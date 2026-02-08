@@ -1,0 +1,569 @@
+// prisma/schema.prisma
+
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ==================== ENUMS ====================
+
+enum UserRole {
+  ADMIN
+  MANAGER
+  USER
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  PENDING
+}
+
+enum ContactStatus {
+  ACTIVE
+  INACTIVE
+  LEAD
+  CUSTOMER
+  CHURNED
+}
+
+enum DealStatus {
+  OPEN
+  WON
+  LOST
+  ABANDONED
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum ActivityType {
+  CALL
+  EMAIL
+  MEETING
+  NOTE
+  TASK
+  DEAL_CREATED
+  DEAL_STAGE_CHANGED
+  DEAL_WON
+  DEAL_LOST
+}
+
+// ========== NOVOS ENUMS PARA AGENCYCRM ==========
+
+enum LeadStatus {
+  NEW // Novo - não contatado
+  CONTACTED // Contatado (email enviado)
+  OPENED // Abriu o email
+  CLICKED // Clicou em link
+  REPLIED // Respondeu
+  CALLED // Ligação realizada
+  INTERESTED // Demonstrou interesse
+  NOT_INTERESTED // Não tem interesse
+  NEGOTIATING // Em negociação
+  CONVERTED // Convertido (virou cliente)
+  UNSUBSCRIBED // Descadastrado
+  BOUNCED // Email inválido
+}
+
+enum CampaignStatus {
+  DRAFT // Rascunho
+  SCHEDULED // Agendada
+  SENDING // Enviando
+  SENT // Enviada
+  PAUSED // Pausada
+  CANCELLED // Cancelada
+}
+
+enum EmailSendStatus {
+  PENDING // Aguardando envio
+  SENT // Enviado
+  DELIVERED // Entregue
+  OPENED // Aberto
+  CLICKED // Clicou
+  REPLIED // Respondeu
+  BOUNCED // Falhou
+  COMPLAINED // Marcou como spam
+}
+
+enum CallResult {
+  ANSWERED // Atendeu
+  NO_ANSWER // Não atendeu
+  BUSY // Ocupado
+  VOICEMAIL // Caixa postal
+  WRONG_NUMBER // Número errado
+  INTERESTED // Atendeu e tem interesse
+  NOT_INTERESTED // Atendeu mas sem interesse
+  CALLBACK // Pediu para retornar
+  MEETING_SCHEDULED // Agendou reunião
+}
+
+// ==================== USUÁRIOS ====================
+
+model User {
+  id       String     @id @default(cuid())
+  email    String     @unique
+  name     String?
+  avatar   String?
+  role     UserRole   @default(USER)
+  status   UserStatus @default(ACTIVE)
+  language String     @default("pt-BR")
+  timezone String     @default("America/Sao_Paulo")
+
+  // Configurações AgencyCRM
+  resendApiKey String? // API key do Resend (criptografada)
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  lastLoginAt DateTime?
+
+  // Relacionamentos existentes (NextCRM)
+  contacts        Contact[]  @relation("AssignedContacts")
+  createdContacts Contact[]  @relation("CreatedContacts")
+  companies       Company[]  @relation("AssignedCompanies")
+  deals           Deal[]     @relation("AssignedDeals")
+  tasksAssigned   Task[]     @relation("AssignedTasks")
+  tasksCreated    Task[]     @relation("CreatedTasks")
+  activities      Activity[]
+
+  // Novos relacionamentos (AgencyCRM)
+  workspaces        Workspace[]
+  activeWorkspaceId String? // Workspace ativo no momento
+
+  @@map("users")
+}
+
+// ==================== WORKSPACE (NOVO - AgencyCRM) ====================
+
+model Workspace {
+  id          String  @id @default(cuid())
+  name        String // "Empresa ABC"
+  description String?
+  color       String  @default("#3B82F6") // Cor para identificação
+  logo        String? // URL do logo
+
+  // Configurações de email
+  senderName  String? // Nome do remetente nos emails
+  senderEmail String? // Email do remetente
+
+  // Relacionamentos
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Entidades do workspace
+  leads          Lead[]
+  campaigns      Campaign[]
+  emailTemplates EmailTemplate[]
+  calls          Call[]
+  tags           Tag[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@map("workspaces")
+}
+
+// ==================== LEAD (NOVO - AgencyCRM) ====================
+
+model Lead {
+  id String @id @default(cuid())
+
+  // Dados básicos
+  firstName String
+  lastName  String?
+  email     String
+  phone     String?
+  mobile    String?
+
+  // Dados da empresa do lead
+  company  String? // Nome da empresa
+  jobTitle String? // Cargo
+  website  String?
+
+  // Controle
+  status LeadStatus @default(NEW)
+  source String? // "csv_import", "manual", "landing_page"
+
+  // Notas
+  notes String? @db.Text
+
+  // Relacionamentos
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  emailSends EmailSend[]
+  calls      Call[]
+  tags       TagsOnLeads[]
+
+  // Importação
+  importedAt  DateTime?
+  importBatch String? // ID do lote de importação
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([email, workspaceId]) // Email único por workspace
+  @@index([workspaceId])
+  @@index([status])
+  @@index([importBatch])
+  @@map("leads")
+}
+
+// ==================== TAG (NOVO - AgencyCRM) ====================
+
+model Tag {
+  id    String @id @default(cuid())
+  name  String
+  color String @default("#6B7280")
+
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  leads TagsOnLeads[]
+
+  @@unique([name, workspaceId])
+  @@index([workspaceId])
+  @@map("tags")
+}
+
+model TagsOnLeads {
+  leadId String
+  lead   Lead   @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  tagId String
+  tag   Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([leadId, tagId])
+  @@map("tags_on_leads")
+}
+
+// ==================== EMAIL TEMPLATE (NOVO - AgencyCRM) ====================
+
+model EmailTemplate {
+  id      String @id @default(cuid())
+  name    String // "Primeiro contato", "Follow-up 1"
+  subject String // Assunto do email
+  body    String @db.Text // Corpo HTML
+
+  // Variáveis disponíveis: {{firstName}}, {{company}}, etc.
+
+  isActive Boolean @default(true)
+
+  workspaceId String
+  workspace   Workspace  @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  campaigns   Campaign[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([workspaceId])
+  @@map("email_templates")
+}
+
+// ==================== CAMPAIGN (NOVO - AgencyCRM) ====================
+
+model Campaign {
+  id          String         @id @default(cuid())
+  name        String // "Campanha Janeiro 2025"
+  description String?
+  status      CampaignStatus @default(DRAFT)
+
+  // Template
+  templateId String?
+  template   EmailTemplate? @relation(fields: [templateId], references: [id])
+
+  // Ou conteúdo direto (se não usar template)
+  subject String?
+  body    String? @db.Text
+
+  // Filtros de destinatários (JSON)
+  filterStatus LeadStatus[] // Enviar para leads com esses status
+  filterTags   String[] // Enviar para leads com essas tags (IDs)
+
+  // Métricas (calculadas)
+  totalRecipients Int @default(0)
+  totalSent       Int @default(0)
+  totalOpened     Int @default(0)
+  totalClicked    Int @default(0)
+  totalReplied    Int @default(0)
+  totalBounced    Int @default(0)
+
+  // Datas
+  scheduledAt DateTime? // Agendamento (futuro)
+  sentAt      DateTime? // Quando foi enviada
+
+  workspaceId String
+  workspace   Workspace   @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  emailSends  EmailSend[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([workspaceId])
+  @@index([status])
+  @@map("campaigns")
+}
+
+// ==================== EMAIL SEND (NOVO - AgencyCRM) ====================
+
+model EmailSend {
+  id String @id @default(cuid())
+
+  // Relacionamentos
+  campaignId String
+  campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  leadId String
+  lead   Lead   @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  // Status do envio
+  status EmailSendStatus @default(PENDING)
+
+  // IDs externos
+  resendId String? // ID retornado pelo Resend
+
+  // Rastreamento
+  openedAt     DateTime?
+  openCount    Int       @default(0) // Quantas vezes abriu
+  clickedAt    DateTime?
+  clickCount   Int       @default(0)
+  repliedAt    DateTime?
+  bouncedAt    DateTime?
+  bounceReason String?
+
+  // Datas
+  sentAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@unique([campaignId, leadId]) // Um envio por lead por campanha
+  @@index([campaignId])
+  @@index([leadId])
+  @@index([status])
+  @@map("email_sends")
+}
+
+// ==================== CALL (NOVO - AgencyCRM) ====================
+
+model Call {
+  id String @id @default(cuid())
+
+  // Relacionamentos
+  leadId String
+  lead   Lead   @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  // Resultado
+  result CallResult
+
+  // Detalhes
+  duration Int?    @db.Integer // Duração em segundos
+  notes    String? @db.Text // Anotações da ligação
+
+  // Agendamento de retorno
+  followUpAt DateTime? // Data para retornar
+
+  // Data da ligação
+  calledAt DateTime @default(now())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([leadId])
+  @@index([workspaceId])
+  @@index([calledAt])
+  @@map("calls")
+}
+
+// ==================== MODELOS EXISTENTES (NextCRM) ====================
+// Mantidos para compatibilidade durante a transição
+
+model Company {
+  id          String   @id @default(cuid())
+  name        String
+  domain      String?
+  industry    String?
+  size        String?
+  website     String?
+  phone       String?
+  email       String?
+  address     String?
+  city        String?
+  state       String?
+  country     String?  @default("Brasil")
+  postalCode  String?
+  description String?
+  logo        String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  assignedToId String?
+  assignedTo   User?     @relation("AssignedCompanies", fields: [assignedToId], references: [id])
+  contacts     Contact[]
+  deals        Deal[]
+  tasks        Task[]
+
+  @@map("companies")
+}
+
+model Contact {
+  id         String        @id @default(cuid())
+  firstName  String
+  lastName   String
+  email      String?
+  phone      String?
+  mobile     String?
+  position   String?
+  department String?
+  status     ContactStatus @default(LEAD)
+  source     String?
+  notes      String?
+  avatar     String?
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  companyId    String?
+  company      Company?   @relation(fields: [companyId], references: [id])
+  assignedToId String?
+  assignedTo   User?      @relation("AssignedContacts", fields: [assignedToId], references: [id])
+  createdById  String?
+  createdBy    User?      @relation("CreatedContacts", fields: [createdById], references: [id])
+  deals        Deal[]
+  tasks        Task[]
+  activities   Activity[]
+
+  @@map("contacts")
+}
+
+model PipelineStage {
+  id        String   @id @default(cuid())
+  name      String
+  order     Int
+  color     String   @default("#6B7280")
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  deals Deal[]
+
+  @@map("pipeline_stages")
+}
+
+model Deal {
+  id                String     @id @default(cuid())
+  title             String
+  value             Decimal?   @db.Decimal(15, 2)
+  currency          String     @default("BRL")
+  status            DealStatus @default(OPEN)
+  probability       Int?       @default(50)
+  expectedCloseDate DateTime?
+  closedAt          DateTime?
+  lostReason        String?
+  description       String?
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+
+  stageId      String?
+  stage        PipelineStage? @relation(fields: [stageId], references: [id])
+  contactId    String?
+  contact      Contact?       @relation(fields: [contactId], references: [id])
+  companyId    String?
+  company      Company?       @relation(fields: [companyId], references: [id])
+  assignedToId String?
+  assignedTo   User?          @relation("AssignedDeals", fields: [assignedToId], references: [id])
+  tasks        Task[]
+  activities   Activity[]
+
+  @@map("deals")
+}
+
+model Task {
+  id          String       @id @default(cuid())
+  title       String
+  description String?      @db.Text
+  status      TaskStatus   @default(TODO)
+  priority    TaskPriority @default(MEDIUM)
+  dueDate     DateTime?
+  completedAt DateTime?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  contactId    String?
+  contact      Contact? @relation(fields: [contactId], references: [id], onDelete: SetNull)
+  companyId    String?
+  company      Company? @relation(fields: [companyId], references: [id], onDelete: SetNull)
+  dealId       String?
+  deal         Deal?    @relation(fields: [dealId], references: [id], onDelete: SetNull)
+  assignedToId String?
+  assignedTo   User?    @relation("AssignedTasks", fields: [assignedToId], references: [id], onDelete: SetNull)
+  createdById  String
+  createdBy    User     @relation("CreatedTasks", fields: [createdById], references: [id], onDelete: Cascade)
+
+  subtasks Subtask[]
+
+  @@index([status])
+  @@index([priority])
+  @@index([dueDate])
+  @@index([contactId])
+  @@index([companyId])
+  @@index([dealId])
+  @@index([assignedToId])
+  @@index([createdById])
+  @@map("tasks")
+}
+
+model Subtask {
+  id          String    @id @default(cuid())
+  title       String
+  completed   Boolean   @default(false)
+  completedAt DateTime?
+  order       Int       @default(0)
+
+  taskId String
+  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([taskId])
+  @@map("subtasks")
+}
+
+model Activity {
+  id          String       @id @default(cuid())
+  type        ActivityType
+  title       String
+  description String?
+  metadata    Json?
+  createdAt   DateTime     @default(now())
+
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+  contactId String?
+  contact   Contact? @relation(fields: [contactId], references: [id])
+  dealId    String?
+  deal      Deal?    @relation(fields: [dealId], references: [id])
+
+  @@map("activities")
+}
