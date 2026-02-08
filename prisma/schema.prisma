@@ -117,6 +117,23 @@ enum CallResult {
   MEETING_SCHEDULED // Agendou reunião
 }
 
+enum CompanySize {
+  MICRO // 1-10 funcionários
+  SMALL // 11-50
+  MEDIUM // 51-200
+  LARGE // 201-500
+  ENTERPRISE // 500+
+}
+
+enum LeadSource {
+  MANUAL // Cadastrado manualmente
+  IMPORT // Importado via CSV
+  MARKETPLACE // Comprado no marketplace
+  WEBSITE // Capturado via formulário
+  REFERRAL // Indicação
+  OTHER // Outros
+}
+
 // ==================== USUÁRIOS ====================
 
 model User {
@@ -188,26 +205,34 @@ model Workspace {
 model Lead {
   id String @id @default(cuid())
 
-  // Dados básicos
+  // === CONTATO ===
   firstName String
   lastName  String?
   email     String
   phone     String?
   mobile    String?
 
-  // Dados da empresa do lead
-  company  String? // Nome da empresa
-  jobTitle String? // Cargo
-  website  String?
+  // === EMPRESA ===
+  company     String?
+  jobTitle    String?
+  website     String?
+  taxId       String? // CNPJ, VAT, EIN, etc. (NOVO)
+  industry    String? // Segmento (NOVO)
+  companySize CompanySize? // Porte da empresa (NOVO)
 
-  // Controle
+  // === LOCALIZAÇÃO (NOVOS) ===
+  address    String?
+  city       String?
+  state      String?
+  postalCode String?
+  country    String? // Código ISO: BR, DE, US
+
+  // === STATUS E CONTROLE ===
   status LeadStatus @default(NEW)
-  source String? // "csv_import", "manual", "landing_page"
+  source LeadSource @default(MANUAL) // Alterado de String para Enum
+  notes  String?    @db.Text
 
-  // Notas
-  notes String? @db.Text
-
-  // Relacionamentos
+  // === RELACIONAMENTOS ===
   workspaceId String
   workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 
@@ -215,16 +240,20 @@ model Lead {
   calls      Call[]
   tags       TagsOnLeads[]
 
-  // Importação
+  // === IMPORTAÇÃO ===
   importedAt  DateTime?
-  importBatch String? // ID do lote de importação
+  importBatch String?
 
+  // === TIMESTAMPS ===
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([email, workspaceId]) // Email único por workspace
+  @@unique([email, workspaceId])
   @@index([workspaceId])
   @@index([status])
+  @@index([source])
+  @@index([country])
+  @@index([industry])
   @@index([importBatch])
   @@map("leads")
 }

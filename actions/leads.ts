@@ -1,409 +1,407 @@
 // actions/leads.ts
 
-"use server"
+'use server'
 
-import { revalidatePath } from "next/cache"
-import { prisma } from "@/lib/prisma"
-import { createClient } from "@/lib/supabase/server"
-import { LeadStatus } from "@prisma/client"
+import { revalidatePath } from 'next/cache'
+import { prisma } from '@/lib/prisma'
+import { getAuthenticatedUser } from '@/lib/auth'
+import {
+    createLeadSchema,
+    updateLeadSchema,
+    type CreateLeadData,
+    type UpdateLeadData
+} from '@/lib/validations/lead.validations'
+import { sanitizeLeadData } from '@/lib/utils/lead.utils'
+import type { LeadStatus } from '@prisma/client'
 
-// Tipos
-export type LeadFormData = {
-    firstName: string
-    lastName?: string | null
-    email: string
-    phone?: string | null
-    mobile?: string | null
-    company?: string | null
-    jobTitle?: string | null
-    website?: string | null
+// ============================================================
+// TIPOS
+// ============================================================
+
+interface ActionResult<T = void> {
+    success: boolean
+    data?: T
+    error?: string
+}
+
+interface GetLeadsParams {
+    workspaceId: string
+    search?: string
     status?: LeadStatus
-    source?: string | null
-    notes?: string | null
+    country?: string
+    industry?: string
+    page?: number
+    pageSize?: number
 }
 
-// Função para serializar lead
-function serializeLead(lead: any) {
-    if (!lead) return null
-    return {
-        ...lead,
-        createdAt: lead.createdAt?.toISOString?.() || lead.createdAt,
-        updatedAt: lead.updatedAt?.toISOString?.() || lead.updatedAt,
-        importedAt: lead.importedAt?.toISOString?.() || lead.importedAt,
-    }
+interface LeadWithRelations {
+    id: string
+    firstName: string
+    lastName: string | null
+    email: string
+    phone: string | null
+    mobile: string | null
+    company: string | null
+    jobTitle: string | null
+    website: string | null
+    taxId: string | null
+    industry: string | null
+    companySize: string | null
+    address: string | null
+    city: string | null
+    state: string | null
+    postalCode: string | null
+    country: string | null
+    status: LeadStatus
+    source: string
+    notes: string | null
+    createdAt: Date
+    updatedAt: Date
 }
 
-// Obter usuário autenticado e garantir que existe na tabela
-async function getAuthenticatedUser() {
-    const supabase = await createClient()
-    const { data: { user }, error } = await supabase.auth.getUser()
-
-    if (error || !user) {
-        throw new Error("Usuário não autenticado")
-    }
-
-    let dbUser = await prisma.user.findUnique({
-        where: { id: user.id },
-    })
-
-    if (!dbUser) {
-        dbUser = await prisma.user.create({
-            data: {
-                id: user.id,
-                email: user.email!,
-                name: user.user_metadata?.name || user.email?.split("@")[0] || "Usuário",
-            },
-        })
-    }
-
-    return dbUser
+interface LeadStats {
+    total: number
+    new: number
+    interested: number
+    converted: number
 }
 
-// Verificar se workspace pertence ao usuário
-async function verifyWorkspaceAccess(workspaceId: string, userId: string) {
-    const workspace = await prisma.workspace.findFirst({
-        where: { id: workspaceId, userId },
-    })
+// ============================================================
+// HELPERS
+// ============================================================
 
-    if (!workspace) {
-        throw new Error("Workspace não encontrado ou sem permissão")
-    }
-
-    return workspace
+/**
+ * Extrai a primeira mensagem de erro do Zod
+ */
+function getFirstZodError(error: { issues: Array<{ message: string }> }): string {
+    return error.issues[0]?.message ?? 'Dados inválidos'
 }
 
-// CREATE - Criar lead
-export async function createLead(workspaceId: string, data: LeadFormData) {
+// ============================================================
+// QUERIES
+// ============================================================
+
+/**
+ * Busca leads do workspace com filtros e paginação
+ */
+export async function getLeads(params: GetLeadsParams): Promise<ActionResult<{
+    leads: LeadWithRelations[]
+    total: number
+    stats: LeadStats
+}>> {
     try {
         const user = await getAuthenticatedUser()
-        await verifyWorkspaceAccess(workspaceId, user.id)
-
-        // Verificar se email já existe no workspace
-        const existingLead = await prisma.lead.findFirst({
-            where: {
-                email: data.email.toLowerCase().trim(),
-                workspaceId,
-            },
-        })
-
-        if (existingLead) {
-            return { success: false, error: "Já existe um lead com este email neste cliente" }
+        if (!user) {
+            return { success: false, error: 'Não autenticado' }
         }
 
-        const lead = await prisma.lead.create({
-            data: {
-                firstName: data.firstName.trim(),
-                lastName: data.lastName?.trim() || null,
-                email: data.email.toLowerCase().trim(),
-                phone: data.phone?.trim() || null,
-                mobile: data.mobile?.trim() || null,
-                company: data.company?.trim() || null,
-                jobTitle: data.jobTitle?.trim() || null,
-                website: data.website?.trim() || null,
-                status: data.status || "NEW",
-                source: data.source || "manual",
-                notes: data.notes?.trim() || null,
-                workspaceId,
-            },
+        const {
+            workspaceId,
+            search,
+            status,
+            country,
+            industry,
+            page = 1,
+            pageSize = 50
+        } = params
+
+        // Verifica se o workspace pertence ao usuário
+        const workspace = await prisma.workspace.findFirst({
+            where: { id: workspaceId, userId: user.id }
         })
 
-        revalidatePath("/leads")
-        return { success: true, data: serializeLead(lead) }
-    } catch (error) {
-        console.error("Erro ao criar lead:", error)
-        return { success: false, error: "Erro ao criar lead" }
-    }
-}
+        if (!workspace) {
+            return { success: false, error: 'Workspace não encontrado' }
+        }
 
-// READ - Listar leads do workspace
-export async function getLeads(
-    workspaceId: string,
-    options?: {
-        search?: string
-        status?: LeadStatus
-        tagId?: string
-        page?: number
-        limit?: number
-    }
-) {
-    try {
-        const user = await getAuthenticatedUser()
-        await verifyWorkspaceAccess(workspaceId, user.id)
-
-        const { search, status, tagId, page = 1, limit = 50 } = options || {}
-
-        const where: any = {
+        // Monta os filtros
+        const where = {
             workspaceId,
             ...(status && { status }),
+            ...(country && { country }),
+            ...(industry && { industry }),
             ...(search && {
                 OR: [
-                    { firstName: { contains: search, mode: "insensitive" } },
-                    { lastName: { contains: search, mode: "insensitive" } },
-                    { email: { contains: search, mode: "insensitive" } },
-                    { company: { contains: search, mode: "insensitive" } },
-                ],
-            }),
-            ...(tagId && {
-                tags: {
-                    some: { tagId },
-                },
-            }),
+                    { firstName: { contains: search, mode: 'insensitive' as const } },
+                    { lastName: { contains: search, mode: 'insensitive' as const } },
+                    { email: { contains: search, mode: 'insensitive' as const } },
+                    { company: { contains: search, mode: 'insensitive' as const } },
+                ]
+            })
         }
 
-        const [leads, total] = await Promise.all([
+        // Busca leads com paginação
+        const [leads, total, stats] = await Promise.all([
             prisma.lead.findMany({
                 where,
+                orderBy: { createdAt: 'desc' },
+                skip: (page - 1) * pageSize,
+                take: pageSize,
                 include: {
-                    tags: {
-                        include: {
-                            tag: true,
-                        },
-                    },
                     _count: {
                         select: {
                             emailSends: true,
                             calls: true,
-                        },
-                    },
-                },
-                orderBy: { createdAt: "desc" },
-                skip: (page - 1) * limit,
-                take: limit,
+                        }
+                    }
+                }
             }),
             prisma.lead.count({ where }),
+            getLeadStats(workspaceId),
         ])
-
-        const serialized = leads.map((lead) => ({
-            ...serializeLead(lead),
-            tags: lead.tags.map((t) => t.tag),
-            _count: lead._count,
-        }))
 
         return {
             success: true,
-            data: serialized,
-            pagination: {
+            data: {
+                leads: leads as unknown as LeadWithRelations[],
                 total,
-                page,
-                limit,
-                totalPages: Math.ceil(total / limit),
-            },
+                stats
+            }
         }
     } catch (error) {
-        console.error("Erro ao buscar leads:", error)
-        return { success: false, error: "Erro ao buscar leads", data: [] }
+        console.error('Erro ao buscar leads:', error)
+        return { success: false, error: 'Erro ao buscar leads' }
     }
 }
 
-// READ - Buscar lead por ID
-export async function getLeadById(workspaceId: string, leadId: string) {
+/**
+ * Busca um lead específico por ID
+ */
+export async function getLeadById(id: string): Promise<ActionResult<LeadWithRelations>> {
     try {
         const user = await getAuthenticatedUser()
-        await verifyWorkspaceAccess(workspaceId, user.id)
+        if (!user) {
+            return { success: false, error: 'Não autenticado' }
+        }
 
         const lead = await prisma.lead.findFirst({
             where: {
-                id: leadId,
-                workspaceId,
-            },
-            include: {
-                tags: {
-                    include: {
-                        tag: true,
-                    },
-                },
-                emailSends: {
-                    include: {
-                        campaign: {
-                            select: { id: true, name: true },
-                        },
-                    },
-                    orderBy: { createdAt: "desc" },
-                    take: 10,
-                },
-                calls: {
-                    orderBy: { calledAt: "desc" },
-                    take: 10,
-                },
-            },
+                id,
+                workspace: { userId: user.id }
+            }
         })
 
         if (!lead) {
-            return { success: false, error: "Lead não encontrado" }
+            return { success: false, error: 'Lead não encontrado' }
         }
 
-        return {
-            success: true,
-            data: {
-                ...serializeLead(lead),
-                tags: lead.tags.map((t) => t.tag),
-                emailSends: lead.emailSends.map((e) => ({
-                    ...e,
-                    sentAt: e.sentAt?.toISOString() || null,
-                    openedAt: e.openedAt?.toISOString() || null,
-                    clickedAt: e.clickedAt?.toISOString() || null,
-                    createdAt: e.createdAt.toISOString(),
-                })),
-                calls: lead.calls.map((c) => ({
-                    ...c,
-                    calledAt: c.calledAt.toISOString(),
-                    followUpAt: c.followUpAt?.toISOString() || null,
-                    createdAt: c.createdAt.toISOString(),
-                    updatedAt: c.updatedAt.toISOString(),
-                })),
-            },
-        }
+        return { success: true, data: lead as unknown as LeadWithRelations }
     } catch (error) {
-        console.error("Erro ao buscar lead:", error)
-        return { success: false, error: "Erro ao buscar lead" }
+        console.error('Erro ao buscar lead:', error)
+        return { success: false, error: 'Erro ao buscar lead' }
     }
 }
 
-// UPDATE - Atualizar lead
-export async function updateLead(
-    workspaceId: string,
-    leadId: string,
-    data: LeadFormData
-) {
+/**
+ * Retorna estatísticas dos leads do workspace
+ */
+async function getLeadStats(workspaceId: string): Promise<LeadStats> {
+    const [total, newCount, interested, converted] = await Promise.all([
+        prisma.lead.count({ where: { workspaceId } }),
+        prisma.lead.count({ where: { workspaceId, status: 'NEW' } }),
+        prisma.lead.count({ where: { workspaceId, status: 'INTERESTED' } }),
+        prisma.lead.count({ where: { workspaceId, status: 'CONVERTED' } }),
+    ])
+
+    return { total, new: newCount, interested, converted }
+}
+
+// ============================================================
+// MUTATIONS
+// ============================================================
+
+/**
+ * Cria um novo lead
+ */
+export async function createLead(data: CreateLeadData): Promise<ActionResult<LeadWithRelations>> {
     try {
         const user = await getAuthenticatedUser()
-        await verifyWorkspaceAccess(workspaceId, user.id)
-
-        // Verificar se lead existe
-        const existing = await prisma.lead.findFirst({
-            where: { id: leadId, workspaceId },
-        })
-
-        if (!existing) {
-            return { success: false, error: "Lead não encontrado" }
+        if (!user) {
+            return { success: false, error: 'Não autenticado' }
         }
 
-        // Verificar se novo email já existe (se mudou)
-        if (data.email.toLowerCase().trim() !== existing.email) {
-            const emailExists = await prisma.lead.findFirst({
+        // Valida os dados
+        const validation = createLeadSchema.safeParse(data)
+        if (!validation.success) {
+            return { success: false, error: getFirstZodError(validation.error) }
+        }
+
+        // Verifica se o workspace pertence ao usuário
+        const workspace = await prisma.workspace.findFirst({
+            where: { id: data.workspaceId, userId: user.id }
+        })
+
+        if (!workspace) {
+            return { success: false, error: 'Workspace não encontrado' }
+        }
+
+        // Verifica se já existe lead com este email no workspace
+        const existingLead = await prisma.lead.findUnique({
+            where: {
+                email_workspaceId: {
+                    email: data.email,
+                    workspaceId: data.workspaceId
+                }
+            }
+        })
+
+        if (existingLead) {
+            return { success: false, error: 'Já existe um lead com este email' }
+        }
+
+        // Sanitiza os dados (converte strings vazias para null)
+        const sanitizedData = sanitizeLeadData(validation.data)
+
+        // Cria o lead
+        const lead = await prisma.lead.create({
+            data: sanitizedData as any
+        })
+
+        revalidatePath('/leads')
+
+        return { success: true, data: lead as unknown as LeadWithRelations }
+    } catch (error) {
+        console.error('Erro ao criar lead:', error)
+        return { success: false, error: 'Erro ao criar lead' }
+    }
+}
+
+/**
+ * Atualiza um lead existente
+ */
+export async function updateLead(
+    id: string,
+    data: UpdateLeadData
+): Promise<ActionResult<LeadWithRelations>> {
+    try {
+        const user = await getAuthenticatedUser()
+        if (!user) {
+            return { success: false, error: 'Não autenticado' }
+        }
+
+        // Valida os dados
+        const validation = updateLeadSchema.safeParse(data)
+        if (!validation.success) {
+            return { success: false, error: getFirstZodError(validation.error) }
+        }
+
+        // Verifica se o lead existe e pertence ao usuário
+        const existingLead = await prisma.lead.findFirst({
+            where: {
+                id,
+                workspace: { userId: user.id }
+            }
+        })
+
+        if (!existingLead) {
+            return { success: false, error: 'Lead não encontrado' }
+        }
+
+        // Se está alterando o email, verifica duplicidade
+        if (data.email && data.email !== existingLead.email) {
+            const duplicateEmail = await prisma.lead.findFirst({
                 where: {
-                    email: data.email.toLowerCase().trim(),
-                    workspaceId,
-                    NOT: { id: leadId },
-                },
+                    email: data.email,
+                    workspaceId: existingLead.workspaceId,
+                    NOT: { id }
+                }
             })
 
-            if (emailExists) {
-                return { success: false, error: "Já existe um lead com este email" }
+            if (duplicateEmail) {
+                return { success: false, error: 'Já existe um lead com este email' }
             }
         }
 
+        // Sanitiza os dados
+        const sanitizedData = sanitizeLeadData(validation.data)
+
+        // Atualiza o lead
         const lead = await prisma.lead.update({
-            where: { id: leadId },
-            data: {
-                firstName: data.firstName.trim(),
-                lastName: data.lastName?.trim() || null,
-                email: data.email.toLowerCase().trim(),
-                phone: data.phone?.trim() || null,
-                mobile: data.mobile?.trim() || null,
-                company: data.company?.trim() || null,
-                jobTitle: data.jobTitle?.trim() || null,
-                website: data.website?.trim() || null,
-                status: data.status,
-                source: data.source || null,
-                notes: data.notes?.trim() || null,
-            },
+            where: { id },
+            data: sanitizedData as any
         })
 
-        revalidatePath("/leads")
-        revalidatePath(`/leads/${leadId}`)
-        return { success: true, data: serializeLead(lead) }
+        revalidatePath('/leads')
+        revalidatePath(`/leads/${id}`)
+
+        return { success: true, data: lead as unknown as LeadWithRelations }
     } catch (error) {
-        console.error("Erro ao atualizar lead:", error)
-        return { success: false, error: "Erro ao atualizar lead" }
+        console.error('Erro ao atualizar lead:', error)
+        return { success: false, error: 'Erro ao atualizar lead' }
     }
 }
 
-// UPDATE - Atualizar apenas o status
-export async function updateLeadStatus(
-    workspaceId: string,
-    leadId: string,
-    status: LeadStatus
-) {
+/**
+ * Exclui um lead
+ */
+export async function deleteLead(id: string): Promise<ActionResult> {
     try {
         const user = await getAuthenticatedUser()
-        await verifyWorkspaceAccess(workspaceId, user.id)
-
-        const lead = await prisma.lead.update({
-            where: { id: leadId },
-            data: { status },
-        })
-
-        revalidatePath("/leads")
-        return { success: true, data: serializeLead(lead) }
-    } catch (error) {
-        console.error("Erro ao atualizar status:", error)
-        return { success: false, error: "Erro ao atualizar status" }
-    }
-}
-
-// DELETE - Excluir lead
-export async function deleteLead(workspaceId: string, leadId: string) {
-    try {
-        const user = await getAuthenticatedUser()
-        await verifyWorkspaceAccess(workspaceId, user.id)
-
-        const existing = await prisma.lead.findFirst({
-            where: { id: leadId, workspaceId },
-        })
-
-        if (!existing) {
-            return { success: false, error: "Lead não encontrado" }
+        if (!user) {
+            return { success: false, error: 'Não autenticado' }
         }
 
-        await prisma.lead.delete({
-            where: { id: leadId },
+        // Verifica se o lead existe e pertence ao usuário
+        const lead = await prisma.lead.findFirst({
+            where: {
+                id,
+                workspace: { userId: user.id }
+            }
         })
 
-        revalidatePath("/leads")
+        if (!lead) {
+            return { success: false, error: 'Lead não encontrado' }
+        }
+
+        // Exclui o lead
+        await prisma.lead.delete({ where: { id } })
+
+        revalidatePath('/leads')
+
         return { success: true }
     } catch (error) {
-        console.error("Erro ao excluir lead:", error)
-        return { success: false, error: "Erro ao excluir lead" }
+        console.error('Erro ao excluir lead:', error)
+        return { success: false, error: 'Erro ao excluir lead' }
     }
 }
 
-// Estatísticas de leads do workspace
-export async function getLeadStats(workspaceId: string) {
+/**
+ * Atualiza o status de um lead
+ */
+export async function updateLeadStatus(
+    id: string,
+    status: LeadStatus
+): Promise<ActionResult<LeadWithRelations>> {
+    return updateLead(id, { status })
+}
+
+/**
+ * Exclui múltiplos leads
+ */
+export async function deleteMultipleLeads(ids: string[]): Promise<ActionResult<{ deleted: number }>> {
     try {
         const user = await getAuthenticatedUser()
-        await verifyWorkspaceAccess(workspaceId, user.id)
-
-        const [total, byStatus] = await Promise.all([
-            prisma.lead.count({ where: { workspaceId } }),
-            prisma.lead.groupBy({
-                by: ["status"],
-                where: { workspaceId },
-                _count: true,
-            }),
-        ])
-
-        const statusCounts = byStatus.reduce(
-            (acc, item) => {
-                acc[item.status] = item._count
-                return acc
-            },
-            {} as Record<string, number>
-        )
-
-        return {
-            success: true,
-            data: {
-                total,
-                byStatus: statusCounts,
-                new: statusCounts["NEW"] || 0,
-                contacted: statusCounts["CONTACTED"] || 0,
-                interested: statusCounts["INTERESTED"] || 0,
-                converted: statusCounts["CONVERTED"] || 0,
-            },
+        if (!user) {
+            return { success: false, error: 'Não autenticado' }
         }
+
+        if (ids.length === 0) {
+            return { success: false, error: 'Nenhum lead selecionado' }
+        }
+
+        // Exclui apenas leads que pertencem ao usuário
+        const result = await prisma.lead.deleteMany({
+            where: {
+                id: { in: ids },
+                workspace: { userId: user.id }
+            }
+        })
+
+        revalidatePath('/leads')
+
+        return { success: true, data: { deleted: result.count } }
     } catch (error) {
-        console.error("Erro ao buscar estatísticas:", error)
-        return { success: false, error: "Erro ao buscar estatísticas" }
+        console.error('Erro ao excluir leads:', error)
+        return { success: false, error: 'Erro ao excluir leads' }
     }
 }

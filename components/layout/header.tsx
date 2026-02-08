@@ -12,7 +12,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { WorkspaceSwitcher } from "@/components/workspace-switcher"
+import { WorkspaceSwitcher } from "@/components/workspaces/workspace-switcher"
 
 interface HeaderProps {
     user?: {
