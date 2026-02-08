@@ -1,0 +1,35 @@
+# .vercelignore
+
+# Arquivos locais
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# Dependências (Vercel instala automaticamente)
+node_modules
+
+# Git
+.git
+.gitignore
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Prisma (migrations locais)
+prisma/migrations
+
+# Testes
+coverage
+.nyc_output
