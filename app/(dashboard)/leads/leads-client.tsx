@@ -178,10 +178,12 @@ function EmptyState({
                         hasFilters,
                         onClearFilters,
                         onAddLead,
+                        onImport,
                     }: {
     hasFilters: boolean
     onClearFilters: () => void
     onAddLead: () => void
+    onImport: () => void
 }) {
     return (
         <div className="flex flex-col items-center justify-center py-12">
@@ -207,7 +209,7 @@ function EmptyState({
                         <Plus className="h-4 w-4 mr-2" />
                         Adicionar Lead
                     </Button>
-                    <Button variant="outline" disabled>
+                    <Button variant="outline" onClick={onImport}>  {/* 👈 CORRIGIDO */}
                         <Upload className="h-4 w-4 mr-2" />
                         Importar CSV
                     </Button>
@@ -579,7 +581,7 @@ export function LeadsClient() {
                     </div>
 
                     <div className="flex gap-2">
-                        <Button variant="outline" disabled>
+                        <Button variant="outline" onClick={() => router.push('/leads/import')}>
                             <Upload className="h-4 w-4 mr-2" />
                             Importar
                         </Button>
@@ -715,6 +717,7 @@ export function LeadsClient() {
                             hasFilters={hasActiveFilters}
                             onClearFilters={handleClearFilters}
                             onAddLead={() => setIsModalOpen(true)}
+                            onImport={() => router.push('/leads/import')}
                         />
                     ) : (
                         <div className="overflow-x-auto">
