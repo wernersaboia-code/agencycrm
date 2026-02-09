@@ -111,69 +111,161 @@ export function isValidEmail(email: string): boolean {
 }
 
 // ============================================================
+// DETECTAR DELIMITADOR
+// ============================================================
+
+/**
+ * Tenta detectar o delimitador do arquivo
+ * Analisa as primeiras linhas e conta ocorrências de possíveis delimitadores
+ */
+function detectDelimiter(text: string): string {
+    const delimiters = [',', ';', '\t', '|']
+    const lines = text.split('\n').slice(0, 10) // Analisa primeiras 10 linhas
+
+    if (lines.length === 0) return ','
+
+    const counts: Record<string, number[]> = {}
+
+    // Conta ocorrências de cada delimitador por linha
+    for (const delimiter of delimiters) {
+        counts[delimiter] = lines.map(line => {
+            // Conta ocorrências fora de aspas
+            let count = 0
+            let inQuotes = false
+            for (const char of line) {
+                if (char === '"') inQuotes = !inQuotes
+                if (char === delimiter && !inQuotes) count++
+            }
+            return count
+        })
+    }
+
+    // Encontra o delimitador mais consistente (mesmo número em todas as linhas e > 0)
+    let bestDelimiter = ','
+    let bestScore = 0
+
+    for (const delimiter of delimiters) {
+        const delimCounts = counts[delimiter]
+        const nonZeroCounts = delimCounts.filter(c => c > 0)
+
+        if (nonZeroCounts.length > 0) {
+            // Verifica consistência (todos iguais ou quase)
+            const first = nonZeroCounts[0]
+            const isConsistent = nonZeroCounts.every(c => Math.abs(c - first) <= 1)
+            const avgCount = nonZeroCounts.reduce((a, b) => a + b, 0) / nonZeroCounts.length
+            const coverage = nonZeroCounts.length / delimCounts.length // % de linhas com esse delimitador
+
+            const score = avgCount * coverage * (isConsistent ? 2 : 1)
+
+            if (score > bestScore) {
+                bestScore = score
+                bestDelimiter = delimiter
+            }
+        }
+    }
+
+    return bestDelimiter
+}
+
+// ============================================================
 // PARSER DE CSV
 // ============================================================
 
 async function parseCSV(file: File): Promise<ParseResult> {
     return new Promise((resolve) => {
-        Papa.parse(file, {
-            header: true,
-            skipEmptyLines: true,
-            encoding: 'UTF-8',
-            transformHeader: (header) => cleanCellValue(header),
-            complete: (results) => {
-                // Verifica erros críticos
-                if (results.errors.length > 0) {
-                    const criticalError = results.errors.find(
-                        (e) => e.type === 'Quotes' || e.type === 'Delimiter'
-                    )
-                    if (criticalError) {
+        // Primeiro, lê o arquivo como texto para detectar o delimitador
+        const reader = new FileReader()
+
+        reader.onload = (event) => {
+            const text = event.target?.result as string
+
+            if (!text || text.trim().length === 0) {
+                resolve({
+                    success: false,
+                    error: {
+                        message: 'Arquivo vazio',
+                        details: 'O arquivo não contém dados',
+                    },
+                })
+                return
+            }
+
+            // Detecta o delimitador
+            const delimiter = detectDelimiter(text)
+
+            // Faz o parse com o delimitador detectado
+            Papa.parse(text, {
+                header: true,
+                skipEmptyLines: true,
+                delimiter: delimiter,
+                transformHeader: (header) => cleanCellValue(header),
+                complete: (results) => {
+                    const headers = results.meta.fields || []
+
+                    // Filtra headers vazios
+                    const validHeaders = headers.filter(h => h && h.trim() !== '')
+
+                    if (validHeaders.length === 0) {
                         resolve({
                             success: false,
                             error: {
-                                message: 'Erro ao processar CSV',
-                                details: criticalError.message,
+                                message: 'Sem colunas válidas',
+                                details: 'Não foi possível identificar as colunas. Verifique se a primeira linha contém os cabeçalhos.',
                             },
                         })
                         return
                     }
-                }
 
-                const headers = results.meta.fields || []
-                const rows = (results.data as Record<string, unknown>[]).map((row) => {
-                    const cleanedRow: Record<string, string> = {}
-                    for (const [key, value] of Object.entries(row)) {
-                        cleanedRow[key] = cleanCellValue(value)
-                    }
-                    return cleanedRow
-                })
+                    const rows = (results.data as Record<string, unknown>[]).map((row) => {
+                        const cleanedRow: Record<string, string> = {}
+                        for (const [key, value] of Object.entries(row)) {
+                            if (key && key.trim() !== '') {
+                                cleanedRow[key] = cleanCellValue(value)
+                            }
+                        }
+                        return cleanedRow
+                    })
 
-                // Filtra linhas completamente vazias
-                const nonEmptyRows = rows.filter((row) =>
-                    Object.values(row).some((v) => v !== '')
-                )
+                    // Filtra linhas completamente vazias
+                    const nonEmptyRows = rows.filter((row) =>
+                        Object.values(row).some((v) => v !== '')
+                    )
 
-                resolve({
-                    success: true,
-                    data: {
-                        headers,
-                        rows: nonEmptyRows,
-                        totalRows: nonEmptyRows.length,
-                        fileName: file.name,
-                        fileType: 'csv',
-                    },
-                })
-            },
-            error: (error) => {
-                resolve({
-                    success: false,
-                    error: {
-                        message: 'Erro ao processar CSV',
-                        details: error.message,
-                    },
-                })
-            },
-        })
+                    resolve({
+                        success: true,
+                        data: {
+                            headers: validHeaders,
+                            rows: nonEmptyRows,
+                            totalRows: nonEmptyRows.length,
+                            fileName: file.name,
+                            fileType: file.name.toLowerCase().endsWith('.txt') ? 'txt' : 'csv',
+                        },
+                    })
+                },
+                error: (error: Error) => {
+                    resolve({
+                        success: false,
+                        error: {
+                            message: 'Erro ao processar arquivo',
+                            details: error.message,
+                        },
+                    })
+                },
+            })
+        }
+
+        reader.onerror = () => {
+            resolve({
+                success: false,
+                error: {
+                    message: 'Erro ao ler arquivo',
+                    details: 'Não foi possível ler o conteúdo do arquivo',
+                },
+            })
+        }
+
+        // Lê como texto com encoding UTF-8
+        reader.readAsText(file, 'UTF-8')
     })
 }
 
