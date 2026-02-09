@@ -259,6 +259,33 @@ export function EmailSettings({ workspace, onUpdate }: EmailSettingsProps) {
                 </CardDescription>
             </CardHeader>
             <CardContent>
+                {!isConfigured && (
+                    <Alert className="mb-6">
+                        <Info className="h-4 w-4" />
+                        <AlertTitle>Como configurar?</AlertTitle>
+                        <AlertDescription>
+                            <ol className="list-decimal list-inside space-y-2 mt-2 text-sm">
+                                <li>
+                                    <strong>Escolha seu provedor</strong> (Gmail, Zoho, Outlook, etc.)
+                                </li>
+                                <li>
+                                    <strong>Crie uma "Senha de App"</strong> no seu provedor de email
+                                    <ul className="list-disc list-inside ml-4 mt-1 text-muted-foreground">
+                                        <li>Gmail: <a href="https://myaccount.google.com/apppasswords" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">myaccount.google.com/apppasswords</a></li>
+                                        <li>Zoho: Configurações → Segurança → Senhas de App</li>
+                                        <li>Outlook: Configurações → Segurança → Senhas de App</li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <strong>Preencha os campos</strong> com seu email e a senha de app gerada
+                                </li>
+                                <li>
+                                    <strong>Teste a conexão</strong> antes de salvar
+                                </li>
+                            </ol>
+                        </AlertDescription>
+                    </Alert>
+                )}
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(handleSave)} className="space-y-6">
                         {/* Status atual */}

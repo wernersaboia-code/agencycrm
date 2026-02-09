@@ -385,6 +385,7 @@ export async function sendCampaign(id: string): Promise<ActionResult> {
             return { success: false, error: "Não autorizado" }
         }
 
+        // Buscar campanha com template, workspace e leads
         const campaign = await prisma.campaign.findFirst({
             where: {
                 id,
@@ -392,7 +393,7 @@ export async function sendCampaign(id: string): Promise<ActionResult> {
             },
             include: {
                 template: true,
-                workspace: true,
+                workspace: true, // Incluir workspace para pegar config SMTP
                 emailSends: {
                     where: { status: "PENDING" },
                     include: {
@@ -421,14 +422,25 @@ export async function sendCampaign(id: string): Promise<ActionResult> {
             return { success: false, error: "Template sem assunto ou corpo" }
         }
 
+        // Atualizar status para SENDING
         await prisma.campaign.update({
             where: { id },
             data: { status: "SENDING" },
         })
 
-        const fromName = campaign.workspace.senderName || "AgencyCRM"
-        const fromEmail = campaign.workspace.senderEmail || "onboarding@resend.dev"
-        const from = `${fromName} <${fromEmail}>`
+        // Preparar configuração SMTP do workspace (se existir)
+        const smtpConfig = campaign.workspace.smtpUser && campaign.workspace.smtpPass
+            ? {
+                provider: campaign.workspace.smtpProvider,
+                host: campaign.workspace.smtpHost,
+                port: campaign.workspace.smtpPort,
+                user: campaign.workspace.smtpUser,
+                pass: campaign.workspace.smtpPass,
+                secure: campaign.workspace.smtpSecure,
+                senderName: campaign.workspace.senderName,
+                senderEmail: campaign.workspace.senderEmail,
+            }
+            : null
 
         let totalSent = 0
         let totalBounced = 0
@@ -454,16 +466,19 @@ export async function sendCampaign(id: string): Promise<ActionResult> {
             const personalizedSubject = replaceEmailVariables(subject, leadData)
             const personalizedBody = replaceEmailVariables(body, leadData)
 
-            const result = await sendEmail({
-                to: lead.email,
-                subject: personalizedSubject,
-                html: personalizedBody,
-                from,
-                tags: [
-                    { name: "campaign_id", value: campaign.id },
-                    { name: "lead_id", value: lead.id },
-                ],
-            })
+            // Usar a função sendEmail que decide automaticamente entre SMTP e Resend
+            const result = await sendEmail(
+                {
+                    to: lead.email,
+                    subject: personalizedSubject,
+                    html: personalizedBody,
+                    tags: [
+                        { name: "campaign_id", value: campaign.id },
+                        { name: "lead_id", value: lead.id },
+                    ],
+                },
+                smtpConfig // Passa config SMTP se existir
+            )
 
             if (result.success) {
                 await prisma.emailSend.update({
@@ -494,9 +509,11 @@ export async function sendCampaign(id: string): Promise<ActionResult> {
                 totalBounced++
             }
 
+            // Pequeno delay entre emails
             await new Promise((resolve) => setTimeout(resolve, 100))
         }
 
+        // Atualizar campanha com totais
         await prisma.campaign.update({
             where: { id },
             data: {
@@ -512,6 +529,7 @@ export async function sendCampaign(id: string): Promise<ActionResult> {
     } catch (error) {
         console.error("Erro ao enviar campanha:", error)
 
+        // Reverter status se der erro
         await prisma.campaign
             .update({
                 where: { id },
