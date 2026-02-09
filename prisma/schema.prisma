@@ -132,6 +132,16 @@ enum LeadSource {
   OTHER // Outros
 }
 
+enum TemplateCategory {
+  PROSPECTING // Primeiro contato / Prospecção
+  FOLLOW_UP // Follow-up
+  PROPOSAL // Proposta comercial
+  THANK_YOU // Agradecimento
+  REACTIVATION // Reativação de lead frio
+  NEWSLETTER // Newsletter / Novidades
+  OTHER // Outros
+}
+
 // ==================== USUÁRIOS ====================
 
 model User {
@@ -287,10 +297,11 @@ model TagsOnLeads {
 // ==================== EMAIL TEMPLATE (NOVO - AgencyCRM) ====================
 
 model EmailTemplate {
-  id      String @id @default(cuid())
-  name    String // "Primeiro contato", "Follow-up 1"
-  subject String // Assunto do email
-  body    String @db.Text // Corpo HTML
+  id       String           @id @default(cuid())
+  name     String // "Primeiro contato", "Follow-up 1"
+  subject  String // Assunto do email
+  body     String           @db.Text // Corpo HTML
+  category TemplateCategory @default(PROSPECTING) // NOVO!
 
   // Variáveis disponíveis: {{firstName}}, {{company}}, etc.
 
@@ -304,6 +315,7 @@ model EmailTemplate {
   updatedAt DateTime @updatedAt
 
   @@index([workspaceId])
+  @@index([category]) // NOVO índice
   @@map("email_templates")
 }
 
