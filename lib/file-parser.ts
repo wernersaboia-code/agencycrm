@@ -36,75 +36,48 @@ const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10MB
 // FUNÇÕES DE LIMPEZA
 // ============================================================
 
-/**
- * Limpa e normaliza valor de célula
- */
 export function cleanCellValue(value: unknown): string {
     if (value === null || value === undefined) return ''
 
     let str = String(value).trim()
-
-    // Remove caracteres invisíveis e de controle
     str = str.replace(/[\x00-\x1F\x7F]/g, '')
-
-    // Normaliza espaços múltiplos
     str = str.replace(/\s+/g, ' ')
 
     return str.trim()
 }
 
-/**
- * Limpa email - corrige formatações comuns de proteção anti-spam
- */
 export function cleanEmail(email: string): string {
     if (!email) return ''
 
     let cleaned = email.trim().toLowerCase()
 
-    // Corrige formatações comuns de proteção anti-spam
     cleaned = cleaned
-        // Variações de [@]
         .replace(/\s*\[\s*@\s*\]\s*/g, '@')
         .replace(/\s*\(\s*@\s*\)\s*/g, '@')
         .replace(/\s*\{\s*@\s*\}\s*/g, '@')
         .replace(/\s*<\s*@\s*>\s*/g, '@')
         .replace(/\s*\[@\]\s*/g, '@')
-        // Variações de "at"
         .replace(/\s+at\s+/gi, '@')
         .replace(/\(at\)/gi, '@')
         .replace(/\[at\]/gi, '@')
-        // Variações de ponto
         .replace(/\s*\[dot\]\s*/gi, '.')
         .replace(/\s*\(dot\)\s*/gi, '.')
-        .replace(/\s*\[punkt\]\s*/gi, '.') // alemão
+        .replace(/\s*\[punkt\]\s*/gi, '.')
         .replace(/\s*\(punkt\)\s*/gi, '.')
         .replace(/\s+dot\s+/gi, '.')
-        // Remove vírgulas, pontos e espaços no final
         .replace(/[,.\s]+$/, '')
-        // Remove espaços restantes
         .replace(/\s+/g, '')
 
     return cleaned
 }
 
-/**
- * Limpa número de telefone
- */
 export function cleanPhone(phone: string): string {
     if (!phone) return ''
-
-    // Mantém apenas números, +, espaços, parênteses e hífens
     let cleaned = phone.replace(/[^\d\s()\-+.]/g, '')
-
-    // Normaliza espaços
     cleaned = cleaned.replace(/\s+/g, ' ').trim()
-
     return cleaned
 }
 
-/**
- * Valida se é um email válido
- */
 export function isValidEmail(email: string): boolean {
     if (!email) return false
     const cleaned = cleanEmail(email)
@@ -112,71 +85,182 @@ export function isValidEmail(email: string): boolean {
     return emailRegex.test(cleaned)
 }
 
-/**
- * Verifica se uma linha tem dados significativos
- * (não é só espaços ou campos vazios)
- */
 function hasSignificantData(row: Record<string, string>, minFields: number = 2): boolean {
     const nonEmptyValues = Object.values(row).filter(v => v && v.trim() !== '')
     return nonEmptyValues.length >= minFields
 }
 
 // ============================================================
-// DETECTAR DELIMITADOR
+// DETECTAR TIPO DE SEPARADOR (MELHORADO)
 // ============================================================
 
+interface DelimiterInfo {
+    type: 'delimiter' | 'fixed-width'
+    delimiter?: string
+    columnRanges?: Array<{ start: number; end: number; header: string }>
+}
+
 /**
- * Tenta detectar o delimitador do arquivo
+ * Detecta se o arquivo usa delimitadores ou é fixed-width (alinhado por espaços)
  */
-function detectDelimiter(text: string): string {
-    const delimiters = ['\t', ',', ';', '|']
-    const lines = text.split('\n').slice(0, 10).filter(l => l.trim() !== '')
+function detectDelimiterType(text: string): DelimiterInfo {
+    const lines = text.split('\n').filter(l => l.trim() !== '').slice(0, 10)
 
-    if (lines.length === 0) return ','
-
-    const counts: Record<string, number[]> = {}
-
-    for (const delimiter of delimiters) {
-        counts[delimiter] = lines.map(line => {
-            let count = 0
-            let inQuotes = false
-            for (const char of line) {
-                if (char === '"') inQuotes = !inQuotes
-                if (char === delimiter && !inQuotes) count++
-            }
-            return count
-        })
+    if (lines.length === 0) {
+        return { type: 'delimiter', delimiter: ',' }
     }
 
-    let bestDelimiter = ','
-    let bestScore = 0
+    const headerLine = lines[0]
+
+    // 1. Primeiro, tenta detectar delimitadores tradicionais
+    const delimiters = ['\t', ';', ',', '|']
 
     for (const delimiter of delimiters) {
-        const delimCounts = counts[delimiter]
-        const nonZeroCounts = delimCounts.filter(c => c > 0)
+        const headerParts = headerLine.split(delimiter)
+        if (headerParts.length >= 2) {
+            // Verifica se todas as linhas têm o mesmo número de partes
+            const consistent = lines.every(line => {
+                const parts = line.split(delimiter)
+                return parts.length >= 2 && Math.abs(parts.length - headerParts.length) <= 1
+            })
 
-        if (nonZeroCounts.length > 0) {
-            const first = nonZeroCounts[0]
-            const isConsistent = nonZeroCounts.every(c => Math.abs(c - first) <= 1)
-            const avgCount = nonZeroCounts.reduce((a, b) => a + b, 0) / nonZeroCounts.length
-            const coverage = nonZeroCounts.length / delimCounts.length
-
-            // TAB tem prioridade se encontrado consistentemente
-            const tabBonus = delimiter === '\t' ? 1.5 : 1
-            const score = avgCount * coverage * (isConsistent ? 2 : 1) * tabBonus
-
-            if (score > bestScore) {
-                bestScore = score
-                bestDelimiter = delimiter
+            if (consistent) {
+                return { type: 'delimiter', delimiter }
             }
         }
     }
 
-    return bestDelimiter
+    // 2. Verifica se é fixed-width (espaços múltiplos como separador visual)
+    // Procura por padrões de "texto + 2+ espaços + texto"
+    const multiSpaceRegex = /\S+\s{2,}/g
+    const matches = [...headerLine.matchAll(multiSpaceRegex)]
+
+    if (matches.length >= 1) {
+        // Encontrou padrão de fixed-width
+        // Agora precisa determinar onde cada coluna começa e termina
+
+        const columnRanges = detectColumnRanges(lines)
+
+        if (columnRanges.length >= 2) {
+            return { type: 'fixed-width', columnRanges }
+        }
+    }
+
+    // 3. Fallback: tenta vírgula
+    return { type: 'delimiter', delimiter: ',' }
+}
+
+/**
+ * Detecta os ranges de cada coluna em um arquivo fixed-width
+ * Analisa onde começam e terminam os "blocos" de texto
+ */
+function detectColumnRanges(lines: string[]): Array<{ start: number; end: number; header: string }> {
+    if (lines.length === 0) return []
+
+    const headerLine = lines[0]
+    const ranges: Array<{ start: number; end: number; header: string }> = []
+
+    // Encontra as posições onde há transição de "espaços" para "texto"
+    // após uma sequência de 2+ espaços
+
+    let inText = false
+    let textStart = 0
+    let spaceCount = 0
+
+    for (let i = 0; i <= headerLine.length; i++) {
+        const char = headerLine[i] || ' ' // Trata fim da linha como espaço
+        const isSpace = char === ' ' || char === '\t'
+
+        if (isSpace) {
+            spaceCount++
+            if (inText && spaceCount >= 2) {
+                // Encontrou fim de uma coluna (2+ espaços após texto)
+                const header = headerLine.substring(textStart, i - spaceCount + 1).trim()
+                if (header) {
+                    ranges.push({
+                        start: textStart,
+                        end: i - spaceCount + 1,
+                        header,
+                    })
+                }
+                inText = false
+            }
+        } else {
+            if (!inText) {
+                // Início de nova coluna
+                textStart = i
+                inText = true
+            }
+            spaceCount = 0
+        }
+    }
+
+    // Adiciona a última coluna se houver
+    if (inText) {
+        const header = headerLine.substring(textStart).trim()
+        if (header) {
+            ranges.push({
+                start: textStart,
+                end: headerLine.length,
+                header,
+            })
+        }
+    }
+
+    // Ajusta os ranges para capturar dados completos
+    // O end de uma coluna é o start da próxima
+    for (let i = 0; i < ranges.length - 1; i++) {
+        ranges[i].end = ranges[i + 1].start
+    }
+
+    // Última coluna vai até o fim da linha
+    if (ranges.length > 0) {
+        ranges[ranges.length - 1].end = Math.max(
+            ...lines.map(l => l.length)
+        )
+    }
+
+    return ranges
+}
+
+/**
+ * Parser para arquivos fixed-width
+ */
+function parseFixedWidth(
+    text: string,
+    columnRanges: Array<{ start: number; end: number; header: string }>
+): { headers: string[]; rows: Record<string, string>[] } | null {
+    const lines = text.split('\n').filter(l => l.trim() !== '')
+
+    if (lines.length <= 1) return null
+
+    const headers = columnRanges.map(r => r.header)
+    const rows: Record<string, string>[] = []
+
+    // Processa cada linha de dados (pula o header)
+    for (let i = 1; i < lines.length; i++) {
+        const line = lines[i]
+        const row: Record<string, string> = {}
+
+        let hasData = false
+
+        columnRanges.forEach((range, index) => {
+            // Extrai o valor baseado nas posições
+            const value = line.substring(range.start, range.end).trim()
+            row[headers[index]] = value
+            if (value) hasData = true
+        })
+
+        if (hasData) {
+            rows.push(row)
+        }
+    }
+
+    return { headers, rows }
 }
 
 // ============================================================
-// PARSER DE CSV/TXT
+// PARSER DE CSV/TXT (ATUALIZADO)
 // ============================================================
 
 async function parseCSV(file: File): Promise<ParseResult> {
@@ -197,11 +281,45 @@ async function parseCSV(file: File): Promise<ParseResult> {
                 return
             }
 
-            const delimiter = detectDelimiter(text)
+            // Detecta o tipo de separador
+            const delimiterInfo = detectDelimiterType(text)
+
+            console.log('Delimiter detection:', delimiterInfo) // Debug
+
+            // Se for fixed-width, usa parser especial
+            if (delimiterInfo.type === 'fixed-width' && delimiterInfo.columnRanges) {
+                const result = parseFixedWidth(text, delimiterInfo.columnRanges)
+
+                if (result && result.rows.length > 0) {
+                    // Limpa os valores
+                    const cleanedRows = result.rows.map(row => {
+                        const cleaned: Record<string, string> = {}
+                        for (const [key, value] of Object.entries(row)) {
+                            cleaned[key] = cleanCellValue(value)
+                        }
+                        return cleaned
+                    })
+
+                    resolve({
+                        success: true,
+                        data: {
+                            headers: result.headers,
+                            rows: cleanedRows,
+                            totalRows: cleanedRows.length,
+                            fileName: file.name,
+                            fileType: 'txt',
+                        },
+                    })
+                    return
+                }
+            }
+
+            // Parser normal com delimitador
+            const delimiter = delimiterInfo.delimiter || ','
 
             Papa.parse(text, {
                 header: true,
-                skipEmptyLines: 'greedy', // Remove linhas vazias de forma mais agressiva
+                skipEmptyLines: 'greedy',
                 delimiter: delimiter,
                 transformHeader: (header) => cleanCellValue(header),
                 complete: (results) => {
@@ -228,7 +346,18 @@ async function parseCSV(file: File): Promise<ParseResult> {
                             }
                             return cleanedRow
                         })
-                        .filter((row) => hasSignificantData(row, 2)) // Precisa ter pelo menos 2 campos
+                        .filter((row) => hasSignificantData(row, 1))
+
+                    if (rows.length === 0) {
+                        resolve({
+                            success: false,
+                            error: {
+                                message: 'Arquivo sem dados',
+                                details: 'O arquivo não contém dados válidos para importar',
+                            },
+                        })
+                        return
+                    }
 
                     resolve({
                         success: true,
@@ -289,7 +418,6 @@ async function parseExcel(file: File): Promise<ParseResult> {
 
         const worksheet = workbook.Sheets[firstSheetName]
 
-        // Converte para array de arrays
         const jsonData = XLSX.utils.sheet_to_json<unknown[]>(worksheet, {
             header: 1,
             defval: '',
@@ -306,7 +434,6 @@ async function parseExcel(file: File): Promise<ParseResult> {
             }
         }
 
-        // Primeira linha são os headers
         const rawHeaders = jsonData[0] as unknown[]
         const headers = rawHeaders.map((h) => cleanCellValue(h)).filter((h) => h !== '')
 
@@ -320,14 +447,12 @@ async function parseExcel(file: File): Promise<ParseResult> {
             }
         }
 
-        // Processa as linhas de dados
         const rows: Record<string, string>[] = []
 
         for (let i = 1; i < jsonData.length; i++) {
             const rowData = jsonData[i] as unknown[]
             const row: Record<string, string> = {}
 
-            // Mapeia cada header para seu valor
             let hasAnyData = false
             headers.forEach((header, index) => {
                 const rawValue = rowData[index]
@@ -336,7 +461,6 @@ async function parseExcel(file: File): Promise<ParseResult> {
                 if (value) hasAnyData = true
             })
 
-            // Só adiciona se tiver dados significativos (pelo menos 2 campos preenchidos)
             if (hasAnyData && hasSignificantData(row, 2)) {
                 rows.push(row)
             }
@@ -423,7 +547,6 @@ export function validateLeadRow(
         return row[sourceColumn]?.trim() || null
     }
 
-    // Email é obrigatório
     const email = getMappedValue('email')
     if (!email) {
         errors.push('Email é obrigatório')
@@ -434,7 +557,6 @@ export function validateLeadRow(
         }
     }
 
-    // Nome é obrigatório (firstName OU lastName)
     const firstName = getMappedValue('firstName')
     const lastName = getMappedValue('lastName')
 
@@ -442,7 +564,6 @@ export function validateLeadRow(
         errors.push('Nome é obrigatório')
     }
 
-    // Warnings
     const phone = getMappedValue('phone')
     if (phone && phone.replace(/\D/g, '').length < 8) {
         warnings.push('Telefone parece incompleto')
@@ -481,7 +602,6 @@ export function applyMapping(
         }
     }
 
-    // Se não tem firstName mas tem lastName, usa lastName como firstName
     if (!result.firstName && result.lastName) {
         result.firstName = result.lastName
         result.lastName = null

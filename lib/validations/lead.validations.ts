@@ -21,7 +21,7 @@ export const leadFormSchema = z.object({
         .max(100, 'Sobrenome deve ter no máximo 100 caracteres')
         .optional()
         .nullable()
-        .transform((val) => val || null),
+        .transform((val) => val?.trim() || null),
     email: z
         .string()
         .min(1, 'Email é obrigatório')
@@ -32,13 +32,13 @@ export const leadFormSchema = z.object({
         .max(30, 'Telefone deve ter no máximo 30 caracteres')
         .optional()
         .nullable()
-        .transform((val) => val || null),
+        .transform((val) => val?.trim() || null),
     mobile: z
         .string()
         .max(30, 'Celular deve ter no máximo 30 caracteres')
         .optional()
         .nullable()
-        .transform((val) => val || null),
+        .transform((val) => val?.trim() || null),
 
     // === EMPRESA ===
     company: z
@@ -46,39 +46,44 @@ export const leadFormSchema = z.object({
         .max(200, 'Nome da empresa deve ter no máximo 200 caracteres')
         .optional()
         .nullable()
-        .transform((val) => val || null),
+        .transform((val) => val?.trim() || null),
     jobTitle: z
         .string()
         .max(100, 'Cargo deve ter no máximo 100 caracteres')
         .optional()
         .nullable()
-        .transform((val) => val || null),
+        .transform((val) => val?.trim() || null),
     website: z
         .string()
         .max(255, 'Website deve ter no máximo 255 caracteres')
         .optional()
         .nullable()
-        .transform((val) => val || null)
-        .refine(
-            (val) => !val || val.startsWith('http://') || val.startsWith('https://'),
-            { message: 'Website deve começar com http:// ou https://' }
-        ),
+        .transform((val) => {
+            const trimmed = val?.trim()
+            if (!trimmed) return null
+            // Adiciona https:// se não tiver protocolo
+            if (trimmed && !trimmed.startsWith('http://') && !trimmed.startsWith('https://')) {
+                return `https://${trimmed}`
+            }
+            return trimmed
+        }),
     taxId: z
         .string()
         .max(50, 'Identificador fiscal deve ter no máximo 50 caracteres')
         .optional()
         .nullable()
-        .transform((val) => val || null),
+        .transform((val) => val?.trim() || null),
     industry: z
         .string()
         .max(100, 'Segmento deve ter no máximo 100 caracteres')
         .optional()
         .nullable()
-        .transform((val) => val || null),
+        .transform((val) => val?.trim() || null),
     companySize: z
         .nativeEnum(CompanySize)
         .optional()
-        .nullable(),
+        .nullable()
+        .transform((val) => val || null),
 
     // === LOCALIZAÇÃO ===
     address: z
@@ -86,31 +91,31 @@ export const leadFormSchema = z.object({
         .max(300, 'Endereço deve ter no máximo 300 caracteres')
         .optional()
         .nullable()
-        .transform((val) => val || null),
+        .transform((val) => val?.trim() || null),
     city: z
         .string()
         .max(100, 'Cidade deve ter no máximo 100 caracteres')
         .optional()
         .nullable()
-        .transform((val) => val || null),
+        .transform((val) => val?.trim() || null),
     state: z
         .string()
         .max(100, 'Estado deve ter no máximo 100 caracteres')
         .optional()
         .nullable()
-        .transform((val) => val || null),
+        .transform((val) => val?.trim() || null),
     postalCode: z
         .string()
         .max(20, 'Código postal deve ter no máximo 20 caracteres')
         .optional()
         .nullable()
-        .transform((val) => val || null),
+        .transform((val) => val?.trim() || null),
     country: z
         .string()
         .max(2, 'Use o código do país com 2 letras (ex: BR, DE)')
         .optional()
         .nullable()
-        .transform((val) => val?.toUpperCase() || null),
+        .transform((val) => val?.trim()?.toUpperCase() || null),
 
     // === STATUS E CONTROLE ===
     status: z.nativeEnum(LeadStatus).default('NEW'),
@@ -120,7 +125,7 @@ export const leadFormSchema = z.object({
         .max(5000, 'Notas devem ter no máximo 5000 caracteres')
         .optional()
         .nullable()
-        .transform((val) => val || null),
+        .transform((val) => val?.trim() || null),
 })
 
 /**
@@ -142,8 +147,7 @@ export const importLeadSchema = leadFormSchema
     .partial()
     .required({ email: true })
     .extend({
-        // Campos extras que podem vir do CSV
-        fullName: z.string().optional(), // Será dividido em firstName + lastName
+        fullName: z.string().optional(),
     })
 
 // ============================================================

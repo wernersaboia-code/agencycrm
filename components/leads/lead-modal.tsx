@@ -17,6 +17,7 @@ import {
     Briefcase,
     Hash,
     FileText,
+    AlertCircle,
 } from "lucide-react"
 import { toast } from "sonner"
 import { LeadStatus, LeadSource, CompanySize } from "@prisma/client"
@@ -54,6 +55,8 @@ import {
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Badge } from "@/components/ui/badge"
 
 import { createLead, updateLead } from "@/actions/leads"
 import { useWorkspace } from "@/contexts/workspace-context"
@@ -103,6 +106,24 @@ interface LeadModalProps {
     onOpenChange: (open: boolean) => void
     lead?: Lead | null
     onSuccess?: () => void
+}
+
+// ============================================================
+// MAPEAMENTO DE CAMPOS POR ABA
+// ============================================================
+
+const TAB_FIELDS: Record<string, (keyof LeadFormData)[]> = {
+    contact: ['firstName', 'lastName', 'email', 'phone', 'mobile'],
+    company: ['company', 'jobTitle', 'website', 'taxId', 'industry', 'companySize'],
+    location: ['address', 'city', 'state', 'postalCode', 'country'],
+    status: ['status', 'source', 'notes'],
+}
+
+const TAB_LABELS: Record<string, string> = {
+    contact: 'Contato',
+    company: 'Empresa',
+    location: 'Localização',
+    status: 'Status',
 }
 
 // ============================================================
@@ -157,13 +178,44 @@ export function LeadModal({
         defaultValues: DEFAULT_LEAD_VALUES,
     })
 
+    // Pega os erros do form
+    const formErrors = form.formState.errors
+
+    // Encontra em qual aba está o primeiro erro
+    const getTabsWithErrors = (): string[] => {
+        const tabsWithErrors: string[] = []
+
+        for (const [tab, fields] of Object.entries(TAB_FIELDS)) {
+            const hasError = fields.some(field => formErrors[field])
+            if (hasError) {
+                tabsWithErrors.push(tab)
+            }
+        }
+
+        return tabsWithErrors
+    }
+
+    const tabsWithErrors = getTabsWithErrors()
+
+    // Obtém lista de erros formatada
+    const getErrorMessages = (): string[] => {
+        const messages: string[] = []
+
+        for (const [field, error] of Object.entries(formErrors)) {
+            if (error?.message) {
+                messages.push(error.message as string)
+            }
+        }
+
+        return messages
+    }
+
     // Reset form quando lead ou modal muda
     useEffect(() => {
         if (open) {
             if (lead) {
                 const formData = prepareLeadForForm({
                     ...lead,
-                    // Garante que enums estão corretos
                     status: lead.status,
                     source: lead.source,
                     companySize: lead.companySize,
@@ -204,6 +256,30 @@ export function LeadModal({
         }
     }
 
+    // Handler para quando o form é inválido
+    const onInvalid = () => {
+        // Vai para a primeira aba com erro
+        if (tabsWithErrors.length > 0) {
+            setActiveTab(tabsWithErrors[0])
+
+            // Mostra toast com os erros
+            const errors = getErrorMessages()
+            if (errors.length > 0) {
+                toast.error(
+                    <div>
+                        <p className="font-medium">Corrija os erros:</p>
+                        <ul className="mt-1 text-sm list-disc list-inside">
+                            {errors.slice(0, 3).map((err, i) => (
+                                <li key={i}>{err}</li>
+                            ))}
+                            {errors.length > 3 && <li>...e mais {errors.length - 3} erro(s)</li>}
+                        </ul>
+                    </div>
+                )
+            }
+        }
+    }
+
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-[700px] max-h-[90vh] flex flex-col">
@@ -220,28 +296,75 @@ export function LeadModal({
                 </DialogHeader>
 
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col flex-1 overflow-hidden">
+                    <form
+                        onSubmit={form.handleSubmit(onSubmit, onInvalid)}
+                        className="flex flex-col flex-1 overflow-hidden"
+                    >
+                        {/* Alerta de erros */}
+                        {tabsWithErrors.length > 0 && (
+                            <Alert variant="destructive" className="mb-4">
+                                <AlertCircle className="h-4 w-4" />
+                                <AlertDescription className="flex items-center gap-2">
+                                    <span>Há erros nos campos. Verifique as abas:</span>
+                                    {tabsWithErrors.map(tab => (
+                                        <Badge
+                                            key={tab}
+                                            variant="destructive"
+                                            className="cursor-pointer"
+                                            onClick={() => setActiveTab(tab)}
+                                        >
+                                            {TAB_LABELS[tab]}
+                                        </Badge>
+                                    ))}
+                                </AlertDescription>
+                            </Alert>
+                        )}
+
                         <Tabs
                             value={activeTab}
                             onValueChange={setActiveTab}
                             className="flex-1 flex flex-col overflow-hidden"
                         >
                             <TabsList className="grid w-full grid-cols-4">
-                                <TabsTrigger value="contact" className="flex items-center gap-1">
+                                <TabsTrigger
+                                    value="contact"
+                                    className={`flex items-center gap-1 ${tabsWithErrors.includes('contact') ? 'text-destructive' : ''}`}
+                                >
                                     <User className="h-4 w-4" />
                                     <span className="hidden sm:inline">Contato</span>
+                                    {tabsWithErrors.includes('contact') && (
+                                        <AlertCircle className="h-3 w-3 text-destructive" />
+                                    )}
                                 </TabsTrigger>
-                                <TabsTrigger value="company" className="flex items-center gap-1">
+                                <TabsTrigger
+                                    value="company"
+                                    className={`flex items-center gap-1 ${tabsWithErrors.includes('company') ? 'text-destructive' : ''}`}
+                                >
                                     <Building2 className="h-4 w-4" />
                                     <span className="hidden sm:inline">Empresa</span>
+                                    {tabsWithErrors.includes('company') && (
+                                        <AlertCircle className="h-3 w-3 text-destructive" />
+                                    )}
                                 </TabsTrigger>
-                                <TabsTrigger value="location" className="flex items-center gap-1">
+                                <TabsTrigger
+                                    value="location"
+                                    className={`flex items-center gap-1 ${tabsWithErrors.includes('location') ? 'text-destructive' : ''}`}
+                                >
                                     <MapPin className="h-4 w-4" />
                                     <span className="hidden sm:inline">Localização</span>
+                                    {tabsWithErrors.includes('location') && (
+                                        <AlertCircle className="h-3 w-3 text-destructive" />
+                                    )}
                                 </TabsTrigger>
-                                <TabsTrigger value="status" className="flex items-center gap-1">
+                                <TabsTrigger
+                                    value="status"
+                                    className={`flex items-center gap-1 ${tabsWithErrors.includes('status') ? 'text-destructive' : ''}`}
+                                >
                                     <Settings className="h-4 w-4" />
                                     <span className="hidden sm:inline">Status</span>
+                                    {tabsWithErrors.includes('status') && (
+                                        <AlertCircle className="h-3 w-3 text-destructive" />
+                                    )}
                                 </TabsTrigger>
                             </TabsList>
 
@@ -454,7 +577,7 @@ export function LeadModal({
                                                         <FormLabel>Segmento</FormLabel>
                                                         <Select
                                                             onValueChange={field.onChange}
-                                                            value={field.value || ''}
+                                                            value={field.value || undefined}
                                                         >
                                                             <FormControl>
                                                                 <SelectTrigger>
@@ -482,7 +605,7 @@ export function LeadModal({
                                                         <FormLabel>Porte da Empresa</FormLabel>
                                                         <Select
                                                             onValueChange={field.onChange}
-                                                            value={field.value || ''}
+                                                            value={field.value || undefined}
                                                         >
                                                             <FormControl>
                                                                 <SelectTrigger>
@@ -590,7 +713,7 @@ export function LeadModal({
                                                     <FormLabel>País</FormLabel>
                                                     <Select
                                                         onValueChange={field.onChange}
-                                                        value={field.value || ''}
+                                                        value={field.value || undefined}
                                                     >
                                                         <FormControl>
                                                             <SelectTrigger>
