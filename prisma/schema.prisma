@@ -181,14 +181,22 @@ model User {
 
 model Workspace {
   id          String  @id @default(cuid())
-  name        String // "Empresa ABC"
+  name        String
   description String?
-  color       String  @default("#3B82F6") // Cor para identificação
-  logo        String? // URL do logo
+  color       String  @default("#3B82F6")
+  logo        String?
 
-  // Configurações de email
-  senderName  String? // Nome do remetente nos emails
-  senderEmail String? // Email do remetente
+  // Configurações de email - ATUALIZADAS
+  senderName  String?
+  senderEmail String?
+
+  // NOVOS CAMPOS - Configurações SMTP
+  smtpProvider String? // google, zoho, outlook, custom
+  smtpHost     String? // smtp.gmail.com, smtp.zoho.com, etc.
+  smtpPort     Int? // 587, 465, etc.
+  smtpUser     String? // email do usuário
+  smtpPass     String? // senha de app (criptografada)
+  smtpSecure   Boolean @default(true) // TLS/SSL
 
   // Relacionamentos
   userId String

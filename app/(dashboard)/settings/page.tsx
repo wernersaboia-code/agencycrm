@@ -3,6 +3,8 @@
 import { Suspense } from "react"
 import { Metadata } from "next"
 import { getUserProfile, getPipelineStagesForSettings, getAccountStats } from "@/actions/settings"
+import { prisma } from "@/lib/prisma"
+import { getAuthenticatedUser } from "@/lib/auth"
 import { SettingsClient } from "./settings-client"
 import { Card, CardContent } from "@/components/ui/card"
 import { Loader2 } from "lucide-react"
@@ -28,21 +30,34 @@ function SettingsLoading() {
 }
 
 async function SettingsData() {
-    const [profileResult, stagesResult, statsResult] = await Promise.all([
+    const [profileResult, stagesResult, statsResult, user] = await Promise.all([
         getUserProfile(),
         getPipelineStagesForSettings(),
         getAccountStats(),
+        getAuthenticatedUser(),
     ])
 
     const profile = profileResult.success ? profileResult.data! : null
     const stages = stagesResult.success ? stagesResult.data! : []
     const stats = statsResult.success ? statsResult.data! : { contacts: 0, companies: 0, deals: 0, tasks: 0 }
 
+    // Buscar primeiro workspace do usuário
+    let workspaceId: string | undefined
+    if (user) {
+        const workspace = await prisma.workspace.findFirst({
+            where: { userId: user.id },
+            select: { id: true },
+            orderBy: { createdAt: "asc" },
+        })
+        workspaceId = workspace?.id
+    }
+
     return (
         <SettingsClient
             profile={profile}
             stages={stages}
             stats={stats}
+            workspaceId={workspaceId}
         />
     )
 }
