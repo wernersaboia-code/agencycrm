@@ -9,7 +9,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 
 import { importLeads } from "@/actions/leads"
-import type { ProcessedLead } from "@/lib/csv-parser"
+import type { ProcessedLead } from "@/lib/file-parser"
 
 // ============================================================
 // TIPOS
@@ -120,8 +120,8 @@ export function StepImporting({
                     <div className={`
             w-20 h-20 rounded-full flex items-center justify-center mb-6
             ${status === 'importing' ? 'bg-primary/10' :
-                        status === 'success' ? 'bg-green-100 dark:bg-green-900' :
-                            'bg-red-100 dark:bg-red-900'}
+                        status === 'success' ? 'bg-green-100 dark:bg-green-900/30' :
+                            'bg-red-100 dark:bg-red-900/30'}
           `}>
                         {status === 'importing' && (
                             <Loader2 className="h-10 w-10 text-primary animate-spin" />

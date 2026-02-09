@@ -31,9 +31,10 @@ import {
 } from "@/components/ui/tabs"
 
 import {
-    processCSVForImport,
-    type ProcessedLead
-} from "@/lib/csv-parser"
+    processForImport,
+    type ProcessedLead,
+    type ProcessingResult,
+} from "@/lib/file-parser"
 import { MAPPABLE_FIELDS } from "@/lib/constants/csv-mapping.constants"
 
 // ============================================================
@@ -43,11 +44,7 @@ import { MAPPABLE_FIELDS } from "@/lib/constants/csv-mapping.constants"
 interface StepPreviewProps {
     rows: Record<string, string>[]
     mapping: Record<string, string>
-    onComplete: (processedLeads: {
-        valid: ProcessedLead[]
-        invalid: ProcessedLead[]
-        total: number
-    }) => void
+    onComplete: (processedLeads: ProcessingResult) => void
     onBack: () => void
 }
 
@@ -63,7 +60,7 @@ export function StepPreview({
                             }: StepPreviewProps) {
     // Processa os leads
     const processedLeads = useMemo(() => {
-        return processCSVForImport(rows, mapping)
+        return processForImport(rows, mapping)
     }, [rows, mapping])
 
     const { valid, invalid, total } = processedLeads
@@ -92,11 +89,11 @@ export function StepPreview({
                         <div className="text-3xl font-bold">{total}</div>
                         <div className="text-sm text-muted-foreground">Total de linhas</div>
                     </div>
-                    <div className="p-4 rounded-lg bg-green-100 dark:bg-green-900 text-center">
+                    <div className="p-4 rounded-lg bg-green-100 dark:bg-green-900/30 text-center">
                         <div className="text-3xl font-bold text-green-600">{valid.length}</div>
                         <div className="text-sm text-green-600/80">Válidos para importar</div>
                     </div>
-                    <div className="p-4 rounded-lg bg-red-100 dark:bg-red-900 text-center">
+                    <div className="p-4 rounded-lg bg-red-100 dark:bg-red-900/30 text-center">
                         <div className="text-3xl font-bold text-red-600">{invalid.length}</div>
                         <div className="text-sm text-red-600/80">Com erros</div>
                     </div>
@@ -211,7 +208,7 @@ export function StepPreview({
                             </p>
                             <p className="text-sm text-yellow-700 dark:text-yellow-300">
                                 Apenas os {valid.length} leads válidos serão importados.
-                                Você pode corrigir o CSV e tentar novamente depois.
+                                Você pode corrigir o arquivo e tentar novamente depois.
                             </p>
                         </div>
                     </div>

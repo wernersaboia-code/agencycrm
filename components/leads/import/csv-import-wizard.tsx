@@ -6,10 +6,8 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import {
     Upload,
-    ArrowLeft,
-    ArrowRight,
-    Check,
     X,
+    Check,
     FileSpreadsheet,
     Columns,
     Eye,
@@ -25,7 +23,7 @@ import { StepMapping } from "./step-mapping"
 import { StepPreview } from "./step-preview"
 import { StepImporting } from "./step-importing"
 import { useWorkspace } from "@/contexts/workspace-context"
-import type { ParsedCSV, ProcessedLead } from "@/lib/csv-parser"
+import type { ParsedFile, ProcessedLead, ProcessingResult } from "@/lib/file-parser"
 
 // ============================================================
 // TIPOS
@@ -35,13 +33,9 @@ type WizardStep = 'upload' | 'mapping' | 'preview' | 'importing' | 'complete'
 
 interface ImportState {
     file: File | null
-    parsedCSV: ParsedCSV | null
+    parsedFile: ParsedFile | null
     mapping: Record<string, string>
-    processedLeads: {
-        valid: ProcessedLead[]
-        invalid: ProcessedLead[]
-        total: number
-    } | null
+    processedLeads: ProcessingResult | null
     importResult: {
         imported: number
         duplicates: number
@@ -67,7 +61,7 @@ export function CSVImportWizard() {
     const [currentStep, setCurrentStep] = useState<WizardStep>('upload')
     const [state, setState] = useState<ImportState>({
         file: null,
-        parsedCSV: null,
+        parsedFile: null,
         mapping: {},
         processedLeads: null,
         importResult: null,
@@ -78,8 +72,8 @@ export function CSVImportWizard() {
     const progress = ((currentStepIndex + 1) / STEPS.length) * 100
 
     // Handlers
-    const handleUploadComplete = (file: File, parsedCSV: ParsedCSV) => {
-        setState(prev => ({ ...prev, file, parsedCSV }))
+    const handleUploadComplete = (file: File, parsedFile: ParsedFile) => {
+        setState(prev => ({ ...prev, file, parsedFile }))
         setCurrentStep('mapping')
     }
 
@@ -88,7 +82,7 @@ export function CSVImportWizard() {
         setCurrentStep('preview')
     }
 
-    const handlePreviewComplete = (processedLeads: ImportState['processedLeads']) => {
+    const handlePreviewComplete = (processedLeads: ProcessingResult) => {
         setState(prev => ({ ...prev, processedLeads }))
         setCurrentStep('importing')
     }
@@ -100,7 +94,7 @@ export function CSVImportWizard() {
 
     const handleBack = () => {
         const steps: WizardStep[] = ['upload', 'mapping', 'preview']
-        const currentIndex = steps.indexOf(currentStep as any)
+        const currentIndex = steps.indexOf(currentStep as WizardStep)
         if (currentIndex > 0) {
             setCurrentStep(steps[currentIndex - 1])
         }
@@ -135,7 +129,7 @@ export function CSVImportWizard() {
                         <div>
                             <CardTitle className="flex items-center gap-2">
                                 <FileSpreadsheet className="h-5 w-5" />
-                                Importar Leads via CSV
+                                Importar Leads
                             </CardTitle>
                             <CardDescription>
                                 Importe leads de uma planilha Excel ou CSV
@@ -152,7 +146,6 @@ export function CSVImportWizard() {
                     <div className="flex items-center justify-between mb-4">
                         {STEPS.map((step, index) => {
                             const Icon = step.icon
-                            const isActive = step.key === currentStep
                             const isComplete = index < currentStepIndex
                             const isCurrent = index === currentStepIndex
 
@@ -167,7 +160,7 @@ export function CSVImportWizard() {
                                 >
                                     <div className={`
                     flex items-center justify-center w-8 h-8 rounded-full
-                    ${isComplete ? 'bg-green-100 dark:bg-green-900' :
+                    ${isComplete ? 'bg-green-100 dark:bg-green-900/30' :
                                         isCurrent ? 'bg-primary/10' :
                                             'bg-muted'}
                   `}>
@@ -201,18 +194,18 @@ export function CSVImportWizard() {
                 <StepUpload onComplete={handleUploadComplete} />
             )}
 
-            {currentStep === 'mapping' && state.parsedCSV && (
+            {currentStep === 'mapping' && state.parsedFile && (
                 <StepMapping
-                    headers={state.parsedCSV.headers}
-                    sampleRows={state.parsedCSV.rows.slice(0, 3)}
+                    headers={state.parsedFile.headers}
+                    sampleRows={state.parsedFile.rows.slice(0, 3)}
                     onComplete={handleMappingComplete}
                     onBack={handleBack}
                 />
             )}
 
-            {currentStep === 'preview' && state.parsedCSV && (
+            {currentStep === 'preview' && state.parsedFile && (
                 <StepPreview
-                    rows={state.parsedCSV.rows}
+                    rows={state.parsedFile.rows}
                     mapping={state.mapping}
                     onComplete={handlePreviewComplete}
                     onBack={handleBack}
@@ -231,7 +224,7 @@ export function CSVImportWizard() {
                 <Card>
                     <CardContent className="py-12">
                         <div className="text-center">
-                            <div className="mx-auto w-16 h-16 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center mb-4">
+                            <div className="mx-auto w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mb-4">
                                 <Check className="h-8 w-8 text-green-600" />
                             </div>
                             <h3 className="text-2xl font-bold mb-2">Importação Concluída!</h3>
