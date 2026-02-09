@@ -79,6 +79,8 @@ export function cleanEmail(email: string): string {
         .replace(/\s*\[punkt\]\s*/gi, '.') // alemão
         .replace(/\s*\(punkt\)\s*/gi, '.')
         .replace(/\s+dot\s+/gi, '.')
+        // Remove vírgulas, pontos e espaços no final
+        .replace(/[,.\s]+$/, '')
         // Remove espaços restantes
         .replace(/\s+/g, '')
 
@@ -110,26 +112,32 @@ export function isValidEmail(email: string): boolean {
     return emailRegex.test(cleaned)
 }
 
+/**
+ * Verifica se uma linha tem dados significativos
+ * (não é só espaços ou campos vazios)
+ */
+function hasSignificantData(row: Record<string, string>, minFields: number = 2): boolean {
+    const nonEmptyValues = Object.values(row).filter(v => v && v.trim() !== '')
+    return nonEmptyValues.length >= minFields
+}
+
 // ============================================================
 // DETECTAR DELIMITADOR
 // ============================================================
 
 /**
  * Tenta detectar o delimitador do arquivo
- * Analisa as primeiras linhas e conta ocorrências de possíveis delimitadores
  */
 function detectDelimiter(text: string): string {
-    const delimiters = [',', ';', '\t', '|']
-    const lines = text.split('\n').slice(0, 10) // Analisa primeiras 10 linhas
+    const delimiters = ['\t', ',', ';', '|']
+    const lines = text.split('\n').slice(0, 10).filter(l => l.trim() !== '')
 
     if (lines.length === 0) return ','
 
     const counts: Record<string, number[]> = {}
 
-    // Conta ocorrências de cada delimitador por linha
     for (const delimiter of delimiters) {
         counts[delimiter] = lines.map(line => {
-            // Conta ocorrências fora de aspas
             let count = 0
             let inQuotes = false
             for (const char of line) {
@@ -140,7 +148,6 @@ function detectDelimiter(text: string): string {
         })
     }
 
-    // Encontra o delimitador mais consistente (mesmo número em todas as linhas e > 0)
     let bestDelimiter = ','
     let bestScore = 0
 
@@ -149,13 +156,14 @@ function detectDelimiter(text: string): string {
         const nonZeroCounts = delimCounts.filter(c => c > 0)
 
         if (nonZeroCounts.length > 0) {
-            // Verifica consistência (todos iguais ou quase)
             const first = nonZeroCounts[0]
             const isConsistent = nonZeroCounts.every(c => Math.abs(c - first) <= 1)
             const avgCount = nonZeroCounts.reduce((a, b) => a + b, 0) / nonZeroCounts.length
-            const coverage = nonZeroCounts.length / delimCounts.length // % de linhas com esse delimitador
+            const coverage = nonZeroCounts.length / delimCounts.length
 
-            const score = avgCount * coverage * (isConsistent ? 2 : 1)
+            // TAB tem prioridade se encontrado consistentemente
+            const tabBonus = delimiter === '\t' ? 1.5 : 1
+            const score = avgCount * coverage * (isConsistent ? 2 : 1) * tabBonus
 
             if (score > bestScore) {
                 bestScore = score
@@ -168,12 +176,11 @@ function detectDelimiter(text: string): string {
 }
 
 // ============================================================
-// PARSER DE CSV
+// PARSER DE CSV/TXT
 // ============================================================
 
 async function parseCSV(file: File): Promise<ParseResult> {
     return new Promise((resolve) => {
-        // Primeiro, lê o arquivo como texto para detectar o delimitador
         const reader = new FileReader()
 
         reader.onload = (event) => {
@@ -190,22 +197,17 @@ async function parseCSV(file: File): Promise<ParseResult> {
                 return
             }
 
-            // Detecta o delimitador
             const delimiter = detectDelimiter(text)
 
-            // Faz o parse com o delimitador detectado
             Papa.parse(text, {
                 header: true,
-                skipEmptyLines: true,
+                skipEmptyLines: 'greedy', // Remove linhas vazias de forma mais agressiva
                 delimiter: delimiter,
                 transformHeader: (header) => cleanCellValue(header),
                 complete: (results) => {
-                    const headers = results.meta.fields || []
+                    const headers = (results.meta.fields || []).filter(h => h && h.trim() !== '')
 
-                    // Filtra headers vazios
-                    const validHeaders = headers.filter(h => h && h.trim() !== '')
-
-                    if (validHeaders.length === 0) {
+                    if (headers.length === 0) {
                         resolve({
                             success: false,
                             error: {
@@ -216,27 +218,24 @@ async function parseCSV(file: File): Promise<ParseResult> {
                         return
                     }
 
-                    const rows = (results.data as Record<string, unknown>[]).map((row) => {
-                        const cleanedRow: Record<string, string> = {}
-                        for (const [key, value] of Object.entries(row)) {
-                            if (key && key.trim() !== '') {
-                                cleanedRow[key] = cleanCellValue(value)
+                    const rows = (results.data as Record<string, unknown>[])
+                        .map((row) => {
+                            const cleanedRow: Record<string, string> = {}
+                            for (const [key, value] of Object.entries(row)) {
+                                if (key && key.trim() !== '') {
+                                    cleanedRow[key] = cleanCellValue(value)
+                                }
                             }
-                        }
-                        return cleanedRow
-                    })
-
-                    // Filtra linhas completamente vazias
-                    const nonEmptyRows = rows.filter((row) =>
-                        Object.values(row).some((v) => v !== '')
-                    )
+                            return cleanedRow
+                        })
+                        .filter((row) => hasSignificantData(row, 2)) // Precisa ter pelo menos 2 campos
 
                     resolve({
                         success: true,
                         data: {
-                            headers: validHeaders,
-                            rows: nonEmptyRows,
-                            totalRows: nonEmptyRows.length,
+                            headers,
+                            rows,
+                            totalRows: rows.length,
                             fileName: file.name,
                             fileType: file.name.toLowerCase().endsWith('.txt') ? 'txt' : 'csv',
                         },
@@ -264,7 +263,6 @@ async function parseCSV(file: File): Promise<ParseResult> {
             })
         }
 
-        // Lê como texto com encoding UTF-8
         reader.readAsText(file, 'UTF-8')
     })
 }
@@ -278,7 +276,6 @@ async function parseExcel(file: File): Promise<ParseResult> {
         const arrayBuffer = await file.arrayBuffer()
         const workbook = XLSX.read(arrayBuffer, { type: 'array' })
 
-        // Pega a primeira planilha
         const firstSheetName = workbook.SheetNames[0]
         if (!firstSheetName) {
             return {
@@ -292,7 +289,7 @@ async function parseExcel(file: File): Promise<ParseResult> {
 
         const worksheet = workbook.Sheets[firstSheetName]
 
-        // Converte para array de arrays primeiro
+        // Converte para array de arrays
         const jsonData = XLSX.utils.sheet_to_json<unknown[]>(worksheet, {
             header: 1,
             defval: '',
@@ -323,21 +320,24 @@ async function parseExcel(file: File): Promise<ParseResult> {
             }
         }
 
-        // Restante são os dados
+        // Processa as linhas de dados
         const rows: Record<string, string>[] = []
+
         for (let i = 1; i < jsonData.length; i++) {
             const rowData = jsonData[i] as unknown[]
             const row: Record<string, string> = {}
 
-            let hasData = false
+            // Mapeia cada header para seu valor
+            let hasAnyData = false
             headers.forEach((header, index) => {
-                const value = cleanCellValue(rowData[index])
+                const rawValue = rowData[index]
+                const value = cleanCellValue(rawValue)
                 row[header] = value
-                if (value) hasData = true
+                if (value) hasAnyData = true
             })
 
-            // Só adiciona se tiver algum valor
-            if (hasData) {
+            // Só adiciona se tiver dados significativos (pelo menos 2 campos preenchidos)
+            if (hasAnyData && hasSignificantData(row, 2)) {
                 rows.push(row)
             }
         }
@@ -370,7 +370,6 @@ async function parseExcel(file: File): Promise<ParseResult> {
 // ============================================================
 
 export async function parseFile(file: File): Promise<ParseResult> {
-    // Valida tamanho
     if (file.size > MAX_FILE_SIZE) {
         return {
             success: false,
@@ -381,7 +380,6 @@ export async function parseFile(file: File): Promise<ParseResult> {
         }
     }
 
-    // Valida extensão
     const fileName = file.name.toLowerCase()
     const extension = SUPPORTED_EXTENSIONS.find((ext) => fileName.endsWith(ext))
 
@@ -395,7 +393,6 @@ export async function parseFile(file: File): Promise<ParseResult> {
         }
     }
 
-    // Escolhe o parser correto
     if (extension === '.xlsx' || extension === '.xls') {
         return parseExcel(file)
     }
@@ -420,7 +417,6 @@ export function validateLeadRow(
     const errors: string[] = []
     const warnings: string[] = []
 
-    // Encontra o valor mapeado para cada campo
     const getMappedValue = (fieldKey: string): string | null => {
         const sourceColumn = Object.keys(mapping).find((col) => mapping[col] === fieldKey)
         if (!sourceColumn) return null
@@ -432,22 +428,23 @@ export function validateLeadRow(
     if (!email) {
         errors.push('Email é obrigatório')
     } else {
-        // Limpa e valida
         const cleanedEmail = cleanEmail(email)
         if (!isValidEmail(cleanedEmail)) {
             errors.push(`Email inválido: ${email}`)
         }
     }
 
-    // Nome é obrigatório
+    // Nome é obrigatório (firstName OU lastName)
     const firstName = getMappedValue('firstName')
-    if (!firstName) {
+    const lastName = getMappedValue('lastName')
+
+    if (!firstName && !lastName) {
         errors.push('Nome é obrigatório')
     }
 
-    // Warnings (não impedem importação)
+    // Warnings
     const phone = getMappedValue('phone')
-    if (phone && phone.length < 8) {
+    if (phone && phone.replace(/\D/g, '').length < 8) {
         warnings.push('Telefone parece incompleto')
     }
 
@@ -472,7 +469,6 @@ export function applyMapping(
         if (leadField && leadField !== 'ignore') {
             let value = row[csvColumn]?.trim() || null
 
-            // Limpeza específica por tipo de campo
             if (value) {
                 if (leadField === 'email') {
                     value = cleanEmail(value)
@@ -483,6 +479,12 @@ export function applyMapping(
 
             result[leadField] = value || null
         }
+    }
+
+    // Se não tem firstName mas tem lastName, usa lastName como firstName
+    if (!result.firstName && result.lastName) {
+        result.firstName = result.lastName
+        result.lastName = null
     }
 
     return result
@@ -519,7 +521,7 @@ export function processForImport(
 
         const processed: ProcessedLead = {
             data,
-            rowIndex: index + 2, // +2 porque: índice começa em 0 + linha de header
+            rowIndex: index + 2,
             isValid: validation.isValid,
             errors: validation.errors,
             warnings: validation.warnings,
@@ -549,7 +551,6 @@ export function generateExcelTemplate(): Blob {
         IMPORT_TEMPLATE_EXAMPLE,
     ])
 
-    // Define largura das colunas
     worksheet['!cols'] = IMPORT_TEMPLATE_HEADERS.map(() => ({ wch: 20 }))
 
     const workbook = XLSX.utils.book_new()
