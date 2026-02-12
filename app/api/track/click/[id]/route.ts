@@ -17,7 +17,6 @@ interface RouteParams {
 
 // ============================================
 // GET /api/track/click/[id]?url=xxx
-// Records click and redirects to original URL
 // ============================================
 
 export async function GET(
@@ -33,6 +32,8 @@ export async function GET(
         ? decodeURIComponent(originalUrl)
         : '/'
 
+    console.log(`[Tracking] Processing click for: ${emailSendId} → ${originalUrl}`)
+
     try {
         // Fetch current email send status
         const emailSend = await prisma.emailSend.findUnique({
@@ -43,6 +44,7 @@ export async function GET(
                 openedAt: true,
                 clickedAt: true,
                 leadId: true,
+                campaignId: true,
                 lead: {
                     select: {
                         status: true,
@@ -56,7 +58,12 @@ export async function GET(
             return NextResponse.redirect(redirectUrl)
         }
 
+        console.log(`[Tracking] Current state - openedAt: ${emailSend.openedAt}, clickedAt: ${emailSend.clickedAt}`)
+
         const now = new Date()
+        const isFirstClick = !emailSend.clickedAt
+        const isFirstOpen = !emailSend.openedAt
+
         const shouldUpgradeEmailStatus = canUpgradeStatus(emailSend.status, 'CLICKED')
         const shouldUpgradeLeadStatus = canUpgradeStatus(
             emailSend.lead.status,
@@ -73,6 +80,7 @@ export async function GET(
                 ...(shouldUpgradeEmailStatus && { status: 'CLICKED' }),
             },
         })
+        console.log(`[Tracking] Updated EmailSend - clickedAt and status`)
 
         // Update lead status if applicable
         if (shouldUpgradeLeadStatus) {
@@ -80,6 +88,28 @@ export async function GET(
                 where: { id: emailSend.leadId },
                 data: { status: TRACKING_LEAD_STATUS_MAP.click },
             })
+            console.log(`[Tracking] Updated Lead status to CLICKED`)
+        }
+
+        // Update campaign counters
+        if (emailSend.campaignId) {
+            // Increment clicked counter (only on first click)
+            if (isFirstClick) {
+                await prisma.campaign.update({
+                    where: { id: emailSend.campaignId },
+                    data: { totalClicked: { increment: 1 } },
+                })
+                console.log(`[Tracking] Incremented Campaign totalClicked`)
+            }
+
+            // Also increment opened if this is first interaction
+            if (isFirstOpen) {
+                await prisma.campaign.update({
+                    where: { id: emailSend.campaignId },
+                    data: { totalOpened: { increment: 1 } },
+                })
+                console.log(`[Tracking] Incremented Campaign totalOpened (via click)`)
+            }
         }
 
         console.log(`[Tracking] ✅ Link clicked: ${emailSendId} → ${originalUrl}`)

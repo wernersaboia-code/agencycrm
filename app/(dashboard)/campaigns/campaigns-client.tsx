@@ -195,6 +195,10 @@ export function CampaignsClient({
         router.refresh()
     }
 
+    const handleViewDetails = (campaign: CampaignWithRelations): void => {
+        router.push(`/campaigns/${campaign.id}`)
+    }
+
     // ============================================================
     // RENDER
     // ============================================================
@@ -346,6 +350,7 @@ export function CampaignsClient({
                             onDuplicate={() => handleDuplicate(campaign)}
                             onCancel={() => handleCancel(campaign)}
                             onDelete={() => handleDelete(campaign)}
+                            onClick={() => handleViewDetails(campaign)}
                         />
                     ))}
                 </div>

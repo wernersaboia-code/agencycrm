@@ -46,6 +46,7 @@ interface CampaignCardProps {
     onDuplicate: () => void
     onCancel: () => void
     onDelete: () => void
+    onClick?: () => void
 }
 
 // ============================================================
@@ -59,6 +60,7 @@ export function CampaignCard({
                                  onDuplicate,
                                  onCancel,
                                  onDelete,
+                                 onClick,
                              }: CampaignCardProps) {
     const statusConfig = getStatusConfig(campaign.status)
     const StatusIcon = statusConfig.icon
@@ -81,9 +83,10 @@ export function CampaignCard({
     return (
         <Card
             className={cn(
-                "transition-all hover:shadow-md",
+                "transition-all hover:shadow-md cursor-pointer",
                 isLoading && "pointer-events-none opacity-50"
             )}
+            onClick={onClick}
         >
             <CardContent className="p-6">
                 <div className="flex flex-col lg:flex-row lg:items-center gap-4">
@@ -108,18 +111,18 @@ export function CampaignCard({
                                 <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
                                     {campaign.template && (
                                         <span className="flex items-center gap-1">
-                      <Mail className="h-3.5 w-3.5" />
+                                            <Mail className="h-3.5 w-3.5" />
                                             {campaign.template.name}
-                    </span>
+                                        </span>
                                     )}
                                     <span className="flex items-center gap-1">
-                    <Users className="h-3.5 w-3.5" />
+                                        <Users className="h-3.5 w-3.5" />
                                         {campaign.totalRecipients} destinatários
-                  </span>
+                                    </span>
                                     <span className="flex items-center gap-1">
-                    <Clock className="h-3.5 w-3.5" />
+                                        <Clock className="h-3.5 w-3.5" />
                                         {formattedDate}
-                  </span>
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -167,8 +170,8 @@ export function CampaignCard({
                             <div className="flex items-center justify-between text-sm mb-1">
                                 <span className="text-muted-foreground">Enviando...</span>
                                 <span className="font-medium">
-                  {campaign.totalSent}/{campaign.totalRecipients}
-                </span>
+                                    {campaign.totalSent}/{campaign.totalRecipients}
+                                </span>
                             </div>
                             <Progress
                                 value={(campaign.totalSent / campaign.totalRecipients) * 100}
@@ -182,7 +185,10 @@ export function CampaignCard({
                         {canSend && (
                             <Button
                                 size="sm"
-                                onClick={onSend}
+                                onClick={(e) => {
+                                    e.stopPropagation()
+                                    onSend()
+                                }}
                                 disabled={isLoading}
                             >
                                 {isLoading ? (
@@ -197,18 +203,24 @@ export function CampaignCard({
                         )}
 
                         <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
+                            <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
                                 <Button variant="ghost" size="icon" disabled={isLoading}>
                                     <MoreHorizontal className="h-4 w-4" />
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
-                                <DropdownMenuItem onClick={onDuplicate}>
+                                <DropdownMenuItem onClick={(e) => {
+                                    e.stopPropagation()
+                                    onDuplicate()
+                                }}>
                                     <Copy className="h-4 w-4 mr-2" />
                                     Duplicar
                                 </DropdownMenuItem>
                                 {canCancel && (
-                                    <DropdownMenuItem onClick={onCancel}>
+                                    <DropdownMenuItem onClick={(e) => {
+                                        e.stopPropagation()
+                                        onCancel()
+                                    }}>
                                         <XCircle className="h-4 w-4 mr-2" />
                                         Cancelar
                                     </DropdownMenuItem>
@@ -216,7 +228,10 @@ export function CampaignCard({
                                 <DropdownMenuSeparator />
                                 {canDelete && (
                                     <DropdownMenuItem
-                                        onClick={onDelete}
+                                        onClick={(e) => {
+                                            e.stopPropagation()
+                                            onDelete()
+                                        }}
                                         className="text-destructive focus:text-destructive"
                                     >
                                         <Trash2 className="h-4 w-4 mr-2" />
