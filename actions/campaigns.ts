@@ -476,6 +476,7 @@ export async function sendCampaign(id: string): Promise<ActionResult> {
                         { name: "campaign_id", value: campaign.id },
                         { name: "lead_id", value: lead.id },
                     ],
+                    emailSendId: emailSend.id,
                 },
                 smtpConfig // Passa config SMTP se existir
             )

@@ -1,5 +1,6 @@
 // lib/email.ts
 
+import { injectTrackingIntoEmail } from '@/lib/utils/tracking.utils'
 import { Resend } from "resend"
 import nodemailer from "nodemailer"
 import type SMTPTransport from "nodemailer/lib/smtp-transport"
@@ -30,6 +31,7 @@ export interface SendEmailParams {
     from?: string
     replyTo?: string
     tags?: { name: string; value: string }[]
+    emailSendId?: string
 }
 
 export interface SendEmailResult {
@@ -185,13 +187,20 @@ export async function sendEmail(
     params: SendEmailParams,
     smtpConfig?: SmtpConfig | null
 ): Promise<SendEmailResult> {
+    // 👇 NOVO: Injetar tracking se emailSendId foi fornecido
+    const htmlWithTracking = params.emailSendId
+        ? injectTrackingIntoEmail(params.html, params.emailSendId)
+        : params.html
+
+    const paramsWithTracking = { ...params, html: htmlWithTracking }
+
     // Se tem configuração SMTP válida, usa SMTP
     if (smtpConfig?.user && smtpConfig?.pass) {
-        return sendEmailSmtp(smtpConfig, params)
+        return sendEmailSmtp(smtpConfig, paramsWithTracking)
     }
 
     // Senão, usa Resend como fallback
-    return sendEmailResend(params)
+    return sendEmailResend(paramsWithTracking)
 }
 
 /**
