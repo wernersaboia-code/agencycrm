@@ -3,7 +3,7 @@
 "use client"
 
 import { recalculateCampaignMetrics } from "@/actions/campaigns/metrics"
-import { useState } from "react"
+import { useState, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { format } from "date-fns"
 import { ptBR } from "date-fns/locale"
@@ -16,12 +16,16 @@ import {
     Mail,
     Calendar,
     FileText,
+    Phone,
+    Plus,
+    ThumbsUp,
+    CalendarCheck,
 } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
     AlertDialog,
@@ -36,6 +40,8 @@ import {
 
 import { CampaignMetrics } from "@/components/campaigns/campaign-metrics"
 import { EmailSendsList } from "@/components/campaigns/email-sends-list"
+import { CampaignCallsList } from "@/components/campaigns/campaign-calls-list"
+import { CallModal } from "@/components/calls/CallModal"
 import { getStatusConfig, calculateMetrics } from "@/lib/constants/campaign.constants"
 import {
     sendCampaign,
@@ -43,6 +49,9 @@ import {
     deleteCampaign,
     getCampaignById,
 } from "@/actions/campaigns"
+import { getCallsByCampaign, getCampaignCallStats } from "@/actions/calls"
+import { SerializedCallWithLead } from "@/types/call.types"
+import { CallResult } from "@prisma/client"
 import { cn } from "@/lib/utils"
 
 // ============================================
@@ -92,20 +101,37 @@ interface Campaign {
     emailSends: EmailSend[]
 }
 
+interface CallStats {
+    total: number
+    byResult: Record<CallResult, number>
+    interested: number
+    meetingsScheduled: number
+}
+
 interface CampaignDetailClientProps {
     campaign: Campaign
+    initialCalls: SerializedCallWithLead[]
+    initialCallStats: CallStats
 }
 
 // ============================================
 // COMPONENT
 // ============================================
 
-export function CampaignDetailClient({ campaign: initialCampaign }: CampaignDetailClientProps) {
+export function CampaignDetailClient({
+                                         campaign: initialCampaign,
+                                         initialCalls,
+                                         initialCallStats,
+                                     }: CampaignDetailClientProps) {
     const router = useRouter()
     const [campaign, setCampaign] = useState<Campaign>(initialCampaign)
+    const [calls, setCalls] = useState<SerializedCallWithLead[]>(initialCalls)
+    const [callStats, setCallStats] = useState<CallStats>(initialCallStats)
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [isRefreshing, setIsRefreshing] = useState<boolean>(false)
     const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false)
+    const [isCallModalOpen, setIsCallModalOpen] = useState<boolean>(false)
+    const [editingCall, setEditingCall] = useState<SerializedCallWithLead | null>(null)
 
     const statusConfig = getStatusConfig(campaign.status)
     const StatusIcon = statusConfig.icon
@@ -125,16 +151,20 @@ export function CampaignDetailClient({ campaign: initialCampaign }: CampaignDeta
     const handleRefresh = async (): Promise<void> => {
         setIsRefreshing(true)
         try {
-            const result = await getCampaignById(campaign.id)
-            if (result.success && result.data) {
-                // Serialize dates
+            const [campaignResult, newCalls, newCallStats] = await Promise.all([
+                getCampaignById(campaign.id),
+                getCallsByCampaign(campaign.id),
+                getCampaignCallStats(campaign.id),
+            ])
+
+            if (campaignResult.success && campaignResult.data) {
                 const refreshedCampaign = {
-                    ...result.data,
-                    createdAt: result.data.createdAt.toISOString(),
-                    updatedAt: result.data.updatedAt.toISOString(),
-                    sentAt: result.data.sentAt?.toISOString() || null,
-                    scheduledAt: result.data.scheduledAt?.toISOString() || null,
-                    emailSends: result.data.emailSends.map((send: any) => ({
+                    ...campaignResult.data,
+                    createdAt: campaignResult.data.createdAt.toISOString(),
+                    updatedAt: campaignResult.data.updatedAt.toISOString(),
+                    sentAt: campaignResult.data.sentAt?.toISOString() || null,
+                    scheduledAt: campaignResult.data.scheduledAt?.toISOString() || null,
+                    emailSends: campaignResult.data.emailSends.map((send: any) => ({
                         ...send,
                         sentAt: send.sentAt?.toISOString() || null,
                         openedAt: send.openedAt?.toISOString() || null,
@@ -144,10 +174,13 @@ export function CampaignDetailClient({ campaign: initialCampaign }: CampaignDeta
                     })),
                 }
                 setCampaign(refreshedCampaign)
-                toast.success("Métricas atualizadas!")
             }
+
+            setCalls(newCalls)
+            setCallStats(newCallStats)
+            toast.success("Dados atualizados!")
         } catch (error) {
-            toast.error("Erro ao atualizar métricas")
+            toast.error("Erro ao atualizar dados")
         } finally {
             setIsRefreshing(false)
         }
@@ -205,17 +238,14 @@ export function CampaignDetailClient({ campaign: initialCampaign }: CampaignDeta
         }
     }
 
-    const formatDate = (date: string | null): string => {
-        if (!date) return "-"
-        return format(new Date(date), "dd 'de' MMMM 'de' yyyy 'às' HH:mm", { locale: ptBR })
-    }
-
     const handleRecalculateMetrics = async (): Promise<void> => {
         setIsRefreshing(true)
         try {
             const result = await recalculateCampaignMetrics(campaign.id)
             if (result.success) {
-                toast.success(`Métricas recalculadas! Abertos: ${result.data?.totalOpened}, Cliques: ${result.data?.totalClicked}`)
+                toast.success(
+                    `Métricas recalculadas! Abertos: ${result.data?.totalOpened}, Cliques: ${result.data?.totalClicked}`
+                )
                 await handleRefresh()
             } else {
                 toast.error(result.error || "Erro ao recalcular")
@@ -225,6 +255,32 @@ export function CampaignDetailClient({ campaign: initialCampaign }: CampaignDeta
         } finally {
             setIsRefreshing(false)
         }
+    }
+
+    const handleOpenCallModal = useCallback((): void => {
+        setEditingCall(null)
+        setIsCallModalOpen(true)
+    }, [])
+
+    const handleEditCall = useCallback((call: SerializedCallWithLead): void => {
+        setEditingCall(call)
+        setIsCallModalOpen(true)
+    }, [])
+
+    const handleCloseCallModal = useCallback((): void => {
+        setIsCallModalOpen(false)
+        setEditingCall(null)
+    }, [])
+
+    const handleCallSaved = useCallback(async (): Promise<void> => {
+        handleCloseCallModal()
+        await handleRefresh()
+        toast.success(editingCall ? "Ligação atualizada" : "Ligação registrada")
+    }, [editingCall, handleCloseCallModal])
+
+    const formatDate = (date: string | null): string => {
+        if (!date) return "-"
+        return format(new Date(date), "dd 'de' MMMM 'de' yyyy 'às' HH:mm", { locale: ptBR })
     }
 
     // ============================================
@@ -242,10 +298,7 @@ export function CampaignDetailClient({ campaign: initialCampaign }: CampaignDeta
                     <div>
                         <div className="flex items-center gap-3">
                             <h1 className="text-2xl font-bold">{campaign.name}</h1>
-                            <Badge
-                                variant={statusConfig.badgeVariant}
-                                className="gap-1"
-                            >
+                            <Badge variant={statusConfig.badgeVariant} className="gap-1">
                                 <StatusIcon className="h-3.5 w-3.5" />
                                 {statusConfig.label}
                             </Badge>
@@ -263,10 +316,7 @@ export function CampaignDetailClient({ campaign: initialCampaign }: CampaignDeta
                         onClick={handleRecalculateMetrics}
                         disabled={isRefreshing}
                     >
-                        <RefreshCw className={cn(
-                            "h-4 w-4 mr-2",
-                            isRefreshing && "animate-spin"
-                        )} />
+                        <RefreshCw className={cn("h-4 w-4 mr-2", isRefreshing && "animate-spin")} />
                         Recalcular Métricas
                     </Button>
 
@@ -296,7 +346,7 @@ export function CampaignDetailClient({ campaign: initialCampaign }: CampaignDeta
             </div>
 
             {/* Info Cards */}
-            <div className="grid gap-4 md:grid-cols-3">
+            <div className="grid gap-4 md:grid-cols-4">
                 <Card>
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
@@ -333,12 +383,26 @@ export function CampaignDetailClient({ campaign: initialCampaign }: CampaignDeta
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
                             <div className="h-10 w-10 rounded-full bg-purple-100 flex items-center justify-center">
-                                <FileText className="h-5 w-5 text-purple-600" />
+                                <Phone className="h-5 w-5 text-purple-600" />
                             </div>
                             <div>
-                                <p className="text-sm text-muted-foreground">Assunto</p>
-                                <p className="font-medium truncate max-w-[200px]">
-                                    {campaign.template?.subject || "-"}
+                                <p className="text-sm text-muted-foreground">Ligações</p>
+                                <p className="font-medium">{callStats.total} realizadas</p>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardContent className="p-4">
+                        <div className="flex items-center gap-3">
+                            <div className="h-10 w-10 rounded-full bg-emerald-100 flex items-center justify-center">
+                                <ThumbsUp className="h-5 w-5 text-emerald-600" />
+                            </div>
+                            <div>
+                                <p className="text-sm text-muted-foreground">Resultados</p>
+                                <p className="font-medium">
+                                    {callStats.interested} interessados, {callStats.meetingsScheduled} reuniões
                                 </p>
                             </div>
                         </div>
@@ -353,6 +417,7 @@ export function CampaignDetailClient({ campaign: initialCampaign }: CampaignDeta
             <Tabs defaultValue="sends" className="space-y-4">
                 <TabsList>
                     <TabsTrigger value="sends">
+                        <Mail className="h-4 w-4 mr-2" />
                         Envios ({campaign.emailSends.length})
                     </TabsTrigger>
                     <TabsTrigger value="opened">
@@ -360,6 +425,10 @@ export function CampaignDetailClient({ campaign: initialCampaign }: CampaignDeta
                     </TabsTrigger>
                     <TabsTrigger value="clicked">
                         Clicaram ({campaign.totalClicked})
+                    </TabsTrigger>
+                    <TabsTrigger value="calls">
+                        <Phone className="h-4 w-4 mr-2" />
+                        Ligações ({callStats.total})
                     </TabsTrigger>
                 </TabsList>
 
@@ -411,6 +480,31 @@ export function CampaignDetailClient({ campaign: initialCampaign }: CampaignDeta
                         </CardContent>
                     </Card>
                 </TabsContent>
+
+                <TabsContent value="calls">
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between">
+                            <div>
+                                <CardTitle>Ligações da Campanha</CardTitle>
+                                <CardDescription>
+                                    Ligações vinculadas a esta campanha de prospecção
+                                </CardDescription>
+                            </div>
+                            <Button size="sm" onClick={handleOpenCallModal}>
+                                <Plus className="h-4 w-4 mr-2" />
+                                Nova Ligação
+                            </Button>
+                        </CardHeader>
+                        <CardContent>
+                            <CampaignCallsList
+                                calls={calls}
+                                isLoading={isRefreshing}
+                                onEdit={handleEditCall}
+                                onRefresh={handleRefresh}
+                            />
+                        </CardContent>
+                    </Card>
+                </TabsContent>
             </Tabs>
 
             {/* Delete Dialog */}
@@ -419,8 +513,8 @@ export function CampaignDetailClient({ campaign: initialCampaign }: CampaignDeta
                     <AlertDialogHeader>
                         <AlertDialogTitle>Excluir campanha?</AlertDialogTitle>
                         <AlertDialogDescription>
-                            Essa ação não pode ser desfeita. A campanha "{campaign.name}" e todos
-                            os registros de envio serão excluídos permanentemente.
+                            Essa ação não pode ser desfeita. A campanha "{campaign.name}" e todos os
+                            registros de envio serão excluídos permanentemente.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
@@ -434,6 +528,17 @@ export function CampaignDetailClient({ campaign: initialCampaign }: CampaignDeta
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
+
+            {/* Call Modal */}
+            <CallModal
+                isOpen={isCallModalOpen}
+                onClose={handleCloseCallModal}
+                onSaved={handleCallSaved}
+                call={editingCall}
+                workspaceId={campaign.workspaceId}
+                preselectedLeadId={null}
+                preselectedCampaignId={campaign.id}
+            />
         </div>
     )
 }

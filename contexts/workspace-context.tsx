@@ -26,13 +26,40 @@ type WorkspaceContextType = {
 
 const WorkspaceContext = createContext<WorkspaceContextType | undefined>(undefined)
 
+// ============================================
+// HELPER: Salvar cookie no cliente
+// ============================================
+function setWorkspaceCookie(workspaceId: string): void {
+    // Cookie expira em 1 ano
+    const expires = new Date()
+    expires.setFullYear(expires.getFullYear() + 1)
+
+    document.cookie = `activeWorkspaceId=${workspaceId}; path=/; expires=${expires.toUTCString()}; SameSite=Lax`
+}
+
+// ============================================
+// HELPER: Ler cookie no cliente
+// ============================================
+function getWorkspaceCookie(): string | null {
+    if (typeof document === "undefined") return null
+
+    const cookies = document.cookie.split(";")
+    for (const cookie of cookies) {
+        const [name, value] = cookie.trim().split("=")
+        if (name === "activeWorkspaceId") {
+            return value
+        }
+    }
+    return null
+}
+
 export function WorkspaceProvider({ children }: { children: ReactNode }) {
     const [workspaces, setWorkspaces] = useState<Workspace[]>([])
     const [activeWorkspace, setActiveWorkspaceState] = useState<Workspace | null>(null)
     const [isLoading, setIsLoading] = useState(true)
 
     // Carregar workspaces ao iniciar
-    const refreshWorkspaces = async () => {
+    const refreshWorkspaces = async (): Promise<void> => {
         try {
             setIsLoading(true)
             const response = await fetch("/api/workspaces")
@@ -43,11 +70,16 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
 
                 // Se não tem workspace ativo, selecionar o primeiro
                 if (!activeWorkspace && data.workspaces?.length > 0) {
-                    // Verificar se tem um salvo no localStorage
-                    const savedId = localStorage.getItem("activeWorkspaceId")
+                    // Verificar se tem um salvo no cookie ou localStorage
+                    const savedId = getWorkspaceCookie() || localStorage.getItem("activeWorkspaceId")
                     const saved = data.workspaces.find((w: Workspace) => w.id === savedId)
 
-                    setActiveWorkspaceState(saved || data.workspaces[0])
+                    const workspaceToSet = saved || data.workspaces[0]
+                    setActiveWorkspaceState(workspaceToSet)
+
+                    // Garantir que o cookie está salvo
+                    setWorkspaceCookie(workspaceToSet.id)
+                    localStorage.setItem("activeWorkspaceId", workspaceToSet.id)
                 }
             }
         } catch (error) {
@@ -58,9 +90,12 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     }
 
     // Função para trocar workspace ativo
-    const setActiveWorkspace = (workspace: Workspace) => {
+    const setActiveWorkspace = (workspace: Workspace): void => {
         setActiveWorkspaceState(workspace)
+
+        // Salvar em AMBOS: localStorage e cookie
         localStorage.setItem("activeWorkspaceId", workspace.id)
+        setWorkspaceCookie(workspace.id)
     }
 
     // Carregar ao montar

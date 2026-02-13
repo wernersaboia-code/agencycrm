@@ -2,6 +2,7 @@
 
 import { notFound } from "next/navigation"
 import { getCampaignById } from "@/actions/campaigns"
+import { getCallsByCampaign, getCampaignCallStats } from "@/actions/calls"
 import { CampaignDetailClient } from "./campaign-detail-client"
 
 // ============================================
@@ -25,6 +26,12 @@ export default async function CampaignDetailPage({ params }: PageProps) {
         notFound()
     }
 
+    // Buscar ligações e estatísticas da campanha
+    const [calls, callStats] = await Promise.all([
+        getCallsByCampaign(id),
+        getCampaignCallStats(id),
+    ])
+
     // Serialize dates for client component
     const campaign = {
         ...result.data,
@@ -42,5 +49,11 @@ export default async function CampaignDetailPage({ params }: PageProps) {
         })),
     }
 
-    return <CampaignDetailClient campaign={campaign} />
+    return (
+        <CampaignDetailClient
+            campaign={campaign}
+            initialCalls={calls}
+            initialCallStats={callStats}
+        />
+    )
 }

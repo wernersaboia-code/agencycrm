@@ -365,6 +365,7 @@ model Campaign {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  calls     Call[]
 
   @@index([workspaceId])
   @@index([status])
@@ -421,6 +422,9 @@ model Call {
   workspaceId String
   workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 
+  campaignId String?
+  campaign   Campaign? @relation(fields: [campaignId], references: [id], onDelete: SetNull)
+
   // Resultado
   result CallResult
 
@@ -439,6 +443,7 @@ model Call {
 
   @@index([leadId])
   @@index([workspaceId])
+  @@index([campaignId])
   @@index([calledAt])
   @@map("calls")
 }

@@ -18,13 +18,13 @@ import type { LeadStatus, CompanySize } from '@prisma/client'
 // TIPOS
 // ============================================================
 
-interface ActionResult<T = void> {
+export interface ActionResult<T = void> {
     success: boolean
     data?: T
     error?: string
 }
 
-interface GetLeadsParams {
+export interface GetLeadsParams {
     workspaceId: string
     search?: string
     status?: LeadStatus
@@ -34,7 +34,7 @@ interface GetLeadsParams {
     pageSize?: number
 }
 
-interface LeadWithRelations {
+export interface LeadWithRelations {
     id: string
     firstName: string
     lastName: string | null
@@ -55,6 +55,7 @@ interface LeadWithRelations {
     status: LeadStatus
     source: string
     notes: string | null
+    workspaceId: string
     createdAt: Date
     updatedAt: Date
 }
@@ -231,6 +232,42 @@ async function getLeadStats(workspaceId: string): Promise<LeadStats> {
     ])
 
     return { total, new: newCount, interested, converted }
+}
+
+export async function getLeadEmailSends(leadId: string): Promise<{
+    id: string
+    campaignName: string
+    status: string
+    sentAt: string | null
+    openedAt: string | null
+    clickedAt: string | null
+}[]> {
+    const user = await getAuthenticatedUser()
+    if (!user) return []
+
+    const emailSends = await prisma.emailSend.findMany({
+        where: {
+            leadId,
+            campaign: {
+                workspace: { userId: user.id },
+            },
+        },
+        include: {
+            campaign: {
+                select: { name: true },
+            },
+        },
+        orderBy: { createdAt: "desc" },
+    })
+
+    return emailSends.map((send) => ({
+        id: send.id,
+        campaignName: send.campaign.name,
+        status: send.status,
+        sentAt: send.sentAt?.toISOString() ?? null,
+        openedAt: send.openedAt?.toISOString() ?? null,
+        clickedAt: send.clickedAt?.toISOString() ?? null,
+    }))
 }
 
 // ============================================================
