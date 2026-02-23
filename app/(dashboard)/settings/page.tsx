@@ -1,69 +1,78 @@
 // app/(dashboard)/settings/page.tsx
-import { Suspense } from "react"
-import { Metadata } from "next"
+import { redirect } from "next/navigation"
+import { cookies } from "next/headers"
+import { getAuthenticatedUser } from "@/lib/auth"
 import { getUserProfile, getAccountStats } from "@/actions/settings"
 import { prisma } from "@/lib/prisma"
-import { getAuthenticatedUser } from "@/lib/auth"
 import { SettingsClient } from "./settings-client"
-import { Card, CardContent } from "@/components/ui/card"
-import { Loader2 } from "lucide-react"
 
-export const metadata: Metadata = {
-    title: "Configurações | AgencyCRM",
-}
+export default async function SettingsPage() {
+    const user = await getAuthenticatedUser()
 
-function SettingsLoading() {
-    return (
-        <div className="space-y-6">
-            <div>
-                <div className="h-8 w-48 bg-muted animate-pulse rounded" />
-                <div className="h-4 w-64 bg-muted animate-pulse rounded mt-2" />
-            </div>
-            <Card>
-                <CardContent className="flex items-center justify-center py-12">
-                    <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-                </CardContent>
-            </Card>
-        </div>
-    )
-}
-
-async function SettingsData() {
-    const [profileResult, statsResult, user] = await Promise.all([
-        getUserProfile(),
-        getAccountStats(),
-        getAuthenticatedUser(),
-    ])
-
-    const profile = profileResult.success ? profileResult.data! : null
-    const stats = statsResult.success
-        ? statsResult.data!
-        : { leads: 0, campaigns: 0, templates: 0, calls: 0 }
-
-    // Buscar primeiro workspace do usuário
-    let workspaceId: string | undefined
-    if (user) {
-        const workspace = await prisma.workspace.findFirst({
-            where: { userId: user.id },
-            select: { id: true },
-            orderBy: { createdAt: "asc" },
-        })
-        workspaceId = workspace?.id
+    if (!user) {
+        redirect("/sign-in")
     }
+
+    // Buscar workspace ativo
+    const cookieStore = await cookies()
+    const activeWorkspaceId = cookieStore.get("activeWorkspaceId")?.value
+
+    if (!activeWorkspaceId) {
+        redirect("/workspaces")
+    }
+
+    // Buscar dados completos do workspace
+    const workspace = await prisma.workspace.findFirst({
+        where: {
+            id: activeWorkspaceId,
+            userId: user.id,
+        },
+        select: {
+            id: true,
+            name: true,
+            description: true,
+            color: true,
+            logo: true,
+            senderName: true,
+            senderEmail: true,
+            smtpProvider: true,
+            smtpHost: true,
+            smtpPort: true,
+            smtpUser: true,
+            smtpPass: true,
+            smtpSecure: true,
+        },
+    })
+
+    if (!workspace) {
+        redirect("/workspaces")
+    }
+
+    // Buscar perfil completo do usuário
+    const profileResult = await getUserProfile()
+    const profile = profileResult.success ? profileResult.data : null
+
+    // Buscar stats
+    const statsResult = await getAccountStats()
+    const stats = statsResult.success && statsResult.data
+        ? {
+            totalLeads: statsResult.data.leads,
+            totalCampaigns: statsResult.data.campaigns,
+            totalTemplates: statsResult.data.templates,
+            totalCalls: statsResult.data.calls,
+        }
+        : {
+            totalLeads: 0,
+            totalCampaigns: 0,
+            totalTemplates: 0,
+            totalCalls: 0,
+        }
 
     return (
         <SettingsClient
-            profile={profile}
+            profile={profile ?? null}
+            workspace={workspace}
             stats={stats}
-            workspaceId={workspaceId}
         />
-    )
-}
-
-export default function SettingsPage() {
-    return (
-        <Suspense fallback={<SettingsLoading />}>
-            <SettingsData />
-        </Suspense>
     )
 }

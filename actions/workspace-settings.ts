@@ -1,5 +1,4 @@
 // actions/workspace-settings.ts
-
 "use server"
 
 import { revalidatePath } from "next/cache"
@@ -16,6 +15,13 @@ interface ActionResult<T = void> {
     success: boolean
     data?: T
     error?: string
+}
+
+export interface WorkspaceSettingsData {
+    name: string
+    description?: string | null
+    color: string
+    logo?: string | null
 }
 
 // ============================================================
@@ -39,6 +45,39 @@ export type SmtpSettingsData = z.infer<typeof smtpSettingsSchema>
 // QUERIES
 // ============================================================
 
+/**
+ * Busca configurações gerais do workspace
+ */
+export async function getWorkspaceSettings(workspaceId: string) {
+    try {
+        const user = await getAuthenticatedUser()
+        if (!user) {
+            return null
+        }
+
+        const workspace = await prisma.workspace.findFirst({
+            where: { id: workspaceId, userId: user.id },
+            select: {
+                id: true,
+                name: true,
+                description: true,
+                color: true,
+                logo: true,
+                senderName: true,
+                senderEmail: true,
+            },
+        })
+
+        return workspace
+    } catch (error) {
+        console.error("Erro ao buscar configurações:", error)
+        return null
+    }
+}
+
+/**
+ * Busca configurações de SMTP do workspace
+ */
 export async function getWorkspaceSmtpSettings(
     workspaceId: string
 ): Promise<ActionResult<{
@@ -87,9 +126,97 @@ export async function getWorkspaceSmtpSettings(
 }
 
 // ============================================================
-// MUTATIONS
+// MUTATIONS - WORKSPACE GERAL
 // ============================================================
 
+/**
+ * Atualiza configurações gerais do workspace
+ */
+export async function updateWorkspaceSettings(
+    workspaceId: string,
+    data: WorkspaceSettingsData
+): Promise<ActionResult> {
+    try {
+        const user = await getAuthenticatedUser()
+        if (!user) {
+            return { success: false, error: "Não autorizado" }
+        }
+
+        // Verificar se o workspace pertence ao usuário
+        const workspace = await prisma.workspace.findFirst({
+            where: { id: workspaceId, userId: user.id },
+        })
+
+        if (!workspace) {
+            return { success: false, error: "Workspace não encontrado" }
+        }
+
+        await prisma.workspace.update({
+            where: { id: workspaceId },
+            data: {
+                name: data.name,
+                description: data.description || null,
+                color: data.color,
+                logo: data.logo,
+            },
+        })
+
+        revalidatePath("/settings")
+        revalidatePath("/dashboard")
+        revalidatePath("/workspaces")
+
+        return { success: true }
+    } catch (error) {
+        console.error("Erro ao atualizar workspace:", error)
+        return { success: false, error: "Erro ao atualizar configurações." }
+    }
+}
+
+/**
+ * Atualiza apenas a logo do workspace
+ */
+export async function updateWorkspaceLogo(
+    workspaceId: string,
+    logoUrl: string | null
+): Promise<ActionResult> {
+    try {
+        const user = await getAuthenticatedUser()
+        if (!user) {
+            return { success: false, error: "Não autorizado" }
+        }
+
+        // Verificar se o workspace pertence ao usuário
+        const workspace = await prisma.workspace.findFirst({
+            where: { id: workspaceId, userId: user.id },
+        })
+
+        if (!workspace) {
+            return { success: false, error: "Workspace não encontrado" }
+        }
+
+        await prisma.workspace.update({
+            where: { id: workspaceId },
+            data: { logo: logoUrl },
+        })
+
+        revalidatePath("/settings")
+        revalidatePath("/dashboard")
+        revalidatePath("/workspaces")
+
+        return { success: true }
+    } catch (error) {
+        console.error("Erro ao atualizar logo:", error)
+        return { success: false, error: "Erro ao atualizar logo." }
+    }
+}
+
+// ============================================================
+// MUTATIONS - SMTP
+// ============================================================
+
+/**
+ * Salva configurações de SMTP
+ */
 export async function saveSmtpSettings(
     workspaceId: string,
     data: SmtpSettingsData
@@ -139,6 +266,9 @@ export async function saveSmtpSettings(
     }
 }
 
+/**
+ * Testa conexão SMTP
+ */
 export async function testSmtpSettings(
     data: SmtpSettingsData
 ): Promise<ActionResult<{ message: string }>> {
@@ -179,6 +309,9 @@ export async function testSmtpSettings(
     }
 }
 
+/**
+ * Limpa configurações de SMTP
+ */
 export async function clearSmtpSettings(workspaceId: string): Promise<ActionResult> {
     try {
         const user = await getAuthenticatedUser()
