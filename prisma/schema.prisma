@@ -1,4 +1,4 @@
-/// prisma/schema.prisma
+// prisma/schema.prisma
 
 generator client {
   provider = "prisma-client-js"
@@ -25,124 +25,81 @@ enum UserStatus {
   PENDING
 }
 
-enum ContactStatus {
-  ACTIVE
-  INACTIVE
-  LEAD
-  CUSTOMER
-  CHURNED
-}
-
-enum DealStatus {
-  OPEN
-  WON
-  LOST
-  ABANDONED
-}
-
-enum TaskStatus {
-  TODO
-  IN_PROGRESS
-  COMPLETED
-  CANCELLED
-}
-
-enum TaskPriority {
-  LOW
-  MEDIUM
-  HIGH
-  URGENT
-}
-
-enum ActivityType {
-  CALL
-  EMAIL
-  MEETING
-  NOTE
-  TASK
-  DEAL_CREATED
-  DEAL_STAGE_CHANGED
-  DEAL_WON
-  DEAL_LOST
-}
-
-// ========== NOVOS ENUMS PARA AGENCYCRM ==========
-
 enum LeadStatus {
-  NEW // Novo - não contatado
-  CONTACTED // Contatado (email enviado)
-  OPENED // Abriu o email
-  CLICKED // Clicou em link
-  REPLIED // Respondeu
-  CALLED // Ligação realizada
-  INTERESTED // Demonstrou interesse
+  NEW           // Novo - não contatado
+  CONTACTED     // Contatado (email enviado)
+  OPENED        // Abriu o email
+  CLICKED       // Clicou em link
+  REPLIED       // Respondeu
+  CALLED        // Ligação realizada
+  INTERESTED    // Demonstrou interesse
   NOT_INTERESTED // Não tem interesse
-  NEGOTIATING // Em negociação
-  CONVERTED // Convertido (virou cliente)
-  UNSUBSCRIBED // Descadastrado
-  BOUNCED // Email inválido
+  NEGOTIATING   // Em negociação
+  CONVERTED     // Convertido (virou cliente)
+  UNSUBSCRIBED  // Descadastrado
+  BOUNCED       // Email inválido
+}
+
+enum LeadSource {
+  MANUAL      // Cadastrado manualmente
+  IMPORT      // Importado via CSV
+  MARKETPLACE // Comprado no marketplace
+  WEBSITE     // Capturado via formulário
+  REFERRAL    // Indicação
+  OTHER       // Outros
+}
+
+enum CompanySize {
+  MICRO      // 1-10 funcionários
+  SMALL      // 11-50
+  MEDIUM     // 51-200
+  LARGE      // 201-500
+  ENTERPRISE // 500+
 }
 
 enum CampaignStatus {
-  DRAFT // Rascunho
+  DRAFT     // Rascunho
   SCHEDULED // Agendada
-  SENDING // Enviando
-  SENT // Enviada
-  PAUSED // Pausada
+  SENDING   // Enviando
+  SENT      // Enviada
+  PAUSED    // Pausada
   CANCELLED // Cancelada
 }
 
 enum EmailSendStatus {
-  PENDING // Aguardando envio
-  SENT // Enviado
+  PENDING   // Aguardando envio
+  SENT      // Enviado
   DELIVERED // Entregue
-  OPENED // Aberto
-  CLICKED // Clicou
-  REPLIED // Respondeu
-  BOUNCED // Falhou
+  OPENED    // Aberto
+  CLICKED   // Clicou
+  REPLIED   // Respondeu
+  BOUNCED   // Falhou
   COMPLAINED // Marcou como spam
 }
 
 enum CallResult {
-  ANSWERED // Atendeu
-  NO_ANSWER // Não atendeu
-  BUSY // Ocupado
-  VOICEMAIL // Caixa postal
-  WRONG_NUMBER // Número errado
-  INTERESTED // Atendeu e tem interesse
-  NOT_INTERESTED // Atendeu mas sem interesse
-  CALLBACK // Pediu para retornar
+  ANSWERED          // Atendeu
+  NO_ANSWER         // Não atendeu
+  BUSY              // Ocupado
+  VOICEMAIL         // Caixa postal
+  WRONG_NUMBER      // Número errado
+  INTERESTED        // Atendeu e tem interesse
+  NOT_INTERESTED    // Atendeu mas sem interesse
+  CALLBACK          // Pediu para retornar
   MEETING_SCHEDULED // Agendou reunião
 }
 
-enum CompanySize {
-  MICRO // 1-10 funcionários
-  SMALL // 11-50
-  MEDIUM // 51-200
-  LARGE // 201-500
-  ENTERPRISE // 500+
-}
-
-enum LeadSource {
-  MANUAL // Cadastrado manualmente
-  IMPORT // Importado via CSV
-  MARKETPLACE // Comprado no marketplace
-  WEBSITE // Capturado via formulário
-  REFERRAL // Indicação
-  OTHER // Outros
-}
-
 enum TemplateCategory {
-  PROSPECTING // Primeiro contato / Prospecção
-  FOLLOW_UP // Follow-up
-  PROPOSAL // Proposta comercial
-  THANK_YOU // Agradecimento
+  PROSPECTING  // Primeiro contato / Prospecção
+  FOLLOW_UP    // Follow-up
+  PROPOSAL     // Proposta comercial
+  THANK_YOU    // Agradecimento
   REACTIVATION // Reativação de lead frio
-  NEWSLETTER // Newsletter / Novidades
-  OTHER // Outros
+  NEWSLETTER   // Newsletter / Novidades
+  OTHER        // Outros
 }
 
-// ==================== USUÁRIOS ====================
+// ==================== USUÁRIO ====================
 
 model User {
   id       String     @id @default(cuid())
@@ -155,29 +112,20 @@ model User {
   timezone String     @default("America/Sao_Paulo")
 
   // Configurações AgencyCRM
-  resendApiKey String? // API key do Resend (criptografada)
+  resendApiKey      String? // API key do Resend (criptografada)
+  activeWorkspaceId String? // Workspace ativo no momento
 
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   lastLoginAt DateTime?
 
-  // Relacionamentos existentes (NextCRM)
-  contacts        Contact[]  @relation("AssignedContacts")
-  createdContacts Contact[]  @relation("CreatedContacts")
-  companies       Company[]  @relation("AssignedCompanies")
-  deals           Deal[]     @relation("AssignedDeals")
-  tasksAssigned   Task[]     @relation("AssignedTasks")
-  tasksCreated    Task[]     @relation("CreatedTasks")
-  activities      Activity[]
-
-  // Novos relacionamentos (AgencyCRM)
-  workspaces        Workspace[]
-  activeWorkspaceId String? // Workspace ativo no momento
+  // Relacionamentos
+  workspaces Workspace[]
 
   @@map("users")
 }
 
-// ==================== WORKSPACE (NOVO - AgencyCRM) ====================
+// ==================== WORKSPACE ====================
 
 model Workspace {
   id          String  @id @default(cuid())
@@ -186,17 +134,17 @@ model Workspace {
   color       String  @default("#3B82F6")
   logo        String?
 
-  // Configurações de email - ATUALIZADAS
+  // Configurações de email
   senderName  String?
   senderEmail String?
 
-  // NOVOS CAMPOS - Configurações SMTP
-  smtpProvider String? // google, zoho, outlook, custom
-  smtpHost     String? // smtp.gmail.com, smtp.zoho.com, etc.
-  smtpPort     Int? // 587, 465, etc.
-  smtpUser     String? // email do usuário
-  smtpPass     String? // senha de app (criptografada)
-  smtpSecure   Boolean @default(true) // TLS/SSL
+  // Configurações SMTP
+  smtpProvider String?  // google, zoho, outlook, custom
+  smtpHost     String?  // smtp.gmail.com, smtp.zoho.com, etc.
+  smtpPort     Int?     // 587, 465, etc.
+  smtpUser     String?  // email do usuário
+  smtpPass     String?  // senha de app (criptografada)
+  smtpSecure   Boolean  @default(true) // TLS/SSL
 
   // Relacionamentos
   userId String
@@ -216,39 +164,39 @@ model Workspace {
   @@map("workspaces")
 }
 
-// ==================== LEAD (NOVO - AgencyCRM) ====================
+// ==================== LEAD ====================
 
 model Lead {
   id String @id @default(cuid())
 
-  // === CONTATO ===
+  // Contato
   firstName String
   lastName  String?
   email     String
   phone     String?
   mobile    String?
 
-  // === EMPRESA ===
+  // Empresa
   company     String?
   jobTitle    String?
   website     String?
-  taxId       String? // CNPJ, VAT, EIN, etc. (NOVO)
-  industry    String? // Segmento (NOVO)
-  companySize CompanySize? // Porte da empresa (NOVO)
+  taxId       String?      // CNPJ, VAT, EIN, etc.
+  industry    String?      // Segmento
+  companySize CompanySize? // Porte da empresa
 
-  // === LOCALIZAÇÃO (NOVOS) ===
+  // Localização
   address    String?
   city       String?
   state      String?
   postalCode String?
   country    String? // Código ISO: BR, DE, US
 
-  // === STATUS E CONTROLE ===
+  // Status e Controle
   status LeadStatus @default(NEW)
-  source LeadSource @default(MANUAL) // Alterado de String para Enum
+  source LeadSource @default(MANUAL)
   notes  String?    @db.Text
 
-  // === RELACIONAMENTOS ===
+  // Relacionamentos
   workspaceId String
   workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 
@@ -256,11 +204,11 @@ model Lead {
   calls      Call[]
   tags       TagsOnLeads[]
 
-  // === IMPORTAÇÃO ===
+  // Importação
   importedAt  DateTime?
   importBatch String?
 
-  // === TIMESTAMPS ===
+  // Timestamps
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -274,7 +222,7 @@ model Lead {
   @@map("leads")
 }
 
-// ==================== TAG (NOVO - AgencyCRM) ====================
+// ==================== TAG ====================
 
 model Tag {
   id    String @id @default(cuid())
@@ -302,18 +250,15 @@ model TagsOnLeads {
   @@map("tags_on_leads")
 }
 
-// ==================== EMAIL TEMPLATE (NOVO - AgencyCRM) ====================
+// ==================== EMAIL TEMPLATE ====================
 
 model EmailTemplate {
   id       String           @id @default(cuid())
-  name     String // "Primeiro contato", "Follow-up 1"
-  subject  String // Assunto do email
-  body     String           @db.Text // Corpo HTML
-  category TemplateCategory @default(PROSPECTING) // NOVO!
-
-  // Variáveis disponíveis: {{firstName}}, {{company}}, etc.
-
-  isActive Boolean @default(true)
+  name     String
+  subject  String
+  body     String           @db.Text
+  category TemplateCategory @default(PROSPECTING)
+  isActive Boolean          @default(true)
 
   workspaceId String
   workspace   Workspace  @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
@@ -323,15 +268,15 @@ model EmailTemplate {
   updatedAt DateTime @updatedAt
 
   @@index([workspaceId])
-  @@index([category]) // NOVO índice
+  @@index([category])
   @@map("email_templates")
 }
 
-// ==================== CAMPAIGN (NOVO - AgencyCRM) ====================
+// ==================== CAMPAIGN ====================
 
 model Campaign {
   id          String         @id @default(cuid())
-  name        String // "Campanha Janeiro 2025"
+  name        String
   description String?
   status      CampaignStatus @default(DRAFT)
 
@@ -343,11 +288,11 @@ model Campaign {
   subject String?
   body    String? @db.Text
 
-  // Filtros de destinatários (JSON)
-  filterStatus LeadStatus[] // Enviar para leads com esses status
-  filterTags   String[] // Enviar para leads com essas tags (IDs)
+  // Filtros de destinatários
+  filterStatus LeadStatus[]
+  filterTags   String[]
 
-  // Métricas (calculadas)
+  // Métricas
   totalRecipients Int @default(0)
   totalSent       Int @default(0)
   totalOpened     Int @default(0)
@@ -356,66 +301,60 @@ model Campaign {
   totalBounced    Int @default(0)
 
   // Datas
-  scheduledAt DateTime? // Agendamento (futuro)
-  sentAt      DateTime? // Quando foi enviada
+  scheduledAt DateTime?
+  sentAt      DateTime?
 
   workspaceId String
   workspace   Workspace   @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   emailSends  EmailSend[]
+  calls       Call[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  calls     Call[]
 
   @@index([workspaceId])
   @@index([status])
   @@map("campaigns")
 }
 
-// ==================== EMAIL SEND (NOVO - AgencyCRM) ====================
+// ==================== EMAIL SEND ====================
 
 model EmailSend {
   id String @id @default(cuid())
 
-  // Relacionamentos
   campaignId String
   campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
 
   leadId String
   lead   Lead   @relation(fields: [leadId], references: [id], onDelete: Cascade)
 
-  // Status do envio
-  status EmailSendStatus @default(PENDING)
-
-  // IDs externos
-  resendId String? // ID retornado pelo Resend
+  status   EmailSendStatus @default(PENDING)
+  resendId String?
 
   // Rastreamento
   openedAt     DateTime?
-  openCount    Int       @default(0) // Quantas vezes abriu
+  openCount    Int       @default(0)
   clickedAt    DateTime?
   clickCount   Int       @default(0)
   repliedAt    DateTime?
   bouncedAt    DateTime?
   bounceReason String?
 
-  // Datas
   sentAt    DateTime?
   createdAt DateTime  @default(now())
 
-  @@unique([campaignId, leadId]) // Um envio por lead por campanha
+  @@unique([campaignId, leadId])
   @@index([campaignId])
   @@index([leadId])
   @@index([status])
   @@map("email_sends")
 }
 
-// ==================== CALL (NOVO - AgencyCRM) ====================
+// ==================== CALL ====================
 
 model Call {
   id String @id @default(cuid())
 
-  // Relacionamentos
   leadId String
   lead   Lead   @relation(fields: [leadId], references: [id], onDelete: Cascade)
 
@@ -425,18 +364,12 @@ model Call {
   campaignId String?
   campaign   Campaign? @relation(fields: [campaignId], references: [id], onDelete: SetNull)
 
-  // Resultado
-  result CallResult
+  result   CallResult
+  duration Int?       @db.Integer
+  notes    String?    @db.Text
 
-  // Detalhes
-  duration Int?    @db.Integer // Duração em segundos
-  notes    String? @db.Text // Anotações da ligação
-
-  // Agendamento de retorno
-  followUpAt DateTime? // Data para retornar
-
-  // Data da ligação
-  calledAt DateTime @default(now())
+  followUpAt DateTime?
+  calledAt   DateTime  @default(now())
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -446,176 +379,4 @@ model Call {
   @@index([campaignId])
   @@index([calledAt])
   @@map("calls")
-}
-
-// ==================== MODELOS EXISTENTES (NextCRM) ====================
-// Mantidos para compatibilidade durante a transição
-
-model Company {
-  id          String   @id @default(cuid())
-  name        String
-  domain      String?
-  industry    String?
-  size        String?
-  website     String?
-  phone       String?
-  email       String?
-  address     String?
-  city        String?
-  state       String?
-  country     String?  @default("Brasil")
-  postalCode  String?
-  description String?
-  logo        String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  assignedToId String?
-  assignedTo   User?     @relation("AssignedCompanies", fields: [assignedToId], references: [id])
-  contacts     Contact[]
-  deals        Deal[]
-  tasks        Task[]
-
-  @@map("companies")
-}
-
-model Contact {
-  id         String        @id @default(cuid())
-  firstName  String
-  lastName   String
-  email      String?
-  phone      String?
-  mobile     String?
-  position   String?
-  department String?
-  status     ContactStatus @default(LEAD)
-  source     String?
-  notes      String?
-  avatar     String?
-  createdAt  DateTime      @default(now())
-  updatedAt  DateTime      @updatedAt
-
-  companyId    String?
-  company      Company?   @relation(fields: [companyId], references: [id])
-  assignedToId String?
-  assignedTo   User?      @relation("AssignedContacts", fields: [assignedToId], references: [id])
-  createdById  String?
-  createdBy    User?      @relation("CreatedContacts", fields: [createdById], references: [id])
-  deals        Deal[]
-  tasks        Task[]
-  activities   Activity[]
-
-  @@map("contacts")
-}
-
-model PipelineStage {
-  id        String   @id @default(cuid())
-  name      String
-  order     Int
-  color     String   @default("#6B7280")
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  deals Deal[]
-
-  @@map("pipeline_stages")
-}
-
-model Deal {
-  id                String     @id @default(cuid())
-  title             String
-  value             Decimal?   @db.Decimal(15, 2)
-  currency          String     @default("BRL")
-  status            DealStatus @default(OPEN)
-  probability       Int?       @default(50)
-  expectedCloseDate DateTime?
-  closedAt          DateTime?
-  lostReason        String?
-  description       String?
-  createdAt         DateTime   @default(now())
-  updatedAt         DateTime   @updatedAt
-
-  stageId      String?
-  stage        PipelineStage? @relation(fields: [stageId], references: [id])
-  contactId    String?
-  contact      Contact?       @relation(fields: [contactId], references: [id])
-  companyId    String?
-  company      Company?       @relation(fields: [companyId], references: [id])
-  assignedToId String?
-  assignedTo   User?          @relation("AssignedDeals", fields: [assignedToId], references: [id])
-  tasks        Task[]
-  activities   Activity[]
-
-  @@map("deals")
-}
-
-model Task {
-  id          String       @id @default(cuid())
-  title       String
-  description String?      @db.Text
-  status      TaskStatus   @default(TODO)
-  priority    TaskPriority @default(MEDIUM)
-  dueDate     DateTime?
-  completedAt DateTime?
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-
-  contactId    String?
-  contact      Contact? @relation(fields: [contactId], references: [id], onDelete: SetNull)
-  companyId    String?
-  company      Company? @relation(fields: [companyId], references: [id], onDelete: SetNull)
-  dealId       String?
-  deal         Deal?    @relation(fields: [dealId], references: [id], onDelete: SetNull)
-  assignedToId String?
-  assignedTo   User?    @relation("AssignedTasks", fields: [assignedToId], references: [id], onDelete: SetNull)
-  createdById  String
-  createdBy    User     @relation("CreatedTasks", fields: [createdById], references: [id], onDelete: Cascade)
-
-  subtasks Subtask[]
-
-  @@index([status])
-  @@index([priority])
-  @@index([dueDate])
-  @@index([contactId])
-  @@index([companyId])
-  @@index([dealId])
-  @@index([assignedToId])
-  @@index([createdById])
-  @@map("tasks")
-}
-
-model Subtask {
-  id          String    @id @default(cuid())
-  title       String
-  completed   Boolean   @default(false)
-  completedAt DateTime?
-  order       Int       @default(0)
-
-  taskId String
-  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([taskId])
-  @@map("subtasks")
-}
-
-model Activity {
-  id          String       @id @default(cuid())
-  type        ActivityType
-  title       String
-  description String?
-  metadata    Json?
-  createdAt   DateTime     @default(now())
-
-  userId    String?
-  user      User?    @relation(fields: [userId], references: [id])
-  contactId String?
-  contact   Contact? @relation(fields: [contactId], references: [id])
-  dealId    String?
-  deal      Deal?    @relation(fields: [dealId], references: [id])
-
-  @@map("activities")
 }

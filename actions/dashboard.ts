@@ -1,196 +1,213 @@
 // actions/dashboard.ts
-
 "use server"
 
 import { prisma } from "@/lib/prisma"
-import { createClient } from "@/lib/supabase/server"
+import { getAuthenticatedUser } from "@/lib/auth"
+import { subDays, startOfDay, endOfDay } from "date-fns"
 
-// ==================== HELPERS ====================
+// ============================================================
+// TIPOS
+// ============================================================
 
-async function getAuthenticatedUser() {
-    const supabase = await createClient()
-    const { data: { user }, error } = await supabase.auth.getUser()
+export interface DashboardStats {
+    // Leads
+    totalLeads: number
+    newLeadsToday: number
+    newLeadsWeek: number
 
-    if (error || !user) {
-        throw new Error("Não autenticado")
-    }
+    // Campanhas
+    totalCampaigns: number
+    activeCampaigns: number
 
-    return user
+    // Emails
+    totalEmailsSent: number
+    totalOpens: number
+    totalClicks: number
+    openRate: number
+    clickRate: number
+
+    // Ligações
+    totalCalls: number
+    answeredCalls: number
+    answerRate: number
+    positiveResults: number
+    positiveRate: number
 }
 
-// ==================== TIPOS ====================
-
-export type DashboardStats = {
-    // Deals
-    pipelineTotal: number
-    pipelineCount: number
-    wonThisMonth: number
-    wonThisMonthCount: number
-    lostThisMonth: number
-    lostThisMonthCount: number
-
-    // Tarefas
-    pendingTasks: number
-    overdueTasks: number
-
-    // Contatos e Empresas
-    totalContacts: number
-    totalCompanies: number
-}
-
-export type DealsByStage = {
-    stage: string
-    count: number
-    value: number
-    color: string
-}
-
-export type DealsOverTime = {
-    month: string
-    won: number
-    lost: number
-    wonValue: number
-    lostValue: number
-}
-
-export type UpcomingTask = {
+export interface CampaignSummary {
     id: string
-    title: string
-    dueDate: string | null
-    priority: string
+    name: string
     status: string
-    contact: { firstName: string; lastName: string } | null
-    company: { name: string } | null
-}
-
-export type RecentDeal = {
-    id: string
-    title: string
-    value: number | null
-    status: string
-    stage: { name: string; color: string } | null
-    contact: { firstName: string; lastName: string } | null
-    company: { name: string } | null
+    sentCount: number
+    openCount: number
+    clickCount: number
+    openRate: number
     createdAt: string
 }
 
-// ==================== FUNÇÕES ====================
+export interface RecentLead {
+    id: string
+    firstName: string
+    lastName: string | null
+    email: string
+    company: string | null
+    status: string
+    createdAt: string
+}
 
-export async function getDashboardStats(): Promise<{ success: boolean; data?: DashboardStats; error?: string }> {
+export interface EmailsOverTime {
+    date: string
+    sent: number
+    opened: number
+    clicked: number
+}
+
+export interface PendingCallback {
+    id: string
+    leadName: string
+    leadCompany: string | null
+    followUpAt: string
+    notes: string | null
+    isOverdue: boolean
+    isToday: boolean
+}
+
+export interface CallbacksSummary {
+    overdue: PendingCallback[]
+    today: PendingCallback[]
+    thisWeek: PendingCallback[]
+    overdueCount: number
+    todayCount: number
+    thisWeekCount: number
+}
+
+// ============================================================
+// FUNÇÕES
+// ============================================================
+
+export async function getDashboardStats(
+    workspaceId: string
+): Promise<{ success: boolean; data?: DashboardStats; error?: string }> {
     try {
         const user = await getAuthenticatedUser()
+        if (!user) {
+            return { success: false, error: "Não autorizado" }
+        }
 
-        // Datas para filtros do mês atual
+        // Verificar acesso ao workspace
+        const workspace = await prisma.workspace.findFirst({
+            where: { id: workspaceId, userId: user.id },
+        })
+
+        if (!workspace) {
+            return { success: false, error: "Workspace não encontrado" }
+        }
+
         const now = new Date()
-        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
-        const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59)
-
-        const today = new Date()
-        today.setHours(0, 0, 0, 0)
+        const todayStart = startOfDay(now)
+        const weekAgo = subDays(now, 7)
 
         // Buscar todas as métricas em paralelo
         const [
-            // Deals em aberto (pipeline)
-            pipelineDeals,
-            // Deals ganhos no mês
-            wonDeals,
-            // Deals perdidos no mês
-            lostDeals,
-            // Tarefas pendentes
-            pendingTasks,
-            // Tarefas atrasadas
-            overdueTasks,
-            // Total de contatos
-            totalContacts,
-            // Total de empresas
-            totalCompanies,
+            totalLeads,
+            newLeadsToday,
+            newLeadsWeek,
+            totalCampaigns,
+            activeCampaigns,
+            emailStats,
+            callStats,
         ] = await Promise.all([
-            // Pipeline (deals abertos)
-            prisma.deal.findMany({
-                where: {
-                    assignedToId: user.id,
-                    status: "OPEN",
-                },
-                select: { value: true },
+            // Total de leads
+            prisma.lead.count({
+                where: { workspaceId },
             }),
 
-            // Ganhos no mês
-            prisma.deal.findMany({
+            // Leads hoje
+            prisma.lead.count({
                 where: {
-                    assignedToId: user.id,
-                    status: "WON",
-                    closedAt: {
-                        gte: startOfMonth,
-                        lte: endOfMonth,
-                    },
-                },
-                select: { value: true },
-            }),
-
-            // Perdidos no mês
-            prisma.deal.findMany({
-                where: {
-                    assignedToId: user.id,
-                    status: "LOST",
-                    closedAt: {
-                        gte: startOfMonth,
-                        lte: endOfMonth,
-                    },
-                },
-                select: { value: true },
-            }),
-
-            // Tarefas pendentes
-            prisma.task.count({
-                where: {
-                    createdById: user.id,
-                    status: { in: ["TODO", "IN_PROGRESS"] },
+                    workspaceId,
+                    createdAt: { gte: todayStart },
                 },
             }),
 
-            // Tarefas atrasadas
-            prisma.task.count({
+            // Leads na semana
+            prisma.lead.count({
                 where: {
-                    createdById: user.id,
-                    status: { in: ["TODO", "IN_PROGRESS"] },
-                    dueDate: { lt: today },
+                    workspaceId,
+                    createdAt: { gte: weekAgo },
                 },
             }),
 
-            // Contatos
-            prisma.contact.count({
+            // Total de campanhas
+            prisma.campaign.count({
+                where: { workspaceId },
+            }),
+
+            // Campanhas ativas (SENDING ou SCHEDULED)
+            prisma.campaign.count({
                 where: {
-                    OR: [
-                        { createdById: user.id },
-                        { assignedToId: user.id },
-                    ],
+                    workspaceId,
+                    status: { in: ["SENDING", "SCHEDULED"] },
                 },
             }),
 
-            // Empresas
-            prisma.company.count({
-                where: { assignedToId: user.id },
+            // Estatísticas de email
+            prisma.emailSend.aggregate({
+                where: {
+                    campaign: { workspaceId },
+                },
+                _count: { id: true },
+                _sum: {
+                    openCount: true,
+                    clickCount: true,
+                },
+            }),
+
+            // Estatísticas de ligações
+            prisma.call.groupBy({
+                by: ["result"],
+                where: { workspaceId },
+                _count: { id: true },
             }),
         ])
 
-        // Calcular totais
-        const pipelineTotal = pipelineDeals.reduce((sum: number, d) => sum + (d.value ? Number(d.value) : 0), 0)
-        const wonTotal = wonDeals.reduce((sum: number, d) => sum + (d.value ? Number(d.value) : 0), 0)
-        const lostTotal = lostDeals.reduce((sum: number, d) => sum + (d.value ? Number(d.value) : 0), 0)
+        // Calcular métricas de email
+        const totalEmailsSent = emailStats._count.id || 0
+        const totalOpens = emailStats._sum.openCount || 0
+        const totalClicks = emailStats._sum.clickCount || 0
+        const openRate = totalEmailsSent > 0 ? (totalOpens / totalEmailsSent) * 100 : 0
+        const clickRate = totalEmailsSent > 0 ? (totalClicks / totalEmailsSent) * 100 : 0
+
+        // Calcular métricas de ligações
+        const totalCalls = callStats.reduce((sum, c) => sum + c._count.id, 0)
+        const answeredCalls = callStats
+            .filter((c) => c.result === "ANSWERED")
+            .reduce((sum, c) => sum + c._count.id, 0)
+        const positiveResults = callStats
+            .filter((c) => ["INTERESTED", "MEETING_SCHEDULED"].includes(c.result))
+            .reduce((sum, c) => sum + c._count.id, 0)
+
+        const answerRate = totalCalls > 0 ? (answeredCalls / totalCalls) * 100 : 0
+        const positiveRate = totalCalls > 0 ? (positiveResults / totalCalls) * 100 : 0
 
         return {
             success: true,
             data: {
-                pipelineTotal,
-                pipelineCount: pipelineDeals.length,
-                wonThisMonth: wonTotal,
-                wonThisMonthCount: wonDeals.length,
-                lostThisMonth: lostTotal,
-                lostThisMonthCount: lostDeals.length,
-                pendingTasks,
-                overdueTasks,
-                totalContacts,
-                totalCompanies,
+                totalLeads,
+                newLeadsToday,
+                newLeadsWeek,
+                totalCampaigns,
+                activeCampaigns,
+                totalEmailsSent,
+                totalOpens,
+                totalClicks,
+                openRate: Math.round(openRate * 10) / 10,
+                clickRate: Math.round(clickRate * 10) / 10,
+                totalCalls,
+                answeredCalls,
+                answerRate: Math.round(answerRate * 10) / 10,
+                positiveResults,
+                positiveRate: Math.round(positiveRate * 10) / 10,
             },
         }
     } catch (error) {
@@ -199,166 +216,214 @@ export async function getDashboardStats(): Promise<{ success: boolean; data?: Da
     }
 }
 
-export async function getDealsByStage(): Promise<{ success: boolean; data?: DealsByStage[]; error?: string }> {
+export async function getRecentCampaigns(
+    workspaceId: string,
+    limit: number = 5
+): Promise<{ success: boolean; data?: CampaignSummary[]; error?: string }> {
     try {
         const user = await getAuthenticatedUser()
+        if (!user) {
+            return { success: false, error: "Não autorizado" }
+        }
 
-        // Buscar estágios com deals
-        const stages = await prisma.pipelineStage.findMany({
-            where: { isActive: true },
-            orderBy: { order: "asc" },
-            include: {
-                deals: {
-                    where: {
-                        assignedToId: user.id,
-                        status: "OPEN",
-                    },
-                    select: { value: true },
-                },
+        const campaigns = await prisma.campaign.findMany({
+            where: {
+                workspaceId,
+                workspace: { userId: user.id },
+            },
+            orderBy: { createdAt: "desc" },
+            take: limit,
+            select: {
+                id: true,
+                name: true,
+                status: true,
+                totalSent: true,      // ← Era sentCount
+                totalOpened: true,    // ← Era openCount
+                totalClicked: true,   // ← Era clickCount
+                createdAt: true,
             },
         })
 
-        const data: DealsByStage[] = stages.map((stage) => ({
-            stage: stage.name,
-            count: stage.deals.length,
-            value: stage.deals.reduce((sum, d) => sum + (d.value ? Number(d.value) : 0), 0),
-            color: stage.color,
+        const data: CampaignSummary[] = campaigns.map((c) => ({
+            id: c.id,
+            name: c.name,
+            status: c.status,
+            sentCount: c.totalSent,      // ← Mapeia para o nome do tipo
+            openCount: c.totalOpened,    // ← Mapeia para o nome do tipo
+            clickCount: c.totalClicked,  // ← Mapeia para o nome do tipo
+            openRate: c.totalSent > 0 ? Math.round((c.totalOpened / c.totalSent) * 100) : 0,
+            createdAt: c.createdAt.toISOString(),
         }))
 
         return { success: true, data }
     } catch (error) {
-        console.error("Erro ao buscar deals por estágio:", error)
-        return { success: false, error: "Erro ao buscar dados" }
+        console.error("Erro ao buscar campanhas:", error)
+        return { success: false, error: "Erro ao buscar campanhas" }
     }
 }
 
-export async function getDealsOverTime(): Promise<{ success: boolean; data?: DealsOverTime[]; error?: string }> {
+export async function getRecentLeads(
+    workspaceId: string,
+    limit: number = 5
+): Promise<{ success: boolean; data?: RecentLead[]; error?: string }> {
     try {
         const user = await getAuthenticatedUser()
+        if (!user) {
+            return { success: false, error: "Não autorizado" }
+        }
 
-        // Últimos 6 meses
-        const months: DealsOverTime[] = []
+        const leads = await prisma.lead.findMany({
+            where: {
+                workspaceId,
+                workspace: { userId: user.id },
+            },
+            orderBy: { createdAt: "desc" },
+            take: limit,
+            select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+                company: true,
+                status: true,
+                createdAt: true,
+            },
+        })
+
+        const data: RecentLead[] = leads.map((l) => ({
+            ...l,
+            createdAt: l.createdAt.toISOString(),
+        }))
+
+        return { success: true, data }
+    } catch (error) {
+        console.error("Erro ao buscar leads:", error)
+        return { success: false, error: "Erro ao buscar leads" }
+    }
+}
+
+export async function getEmailsOverTime(
+    workspaceId: string,
+    days: number = 7
+): Promise<{ success: boolean; data?: EmailsOverTime[]; error?: string }> {
+    try {
+        const user = await getAuthenticatedUser()
+        if (!user) {
+            return { success: false, error: "Não autorizado" }
+        }
+
+        const results: EmailsOverTime[] = []
         const now = new Date()
 
-        for (let i = 5; i >= 0; i--) {
-            const date = new Date(now.getFullYear(), now.getMonth() - i, 1)
-            const startOfMonth = new Date(date.getFullYear(), date.getMonth(), 1)
-            const endOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0, 23, 59, 59)
+        for (let i = days - 1; i >= 0; i--) {
+            const date = subDays(now, i)
+            const dayStart = startOfDay(date)
+            const dayEnd = endOfDay(date)
 
-            const monthName = date.toLocaleDateString("pt-BR", { month: "short" }).replace(".", "")
-
-            // Buscar deals ganhos e perdidos no mês
-            const [wonDeals, lostDeals] = await Promise.all([
-                prisma.deal.findMany({
-                    where: {
-                        assignedToId: user.id,
-                        status: "WON",
-                        closedAt: { gte: startOfMonth, lte: endOfMonth },
+            const stats = await prisma.emailSend.aggregate({
+                where: {
+                    campaign: { workspaceId },
+                    sentAt: {
+                        gte: dayStart,
+                        lte: dayEnd,
                     },
-                    select: { value: true },
-                }),
-                prisma.deal.findMany({
-                    where: {
-                        assignedToId: user.id,
-                        status: "LOST",
-                        closedAt: { gte: startOfMonth, lte: endOfMonth },
-                    },
-                    select: { value: true },
-                }),
-            ])
+                },
+                _count: { id: true },
+                _sum: {
+                    openCount: true,
+                    clickCount: true,
+                },
+            })
 
-            months.push({
-                month: monthName.charAt(0).toUpperCase() + monthName.slice(1),
-                won: wonDeals.length,
-                lost: lostDeals.length,
-                wonValue: wonDeals.reduce((sum, d) => sum + (d.value ? Number(d.value) : 0), 0),
-                lostValue: lostDeals.reduce((sum, d) => sum + (d.value ? Number(d.value) : 0), 0),
+            results.push({
+                date: date.toISOString().split("T")[0],
+                sent: stats._count.id || 0,
+                opened: stats._sum.openCount || 0,
+                clicked: stats._sum.clickCount || 0,
             })
         }
 
-        return { success: true, data: months }
+        return { success: true, data: results }
     } catch (error) {
-        console.error("Erro ao buscar deals ao longo do tempo:", error)
+        console.error("Erro ao buscar emails:", error)
         return { success: false, error: "Erro ao buscar dados" }
     }
 }
 
-export async function getUpcomingTasks(): Promise<{ success: boolean; data?: UpcomingTask[]; error?: string }> {
+export async function getDashboardCallbacks(
+    workspaceId: string
+): Promise<{ success: boolean; data?: CallbacksSummary; error?: string }> {
     try {
         const user = await getAuthenticatedUser()
+        if (!user) {
+            return { success: false, error: "Não autorizado" }
+        }
 
-        const tasks = await prisma.task.findMany({
+        const now = new Date()
+        const todayStart = startOfDay(now)
+        const todayEnd = endOfDay(now)
+        const weekEnd = endOfDay(subDays(now, -7))
+
+        const callbacks = await prisma.call.findMany({
             where: {
-                createdById: user.id,
-                status: { in: ["TODO", "IN_PROGRESS"] },
+                workspaceId,
+                workspace: { userId: user.id },
+                followUpAt: { not: null },
             },
-            orderBy: [
-                { dueDate: "asc" },
-                { priority: "desc" },
-            ],
-            take: 5,
-            select: {
-                id: true,
-                title: true,
-                dueDate: true,
-                priority: true,
-                status: true,
-                contact: {
-                    select: { firstName: true, lastName: true },
-                },
-                company: {
-                    select: { name: true },
+            orderBy: { followUpAt: "asc" },
+            include: {
+                lead: {
+                    select: {
+                        firstName: true,
+                        lastName: true,
+                        company: true,
+                    },
                 },
             },
         })
 
-        const data: UpcomingTask[] = tasks.map((task) => ({
-            ...task,
-            dueDate: task.dueDate?.toISOString() || null,
-        }))
-
-        return { success: true, data }
-    } catch (error) {
-        console.error("Erro ao buscar próximas tarefas:", error)
-        return { success: false, error: "Erro ao buscar tarefas" }
-    }
-}
-
-export async function getRecentDeals(): Promise<{ success: boolean; data?: RecentDeal[]; error?: string }> {
-    try {
-        const user = await getAuthenticatedUser()
-
-        const deals = await prisma.deal.findMany({
-            where: { assignedToId: user.id },
-            orderBy: { createdAt: "desc" },
-            take: 5,
-            select: {
-                id: true,
-                title: true,
-                value: true,
-                status: true,
-                createdAt: true,
-                stage: {
-                    select: { name: true, color: true },
-                },
-                contact: {
-                    select: { firstName: true, lastName: true },
-                },
-                company: {
-                    select: { name: true },
-                },
-            },
+        const mapCallback = (call: any): PendingCallback => ({
+            id: call.id,
+            leadName: `${call.lead.firstName} ${call.lead.lastName || ""}`.trim(),
+            leadCompany: call.lead.company,
+            followUpAt: call.followUpAt!.toISOString(),
+            notes: call.notes,
+            isOverdue: call.followUpAt < todayStart,
+            isToday: call.followUpAt >= todayStart && call.followUpAt <= todayEnd,
         })
 
-        const data: RecentDeal[] = deals.map((deal) => ({
-            ...deal,
-            value: deal.value ? Number(deal.value) : null,
-            createdAt: deal.createdAt.toISOString(),
-        }))
+        const overdue = callbacks
+            .filter((c) => c.followUpAt! < todayStart)
+            .map(mapCallback)
+            .slice(0, 5)
 
-        return { success: true, data }
+        const today = callbacks
+            .filter((c) => c.followUpAt! >= todayStart && c.followUpAt! <= todayEnd)
+            .map(mapCallback)
+            .slice(0, 5)
+
+        const thisWeek = callbacks
+            .filter((c) => c.followUpAt! > todayEnd && c.followUpAt! <= weekEnd)
+            .map(mapCallback)
+            .slice(0, 5)
+
+        return {
+            success: true,
+            data: {
+                overdue,
+                today,
+                thisWeek,
+                overdueCount: callbacks.filter((c) => c.followUpAt! < todayStart).length,
+                todayCount: callbacks.filter(
+                    (c) => c.followUpAt! >= todayStart && c.followUpAt! <= todayEnd
+                ).length,
+                thisWeekCount: callbacks.filter(
+                    (c) => c.followUpAt! > todayEnd && c.followUpAt! <= weekEnd
+                ).length,
+            },
+        }
     } catch (error) {
-        console.error("Erro ao buscar deals recentes:", error)
-        return { success: false, error: "Erro ao buscar deals" }
+        console.error("Erro ao buscar callbacks:", error)
+        return { success: false, error: "Erro ao buscar callbacks" }
     }
 }

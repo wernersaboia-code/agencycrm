@@ -1,8 +1,7 @@
 // app/(dashboard)/settings/page.tsx
-
 import { Suspense } from "react"
 import { Metadata } from "next"
-import { getUserProfile, getPipelineStagesForSettings, getAccountStats } from "@/actions/settings"
+import { getUserProfile, getAccountStats } from "@/actions/settings"
 import { prisma } from "@/lib/prisma"
 import { getAuthenticatedUser } from "@/lib/auth"
 import { SettingsClient } from "./settings-client"
@@ -10,7 +9,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Loader2 } from "lucide-react"
 
 export const metadata: Metadata = {
-    title: "Configurações | NextCRM",
+    title: "Configurações | AgencyCRM",
 }
 
 function SettingsLoading() {
@@ -30,16 +29,16 @@ function SettingsLoading() {
 }
 
 async function SettingsData() {
-    const [profileResult, stagesResult, statsResult, user] = await Promise.all([
+    const [profileResult, statsResult, user] = await Promise.all([
         getUserProfile(),
-        getPipelineStagesForSettings(),
         getAccountStats(),
         getAuthenticatedUser(),
     ])
 
     const profile = profileResult.success ? profileResult.data! : null
-    const stages = stagesResult.success ? stagesResult.data! : []
-    const stats = statsResult.success ? statsResult.data! : { contacts: 0, companies: 0, deals: 0, tasks: 0 }
+    const stats = statsResult.success
+        ? statsResult.data!
+        : { leads: 0, campaigns: 0, templates: 0, calls: 0 }
 
     // Buscar primeiro workspace do usuário
     let workspaceId: string | undefined
@@ -55,7 +54,6 @@ async function SettingsData() {
     return (
         <SettingsClient
             profile={profile}
-            stages={stages}
             stats={stats}
             workspaceId={workspaceId}
         />

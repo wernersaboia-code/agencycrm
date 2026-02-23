@@ -1,12 +1,23 @@
 // types/lead.types.ts
+import { Lead, LeadStatus, LeadSource, CompanySize, Tag, Call, EmailSend } from "@prisma/client"
 
-import type { LeadStatus, CompanySize, LeadSource } from "@prisma/client"
+export interface LeadWithRelations extends Lead {
+    tags?: { tag: Tag }[]
+    calls?: Call[]
+    emailSends?: EmailSend[]
+    _count?: {
+        calls: number
+        emailSends: number
+    }
+}
 
-// ============================================
-// TIPOS BASE
-// ============================================
+export interface LeadStats {
+    total: number
+    byStatus: Record<LeadStatus, number>
+    bySource: Record<LeadSource, number>
+}
 
-export interface LeadWithRelations {
+export interface SerializedLead {
     id: string
     firstName: string
     lastName: string | null
@@ -25,73 +36,28 @@ export interface LeadWithRelations {
     postalCode: string | null
     country: string | null
     status: LeadStatus
-    source: LeadSource | string
+    source: LeadSource
     notes: string | null
     workspaceId: string
-    createdAt: Date
-    updatedAt: Date
-}
-
-export interface LeadStats {
-    total: number
-    new: number
-    interested: number
-    converted: number
-}
-
-// ============================================
-// SERIALIZADO (para client components)
-// ============================================
-
-export interface SerializedLead {
-    id: string
-    firstName: string
-    lastName: string | null
-    email: string
-    phone: string | null
-    mobile: string | null
-    company: string | null
-    jobTitle: string | null
-    website: string | null
-    taxId: string | null
-    industry: string | null
-    companySize: string | null
-    address: string | null
-    city: string | null
-    state: string | null
-    postalCode: string | null
-    country: string | null
-    status: string
-    source: string
-    notes: string | null
-    workspaceId: string
+    importedAt: string | null
+    importBatch: string | null
     createdAt: string
     updatedAt: string
 }
-
-// ============================================
-// OPÇÕES PARA SELEÇÃO
-// ============================================
 
 export interface LeadOption {
     id: string
     firstName: string
     lastName: string | null
     email: string
-    phone: string | null
     company: string | null
+    phone: string | null
 }
 
-// ============================================
-// HELPERS DE SERIALIZAÇÃO
-// ============================================
-
-export function serializeLead(lead: LeadWithRelations): SerializedLead {
+export function serializeLead(lead: Lead): SerializedLead {
     return {
         ...lead,
-        companySize: lead.companySize ?? null,
-        status: lead.status,
-        source: lead.source,
+        importedAt: lead.importedAt?.toISOString() || null,
         createdAt: lead.createdAt.toISOString(),
         updatedAt: lead.updatedAt.toISOString(),
     }

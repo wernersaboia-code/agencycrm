@@ -1,69 +1,74 @@
 // types/call.types.ts
-
-import { Call, Lead, CallResult, Campaign } from "@prisma/client"
-
-// ============================================
-// TIPOS BASE
-// ============================================
+import { Call, CallResult } from "@prisma/client"
 
 export interface CallWithLead extends Call {
-    lead: Pick<Lead, "id" | "firstName" | "lastName" | "email" | "phone" | "company">
-}
-
-export interface CallWithDetails extends Call {
-    lead: Lead
-    campaign?: Pick<Campaign, "id" | "name"> | null
+    lead: {
+        id: string
+        firstName: string
+        lastName: string | null
+        email: string
+        phone: string | null
+        company: string | null
+    }
 }
 
 export interface CallWithLeadAndCampaign extends Call {
-    lead: Pick<Lead, "id" | "firstName" | "lastName" | "email" | "phone" | "company">
-    campaign?: Pick<Campaign, "id" | "name"> | null
+    lead: {
+        id: string
+        firstName: string
+        lastName: string | null
+        email: string
+        phone: string | null
+        company: string | null
+    }
+    campaign?: {
+        id: string
+        name: string
+    } | null
 }
-
-// ============================================
-// DTOs - CREATE / UPDATE
-// ============================================
 
 export interface CreateCallDTO {
     leadId: string
     workspaceId: string
+    campaignId?: string | null
     result: CallResult
     duration?: number | null
     notes?: string | null
-    followUpAt?: Date | string | null
-    calledAt?: Date | string
-    campaignId?: string | null  // NOVO
+    followUpAt?: Date | null
+    calledAt?: Date
 }
 
 export interface UpdateCallDTO {
     result?: CallResult
     duration?: number | null
     notes?: string | null
-    followUpAt?: Date | string | null
-    calledAt?: Date | string
-    campaignId?: string | null  // NOVO
+    followUpAt?: Date | null
+    calledAt?: Date
 }
-
-// ============================================
-// FILTROS
-// ============================================
 
 export interface CallFilters {
-    result?: CallResult | CallResult[]
-    dateFrom?: Date | string
-    dateTo?: Date | string
+    result?: CallResult
+    dateFrom?: string
+    dateTo?: string
+    search?: string
     hasFollowUp?: boolean
     leadId?: string
-    campaignId?: string  // NOVO
-    search?: string
+    campaignId?: string
 }
 
-// ============================================
-// CALLBACKS PENDENTES
-// ============================================
+export interface CallStats {
+    total: number
+    answered: number
+    answerRate: number
+    positiveResults: number
+    positiveRate: number
+    byResult: Record<CallResult, number>
+}
 
 export interface PendingCallback extends CallWithLeadAndCampaign {
     isOverdue: boolean
+    isToday: boolean
+    isThisWeek: boolean
     daysUntil: number
 }
 
@@ -72,30 +77,17 @@ export interface CallbacksSummary {
     today: PendingCallback[]
     thisWeek: PendingCallback[]
     later: PendingCallback[]
+    overdueCount: number
+    todayCount: number
+    thisWeekCount: number
+    laterCount: number
 }
-
-// ============================================
-// FORMULÁRIO
-// ============================================
-
-export interface CallFormData {
-    result: CallResult
-    duration: string
-    notes: string
-    followUpAt: string
-    calledAt: string
-    campaignId: string  // NOVO (vazio = sem campanha)
-}
-
-// ============================================
-// SERIALIZADO (para client components)
-// ============================================
 
 export interface SerializedCall {
     id: string
     leadId: string
     workspaceId: string
-    campaignId: string | null  // NOVO
+    campaignId: string | null
     result: CallResult
     duration: number | null
     notes: string | null
@@ -120,40 +112,22 @@ export interface SerializedCallWithLead extends SerializedCall {
     } | null
 }
 
-// ============================================
-// HELPERS DE SERIALIZAÇÃO
-// ============================================
-
 export function serializeCall(call: Call): SerializedCall {
     return {
-        id: call.id,
-        leadId: call.leadId,
-        workspaceId: call.workspaceId,
-        campaignId: call.campaignId,  // NOVO
-        result: call.result,
-        duration: call.duration,
-        notes: call.notes,
-        followUpAt: call.followUpAt?.toISOString() ?? null,
+        ...call,
+        followUpAt: call.followUpAt?.toISOString() || null,
         calledAt: call.calledAt.toISOString(),
         createdAt: call.createdAt.toISOString(),
         updatedAt: call.updatedAt.toISOString(),
     }
 }
 
-export function serializeCallWithLead(call: CallWithLeadAndCampaign): SerializedCallWithLead {
+export function serializeCallWithLead(
+    call: CallWithLeadAndCampaign
+): SerializedCallWithLead {
     return {
         ...serializeCall(call),
-        lead: {
-            id: call.lead.id,
-            firstName: call.lead.firstName,
-            lastName: call.lead.lastName,
-            email: call.lead.email,
-            phone: call.lead.phone,
-            company: call.lead.company,
-        },
-        campaign: call.campaign ? {
-            id: call.campaign.id,
-            name: call.campaign.name,
-        } : null,
+        lead: call.lead,
+        campaign: call.campaign || null,
     }
 }

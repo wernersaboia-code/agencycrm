@@ -1,23 +1,11 @@
 // components/templates/template-modal.tsx
-
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "sonner"
-import {
-    Bold,
-    Italic,
-    Link,
-    List,
-    ListOrdered,
-    Eye,
-    EyeOff,
-    Info,
-    Loader2,
-    Sparkles,
-} from "lucide-react"
+import { Eye, Info, Loader2, Sparkles } from "lucide-react"
 import { TemplateCategory } from "@prisma/client"
 
 import {
@@ -37,7 +25,6 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import {
     Select,
@@ -54,11 +41,14 @@ import {
 } from "@/components/ui/tooltip"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Switch } from "@/components/ui/switch"
-import { Label } from "@/components/ui/label"
-import { Separator } from "@/components/ui/separator"
 import { ScrollArea } from "@/components/ui/scroll-area"
 
-import { createTemplate, updateTemplate, type TemplateWithStats } from "@/actions/templates"
+import { RichTextEditor } from "@/components/ui/rich-text-editor"
+import {
+    createTemplate,
+    updateTemplate,
+    type TemplateWithStats,
+} from "@/actions/templates"
 import {
     templateFormSchema,
     type TemplateFormData,
@@ -70,7 +60,6 @@ import {
     PREVIEW_LEAD,
     replaceVariables,
 } from "@/lib/constants/template.constants"
-import { cn } from "@/lib/utils"
 
 // ============================================================
 // TIPOS
@@ -95,8 +84,7 @@ export function TemplateModal({
                                   template,
                                   workspaceId,
                               }: TemplateModalProps) {
-    const [isSubmitting, setIsSubmitting] = useState(false)
-    const [showPreview, setShowPreview] = useState(false)
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
     const [activeTab, setActiveTab] = useState<"edit" | "preview">("edit")
 
     const isEditing = !!template
@@ -107,7 +95,7 @@ export function TemplateModal({
         defaultValues: DEFAULT_TEMPLATE_VALUES,
     })
 
-    const { watch, setValue, getValues } = form
+    const { watch, setValue } = form
     const watchSubject = watch("subject")
     const watchBody = watch("body")
 
@@ -130,79 +118,22 @@ export function TemplateModal({
     }, [open, template, form])
 
     // ============================================================
-    // HANDLERS DO EDITOR
+    // HANDLERS
     // ============================================================
 
-    const insertTag = useCallback(
-        (tag: string, field: "subject" | "body") => {
-            const currentValue = getValues(field)
-            const variable = `{{${tag}}}`
-            setValue(field, currentValue + variable, { shouldDirty: true })
+    const insertVariableInSubject = useCallback(
+        (variable: string) => {
+            const currentValue = watchSubject || ""
+            setValue("subject", currentValue + `{{${variable}}}`, { shouldDirty: true })
         },
-        [getValues, setValue]
-    )
-
-    const wrapText = useCallback(
-        (before: string, after: string) => {
-            const textarea = document.querySelector(
-                'textarea[name="body"]'
-            ) as HTMLTextAreaElement
-            if (!textarea) return
-
-            const start = textarea.selectionStart
-            const end = textarea.selectionEnd
-            const currentValue = getValues("body")
-            const selectedText = currentValue.substring(start, end)
-
-            const newValue =
-                currentValue.substring(0, start) +
-                before +
-                selectedText +
-                after +
-                currentValue.substring(end)
-
-            setValue("body", newValue, { shouldDirty: true })
-
-            // Reposicionar cursor
-            setTimeout(() => {
-                textarea.focus()
-                textarea.setSelectionRange(
-                    start + before.length,
-                    end + before.length
-                )
-            }, 0)
-        },
-        [getValues, setValue]
-    )
-
-    const insertFormat = useCallback(
-        (format: "bold" | "italic" | "link" | "ul" | "ol") => {
-            switch (format) {
-                case "bold":
-                    wrapText("<strong>", "</strong>")
-                    break
-                case "italic":
-                    wrapText("<em>", "</em>")
-                    break
-                case "link":
-                    wrapText('<a href="URL_AQUI">', "</a>")
-                    break
-                case "ul":
-                    wrapText("<ul>\n  <li>", "</li>\n</ul>")
-                    break
-                case "ol":
-                    wrapText("<ol>\n  <li>", "</li>\n</ol>")
-                    break
-            }
-        },
-        [wrapText]
+        [watchSubject, setValue]
     )
 
     // ============================================================
     // SUBMIT
     // ============================================================
 
-    const onSubmit = async (data: TemplateFormData) => {
+    const onSubmit = async (data: TemplateFormData): Promise<void> => {
         setIsSubmitting(true)
 
         try {
@@ -365,7 +296,7 @@ export function TemplateModal({
                                                                                 variant="secondary"
                                                                                 className="cursor-pointer hover:bg-primary hover:text-primary-foreground text-xs"
                                                                                 onClick={() =>
-                                                                                    insertTag(v.key, "subject")
+                                                                                    insertVariableInSubject(v.key)
                                                                                 }
                                                                             >
                                                                                 {`{{${v.key}}}`}
@@ -388,138 +319,18 @@ export function TemplateModal({
                                         )}
                                     />
 
-                                    {/* Corpo do Email */}
+                                    {/* Corpo do Email - TIPTAP */}
                                     <FormField
                                         control={form.control}
                                         name="body"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <div className="flex items-center justify-between">
-                                                    <FormLabel>Corpo do Email *</FormLabel>
-                                                </div>
-
-                                                {/* Toolbar */}
-                                                <div className="flex items-center gap-1 p-1 border rounded-t-md bg-muted/30">
-                                                    <TooltipProvider>
-                                                        <Tooltip>
-                                                            <TooltipTrigger asChild>
-                                                                <Button
-                                                                    type="button"
-                                                                    variant="ghost"
-                                                                    size="icon"
-                                                                    className="h-8 w-8"
-                                                                    onClick={() => insertFormat("bold")}
-                                                                >
-                                                                    <Bold className="h-4 w-4" />
-                                                                </Button>
-                                                            </TooltipTrigger>
-                                                            <TooltipContent>Negrito</TooltipContent>
-                                                        </Tooltip>
-                                                    </TooltipProvider>
-
-                                                    <TooltipProvider>
-                                                        <Tooltip>
-                                                            <TooltipTrigger asChild>
-                                                                <Button
-                                                                    type="button"
-                                                                    variant="ghost"
-                                                                    size="icon"
-                                                                    className="h-8 w-8"
-                                                                    onClick={() => insertFormat("italic")}
-                                                                >
-                                                                    <Italic className="h-4 w-4" />
-                                                                </Button>
-                                                            </TooltipTrigger>
-                                                            <TooltipContent>Itálico</TooltipContent>
-                                                        </Tooltip>
-                                                    </TooltipProvider>
-
-                                                    <TooltipProvider>
-                                                        <Tooltip>
-                                                            <TooltipTrigger asChild>
-                                                                <Button
-                                                                    type="button"
-                                                                    variant="ghost"
-                                                                    size="icon"
-                                                                    className="h-8 w-8"
-                                                                    onClick={() => insertFormat("link")}
-                                                                >
-                                                                    <Link className="h-4 w-4" />
-                                                                </Button>
-                                                            </TooltipTrigger>
-                                                            <TooltipContent>Link</TooltipContent>
-                                                        </Tooltip>
-                                                    </TooltipProvider>
-
-                                                    <Separator orientation="vertical" className="h-6 mx-1" />
-
-                                                    <TooltipProvider>
-                                                        <Tooltip>
-                                                            <TooltipTrigger asChild>
-                                                                <Button
-                                                                    type="button"
-                                                                    variant="ghost"
-                                                                    size="icon"
-                                                                    className="h-8 w-8"
-                                                                    onClick={() => insertFormat("ul")}
-                                                                >
-                                                                    <List className="h-4 w-4" />
-                                                                </Button>
-                                                            </TooltipTrigger>
-                                                            <TooltipContent>Lista</TooltipContent>
-                                                        </Tooltip>
-                                                    </TooltipProvider>
-
-                                                    <TooltipProvider>
-                                                        <Tooltip>
-                                                            <TooltipTrigger asChild>
-                                                                <Button
-                                                                    type="button"
-                                                                    variant="ghost"
-                                                                    size="icon"
-                                                                    className="h-8 w-8"
-                                                                    onClick={() => insertFormat("ol")}
-                                                                >
-                                                                    <ListOrdered className="h-4 w-4" />
-                                                                </Button>
-                                                            </TooltipTrigger>
-                                                            <TooltipContent>Lista numerada</TooltipContent>
-                                                        </Tooltip>
-                                                    </TooltipProvider>
-
-                                                    <Separator orientation="vertical" className="h-6 mx-1" />
-
-                                                    {/* Variáveis dropdown */}
-                                                    <Select
-                                                        onValueChange={(value) => insertTag(value, "body")}
-                                                    >
-                                                        <SelectTrigger className="h-8 w-40 text-xs">
-                                                            <Sparkles className="h-3 w-3 mr-1" />
-                                                            <span>Variável</span>
-                                                        </SelectTrigger>
-                                                        <SelectContent>
-                                                            {TEMPLATE_VARIABLES.map((variable) => (
-                                                                <SelectItem
-                                                                    key={variable.key}
-                                                                    value={variable.key}
-                                                                >
-                                                                    <div className="flex flex-col">
-                                                                        <span>{variable.label}</span>
-                                                                        <span className="text-xs text-muted-foreground">
-                                      {`{{${variable.key}}}`} → {variable.example}
-                                    </span>
-                                                                    </div>
-                                                                </SelectItem>
-                                                            ))}
-                                                        </SelectContent>
-                                                    </Select>
-                                                </div>
-
+                                                <FormLabel>Corpo do Email *</FormLabel>
                                                 <FormControl>
-                                                    <Textarea
-                                                        placeholder={`<p>Olá {{firstName}},</p>\n\n<p>Meu nome é [Seu Nome] e trabalho na [Sua Empresa].</p>\n\n<p>Gostaria de apresentar...</p>`}
-                                                        className="min-h-[250px] font-mono text-sm rounded-t-none resize-none"
-                                                        {...field}
+                                                    <RichTextEditor
+                                                        content={field.value}
+                                                        onChange={field.onChange}
+                                                        placeholder="Escreva o conteúdo do seu email..."
                                                     />
                                                 </FormControl>
                                                 <FormMessage />
@@ -528,20 +339,13 @@ export function TemplateModal({
                                                 <div className="flex items-start gap-2 p-3 bg-blue-50 dark:bg-blue-950 rounded-md">
                                                     <Info className="h-4 w-4 text-blue-500 mt-0.5 shrink-0" />
                                                     <div className="text-xs text-blue-700 dark:text-blue-300">
-                                                        <p className="font-medium mb-1">
-                                                            Dicas de formatação:
+                                                        <p className="font-medium mb-1">Dica:</p>
+                                                        <p>
+                                                            Use o botão <strong>"Variável"</strong> na barra
+                                                            de ferramentas para inserir campos dinâmicos como
+                                                            nome, empresa, etc. Eles serão substituídos
+                                                            automaticamente pelos dados de cada lead.
                                                         </p>
-                                                        <ul className="list-disc list-inside space-y-0.5">
-                                                            <li>
-                                                                Use <code className="bg-blue-100 dark:bg-blue-900 px-1 rounded">&lt;p&gt;...&lt;/p&gt;</code> para parágrafos
-                                                            </li>
-                                                            <li>
-                                                                Use <code className="bg-blue-100 dark:bg-blue-900 px-1 rounded">&lt;br&gt;</code> para quebra de linha
-                                                            </li>
-                                                            <li>
-                                                                Variáveis como <code className="bg-blue-100 dark:bg-blue-900 px-1 rounded">{`{{firstName}}`}</code> serão substituídas automaticamente
-                                                            </li>
-                                                        </ul>
                                                     </div>
                                                 </div>
                                             </FormItem>
@@ -559,7 +363,8 @@ export function TemplateModal({
                                                         Template Ativo
                                                     </FormLabel>
                                                     <p className="text-sm text-muted-foreground">
-                                                        Templates inativos não aparecem na seleção de campanhas
+                                                        Templates inativos não aparecem na seleção de
+                                                        campanhas
                                                     </p>
                                                 </div>
                                                 <FormControl>
@@ -599,7 +404,9 @@ export function TemplateModal({
                                                 <span>Sua Empresa &lt;contato@suaempresa.com&gt;</span>
                                             </div>
                                             <div className="flex">
-                                                <span className="w-20 text-muted-foreground">Para:</span>
+                        <span className="w-20 text-muted-foreground">
+                          Para:
+                        </span>
                                                 <span>
                           {PREVIEW_LEAD.fullName} &lt;{PREVIEW_LEAD.email}&gt;
                         </span>

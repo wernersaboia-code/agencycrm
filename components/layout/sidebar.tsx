@@ -1,5 +1,4 @@
 // components/layout/sidebar.tsx
-
 "use client"
 
 import Link from "next/link"
@@ -14,8 +13,6 @@ import {
     BarChart3,
     Settings,
     LogOut,
-    Briefcase,
-    CheckSquare,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -25,7 +22,10 @@ import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 
-// Menu principal do AgencyCRM
+// ============================================================
+// CONFIGURAÇÃO DO MENU
+// ============================================================
+
 const mainMenuItems = [
     {
         title: "Dashboard",
@@ -52,14 +52,8 @@ const mainMenuItems = [
         href: "/calls",
         icon: Phone,
     },
-    {
-        title: "Relatórios",
-        href: "/reports",
-        icon: BarChart3,
-    },
 ]
 
-// Menu de gestão
 const managementMenuItems = [
     {
         title: "Clientes",
@@ -73,35 +67,15 @@ const managementMenuItems = [
     },
 ]
 
-// Menu legado (NextCRM) - pode remover depois
-const legacyMenuItems = [
-    {
-        title: "Contatos",
-        href: "/contacts",
-        icon: Users,
-    },
-    {
-        title: "Empresas",
-        href: "/companies",
-        icon: Building2,
-    },
-    {
-        title: "Pipeline",
-        href: "/deals",
-        icon: Briefcase,
-    },
-    {
-        title: "Tarefas",
-        href: "/tasks",
-        icon: CheckSquare,
-    },
-]
+// ============================================================
+// COMPONENTE
+// ============================================================
 
 export function Sidebar() {
     const pathname = usePathname()
     const router = useRouter()
 
-    async function handleLogout() {
+    const handleLogout = async (): Promise<void> => {
         const supabase = createClient()
         await supabase.auth.signOut()
         toast.success("Logout realizado com sucesso!")
@@ -130,7 +104,8 @@ export function Sidebar() {
                             Principal
                         </p>
                         {mainMenuItems.map((item) => {
-                            const isActive = pathname === item.href || pathname.startsWith(item.href + "/")
+                            const isActive =
+                                pathname === item.href || pathname.startsWith(item.href + "/")
                             return (
                                 <Link
                                     key={item.href}
@@ -157,7 +132,8 @@ export function Sidebar() {
                             Gestão
                         </p>
                         {managementMenuItems.map((item) => {
-                            const isActive = pathname === item.href || pathname.startsWith(item.href + "/")
+                            const isActive =
+                                pathname === item.href || pathname.startsWith(item.href + "/")
                             return (
                                 <Link
                                     key={item.href}
@@ -167,33 +143,6 @@ export function Sidebar() {
                                         isActive
                                             ? "bg-primary text-primary-foreground"
                                             : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                                    )}
-                                >
-                                    <item.icon className="h-4 w-4" />
-                                    {item.title}
-                                </Link>
-                            )
-                        })}
-                    </div>
-
-                    <Separator className="my-2" />
-
-                    {/* Menu Legado (NextCRM) */}
-                    <div className="mb-2">
-                        <p className="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
-                            Legado (NextCRM)
-                        </p>
-                        {legacyMenuItems.map((item) => {
-                            const isActive = pathname === item.href || pathname.startsWith(item.href + "/")
-                            return (
-                                <Link
-                                    key={item.href}
-                                    href={item.href}
-                                    className={cn(
-                                        "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors opacity-60",
-                                        isActive
-                                            ? "bg-primary text-primary-foreground opacity-100"
-                                            : "text-muted-foreground hover:bg-muted hover:text-foreground hover:opacity-100"
                                     )}
                                 >
                                     <item.icon className="h-4 w-4" />

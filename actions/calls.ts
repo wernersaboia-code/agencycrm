@@ -72,7 +72,7 @@ const callInclude = {
             firstName: true,
             lastName: true,
             email: true,
-            phone: true,
+            phone: true,  // ← já está aqui, confirma que está
             company: true,
         },
     },
@@ -401,7 +401,16 @@ export async function getPendingCallbacks(
 ): Promise<CallbacksSummary> {
     const hasAccess = await verifyWorkspaceAccess(workspaceId)
     if (!hasAccess) {
-        return { overdue: [], today: [], thisWeek: [], later: [] }
+        return {
+            overdue: [],
+            today: [],
+            thisWeek: [],
+            later: [],
+            overdueCount: 0,
+            todayCount: 0,
+            thisWeekCount: 0,
+            laterCount: 0,
+        }
     }
 
     const now = new Date()
@@ -426,6 +435,10 @@ export async function getPendingCallbacks(
         today: [],
         thisWeek: [],
         later: [],
+        overdueCount: 0,
+        todayCount: 0,
+        thisWeekCount: 0,
+        laterCount: 0,
     }
 
     calls.forEach((call) => {
@@ -436,22 +449,34 @@ export async function getPendingCallbacks(
             (followUpDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
         )
 
+        const isOverdue = followUpDate < todayStart
+        const isToday = followUpDate >= todayStart && followUpDate < todayEnd
+        const isThisWeek = followUpDate >= todayEnd && followUpDate < weekEnd
+
         const pendingCallback: PendingCallback = {
             ...(call as CallWithLeadAndCampaign),
-            isOverdue: followUpDate < todayStart,
+            isOverdue,
+            isToday,
+            isThisWeek,
             daysUntil,
         }
 
-        if (followUpDate < todayStart) {
+        if (isOverdue) {
             summary.overdue.push(pendingCallback)
-        } else if (followUpDate >= todayStart && followUpDate < todayEnd) {
+        } else if (isToday) {
             summary.today.push(pendingCallback)
-        } else if (followUpDate >= todayEnd && followUpDate < weekEnd) {
+        } else if (isThisWeek) {
             summary.thisWeek.push(pendingCallback)
         } else {
             summary.later.push(pendingCallback)
         }
     })
+
+    // Atualizar contadores
+    summary.overdueCount = summary.overdue.length
+    summary.todayCount = summary.today.length
+    summary.thisWeekCount = summary.thisWeek.length
+    summary.laterCount = summary.later.length
 
     return summary
 }

@@ -1,5 +1,4 @@
 // app/(dashboard)/settings/settings-client.tsx
-
 "use client"
 
 import { useState, useEffect } from "react"
@@ -8,8 +7,11 @@ import {
     Settings,
     User,
     Palette,
-    GitBranch,
     Mail,
+    Users,
+    Send,
+    FileText,
+    Phone,
 } from "lucide-react"
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -17,9 +19,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 import { ProfileSettings } from "./components/profile-settings"
 import { AppearanceSettings } from "./components/appearance-settings"
-import { PipelineSettings } from "./components/pipeline-settings"
 import { EmailSettings } from "./components/email-settings"
 import { getWorkspaceSmtpSettings } from "@/actions/workspace-settings"
+
+// ============================================================
+// TIPOS
+// ============================================================
 
 type Profile = {
     id: string
@@ -32,20 +37,11 @@ type Profile = {
     createdAt: string
 } | null
 
-type Stage = {
-    id: string
-    name: string
-    color: string
-    order: number
-    isActive: boolean
-    dealsCount: number
-}
-
 type Stats = {
-    contacts: number
-    companies: number
-    deals: number
-    tasks: number
+    leads: number
+    campaigns: number
+    templates: number
+    calls: number
 }
 
 type WorkspaceSmtp = {
@@ -61,16 +57,22 @@ type WorkspaceSmtp = {
     senderEmail: string | null
 } | null
 
-type SettingsClientProps = {
+interface SettingsClientProps {
     profile: Profile
-    stages: Stage[]
     stats: Stats
     workspaceId?: string
 }
 
-export function SettingsClient({ profile, stages: initialStages, stats, workspaceId }: SettingsClientProps) {
+// ============================================================
+// COMPONENTE
+// ============================================================
+
+export function SettingsClient({
+                                   profile,
+                                   stats,
+                                   workspaceId,
+                               }: SettingsClientProps) {
     const router = useRouter()
-    const [stages, setStages] = useState(initialStages)
     const [workspace, setWorkspace] = useState<WorkspaceSmtp>(null)
     const [loadingWorkspace, setLoadingWorkspace] = useState(false)
 
@@ -108,53 +110,57 @@ export function SettingsClient({ profile, stages: initialStages, stats, workspac
                 </p>
             </div>
 
-            {/* Stats Cards */}
+            {/* Stats Cards - Atualizados para AgencyCRM */}
             <div className="grid gap-4 md:grid-cols-4">
                 <Card>
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">
-                            Contatos
+                        <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                            <Users className="h-4 w-4" />
+                            Leads
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{stats.contacts}</div>
+                        <div className="text-2xl font-bold">{stats.leads}</div>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">
-                            Empresas
+                        <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                            <Send className="h-4 w-4" />
+                            Campanhas
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{stats.companies}</div>
+                        <div className="text-2xl font-bold">{stats.campaigns}</div>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">
-                            Deals
+                        <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                            <FileText className="h-4 w-4" />
+                            Templates
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{stats.deals}</div>
+                        <div className="text-2xl font-bold">{stats.templates}</div>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">
-                            Tarefas
+                        <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                            <Phone className="h-4 w-4" />
+                            Ligações
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{stats.tasks}</div>
+                        <div className="text-2xl font-bold">{stats.calls}</div>
                     </CardContent>
                 </Card>
             </div>
 
-            {/* Tabs de configurações */}
+            {/* Tabs de configurações - Sem Pipeline */}
             <Tabs defaultValue="profile" className="space-y-6">
-                <TabsList className="grid w-full grid-cols-4 lg:w-[500px]">
+                <TabsList className="grid w-full grid-cols-3 lg:w-[400px]">
                     <TabsTrigger value="profile" className="gap-2">
                         <User className="h-4 w-4" />
                         <span className="hidden sm:inline">Perfil</span>
@@ -162,10 +168,6 @@ export function SettingsClient({ profile, stages: initialStages, stats, workspac
                     <TabsTrigger value="appearance" className="gap-2">
                         <Palette className="h-4 w-4" />
                         <span className="hidden sm:inline">Aparência</span>
-                    </TabsTrigger>
-                    <TabsTrigger value="pipeline" className="gap-2">
-                        <GitBranch className="h-4 w-4" />
-                        <span className="hidden sm:inline">Pipeline</span>
                     </TabsTrigger>
                     <TabsTrigger value="email" className="gap-2">
                         <Mail className="h-4 w-4" />
@@ -179,10 +181,6 @@ export function SettingsClient({ profile, stages: initialStages, stats, workspac
 
                 <TabsContent value="appearance">
                     <AppearanceSettings />
-                </TabsContent>
-
-                <TabsContent value="pipeline">
-                    <PipelineSettings stages={stages} onStagesChange={setStages} />
                 </TabsContent>
 
                 <TabsContent value="email">
