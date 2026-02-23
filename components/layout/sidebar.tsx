@@ -52,6 +52,11 @@ const mainMenuItems = [
         href: "/calls",
         icon: Phone,
     },
+    {
+        title: "Relatórios",
+        href: "/reports",
+        icon: BarChart3,
+    },
 ]
 
 const managementMenuItems = [

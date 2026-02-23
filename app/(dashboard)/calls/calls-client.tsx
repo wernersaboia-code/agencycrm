@@ -16,6 +16,7 @@ import { PendingCallbacks } from "@/components/calls/PendingCallbacks"
 
 import { getCalls, getCallStats, getPendingCallbacks, deleteCall } from "@/actions/calls"
 import { SerializedCallWithLead, CallbacksSummary } from "@/types/call.types"
+import { ExportCallsButtons } from "@/components/reports/export-calls-buttons"
 import { CallResult } from "@prisma/client"
 
 // ============================================
@@ -249,6 +250,14 @@ export function CallsClient({
                         <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
                         Atualizar
                     </Button>
+                    <ExportCallsButtons
+                        workspaceId={workspaceId}
+                        filters={{
+                            result: filters.result !== "ALL" ? filters.result : undefined,
+                            startDate: filters.dateFrom || undefined,
+                            endDate: filters.dateTo || undefined,
+                        }}
+                    />
                     <Button onClick={() => handleOpenModal()}>
                         <Plus className="h-4 w-4 mr-2" />
                         Nova Ligação

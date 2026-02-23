@@ -53,6 +53,7 @@ import { getCallsByCampaign, getCampaignCallStats } from "@/actions/calls"
 import { SerializedCallWithLead } from "@/types/call.types"
 import { CallResult } from "@prisma/client"
 import { cn } from "@/lib/utils"
+import { ExportCampaignButtons } from "@/components/reports/export-campaign-buttons"
 
 // ============================================
 // TYPES
@@ -342,6 +343,10 @@ export function CampaignDetailClient({
                             Excluir
                         </Button>
                     )}
+                    <ExportCampaignButtons
+                        campaignId={campaign.id}
+                        campaignName={campaign.name}
+                    />
                 </div>
             </div>
 

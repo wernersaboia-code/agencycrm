@@ -83,6 +83,7 @@ import {
     INDUSTRIES,
 } from "@/lib/constants/lead.constants"
 import { formatFullName, getCompanySizeLabel } from "@/lib/utils/lead.utils"
+import { ExportLeadsButtons } from "@/components/reports/export-leads-buttons"
 
 // ============================================================
 // TIPOS
@@ -585,10 +586,15 @@ export function LeadsClient() {
                             <Upload className="h-4 w-4 mr-2" />
                             Importar
                         </Button>
-                        <Button variant="outline" disabled>
-                            <Download className="h-4 w-4 mr-2" />
-                            Exportar
-                        </Button>
+                        <ExportLeadsButtons
+                            workspaceId={activeWorkspace.id}
+                            filters={{
+                                status: filters.status !== "all" ? filters.status : undefined,
+                                country: filters.country !== "all" ? filters.country : undefined,
+                                industry: filters.industry !== "all" ? filters.industry : undefined,
+                                search: filters.search || undefined,
+                            }}
+                        />
                         <Button onClick={() => setIsModalOpen(true)}>
                             <Plus className="h-4 w-4 mr-2" />
                             Novo Lead
