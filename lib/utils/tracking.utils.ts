@@ -1,7 +1,7 @@
 // lib/utils/tracking.utils.ts
 
 import {
-    TRACKING_BASE_URL,
+    getTrackingBaseUrl,
     TRACKING_ENDPOINTS
 } from '@/lib/constants/tracking.constants'
 import type { EmailTrackingMetrics } from '@/types/tracking.types'
@@ -33,7 +33,10 @@ export function generateTrackingUrl({
                                         type,
                                         originalUrl
                                     }: GenerateTrackingUrlParams): string {
-    const baseUrl = `${TRACKING_BASE_URL}${TRACKING_ENDPOINTS[type]}/${emailSendId}`
+    const trackingBaseUrl = getTrackingBaseUrl()
+    console.log('[Tracking] Base URL:', trackingBaseUrl) // Debug temporário
+
+    const baseUrl = `${trackingBaseUrl}${TRACKING_ENDPOINTS[type]}/${emailSendId}`
 
     if (type === 'click' && originalUrl) {
         const encodedUrl = encodeURIComponent(originalUrl)

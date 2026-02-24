@@ -5,11 +5,26 @@
 // ============================================
 
 /**
- * Base URL for tracking endpoints
- * NOTE: Must be set in environment variables for production
+ * Get base URL for tracking endpoints
+ * NOTE: Function instead of constant to ensure env var is read at runtime
  */
-export const TRACKING_BASE_URL =
-    process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+export function getTrackingBaseUrl(): string {
+    // Em produção, usa a variável de ambiente
+    if (process.env.NEXT_PUBLIC_APP_URL) {
+        return process.env.NEXT_PUBLIC_APP_URL
+    }
+
+    // Em desenvolvimento, usa localhost com a porta correta
+    if (process.env.NODE_ENV === 'development') {
+        return 'http://localhost:3001'
+    }
+
+    // Fallback
+    return 'http://localhost:3001'
+}
+
+// Manter compatibilidade com código existente
+export const TRACKING_BASE_URL = getTrackingBaseUrl()
 
 /**
  * Tracking endpoint paths
@@ -21,7 +36,6 @@ export const TRACKING_ENDPOINTS = {
 
 /**
  * 1x1 transparent GIF pixel (base64)
- * NOTE: Smallest valid GIF image for open tracking
  */
 export const TRANSPARENT_PIXEL_BASE64 =
     'R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
@@ -46,7 +60,6 @@ export const PIXEL_RESPONSE_HEADERS: Record<string, string> = {
 
 /**
  * Status priority for updates
- * NOTE: Higher priority status should not be downgraded
  */
 export const EMAIL_STATUS_PRIORITY: Record<string, number> = {
     PENDING: 0,

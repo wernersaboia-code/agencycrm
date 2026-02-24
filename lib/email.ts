@@ -145,8 +145,8 @@ export async function sendEmailResend(
 ): Promise<SendEmailResult> {
     try {
         if (!resend) {
-            console.warn("RESEND_API_KEY não configurada - email simulado")
-            return { success: true, id: `simulated_${Date.now()}` }
+            console.warn("⚠️ RESEND_API_KEY não configurada e SMTP não disponível")
+            return { success: false, error: "Nenhum método de envio configurado" }
         }
 
         const fromAddress = params.from || "AgencyCRM <onboarding@resend.dev>"
@@ -187,7 +187,7 @@ export async function sendEmail(
     params: SendEmailParams,
     smtpConfig?: SmtpConfig | null
 ): Promise<SendEmailResult> {
-    // 👇 NOVO: Injetar tracking se emailSendId foi fornecido
+    // Injetar tracking se emailSendId foi fornecido
     const htmlWithTracking = params.emailSendId
         ? injectTrackingIntoEmail(params.html, params.emailSendId)
         : params.html
@@ -212,6 +212,7 @@ export function replaceEmailVariables(
 ): string {
     let result = text
 
+    // Variáveis em inglês (dados do lead)
     const variables = [
         "firstName",
         "lastName",
@@ -225,17 +226,46 @@ export function replaceEmailVariables(
         "city",
         "state",
         "country",
+        // Variáveis do remetente/workspace
+        "meuNome",
+        "minhaEmpresa",
+        "meuEmail",
     ]
 
+    // Substituir variáveis em inglês
     variables.forEach((key) => {
         const regex = new RegExp(`{{\\s*${key}\\s*}}`, "gi")
         const value = data[key] || ""
         result = result.replace(regex, value)
     })
 
+    // Aliases em português para variáveis do lead
+    const aliases: Record<string, string> = {
+        nome: "firstName",
+        sobrenome: "lastName",
+        nomeCompleto: "fullName",
+        telefone: "phone",
+        empresa: "company",
+        cargo: "jobTitle",
+        segmento: "industry",
+        site: "website",
+        cidade: "city",
+        estado: "state",
+        pais: "country",
+    }
+
+    // Substituir aliases em português
+    Object.entries(aliases).forEach(([alias, key]) => {
+        const regex = new RegExp(`{{\\s*${alias}\\s*}}`, "gi")
+        const value = data[key] || ""
+        result = result.replace(regex, value)
+    })
+
+    // Construir fullName se não existir
     if (!data.fullName && (data.firstName || data.lastName)) {
         const fullName = [data.firstName, data.lastName].filter(Boolean).join(" ")
         result = result.replace(/\{\{\s*fullName\s*\}\}/gi, fullName)
+        result = result.replace(/\{\{\s*nomeCompleto\s*\}\}/gi, fullName)
     }
 
     return result

@@ -26,77 +26,97 @@ enum UserStatus {
 }
 
 enum LeadStatus {
-  NEW           // Novo - não contatado
-  CONTACTED     // Contatado (email enviado)
-  OPENED        // Abriu o email
-  CLICKED       // Clicou em link
-  REPLIED       // Respondeu
-  CALLED        // Ligação realizada
-  INTERESTED    // Demonstrou interesse
+  NEW // Novo - não contatado
+  CONTACTED // Contatado (email enviado)
+  OPENED // Abriu o email
+  CLICKED // Clicou em link
+  REPLIED // Respondeu
+  CALLED // Ligação realizada
+  INTERESTED // Demonstrou interesse
   NOT_INTERESTED // Não tem interesse
-  NEGOTIATING   // Em negociação
-  CONVERTED     // Convertido (virou cliente)
-  UNSUBSCRIBED  // Descadastrado
-  BOUNCED       // Email inválido
+  NEGOTIATING // Em negociação
+  CONVERTED // Convertido (virou cliente)
+  UNSUBSCRIBED // Descadastrado
+  BOUNCED // Email inválido
 }
 
 enum LeadSource {
-  MANUAL      // Cadastrado manualmente
-  IMPORT      // Importado via CSV
+  MANUAL // Cadastrado manualmente
+  IMPORT // Importado via CSV
   MARKETPLACE // Comprado no marketplace
-  WEBSITE     // Capturado via formulário
-  REFERRAL    // Indicação
-  OTHER       // Outros
+  WEBSITE // Capturado via formulário
+  REFERRAL // Indicação
+  OTHER // Outros
 }
 
 enum CompanySize {
-  MICRO      // 1-10 funcionários
-  SMALL      // 11-50
-  MEDIUM     // 51-200
-  LARGE      // 201-500
+  MICRO // 1-10 funcionários
+  SMALL // 11-50
+  MEDIUM // 51-200
+  LARGE // 201-500
   ENTERPRISE // 500+
 }
 
 enum CampaignStatus {
-  DRAFT     // Rascunho
+  DRAFT // Rascunho
   SCHEDULED // Agendada
-  SENDING   // Enviando
-  SENT      // Enviada
-  PAUSED    // Pausada
+  SENDING // Enviando
+  SENT // Enviada
+  PAUSED // Pausada
   CANCELLED // Cancelada
 }
 
 enum EmailSendStatus {
-  PENDING   // Aguardando envio
-  SENT      // Enviado
+  PENDING // Aguardando envio
+  SENT // Enviado
   DELIVERED // Entregue
-  OPENED    // Aberto
-  CLICKED   // Clicou
-  REPLIED   // Respondeu
-  BOUNCED   // Falhou
+  OPENED // Aberto
+  CLICKED // Clicou
+  REPLIED // Respondeu
+  BOUNCED // Falhou
   COMPLAINED // Marcou como spam
 }
 
 enum CallResult {
-  ANSWERED          // Atendeu
-  NO_ANSWER         // Não atendeu
-  BUSY              // Ocupado
-  VOICEMAIL         // Caixa postal
-  WRONG_NUMBER      // Número errado
-  INTERESTED        // Atendeu e tem interesse
-  NOT_INTERESTED    // Atendeu mas sem interesse
-  CALLBACK          // Pediu para retornar
+  ANSWERED // Atendeu
+  NO_ANSWER // Não atendeu
+  BUSY // Ocupado
+  VOICEMAIL // Caixa postal
+  WRONG_NUMBER // Número errado
+  INTERESTED // Atendeu e tem interesse
+  NOT_INTERESTED // Atendeu mas sem interesse
+  CALLBACK // Pediu para retornar
   MEETING_SCHEDULED // Agendou reunião
 }
 
 enum TemplateCategory {
-  PROSPECTING  // Primeiro contato / Prospecção
-  FOLLOW_UP    // Follow-up
-  PROPOSAL     // Proposta comercial
-  THANK_YOU    // Agradecimento
+  PROSPECTING // Primeiro contato / Prospecção
+  FOLLOW_UP // Follow-up
+  PROPOSAL // Proposta comercial
+  THANK_YOU // Agradecimento
   REACTIVATION // Reativação de lead frio
-  NEWSLETTER   // Newsletter / Novidades
-  OTHER        // Outros
+  NEWSLETTER // Newsletter / Novidades
+  OTHER // Outros
+}
+
+enum CampaignType {
+  single
+  sequence
+}
+
+enum StepCondition {
+  always
+  not_opened
+  opened
+  not_clicked
+  clicked
+}
+
+enum EnrollmentStatus {
+  active
+  paused
+  completed
+  stopped
 }
 
 // ==================== USUÁRIO ====================
@@ -139,12 +159,12 @@ model Workspace {
   senderEmail String?
 
   // Configurações SMTP
-  smtpProvider String?  // google, zoho, outlook, custom
-  smtpHost     String?  // smtp.gmail.com, smtp.zoho.com, etc.
-  smtpPort     Int?     // 587, 465, etc.
-  smtpUser     String?  // email do usuário
-  smtpPass     String?  // senha de app (criptografada)
-  smtpSecure   Boolean  @default(true) // TLS/SSL
+  smtpProvider String? // google, zoho, outlook, custom
+  smtpHost     String? // smtp.gmail.com, smtp.zoho.com, etc.
+  smtpPort     Int? // 587, 465, etc.
+  smtpUser     String? // email do usuário
+  smtpPass     String? // senha de app (criptografada)
+  smtpSecure   Boolean @default(true) // TLS/SSL
 
   // Relacionamentos
   userId String
@@ -180,8 +200,8 @@ model Lead {
   company     String?
   jobTitle    String?
   website     String?
-  taxId       String?      // CNPJ, VAT, EIN, etc.
-  industry    String?      // Segmento
+  taxId       String? // CNPJ, VAT, EIN, etc.
+  industry    String? // Segmento
   companySize CompanySize? // Porte da empresa
 
   // Localização
@@ -200,9 +220,10 @@ model Lead {
   workspaceId String
   workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 
-  emailSends EmailSend[]
-  calls      Call[]
-  tags       TagsOnLeads[]
+  emailSends  EmailSend[]
+  calls       Call[]
+  tags        TagsOnLeads[]
+  enrollments CampaignEnrollment[]
 
   // Importação
   importedAt  DateTime?
@@ -261,8 +282,9 @@ model EmailTemplate {
   isActive Boolean          @default(true)
 
   workspaceId String
-  workspace   Workspace  @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  workspace   Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   campaigns   Campaign[]
+  steps       CampaignStep[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -279,6 +301,11 @@ model Campaign {
   name        String
   description String?
   status      CampaignStatus @default(DRAFT)
+
+  // 🆕 Tipo de campanha (single ou sequence)
+  type              CampaignType @default(single)
+  stopOnUnsubscribe Boolean      @default(true)
+  stopOnConverted   Boolean      @default(true)
 
   // Template
   templateId String?
@@ -309,12 +336,68 @@ model Campaign {
   emailSends  EmailSend[]
   calls       Call[]
 
+  // 🆕 Relacionamentos para sequências
+  steps       CampaignStep[]
+  enrollments CampaignEnrollment[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([workspaceId])
   @@index([status])
   @@map("campaigns")
+}
+
+model CampaignStep {
+  id         String   @id @default(cuid())
+  campaignId String
+  campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  order      Int // 1, 2, 3, 4, 5
+  templateId String?
+  template   EmailTemplate? @relation(fields: [templateId], references: [id], onDelete: SetNull)
+  subject    String
+  content    String         @db.Text
+
+  delayDays  Int @default(0)
+  delayHours Int @default(0)
+
+  condition StepCondition @default(always)
+
+  sends EmailSend[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([campaignId])
+  @@map("campaign_steps")
+}
+
+model CampaignEnrollment {
+  id         String   @id @default(cuid())
+  campaignId String
+  campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  leadId     String
+  lead       Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  currentStep Int              @default(1)
+  status      EnrollmentStatus @default(active)
+
+  nextSendAt  DateTime?
+  startedAt   DateTime  @default(now())
+  completedAt DateTime?
+  pausedAt    DateTime?
+  stoppedAt   DateTime?
+  stopReason  String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([campaignId, leadId])
+  @@index([campaignId])
+  @@index([leadId])
+  @@index([status, nextSendAt])
+  @@map("campaign_enrollments")
 }
 
 // ==================== EMAIL SEND ====================
@@ -327,6 +410,11 @@ model EmailSend {
 
   leadId String
   lead   Lead   @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  // 🆕 Campos para sequências
+  stepId     String?
+  step       CampaignStep? @relation(fields: [stepId], references: [id], onDelete: SetNull)
+  stepNumber Int?
 
   status   EmailSendStatus @default(PENDING)
   resendId String?
@@ -343,9 +431,9 @@ model EmailSend {
   sentAt    DateTime?
   createdAt DateTime  @default(now())
 
-  @@unique([campaignId, leadId])
   @@index([campaignId])
   @@index([leadId])
+  @@index([stepId])
   @@index([status])
   @@map("email_sends")
 }

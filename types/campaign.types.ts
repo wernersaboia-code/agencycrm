@@ -41,6 +41,34 @@ export interface SerializedCampaign {
     updatedAt: string
 }
 
+export interface SequenceStep {
+    id: string
+    order: number
+    templateId: string | null
+    subject: string
+    content: string
+    delayDays: number
+    delayHours: number
+    condition: StepCondition
+}
+
+export type StepCondition =
+    | "always"
+    | "not_opened"
+    | "opened"
+    | "not_clicked"
+    | "clicked"
+
+export const STEP_CONDITIONS = [
+    { value: "always" as const, label: "Sempre (após o delay)", description: "Envia independente do que aconteceu" },
+    { value: "not_opened" as const, label: "Se NÃO abriu", description: "Só envia se não abriu o email anterior" },
+    { value: "opened" as const, label: "Se abriu", description: "Só envia se abriu o email anterior" },
+    { value: "not_clicked" as const, label: "Se NÃO clicou", description: "Só envia se não clicou em nenhum link" },
+    { value: "clicked" as const, label: "Se clicou", description: "Só envia se clicou em algum link" },
+]
+
+export const MAX_SEQUENCE_STEPS = 5
+
 export function serializeCampaign(campaign: Campaign): SerializedCampaign {
     return {
         ...campaign,

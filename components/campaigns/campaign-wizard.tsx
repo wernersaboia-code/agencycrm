@@ -15,6 +15,7 @@ import {
     Search,
     FileText,
     AlertCircle,
+    RefreshCw,
 } from "lucide-react"
 import { LeadStatus } from "@prisma/client"
 
@@ -53,12 +54,15 @@ import {
     AlertTitle,
 } from "@/components/ui/alert"
 
+import { CampaignTypeSelector } from "./campaign-type-selector"
+import { SequenceStepsEditor } from "./sequence-steps-editor"
 import { createCampaign, getLeadsForCampaign } from "@/actions/campaigns"
 import type { TemplateWithStats } from "@/actions/templates"
 import { getCategoryConfig } from "@/lib/constants/template.constants"
 import { LEAD_STATUS_CONFIG } from "@/lib/constants/lead.constants"
 import { replaceVariables, PREVIEW_LEAD } from "@/lib/constants/template.constants"
 import { cn } from "@/lib/utils"
+import type { SequenceStep } from "@/types/campaign.types"
 
 // ============================================================
 // TIPOS
@@ -81,11 +85,19 @@ interface LeadForSelection {
     status: LeadStatus
 }
 
+type CampaignType = "single" | "sequence"
+
 interface WizardData {
     // Passo 1
     name: string
     description: string
+    type: CampaignType
+    // Single
     templateId: string
+    // Sequence
+    steps: SequenceStep[]
+    stopOnUnsubscribe: boolean
+    stopOnConverted: boolean
     // Passo 2
     selectedLeadIds: string[]
     // Passo 3
@@ -93,10 +105,25 @@ interface WizardData {
     scheduledAt: string
 }
 
+const createInitialStep = (): SequenceStep => ({
+    id: crypto.randomUUID(),
+    order: 1,
+    templateId: null,
+    subject: "",
+    content: "",
+    delayDays: 0,
+    delayHours: 0,
+    condition: "always",
+})
+
 const INITIAL_DATA: WizardData = {
     name: "",
     description: "",
+    type: "single",
     templateId: "",
+    steps: [createInitialStep()],
+    stopOnUnsubscribe: true,
+    stopOnConverted: true,
     selectedLeadIds: [],
     sendNow: true,
     scheduledAt: "",
@@ -128,7 +155,10 @@ export function CampaignWizard({
     useEffect(() => {
         if (open) {
             setStep(1)
-            setData(INITIAL_DATA)
+            setData({
+                ...INITIAL_DATA,
+                steps: [createInitialStep()],
+            })
             setLeads([])
             setLeadSearch("")
             setStatusFilter("ALL")
@@ -162,9 +192,19 @@ export function CampaignWizard({
         return templates.find((t) => t.id === data.templateId)
     }, [templates, data.templateId])
 
+    const templatesForEditor = useMemo(() => {
+        return templates
+            .filter((t) => t.isActive)
+            .map((t) => ({
+                id: t.id,
+                name: t.name,
+                subject: t.subject,
+                body: t.body,
+            }))
+    }, [templates])
+
     const filteredLeads = useMemo(() => {
         return leads.filter((lead) => {
-            // Filtro de busca
             if (leadSearch) {
                 const search = leadSearch.toLowerCase()
                 const matchesSearch =
@@ -175,7 +215,6 @@ export function CampaignWizard({
                 if (!matchesSearch) return false
             }
 
-            // Filtro de status
             if (statusFilter !== "ALL" && lead.status !== statusFilter) {
                 return false
             }
@@ -197,10 +236,32 @@ export function CampaignWizard({
             toast.error("Digite o nome da campanha")
             return false
         }
-        if (!data.templateId) {
-            toast.error("Selecione um template")
-            return false
+
+        if (data.type === "single") {
+            if (!data.templateId) {
+                toast.error("Selecione um template")
+                return false
+            }
+        } else {
+            // Sequence
+            if (data.steps.length === 0) {
+                toast.error("Adicione pelo menos um step na sequência")
+                return false
+            }
+
+            for (let i = 0; i < data.steps.length; i++) {
+                const s = data.steps[i]
+                if (!s.subject.trim()) {
+                    toast.error(`Step ${i + 1}: Digite o assunto do email`)
+                    return false
+                }
+                if (!s.content.trim()) {
+                    toast.error(`Step ${i + 1}: Digite o conteúdo do email`)
+                    return false
+                }
+            }
         }
+
         return true
     }
 
@@ -234,14 +295,23 @@ export function CampaignWizard({
         setIsSubmitting(true)
 
         try {
-            const result = await createCampaign({
+            const payload = {
                 name: data.name,
                 description: data.description || null,
-                templateId: data.templateId,
+                type: data.type,
+                // Single
+                templateId: data.type === "single" ? data.templateId : null,
+                // Sequence
+                steps: data.type === "sequence" ? data.steps : [],
+                stopOnUnsubscribe: data.stopOnUnsubscribe,
+                stopOnConverted: data.stopOnConverted,
+                // Common
                 selectedLeadIds: data.selectedLeadIds,
                 scheduledAt: data.sendNow ? null : data.scheduledAt || null,
                 workspaceId,
-            })
+            }
+
+            const result = await createCampaign(payload)
 
             if (result.success) {
                 toast.success("Campanha criada com sucesso!")
@@ -257,8 +327,23 @@ export function CampaignWizard({
     }
 
     // ============================================================
-    // HANDLERS DE SELEÇÃO
+    // HANDLERS
     // ============================================================
+
+    const handleTypeChange = (type: CampaignType) => {
+        setData((prev) => ({
+            ...prev,
+            type,
+            // Reset template quando muda para sequência
+            templateId: type === "single" ? prev.templateId : "",
+            // Reset steps quando muda para single
+            steps: type === "sequence" ? prev.steps : [createInitialStep()],
+        }))
+    }
+
+    const handleStepsChange = (steps: SequenceStep[]) => {
+        setData((prev) => ({ ...prev, steps }))
+    }
 
     const toggleLead = (leadId: string) => {
         setData((prev) => ({
@@ -332,7 +417,7 @@ export function CampaignWizard({
                 </div>
 
                 <div className="text-center text-sm text-muted-foreground mb-4">
-                    {step === 1 && "Informações e Template"}
+                    {step === 1 && "Configuração da Campanha"}
                     {step === 2 && "Selecionar Destinatários"}
                     {step === 3 && "Revisar e Enviar"}
                 </div>
@@ -341,9 +426,9 @@ export function CampaignWizard({
 
                 {/* Conteúdo dos Passos */}
                 <div className="flex-1 overflow-hidden py-4">
-                    {/* ====== PASSO 1: INFORMAÇÕES + TEMPLATE ====== */}
+                    {/* ====== PASSO 1: CONFIGURAÇÃO ====== */}
                     {step === 1 && (
-                        <ScrollArea className="h-[calc(90vh-350px)]">
+                        <ScrollArea className="h-[calc(90vh-400px)]">
                             <div className="space-y-6 pr-4">
                                 {/* Nome e Descrição */}
                                 <div className="space-y-4">
@@ -375,101 +460,171 @@ export function CampaignWizard({
 
                                 <Separator />
 
-                                {/* Seleção de Template */}
+                                {/* Tipo de Campanha */}
                                 <div className="space-y-4">
-                                    <Label>Selecione o Template *</Label>
-
-                                    {templates.length === 0 ? (
-                                        <Alert>
-                                            <AlertCircle className="h-4 w-4" />
-                                            <AlertTitle>Nenhum template disponível</AlertTitle>
-                                            <AlertDescription>
-                                                Você precisa criar pelo menos um template antes de criar uma campanha.
-                                            </AlertDescription>
-                                        </Alert>
-                                    ) : (
-                                        <div className="grid gap-3 md:grid-cols-2">
-                                            {templates
-                                                .filter((t) => t.isActive)
-                                                .map((template) => {
-                                                    const categoryConfig = getCategoryConfig(template.category)
-                                                    const isSelected = data.templateId === template.id
-
-                                                    return (
-                                                        <Card
-                                                            key={template.id}
-                                                            className={cn(
-                                                                "cursor-pointer transition-all hover:shadow-md",
-                                                                isSelected && "ring-2 ring-primary"
-                                                            )}
-                                                            onClick={() =>
-                                                                setData((prev) => ({ ...prev, templateId: template.id }))
-                                                            }
-                                                        >
-                                                            <CardHeader className="pb-2">
-                                                                <div className="flex items-start justify-between">
-                                                                    <div className="flex items-center gap-2">
-                                                                        <div
-                                                                            className={cn(
-                                                                                "p-1.5 rounded",
-                                                                                categoryConfig.bgColor
-                                                                            )}
-                                                                        >
-                                                                            <categoryConfig.icon
-                                                                                className={cn("h-4 w-4", categoryConfig.color)}
-                                                                            />
-                                                                        </div>
-                                                                        <CardTitle className="text-base">
-                                                                            {template.name}
-                                                                        </CardTitle>
-                                                                    </div>
-                                                                    {isSelected && (
-                                                                        <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
-                                                                            <Check className="h-3 w-3 text-primary-foreground" />
-                                                                        </div>
-                                                                    )}
-                                                                </div>
-                                                                <Badge variant="outline" className="w-fit text-xs">
-                                                                    {categoryConfig.label}
-                                                                </Badge>
-                                                            </CardHeader>
-                                                            <CardContent>
-                                                                <p className="text-sm text-muted-foreground line-clamp-2">
-                                                                    {template.subject}
-                                                                </p>
-                                                            </CardContent>
-                                                        </Card>
-                                                    )
-                                                })}
-                                        </div>
-                                    )}
+                                    <Label>Tipo de Campanha *</Label>
+                                    <CampaignTypeSelector
+                                        value={data.type}
+                                        onChange={handleTypeChange}
+                                    />
                                 </div>
 
-                                {/* Preview do Template Selecionado */}
-                                {selectedTemplate && (
+                                <Separator />
+
+                                {/* Conteúdo baseado no tipo */}
+                                {data.type === "single" ? (
                                     <>
+                                        {/* Seleção de Template (Single) */}
+                                        <div className="space-y-4">
+                                            <Label>Selecione o Template *</Label>
+
+                                            {templates.length === 0 ? (
+                                                <Alert>
+                                                    <AlertCircle className="h-4 w-4" />
+                                                    <AlertTitle>Nenhum template disponível</AlertTitle>
+                                                    <AlertDescription>
+                                                        Você precisa criar pelo menos um template antes de criar uma campanha.
+                                                    </AlertDescription>
+                                                </Alert>
+                                            ) : (
+                                                <div className="grid gap-3 md:grid-cols-2">
+                                                    {templates
+                                                        .filter((t) => t.isActive)
+                                                        .map((template) => {
+                                                            const categoryConfig = getCategoryConfig(template.category)
+                                                            const isSelected = data.templateId === template.id
+
+                                                            return (
+                                                                <Card
+                                                                    key={template.id}
+                                                                    className={cn(
+                                                                        "cursor-pointer transition-all hover:shadow-md",
+                                                                        isSelected && "ring-2 ring-primary"
+                                                                    )}
+                                                                    onClick={() =>
+                                                                        setData((prev) => ({ ...prev, templateId: template.id }))
+                                                                    }
+                                                                >
+                                                                    <CardHeader className="pb-2">
+                                                                        <div className="flex items-start justify-between">
+                                                                            <div className="flex items-center gap-2">
+                                                                                <div
+                                                                                    className={cn(
+                                                                                        "p-1.5 rounded",
+                                                                                        categoryConfig.bgColor
+                                                                                    )}
+                                                                                >
+                                                                                    <categoryConfig.icon
+                                                                                        className={cn("h-4 w-4", categoryConfig.color)}
+                                                                                    />
+                                                                                </div>
+                                                                                <CardTitle className="text-base">
+                                                                                    {template.name}
+                                                                                </CardTitle>
+                                                                            </div>
+                                                                            {isSelected && (
+                                                                                <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+                                                                                    <Check className="h-3 w-3 text-primary-foreground" />
+                                                                                </div>
+                                                                            )}
+                                                                        </div>
+                                                                        <Badge variant="outline" className="w-fit text-xs">
+                                                                            {categoryConfig.label}
+                                                                        </Badge>
+                                                                    </CardHeader>
+                                                                    <CardContent>
+                                                                        <p className="text-sm text-muted-foreground line-clamp-2">
+                                                                            {template.subject}
+                                                                        </p>
+                                                                    </CardContent>
+                                                                </Card>
+                                                            )
+                                                        })}
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {/* Preview do Template Selecionado */}
+                                        {selectedTemplate && (
+                                            <>
+                                                <Separator />
+                                                <div className="space-y-3">
+                                                    <Label>Preview do Email</Label>
+                                                    <Card className="bg-muted/30">
+                                                        <CardHeader className="pb-2">
+                                                            <CardDescription>
+                                                                <strong>Assunto:</strong>{" "}
+                                                                {replaceVariables(selectedTemplate.subject, PREVIEW_LEAD)}
+                                                            </CardDescription>
+                                                        </CardHeader>
+                                                        <CardContent>
+                                                            <div
+                                                                className="prose prose-sm dark:prose-invert max-w-none"
+                                                                dangerouslySetInnerHTML={{
+                                                                    __html: replaceVariables(selectedTemplate.body, PREVIEW_LEAD),
+                                                                }}
+                                                            />
+                                                        </CardContent>
+                                                    </Card>
+                                                    <p className="text-xs text-muted-foreground">
+                                                        * Preview usando dados de exemplo.
+                                                    </p>
+                                                </div>
+                                            </>
+                                        )}
+                                    </>
+                                ) : (
+                                    <>
+                                        {/* Editor de Sequência */}
+                                        <SequenceStepsEditor
+                                            steps={data.steps}
+                                            templates={templatesForEditor}
+                                            onChange={handleStepsChange}
+                                        />
+
                                         <Separator />
-                                        <div className="space-y-3">
-                                            <Label>Preview do Email</Label>
-                                            <Card className="bg-muted/30">
-                                                <CardHeader className="pb-2">
-                                                    <CardDescription>
-                                                        <strong>Assunto:</strong>{" "}
-                                                        {replaceVariables(selectedTemplate.subject, PREVIEW_LEAD)}
-                                                    </CardDescription>
-                                                </CardHeader>
-                                                <CardContent>
-                                                    <div
-                                                        className="prose prose-sm dark:prose-invert max-w-none"
-                                                        dangerouslySetInnerHTML={{
-                                                            __html: replaceVariables(selectedTemplate.body, PREVIEW_LEAD),
-                                                        }}
+
+                                        {/* Configurações de Parada */}
+                                        <div className="space-y-4">
+                                            <Label>Parar sequência automaticamente se:</Label>
+                                            <div className="space-y-3">
+                                                <div className="flex items-center gap-3">
+                                                    <Checkbox
+                                                        id="stopOnUnsubscribe"
+                                                        checked={data.stopOnUnsubscribe}
+                                                        onCheckedChange={(checked) =>
+                                                            setData((prev) => ({
+                                                                ...prev,
+                                                                stopOnUnsubscribe: checked === true,
+                                                            }))
+                                                        }
                                                     />
-                                                </CardContent>
-                                            </Card>
-                                            <p className="text-xs text-muted-foreground">
-                                                * Preview usando dados de exemplo. As variáveis serão substituídas pelos dados reais.
-                                            </p>
+                                                    <label
+                                                        htmlFor="stopOnUnsubscribe"
+                                                        className="text-sm cursor-pointer"
+                                                    >
+                                                        Lead clicar em "não tenho interesse"
+                                                    </label>
+                                                </div>
+                                                <div className="flex items-center gap-3">
+                                                    <Checkbox
+                                                        id="stopOnConverted"
+                                                        checked={data.stopOnConverted}
+                                                        onCheckedChange={(checked) =>
+                                                            setData((prev) => ({
+                                                                ...prev,
+                                                                stopOnConverted: checked === true,
+                                                            }))
+                                                        }
+                                                    />
+                                                    <label
+                                                        htmlFor="stopOnConverted"
+                                                        className="text-sm cursor-pointer"
+                                                    >
+                                                        Lead for convertido (status = Convertido)
+                                                    </label>
+                                                </div>
+                                            </div>
                                         </div>
                                     </>
                                 )}
@@ -545,7 +700,7 @@ export function CampaignWizard({
                                 </div>
                             </div>
 
-                            {/* Lista de Leads - CORRIGIDO O SCROLL */}
+                            {/* Lista de Leads */}
                             <div className="flex-1 min-h-0 border rounded-lg overflow-hidden">
                                 <ScrollArea className="h-full">
                                     {isLoadingLeads ? (
@@ -627,25 +782,77 @@ export function CampaignWizard({
                                                 <Label className="text-muted-foreground">Nome</Label>
                                                 <p className="font-medium">{data.name}</p>
                                             </div>
+                                            <div>
+                                                <Label className="text-muted-foreground">Tipo</Label>
+                                                <div className="flex items-center gap-2">
+                                                    {data.type === "single" ? (
+                                                        <>
+                                                            <Mail className="h-4 w-4 text-muted-foreground" />
+                                                            <span className="font-medium">Email Único</span>
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <RefreshCw className="h-4 w-4 text-muted-foreground" />
+                                                            <span className="font-medium">
+                                Sequência ({data.steps.length} steps)
+                              </span>
+                                                        </>
+                                                    )}
+                                                </div>
+                                            </div>
                                             {data.description && (
-                                                <div>
+                                                <div className="md:col-span-2">
                                                     <Label className="text-muted-foreground">Descrição</Label>
                                                     <p className="font-medium">{data.description}</p>
                                                 </div>
                                             )}
-                                            <div>
-                                                <Label className="text-muted-foreground">Template</Label>
-                                                <p className="font-medium">{selectedTemplate?.name}</p>
-                                            </div>
+                                            {data.type === "single" && selectedTemplate && (
+                                                <div>
+                                                    <Label className="text-muted-foreground">Template</Label>
+                                                    <p className="font-medium">{selectedTemplate.name}</p>
+                                                </div>
+                                            )}
                                             <div>
                                                 <Label className="text-muted-foreground">Destinatários</Label>
-                                                <p className="font-medium">
-                                                    {data.selectedLeadIds.length} lead(s)
-                                                </p>
+                                                <p className="font-medium">{data.selectedLeadIds.length} lead(s)</p>
                                             </div>
                                         </div>
                                     </CardContent>
                                 </Card>
+
+                                {/* Steps da Sequência (se for sequência) */}
+                                {data.type === "sequence" && (
+                                    <Card>
+                                        <CardHeader>
+                                            <CardTitle className="flex items-center gap-2">
+                                                <RefreshCw className="h-5 w-5" />
+                                                Steps da Sequência
+                                            </CardTitle>
+                                        </CardHeader>
+                                        <CardContent>
+                                            <div className="space-y-3">
+                                                {data.steps.map((s, index) => (
+                                                    <div
+                                                        key={s.id}
+                                                        className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg"
+                                                    >
+                                                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold">
+                                                            {index + 1}
+                                                        </div>
+                                                        <div className="flex-1">
+                                                            <p className="font-medium">{s.subject || "Sem assunto"}</p>
+                                                            <p className="text-sm text-muted-foreground">
+                                                                {index === 0
+                                                                    ? "Enviado imediatamente"
+                                                                    : `Após ${s.delayDays}d ${s.delayHours}h • ${s.condition === "always" ? "Sempre" : s.condition === "not_opened" ? "Se não abriu" : s.condition === "opened" ? "Se abriu" : s.condition === "not_clicked" ? "Se não clicou" : "Se clicou"}`}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+                                )}
 
                                 {/* Lista de destinatários */}
                                 <Card>
@@ -663,16 +870,14 @@ export function CampaignWizard({
                                                 </Badge>
                                             ))}
                                             {selectedLeads.length > 20 && (
-                                                <Badge variant="outline">
-                                                    +{selectedLeads.length - 20} mais
-                                                </Badge>
+                                                <Badge variant="outline">+{selectedLeads.length - 20} mais</Badge>
                                             )}
                                         </div>
                                     </CardContent>
                                 </Card>
 
-                                {/* Preview do email */}
-                                {selectedTemplate && (
+                                {/* Preview do email (apenas para single) */}
+                                {data.type === "single" && selectedTemplate && (
                                     <Card>
                                         <CardHeader>
                                             <CardTitle className="flex items-center gap-2">
@@ -699,8 +904,9 @@ export function CampaignWizard({
                                     <Send className="h-4 w-4" />
                                     <AlertTitle>Pronto para enviar!</AlertTitle>
                                     <AlertDescription>
-                                        Ao clicar em "Criar Campanha", ela será salva como rascunho.
-                                        Você poderá enviá-la depois clicando no botão "Enviar".
+                                        {data.type === "single"
+                                            ? "Ao clicar em \"Criar Campanha\", ela será salva como rascunho. Você poderá enviá-la depois clicando no botão \"Enviar\"."
+                                            : "Ao clicar em \"Criar Campanha\", a sequência será iniciada e o primeiro email será enviado imediatamente aos leads selecionados."}
                                     </AlertDescription>
                                 </Alert>
                             </div>

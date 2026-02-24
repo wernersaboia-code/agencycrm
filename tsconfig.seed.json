@@ -1,0 +1,13 @@
+// tsconfig.seed.json (criar na raiz do projeto)
+
+{
+  "compilerOptions": {
+    "module": "CommonJS",
+    "target": "ES2020",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "resolveJsonModule": true
+  },
+  "include": ["prisma/**/*.ts"]
+}
