@@ -13,6 +13,7 @@ import {
     BarChart3,
     Settings,
     LogOut,
+    ShieldCheck,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -21,10 +22,7 @@ import { Separator } from "@/components/ui/separator"
 import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
-
-// ============================================================
-// CONFIGURAÇÃO DO MENU
-// ============================================================
+import { useEffect, useState } from "react"
 
 const mainMenuItems = [
     {
@@ -72,13 +70,25 @@ const managementMenuItems = [
     },
 ]
 
-// ============================================================
-// COMPONENTE
-// ============================================================
-
 export function Sidebar() {
     const pathname = usePathname()
     const router = useRouter()
+    const [isAdmin, setIsAdmin] = useState(false)
+
+    useEffect(() => {
+        const checkAdmin = async () => {
+            try {
+                const res = await fetch("/api/user/role")
+                if (res.ok) {
+                    const data = await res.json()
+                    setIsAdmin(data.role === "ADMIN")
+                }
+            } catch {
+                setIsAdmin(false)
+            }
+        }
+        checkAdmin()
+    }, [])
 
     const handleLogout = async (): Promise<void> => {
         const supabase = createClient()
@@ -156,6 +166,30 @@ export function Sidebar() {
                             )
                         })}
                     </div>
+
+                    {/* Admin - só aparece para ADMIN */}
+                    {isAdmin && (
+                        <>
+                            <Separator className="my-2" />
+                            <div className="mb-2">
+                                <p className="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                                    Administração
+                                </p>
+                                <Link
+                                    href="/admin"
+                                    className={cn(
+                                        "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                                        pathname.startsWith("/admin")
+                                            ? "bg-emerald-600 text-white"
+                                            : "text-emerald-600 hover:bg-emerald-50"
+                                    )}
+                                >
+                                    <ShieldCheck className="h-4 w-4" />
+                                    Admin Marketplace
+                                </Link>
+                            </div>
+                        </>
+                    )}
                 </nav>
             </ScrollArea>
 

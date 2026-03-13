@@ -141,6 +141,7 @@ model User {
 
   // Relacionamentos
   workspaces Workspace[]
+  purchases  Purchase[]
 
   @@map("users")
 }
@@ -400,6 +401,13 @@ model CampaignEnrollment {
   @@map("campaign_enrollments")
 }
 
+enum PurchaseStatus {
+  pending
+  paid
+  failed
+  refunded
+}
+
 // ==================== EMAIL SEND ====================
 
 model EmailSend {
@@ -467,4 +475,145 @@ model Call {
   @@index([campaignId])
   @@index([calledAt])
   @@map("calls")
+}
+
+// ==================== LEADSTORE - MARKETPLACE ====================
+
+// Listas disponíveis para venda
+model LeadList {
+  id          String  @id @default(cuid())
+  name        String
+  slug        String  @unique
+  description String? @db.Text
+
+  // Categorização
+  category   String
+  countries  String[]
+  industries String[]
+
+  // Métricas
+  totalLeads Int @default(0)
+
+  // Preço
+  price    Decimal @db.Decimal(10, 2)
+  currency String  @default("EUR")
+
+  // Controle
+  isActive   Boolean @default(true)
+  isFeatured Boolean @default(false)
+
+  // Preview (dados parciais para mostrar antes da compra)
+  previewData Json?
+
+  // Relacionamentos
+  leads         MarketplaceLead[]
+  purchaseItems PurchaseItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([category])
+  @@index([isActive, isFeatured])
+  @@map("lead_lists")
+}
+
+// Leads do marketplace (separados dos leads do CRM)
+model MarketplaceLead {
+  id String @id @default(cuid())
+
+  // Dados da empresa
+  company     String
+  country     String
+  city        String?
+  industry    String?
+  companySize String?
+  website     String?
+  taxId       String?
+
+  // Dados de contato
+  contactName String?
+  jobTitle    String?
+  email       String
+  phone       String?
+
+  // Verificação
+  emailVerified   Boolean   @default(false)
+  emailVerifiedAt DateTime?
+
+  // Relacionamento com lista
+  listId String
+  list   LeadList @relation(fields: [listId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([listId])
+  @@index([country])
+  @@index([industry])
+  @@map("marketplace_leads")
+}
+
+// Compras realizadas
+model Purchase {
+  id String @id @default(cuid())
+
+  // Comprador
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  // Pagamento PayPal
+  paypalOrderId String?        @unique
+  paypalPayerId String?
+  status        PurchaseStatus @default(pending)
+
+  // Valores
+  subtotal Decimal @db.Decimal(10, 2)
+  discount Decimal @default(0) @db.Decimal(10, 2)
+  total    Decimal @db.Decimal(10, 2)
+  currency String  @default("EUR")
+
+  // Dados do comprador (snapshot)
+  buyerEmail String?
+  buyerName  String?
+  buyerTaxId String?
+
+  // Itens
+  items PurchaseItem[]
+
+  // Datas
+  paidAt    DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@map("purchases")
+}
+
+// Itens de uma compra
+model PurchaseItem {
+  id String @id @default(cuid())
+
+  purchaseId String
+  purchase   Purchase @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+
+  listId String
+  list   LeadList @relation(fields: [listId], references: [id])
+
+  // Snapshot do preço no momento da compra
+  price      Decimal @db.Decimal(10, 2)
+  currency   String
+  leadsCount Int
+
+  // Controle de download/importação
+  downloadCount Int       @default(0)
+  downloadedAt  DateTime?
+  importedAt    DateTime?
+  importedTo    String?
+
+  createdAt DateTime @default(now())
+
+  @@index([purchaseId])
+  @@index([listId])
+  @@map("purchase_items")
 }

@@ -1,0 +1,583 @@
+// app/(crm)/campaigns/[id]/campaign-detail-client.tsx
+
+"use client"
+
+import { recalculateCampaignMetrics } from "@/actions/campaigns/metrics"
+import { useState, useCallback } from "react"
+import { useRouter } from "next/navigation"
+import { format } from "date-fns"
+import { ptBR } from "date-fns/locale"
+import {
+    ArrowLeft,
+    Send,
+    Copy,
+    Trash2,
+    RefreshCw,
+    Mail,
+    Calendar,
+    FileText,
+    Phone,
+    Plus,
+    ThumbsUp,
+    CalendarCheck,
+} from "lucide-react"
+import { toast } from "sonner"
+
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
+
+import { CampaignMetrics } from "@/components/campaigns/campaign-metrics"
+import { EmailSendsList } from "@/components/campaigns/email-sends-list"
+import { CampaignCallsList } from "@/components/campaigns/campaign-calls-list"
+import { CallModal } from "@/components/calls/CallModal"
+import { getStatusConfig, calculateMetrics } from "@/lib/constants/campaign.constants"
+import {
+    sendCampaign,
+    duplicateCampaign,
+    deleteCampaign,
+    getCampaignById,
+} from "@/actions/campaigns"
+import { getCallsByCampaign, getCampaignCallStats } from "@/actions/calls"
+import { SerializedCallWithLead } from "@/types/call.types"
+import { CallResult } from "@prisma/client"
+import { cn } from "@/lib/utils"
+import { ExportCampaignButtons } from "@/components/reports/export-campaign-buttons"
+import { SendConfirmationDialog } from "@/components/campaigns/send-confirmation-dialog"
+
+// ============================================
+// TYPES
+// ============================================
+
+interface EmailSend {
+    id: string
+    status: string
+    sentAt: string | null
+    openedAt: string | null
+    clickedAt: string | null
+    repliedAt: string | null
+    bouncedAt: string | null
+    bounceReason: string | null
+    lead: {
+        id: string
+        firstName: string | null
+        lastName: string | null
+        email: string
+        company: string | null
+    }
+}
+
+interface Campaign {
+    id: string
+    name: string
+    description: string | null
+    status: string
+    templateId: string | null
+    template: {
+        id: string
+        name: string
+        subject: string
+    } | null
+    totalRecipients: number
+    totalSent: number
+    totalOpened: number
+    totalClicked: number
+    totalReplied: number
+    totalBounced: number
+    scheduledAt: string | null
+    sentAt: string | null
+    createdAt: string
+    updatedAt: string
+    workspaceId: string
+    emailSends: EmailSend[]
+}
+
+interface CallStats {
+    total: number
+    byResult: Record<CallResult, number>
+    interested: number
+    meetingsScheduled: number
+}
+
+interface CampaignDetailClientProps {
+    campaign: Campaign
+    initialCalls: SerializedCallWithLead[]
+    initialCallStats: CallStats
+}
+
+// ============================================
+// COMPONENT
+// ============================================
+
+export function CampaignDetailClient({
+                                         campaign: initialCampaign,
+                                         initialCalls,
+                                         initialCallStats,
+                                     }: CampaignDetailClientProps) {
+    const router = useRouter()
+    const [campaign, setCampaign] = useState<Campaign>(initialCampaign)
+    const [calls, setCalls] = useState<SerializedCallWithLead[]>(initialCalls)
+    const [callStats, setCallStats] = useState<CallStats>(initialCallStats)
+    const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [isRefreshing, setIsRefreshing] = useState<boolean>(false)
+    const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false)
+    const [showSendDialog, setShowSendDialog] = useState<boolean>(false)
+    const [isCallModalOpen, setIsCallModalOpen] = useState<boolean>(false)
+    const [editingCall, setEditingCall] = useState<SerializedCallWithLead | null>(null)
+
+    const statusConfig = getStatusConfig(campaign.status)
+    const StatusIcon = statusConfig.icon
+    const metrics = calculateMetrics(campaign)
+
+    const canSend = campaign.status === "DRAFT" || campaign.status === "SCHEDULED"
+    const canDelete = campaign.status !== "SENDING"
+    const isSequence = (campaign as any).type === "sequence"
+    const pendingCount = campaign.emailSends.filter(
+        (send) => send.status === "PENDING"
+    ).length
+    const stepsCount = (campaign as any).steps?.length || 1
+
+    // ============================================
+    // HANDLERS
+    // ============================================
+
+    const handleBack = (): void => {
+        router.push("/campaigns")
+    }
+
+    const handleRefresh = async (): Promise<void> => {
+        setIsRefreshing(true)
+        try {
+            const [campaignResult, newCalls, newCallStats] = await Promise.all([
+                getCampaignById(campaign.id),
+                getCallsByCampaign(campaign.id),
+                getCampaignCallStats(campaign.id),
+            ])
+
+            if (campaignResult.success && campaignResult.data) {
+                const refreshedCampaign = {
+                    ...campaignResult.data,
+                    createdAt: campaignResult.data.createdAt.toISOString(),
+                    updatedAt: campaignResult.data.updatedAt.toISOString(),
+                    sentAt: campaignResult.data.sentAt?.toISOString() || null,
+                    scheduledAt: campaignResult.data.scheduledAt?.toISOString() || null,
+                    emailSends: campaignResult.data.emailSends.map((send: any) => ({
+                        ...send,
+                        sentAt: send.sentAt?.toISOString() || null,
+                        openedAt: send.openedAt?.toISOString() || null,
+                        clickedAt: send.clickedAt?.toISOString() || null,
+                        repliedAt: send.repliedAt?.toISOString() || null,
+                        bouncedAt: send.bouncedAt?.toISOString() || null,
+                    })),
+                }
+                setCampaign(refreshedCampaign)
+            }
+
+            setCalls(newCalls)
+            setCallStats(newCallStats)
+            toast.success("Dados atualizados!")
+        } catch (error) {
+            toast.error("Erro ao atualizar dados")
+        } finally {
+            setIsRefreshing(false)
+        }
+    }
+
+    const handleSendClick = (): void => {
+        setShowSendDialog(true)
+    }
+
+    const handleConfirmSend = async (): Promise<void> => {
+        setIsLoading(true)
+        try {
+            const result = await sendCampaign(campaign.id)
+            if (result.success) {
+                toast.success("Campanha enviada com sucesso!")
+                setShowSendDialog(false)
+                await handleRefresh()
+            } else {
+                toast.error(result.error || "Erro ao enviar campanha")
+            }
+        } catch (error) {
+            toast.error("Erro ao enviar campanha")
+        } finally {
+            setIsLoading(false)
+        }
+    }
+
+    const handleDuplicate = async (): Promise<void> => {
+        setIsLoading(true)
+        try {
+            const result = await duplicateCampaign(campaign.id)
+            if (result.success && result.data) {
+                toast.success("Campanha duplicada!")
+                router.push(`/campaigns/${result.data.id}`)
+            } else {
+                toast.error(result.error || "Erro ao duplicar")
+            }
+        } catch (error) {
+            toast.error("Erro ao duplicar campanha")
+        } finally {
+            setIsLoading(false)
+        }
+    }
+
+    const handleDelete = async (): Promise<void> => {
+        setIsLoading(true)
+        try {
+            const result = await deleteCampaign(campaign.id)
+            if (result.success) {
+                toast.success("Campanha excluída!")
+                router.push("/campaigns")
+            } else {
+                toast.error(result.error || "Erro ao excluir")
+            }
+        } catch (error) {
+            toast.error("Erro ao excluir campanha")
+        } finally {
+            setIsLoading(false)
+            setShowDeleteDialog(false)
+        }
+    }
+
+    const handleRecalculateMetrics = async (): Promise<void> => {
+        setIsRefreshing(true)
+        try {
+            const result = await recalculateCampaignMetrics(campaign.id)
+            if (result.success) {
+                toast.success(
+                    `Métricas recalculadas! Abertos: ${result.data?.totalOpened}, Cliques: ${result.data?.totalClicked}`
+                )
+                await handleRefresh()
+            } else {
+                toast.error(result.error || "Erro ao recalcular")
+            }
+        } catch (error) {
+            toast.error("Erro ao recalcular métricas")
+        } finally {
+            setIsRefreshing(false)
+        }
+    }
+
+    const handleOpenCallModal = useCallback((): void => {
+        setEditingCall(null)
+        setIsCallModalOpen(true)
+    }, [])
+
+    const handleEditCall = useCallback((call: SerializedCallWithLead): void => {
+        setEditingCall(call)
+        setIsCallModalOpen(true)
+    }, [])
+
+    const handleCloseCallModal = useCallback((): void => {
+        setIsCallModalOpen(false)
+        setEditingCall(null)
+    }, [])
+
+    const handleCallSaved = useCallback(async (): Promise<void> => {
+        handleCloseCallModal()
+        await handleRefresh()
+        toast.success(editingCall ? "Ligação atualizada" : "Ligação registrada")
+    }, [editingCall, handleCloseCallModal])
+
+    const formatDate = (date: string | null): string => {
+        if (!date) return "-"
+        return format(new Date(date), "dd 'de' MMMM 'de' yyyy 'às' HH:mm", { locale: ptBR })
+    }
+
+    // ============================================
+    // RENDER
+    // ============================================
+
+    console.log("DEBUG:", {
+        status: campaign.status,
+        canSend,
+        showSendDialog,
+        isSequence,
+        pendingCount,
+    })
+    return (
+        <div className="space-y-6">
+            {/* Header */}
+            <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                    <Button variant="ghost" size="icon" onClick={handleBack}>
+                        <ArrowLeft className="h-5 w-5" />
+                    </Button>
+                    <div>
+                        <div className="flex items-center gap-3">
+                            <h1 className="text-2xl font-bold">{campaign.name}</h1>
+                            <Badge variant={statusConfig.badgeVariant} className="gap-1">
+                                <StatusIcon className="h-3.5 w-3.5" />
+                                {statusConfig.label}
+                            </Badge>
+                        </div>
+                        {campaign.description && (
+                            <p className="text-muted-foreground mt-1">{campaign.description}</p>
+                        )}
+                    </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleRecalculateMetrics}
+                        disabled={isRefreshing}
+                    >
+                        <RefreshCw className={cn("h-4 w-4 mr-2", isRefreshing && "animate-spin")} />
+                        Recalcular Métricas
+                    </Button>
+                    {canSend && (
+                        <Button onClick={handleSendClick} disabled={isLoading}>
+                            <Send className="h-4 w-4 mr-2" />
+                            Enviar Campanha
+                        </Button>
+                    )}
+
+                    <Button variant="outline" onClick={handleDuplicate} disabled={isLoading}>
+                        <Copy className="h-4 w-4 mr-2" />
+                        Duplicar
+                    </Button>
+
+                    {canDelete && (
+                        <Button
+                            variant="destructive"
+                            onClick={() => setShowDeleteDialog(true)}
+                            disabled={isLoading}
+                        >
+                            <Trash2 className="h-4 w-4 mr-2" />
+                            Excluir
+                        </Button>
+                    )}
+                    <ExportCampaignButtons
+                        campaignId={campaign.id}
+                        campaignName={campaign.name}
+                    />
+                </div>
+            </div>
+
+            {/* Info Cards */}
+            <div className="grid gap-4 md:grid-cols-4">
+                <Card>
+                    <CardContent className="p-4">
+                        <div className="flex items-center gap-3">
+                            <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                                <Mail className="h-5 w-5 text-blue-600" />
+                            </div>
+                            <div>
+                                <p className="text-sm text-muted-foreground">Template</p>
+                                <p className="font-medium">{campaign.template?.name || "Sem template"}</p>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardContent className="p-4">
+                        <div className="flex items-center gap-3">
+                            <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
+                                <Calendar className="h-5 w-5 text-green-600" />
+                            </div>
+                            <div>
+                                <p className="text-sm text-muted-foreground">
+                                    {campaign.sentAt ? "Enviada em" : "Criada em"}
+                                </p>
+                                <p className="font-medium">
+                                    {formatDate(campaign.sentAt || campaign.createdAt)}
+                                </p>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardContent className="p-4">
+                        <div className="flex items-center gap-3">
+                            <div className="h-10 w-10 rounded-full bg-purple-100 flex items-center justify-center">
+                                <Phone className="h-5 w-5 text-purple-600" />
+                            </div>
+                            <div>
+                                <p className="text-sm text-muted-foreground">Ligações</p>
+                                <p className="font-medium">{callStats.total} realizadas</p>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardContent className="p-4">
+                        <div className="flex items-center gap-3">
+                            <div className="h-10 w-10 rounded-full bg-emerald-100 flex items-center justify-center">
+                                <ThumbsUp className="h-5 w-5 text-emerald-600" />
+                            </div>
+                            <div>
+                                <p className="text-sm text-muted-foreground">Resultados</p>
+                                <p className="font-medium">
+                                    {callStats.interested} interessados, {callStats.meetingsScheduled} reuniões
+                                </p>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+
+            {/* Metrics */}
+            <CampaignMetrics metrics={metrics} />
+
+            {/* Tabs */}
+            <Tabs defaultValue="sends" className="space-y-4">
+                <TabsList>
+                    <TabsTrigger value="sends">
+                        <Mail className="h-4 w-4 mr-2" />
+                        Envios ({campaign.emailSends.length})
+                    </TabsTrigger>
+                    <TabsTrigger value="opened">
+                        Abertos ({campaign.totalOpened})
+                    </TabsTrigger>
+                    <TabsTrigger value="clicked">
+                        Clicaram ({campaign.totalClicked})
+                    </TabsTrigger>
+                    <TabsTrigger value="calls">
+                        <Phone className="h-4 w-4 mr-2" />
+                        Ligações ({callStats.total})
+                    </TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="sends">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Todos os Envios</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <EmailSendsList
+                                emailSends={campaign.emailSends}
+                                isLoading={isRefreshing}
+                                onRefresh={handleRefresh}
+                            />
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+
+                <TabsContent value="opened">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Emails Abertos</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <EmailSendsList
+                                emailSends={campaign.emailSends.filter(
+                                    (send: EmailSend) => send.openedAt !== null
+                                )}
+                                isLoading={isRefreshing}
+                                onRefresh={handleRefresh}
+                            />
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+
+                <TabsContent value="clicked">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Clicaram em Links</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <EmailSendsList
+                                emailSends={campaign.emailSends.filter(
+                                    (send: EmailSend) => send.clickedAt !== null
+                                )}
+                                isLoading={isRefreshing}
+                                onRefresh={handleRefresh}
+                            />
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+
+                <TabsContent value="calls">
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between">
+                            <div>
+                                <CardTitle>Ligações da Campanha</CardTitle>
+                                <CardDescription>
+                                    Ligações vinculadas a esta campanha de prospecção
+                                </CardDescription>
+                            </div>
+                            <Button size="sm" onClick={handleOpenCallModal}>
+                                <Plus className="h-4 w-4 mr-2" />
+                                Nova Ligação
+                            </Button>
+                        </CardHeader>
+                        <CardContent>
+                            <CampaignCallsList
+                                calls={calls}
+                                isLoading={isRefreshing}
+                                onEdit={handleEditCall}
+                                onRefresh={handleRefresh}
+                            />
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+            </Tabs>
+
+            {/* Delete Dialog */}
+            <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Excluir campanha?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Essa ação não pode ser desfeita. A campanha "{campaign.name}" e todos os
+                            registros de envio serão excluídos permanentemente.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={handleDelete}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                            Excluir
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+
+            {/* Send Confirmation Dialog */}
+            <SendConfirmationDialog
+                open={showSendDialog}
+                onClose={() => setShowSendDialog(false)}
+                onConfirm={handleConfirmSend}
+                campaignName={campaign.name}
+                campaignType={isSequence ? "sequence" : "single"}
+                templateName={campaign.template?.name || null}
+                totalRecipients={campaign.totalRecipients}
+                totalPending={isSequence ? campaign.totalRecipients : pendingCount}
+                isSequence={isSequence}
+                stepsCount={stepsCount}
+            />
+
+            {/* Call Modal */}
+
+            {/* Call Modal */}
+            <CallModal
+                isOpen={isCallModalOpen}
+                onClose={handleCloseCallModal}
+                onSaved={handleCallSaved}
+                call={editingCall}
+                workspaceId={campaign.workspaceId}
+                preselectedLeadId={null}
+                preselectedCampaignId={campaign.id}
+            />
+        </div>
+    )
+}

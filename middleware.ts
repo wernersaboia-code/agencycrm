@@ -1,16 +1,13 @@
 // middleware.ts
-
 import { createServerClient } from "@supabase/ssr"
 import { NextResponse, type NextRequest } from "next/server"
 
 export async function middleware(request: NextRequest) {
-    // Verifica se as variáveis de ambiente existem
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
     if (!supabaseUrl || !supabaseAnonKey) {
         console.error('Missing Supabase environment variables')
-        // Em produção, redireciona para uma página de erro ou continua
         return NextResponse.next()
     }
 
@@ -41,44 +38,70 @@ export async function middleware(request: NextRequest) {
         }
     )
 
-    // Rotas públicas (não precisam de autenticação)
-    const publicRoutes = ["/sign-in", "/sign-up", "/forgot-password", "/"]
-    const isPublicRoute = publicRoutes.some((route) =>
-        request.nextUrl.pathname === route ||
-        request.nextUrl.pathname.startsWith("/sign-") ||
-        request.nextUrl.pathname.startsWith("/forgot-")
+    const pathname = request.nextUrl.pathname
+
+    // ============================================
+    // ROTAS PÚBLICAS - LeadStore (Marketplace)
+    // ============================================
+    const marketplaceRoutes = [
+        "/",
+        "/catalog",
+        "/list",
+    ]
+
+    const isMarketplaceRoute = marketplaceRoutes.some((route) => {
+        if (route === "/") return pathname === "/"
+        return pathname === route || pathname.startsWith(`${route}/`)
+    })
+
+    // ============================================
+    // ROTAS DE AUTH (públicas)
+    // ============================================
+    const authRoutes = ["/sign-in", "/sign-up", "/forgot-password"]
+    const isAuthRoute = authRoutes.some((route) =>
+        pathname === route || pathname.startsWith(`${route}/`)
     )
 
-    // Rotas de API e assets - não processar
+    // ============================================
+    // ROTAS DE API e ASSETS - não processar
+    // ============================================
     if (
-        request.nextUrl.pathname.startsWith('/api') ||
-        request.nextUrl.pathname.startsWith('/_next') ||
-        request.nextUrl.pathname.includes('.')
+        pathname.startsWith('/api') ||
+        pathname.startsWith('/_next') ||
+        pathname.includes('.')
     ) {
         return supabaseResponse
     }
 
-    try {
-        const {
-            data: { user },
-        } = await supabase.auth.getUser()
+    // ============================================
+    // MARKETPLACE - sempre público, não verifica auth
+    // ============================================
+    if (isMarketplaceRoute) {
+        return supabaseResponse
+    }
 
-        // Se não está logado e tenta acessar rota protegida
-        if (!user && !isPublicRoute) {
+    // ============================================
+    // VERIFICAR AUTENTICAÇÃO PARA ROTAS DO CRM
+    // ============================================
+    try {
+        const { data: { user } } = await supabase.auth.getUser()
+
+        // Se não está logado e tenta acessar rota protegida (CRM)
+        if (!user && !isAuthRoute) {
             const url = request.nextUrl.clone()
             url.pathname = "/sign-in"
             return NextResponse.redirect(url)
         }
 
-        // Se está logado e tenta acessar página de login
-        if (user && isPublicRoute && request.nextUrl.pathname !== "/") {
+        // Se está logado e tenta acessar página de login/signup
+        if (user && isAuthRoute) {
             const url = request.nextUrl.clone()
             url.pathname = "/dashboard"
             return NextResponse.redirect(url)
         }
+
     } catch (error) {
         console.error('Middleware auth error:', error)
-        // Em caso de erro, permite acesso (fail open)
         return supabaseResponse
     }
 
@@ -87,14 +110,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
     matcher: [
-        /*
-         * Match all request paths except for the ones starting with:
-         * - _next/static (static files)
-         * - _next/image (image optimization files)
-         * - favicon.ico (favicon file)
-         * - public folder
-         * - api routes
-         */
         "/((?!_next/static|_next/image|favicon.ico|api|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)",
     ],
 }

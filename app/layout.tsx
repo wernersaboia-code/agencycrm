@@ -1,5 +1,4 @@
 // app/layout.tsx
-
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
@@ -11,8 +10,8 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-    title: "NextCRM - Sistema de Gestão de Relacionamento",
-    description: "CRM moderno e performático para gestão de clientes e vendas",
+    title: "LeadStore & AgencyCRM",
+    description: "Leads qualificados de comércio exterior e CRM para prospecção",
 }
 
 export default function RootLayout({

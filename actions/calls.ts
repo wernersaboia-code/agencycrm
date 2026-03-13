@@ -597,3 +597,207 @@ export async function getCampaignCallStats(campaignId: string): Promise<{
         meetingsScheduled: byResult.MEETING_SCHEDULED || 0,
     }
 }
+
+// ============================================
+// GET CALLS CHART DATA (Ligações por dia)
+// ============================================
+
+export async function getCallsPerDayData(
+    workspaceId: string,
+    days: number = 30
+): Promise<{ date: string; total: number; answered: number; interested: number }[]> {
+    const hasAccess = await verifyWorkspaceAccess(workspaceId)
+    if (!hasAccess) return []
+
+    const startDate = new Date()
+    startDate.setDate(startDate.getDate() - days)
+    startDate.setHours(0, 0, 0, 0)
+
+    const calls = await prisma.call.findMany({
+        where: {
+            workspaceId,
+            calledAt: { gte: startDate },
+        },
+        select: {
+            calledAt: true,
+            result: true,
+        },
+        orderBy: { calledAt: "asc" },
+    })
+
+    // Agrupa por dia
+    const dailyData: Record<string, { total: number; answered: number; interested: number }> = {}
+
+    // Inicializa todos os dias com 0
+    for (let i = 0; i < days; i++) {
+        const date = new Date(startDate)
+        date.setDate(date.getDate() + i)
+        const dateStr = date.toISOString().split("T")[0]
+        dailyData[dateStr] = { total: 0, answered: 0, interested: 0 }
+    }
+
+    // Preenche com dados reais
+    calls.forEach((call) => {
+        const dateStr = new Date(call.calledAt).toISOString().split("T")[0]
+        if (dailyData[dateStr]) {
+            dailyData[dateStr].total++
+            if (call.result === "ANSWERED" || call.result === "INTERESTED" || call.result === "MEETING_SCHEDULED" || call.result === "CALLBACK") {
+                dailyData[dateStr].answered++
+            }
+            if (call.result === "INTERESTED" || call.result === "MEETING_SCHEDULED") {
+                dailyData[dateStr].interested++
+            }
+        }
+    })
+
+    return Object.entries(dailyData).map(([date, data]) => ({
+        date,
+        ...data,
+    }))
+}
+
+// ============================================
+// GET CALLS BY RESULT DATA (Pizza)
+// ============================================
+
+export async function getCallsByResultData(
+    workspaceId: string
+): Promise<{ result: CallResult; label: string; count: number; color: string }[]> {
+    const hasAccess = await verifyWorkspaceAccess(workspaceId)
+    if (!hasAccess) return []
+
+    const calls = await prisma.call.groupBy({
+        by: ["result"],
+        where: { workspaceId },
+        _count: { result: true },
+    })
+
+    const resultConfig: Record<CallResult, { label: string; color: string }> = {
+        ANSWERED: { label: "Atendeu", color: "#22c55e" },
+        NO_ANSWER: { label: "Não Atendeu", color: "#6b7280" },
+        BUSY: { label: "Ocupado", color: "#f97316" },
+        VOICEMAIL: { label: "Caixa Postal", color: "#a855f7" },
+        WRONG_NUMBER: { label: "Número Errado", color: "#ef4444" },
+        INTERESTED: { label: "Interessado", color: "#10b981" },
+        NOT_INTERESTED: { label: "Sem Interesse", color: "#64748b" },
+        CALLBACK: { label: "Retornar", color: "#3b82f6" },
+        MEETING_SCHEDULED: { label: "Reunião", color: "#6366f1" },
+    }
+
+    return calls
+        .map((c) => ({
+            result: c.result,
+            label: resultConfig[c.result].label,
+            count: c._count.result,
+            color: resultConfig[c.result].color,
+        }))
+        .sort((a, b) => b.count - a.count)
+}
+
+// ============================================
+// GET CALLS DURATION DATA (Duração média por dia)
+// ============================================
+
+export async function getCallsDurationData(
+    workspaceId: string,
+    days: number = 30
+): Promise<{ date: string; avgDuration: number; totalCalls: number }[]> {
+    const hasAccess = await verifyWorkspaceAccess(workspaceId)
+    if (!hasAccess) return []
+
+    const startDate = new Date()
+    startDate.setDate(startDate.getDate() - days)
+    startDate.setHours(0, 0, 0, 0)
+
+    const calls = await prisma.call.findMany({
+        where: {
+            workspaceId,
+            calledAt: { gte: startDate },
+            duration: { not: null, gt: 0 },
+        },
+        select: {
+            calledAt: true,
+            duration: true,
+        },
+        orderBy: { calledAt: "asc" },
+    })
+
+    // Agrupa por dia
+    const dailyData: Record<string, { totalDuration: number; count: number }> = {}
+
+    // Inicializa todos os dias
+    for (let i = 0; i < days; i++) {
+        const date = new Date(startDate)
+        date.setDate(date.getDate() + i)
+        const dateStr = date.toISOString().split("T")[0]
+        dailyData[dateStr] = { totalDuration: 0, count: 0 }
+    }
+
+    // Preenche com dados reais
+    calls.forEach((call) => {
+        const dateStr = new Date(call.calledAt).toISOString().split("T")[0]
+        if (dailyData[dateStr] && call.duration) {
+            dailyData[dateStr].totalDuration += call.duration
+            dailyData[dateStr].count++
+        }
+    })
+
+    return Object.entries(dailyData).map(([date, data]) => ({
+        date,
+        avgDuration: data.count > 0 ? Math.round(data.totalDuration / data.count) : 0,
+        totalCalls: data.count,
+    }))
+}
+
+// ============================================
+// GET CALLS CONVERSION DATA (Funil)
+// ============================================
+
+export async function getCallsConversionData(
+    workspaceId: string
+): Promise<{
+    totalCalls: number
+    answered: number
+    interested: number
+    meetingsScheduled: number
+    answeredRate: number
+    interestedRate: number
+    meetingRate: number
+}> {
+    const hasAccess = await verifyWorkspaceAccess(workspaceId)
+    if (!hasAccess) {
+        return {
+            totalCalls: 0,
+            answered: 0,
+            interested: 0,
+            meetingsScheduled: 0,
+            answeredRate: 0,
+            interestedRate: 0,
+            meetingRate: 0,
+        }
+    }
+
+    const calls = await prisma.call.findMany({
+        where: { workspaceId },
+        select: { result: true },
+    })
+
+    const totalCalls = calls.length
+    const answered = calls.filter((c) =>
+        ["ANSWERED", "INTERESTED", "NOT_INTERESTED", "CALLBACK", "MEETING_SCHEDULED"].includes(c.result)
+    ).length
+    const interested = calls.filter((c) =>
+        ["INTERESTED", "MEETING_SCHEDULED"].includes(c.result)
+    ).length
+    const meetingsScheduled = calls.filter((c) => c.result === "MEETING_SCHEDULED").length
+
+    return {
+        totalCalls,
+        answered,
+        interested,
+        meetingsScheduled,
+        answeredRate: totalCalls > 0 ? Math.round((answered / totalCalls) * 100) : 0,
+        interestedRate: totalCalls > 0 ? Math.round((interested / totalCalls) * 100) : 0,
+        meetingRate: totalCalls > 0 ? Math.round((meetingsScheduled / totalCalls) * 100) : 0,
+    }
+}

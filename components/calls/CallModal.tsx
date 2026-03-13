@@ -61,6 +61,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { Badge } from "@/components/ui/badge"
 
 import { createCall, updateCall } from "@/actions/calls"
 import { getLeads } from "@/actions/leads"
@@ -90,6 +91,12 @@ interface CallModalProps {
     workspaceId: string
     preselectedLeadId: string | null
     preselectedCampaignId?: string | null
+    /** 🆕 Duração inicial em segundos (do Click-to-Call) */
+    initialDuration?: number
+    /** 🆕 Notas iniciais (do Click-to-Call) */
+    initialNotes?: string
+    /** 🆕 Data/hora inicial da ligação (do Click-to-Call) */
+    initialCalledAt?: Date
 }
 
 interface LeadOption {
@@ -118,6 +125,9 @@ export function CallModal({
                               workspaceId,
                               preselectedLeadId,
                               preselectedCampaignId,
+                              initialDuration,
+                              initialNotes,
+                              initialCalledAt,
                           }: CallModalProps) {
     // ============================================
     // STATE
@@ -132,6 +142,7 @@ export function CallModal({
     const [isLeadPopoverOpen, setIsLeadPopoverOpen] = useState<boolean>(false)
 
     const isEditing = !!call
+    const isFromClickToCall = !!initialDuration || !!initialCalledAt
 
     // ============================================
     // FORM
@@ -201,9 +212,10 @@ export function CallModal({
         loadData()
     }, [isOpen, workspaceId])
 
-    // Preenche formulário ao editar
+    // Preenche formulário ao editar OU com dados do Click-to-Call
     useEffect(() => {
         if (call) {
+            // Editando ligação existente
             form.reset({
                 result: call.result,
                 duration: call.duration ? formatCallDuration(call.duration) : "",
@@ -215,7 +227,21 @@ export function CallModal({
                 campaignId: call.campaignId || "",
             })
             setSelectedLead(call.lead)
+        } else if (isFromClickToCall) {
+            // 🆕 Dados vindos do Click-to-Call
+            form.reset({
+                result: "ANSWERED",
+                duration: initialDuration ? formatCallDuration(initialDuration) : "",
+                notes: initialNotes || "",
+                followUpAt: "",
+                calledAt: initialCalledAt
+                    ? format(initialCalledAt, "yyyy-MM-dd'T'HH:mm")
+                    : format(new Date(), "yyyy-MM-dd'T'HH:mm"),
+                campaignId: preselectedCampaignId || "",
+            })
+            setSelectedLead(null)
         } else {
+            // Nova ligação normal
             form.reset({
                 result: "ANSWERED",
                 duration: "",
@@ -226,7 +252,7 @@ export function CallModal({
             })
             setSelectedLead(null)
         }
-    }, [call, form, preselectedCampaignId])
+    }, [call, form, preselectedCampaignId, isFromClickToCall, initialDuration, initialNotes, initialCalledAt])
 
     // Define lead pré-selecionado
     useEffect(() => {
@@ -324,11 +350,20 @@ export function CallModal({
                     <DialogTitle className="flex items-center gap-2">
                         <Phone className="h-5 w-5" />
                         {isEditing ? "Editar Ligação" : "Registrar Ligação"}
+                        {/* 🆕 Badge indicando Click-to-Call */}
+                        {isFromClickToCall && !isEditing && (
+                            <Badge variant="secondary" className="ml-2 bg-green-100 text-green-700">
+                                <Clock className="h-3 w-3 mr-1" />
+                                Timer
+                            </Badge>
+                        )}
                     </DialogTitle>
                     <DialogDescription>
                         {isEditing
                             ? "Atualize os dados da ligação"
-                            : "Registre uma nova ligação realizada"}
+                            : isFromClickToCall
+                                ? "Complete o registro da ligação realizada"
+                                : "Registre uma nova ligação realizada"}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -351,7 +386,7 @@ export function CallModal({
                                             role="combobox"
                                             aria-expanded={isLeadPopoverOpen}
                                             className="w-full justify-start font-normal"
-                                            disabled={isEditing}
+                                            disabled={isEditing || isFromClickToCall}
                                         >
                                             {selectedLead ? (
                                                 <div className="flex items-center gap-2 truncate">
@@ -555,7 +590,15 @@ export function CallModal({
                                 name="duration"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Duração</FormLabel>
+                                        <FormLabel className="flex items-center gap-2">
+                                            Duração
+                                            {/* 🆕 Indicador de duração automática */}
+                                            {isFromClickToCall && initialDuration && (
+                                                <Badge variant="outline" className="text-xs font-normal">
+                                                    Automático
+                                                </Badge>
+                                            )}
+                                        </FormLabel>
                                         <FormControl>
                                             <div className="relative">
                                                 <Clock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -607,7 +650,16 @@ export function CallModal({
                                 name="notes"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Notas</FormLabel>
+                                        <FormLabel className="flex items-center gap-2">
+                                            <MessageSquare className="h-4 w-4" />
+                                            Notas
+                                            {/* 🆕 Indicador de notas do timer */}
+                                            {isFromClickToCall && initialNotes && (
+                                                <Badge variant="outline" className="text-xs font-normal">
+                                                    Do timer
+                                                </Badge>
+                                            )}
+                                        </FormLabel>
                                         <FormControl>
                                             <Textarea
                                                 placeholder="Anotações sobre a ligação..."

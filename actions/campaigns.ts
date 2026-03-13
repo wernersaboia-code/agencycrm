@@ -687,6 +687,7 @@ export async function sendCampaign(id: string): Promise<ActionResult> {
                 const personalizedBody = replaceEmailVariables(firstStep.content, leadData)
 
                 // Criar registro de envio
+                console.log('[Campaign] Criando EmailSend para lead:', lead.id)
                 const emailSend = await prisma.emailSend.create({
                     data: {
                         campaignId: campaign.id,
