@@ -4,6 +4,17 @@
 import { useState, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
+import Papa from "papaparse"
+import {
+    Upload,
+    FileSpreadsheet,
+    Loader2,
+    AlertCircle,
+    CheckCircle2,
+    Download,
+    X
+} from "lucide-react"
+
 import { Button } from "@/components/ui/button"
 import {
     Dialog,
@@ -15,227 +26,441 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Upload, FileSpreadsheet, Loader2, AlertCircle } from "lucide-react"
+import { Progress } from "@/components/ui/progress"
+import { Badge } from "@/components/ui/badge"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table"
+
 import { uploadLeadsToList } from "@/actions/admin/lists"
-import Papa from "papaparse"
+import {
+    MARKETPLACE_CSV_TEMPLATE_HEADERS,
+    MARKETPLACE_CSV_TEMPLATE_EXAMPLE,
+    autoMapMarketplaceColumn,
+    validateMarketplaceLead,
+    type MarketplaceLeadData,
+} from "@/lib/constants/marketplace-csv.constants"
 
 interface LeadsUploadModalProps {
     listId: string
     listName: string
+    trigger?: React.ReactNode
 }
 
-interface ParsedLead {
-    company: string
-    email: string
-    country: string
-    city?: string
-    industry?: string
-    companySize?: string
-    website?: string
-    taxId?: string
-    contactName?: string
-    jobTitle?: string
-    phone?: string
+type UploadStep = "select" | "preview" | "uploading" | "complete"
+
+interface ParsedRow {
+    original: Record<string, string>
+    mapped: Partial<MarketplaceLeadData>
+    valid: boolean
+    errors: string[]
 }
 
-export function LeadsUploadModal({ listId, listName }: LeadsUploadModalProps) {
+export function LeadsUploadModal({ listId, listName, trigger }: LeadsUploadModalProps) {
     const router = useRouter()
     const [open, setOpen] = useState(false)
-    const [isLoading, setIsLoading] = useState(false)
+    const [step, setStep] = useState<UploadStep>("select")
     const [file, setFile] = useState<File | null>(null)
-    const [preview, setPreview] = useState<ParsedLead[]>([])
-    const [error, setError] = useState<string | null>(null)
+    const [parsedRows, setParsedRows] = useState<ParsedRow[]>([])
+    const [columnMapping, setColumnMapping] = useState<Record<string, string | null>>({})
+    const [progress, setProgress] = useState(0)
+    const [result, setResult] = useState<{ success: number; duplicates: number; errors: number } | null>(null)
+    const [isLoading, setIsLoading] = useState(false)
 
+    // Reset quando fecha o modal
+    const handleOpenChange = (isOpen: boolean) => {
+        setOpen(isOpen)
+        if (!isOpen) {
+            setTimeout(() => {
+                setStep("select")
+                setFile(null)
+                setParsedRows([])
+                setColumnMapping({})
+                setProgress(0)
+                setResult(null)
+                setIsLoading(false)
+            }, 200)
+        }
+    }
+
+    // Download template CSV
+    const handleDownloadTemplate = () => {
+        const csvContent = [
+            MARKETPLACE_CSV_TEMPLATE_HEADERS.join(","),
+            MARKETPLACE_CSV_TEMPLATE_EXAMPLE.map(v => `"${v}"`).join(","),
+        ].join("\n")
+
+        const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" })
+        const url = URL.createObjectURL(blob)
+        const link = document.createElement("a")
+        link.href = url
+        link.download = "marketplace_leads_template.csv"
+        link.click()
+        URL.revokeObjectURL(url)
+
+        toast.success("Template baixado!")
+    }
+
+    // Handle file selection
     const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFile = e.target.files?.[0]
-        setError(null)
-        setPreview([])
-
-        if (!selectedFile) {
-            setFile(null)
-            return
-        }
+        if (!selectedFile) return
 
         if (!selectedFile.name.endsWith(".csv")) {
-            setError("Por favor, selecione um arquivo CSV")
-            setFile(null)
+            toast.error("Por favor, selecione um arquivo CSV")
             return
         }
 
         setFile(selectedFile)
+        setIsLoading(true)
 
-        // Parse preview
-        Papa.parse(selectedFile, {
+        // Parse CSV
+        Papa.parse<Record<string, string>>(selectedFile, {
             header: true,
             skipEmptyLines: true,
-            preview: 5,
+            encoding: "UTF-8",
             complete: (results) => {
-                const leads = results.data as ParsedLead[]
+                // Auto-mapear colunas
+                const headers = results.meta.fields || []
+                const mapping: Record<string, string | null> = {}
 
-                // Validar campos obrigatórios
-                const isValid = leads.every(lead =>
-                    lead.company && lead.email && lead.country
-                )
+                headers.forEach(header => {
+                    mapping[header] = autoMapMarketplaceColumn(header)
+                })
 
-                if (!isValid) {
-                    setError("O CSV deve conter as colunas: company, email, country")
-                    setPreview([])
-                    return
-                }
+                setColumnMapping(mapping)
 
-                setPreview(leads)
+                // Processar cada linha
+                const rows: ParsedRow[] = results.data.map((row) => {
+                    const mapped: Partial<MarketplaceLeadData> = {}
+
+                    // Aplicar mapeamento
+                    for (const [csvColumn, value] of Object.entries(row)) {
+                        const fieldKey = mapping[csvColumn]
+                        if (fieldKey && value?.trim()) {
+                            (mapped as Record<string, string>)[fieldKey] = value.trim()
+                        }
+                    }
+
+                    // Validar
+                    const validation = validateMarketplaceLead(mapped)
+
+                    return {
+                        original: row,
+                        mapped,
+                        valid: validation.valid,
+                        errors: validation.errors,
+                    }
+                })
+
+                setParsedRows(rows)
+                setStep("preview")
+                setIsLoading(false)
             },
-            error: (err) => {
-                setError(`Erro ao ler arquivo: ${err.message}`)
-            }
+            error: (error) => {
+                toast.error(`Erro ao ler arquivo: ${error.message}`)
+                setIsLoading(false)
+            },
         })
     }, [])
 
+    // Handle upload
     const handleUpload = async () => {
-        if (!file) return
+        const validLeads = parsedRows
+            .filter(row => row.valid)
+            .map(row => row.mapped as MarketplaceLeadData)
 
-        setIsLoading(true)
-        setError(null)
+        if (validLeads.length === 0) {
+            toast.error("Nenhum lead válido para importar")
+            return
+        }
+
+        setStep("uploading")
+        setProgress(10)
 
         try {
-            const text = await file.text()
+            // Simular progresso
+            const progressInterval = setInterval(() => {
+                setProgress(prev => Math.min(prev + 15, 85))
+            }, 300)
 
-            const result = await new Promise<Papa.ParseResult<ParsedLead>>((resolve) => {
-                Papa.parse(text, {
-                    header: true,
-                    skipEmptyLines: true,
-                    complete: resolve,
-                })
+            const uploadResult = await uploadLeadsToList(listId, validLeads)
+
+            clearInterval(progressInterval)
+            setProgress(100)
+
+            const invalidCount = parsedRows.filter(r => !r.valid).length
+
+            setResult({
+                success: uploadResult.count,
+                duplicates: validLeads.length - uploadResult.count,
+                errors: invalidCount,
             })
+            setStep("complete")
 
-            const leads = result.data.filter(lead =>
-                lead.company && lead.email && lead.country
-            )
-
-            if (leads.length === 0) {
-                setError("Nenhum lead válido encontrado no arquivo")
-                return
-            }
-
-            await uploadLeadsToList(listId, leads)
-
-            toast.success(`${leads.length} leads importados com sucesso!`)
-            setOpen(false)
-            setFile(null)
-            setPreview([])
-            router.refresh()
-        } catch (err) {
-            console.error(err)
-            setError("Erro ao importar leads")
+            toast.success(`${uploadResult.count} leads importados com sucesso!`)
+        } catch (error) {
+            console.error("Erro ao importar:", error)
             toast.error("Erro ao importar leads")
-        } finally {
-            setIsLoading(false)
+            setStep("preview")
         }
     }
 
+    const validCount = parsedRows.filter(r => r.valid).length
+    const invalidCount = parsedRows.filter(r => !r.valid).length
+    const mappedFieldsCount = Object.values(columnMapping).filter(Boolean).length
+    const totalFieldsCount = Object.keys(columnMapping).length
+
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
+        <Dialog open={open} onOpenChange={handleOpenChange}>
             <DialogTrigger asChild>
-                <Button>
-                    <Upload className="h-4 w-4 mr-2" />
-                    Importar Leads
-                </Button>
+                {trigger || (
+                    <Button>
+                        <Upload className="h-4 w-4 mr-2" />
+                        Importar Leads
+                    </Button>
+                )}
             </DialogTrigger>
-            <DialogContent className="max-w-2xl">
+
+            <DialogContent className="max-w-4xl max-h-[90vh] flex flex-col">
                 <DialogHeader>
-                    <DialogTitle>Importar Leads</DialogTitle>
+                    <DialogTitle>
+                        Importar Leads para &ldquo;{listName}&rdquo;
+                    </DialogTitle>
                     <DialogDescription>
-                        Importe leads para a lista "{listName}" via arquivo CSV
+                        Faça upload de um arquivo CSV com os leads para adicionar à lista.
                     </DialogDescription>
                 </DialogHeader>
 
-                <div className="space-y-4">
-                    {/* Instruções */}
-                    <div className="bg-muted p-4 rounded-lg text-sm">
-                        <p className="font-medium mb-2">Formato do CSV:</p>
-                        <p className="text-muted-foreground mb-2">
-                            O arquivo deve conter as colunas obrigatórias: <code>company</code>, <code>email</code>, <code>country</code>
-                        </p>
-                        <p className="text-muted-foreground">
-                            Colunas opcionais: <code>city</code>, <code>industry</code>, <code>companySize</code>, <code>website</code>, <code>taxId</code>, <code>contactName</code>, <code>jobTitle</code>, <code>phone</code>
-                        </p>
-                    </div>
-
-                    {/* Input de arquivo */}
-                    <div className="space-y-2">
-                        <Label htmlFor="file">Arquivo CSV</Label>
-                        <Input
-                            id="file"
-                            type="file"
-                            accept=".csv"
-                            onChange={handleFileChange}
-                            disabled={isLoading}
-                        />
-                    </div>
-
-                    {/* Erro */}
-                    {error && (
-                        <div className="flex items-center gap-2 text-destructive text-sm">
-                            <AlertCircle className="h-4 w-4" />
-                            {error}
-                        </div>
+                {/* Step: Select File */}
+                {step === "select" && (
+                    <div className="space-y-6 py-4">
+                        {/* Área de upload */}
+                        <div className="border-2 border-dashed rounded-lg p-8 text-center hover:border-primary/50 transition-colors">
+                            <FileSpreadsheet className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+                            <p className="text-sm text-muted-foreground mb-4">
+                                Arraste um arquivo CSV ou clique para selecionar
+                            </p>
+                            <Input
+                                type="file"
+                                accept=".csv"
+                                onChange={handleFileChange}
+                                disabled={isLoading}
+                                className="hidden"
+                                id="csv-upload"
+                            />
+                            <Label htmlFor="csv-upload" className="cursor-pointer">
+                                <Button asChild disabled={isLoading}>
+                  <span>
+                    {isLoading ? (
+                        <>
+                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                            Processando...
+                        </>
+                    ) : (
+                        "Selecionar Arquivo"
                     )}
+                  </span>
+                                </Button>
+                            </Label>
+                        </div>
 
-                    {/* Preview */}
-                    {preview.length > 0 && (
-                        <div className="space-y-2">
-                            <Label>Preview (primeiros 5 leads)</Label>
-                            <div className="border rounded-lg overflow-hidden">
-                                <table className="w-full text-sm">
-                                    <thead className="bg-muted">
-                                    <tr>
-                                        <th className="text-left p-2">Empresa</th>
-                                        <th className="text-left p-2">Email</th>
-                                        <th className="text-left p-2">País</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {preview.map((lead, i) => (
-                                        <tr key={i} className="border-t">
-                                            <td className="p-2">{lead.company}</td>
-                                            <td className="p-2">{lead.email}</td>
-                                            <td className="p-2">{lead.country}</td>
-                                        </tr>
-                                    ))}
-                                    </tbody>
-                                </table>
+                        {/* Template download */}
+                        <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+                            <div>
+                                <p className="font-medium">Precisa de um modelo?</p>
+                                <p className="text-sm text-muted-foreground">
+                                    Baixe nosso template CSV com todas as colunas
+                                </p>
+                            </div>
+                            <Button variant="outline" onClick={handleDownloadTemplate}>
+                                <Download className="mr-2 h-4 w-4" />
+                                Download Template
+                            </Button>
+                        </div>
+
+                        {/* Campos obrigatórios */}
+                        <div className="p-4 bg-amber-50 dark:bg-amber-950/30 rounded-lg border border-amber-200 dark:border-amber-800">
+                            <div className="flex gap-2">
+                                <AlertCircle className="h-4 w-4 text-amber-600 mt-0.5" />
+                                <div className="text-sm">
+                                    <p className="font-medium text-amber-800 dark:text-amber-200">
+                                        Campos obrigatórios:
+                                    </p>
+                                    <p className="text-amber-700 dark:text-amber-300">
+                                        Country, Company Name, General Email
+                                    </p>
+                                </div>
                             </div>
                         </div>
-                    )}
+                    </div>
+                )}
 
-                    {/* Ações */}
-                    <div className="flex justify-end gap-2">
-                        <Button
-                            variant="outline"
-                            onClick={() => setOpen(false)}
-                            disabled={isLoading}
-                        >
-                            Cancelar
-                        </Button>
-                        <Button
-                            onClick={handleUpload}
-                            disabled={!file || preview.length === 0 || isLoading}
-                        >
-                            {isLoading ? (
-                                <>
-                                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                                    Importando...
-                                </>
-                            ) : (
-                                <>
-                                    <Upload className="h-4 w-4 mr-2" />
-                                    Importar
-                                </>
+                {/* Step: Preview */}
+                {step === "preview" && (
+                    <div className="space-y-4 flex-1 overflow-hidden flex flex-col">
+                        {/* Estatísticas */}
+                        <div className="grid grid-cols-4 gap-3">
+                            <div className="p-3 bg-muted rounded-lg text-center">
+                                <p className="text-2xl font-bold">{parsedRows.length}</p>
+                                <p className="text-xs text-muted-foreground">Total</p>
+                            </div>
+                            <div className="p-3 bg-green-50 dark:bg-green-950/30 rounded-lg text-center">
+                                <p className="text-2xl font-bold text-green-600">{validCount}</p>
+                                <p className="text-xs text-muted-foreground">Válidos</p>
+                            </div>
+                            <div className="p-3 bg-red-50 dark:bg-red-950/30 rounded-lg text-center">
+                                <p className="text-2xl font-bold text-red-600">{invalidCount}</p>
+                                <p className="text-xs text-muted-foreground">Com Erros</p>
+                            </div>
+                            <div className="p-3 bg-blue-50 dark:bg-blue-950/30 rounded-lg text-center">
+                                <p className="text-2xl font-bold text-blue-600">
+                                    {mappedFieldsCount}/{totalFieldsCount}
+                                </p>
+                                <p className="text-xs text-muted-foreground">Mapeados</p>
+                            </div>
+                        </div>
+
+                        {/* Mapeamento de colunas */}
+                        <div className="p-3 bg-muted/50 rounded-lg">
+                            <p className="text-sm font-medium mb-2">Colunas mapeadas automaticamente:</p>
+                            <div className="flex flex-wrap gap-1">
+                                {Object.entries(columnMapping).map(([csv, field]) => (
+                                    <Badge
+                                        key={csv}
+                                        variant={field ? "default" : "outline"}
+                                        className="text-xs"
+                                    >
+                                        {csv} → {field || "não mapeado"}
+                                    </Badge>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Tabela de preview */}
+                        <ScrollArea className="flex-1 border rounded-lg">
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead className="w-[50px]">Status</TableHead>
+                                        <TableHead>Empresa</TableHead>
+                                        <TableHead>País</TableHead>
+                                        <TableHead>Email</TableHead>
+                                        <TableHead>Setor</TableHead>
+                                        <TableHead>Erros</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {parsedRows.slice(0, 50).map((row, index) => (
+                                        <TableRow
+                                            key={index}
+                                            className={!row.valid ? "bg-red-50 dark:bg-red-950/20" : ""}
+                                        >
+                                            <TableCell>
+                                                {row.valid ? (
+                                                    <CheckCircle2 className="h-4 w-4 text-green-600" />
+                                                ) : (
+                                                    <X className="h-4 w-4 text-red-600" />
+                                                )}
+                                            </TableCell>
+                                            <TableCell className="font-medium">
+                                                {row.mapped.companyName || "-"}
+                                            </TableCell>
+                                            <TableCell>
+                                                <Badge variant="outline">
+                                                    {row.mapped.country || "-"}
+                                                </Badge>
+                                            </TableCell>
+                                            <TableCell className="text-sm">
+                                                {row.mapped.emailGeneral || "-"}
+                                            </TableCell>
+                                            <TableCell className="text-sm text-muted-foreground">
+                                                {row.mapped.sector || "-"}
+                                            </TableCell>
+                                            <TableCell>
+                                                {row.errors.length > 0 && (
+                                                    <span className="text-xs text-red-600">
+                            {row.errors.join(", ")}
+                          </span>
+                                                )}
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </ScrollArea>
+
+                        {parsedRows.length > 50 && (
+                            <p className="text-sm text-muted-foreground text-center">
+                                Mostrando 50 de {parsedRows.length} linhas
+                            </p>
+                        )}
+
+                        {/* Ações */}
+                        <div className="flex justify-between pt-2">
+                            <Button variant="outline" onClick={() => setStep("select")}>
+                                Voltar
+                            </Button>
+                            <Button onClick={handleUpload} disabled={validCount === 0}>
+                                <Upload className="h-4 w-4 mr-2" />
+                                Importar {validCount} Leads
+                            </Button>
+                        </div>
+                    </div>
+                )}
+
+                {/* Step: Uploading */}
+                {step === "uploading" && (
+                    <div className="py-12 space-y-6">
+                        <div className="text-center">
+                            <Loader2 className="mx-auto h-12 w-12 animate-spin text-primary mb-4" />
+                            <p className="text-lg font-medium">Importando leads...</p>
+                            <p className="text-sm text-muted-foreground">
+                                Aguarde enquanto processamos os dados
+                            </p>
+                        </div>
+                        <Progress value={progress} className="w-full" />
+                        <p className="text-center text-sm text-muted-foreground">
+                            {progress}% concluído
+                        </p>
+                    </div>
+                )}
+
+                {/* Step: Complete */}
+                {step === "complete" && result && (
+                    <div className="py-12 text-center space-y-6">
+                        <CheckCircle2 className="mx-auto h-16 w-16 text-green-600" />
+                        <div>
+                            <p className="text-2xl font-bold text-green-600">
+                                {result.success} leads importados!
+                            </p>
+                            {result.duplicates > 0 && (
+                                <p className="text-sm text-muted-foreground">
+                                    {result.duplicates} duplicados ignorados
+                                </p>
                             )}
+                            {result.errors > 0 && (
+                                <p className="text-sm text-red-600">
+                                    {result.errors} linhas com erros
+                                </p>
+                            )}
+                        </div>
+                        <Button
+                            onClick={() => {
+                                handleOpenChange(false)
+                                router.refresh()
+                            }}
+                        >
+                            Fechar
                         </Button>
                     </div>
-                </div>
+                )}
             </DialogContent>
         </Dialog>
     )

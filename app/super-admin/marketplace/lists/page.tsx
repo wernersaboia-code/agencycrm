@@ -1,4 +1,4 @@
-// app/(crm)/admin/lists/page.tsx
+// app/super-admin/marketplace/lists/page.tsx
 import Link from "next/link"
 import { prisma } from "@/lib/prisma"
 import { Button } from "@/components/ui/button"
@@ -11,26 +11,22 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { Plus, Pencil, Users, Eye, EyeOff } from "lucide-react"
+import { Plus, Users, Edit } from "lucide-react"
 import { formatCurrency } from "@/lib/utils"
+import { DeleteListButton } from "@/components/admin/delete-list-button"
 
-export default async function AdminListsPage() {
+export default async function MarketplaceListsPage() {
     const lists = await prisma.leadList.findMany({
         orderBy: { createdAt: "desc" },
         include: {
             _count: {
-                select: { leads: true, purchaseItems: true }
-            }
-        }
+                select: {
+                    leads: true,
+                    purchaseItems: true,
+                },
+            },
+        },
     })
-
-    // Serializar os dados antes de usar
-    const serializedLists = lists.map(list => ({
-        ...list,
-        price: Number(list.price),
-        createdAt: list.createdAt.toISOString(),
-        updatedAt: list.updatedAt.toISOString(),
-    }))
 
     return (
         <div className="space-y-6">
@@ -38,15 +34,15 @@ export default async function AdminListsPage() {
                 <div>
                     <h1 className="text-3xl font-bold">Listas de Leads</h1>
                     <p className="text-muted-foreground">
-                        Gerencie as listas disponíveis no catálogo
+                        Gerencie as listas disponíveis no marketplace
                     </p>
                 </div>
-                <Button asChild>
-                    <Link href="/admin/lists/new">
+                <Link href="/super-admin/marketplace/lists/new">
+                    <Button>
                         <Plus className="h-4 w-4 mr-2" />
                         Nova Lista
-                    </Link>
-                </Button>
+                    </Button>
+                </Link>
             </div>
 
             <div className="border rounded-lg">
@@ -66,8 +62,16 @@ export default async function AdminListsPage() {
                     <TableBody>
                         {lists.length === 0 ? (
                             <TableRow>
-                                <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
-                                    Nenhuma lista cadastrada ainda.
+                                <TableCell colSpan={8} className="text-center py-12">
+                                    <p className="text-muted-foreground mb-4">
+                                        Nenhuma lista criada ainda.
+                                    </p>
+                                    <Link href="/super-admin/marketplace/lists/new">
+                                        <Button>
+                                            <Plus className="h-4 w-4 mr-2" />
+                                            Criar Primeira Lista
+                                        </Button>
+                                    </Link>
                                 </TableCell>
                             </TableRow>
                         ) : (
@@ -76,15 +80,17 @@ export default async function AdminListsPage() {
                                     <TableCell>
                                         <div>
                                             <p className="font-medium">{list.name}</p>
-                                            <p className="text-sm text-muted-foreground">{list.slug}</p>
+                                            <p className="text-xs text-muted-foreground">{list.slug}</p>
                                         </div>
                                     </TableCell>
                                     <TableCell>
                                         <Badge variant="outline">{list.category}</Badge>
                                     </TableCell>
                                     <TableCell>
-                                        {list.countries.slice(0, 3).join(", ")}
-                                        {list.countries.length > 3 && ` +${list.countries.length - 3}`}
+                                        <span className="text-sm">
+                                            {list.countries.slice(0, 3).join(", ")}
+                                            {list.countries.length > 3 && ` +${list.countries.length - 3}`}
+                                        </span>
                                     </TableCell>
                                     <TableCell className="text-center">
                                         {list._count.leads.toLocaleString()}
@@ -96,30 +102,28 @@ export default async function AdminListsPage() {
                                         {formatCurrency(Number(list.price), list.currency)}
                                     </TableCell>
                                     <TableCell className="text-center">
-                                        {list.isActive ? (
-                                            <Badge className="bg-green-100 text-green-800">
-                                                <Eye className="h-3 w-3 mr-1" />
-                                                Ativa
-                                            </Badge>
-                                        ) : (
-                                            <Badge variant="secondary">
-                                                <EyeOff className="h-3 w-3 mr-1" />
-                                                Inativa
+                                        <Badge variant={list.isActive ? "default" : "secondary"}>
+                                            {list.isActive ? "Ativa" : "Inativa"}
+                                        </Badge>
+                                        {list.isFeatured && (
+                                            <Badge variant="outline" className="ml-1">
+                                                Destaque
                                             </Badge>
                                         )}
                                     </TableCell>
                                     <TableCell className="text-right">
-                                        <div className="flex justify-end gap-2">
-                                            <Button variant="ghost" size="sm" asChild>
-                                                <Link href={`/admin/lists/${list.id}/leads`}>
+                                        <div className="flex justify-end gap-1">
+                                            <Link href={`/super-admin/marketplace/lists/${list.id}/leads`}>
+                                                <Button variant="ghost" size="icon" title="Ver Leads">
                                                     <Users className="h-4 w-4" />
-                                                </Link>
-                                            </Button>
-                                            <Button variant="ghost" size="sm" asChild>
-                                                <Link href={`/admin/lists/${list.id}`}>
-                                                    <Pencil className="h-4 w-4" />
-                                                </Link>
-                                            </Button>
+                                                </Button>
+                                            </Link>
+                                            <Link href={`/super-admin/marketplace/lists/${list.id}`}>
+                                                <Button variant="ghost" size="icon" title="Editar">
+                                                    <Edit className="h-4 w-4" />
+                                                </Button>
+                                            </Link>
+                                            <DeleteListButton listId={list.id} listName={list.name} />
                                         </div>
                                     </TableCell>
                                 </TableRow>

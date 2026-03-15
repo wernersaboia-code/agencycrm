@@ -1,4 +1,4 @@
-// app/(crm)/admin/lists/new/page.tsx
+// app/super-admin/marketplace/lists/new/page.tsx
 import { ListForm } from "@/components/admin/list-form"
 
 export default function NewListPage() {

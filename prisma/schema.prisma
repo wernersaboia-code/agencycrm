@@ -519,37 +519,58 @@ model LeadList {
 
 // Leads do marketplace (separados dos leads do CRM)
 model MarketplaceLead {
-  id String @id @default(cuid())
-
-  // Dados da empresa
-  company     String
-  country     String
-  city        String?
-  industry    String?
-  companySize String?
-  website     String?
-  taxId       String?
-
-  // Dados de contato
-  contactName String?
-  jobTitle    String?
-  email       String
-  phone       String?
-
-  // Verificação
-  emailVerified   Boolean   @default(false)
-  emailVerifiedAt DateTime?
-
-  // Relacionamento com lista
+  id     String @id @default(cuid())
   listId String
-  list   LeadList @relation(fields: [listId], references: [id], onDelete: Cascade)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  // === DADOS BÁSICOS ===
+  country      String // País (obrigatório)
+  companyName  String // Nome da empresa (obrigatório)
+  emailGeneral String? // E-Mail geral (agora OPCIONAL)
 
+  // === FLAG DE COMPLETUDE ===
+  isComplete Boolean @default(true) // false = falta email ou dados importantes
+
+  // === EMPRESA ===
+  companyType String?
+  sector      String?
+  website     String?
+  contactForm String?
+
+  // === TELEFONES ===
+  phoneGeneral    String?
+  phonePurchasing String?
+
+  // === EMAILS ===
+  emailPurchasing String?
+
+  // === CONTATOS ===
+  manager          String?
+  purchasingPerson String?
+
+  // === DETALHES DO NEGÓCIO ===
+  productPortfolio String?
+  specialty        String?
+  customerTypes    String?
+  productTypes     String?
+  sourcing         String?
+  exportSales      String?
+  specialFocus     String?
+  productKeywords  String?
+  salesPointsCount String?
+
+  // === METADADOS ===
+  emailVerified Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // === RELACIONAMENTO ===
+  list LeadList @relation(fields: [listId], references: [id], onDelete: Cascade)
+
+  @@unique([listId, companyName, country]) // Mudou: agora é por empresa+país, não email
   @@index([listId])
   @@index([country])
-  @@index([industry])
+  @@index([sector])
+  @@index([isComplete])
   @@map("marketplace_leads")
 }
 

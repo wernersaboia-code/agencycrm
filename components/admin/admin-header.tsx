@@ -1,4 +1,3 @@
-// components/admin/admin-header.tsx
 "use client"
 
 import { useEffect, useState } from "react"
@@ -13,17 +12,43 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
+import { cn } from "@/lib/utils"
+
+// ==================== CONFIGURAÇÕES POR VARIANTE ====================
+
+const headerConfigs = {
+    leadstore: {
+        badge: "Área Administrativa",
+        title: "Gerenciamento do Marketplace",
+        badgeColors: "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-800",
+        avatarColors: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300",
+    },
+    "super-admin": {
+        badge: "Super Admin",
+        title: "Administração Global do Sistema",
+        badgeColors: "bg-violet-50 text-violet-700 border-violet-200 dark:bg-violet-950 dark:text-violet-300 dark:border-violet-800",
+        avatarColors: "bg-violet-100 text-violet-700 dark:bg-violet-900 dark:text-violet-300",
+    },
+}
+
+// ==================== TIPOS ====================
+
+type AdminVariant = keyof typeof headerConfigs
 
 interface AdminHeaderProps {
     user?: {
         name?: string | null
         email?: string | null
     }
+    variant?: AdminVariant
 }
 
-export function AdminHeader({ user }: AdminHeaderProps) {
+// ==================== COMPONENTE ====================
+
+export function AdminHeader({ user, variant = "leadstore" }: AdminHeaderProps) {
     const { setTheme } = useTheme()
     const [mounted, setMounted] = useState(false)
+    const config = headerConfigs[variant]
 
     useEffect(() => {
         setMounted(true)
@@ -39,12 +64,12 @@ export function AdminHeader({ user }: AdminHeaderProps) {
     return (
         <header className="flex h-16 items-center justify-between border-b bg-background px-6">
             <div className="flex items-center gap-4">
-                <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200">
-                    Área Administrativa
+                <Badge variant="outline" className={cn(config.badgeColors)}>
+                    {config.badge}
                 </Badge>
                 <div className="hidden md:block">
                     <h1 className="text-lg font-semibold">
-                        Gerenciamento do Marketplace
+                        {config.title}
                     </h1>
                 </div>
             </div>
@@ -81,7 +106,7 @@ export function AdminHeader({ user }: AdminHeaderProps) {
                         <p className="text-xs text-muted-foreground">{user?.email}</p>
                     </div>
                     <Avatar>
-                        <AvatarFallback className="bg-emerald-100 text-emerald-700">
+                        <AvatarFallback className={cn(config.avatarColors)}>
                             {initials}
                         </AvatarFallback>
                     </Avatar>

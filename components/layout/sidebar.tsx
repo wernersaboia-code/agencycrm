@@ -176,16 +176,16 @@ export function Sidebar() {
                                     Administração
                                 </p>
                                 <Link
-                                    href="/admin"
+                                    href="/super-admin"
                                     className={cn(
                                         "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
-                                        pathname.startsWith("/admin")
-                                            ? "bg-emerald-600 text-white"
-                                            : "text-emerald-600 hover:bg-emerald-50"
+                                        pathname.startsWith("/super-admin")
+                                            ? "bg-violet-600 text-white"
+                                            : "text-violet-600 hover:bg-violet-50 dark:hover:bg-violet-950"
                                     )}
                                 >
                                     <ShieldCheck className="h-4 w-4" />
-                                    Admin Marketplace
+                                    Super Admin
                                 </Link>
                             </div>
                         </>

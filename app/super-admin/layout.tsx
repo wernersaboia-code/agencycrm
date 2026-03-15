@@ -1,13 +1,14 @@
-// app/(crm)/admin/layout.tsx
+// app/super-admin/layout.tsx
+
 import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
 import { prisma } from "@/lib/prisma"
 import { AdminSidebar } from "@/components/admin/admin-sidebar"
 import { AdminHeader } from "@/components/admin/admin-header"
 
-export default async function AdminLayout({
-                                              children,
-                                          }: {
+export default async function SuperAdminLayout({
+                                                   children,
+                                               }: {
     children: React.ReactNode
 }) {
     const supabase = await createClient()
@@ -28,9 +29,12 @@ export default async function AdminLayout({
 
     return (
         <div className="flex h-screen">
-            <AdminSidebar />
+            <AdminSidebar variant="super-admin" />
             <div className="flex-1 flex flex-col overflow-hidden">
-                <AdminHeader user={{ name: dbUser.name, email: dbUser.email }} />
+                <AdminHeader
+                    user={{ name: dbUser.name, email: dbUser.email }}
+                    variant="super-admin"
+                />
                 <main className="flex-1 overflow-y-auto p-6 bg-muted/30">
                     {children}
                 </main>
