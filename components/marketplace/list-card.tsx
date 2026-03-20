@@ -1,76 +1,113 @@
 // components/marketplace/list-card.tsx
+"use client"
+
 import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { formatCurrency } from "@/lib/utils"
-import { Building2, Globe, CheckCircle } from "lucide-react"
-import type { LeadList } from "@prisma/client"
+import { Building2, Globe, CheckCircle, ArrowRight } from "lucide-react"
+import { FlagIcon } from "@/components/ui/flag-icon"
 
 interface ListCardProps {
-    list: LeadList
+    list: {
+        id: string
+        name: string
+        slug: string
+        description: string | null
+        category: string
+        countries: string[]
+        industries: string[]
+        totalLeads: number
+        price: number
+        currency: string
+        isActive: boolean
+        isFeatured: boolean
+        previewData: any
+        createdAt: Date
+        updatedAt: Date
+    }
 }
 
 export function ListCard({ list }: ListCardProps) {
     return (
-        <Card className="flex flex-col">
-            <CardHeader>
-                <div className="flex items-start justify-between">
-                    <div>
-                        {list.isFeatured && (
-                            <Badge className="mb-2">Destaque</Badge>
-                        )}
-                        <h3 className="font-semibold line-clamp-2">{list.name}</h3>
+        <Link href={`/list/${list.slug}`}>
+            <Card className="h-full hover:shadow-lg transition-shadow border-gray-200 hover:border-[#2ec4b6] group cursor-pointer">
+                <CardContent className="p-5">
+                    {/* Header */}
+                    <div className="flex items-start justify-between mb-4">
+                        <div className="flex-1">
+                            {list.isFeatured && (
+                                <Badge className="mb-2 bg-[#4a2c5a] hover:bg-[#4a2c5a]">
+                                    Destaque
+                                </Badge>
+                            )}
+                            <h3 className="font-semibold text-gray-800 line-clamp-2 group-hover:text-[#2ec4b6] transition-colors">
+                                {list.name}
+                            </h3>
+                        </div>
+                        <div className="flex items-center gap-1">
+                            {list.countries.slice(0, 3).map((code) => (
+                                <FlagIcon
+                                    key={code}
+                                    code={code}
+                                    size="sm"
+                                    className="shadow-sm"
+                                />
+                            ))}
+                            {list.countries.length > 3 && (
+                                <span className="text-xs text-gray-400 ml-1">
+                                    +{list.countries.length - 3}
+                                </span>
+                            )}
+                        </div>
                     </div>
-                    <div className="text-2xl">
-                        {list.countries[0] && getFlagEmoji(list.countries[0])}
-                    </div>
-                </div>
-            </CardHeader>
 
-            <CardContent className="flex-1">
-                <div className="space-y-2 text-sm text-muted-foreground">
-                    <div className="flex items-center gap-2">
-                        <Building2 className="h-4 w-4" />
-                        <span>{list.totalLeads.toLocaleString()} leads</span>
+                    {/* Info */}
+                    <div className="space-y-2 mb-4">
+                        <div className="flex items-center gap-2 text-sm text-gray-600">
+                            <Building2 className="h-4 w-4 text-gray-400" />
+                            <span>{list.totalLeads.toLocaleString()} empresas</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm text-gray-600">
+                            <Globe className="h-4 w-4 text-gray-400" />
+                            <span className="truncate">{list.countries.slice(0, 3).join(", ")}{list.countries.length > 3 ? ` +${list.countries.length - 3}` : ''}</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm text-gray-600">
+                            <CheckCircle className="h-4 w-4 text-[#2ec4b6]" />
+                            <span>Emails verificados</span>
+                        </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                        <Globe className="h-4 w-4" />
-                        <span>{list.countries.join(", ")}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <CheckCircle className="h-4 w-4 text-green-500" />
-                        <span>Verificados</span>
-                    </div>
-                </div>
-            </CardContent>
 
-            <CardFooter className="flex flex-col gap-2">
-                <div className="w-full flex items-center justify-between">
-          <span className="text-2xl font-bold">
-            {formatCurrency(Number(list.price), list.currency)}
-          </span>
-                </div>
-                <Button className="w-full" asChild>
-                    <Link href={`/list/${list.slug}`}>Ver Detalhes</Link>
-                </Button>
-            </CardFooter>
-        </Card>
+                    {/* Setores */}
+                    {list.industries.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mb-4">
+                            {list.industries.slice(0, 3).map((industry) => (
+                                <Badge key={industry} variant="secondary" className="text-xs">
+                                    {industry}
+                                </Badge>
+                            ))}
+                            {list.industries.length > 3 && (
+                                <Badge variant="outline" className="text-xs">
+                                    +{list.industries.length - 3}
+                                </Badge>
+                            )}
+                        </div>
+                    )}
+
+                    {/* Footer */}
+                    <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                        <div>
+                            <span className="text-2xl font-bold text-[#4a2c5a]">
+                                {formatCurrency(list.price, list.currency)}
+                            </span>
+                        </div>
+                        <div className="flex items-center text-sm text-[#2ec4b6] font-medium group-hover:translate-x-1 transition-transform">
+                            Ver detalhes
+                            <ArrowRight className="h-4 w-4 ml-1" />
+                        </div>
+                    </div>
+                </CardContent>
+            </Card>
+        </Link>
     )
-}
-
-function getFlagEmoji(countryCode: string): string {
-    const flags: Record<string, string> = {
-        DE: "🇩🇪",
-        FR: "🇫🇷",
-        IT: "🇮🇹",
-        US: "🇺🇸",
-        CN: "🇨🇳",
-        BR: "🇧🇷",
-        PT: "🇵🇹",
-        ES: "🇪🇸",
-        GB: "🇬🇧",
-        NL: "🇳🇱",
-    }
-    return flags[countryCode] || "🌍"
 }

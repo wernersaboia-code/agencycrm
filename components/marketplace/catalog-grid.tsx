@@ -13,8 +13,8 @@ export async function CatalogGrid() {
 
     if (lists.length === 0) {
         return (
-            <div className="text-center py-12">
-                <p className="text-muted-foreground">
+            <div className="text-center py-12 bg-white rounded-xl border border-gray-200">
+                <p className="text-gray-500">
                     Nenhuma lista disponível no momento.
                 </p>
             </div>
@@ -22,9 +22,15 @@ export async function CatalogGrid() {
     }
 
     return (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             {lists.map((list) => (
-                <ListCard key={list.id} list={list} />
+                <ListCard
+                    key={list.id}
+                    list={{
+                        ...list,
+                        price: Number(list.price), // ← Converter Decimal pra Number
+                    }}
+                />
             ))}
         </div>
     )
