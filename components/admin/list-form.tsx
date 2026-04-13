@@ -13,6 +13,7 @@ import {
     Loader2,
     CheckCircle2,
     Trash2,
+    X,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -22,6 +23,7 @@ import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
+import { Checkbox } from "@/components/ui/checkbox"
 import {
     Select,
     SelectContent,
@@ -106,6 +108,21 @@ const currencies = [
     { value: "BRL", label: "Real (R$)" },
 ]
 
+const INDUSTRIES = [
+    { id: "food", name: "Alimentos & Bebidas" },
+    { id: "tech", name: "Tecnologia" },
+    { id: "fashion", name: "Moda & Têxtil" },
+    { id: "automotive", name: "Automotivo" },
+    { id: "health", name: "Saúde & Farmácia" },
+    { id: "construction", name: "Construção" },
+    { id: "retail", name: "Varejo" },
+    { id: "industrial", name: "Industrial" },
+    { id: "agriculture", name: "Agricultura" },
+    { id: "electronics", name: "Eletrônicos" },
+    { id: "chemicals", name: "Químicos" },
+    { id: "machinery", name: "Máquinas & Equipamentos" },
+]
+
 // ============================================
 // COMPONENTE
 // ============================================
@@ -122,6 +139,11 @@ export function ListForm({ list }: ListFormProps) {
 
     // Estado dos leads preparados (para criação de nova lista)
     const [preparedLeads, setPreparedLeads] = useState<MarketplaceLeadData[]>([])
+
+    // Estado das indústrias selecionadas
+    const [selectedIndustries, setSelectedIndustries] = useState<string[]>(
+        list?.industries || []
+    )
 
     const form = useForm<ListFormData>({
         resolver: zodResolver(listSchema) as any,
@@ -143,6 +165,26 @@ export function ListForm({ list }: ListFormProps) {
     // HANDLERS
     // ============================================
 
+    const toggleIndustry = (industryId: string) => {
+        setSelectedIndustries((prev) => {
+            const newSelected = prev.includes(industryId)
+                ? prev.filter((id) => id !== industryId)
+                : [...prev, industryId]
+
+            // Atualizar form
+            form.setValue("industries", newSelected.join(", "))
+            return newSelected
+        })
+    }
+
+    const removeIndustry = (industryId: string) => {
+        setSelectedIndustries((prev) => {
+            const newSelected = prev.filter((id) => id !== industryId)
+            form.setValue("industries", newSelected.join(", "))
+            return newSelected
+        })
+    }
+
     const onSubmit = async (data: ListFormData) => {
         setIsLoading(true)
         setUploadProgress(0)
@@ -152,9 +194,7 @@ export function ListForm({ list }: ListFormProps) {
                 ...data,
                 price: parseFloat(data.price),
                 countries: data.countries.split(",").map((c) => c.trim().toUpperCase()),
-                industries: data.industries
-                    ? data.industries.split(",").map((i) => i.trim())
-                    : [],
+                industries: selectedIndustries, // Usar array direto
             }
 
             if (list) {
@@ -215,15 +255,62 @@ export function ListForm({ list }: ListFormProps) {
     const handleLeadsPrepared = (leads: MarketplaceLeadData[]) => {
         setPreparedLeads(leads)
 
-        // Auto-preencher países e setores do CSV
+        // Auto-preencher países do CSV
         const countriesFromLeads = [...new Set(leads.map((l) => l.country))]
-        const sectorsFromLeads = [...new Set(leads.map((l) => l.sector).filter(Boolean))]
 
         if (countriesFromLeads.length > 0 && !form.getValues("countries")) {
             form.setValue("countries", countriesFromLeads.join(", "))
         }
-        if (sectorsFromLeads.length > 0 && !form.getValues("industries")) {
-            form.setValue("industries", sectorsFromLeads.join(", "))
+
+        // Auto-preencher setores do CSV (se tiver)
+        const sectorsFromLeads = leads
+            .map((l) => l.sector)
+            .filter((s): s is string => typeof s === "string" && s.length > 0)
+
+        if (sectorsFromLeads.length > 0 && selectedIndustries.length === 0) {
+            // Mapear setores do CSV para IDs de indústrias (simplificado)
+            const mappedIndustries: string[] = []
+
+            sectorsFromLeads.forEach((sector) => {
+                const lowerSector = sector.toLowerCase()
+                let industryId: string | null = null
+
+                // Tentar mapear para IDs conhecidos
+                if (lowerSector.includes("food") || lowerSector.includes("aliment")) {
+                    industryId = "food"
+                } else if (lowerSector.includes("tech")) {
+                    industryId = "tech"
+                } else if (lowerSector.includes("fashion") || lowerSector.includes("moda")) {
+                    industryId = "fashion"
+                } else if (lowerSector.includes("auto")) {
+                    industryId = "automotive"
+                } else if (lowerSector.includes("health") || lowerSector.includes("saúde")) {
+                    industryId = "health"
+                } else if (lowerSector.includes("construc")) {
+                    industryId = "construction"
+                } else if (lowerSector.includes("retail") || lowerSector.includes("varejo")) {
+                    industryId = "retail"
+                } else if (lowerSector.includes("industr")) {
+                    industryId = "industrial"
+                } else if (lowerSector.includes("agric")) {
+                    industryId = "agriculture"
+                } else if (lowerSector.includes("electr")) {
+                    industryId = "electronics"
+                } else if (lowerSector.includes("chem") || lowerSector.includes("quim")) {
+                    industryId = "chemicals"
+                } else if (lowerSector.includes("mach") || lowerSector.includes("máquin")) {
+                    industryId = "machinery"
+                }
+
+                if (industryId && !mappedIndustries.includes(industryId)) {
+                    mappedIndustries.push(industryId)
+                }
+            })
+
+            if (mappedIndustries.length > 0) {
+                setSelectedIndustries(mappedIndustries)
+                form.setValue("industries", mappedIndustries.join(", "))
+            }
         }
     }
 
@@ -346,21 +433,61 @@ export function ListForm({ list }: ListFormProps) {
                             </div>
                         </div>
 
-                        <div className="space-y-2">
-                            <Label htmlFor="industries">
-                                Setores
+                        {/* NOVO: Seletor de Indústrias */}
+                        <div className="space-y-3">
+                            <Label>
+                                Setores/Indústrias
                                 {hasPreparedLeads && (
                                     <Badge variant="outline" className="ml-2 text-xs">
                                         Auto-preenchido
                                     </Badge>
                                 )}
                             </Label>
-                            <Input
-                                id="industries"
-                                placeholder="Alimentos, Bebidas, Orgânicos"
-                                {...form.register("industries")}
-                            />
-                            <p className="text-xs text-muted-foreground">Separe por vírgula</p>
+
+                            {/* Badges das selecionadas */}
+                            {selectedIndustries.length > 0 && (
+                                <div className="flex flex-wrap gap-2 p-3 bg-muted rounded-lg">
+                                    {selectedIndustries.map((id) => {
+                                        const industry = INDUSTRIES.find((i) => i.id === id)
+                                        return (
+                                            <Badge
+                                                key={id}
+                                                variant="secondary"
+                                                className="gap-1 pr-1"
+                                            >
+                                                {industry?.name}
+                                                <button
+                                                    type="button"
+                                                    onClick={() => removeIndustry(id)}
+                                                    className="ml-1 hover:bg-destructive/20 rounded-full p-0.5"
+                                                >
+                                                    <X className="h-3 w-3" />
+                                                </button>
+                                            </Badge>
+                                        )
+                                    })}
+                                </div>
+                            )}
+
+                            {/* Grid de checkboxes */}
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 p-4 border rounded-lg">
+                                {INDUSTRIES.map((industry) => (
+                                    <label
+                                        key={industry.id}
+                                        className="flex items-center gap-2 cursor-pointer hover:bg-muted/50 p-2 rounded transition-colors"
+                                    >
+                                        <Checkbox
+                                            checked={selectedIndustries.includes(industry.id)}
+                                            onCheckedChange={() => toggleIndustry(industry.id)}
+                                        />
+                                        <span className="text-sm">{industry.name}</span>
+                                    </label>
+                                ))}
+                            </div>
+
+                            <p className="text-xs text-muted-foreground">
+                                Selecione um ou mais setores para esta lista
+                            </p>
                         </div>
                     </CardContent>
                 </Card>

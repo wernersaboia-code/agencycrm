@@ -1,34 +1,22 @@
 // components/marketplace/catalog-stats.tsx
-import { prisma } from "@/lib/prisma"
 import { Building2, Users, CheckCircle, Globe } from "lucide-react"
 
-export async function CatalogStats() {
-    const [totalLists, totalLeads, totalCountries] = await Promise.all([
-        prisma.leadList.count({ where: { isActive: true } }),
-        prisma.leadList.aggregate({
-            where: { isActive: true },
-            _sum: { totalLeads: true }
-        }),
-        prisma.leadList.findMany({
-            where: { isActive: true },
-            select: { countries: true }
-        }).then(lists => {
-            const allCountries = lists.flatMap(l => l.countries)
-            return new Set(allCountries).size
-        })
-    ])
+interface CatalogStatsProps {
+    total: number
+}
 
+export function CatalogStats({ total }: CatalogStatsProps) {
     const stats = [
         {
             icon: Building2,
-            value: totalLists.toLocaleString(),
-            label: "Listas",
+            value: total.toLocaleString(),
+            label: "Listas Encontradas",
             color: "text-blue-500"
         },
         {
             icon: Users,
-            value: Number(totalLeads._sum.totalLeads || 0).toLocaleString(),
-            label: "Leads Totais",
+            value: "10k+",
+            label: "Leads Disponíveis",
             color: "text-yellow-500"
         },
         {
@@ -39,14 +27,14 @@ export async function CatalogStats() {
         },
         {
             icon: Globe,
-            value: totalCountries.toString(),
+            value: "16",
             label: "Países",
             color: "text-purple-500"
         }
     ]
 
     return (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {stats.map((stat) => (
                 <div
                     key={stat.label}

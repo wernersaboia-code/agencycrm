@@ -3,8 +3,8 @@
 
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { ShoppingCart, User, Menu } from "lucide-react"
-import { useState } from "react"
+import { User, Menu } from "lucide-react"
+import { CartBadge } from "@/components/marketplace/cart-badge"
 import {
     Sheet,
     SheetContent,
@@ -12,17 +12,15 @@ import {
 } from "@/components/ui/sheet"
 
 export function MarketplaceHeader() {
-    const [cartCount] = useState(0)
-
     return (
         <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="container mx-auto px-4 h-16 flex items-center justify-between">
                 {/* Logo */}
                 <Link href="/" className="flex items-center gap-2">
                     <div className="h-8 w-8 rounded-lg bg-emerald-600 flex items-center justify-center">
-                        <span className="text-white font-bold text-lg">E</span>
+                        <span className="text-white font-bold text-lg">L</span>
                     </div>
-                    <span className="font-bold text-xl hidden sm:block">Easy Prospect</span>
+                    <span className="font-bold text-xl hidden sm:block">LeadStore</span>
                 </Link>
 
                 {/* Desktop Nav */}
@@ -43,19 +41,17 @@ export function MarketplaceHeader() {
 
                 {/* Actions */}
                 <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="icon" className="relative">
-                        <ShoppingCart className="h-5 w-5" />
-                        {cartCount > 0 && (
-                            <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-emerald-600 text-white text-xs flex items-center justify-center">
-                {cartCount}
-              </span>
-                        )}
-                    </Button>
+                    {/* Cart Badge */}
+                    <CartBadge />
 
                     <Button variant="outline" size="sm" asChild>
-                        <Link href="/sign-in">Entrar</Link>
+                        <Link href="/sign-in">
+                            <User className="h-4 w-4 mr-2" />
+                            Entrar
+                        </Link>
                     </Button>
 
+                    {/* Mobile Menu */}
                     <Sheet>
                         <SheetTrigger asChild>
                             <Button variant="ghost" size="icon" className="md:hidden">

@@ -3,7 +3,7 @@
 
 import { Button } from "@/components/ui/button"
 import { ShoppingCart } from "lucide-react"
-import { toast } from "sonner"
+import { useCart } from "@/contexts/cart-context"
 
 interface AddToCartButtonProps {
     list: {
@@ -17,13 +17,26 @@ interface AddToCartButtonProps {
 }
 
 export function AddToCartButton({ list }: AddToCartButtonProps) {
+    const { addItem } = useCart()
+
     const handleAddToCart = () => {
-        // TODO: Implementar carrinho real
-        toast.success(`"${list.name}" adicionado ao carrinho!`)
+        addItem({
+            id: list.id,
+            name: list.name,
+            slug: list.slug,
+            price: list.price,
+            currency: list.currency,
+            totalLeads: list.totalLeads,
+        })
     }
 
     return (
-        <Button className="w-full" size="lg" onClick={handleAddToCart}>
+        <Button
+            className="w-full"
+            size="lg"
+            variant="outline"
+            onClick={handleAddToCart}
+        >
             <ShoppingCart className="h-5 w-5 mr-2" />
             Adicionar ao Carrinho
         </Button>

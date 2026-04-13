@@ -2,6 +2,8 @@
 import { Suspense } from "react"
 import { MarketplaceHeader } from "@/components/marketplace/marketplace-header"
 import { MarketplaceFooter } from "@/components/marketplace/marketplace-footer"
+import { CartProvider } from "@/contexts/cart-context"
+import { CartDrawer } from "@/components/marketplace/cart-drawer"
 
 export const metadata = {
     title: "LeadStore - Leads Qualificados de Comércio Exterior",
@@ -14,16 +16,21 @@ export default function MarketplaceLayout({
     children: React.ReactNode
 }) {
     return (
-        <div className="min-h-screen flex flex-col">
-            <Suspense fallback={<div className="h-16 bg-background border-b" />}>
-                <MarketplaceHeader />
-            </Suspense>
+        <CartProvider>
+            <div className="min-h-screen flex flex-col">
+                <Suspense fallback={<div className="h-16 bg-background border-b" />}>
+                    <MarketplaceHeader />
+                </Suspense>
 
-            <main className="flex-1">
-                {children}
-            </main>
+                <main className="flex-1">
+                    {children}
+                </main>
 
-            <MarketplaceFooter />
-        </div>
+                <MarketplaceFooter />
+
+                {/* Cart Drawer - Global */}
+                <CartDrawer />
+            </div>
+        </CartProvider>
     )
 }

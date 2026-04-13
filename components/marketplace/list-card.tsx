@@ -4,9 +4,11 @@
 import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import { formatCurrency } from "@/lib/utils"
-import { Building2, Globe, CheckCircle, ArrowRight } from "lucide-react"
+import { Building2, Globe, CheckCircle, ArrowRight, ShoppingCart } from "lucide-react"
 import { FlagIcon } from "@/components/ui/flag-icon"
+import { useCart } from "@/contexts/cart-context"
 
 interface ListCardProps {
     list: {
@@ -29,11 +31,25 @@ interface ListCardProps {
 }
 
 export function ListCard({ list }: ListCardProps) {
+    const { addItem } = useCart()
+
+    const handleAddToCart = (e: React.MouseEvent) => {
+        e.preventDefault() // Evitar navegação
+        addItem({
+            id: list.id,
+            name: list.name,
+            slug: list.slug,
+            price: list.price,
+            currency: list.currency,
+            totalLeads: list.totalLeads,
+        })
+    }
+
     return (
-        <Link href={`/list/${list.slug}`}>
-            <Card className="h-full hover:shadow-lg transition-shadow border-gray-200 hover:border-[#2ec4b6] group cursor-pointer">
-                <CardContent className="p-5">
-                    {/* Header */}
+        <Card className="h-full hover:shadow-lg transition-shadow border-gray-200 hover:border-[#2ec4b6] group">
+            <CardContent className="p-5 flex flex-col h-full">
+                {/* Header */}
+                <Link href={`/list/${list.slug}`} className="flex-1">
                     <div className="flex items-start justify-between mb-4">
                         <div className="flex-1">
                             {list.isFeatured && (
@@ -93,21 +109,37 @@ export function ListCard({ list }: ListCardProps) {
                             )}
                         </div>
                     )}
+                </Link>
 
-                    {/* Footer */}
-                    <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                {/* Footer */}
+                <div className="pt-4 border-t border-gray-100 space-y-3">
+                    <div className="flex items-center justify-between">
                         <div>
                             <span className="text-2xl font-bold text-[#4a2c5a]">
                                 {formatCurrency(list.price, list.currency)}
                             </span>
                         </div>
-                        <div className="flex items-center text-sm text-[#2ec4b6] font-medium group-hover:translate-x-1 transition-transform">
+                        <Link
+                            href={`/list/${list.slug}`}
+                            className="flex items-center text-sm text-[#2ec4b6] font-medium hover:translate-x-1 transition-transform"
+                        >
                             Ver detalhes
                             <ArrowRight className="h-4 w-4 ml-1" />
-                        </div>
+                        </Link>
                     </div>
-                </CardContent>
-            </Card>
-        </Link>
+
+                    {/* Add to Cart Button */}
+                    <Button
+                        onClick={handleAddToCart}
+                        variant="outline"
+                        size="sm"
+                        className="w-full hover:bg-[#2ec4b6] hover:text-white hover:border-[#2ec4b6] transition-colors"
+                    >
+                        <ShoppingCart className="h-4 w-4 mr-2" />
+                        Adicionar ao Carrinho
+                    </Button>
+                </div>
+            </CardContent>
+        </Card>
     )
 }

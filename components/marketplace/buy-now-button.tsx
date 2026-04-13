@@ -3,7 +3,7 @@
 
 import { Button } from "@/components/ui/button"
 import { ShoppingCart } from "lucide-react"
-import { toast } from "sonner"
+import { useCart } from "@/contexts/cart-context"
 import { useRouter } from "next/navigation"
 
 interface BuyNowButtonProps {
@@ -18,19 +18,26 @@ interface BuyNowButtonProps {
 }
 
 export function BuyNowButton({ list }: BuyNowButtonProps) {
+    const { addItem } = useCart()
     const router = useRouter()
 
     const handleBuyNow = () => {
-        // TODO: Verificar autenticação
-        // TODO: Criar purchase no backend
-        // TODO: Redirecionar para checkout
-        toast.success(`"${list.name}" - Indo para checkout...`)
-        router.push(`/checkout?listId=${list.id}`)
+        addItem({
+            id: list.id,
+            name: list.name,
+            slug: list.slug,
+            price: list.price,
+            currency: list.currency,
+            totalLeads: list.totalLeads,
+        })
+
+        // Redirecionar para checkout
+        router.push("/checkout")
     }
 
     return (
         <Button
-            className="w-full h-12 text-lg font-semibold bg-[#4a2c5a] hover:bg-[#5d3a70]"
+            className="w-full bg-[#4a2c5a] hover:bg-[#3a1c4a]"
             size="lg"
             onClick={handleBuyNow}
         >
