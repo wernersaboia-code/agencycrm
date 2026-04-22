@@ -1,5 +1,4 @@
 // contexts/workspace-context.tsx
-
 "use client"
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react"
@@ -14,6 +13,10 @@ export type Workspace = {
     senderEmail: string | null
     createdAt: string
     updatedAt: string
+    // 🆕 Campos para assinatura/trial
+    plan?: string | null
+    trialEndsAt?: string | null
+    subscriptionStatus?: string | null
 }
 
 type WorkspaceContextType = {
@@ -69,7 +72,8 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
                 setWorkspaces(data.workspaces || [])
 
                 // Se não tem workspace ativo, selecionar o primeiro
-                if (!activeWorkspace && data.workspaces?.length > 0) {
+                const currentActive = activeWorkspace
+                if (!currentActive && data.workspaces?.length > 0) {
                     // Verificar se tem um salvo no cookie ou localStorage
                     const savedId = getWorkspaceCookie() || localStorage.getItem("activeWorkspaceId")
                     const saved = data.workspaces.find((w: Workspace) => w.id === savedId)
@@ -101,6 +105,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     // Carregar ao montar
     useEffect(() => {
         refreshWorkspaces()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     return (

@@ -1,4 +1,4 @@
-// app/super-admin/workspaces/[id]/page.tsx
+// app/super-admin/workspaces/[id]/page.tsx.bak
 
 import { notFound } from "next/navigation"
 import Link from "next/link"

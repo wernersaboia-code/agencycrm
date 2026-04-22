@@ -27,32 +27,32 @@ import { useEffect, useState } from "react"
 const mainMenuItems = [
     {
         title: "Dashboard",
-        href: "/dashboard",
+        href: "/crm/dashboard",
         icon: LayoutDashboard,
     },
     {
         title: "Leads",
-        href: "/leads",
+        href: "/crm/leads",
         icon: Users,
     },
     {
         title: "Campanhas",
-        href: "/campaigns",
+        href: "/crm/campaigns",
         icon: Mail,
     },
     {
         title: "Templates",
-        href: "/templates",
+        href: "/crm/templates",
         icon: FileText,
     },
     {
         title: "Ligações",
-        href: "/calls",
+        href: "/crm/calls",
         icon: Phone,
     },
     {
         title: "Relatórios",
-        href: "/reports",
+        href: "/crm/reports",
         icon: BarChart3,
     },
 ]
@@ -60,12 +60,12 @@ const mainMenuItems = [
 const managementMenuItems = [
     {
         title: "Clientes",
-        href: "/workspaces",
+        href: "/crm/workspaces",
         icon: Building2,
     },
     {
         title: "Configurações",
-        href: "/settings",
+        href: "/crm/settings",
         icon: Settings,
     },
 ]
@@ -94,7 +94,7 @@ export function Sidebar() {
         const supabase = createClient()
         await supabase.auth.signOut()
         toast.success("Logout realizado com sucesso!")
-        router.push("/sign-in")
+        router.push("/")
         router.refresh()
     }
 
@@ -102,7 +102,7 @@ export function Sidebar() {
         <div className="flex h-full w-64 flex-col border-r bg-muted/40">
             {/* Logo */}
             <div className="flex h-16 items-center border-b px-6">
-                <Link href="/dashboard" className="flex items-center gap-2">
+                <Link href="/crm/dashboard" className="flex items-center gap-2">
                     <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
                         <span className="text-lg font-bold text-primary-foreground">A</span>
                     </div>

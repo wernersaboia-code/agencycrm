@@ -1,4 +1,4 @@
-// app/(crm)/campaigns/[id]/page.tsx
+// app/(crm)/campaigns/[id]/page.tsx.bak
 
 import { notFound } from "next/navigation"
 import { getCampaignById } from "@/actions/campaigns"

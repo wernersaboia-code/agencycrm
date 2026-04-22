@@ -1,4 +1,4 @@
-// app/(crm)/campaigns/page.tsx
+// app/(crm)/campaigns/page.tsx.bak
 
 import { Suspense } from "react"
 import { redirect } from "next/navigation"

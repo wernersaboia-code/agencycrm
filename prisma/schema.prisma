@@ -119,6 +119,14 @@ enum EnrollmentStatus {
   stopped
 }
 
+enum WorkspacePlan {
+  FREE // 🆕 Usuários legados (quem comprou lista)
+  TRIAL // 14 dias grátis
+  STARTER // €29/mês
+  PRO // €49/mês
+  ENTERPRISE // €99/mês
+}
+
 // ==================== USUÁRIO ====================
 
 model User {
@@ -140,8 +148,9 @@ model User {
   lastLoginAt DateTime?
 
   // Relacionamentos
-  workspaces Workspace[]
-  purchases  Purchase[]
+  workspaces           Workspace[]
+  purchases            Purchase[]
+  purchaseAccessTokens PurchaseAccessToken[]
 
   @@map("users")
 }
@@ -180,6 +189,18 @@ model Workspace {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  // 🆕 Campos para assinatura
+  plan               WorkspacePlan @default(FREE)
+  trialEndsAt        DateTime?
+  subscriptionId     String? // ID da assinatura no Stripe
+  subscriptionStatus String? // active, canceled, past_due
+  stripeCustomerId   String? // ID do customer no Stripe
+
+  // 🆕 Limites
+  maxLeads        Int @default(0) // 0 = ilimitado (para FREE e ENTERPRISE)
+  maxUsers        Int @default(1)
+  maxEmailsPerDay Int @default(0) // 0 = ilimitado
 
   @@index([userId])
   @@map("workspaces")
@@ -477,7 +498,7 @@ model Call {
   @@map("calls")
 }
 
-// ==================== LEADSTORE - MARKETPLACE ====================
+// ==================== EASY PROSPECT - MARKETPLACE ====================
 
 // Listas disponíveis para venda
 model LeadList {
@@ -602,9 +623,10 @@ model Purchase {
   items PurchaseItem[]
 
   // Datas
-  paidAt    DateTime?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  paidAt               DateTime?
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+  purchaseAccessTokens PurchaseAccessToken[]
 
   @@index([userId])
   @@index([status])
@@ -637,4 +659,20 @@ model PurchaseItem {
   @@index([purchaseId])
   @@index([listId])
   @@map("purchase_items")
+}
+
+model PurchaseAccessToken {
+  id         String    @id @default(cuid())
+  token      String    @unique
+  userId     String
+  purchaseId String?
+  expiresAt  DateTime
+  usedAt     DateTime?
+  createdAt  DateTime  @default(now())
+
+  user     User      @relation(fields: [userId], references: [id])
+  purchase Purchase? @relation(fields: [purchaseId], references: [id])
+
+  @@index([token])
+  @@index([userId])
 }

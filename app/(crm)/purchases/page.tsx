@@ -1,15 +1,17 @@
-// app/(crm)/purchases/page.tsx
+// app/(crm)/purchases/page.tsx.bak
 import { Suspense } from "react"
+import { redirect } from "next/navigation"
 import { createServerClient } from "@supabase/ssr"
 import { cookies } from "next/headers"
-import { redirect } from "next/navigation"
 import { getUserPurchases } from "@/actions/checkout"
 import { PurchaseCard } from "@/components/purchases/purchase-card"
-import { ShoppingBag, Download, Package } from "lucide-react"
+import { ShoppingBag, ArrowLeft, Sparkles } from "lucide-react"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
 
 export const metadata = {
     title: "Minhas Compras | LeadStore",
-    description: "Acesse suas compras e baixe suas listas",
+    description: "Acesse suas listas de leads compradas",
 }
 
 async function getSession() {
@@ -23,14 +25,15 @@ async function getSession() {
                 getAll() {
                     return cookieStore.getAll()
                 },
-                setAll() {
-                    // Em Server Components, não podemos setar cookies
-                },
+                setAll() {},
             },
         }
     )
 
-    const { data: { session } } = await supabase.auth.getSession()
+    const {
+        data: { session },
+    } = await supabase.auth.getSession()
+
     return { session }
 }
 
@@ -38,71 +41,161 @@ export default async function PurchasesPage() {
     const { session } = await getSession()
 
     if (!session) {
-        redirect("/sign-in")
+        redirect("/sign-in?redirect=/purchases")
     }
 
     const purchases = await getUserPurchases()
 
+    // Calcular totais
+    const totalPurchases = purchases.length
+    const totalLists = purchases.reduce((acc, p) => acc + p.items.length, 0)
+    const totalLeads = purchases.reduce(
+        (acc, p) =>
+            acc +
+            p.items.reduce(
+                (sum: number, item: any) => sum + item.list.totalLeads,
+                0
+            ),
+        0
+    )
+
     return (
         <div className="min-h-screen bg-gray-50">
             {/* Header */}
-            <header className="bg-[#4a2c5a] h-16 flex items-center px-6">
-                <div className="flex items-center gap-4">
-                    <div className="h-8 w-8 rounded-lg bg-emerald-600 flex items-center justify-center">
-                        <span className="text-white font-bold text-lg">L</span>
+            <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
+                <div className="max-w-7xl mx-auto px-6 py-4">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                            <Link href="/catalog">
+                                <Button variant="ghost" size="icon">
+                                    <ArrowLeft className="h-5 w-5" />
+                                </Button>
+                            </Link>
+                            <div>
+                                <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+                                    <ShoppingBag className="h-6 w-6 text-[#2ec4b6]" />
+                                    Minhas Compras
+                                </h1>
+                                <p className="text-sm text-gray-500">
+                                    Acesse e baixe suas listas de leads
+                                </p>
+                            </div>
+                        </div>
+
+                        <Button asChild className="bg-[#4a2c5a] hover:bg-[#5d3a70]">
+                            <Link href="/catalog">
+                                <Sparkles className="h-4 w-4 mr-2" />
+                                Comprar Mais Listas
+                            </Link>
+                        </Button>
                     </div>
-                    <span className="text-white font-bold text-xl">LeadStore</span>
                 </div>
             </header>
 
-            {/* Conteúdo */}
-            <div className="max-w-6xl mx-auto p-6">
-                {/* Título */}
-                <div className="mb-8">
-                    <div className="flex items-center gap-3 mb-2">
-                        <div className="w-10 h-10 rounded-lg bg-[#4a2c5a] flex items-center justify-center">
-                            <ShoppingBag className="h-5 w-5 text-white" />
-                        </div>
-                        <h1 className="text-2xl font-bold text-gray-800">Minhas Compras</h1>
-                    </div>
-                    <p className="text-gray-500">
-                        Acesse suas listas compradas e faça o download
-                    </p>
-                </div>
+            {/* Content */}
+            <div className="max-w-7xl mx-auto px-6 py-8">
+                <Suspense fallback={<PurchasesSkeleton />}>
+                    {purchases.length === 0 ? (
+                        <EmptyState />
+                    ) : (
+                        <div className="space-y-4">
+                            {/* Stats */}
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                                <StatCard
+                                    label="Total de Compras"
+                                    value={totalPurchases.toString()}
+                                    icon={ShoppingBag}
+                                    color="bg-blue-500"
+                                />
+                                <StatCard
+                                    label="Total de Listas"
+                                    value={totalLists.toString()}
+                                    icon={ShoppingBag}
+                                    color="bg-emerald-500"
+                                />
+                                <StatCard
+                                    label="Total de Leads"
+                                    value={totalLeads.toLocaleString()}
+                                    icon={ShoppingBag}
+                                    color="bg-purple-500"
+                                />
+                            </div>
 
-                {/* Lista de Compras */}
-                {purchases.length === 0 ? (
-                    <div className="bg-white rounded-2xl p-12 shadow-sm border border-gray-100 text-center">
-                        <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
-                            <Package className="h-8 w-8 text-gray-400" />
+                            {/* Purchases List */}
+                            <div className="space-y-4">
+                                {purchases.map((purchase) => (
+                                    <PurchaseCard key={purchase.id} purchase={purchase} />
+                                ))}
+                            </div>
                         </div>
-                        <h3 className="font-semibold text-gray-800 mb-2">
-                            Nenhuma compra ainda
-                        </h3>
-                        <p className="text-gray-500 mb-6">
-                            Explore nosso catálogo e encontre as listas perfeitas para seu negócio
-                        </p>
-                        <a
-                            href="/catalog"
-                            className="inline-flex items-center gap-2 bg-[#4a2c5a] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#5d3a70] transition-colors"
-                        >
-                            Ver Catálogo
-                            <Download className="h-4 w-4" />
-                        </a>
-                    </div>
-                ) : (
-                    <div className="space-y-4">
-                        {purchases.map((purchase) => (
-                            <Suspense
-                                key={purchase.id}
-                                fallback={<div className="h-32 bg-gray-100 rounded-2xl animate-pulse"/>}
-                            >
-                                <PurchaseCard purchase={purchase} />
-                            </Suspense>
-                        ))}
-                    </div>
-                )}
+                    )}
+                </Suspense>
             </div>
+        </div>
+    )
+}
+
+// Empty State
+function EmptyState() {
+    return (
+        <div className="text-center py-16">
+            <div className="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-6">
+                <ShoppingBag className="h-12 w-12 text-gray-400" />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-800 mb-2">
+                Nenhuma compra ainda
+            </h2>
+            <p className="text-gray-500 mb-8 max-w-md mx-auto">
+                Explore nosso catálogo e encontre as melhores listas de leads para
+                impulsionar seu negócio
+            </p>
+            <Button asChild size="lg" className="bg-[#4a2c5a] hover:bg-[#5d3a70]">
+                <Link href="/catalog">
+                    <Sparkles className="h-5 w-5 mr-2" />
+                    Explorar Catálogo
+                </Link>
+            </Button>
+        </div>
+    )
+}
+
+// Stat Card
+function StatCard({
+                      label,
+                      value,
+                      icon: Icon,
+                      color,
+                  }: {
+    label: string
+    value: string
+    icon: React.ComponentType<{ className?: string }>
+    color: string
+}) {
+    return (
+        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div className="flex items-center gap-4">
+                <div className={`w-12 h-12 rounded-lg ${color} flex items-center justify-center`}>
+                    <Icon className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                    <div className="text-2xl font-bold text-gray-800">{value}</div>
+                    <div className="text-sm text-gray-500">{label}</div>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+// Skeleton
+function PurchasesSkeleton() {
+    return (
+        <div className="space-y-4">
+            {Array.from({ length: 3 }).map((_, i) => (
+                <div
+                    key={i}
+                    className="h-32 bg-gray-100 rounded-2xl animate-pulse"
+                />
+            ))}
         </div>
     )
 }

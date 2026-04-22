@@ -10,6 +10,14 @@ import { Building2, Globe, CheckCircle, ArrowRight, ShoppingCart } from "lucide-
 import { FlagIcon } from "@/components/ui/flag-icon"
 import { useCart } from "@/contexts/cart-context"
 
+// Definir tipo específico para previewData
+interface PreviewLead {
+    companyName: string
+    country: string
+    sector?: string | null
+    emailGeneral?: string | null
+}
+
 interface ListCardProps {
     list: {
         id: string
@@ -24,7 +32,7 @@ interface ListCardProps {
         currency: string
         isActive: boolean
         isFeatured: boolean
-        previewData: any
+        previewData: PreviewLead[] | null
         createdAt: Date
         updatedAt: Date
     }

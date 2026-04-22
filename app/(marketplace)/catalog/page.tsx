@@ -1,4 +1,4 @@
-// app/(marketplace)/catalog/page.tsx
+// app/(marketplace)/catalog/page.tsx.bak
 import { Suspense } from "react"
 import { CatalogSidebar } from "@/components/marketplace/catalog-sidebar"
 import { CatalogGrid } from "@/components/marketplace/catalog-grid"

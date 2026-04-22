@@ -1,10 +1,10 @@
-// app/(marketplace)/checkout/success/page.tsx
+// app/(marketplace)/checkout/success/page.tsx.bak
 import { Suspense } from "react"
 import { prisma } from "@/lib/prisma"
 import { createServerClient } from "@supabase/ssr"
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
-import { CheckCircle, Download, ArrowRight, Mail } from "lucide-react"
+import { CheckCircle, Download, ArrowRight, Mail, ShoppingBag } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { formatCurrency } from "@/lib/utils"
@@ -126,18 +126,27 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
                     {/* Ações */}
                     <div className="space-y-3">
                         <Button className="w-full h-12 bg-[#4a2c5a] hover:bg-[#5d3a70]" asChild>
-                            <Link href="/purchases">
-                                <Download className="h-5 w-5 mr-2" />
+                            <Link href="/my-purchases">
+                                <ShoppingBag className="h-5 w-5 mr-2" />
                                 Acessar Minhas Compras
                             </Link>
                         </Button>
 
-                        <Button variant="outline" className="w-full h-12" asChild>
-                            <Link href="/catalog">
-                                Continuar Comprando
-                                <ArrowRight className="h-5 w-5 ml-2" />
-                            </Link>
-                        </Button>
+                        <div className="grid grid-cols-2 gap-3">
+                            <Button variant="outline" className="h-12" asChild>
+                                <Link href="/dashboard">
+                                    <Download className="h-5 w-5 mr-2" />
+                                    Usar CRM
+                                </Link>
+                            </Button>
+
+                            <Button variant="outline" className="h-12" asChild>
+                                <Link href="/catalog">
+                                    Continuar Comprando
+                                    <ArrowRight className="h-5 w-5 ml-2" />
+                                </Link>
+                            </Button>
+                        </div>
                     </div>
 
                     {/* Email de Confirmação */}

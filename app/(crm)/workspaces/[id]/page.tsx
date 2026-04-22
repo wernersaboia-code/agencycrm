@@ -1,4 +1,4 @@
-// app/(crm)/workspaces/[id]/page.tsx
+// app/(crm)/workspaces/[id]/page.tsx.bak
 
 import { redirect } from "next/navigation"
 

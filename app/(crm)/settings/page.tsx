@@ -1,4 +1,4 @@
-// app/(crm)/settings/page.tsx
+// app/(crm)/settings/page.tsx.bak
 import { redirect } from "next/navigation"
 import { cookies } from "next/headers"
 import { getAuthenticatedUser } from "@/lib/auth"

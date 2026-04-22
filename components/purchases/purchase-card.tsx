@@ -5,6 +5,7 @@ import { formatCurrency } from "@/lib/utils"
 import { CheckCircle, Download, Database, Calendar, ChevronDown } from "lucide-react"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
+import { toast } from "sonner"
 
 interface PurchaseCardProps {
     purchase: {
@@ -29,6 +30,7 @@ interface PurchaseCardProps {
 
 export function PurchaseCard({ purchase }: PurchaseCardProps) {
     const [expanded, setExpanded] = useState(false)
+    const [downloading, setDownloading] = useState<string | null>(null)
 
     const statusColors: Record<string, string> = {
         paid: "bg-emerald-100 text-emerald-700",
@@ -42,6 +44,60 @@ export function PurchaseCard({ purchase }: PurchaseCardProps) {
         pending: "Pendente",
         failed: "Falhou",
         refunded: "Reembolsado"
+    }
+
+    const handleDownload = async (itemId: string, format: "csv" | "excel", itemName: string) => {
+        setDownloading(`${itemId}-${format}`)
+
+        try {
+            const endpoint =
+                format === "csv"
+                    ? `/api/purchases/${itemId}/download`
+                    : `/api/purchases/${itemId}/download-excel`
+
+            const response = await fetch(endpoint)
+
+            if (!response.ok) {
+                throw new Error("Erro ao baixar arquivo")
+            }
+
+            const blob = await response.blob()
+            const url = window.URL.createObjectURL(blob)
+            const a = document.createElement("a")
+            a.href = url
+            a.download = `${itemName}.${format === "csv" ? "csv" : "xlsx"}`
+            document.body.appendChild(a)
+            a.click()
+            window.URL.revokeObjectURL(url)
+            document.body.removeChild(a)
+
+            toast.success(`Download de ${format.toUpperCase()} iniciado!`)
+        } catch (error) {
+            toast.error("Erro ao fazer download")
+            console.error(error)
+        } finally {
+            setDownloading(null)
+        }
+    }
+
+    const handleDownloadAll = async (format: "csv" | "excel") => {
+        setDownloading(`all-${format}`)
+
+        try {
+            // Download de cada item sequencialmente
+            for (const item of purchase.items) {
+                await handleDownload(item.id, format, item.list.slug)
+                // Pequeno delay entre downloads
+                await new Promise((resolve) => setTimeout(resolve, 500))
+            }
+
+            toast.success(`Todos os arquivos foram baixados!`)
+        } catch (error) {
+            toast.error("Erro ao fazer downloads")
+            console.error(error)
+        } finally {
+            setDownloading(null)
+        }
     }
 
     return (
@@ -59,7 +115,7 @@ export function PurchaseCard({ purchase }: PurchaseCardProps) {
                         <div>
                             <div className="flex items-center gap-3 mb-1">
                                 <h3 className="font-semibold text-gray-800">
-                                    Pedido {purchase.id.slice(0, 8)}...
+                                    Pedido #{purchase.id.slice(0, 8)}
                                 </h3>
                                 <span className={`px-3 py-1 rounded-full text-xs font-medium ${statusColors[purchase.status]}`}>
                                     {statusLabels[purchase.status] || purchase.status}
@@ -111,25 +167,88 @@ export function PurchaseCard({ purchase }: PurchaseCardProps) {
                                     <span className="font-medium text-gray-800">
                                         {formatCurrency(item.price, purchase.currency)}
                                     </span>
-                                    <Button size="sm" variant="outline">
-                                        <Download className="h-4 w-4 mr-1" />
-                                        Download
-                                    </Button>
+                                    <div className="flex gap-2">
+                                        <Button
+                                            size="sm"
+                                            variant="outline"
+                                            onClick={() => handleDownload(item.id, "csv", item.list.slug)}
+                                            disabled={downloading !== null}
+                                        >
+                                            {downloading === `${item.id}-csv` ? (
+                                                <>
+                                                    <Download className="h-4 w-4 mr-1 animate-spin" />
+                                                    Baixando...
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Download className="h-4 w-4 mr-1" />
+                                                    CSV
+                                                </>
+                                            )}
+                                        </Button>
+                                        <Button
+                                            size="sm"
+                                            variant="outline"
+                                            onClick={() => handleDownload(item.id, "excel", item.list.slug)}
+                                            disabled={downloading !== null}
+                                        >
+                                            {downloading === `${item.id}-excel` ? (
+                                                <>
+                                                    <Download className="h-4 w-4 mr-1 animate-spin" />
+                                                    Baixando...
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Download className="h-4 w-4 mr-1" />
+                                                    Excel
+                                                </>
+                                            )}
+                                        </Button>
+                                    </div>
                                 </div>
                             </div>
                         ))}
                     </div>
 
                     {/* Ações */}
-                    <div className="mt-4 flex gap-3">
-                        <Button className="bg-[#4a2c5a] hover:bg-[#5d3a70]">
-                            <Download className="h-4 w-4 mr-2" />
-                            Baixar Tudo (CSV)
-                        </Button>
-                        <Button variant="outline">
-                            Importar para CRM
-                        </Button>
-                    </div>
+                    {purchase.items.length > 1 && (
+                        <div className="mt-4 flex gap-3">
+                            <Button
+                                className="bg-[#4a2c5a] hover:bg-[#5d3a70]"
+                                onClick={() => handleDownloadAll("csv")}
+                                disabled={downloading !== null}
+                            >
+                                {downloading === "all-csv" ? (
+                                    <>
+                                        <Download className="h-4 w-4 mr-2 animate-spin" />
+                                        Baixando...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Download className="h-4 w-4 mr-2" />
+                                        Baixar Tudo (CSV)
+                                    </>
+                                )}
+                            </Button>
+                            <Button
+                                variant="outline"
+                                onClick={() => handleDownloadAll("excel")}
+                                disabled={downloading !== null}
+                            >
+                                {downloading === "all-excel" ? (
+                                    <>
+                                        <Download className="h-4 w-4 mr-2 animate-spin" />
+                                        Baixando...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Download className="h-4 w-4 mr-2" />
+                                        Baixar Tudo (Excel)
+                                    </>
+                                )}
+                            </Button>
+                        </div>
+                    )}
                 </div>
             )}
         </div>

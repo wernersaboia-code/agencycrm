@@ -1,4 +1,4 @@
-// app/(crm)/templates/page.tsx
+// app/(crm)/templates/page.tsx.bak
 
 import { Suspense } from "react"
 import { redirect } from "next/navigation"

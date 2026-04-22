@@ -1,8 +1,7 @@
 // app/api/workspaces/route.ts
-
 import { NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
 import { createClient } from "@/lib/supabase/server"
+import { prisma } from "@/lib/prisma"
 
 export async function GET() {
     try {
@@ -10,24 +9,40 @@ export async function GET() {
         const { data: { user }, error } = await supabase.auth.getUser()
 
         if (error || !user) {
-            return NextResponse.json({ error: "Não autorizado" }, { status: 401 })
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
         }
 
         const workspaces = await prisma.workspace.findMany({
             where: { userId: user.id },
-            orderBy: { createdAt: "asc" },
+            select: {
+                id: true,
+                name: true,
+                description: true,
+                color: true,
+                logo: true,
+                senderName: true,
+                senderEmail: true,
+                createdAt: true,
+                updatedAt: true,
+                // 🆕 Novos campos
+                plan: true,
+                trialEndsAt: true,
+                subscriptionStatus: true,
+            },
+            orderBy: { createdAt: 'desc' }
         })
 
-        // Serializar datas
-        const serialized = workspaces.map((w) => ({
-            ...w,
-            createdAt: w.createdAt.toISOString(),
-            updatedAt: w.updatedAt.toISOString(),
+        // Converter datas para string
+        const serializedWorkspaces = workspaces.map(workspace => ({
+            ...workspace,
+            createdAt: workspace.createdAt.toISOString(),
+            updatedAt: workspace.updatedAt.toISOString(),
+            trialEndsAt: workspace.trialEndsAt?.toISOString() || null,
         }))
 
-        return NextResponse.json({ workspaces: serialized })
+        return NextResponse.json({ workspaces: serializedWorkspaces })
     } catch (error) {
         console.error("Erro ao buscar workspaces:", error)
-        return NextResponse.json({ error: "Erro interno" }, { status: 500 })
+        return NextResponse.json({ error: "Internal server error" }, { status: 500 })
     }
 }

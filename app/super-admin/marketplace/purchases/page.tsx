@@ -1,4 +1,4 @@
-// app/super-admin/marketplace/purchases/page.tsx
+// app/super-admin/marketplace/purchases/page.tsx.bak
 import { prisma } from "@/lib/prisma"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
