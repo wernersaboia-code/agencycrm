@@ -6,26 +6,10 @@ import { CheckCircle, Download, Database, Calendar, ChevronDown } from "lucide-r
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
+import type { UserPurchase } from "@/actions/checkout"
 
 interface PurchaseCardProps {
-    purchase: {
-        id: string
-        status: string
-        total: number
-        currency: string
-        createdAt: string
-        items: {
-            id: string
-            list: {
-                id: string
-                name: string
-                slug: string
-                totalLeads: number
-                category: string
-            }
-            price: number
-        }[]
-    }
+    purchase: UserPurchase
 }
 
 export function PurchaseCard({ purchase }: PurchaseCardProps) {

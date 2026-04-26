@@ -71,12 +71,24 @@ const campaignStatusConfig: Record<string, { label: string; color: string }> = {
     CANCELLED: { label: "Cancelada", color: "bg-red-100 text-red-700" },
 }
 
-function CustomTooltip({ active, payload, label }: any) {
+interface ChartTooltipPayload {
+    color?: string
+    name?: string
+    value?: string | number
+}
+
+interface ChartTooltipProps {
+    active?: boolean
+    payload?: ChartTooltipPayload[]
+    label?: string
+}
+
+function CustomTooltip({ active, payload, label }: ChartTooltipProps) {
     if (active && payload && payload.length) {
         return (
             <div className="bg-card border rounded-lg p-3 shadow-lg">
                 <p className="font-medium mb-1">{label}</p>
-                {payload.map((entry: any, index: number) => (
+                {payload.map((entry, index) => (
                     <p key={index} className="text-sm" style={{ color: entry.color }}>
                         {entry.name}: <span className="font-medium">{entry.value}</span>
                     </p>

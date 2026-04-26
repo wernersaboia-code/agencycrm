@@ -1,7 +1,22 @@
 // app/(crm)/pricing/page.tsx.bak
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { CheckCircle, Star, Shield, Zap, Users, Mail, BarChart3, Globe } from "lucide-react"
+import { CheckCircle, Star } from "lucide-react"
+
+interface PricingFeature {
+    text: string
+    included: boolean
+}
+
+interface PricingCardProps {
+    name: string
+    description: string
+    monthlyPrice: number
+    yearlyPrice: number
+    features: PricingFeature[]
+    cta: string
+    popular: boolean
+}
 
 export default function PricingPage() {
     return (
@@ -161,7 +176,7 @@ export default function PricingPage() {
     )
 }
 
-function PricingCard({ name, description, monthlyPrice, yearlyPrice, features, cta, popular }: any) {
+function PricingCard({ name, description, monthlyPrice, yearlyPrice, features, cta, popular }: PricingCardProps) {
     return (
         <div className={`
             bg-white rounded-2xl shadow-lg overflow-hidden
@@ -197,7 +212,7 @@ function PricingCard({ name, description, monthlyPrice, yearlyPrice, features, c
                 </Button>
 
                 <ul className="space-y-3">
-                    {features.map((feature: any, i: number) => (
+                    {features.map((feature, i) => (
                         <li key={i} className="flex items-center gap-2">
                             <CheckCircle className={`h-5 w-5 flex-shrink-0 ${
                                 feature.included ? 'text-green-500' : 'text-gray-300'

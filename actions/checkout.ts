@@ -19,6 +19,26 @@ type PurchaseWithItems = Prisma.PurchaseGetPayload<{
 
 type PurchaseItemWithList = PurchaseWithItems["items"][number]
 
+export interface UserPurchase {
+    id: string
+    status: string
+    total: number
+    currency: string
+    createdAt: string
+    paypalOrderId: string | null
+    items: {
+        id: string
+        list: {
+            id: string
+            name: string
+            slug: string
+            totalLeads: number
+            category: string
+        }
+        price: number
+    }[]
+}
+
 async function getSession() {
     const cookieStore = await cookies()
 
@@ -199,7 +219,7 @@ export async function getUserPurchases() {
             }
         })
 
-        return purchases.map((purchase: PurchaseWithItems) => ({
+        return purchases.map((purchase: PurchaseWithItems): UserPurchase => ({
             id: purchase.id,
             status: purchase.status,
             total: Number(purchase.total),

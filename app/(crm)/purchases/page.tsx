@@ -4,6 +4,7 @@ import { redirect } from "next/navigation"
 import { createServerClient } from "@supabase/ssr"
 import { cookies } from "next/headers"
 import { getUserPurchases } from "@/actions/checkout"
+import type { UserPurchase } from "@/actions/checkout"
 import { PurchaseCard } from "@/components/purchases/purchase-card"
 import { ShoppingBag, ArrowLeft, Sparkles } from "lucide-react"
 import Link from "next/link"
@@ -53,7 +54,7 @@ export default async function PurchasesPage() {
         (acc, p) =>
             acc +
             p.items.reduce(
-                (sum: number, item: any) => sum + item.list.totalLeads,
+                (sum: number, item: UserPurchase["items"][number]) => sum + item.list.totalLeads,
                 0
             ),
         0
