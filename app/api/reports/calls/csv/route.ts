@@ -3,6 +3,11 @@ import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { getAuthenticatedUser } from "@/lib/auth"
 import { format } from "date-fns"
+import {
+    buildCallReportWhere,
+    callReportQuerySchema,
+    searchParamsToObject,
+} from "@/lib/reports/call-report-filters"
 
 const RESULT_LABELS: Record<string, string> = {
     ANSWERED: "Atendeu",
@@ -31,12 +36,15 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ error: "Não autorizado" }, { status: 401 })
         }
 
-        const { searchParams } = new URL(request.url)
-        const workspaceId = searchParams.get("workspaceId")
-        const startDate = searchParams.get("startDate")
-        const endDate = searchParams.get("endDate")
-        const result = searchParams.get("result")
-        const campaignId = searchParams.get("campaignId")
+        const parsedParams = callReportQuerySchema.safeParse(
+            searchParamsToObject(request.nextUrl.searchParams)
+        )
+
+        if (!parsedParams.success) {
+            return NextResponse.json({ error: "Filtros invalidos" }, { status: 400 })
+        }
+
+        const { workspaceId } = parsedParams.data
 
         if (!workspaceId) {
             return NextResponse.json({ error: "Workspace não informado" }, { status: 400 })
@@ -51,23 +59,7 @@ export async function GET(request: NextRequest) {
         }
 
         // Montar filtros
-        const where: any = { workspaceId }
-
-        if (startDate) {
-            where.calledAt = { ...where.calledAt, gte: new Date(startDate) }
-        }
-
-        if (endDate) {
-            where.calledAt = { ...where.calledAt, lte: new Date(endDate + "T23:59:59") }
-        }
-
-        if (result && result !== "all") {
-            where.result = result
-        }
-
-        if (campaignId && campaignId !== "all") {
-            where.campaignId = campaignId
-        }
+        const where = buildCallReportWhere(parsedParams.data)
 
         // Buscar ligações
         const calls = await prisma.call.findMany({

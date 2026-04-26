@@ -5,18 +5,12 @@ import { prisma } from "@/lib/prisma"
 import { getAuthenticatedUser } from "@/lib/auth"
 import { CallsReportPDF } from "@/lib/pdf/templates/calls-report"
 import { format } from "date-fns"
-
-const RESULT_LABELS: Record<string, string> = {
-    ANSWERED: "Atendeu",
-    NO_ANSWER: "Nao Atendeu",
-    BUSY: "Ocupado",
-    VOICEMAIL: "Caixa Postal",
-    WRONG_NUMBER: "Numero Errado",
-    INTERESTED: "Interessado",
-    NOT_INTERESTED: "Sem Interesse",
-    CALLBACK: "Retornar",
-    MEETING_SCHEDULED: "Reuniao Agendada",
-}
+import {
+    buildCallReportWhere,
+    callReportQuerySchema,
+    CALL_RESULT_LABELS,
+    searchParamsToObject,
+} from "@/lib/reports/call-report-filters"
 
 export async function GET(request: NextRequest) {
     try {
@@ -27,12 +21,15 @@ export async function GET(request: NextRequest) {
         }
 
         // Pegar parâmetros da URL
-        const { searchParams } = new URL(request.url)
-        const workspaceId = searchParams.get("workspaceId")
-        const startDate = searchParams.get("startDate")
-        const endDate = searchParams.get("endDate")
-        const result = searchParams.get("result")
-        const campaignId = searchParams.get("campaignId")
+        const parsedParams = callReportQuerySchema.safeParse(
+            searchParamsToObject(request.nextUrl.searchParams)
+        )
+
+        if (!parsedParams.success) {
+            return NextResponse.json({ error: "Filtros invalidos" }, { status: 400 })
+        }
+
+        const { workspaceId, startDate, endDate } = parsedParams.data
 
         if (!workspaceId) {
             return NextResponse.json({ error: "Workspace não informado" }, { status: 400 })
@@ -54,23 +51,7 @@ export async function GET(request: NextRequest) {
         }
 
         // Montar filtros
-        const where: any = { workspaceId }
-
-        if (startDate) {
-            where.calledAt = { ...where.calledAt, gte: new Date(startDate) }
-        }
-
-        if (endDate) {
-            where.calledAt = { ...where.calledAt, lte: new Date(endDate + "T23:59:59") }
-        }
-
-        if (result && result !== "all") {
-            where.result = result
-        }
-
-        if (campaignId && campaignId !== "all") {
-            where.campaignId = campaignId
-        }
+        const where = buildCallReportWhere(parsedParams.data)
 
         // Buscar ligações
         const calls = await prisma.call.findMany({
@@ -113,7 +94,7 @@ export async function GET(request: NextRequest) {
             .map(([result, count]) => ({
                 result,
                 count,
-                label: RESULT_LABELS[result] || result,
+                label: CALL_RESULT_LABELS[result] || result,
             }))
             .sort((a, b) => b.count - a.count)
 

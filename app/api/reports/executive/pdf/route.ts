@@ -5,6 +5,11 @@ import { prisma } from "@/lib/prisma"
 import { getAuthenticatedUser } from "@/lib/auth"
 import { ExecutiveReportPDF } from "@/lib/pdf/templates/executive-report"
 import { format } from "date-fns"
+import {
+    executiveReportQuerySchema,
+    getExecutiveReportPeriod,
+    searchParamsToObject,
+} from "@/lib/reports/executive-report-filters"
 
 const STATUS_LABELS: Record<string, string> = {
     NEW: "Novo",
@@ -43,10 +48,15 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ error: "Não autorizado" }, { status: 401 })
         }
 
-        const { searchParams } = new URL(request.url)
-        const workspaceId = searchParams.get("workspaceId")
-        const startDate = searchParams.get("startDate")
-        const endDate = searchParams.get("endDate")
+        const parsedParams = executiveReportQuerySchema.safeParse(
+            searchParamsToObject(request.nextUrl.searchParams)
+        )
+
+        if (!parsedParams.success) {
+            return NextResponse.json({ error: "Filtros invalidos" }, { status: 400 })
+        }
+
+        const { workspaceId } = parsedParams.data
 
         if (!workspaceId) {
             return NextResponse.json({ error: "Workspace não informado" }, { status: 400 })
@@ -63,18 +73,13 @@ export async function GET(request: NextRequest) {
         }
 
         // Definir período
-        const start = startDate ? new Date(startDate) : new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
-        const end = endDate ? new Date(endDate + "T23:59:59") : new Date()
+        const { start, end } = getExecutiveReportPeriod(parsedParams.data)
 
         // ========== LEADS ==========
         const leads = await prisma.lead.findMany({
             where: { workspaceId },
             select: { status: true, country: true, industry: true, createdAt: true },
         })
-
-        const leadsInPeriod = leads.filter(
-            (l) => l.createdAt >= start && l.createdAt <= end
-        )
 
         // Stats de leads
         const leadsStats = {
