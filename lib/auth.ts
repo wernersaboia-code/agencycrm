@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
+import type { UserRole, UserStatus } from '@prisma/client'
 
 // ============================================================
 // TIPOS
@@ -11,6 +12,12 @@ export interface AuthenticatedUser {
     id: string
     email: string
     name: string | null
+}
+
+export interface AuthenticatedDbUser extends AuthenticatedUser {
+    role: UserRole
+    status: UserStatus
+    activeWorkspaceId: string | null
 }
 
 // ============================================================
@@ -68,6 +75,50 @@ export async function getAuthenticatedUser(): Promise<AuthenticatedUser | null> 
     }
 }
 
+export async function getAuthenticatedDbUser(): Promise<AuthenticatedDbUser | null> {
+    const supabase = await createClient()
+
+    const { data: { user: supabaseUser }, error } = await supabase.auth.getUser()
+
+    if (error || !supabaseUser || !supabaseUser.email) {
+        return null
+    }
+
+    let user = await prisma.user.findUnique({
+        where: { id: supabaseUser.id },
+        select: {
+            id: true,
+            email: true,
+            name: true,
+            role: true,
+            status: true,
+            activeWorkspaceId: true,
+        }
+    })
+
+    if (!user) {
+        user = await prisma.user.create({
+            data: {
+                id: supabaseUser.id,
+                email: supabaseUser.email,
+                name: supabaseUser.user_metadata?.name ??
+                    supabaseUser.user_metadata?.full_name ??
+                    supabaseUser.email.split('@')[0],
+            },
+            select: {
+                id: true,
+                email: true,
+                name: true,
+                role: true,
+                status: true,
+                activeWorkspaceId: true,
+            }
+        })
+    }
+
+    return user
+}
+
 /**
  * Verifica se existe um usuário autenticado (mais leve, sem buscar no banco)
  *
@@ -109,6 +160,38 @@ export async function requireAuth(): Promise<AuthenticatedUser> {
 
     if (!user) {
         throw new Error('Não autenticado')
+    }
+
+    return user
+}
+
+export async function requireAdmin(): Promise<AuthenticatedDbUser> {
+    const user = await getAuthenticatedDbUser()
+
+    if (!user) {
+        throw new Error('Nao autenticado')
+    }
+
+    if (user.role !== 'ADMIN') {
+        throw new Error('Acesso negado')
+    }
+
+    return user
+}
+
+export async function requireWorkspaceAccess(workspaceId: string): Promise<AuthenticatedUser> {
+    const user = await requireAuth()
+
+    const workspace = await prisma.workspace.findFirst({
+        where: {
+            id: workspaceId,
+            userId: user.id,
+        },
+        select: { id: true },
+    })
+
+    if (!workspace) {
+        throw new Error('Workspace nao encontrado')
     }
 
     return user

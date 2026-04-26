@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache"
 import { prisma } from "@/lib/prisma"
 import { createClient } from "@/lib/supabase/server"
+import { requireAdmin } from "@/lib/auth"
 import type { UserRole, UserStatus } from "@prisma/client"
 
 // ==================== TIPOS ====================
@@ -58,6 +59,8 @@ export interface UsersFilters {
 // ==================== LISTAR USUÁRIOS ====================
 
 export async function getUsers(filters: UsersFilters = {}) {
+    await requireAdmin()
+
     const {
         search = "",
         role = "ALL",
@@ -128,6 +131,8 @@ export async function getUsers(filters: UsersFilters = {}) {
 // ==================== DETALHES DO USUÁRIO ====================
 
 export async function getUserDetails(userId: string): Promise<UserDetails | null> {
+    await requireAdmin()
+
     const user = await prisma.user.findUnique({
         where: { id: userId },
         include: {
@@ -166,6 +171,8 @@ export async function getUserDetails(userId: string): Promise<UserDetails | null
 // ==================== ALTERAR ROLE ====================
 
 export async function updateUserRole(userId: string, role: UserRole) {
+    await requireAdmin()
+
     await prisma.user.update({
         where: { id: userId },
         data: { role },
@@ -180,6 +187,8 @@ export async function updateUserRole(userId: string, role: UserRole) {
 // ==================== ALTERAR STATUS ====================
 
 export async function updateUserStatus(userId: string, status: UserStatus) {
+    await requireAdmin()
+
     await prisma.user.update({
         where: { id: userId },
         data: { status },
@@ -194,6 +203,8 @@ export async function updateUserStatus(userId: string, status: UserStatus) {
 // ==================== RESET DE SENHA ====================
 
 export async function sendPasswordReset(email: string) {
+    await requireAdmin()
+
     const supabase = await createClient()
 
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
@@ -211,6 +222,8 @@ export async function sendPasswordReset(email: string) {
 // ==================== ESTATÍSTICAS DO USUÁRIO ====================
 
 export async function getUserStats(userId: string) {
+    await requireAdmin()
+
     const [
         totalLeads,
         totalCampaigns,

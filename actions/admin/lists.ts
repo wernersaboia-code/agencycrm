@@ -3,6 +3,7 @@
 
 import { revalidatePath } from "next/cache"
 import { prisma } from "@/lib/prisma"
+import { requireAdmin } from "@/lib/auth"
 import type { MarketplaceLeadData } from "@/lib/constants/marketplace-csv.constants"
 
 interface CreateListData {
@@ -63,6 +64,8 @@ function revalidateListPaths(listSlug?: string) {
 }
 
 export async function createList(data: CreateListData): Promise<SerializedList> {
+    await requireAdmin()
+
     const list = await prisma.leadList.create({
         data: {
             name: data.name,
@@ -84,6 +87,8 @@ export async function createList(data: CreateListData): Promise<SerializedList> 
 }
 
 export async function updateList(id: string, data: CreateListData): Promise<SerializedList> {
+    await requireAdmin()
+
     const list = await prisma.leadList.update({
         where: { id },
         data: {
@@ -106,6 +111,8 @@ export async function updateList(id: string, data: CreateListData): Promise<Seri
 }
 
 export async function deleteList(id: string) {
+    await requireAdmin()
+
     const list = await prisma.leadList.findUnique({
         where: { id },
         select: { slug: true }
@@ -119,6 +126,8 @@ export async function deleteList(id: string) {
 }
 
 export async function toggleListActive(id: string, isActive: boolean) {
+    await requireAdmin()
+
     const list = await prisma.leadList.update({
         where: { id },
         data: { isActive },
@@ -128,6 +137,8 @@ export async function toggleListActive(id: string, isActive: boolean) {
 }
 
 export async function uploadLeadsToList(listId: string, leads: MarketplaceLeadData[]) {
+    await requireAdmin()
+
     // Criar leads em batch
     const created = await prisma.marketplaceLead.createMany({
         data: leads.map((lead) => {
@@ -199,6 +210,8 @@ export async function uploadLeadsToList(listId: string, leads: MarketplaceLeadDa
 }
 
 export async function deleteMarketplaceLead(leadId: string, listId: string) {
+    await requireAdmin()
+
     await prisma.marketplaceLead.delete({
         where: { id: leadId },
     })
@@ -252,6 +265,8 @@ function maskEmail(email: string): string {
 
 // Buscar leads de uma lista
 export async function getListLeads(listId: string, page: number = 1, limit: number = 50) {
+    await requireAdmin()
+
     const skip = (page - 1) * limit
 
     const [leads, total] = await Promise.all([
@@ -276,6 +291,8 @@ export async function getListLeads(listId: string, page: number = 1, limit: numb
 
 // Estatísticas de uma lista
 export async function getListStats(listId: string) {
+    await requireAdmin()
+
     const leads = await prisma.marketplaceLead.findMany({
         where: { listId },
         select: {

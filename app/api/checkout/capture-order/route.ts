@@ -9,6 +9,9 @@ import { generatePurchaseAccessToken, generateMagicLinkUrl } from "@/lib/auth/ma
 import { sendPurchaseConfirmationEmail } from "@/lib/email/purchase"
 
 export async function POST(request: NextRequest) {
+    let orderId: string | undefined
+    let sessionUserId: string | undefined
+
     try {
         const cookieStore = await cookies()
         const supabase = createServerClient(
@@ -31,12 +34,29 @@ export async function POST(request: NextRequest) {
         if (!session) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
         }
+        sessionUserId = session.user.id
 
         const body = await request.json()
-        const { orderId } = body
+        orderId = body.orderId
 
         if (!orderId) {
             return NextResponse.json({ error: "No order ID" }, { status: 400 })
+        }
+
+        const pendingPurchase = await prisma.purchase.findFirst({
+            where: {
+                paypalOrderId: orderId,
+                userId: session.user.id,
+                status: "pending",
+            },
+            select: { id: true },
+        })
+
+        if (!pendingPurchase) {
+            return NextResponse.json(
+                { error: "Purchase not found" },
+                { status: 404 }
+            )
         }
 
         // Capturar pagamento no PayPal
@@ -54,7 +74,7 @@ export async function POST(request: NextRequest) {
 
         // Atualizar Purchase no DB
         const purchase = await prisma.purchase.update({
-            where: { paypalOrderId: orderId },
+            where: { id: pendingPurchase.id },
             data: {
                 status: "paid",
                 paidAt: new Date(),
@@ -102,10 +122,13 @@ export async function POST(request: NextRequest) {
         console.error("Error capturing order:", error)
 
         // Atualizar status para failed se houver erro
-        const body = await request.json()
-        if (body.orderId) {
+        if (orderId) {
             await prisma.purchase.updateMany({
-                where: { paypalOrderId: body.orderId },
+                where: {
+                    paypalOrderId: orderId,
+                    userId: sessionUserId,
+                    status: "pending",
+                },
                 data: { status: "failed" },
             })
         }

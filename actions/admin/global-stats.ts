@@ -3,6 +3,7 @@
 "use server"
 
 import { prisma } from "@/lib/prisma"
+import { requireAdmin } from "@/lib/auth"
 import { startOfMonth, subDays } from "date-fns"
 
 export interface GlobalStats {
@@ -41,6 +42,8 @@ export interface GlobalStats {
 }
 
 export async function getGlobalStats(): Promise<GlobalStats> {
+    await requireAdmin()
+
     const now = new Date()
     const thirtyDaysAgo = subDays(now, 30)
     const startOfCurrentMonth = startOfMonth(now)

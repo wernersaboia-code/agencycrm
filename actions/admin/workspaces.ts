@@ -4,6 +4,7 @@
 
 import { revalidatePath } from "next/cache"
 import { prisma } from "@/lib/prisma"
+import { requireAdmin } from "@/lib/auth"
 
 // ==================== TIPOS ====================
 
@@ -80,6 +81,8 @@ export interface WorkspacesFilters {
 // ==================== LISTAR WORKSPACES ====================
 
 export async function getWorkspaces(filters: WorkspacesFilters = {}) {
+    await requireAdmin()
+
     const {
         search = "",
         userId,
@@ -153,6 +156,8 @@ export async function getWorkspaces(filters: WorkspacesFilters = {}) {
 // ==================== DETALHES DO WORKSPACE ====================
 
 export async function getWorkspaceDetails(workspaceId: string): Promise<WorkspaceDetails | null> {
+    await requireAdmin()
+
     const workspace = await prisma.workspace.findUnique({
         where: { id: workspaceId },
         include: {
@@ -187,6 +192,8 @@ export async function getWorkspaceDetails(workspaceId: string): Promise<Workspac
 // ==================== ESTATÍSTICAS DO WORKSPACE ====================
 
 export async function getWorkspaceStats(workspaceId: string): Promise<WorkspaceStats> {
+    await requireAdmin()
+
     const [
         totalLeads,
         leadsByStatus,
@@ -277,6 +284,8 @@ export async function getWorkspaceStats(workspaceId: string): Promise<WorkspaceS
 // ==================== TRANSFERIR WORKSPACE ====================
 
 export async function transferWorkspace(workspaceId: string, newUserId: string) {
+    await requireAdmin()
+
     // Verificar se o novo usuário existe
     const newUser = await prisma.user.findUnique({
         where: { id: newUserId },
@@ -301,6 +310,8 @@ export async function transferWorkspace(workspaceId: string, newUserId: string) 
 // ==================== DELETAR WORKSPACE ====================
 
 export async function deleteWorkspace(workspaceId: string) {
+    await requireAdmin()
+
     // O Prisma vai deletar em cascata (leads, campaigns, etc.)
     await prisma.workspace.delete({
         where: { id: workspaceId },
@@ -314,6 +325,8 @@ export async function deleteWorkspace(workspaceId: string) {
 // ==================== EXPORTAR DADOS DO WORKSPACE ====================
 
 export async function exportWorkspaceData(workspaceId: string) {
+    await requireAdmin()
+
     const [workspace, leads, campaigns, calls, templates] = await Promise.all([
         prisma.workspace.findUnique({
             where: { id: workspaceId },
@@ -419,6 +432,8 @@ export async function exportWorkspaceData(workspaceId: string) {
 // ==================== BUSCAR USUÁRIOS (para transfer) ====================
 
 export async function searchUsersForTransfer(search: string) {
+    await requireAdmin()
+
     if (!search || search.length < 2) return []
 
     const users = await prisma.user.findMany({
