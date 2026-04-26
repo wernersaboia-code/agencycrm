@@ -7,6 +7,15 @@ import { createServerClient } from "@supabase/ssr"
 import { cookies } from "next/headers"
 import { generatePurchaseAccessToken, generateMagicLinkUrl } from "@/lib/auth/magic-link"
 import { sendPurchaseConfirmationEmail } from "@/lib/email/purchase"
+import { z } from "zod"
+
+const captureOrderSchema = z.object({
+    orderId: z.string().min(1),
+})
+
+function getErrorMessage(error: unknown): string {
+    return error instanceof Error ? error.message : "Failed to capture payment"
+}
 
 export async function POST(request: NextRequest) {
     let orderId: string | undefined
@@ -36,12 +45,13 @@ export async function POST(request: NextRequest) {
         }
         sessionUserId = session.user.id
 
-        const body = await request.json()
-        orderId = body.orderId
+        const parsedBody = captureOrderSchema.safeParse(await request.json())
 
-        if (!orderId) {
+        if (!parsedBody.success) {
             return NextResponse.json({ error: "No order ID" }, { status: 400 })
         }
+
+        orderId = parsedBody.data.orderId
 
         const pendingPurchase = await prisma.purchase.findFirst({
             where: {
@@ -118,7 +128,7 @@ export async function POST(request: NextRequest) {
             purchaseId: purchase.id,
             accessUrl, // Retornar URL para possível uso no frontend
         })
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Error capturing order:", error)
 
         // Atualizar status para failed se houver erro
@@ -134,7 +144,7 @@ export async function POST(request: NextRequest) {
         }
 
         return NextResponse.json(
-            { error: error.message || "Failed to capture payment" },
+            { error: getErrorMessage(error) },
             { status: 500 }
         )
     }

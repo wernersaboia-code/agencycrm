@@ -3,8 +3,12 @@ import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { getAuthenticatedUser } from "@/lib/auth"
 import { format } from "date-fns"
-import { LeadStatus } from "@prisma/client"
 import * as XLSX from "xlsx"
+import {
+    buildLeadReportWhere,
+    leadReportQuerySchema,
+    searchParamsToObject,
+} from "@/lib/reports/lead-report-filters"
 
 // Labels para exibição
 const STATUS_LABELS: Record<string, string> = {
@@ -40,11 +44,11 @@ export async function GET(request: NextRequest) {
 
         // Pegar parâmetros da URL
         const { searchParams } = new URL(request.url)
-        const workspaceId = searchParams.get("workspaceId")
-        const status = searchParams.get("status")
-        const country = searchParams.get("country")
-        const industry = searchParams.get("industry")
-        const search = searchParams.get("search")
+        const parsedParams = leadReportQuerySchema.safeParse(searchParamsToObject(searchParams))
+        if (!parsedParams.success) {
+            return NextResponse.json({ error: "Parametros invalidos" }, { status: 400 })
+        }
+        const { workspaceId } = parsedParams.data
 
         if (!workspaceId) {
             return NextResponse.json({ error: "Workspace não informado" }, { status: 400 })
@@ -60,28 +64,7 @@ export async function GET(request: NextRequest) {
         }
 
         // Montar filtros
-        const where: any = { workspaceId }
-
-        if (status && status !== "all") {
-            where.status = status as LeadStatus
-        }
-
-        if (country && country !== "all") {
-            where.country = country
-        }
-
-        if (industry && industry !== "all") {
-            where.industry = industry
-        }
-
-        if (search) {
-            where.OR = [
-                { firstName: { contains: search, mode: "insensitive" } },
-                { lastName: { contains: search, mode: "insensitive" } },
-                { email: { contains: search, mode: "insensitive" } },
-                { company: { contains: search, mode: "insensitive" } },
-            ]
-        }
+        const where = buildLeadReportWhere(parsedParams.data)
 
         // Buscar leads
         const leads = await prisma.lead.findMany({

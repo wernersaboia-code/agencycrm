@@ -10,6 +10,20 @@ interface PayPalButtonsWrapperProps {
     items: Array<{ listId: string; quantity: number }>
 }
 
+type CreateOrderResponse = {
+    orderId?: string
+    error?: string
+}
+
+type CaptureOrderResponse = {
+    purchaseId?: string
+    error?: string
+}
+
+function getErrorMessage(error: unknown, fallback: string): string {
+    return error instanceof Error ? error.message : fallback
+}
+
 export function PayPalButtonsWrapper({ items }: PayPalButtonsWrapperProps) {
     const router = useRouter()
     const { clearCart } = useCart()
@@ -48,15 +62,15 @@ export function PayPalButtonsWrapper({ items }: PayPalButtonsWrapperProps) {
                             body: JSON.stringify({ items }),
                         })
 
-                        const data = await response.json()
+                        const data = await response.json() as CreateOrderResponse
 
-                        if (!response.ok) {
+                        if (!response.ok || !data.orderId) {
                             throw new Error(data.error || "Erro ao criar pedido")
                         }
 
                         return data.orderId
-                    } catch (error: any) {
-                        toast.error(error.message || "Erro ao processar pagamento")
+                    } catch (error: unknown) {
+                        toast.error(getErrorMessage(error, "Erro ao processar pagamento"))
                         throw error
                     }
                 }}
@@ -68,9 +82,9 @@ export function PayPalButtonsWrapper({ items }: PayPalButtonsWrapperProps) {
                             body: JSON.stringify({ orderId: data.orderID }),
                         })
 
-                        const result = await response.json()
+                        const result = await response.json() as CaptureOrderResponse
 
-                        if (!response.ok) {
+                        if (!response.ok || !result.purchaseId) {
                             throw new Error(result.error || "Erro ao capturar pagamento")
                         }
 
@@ -81,8 +95,8 @@ export function PayPalButtonsWrapper({ items }: PayPalButtonsWrapperProps) {
                         router.push(`/checkout/success?purchaseId=${result.purchaseId}`)
 
                         toast.success("Pagamento confirmado!")
-                    } catch (error: any) {
-                        toast.error(error.message || "Erro ao confirmar pagamento")
+                    } catch (error: unknown) {
+                        toast.error(getErrorMessage(error, "Erro ao confirmar pagamento"))
                     }
                 }}
                 onError={(err) => {

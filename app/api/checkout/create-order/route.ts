@@ -5,6 +5,14 @@ import paypal from "@paypal/checkout-server-sdk"
 import { prisma } from "@/lib/prisma"
 import { createServerClient } from "@supabase/ssr"
 import { cookies } from "next/headers"
+import { z } from "zod"
+
+const createOrderSchema = z.object({
+    items: z.array(z.object({
+        listId: z.string().min(1),
+        quantity: z.number().int().positive().max(99).default(1),
+    })).min(1).max(50),
+})
 
 export async function POST(request: NextRequest) {
     try {
@@ -30,15 +38,16 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
         }
 
-        const body = await request.json()
-        const { items } = body // [ { listId, quantity } ]
+        const parsedBody = createOrderSchema.safeParse(await request.json())
 
-        if (!items || items.length === 0) {
-            return NextResponse.json({ error: "No items" }, { status: 400 })
+        if (!parsedBody.success) {
+            return NextResponse.json({ error: "Invalid checkout items" }, { status: 400 })
         }
 
+        const { items } = parsedBody.data
+
         // Buscar listas
-        const listIds = items.map((item: any) => item.listId)
+        const listIds = items.map((item) => item.listId)
         const lists = await prisma.leadList.findMany({
             where: { id: { in: listIds }, isActive: true },
         })
@@ -50,7 +59,7 @@ export async function POST(request: NextRequest) {
         // Calcular total
         let subtotal = 0
         const purchaseItems = lists.map((list) => {
-            const quantity = items.find((i: any) => i.listId === list.id)?.quantity || 1
+            const quantity = items.find((item) => item.listId === list.id)?.quantity ?? 1
             const itemTotal = Number(list.price) * quantity
             subtotal += itemTotal
 
