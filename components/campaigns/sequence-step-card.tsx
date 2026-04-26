@@ -19,7 +19,6 @@ import {
     CollapsibleTrigger,
 } from "@/components/ui/collapsible"
 import { RichTextEditor } from "@/components/ui/rich-text-editor"
-import { cn } from "@/lib/utils"
 import { STEP_CONDITIONS, type SequenceStep, type StepCondition } from "@/types/campaign.types"
 
 interface SequenceStepCardProps {

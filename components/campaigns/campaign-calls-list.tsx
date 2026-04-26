@@ -8,11 +8,8 @@
 import { format, formatDistanceToNow } from "date-fns"
 import { ptBR } from "date-fns/locale"
 import {
-    Phone,
     PhoneOff,
     Clock,
-    MessageSquare,
-    User,
     Building2,
     Calendar,
     MoreHorizontal,
@@ -56,7 +53,6 @@ interface CampaignCallsListProps {
     calls: SerializedCallWithLead[]
     isLoading: boolean
     onEdit: (call: SerializedCallWithLead) => void
-    onRefresh: () => void
 }
 
 // ============================================
@@ -85,7 +81,7 @@ function CampaignCallsListEmpty() {
             </div>
             <h3 className="text-lg font-medium">Nenhuma ligação vinculada</h3>
             <p className="text-sm text-muted-foreground mt-1 max-w-sm">
-                Registre ligações para esta campanha usando o botão "Nova Ligação" acima.
+                Registre ligações para esta campanha usando o botão Nova Ligação acima.
             </p>
         </div>
     )
@@ -99,7 +95,6 @@ export function CampaignCallsList({
                                       calls,
                                       isLoading,
                                       onEdit,
-                                      onRefresh,
                                   }: CampaignCallsListProps) {
     const router = useRouter()
 

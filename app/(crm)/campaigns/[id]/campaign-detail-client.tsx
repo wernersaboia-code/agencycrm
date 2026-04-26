@@ -518,7 +518,6 @@ export function CampaignDetailClient({
                                 calls={calls}
                                 isLoading={isRefreshing}
                                 onEdit={handleEditCall}
-                                onRefresh={handleRefresh}
                             />
                         </CardContent>
                     </Card>
@@ -553,7 +552,6 @@ export function CampaignDetailClient({
                 onClose={() => setShowSendDialog(false)}
                 onConfirm={handleConfirmSend}
                 campaignName={campaign.name}
-                campaignType={isSequence ? "sequence" : "single"}
                 templateName={campaign.template?.name || null}
                 totalRecipients={campaign.totalRecipients}
                 totalPending={isSequence ? campaign.totalRecipients : pendingCount}

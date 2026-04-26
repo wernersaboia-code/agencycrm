@@ -34,7 +34,6 @@ interface SendConfirmationDialogProps {
     onClose: () => void
     onConfirm: () => Promise<void>
     campaignName: string
-    campaignType: string
     templateName: string | null
     totalRecipients: number
     totalPending: number
@@ -51,7 +50,6 @@ export function SendConfirmationDialog({
                                            onClose,
                                            onConfirm,
                                            campaignName,
-                                           campaignType,
                                            templateName,
                                            totalRecipients,
                                            totalPending,
@@ -147,7 +145,7 @@ export function SendConfirmationDialog({
                             <span className="text-sm text-muted-foreground">Destinatários</span>
                             <Badge variant="secondary" className="gap-1">
                                 <Users className="h-3 w-3" />
-                                {totalPending} email(s)
+                                {totalPending} de {totalRecipients} email(s)
                             </Badge>
                         </div>
                     </div>

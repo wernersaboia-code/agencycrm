@@ -2,7 +2,7 @@
 
 "use client"
 
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect, useMemo, useCallback } from "react"
 import { toast } from "sonner"
 import {
     ChevronLeft,
@@ -151,6 +151,18 @@ export function CampaignWizard({
     const [leadSearch, setLeadSearch] = useState("")
     const [statusFilter, setStatusFilter] = useState<string>("ALL")
 
+    const loadLeads = useCallback(async () => {
+        setIsLoadingLeads(true)
+        const result = await getLeadsForCampaign(workspaceId)
+        setIsLoadingLeads(false)
+
+        if (result.success && result.data) {
+            setLeads(result.data)
+        } else {
+            toast.error("Erro ao carregar leads")
+        }
+    }, [workspaceId])
+
     // Reset quando fecha/abre
     useEffect(() => {
         if (open) {
@@ -170,23 +182,11 @@ export function CampaignWizard({
         if (step === 2 && leads.length === 0) {
             loadLeads()
         }
-    }, [step])
+    }, [leads.length, loadLeads, step])
 
     // ============================================================
     // FUNÇÕES
     // ============================================================
-
-    const loadLeads = async () => {
-        setIsLoadingLeads(true)
-        const result = await getLeadsForCampaign(workspaceId)
-        setIsLoadingLeads(false)
-
-        if (result.success && result.data) {
-            setLeads(result.data)
-        } else {
-            toast.error("Erro ao carregar leads")
-        }
-    }
 
     const selectedTemplate = useMemo(() => {
         return templates.find((t) => t.id === data.templateId)
@@ -319,7 +319,7 @@ export function CampaignWizard({
             } else {
                 toast.error(result.error || "Erro ao criar campanha")
             }
-        } catch (error) {
+        } catch {
             toast.error("Erro inesperado")
         } finally {
             setIsSubmitting(false)
@@ -603,7 +603,7 @@ export function CampaignWizard({
                                                         htmlFor="stopOnUnsubscribe"
                                                         className="text-sm cursor-pointer"
                                                     >
-                                                        Lead clicar em "não tenho interesse"
+                                                        Lead clicar em não tenho interesse
                                                     </label>
                                                 </div>
                                                 <div className="flex items-center gap-3">
@@ -905,8 +905,8 @@ export function CampaignWizard({
                                     <AlertTitle>Pronto para enviar!</AlertTitle>
                                     <AlertDescription>
                                         {data.type === "single"
-                                            ? "Ao clicar em \"Criar Campanha\", ela será salva como rascunho. Você poderá enviá-la depois clicando no botão \"Enviar\"."
-                                            : "Ao clicar em \"Criar Campanha\", a sequência será iniciada e o primeiro email será enviado imediatamente aos leads selecionados."}
+                                            ? "Ao clicar em Criar Campanha, ela será salva como rascunho. Você poderá enviá-la depois pelo botão Enviar."
+                                            : "Ao clicar em Criar Campanha, a sequência será iniciada e o primeiro email será enviado imediatamente aos leads selecionados."}
                                     </AlertDescription>
                                 </Alert>
                             </div>

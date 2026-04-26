@@ -374,7 +374,6 @@ export function CampaignsClient({
                     onClose={() => setSendingCampaign(null)}
                     onConfirm={handleConfirmSend}
                     campaignName={sendingCampaign.name}
-                    campaignType={sendingCampaign.type}
                     templateName={sendingCampaign.template?.name || null}
                     totalRecipients={sendingCampaign.totalRecipients}
                     totalPending={sendingCampaign.totalRecipients}
