@@ -3,7 +3,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useForm } from "react-hook-form"
+import { useForm, useWatch, type Resolver } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { toast } from "sonner"
@@ -115,7 +115,7 @@ export function EmailSettings({ workspace, onUpdate }: EmailSettingsProps) {
     const isConfigured = !!workspace?.smtpUser
 
     const form = useForm<FormData>({
-        resolver: zodResolver(formSchema) as any,
+        resolver: zodResolver(formSchema) as Resolver<FormData>,
         defaultValues: {
             smtpProvider: workspace?.smtpProvider || "",
             smtpHost: workspace?.smtpHost || "",
@@ -128,7 +128,10 @@ export function EmailSettings({ workspace, onUpdate }: EmailSettingsProps) {
         },
     })
 
-    const selectedProvider = form.watch("smtpProvider") as SmtpProvider
+    const selectedProvider = useWatch({
+        control: form.control,
+        name: "smtpProvider",
+    }) as SmtpProvider | ""
     const providerConfig = selectedProvider ? SMTP_PROVIDERS[selectedProvider] : null
 
     // Atualizar host/port quando mudar o provedor
@@ -269,7 +272,7 @@ export function EmailSettings({ workspace, onUpdate }: EmailSettingsProps) {
                                     <strong>Escolha seu provedor</strong> (Gmail, Zoho, Outlook, etc.)
                                 </li>
                                 <li>
-                                    <strong>Crie uma "Senha de App"</strong> no seu provedor de email
+                                    <strong>Crie uma senha de app</strong> no seu provedor de email
                                     <ul className="list-disc list-inside ml-4 mt-1 text-muted-foreground">
                                         <li>Gmail: <a href="https://myaccount.google.com/apppasswords" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">myaccount.google.com/apppasswords</a></li>
                                         <li>Zoho: Configurações → Segurança → Senhas de App</li>
@@ -445,7 +448,7 @@ export function EmailSettings({ workspace, onUpdate }: EmailSettingsProps) {
                                         <FormControl>
                                             <Input placeholder="Sua Empresa" {...field} />
                                         </FormControl>
-                                        <FormDescription>Como aparece no "De:" do email</FormDescription>
+                                        <FormDescription>Como aparece no campo De do email</FormDescription>
                                         <FormMessage />
                                     </FormItem>
                                 )}
