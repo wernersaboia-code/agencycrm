@@ -11,7 +11,7 @@ import {
     type CreateCampaignData,
     type UpdateCampaignData,
 } from "@/lib/validations/campaign.validations"
-import { CampaignStatus, LeadStatus } from "@prisma/client"
+import { CampaignStatus, LeadStatus, type Prisma } from "@prisma/client"
 import { sendEmail, replaceEmailVariables } from "@/lib/email"
 import { decryptSecret } from "@/lib/secrets"
 
@@ -53,6 +53,20 @@ export interface CampaignWithRelations {
     }
 }
 
+type CampaignEmailSendWithLead = Prisma.EmailSendGetPayload<{
+    include: {
+        lead: {
+            select: {
+                id: true
+                firstName: true
+                lastName: true
+                email: true
+                company: true
+            }
+        }
+    }
+}>
+
 // ============================================================
 // QUERIES
 // ============================================================
@@ -78,7 +92,7 @@ export async function getCampaigns(
             return { success: false, error: "Workspace não encontrado" }
         }
 
-        const where: any = { workspaceId }
+        const where: Prisma.CampaignWhereInput = { workspaceId }
 
         if (options?.status) {
             where.status = options.status
@@ -117,7 +131,7 @@ export async function getCampaigns(
 
 export async function getCampaignById(
     id: string
-): Promise<ActionResult<CampaignWithRelations & { emailSends: any[] }>> {
+): Promise<ActionResult<CampaignWithRelations & { emailSends: CampaignEmailSendWithLead[] }>> {
     try {
         const user = await getAuthenticatedUser()
         if (!user) {
@@ -927,7 +941,7 @@ export async function getLeadsForCampaign(
             return { success: false, error: "Não autorizado" }
         }
 
-        const where: any = { workspaceId }
+        const where: Prisma.LeadWhereInput = { workspaceId }
 
         if (options?.status && options.status.length > 0) {
             where.status = { in: options.status }

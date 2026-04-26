@@ -6,6 +6,11 @@ import { revalidatePath } from "next/cache"
 import { prisma } from "@/lib/prisma"
 import { createClient } from "@/lib/supabase/server"
 
+type SerializableWorkspace = {
+    createdAt: Date | string
+    updatedAt: Date | string
+}
+
 // Tipos
 export type WorkspaceFormData = {
     name: string
@@ -17,12 +22,22 @@ export type WorkspaceFormData = {
 }
 
 // Função para serializar workspace
-function serializeWorkspace(workspace: any) {
+function serializeWorkspace<T extends SerializableWorkspace>(
+    workspace: T
+): Omit<T, "createdAt" | "updatedAt"> & { createdAt: string; updatedAt: string }
+function serializeWorkspace(workspace: null): null
+function serializeWorkspace<T extends SerializableWorkspace>(
+    workspace: T | null
+): (Omit<T, "createdAt" | "updatedAt"> & { createdAt: string; updatedAt: string }) | null {
     if (!workspace) return null
     return {
         ...workspace,
-        createdAt: workspace.createdAt?.toISOString?.() || workspace.createdAt,
-        updatedAt: workspace.updatedAt?.toISOString?.() || workspace.updatedAt,
+        createdAt: workspace.createdAt instanceof Date
+            ? workspace.createdAt.toISOString()
+            : workspace.createdAt,
+        updatedAt: workspace.updatedAt instanceof Date
+            ? workspace.updatedAt.toISOString()
+            : workspace.updatedAt,
     }
 }
 

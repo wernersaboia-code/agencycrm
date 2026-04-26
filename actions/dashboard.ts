@@ -4,6 +4,7 @@
 import { prisma } from "@/lib/prisma"
 import { getAuthenticatedUser } from "@/lib/auth"
 import { subDays, startOfDay, endOfDay } from "date-fns"
+import type { Prisma } from "@prisma/client"
 
 // ============================================================
 // TIPOS
@@ -80,6 +81,18 @@ export interface CallbacksSummary {
     todayCount: number
     thisWeekCount: number
 }
+
+type DashboardCallbackCall = Omit<Prisma.CallGetPayload<{
+    include: {
+        lead: {
+            select: {
+                firstName: true
+                lastName: true
+                company: true
+            }
+        }
+    }
+}>, "followUpAt"> & { followUpAt: Date }
 
 // ============================================================
 // FUNÇÕES
@@ -380,9 +393,9 @@ export async function getDashboardCallbacks(
                     },
                 },
             },
-        })
+        }) as DashboardCallbackCall[]
 
-        const mapCallback = (call: any): PendingCallback => ({
+        const mapCallback = (call: DashboardCallbackCall): PendingCallback => ({
             id: call.id,
             leadName: `${call.lead.firstName} ${call.lead.lastName || ""}`.trim(),
             leadCompany: call.lead.company,

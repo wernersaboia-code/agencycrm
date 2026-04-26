@@ -5,6 +5,7 @@
 import { revalidatePath } from "next/cache"
 import { prisma } from "@/lib/prisma"
 import { requireAdmin } from "@/lib/auth"
+import type { Prisma } from "@prisma/client"
 
 // ==================== TIPOS ====================
 
@@ -93,7 +94,7 @@ export async function getWorkspaces(filters: WorkspacesFilters = {}) {
     const skip = (page - 1) * limit
 
     // Construir where clause
-    const where: any = {}
+    const where: Prisma.WorkspaceWhereInput = {}
 
     if (search) {
         where.OR = [

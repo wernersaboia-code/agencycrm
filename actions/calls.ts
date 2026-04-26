@@ -19,7 +19,7 @@ import {
     serializeCallWithLead,
     SerializedCallWithLead,
 } from "@/types/call.types"
-import { CallResult, LeadStatus } from "@prisma/client"
+import { CallResult, LeadStatus, type Prisma } from "@prisma/client"
 
 // ============================================
 // TYPES
@@ -95,7 +95,7 @@ export async function getCalls(
     const hasAccess = await verifyWorkspaceAccess(workspaceId)
     if (!hasAccess) return []
 
-    const where: any = { workspaceId }
+    const where: Prisma.CallWhereInput = { workspaceId }
 
     if (filters?.result) {
         where.result = Array.isArray(filters.result)
@@ -104,9 +104,10 @@ export async function getCalls(
     }
 
     if (filters?.dateFrom || filters?.dateTo) {
-        where.calledAt = {}
-        if (filters.dateFrom) where.calledAt.gte = new Date(filters.dateFrom)
-        if (filters.dateTo) where.calledAt.lte = new Date(filters.dateTo)
+        const calledAt: Prisma.DateTimeFilter = {}
+        if (filters.dateFrom) calledAt.gte = new Date(filters.dateFrom)
+        if (filters.dateTo) calledAt.lte = new Date(filters.dateTo)
+        where.calledAt = calledAt
     }
 
     if (filters?.hasFollowUp !== undefined) {
@@ -505,12 +506,13 @@ export async function getCallStats(
         }
     }
 
-    const where: any = { workspaceId }
+    const where: Prisma.CallWhereInput = { workspaceId }
 
     if (dateFrom || dateTo) {
-        where.calledAt = {}
-        if (dateFrom) where.calledAt.gte = dateFrom
-        if (dateTo) where.calledAt.lte = dateTo
+        const calledAt: Prisma.DateTimeFilter = {}
+        if (dateFrom) calledAt.gte = dateFrom
+        if (dateTo) calledAt.lte = dateTo
+        where.calledAt = calledAt
     }
 
     const calls = await prisma.call.findMany({

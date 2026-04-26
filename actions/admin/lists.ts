@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache"
 import { prisma } from "@/lib/prisma"
 import { requireAdmin } from "@/lib/auth"
 import type { MarketplaceLeadData } from "@/lib/constants/marketplace-csv.constants"
+import type { LeadList } from "@prisma/client"
 
 interface CreateListData {
     name: string
@@ -39,7 +40,7 @@ interface SerializedList {
 }
 
 // Função auxiliar para serializar lista
-function serializeList(list: any): SerializedList {
+function serializeList(list: LeadList): SerializedList {
     return {
         ...list,
         price: Number(list.price),

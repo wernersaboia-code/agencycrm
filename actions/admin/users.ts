@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache"
 import { prisma } from "@/lib/prisma"
 import { createClient } from "@/lib/supabase/server"
 import { requireAdmin } from "@/lib/auth"
-import type { UserRole, UserStatus } from "@prisma/client"
+import type { Prisma, UserRole, UserStatus } from "@prisma/client"
 
 // ==================== TIPOS ====================
 
@@ -72,7 +72,7 @@ export async function getUsers(filters: UsersFilters = {}) {
     const skip = (page - 1) * limit
 
     // Construir where clause
-    const where: any = {}
+    const where: Prisma.UserWhereInput = {}
 
     if (search) {
         where.OR = [

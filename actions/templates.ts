@@ -11,7 +11,7 @@ import {
     type CreateTemplateData,
     type UpdateTemplateData
 } from "@/lib/validations/template.validations"
-import { TemplateCategory } from "@prisma/client"
+import { TemplateCategory, type Prisma } from "@prisma/client"
 
 // ============================================================
 // TIPOS
@@ -65,7 +65,7 @@ export async function getTemplates(
             return { success: false, error: "Workspace não encontrado" }
         }
 
-        const where: any = { workspaceId }
+        const where: Prisma.EmailTemplateWhereInput = { workspaceId }
 
         if (options?.category) {
             where.category = options.category
