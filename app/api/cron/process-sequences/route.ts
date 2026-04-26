@@ -4,6 +4,7 @@ import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { sendEmail, replaceEmailVariables } from "@/lib/email"
 import { decryptSecret } from "@/lib/secrets"
+import type { CampaignEnrollment, CampaignStep, StepCondition } from "@prisma/client"
 
 // Vercel Cron - roda a cada hora
 // Configurar em vercel.json
@@ -317,8 +318,8 @@ export async function GET(request: Request) {
 // ============================================================
 
 async function checkStepCondition(
-    enrollment: any,
-    condition: string
+    enrollment: Pick<CampaignEnrollment, "campaignId" | "leadId" | "currentStep">,
+    condition: StepCondition
 ): Promise<boolean> {
     if (condition === "always") {
         return true
@@ -358,7 +359,10 @@ async function checkStepCondition(
     }
 }
 
-function calculateNextSendAt(fromDate: Date, step: any): Date {
+function calculateNextSendAt(
+    fromDate: Date,
+    step: Pick<CampaignStep, "delayDays" | "delayHours">
+): Date {
     const nextDate = new Date(fromDate)
     nextDate.setDate(nextDate.getDate() + (step.delayDays || 0))
     nextDate.setHours(nextDate.getHours() + (step.delayHours || 0))

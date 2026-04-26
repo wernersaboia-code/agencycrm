@@ -4,8 +4,20 @@
 import { prisma } from "@/lib/prisma"
 import { createServerClient } from "@supabase/ssr"
 import { cookies } from "next/headers"
-import { redirect } from "next/navigation"
 import { Decimal } from "@prisma/client/runtime/library"
+import type { Prisma } from "@prisma/client"
+
+type PurchaseWithItems = Prisma.PurchaseGetPayload<{
+    include: {
+        items: {
+            include: {
+                list: true
+            }
+        }
+    }
+}>
+
+type PurchaseItemWithList = PurchaseWithItems["items"][number]
 
 async function getSession() {
     const cookieStore = await cookies()
@@ -95,7 +107,7 @@ export async function createPurchase(listId: string) {
                 id: purchase.id,
                 total: Number(purchase.total),
                 currency: purchase.currency,
-                items: purchase.items.map((item: any) => ({
+                items: purchase.items.map((item: PurchaseItemWithList) => ({
                     id: item.id,
                     list: {
                         id: item.list.id,
@@ -147,7 +159,7 @@ export async function getPurchase(purchaseId: string) {
             total: Number(purchase.total),
             currency: purchase.currency,
             createdAt: purchase.createdAt.toISOString(),
-            items: purchase.items.map((item: any) => ({
+            items: purchase.items.map((item: PurchaseItemWithList) => ({
                 id: item.id,
                 list: {
                     id: item.list.id,
@@ -187,14 +199,14 @@ export async function getUserPurchases() {
             }
         })
 
-        return purchases.map((purchase: any) => ({
+        return purchases.map((purchase: PurchaseWithItems) => ({
             id: purchase.id,
             status: purchase.status,
             total: Number(purchase.total),
             currency: purchase.currency,
             createdAt: purchase.createdAt.toISOString(),
             paypalOrderId: purchase.paypalOrderId,
-            items: purchase.items.map((item: any) => ({
+            items: purchase.items.map((item: PurchaseItemWithList) => ({
                 id: item.id,
                 list: {
                     id: item.list.id,

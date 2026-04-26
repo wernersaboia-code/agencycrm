@@ -2,6 +2,7 @@
 "use server"
 
 import { prisma } from "@/lib/prisma"
+import type { Prisma } from "@prisma/client"
 
 interface GetListsParams {
     countries?: string[]
@@ -25,7 +26,7 @@ export async function getMarketplaceLists(params: GetListsParams = {}) {
     const skip = (page - 1) * limit
 
     // Construir filtros dinâmicos
-    const where: any = {
+    const where: Prisma.LeadListWhereInput = {
         isActive: true,
     }
 

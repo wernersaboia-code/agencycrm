@@ -20,9 +20,12 @@ export function paypalClient() {
 // Verificar assinatura do webhook (segurança)
 export async function verifyWebhookSignature(
     headers: Record<string, string>,
-    body: any
+    body: unknown
 ): Promise<boolean> {
+    void headers
+    void body
+
     // TODO: Implementar verificação de webhook
     // https://developer.paypal.com/api/rest/webhooks/
-    return true
+    return false
 }
