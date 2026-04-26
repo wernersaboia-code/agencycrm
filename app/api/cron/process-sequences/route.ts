@@ -3,6 +3,7 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { sendEmail, replaceEmailVariables } from "@/lib/email"
+import { decryptSecret } from "@/lib/secrets"
 
 // Vercel Cron - roda a cada hora
 // Configurar em vercel.json
@@ -186,14 +187,15 @@ export async function GET(request: Request) {
                 })
 
                 // Configurar SMTP
+                const smtpPass = decryptSecret(campaign.workspace.smtpPass)
                 const smtpConfig =
-                    campaign.workspace.smtpUser && campaign.workspace.smtpPass
+                    campaign.workspace.smtpUser && smtpPass
                         ? {
                             provider: campaign.workspace.smtpProvider,
                             host: campaign.workspace.smtpHost,
                             port: campaign.workspace.smtpPort,
                             user: campaign.workspace.smtpUser,
-                            pass: campaign.workspace.smtpPass,
+                            pass: smtpPass,
                             secure: campaign.workspace.smtpSecure,
                             senderName: campaign.workspace.senderName,
                             senderEmail: campaign.workspace.senderEmail,

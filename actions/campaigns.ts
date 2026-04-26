@@ -13,6 +13,7 @@ import {
 } from "@/lib/validations/campaign.validations"
 import { CampaignStatus, LeadStatus } from "@prisma/client"
 import { sendEmail, replaceEmailVariables } from "@/lib/email"
+import { decryptSecret } from "@/lib/secrets"
 
 // ============================================================
 // TIPOS
@@ -515,13 +516,14 @@ export async function sendCampaign(id: string): Promise<ActionResult> {
         }
 
         // Preparar configuração SMTP
-        const smtpConfig = campaign.workspace.smtpUser && campaign.workspace.smtpPass
+        const smtpPass = decryptSecret(campaign.workspace.smtpPass)
+        const smtpConfig = campaign.workspace.smtpUser && smtpPass
             ? {
                 provider: campaign.workspace.smtpProvider,
                 host: campaign.workspace.smtpHost,
                 port: campaign.workspace.smtpPort,
                 user: campaign.workspace.smtpUser,
-                pass: campaign.workspace.smtpPass,
+                pass: smtpPass,
                 secure: campaign.workspace.smtpSecure,
                 senderName: campaign.workspace.senderName,
                 senderEmail: campaign.workspace.senderEmail,

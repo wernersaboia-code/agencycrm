@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache"
 import { prisma } from "@/lib/prisma"
 import { getAuthenticatedUser } from "@/lib/auth"
 import { testSmtpConnection, type SmtpConfig } from "@/lib/email"
+import { encryptSecret } from "@/lib/secrets"
 import { z } from "zod"
 
 // ============================================================
@@ -87,7 +88,7 @@ export async function getWorkspaceSmtpSettings(
     smtpHost: string | null
     smtpPort: number | null
     smtpUser: string | null
-    smtpPass: string | null
+    smtpPass: null
     smtpSecure: boolean
     senderName: string | null
     senderEmail: string | null
@@ -107,7 +108,6 @@ export async function getWorkspaceSmtpSettings(
                 smtpHost: true,
                 smtpPort: true,
                 smtpUser: true,
-                smtpPass: true,
                 smtpSecure: true,
                 senderName: true,
                 senderEmail: true,
@@ -118,7 +118,7 @@ export async function getWorkspaceSmtpSettings(
             return { success: false, error: "Workspace não encontrado" }
         }
 
-        return { success: true, data: workspace }
+        return { success: true, data: { ...workspace, smtpPass: null } }
     } catch (error) {
         console.error("Erro ao buscar configurações:", error)
         return { success: false, error: "Erro ao buscar configurações" }
@@ -250,7 +250,7 @@ export async function saveSmtpSettings(
                 smtpHost: validated.data.smtpHost,
                 smtpPort: validated.data.smtpPort,
                 smtpUser: validated.data.smtpUser,
-                smtpPass: validated.data.smtpPass,
+                smtpPass: encryptSecret(validated.data.smtpPass),
                 smtpSecure: validated.data.smtpSecure,
                 senderName: validated.data.senderName,
                 senderEmail: validated.data.senderEmail || validated.data.smtpUser,

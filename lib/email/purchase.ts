@@ -5,6 +5,7 @@ import { sendEmail, SmtpConfig } from "@/lib/email"
 import { generatePurchaseConfirmationEmail } from "./templates/purchase-confirmation"
 import { prisma } from "@/lib/prisma"
 import { SMTP_PROVIDERS } from "@/lib/constants/smtp.constants"
+import { decryptSecret } from "@/lib/secrets"
 
 interface SendPurchaseConfirmationParams {
     userId: string
@@ -119,7 +120,8 @@ export async function sendPurchaseConfirmationEmail({
         })
 
         // Se o workspace tem SMTP configurado, usa ele
-        if (workspace?.smtpUser && workspace?.smtpPass) {
+        const smtpPass = decryptSecret(workspace?.smtpPass)
+        if (workspace?.smtpUser && smtpPass) {
             console.log("✅ Usando SMTP do workspace do usuário")
 
             const providerConfig = workspace.smtpProvider
@@ -131,7 +133,7 @@ export async function sendPurchaseConfirmationEmail({
                 host: workspace.smtpHost || providerConfig?.host || null,
                 port: workspace.smtpPort || providerConfig?.port || 587,
                 user: workspace.smtpUser,
-                pass: workspace.smtpPass,
+                pass: smtpPass,
                 secure: workspace.smtpSecure ?? false,
                 senderName: workspace.senderName || purchase.user.name || "Easy Prospect",
                 senderEmail: workspace.senderEmail || workspace.smtpUser,

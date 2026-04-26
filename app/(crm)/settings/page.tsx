@@ -39,13 +39,17 @@ export default async function SettingsPage() {
             smtpHost: true,
             smtpPort: true,
             smtpUser: true,
-            smtpPass: true,
             smtpSecure: true,
         },
     })
 
     if (!workspace) {
         redirect("/workspaces")
+    }
+
+    const workspaceForClient = {
+        ...workspace,
+        smtpPass: null,
     }
 
     // Buscar perfil completo do usuário
@@ -71,7 +75,7 @@ export default async function SettingsPage() {
     return (
         <SettingsClient
             profile={profile ?? null}
-            workspace={workspace}
+            workspace={workspaceForClient}
             stats={stats}
         />
     )
