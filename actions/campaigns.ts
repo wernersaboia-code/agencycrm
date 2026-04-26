@@ -30,7 +30,7 @@ export interface CampaignWithRelations {
     name: string
     description: string | null
     status: CampaignStatus
-    type?: "single" | "sequence"
+    type: "single" | "sequence"
     templateId: string | null
     template: {
         id: string
@@ -50,6 +50,7 @@ export interface CampaignWithRelations {
     workspaceId: string
     _count: {
         emailSends: number
+        steps: number
     }
 }
 
@@ -116,7 +117,10 @@ export async function getCampaigns(
                     },
                 },
                 _count: {
-                    select: { emailSends: true },
+                    select: {
+                        emailSends: true,
+                        steps: true,
+                    },
                 },
             },
             orderBy: { updatedAt: "desc" },
@@ -167,7 +171,10 @@ export async function getCampaignById(
                     take: 100,
                 },
                 _count: {
-                    select: { emailSends: true },
+                    select: {
+                        emailSends: true,
+                        steps: true,
+                    },
                 },
             },
         })

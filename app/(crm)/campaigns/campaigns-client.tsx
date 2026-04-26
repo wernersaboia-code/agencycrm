@@ -8,16 +8,13 @@ import {
     Plus,
     Search,
     Send,
-    Mail,
     MousePointer,
     Eye,
-    MessageSquare,
     AlertTriangle,
     Filter,
     Megaphone,
 } from "lucide-react"
 import { toast } from "sonner"
-import { CampaignStatus } from "@prisma/client"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -40,10 +37,7 @@ import {
     type CampaignWithRelations,
 } from "@/actions/campaigns"
 import type { TemplateWithStats } from "@/actions/templates"
-import {
-    CAMPAIGN_STATUS_CONFIG,
-    calculateMetrics,
-} from "@/lib/constants/campaign.constants"
+import { CAMPAIGN_STATUS_CONFIG } from "@/lib/constants/campaign.constants"
 
 // ============================================================
 // TIPOS
@@ -160,7 +154,7 @@ export function CampaignsClient({
             } else {
                 toast.error(result.error || "Erro ao enviar")
             }
-        } catch (error) {
+        } catch {
             toast.error("Erro ao enviar campanha")
         } finally {
             setIsLoading(null)
@@ -380,12 +374,12 @@ export function CampaignsClient({
                     onClose={() => setSendingCampaign(null)}
                     onConfirm={handleConfirmSend}
                     campaignName={sendingCampaign.name}
-                    campaignType={(sendingCampaign as any).type === "sequence" ? "sequence" : "single"}
+                    campaignType={sendingCampaign.type}
                     templateName={sendingCampaign.template?.name || null}
                     totalRecipients={sendingCampaign.totalRecipients}
                     totalPending={sendingCampaign.totalRecipients}
-                    isSequence={(sendingCampaign as any).type === "sequence"}
-                    stepsCount={(sendingCampaign as any).steps?.length || 1}
+                    isSequence={sendingCampaign.type === "sequence"}
+                    stepsCount={sendingCampaign._count.steps || 1}
                 />
             )}
         </>

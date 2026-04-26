@@ -15,11 +15,9 @@ import {
     RefreshCw,
     Mail,
     Calendar,
-    FileText,
     Phone,
     Plus,
     ThumbsUp,
-    CalendarCheck,
 } from "lucide-react"
 import { toast } from "sonner"
 
@@ -51,7 +49,7 @@ import {
 } from "@/actions/campaigns"
 import { getCallsByCampaign, getCampaignCallStats } from "@/actions/calls"
 import { SerializedCallWithLead } from "@/types/call.types"
-import { CallResult } from "@prisma/client"
+import type { CallResult, CampaignType } from "@prisma/client"
 import { cn } from "@/lib/utils"
 import { ExportCampaignButtons } from "@/components/reports/export-campaign-buttons"
 import { SendConfirmationDialog } from "@/components/campaigns/send-confirmation-dialog"
@@ -100,6 +98,10 @@ interface Campaign {
     createdAt: string
     updatedAt: string
     workspaceId: string
+    type: CampaignType
+    _count?: {
+        steps: number
+    }
     emailSends: EmailSend[]
 }
 
@@ -142,11 +144,11 @@ export function CampaignDetailClient({
 
     const canSend = campaign.status === "DRAFT" || campaign.status === "SCHEDULED"
     const canDelete = campaign.status !== "SENDING"
-    const isSequence = (campaign as any).type === "sequence"
+    const isSequence = campaign.type === "sequence"
     const pendingCount = campaign.emailSends.filter(
         (send) => send.status === "PENDING"
     ).length
-    const stepsCount = (campaign as any).steps?.length || 1
+    const stepsCount = campaign._count?.steps || 1
 
     // ============================================
     // HANDLERS
@@ -156,7 +158,7 @@ export function CampaignDetailClient({
         router.push("/campaigns")
     }
 
-    const handleRefresh = async (): Promise<void> => {
+    const handleRefresh = useCallback(async (): Promise<void> => {
         setIsRefreshing(true)
         try {
             const [campaignResult, newCalls, newCallStats] = await Promise.all([
@@ -172,7 +174,7 @@ export function CampaignDetailClient({
                     updatedAt: campaignResult.data.updatedAt.toISOString(),
                     sentAt: campaignResult.data.sentAt?.toISOString() || null,
                     scheduledAt: campaignResult.data.scheduledAt?.toISOString() || null,
-                    emailSends: campaignResult.data.emailSends.map((send: any) => ({
+                    emailSends: campaignResult.data.emailSends.map((send) => ({
                         ...send,
                         sentAt: send.sentAt?.toISOString() || null,
                         openedAt: send.openedAt?.toISOString() || null,
@@ -187,12 +189,12 @@ export function CampaignDetailClient({
             setCalls(newCalls)
             setCallStats(newCallStats)
             toast.success("Dados atualizados!")
-        } catch (error) {
+        } catch {
             toast.error("Erro ao atualizar dados")
         } finally {
             setIsRefreshing(false)
         }
-    }
+    }, [campaign.id])
 
     const handleSendClick = (): void => {
         setShowSendDialog(true)
@@ -209,7 +211,7 @@ export function CampaignDetailClient({
             } else {
                 toast.error(result.error || "Erro ao enviar campanha")
             }
-        } catch (error) {
+        } catch {
             toast.error("Erro ao enviar campanha")
         } finally {
             setIsLoading(false)
@@ -226,7 +228,7 @@ export function CampaignDetailClient({
             } else {
                 toast.error(result.error || "Erro ao duplicar")
             }
-        } catch (error) {
+        } catch {
             toast.error("Erro ao duplicar campanha")
         } finally {
             setIsLoading(false)
@@ -243,7 +245,7 @@ export function CampaignDetailClient({
             } else {
                 toast.error(result.error || "Erro ao excluir")
             }
-        } catch (error) {
+        } catch {
             toast.error("Erro ao excluir campanha")
         } finally {
             setIsLoading(false)
@@ -263,7 +265,7 @@ export function CampaignDetailClient({
             } else {
                 toast.error(result.error || "Erro ao recalcular")
             }
-        } catch (error) {
+        } catch {
             toast.error("Erro ao recalcular métricas")
         } finally {
             setIsRefreshing(false)
@@ -289,7 +291,7 @@ export function CampaignDetailClient({
         handleCloseCallModal()
         await handleRefresh()
         toast.success(editingCall ? "Ligação atualizada" : "Ligação registrada")
-    }, [editingCall, handleCloseCallModal])
+    }, [editingCall, handleCloseCallModal, handleRefresh])
 
     const formatDate = (date: string | null): string => {
         if (!date) return "-"
@@ -300,13 +302,6 @@ export function CampaignDetailClient({
     // RENDER
     // ============================================
 
-    console.log("DEBUG:", {
-        status: campaign.status,
-        canSend,
-        showSendDialog,
-        isSequence,
-        pendingCount,
-    })
     return (
         <div className="space-y-6">
             {/* Header */}
@@ -536,7 +531,7 @@ export function CampaignDetailClient({
                     <AlertDialogHeader>
                         <AlertDialogTitle>Excluir campanha?</AlertDialogTitle>
                         <AlertDialogDescription>
-                            Essa ação não pode ser desfeita. A campanha "{campaign.name}" e todos os
+                            Essa ação não pode ser desfeita. A campanha &quot;{campaign.name}&quot; e todos os
                             registros de envio serão excluídos permanentemente.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
