@@ -71,7 +71,6 @@ import { cn } from "@/lib/utils"
 
 interface LeadCallsSectionProps {
     leadId: string
-    leadName: string
     workspaceId: string
     initialCalls: SerializedCallWithLead[]
 }
@@ -82,7 +81,6 @@ interface LeadCallsSectionProps {
 
 export function LeadCallsSection({
                                      leadId,
-                                     leadName,
                                      workspaceId,
                                      initialCalls,
                                  }: LeadCallsSectionProps) {

@@ -186,7 +186,6 @@ export function LeadDetailClient({
                     {/* Seção de Ligações */}
                     <LeadCallsSection
                         leadId={lead.id}
-                        leadName={fullName}
                         workspaceId={lead.workspaceId}
                         initialCalls={initialCalls}
                     />

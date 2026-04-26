@@ -44,7 +44,7 @@ function CallsListEmpty() {
             </div>
             <h3 className="text-lg font-medium">Nenhuma ligação encontrada</h3>
             <p className="text-sm text-muted-foreground mt-1 max-w-sm">
-                Registre sua primeira ligação clicando no botão "Nova Ligação" acima.
+                Registre sua primeira ligação clicando no botão Nova Ligação acima.
             </p>
         </div>
     )

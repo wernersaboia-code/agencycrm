@@ -63,7 +63,7 @@ export function CallsConversionFunnel({ data }: CallsConversionFunnelProps) {
 
     return (
         <div className="space-y-3">
-            {stages.map((stage, index) => (
+            {stages.map((stage) => (
                 <div key={stage.label} className="space-y-1">
                     <div className="flex items-center justify-between text-sm">
                         <div className="flex items-center gap-2">

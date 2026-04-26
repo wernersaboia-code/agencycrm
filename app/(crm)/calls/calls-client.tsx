@@ -3,7 +3,6 @@
 "use client"
 
 import { useState, useCallback, useMemo } from "react"
-import { useRouter } from "next/navigation"
 import { Plus, Phone, RefreshCw } from "lucide-react"
 import { toast } from "sonner"
 
@@ -44,14 +43,6 @@ interface CallsClientProps {
     workspaceId: string
 }
 
-export interface CallFiltersState {
-    search: string
-    result: CallResult | "ALL"
-    dateRange: "all" | "today" | "week" | "month" | "custom"
-    dateFrom: string
-    dateTo: string
-}
-
 // ============================================
 // COMPONENT
 // ============================================
@@ -62,8 +53,6 @@ export function CallsClient({
                                 initialCallbacks,
                                 workspaceId,
                             }: CallsClientProps) {
-    const router = useRouter()
-
     // ============================================
     // STATE
     // ============================================
@@ -159,7 +148,7 @@ export function CallsClient({
             setStats(newStats)
             setCallbacks(newCallbacks)
             toast.success("Dados atualizados")
-        } catch (error) {
+        } catch {
             toast.error("Erro ao atualizar dados")
         } finally {
             setIsLoading(false)

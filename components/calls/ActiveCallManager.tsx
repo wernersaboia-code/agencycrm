@@ -5,7 +5,7 @@
 // ============================================
 // IMPORTS
 // ============================================
-import { useState, useCallback, useEffect } from "react"
+import { useState, useCallback } from "react"
 import { toast } from "sonner"
 
 import { ActiveCallModal } from "@/components/calls/ActiveCallModal"
