@@ -14,7 +14,6 @@ import {
     FileText
 } from "lucide-react"
 import { toast } from "sonner"
-import { TemplateCategory } from "@prisma/client"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -33,10 +32,7 @@ import {
     toggleTemplateActive,
     type TemplateWithStats
 } from "@/actions/templates"
-import {
-    TEMPLATE_CATEGORY_CONFIG,
-    getCategoryLabel
-} from "@/lib/constants/template.constants"
+import { TEMPLATE_CATEGORY_CONFIG } from "@/lib/constants/template.constants"
 
 // ============================================================
 // TIPOS
@@ -130,7 +126,7 @@ export function TemplatesClient({ templates, workspaceId }: TemplatesClientProps
     }
 
     const handleDelete = async (template: TemplateWithStats) => {
-        if (!confirm(`Excluir template "${template.name}"?`)) return
+        if (!confirm(`Excluir template ${template.name}?`)) return
 
         setIsDeleting(template.id)
         const result = await deleteTemplate(template.id)

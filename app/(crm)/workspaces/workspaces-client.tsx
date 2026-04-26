@@ -90,7 +90,7 @@ export function WorkspacesClient({ initialWorkspaces }: WorkspacesClientProps) {
             } else {
                 toast.error(result.error || "Erro ao excluir")
             }
-        } catch (error) {
+        } catch {
             toast.error("Erro ao excluir cliente")
         } finally {
             setIsDeleting(false)

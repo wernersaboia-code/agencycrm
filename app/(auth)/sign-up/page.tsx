@@ -62,7 +62,7 @@ function SignUpForm() {
 
             setIsSuccess(true)
             toast.success("Conta criada com sucesso!")
-        } catch (error) {
+        } catch {
             toast.error("Erro ao criar conta")
         } finally {
             setIsLoading(false)

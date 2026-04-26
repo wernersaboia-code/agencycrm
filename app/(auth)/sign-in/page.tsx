@@ -1,7 +1,7 @@
 // app/(auth)/sign-in/page.tsx.bak
 "use client"
 
-import { useState, useEffect, Suspense } from "react"
+import { useState, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { toast } from "sonner"
@@ -53,7 +53,7 @@ function SignInForm() {
             toast.success("Login realizado com sucesso!")
             router.push(redirectTo)
             router.refresh()
-        } catch (error) {
+        } catch {
             toast.error("Erro ao fazer login")
         } finally {
             setIsLoading(false)

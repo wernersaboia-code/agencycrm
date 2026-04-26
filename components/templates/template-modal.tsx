@@ -2,11 +2,10 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import { useForm } from "react-hook-form"
+import { useForm, type Resolver } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "sonner"
 import { Eye, Info, Loader2, Sparkles } from "lucide-react"
-import { TemplateCategory } from "@prisma/client"
 
 import {
     Dialog,
@@ -91,7 +90,7 @@ export function TemplateModal({
 
     // Form
     const form = useForm<TemplateFormData>({
-        resolver: zodResolver(templateFormSchema) as any,
+        resolver: zodResolver(templateFormSchema) as Resolver<TemplateFormData>,
         defaultValues: DEFAULT_TEMPLATE_VALUES,
     })
 
@@ -157,7 +156,7 @@ export function TemplateModal({
                     toast.error(result.error || "Erro ao criar")
                 }
             }
-        } catch (error) {
+        } catch {
             toast.error("Erro inesperado")
         } finally {
             setIsSubmitting(false)
@@ -341,7 +340,7 @@ export function TemplateModal({
                                                     <div className="text-xs text-blue-700 dark:text-blue-300">
                                                         <p className="font-medium mb-1">Dica:</p>
                                                         <p>
-                                                            Use o botão <strong>"Variável"</strong> na barra
+                                                            Use o botão <strong>Variável</strong> na barra
                                                             de ferramentas para inserir campos dinâmicos como
                                                             nome, empresa, etc. Eles serão substituídos
                                                             automaticamente pelos dados de cada lead.

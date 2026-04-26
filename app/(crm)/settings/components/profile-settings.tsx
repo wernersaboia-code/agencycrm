@@ -2,13 +2,13 @@
 
 "use client"
 
-import { useState, useTransition } from "react"
+import { useTransition } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { format } from "date-fns"
 import { ptBR } from "date-fns/locale"
-import { Loader2, User, Mail, Calendar, Shield } from "lucide-react"
+import { Loader2, User, Mail, Calendar } from "lucide-react"
 
 import {
     Card,
