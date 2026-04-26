@@ -10,7 +10,6 @@ import {
     AlertCircle,
     CheckCircle2,
     X,
-    Download,
 } from "lucide-react"
 import { toast } from "sonner"
 

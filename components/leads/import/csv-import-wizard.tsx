@@ -23,7 +23,7 @@ import { StepMapping } from "./step-mapping"
 import { StepPreview } from "./step-preview"
 import { StepImporting } from "./step-importing"
 import { useWorkspace } from "@/contexts/workspace-context"
-import type { ParsedFile, ProcessedLead, ProcessingResult } from "@/lib/file-parser"
+import type { ParsedFile, ProcessingResult } from "@/lib/file-parser"
 
 // ============================================================
 // TIPOS

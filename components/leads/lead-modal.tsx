@@ -3,7 +3,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useForm } from "react-hook-form"
+import { useForm, type Resolver } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import {
     Loader2,
@@ -174,7 +174,7 @@ export function LeadModal({
     const isEditing = !!lead
 
     const form = useForm<LeadFormData>({
-        resolver: zodResolver(leadFormSchema) as any,
+        resolver: zodResolver(leadFormSchema) as Resolver<LeadFormData>,
         defaultValues: DEFAULT_LEAD_VALUES,
     })
 
@@ -201,7 +201,7 @@ export function LeadModal({
     const getErrorMessages = (): string[] => {
         const messages: string[] = []
 
-        for (const [field, error] of Object.entries(formErrors)) {
+        for (const error of Object.values(formErrors)) {
             if (error?.message) {
                 messages.push(error.message as string)
             }

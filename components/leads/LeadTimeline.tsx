@@ -13,9 +13,7 @@ import {
     MailOpen,
     MousePointerClick,
     Phone,
-    MessageSquare,
     Calendar,
-    Clock,
     Activity,
 } from "lucide-react"
 

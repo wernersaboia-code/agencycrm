@@ -73,8 +73,6 @@ import { Skeleton } from "@/components/ui/skeleton"
 
 import { LeadModal } from "@/components/leads/lead-modal"
 import { LeadStatusBadge } from "@/components/leads/lead-status-badge"
-import { LeadSourceBadge } from "@/components/leads/lead-source-badge"
-import { LeadCountryBadge } from "@/components/leads/lead-country-badge"
 import { ClickToCallButton } from "@/components/calls/ClickToCallButton"
 import { useWorkspace } from "@/contexts/workspace-context"
 import { getLeads, deleteLead } from "@/actions/leads"
@@ -85,7 +83,6 @@ import {
 } from "@/lib/constants/lead.constants"
 import { formatFullName, getCompanySizeLabel } from "@/lib/utils/lead.utils"
 import { ExportLeadsButtons } from "@/components/reports/export-leads-buttons"
-import { cn } from "@/lib/utils"
 
 // ============================================================
 // TIPOS

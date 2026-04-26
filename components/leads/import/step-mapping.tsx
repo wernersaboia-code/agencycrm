@@ -55,9 +55,6 @@ interface StepMappingProps {
     onBack: () => void
 }
 
-// Campos que podem ter múltiplas colunas mapeadas
-const MULTI_VALUE_FIELDS = ['notes']
-
 // Campos que usam a primeira coluna encontrada (não duplica)
 const SINGLE_VALUE_FIELDS = ['email', 'phone', 'mobile', 'firstName', 'lastName']
 
@@ -191,15 +188,6 @@ export function StepMapping({
 
         setMapping(newMapping)
     }
-
-    // Conta quantas colunas mapeiam para cada campo
-    const fieldUsageCount = useMemo(() => {
-        const counts: Record<string, number> = {}
-        Object.values(mapping).forEach(field => {
-            counts[field] = (counts[field] || 0) + 1
-        })
-        return counts
-    }, [mapping])
 
     return (
         <Card>
