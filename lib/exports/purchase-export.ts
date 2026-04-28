@@ -1,5 +1,6 @@
 // lib/exports/purchase-export.ts
 import { prisma } from "@/lib/prisma"
+import { buildCsv, sanitizeCsvFilenameSegment } from "@/lib/utils/csv.utils"
 
 export async function generatePurchaseCSV(purchaseItemId: string, userId: string) {
     // Buscar item da compra
@@ -82,20 +83,14 @@ export async function generatePurchaseCSV(purchaseItemId: string, userId: string
         lead.contactForm || "",
     ])
 
-    // Construir CSV
-    const csvContent = [
-        headers.join(","),
-        ...rows.map((row) =>
-            row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(",")
-        ),
-    ].join("\n")
+    const csvContent = buildCsv(headers, rows.map((row) => row.map(String)))
 
     // BOM para UTF-8
     const csv = "\uFEFF" + csvContent
 
     return {
         csv,
-        filename: `${purchaseItem.list.slug}-${new Date().toISOString().split("T")[0]}.csv`,
+        filename: `${sanitizeCsvFilenameSegment(purchaseItem.list.slug)}-${new Date().toISOString().split("T")[0]}.csv`,
         leadsCount: leads.length,
     }
 }

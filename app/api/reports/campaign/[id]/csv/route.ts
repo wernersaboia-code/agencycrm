@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { getAuthenticatedUser } from "@/lib/auth"
 import { format } from "date-fns"
+import { buildCsv, sanitizeCsvFilenameSegment } from "@/lib/utils/csv.utils"
 
 export async function GET(
     request: NextRequest,
@@ -82,24 +83,13 @@ export async function GET(
             send.clickedAt ? format(send.clickedAt, "dd/MM/yyyy HH:mm") : "",
         ])
 
-        // Escapar valores CSV
-        const escapeCSV = (value: string) => {
-            if (value.includes(",") || value.includes('"') || value.includes("\n")) {
-                return `"${value.replace(/"/g, '""')}"`
-            }
-            return value
-        }
-
-        const csvContent = [
-            headers.join(","),
-            ...rows.map((row) => row.map(escapeCSV).join(",")),
-        ].join("\n")
+        const csvContent = buildCsv(headers, rows)
 
         // Adicionar BOM para Excel reconhecer UTF-8
         const bom = "\uFEFF"
         const csvWithBom = bom + csvContent
 
-        const fileName = `relatorio-${campaign.name.toLowerCase().replace(/\s+/g, "-")}-${Date.now()}.csv`
+        const fileName = `relatorio-${sanitizeCsvFilenameSegment(campaign.name)}-${Date.now()}.csv`
 
         return new NextResponse(csvWithBom, {
             headers: {

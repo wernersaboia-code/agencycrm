@@ -8,6 +8,7 @@ import {
     leadReportQuerySchema,
     searchParamsToObject,
 } from "@/lib/reports/lead-report-filters"
+import { buildCsv, sanitizeCsvFilenameSegment } from "@/lib/utils/csv.utils"
 
 // Labels para exibição
 const STATUS_LABELS: Record<string, string> = {
@@ -118,24 +119,13 @@ export async function GET(request: NextRequest) {
             format(lead.createdAt, "dd/MM/yyyy HH:mm"),
         ])
 
-        // Escapar valores CSV
-        const escapeCSV = (value: string) => {
-            if (value.includes(",") || value.includes('"') || value.includes("\n")) {
-                return `"${value.replace(/"/g, '""')}"`
-            }
-            return value
-        }
-
-        const csvContent = [
-            headers.join(","),
-            ...rows.map((row) => row.map(escapeCSV).join(",")),
-        ].join("\n")
+        const csvContent = buildCsv(headers, rows)
 
         // Adicionar BOM para Excel reconhecer UTF-8
         const bom = "\uFEFF"
         const csvWithBom = bom + csvContent
 
-        const fileName = `leads-${workspace.name.toLowerCase().replace(/\s+/g, "-")}-${format(new Date(), "yyyy-MM-dd")}.csv`
+        const fileName = `leads-${sanitizeCsvFilenameSegment(workspace.name)}-${format(new Date(), "yyyy-MM-dd")}.csv`
 
         return new NextResponse(csvWithBom, {
             headers: {

@@ -56,6 +56,11 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: "Invalid items" }, { status: 400 })
         }
 
+        const currencies = new Set(lists.map((list) => list.currency))
+        if (currencies.size !== 1) {
+            return NextResponse.json({ error: "Mixed currencies are not supported" }, { status: 400 })
+        }
+
         // Calcular total
         let subtotal = 0
         const purchaseItems = lists.map((list) => {

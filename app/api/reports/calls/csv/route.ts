@@ -8,6 +8,7 @@ import {
     callReportQuerySchema,
     searchParamsToObject,
 } from "@/lib/reports/call-report-filters"
+import { buildCsv, sanitizeCsvFilenameSegment } from "@/lib/utils/csv.utils"
 
 const RESULT_LABELS: Record<string, string> = {
     ANSWERED: "Atendeu",
@@ -110,22 +111,12 @@ export async function GET(request: NextRequest) {
             call.followUpAt ? format(call.followUpAt, "dd/MM/yyyy HH:mm") : "",
         ])
 
-        const escapeCSV = (value: string) => {
-            if (value.includes(",") || value.includes('"') || value.includes("\n")) {
-                return `"${value.replace(/"/g, '""')}"`
-            }
-            return value
-        }
-
-        const csvContent = [
-            headers.join(","),
-            ...rows.map((row) => row.map(escapeCSV).join(",")),
-        ].join("\n")
+        const csvContent = buildCsv(headers, rows)
 
         const bom = "\uFEFF"
         const csvWithBom = bom + csvContent
 
-        const fileName = `ligacoes-${workspace.name.toLowerCase().replace(/\s+/g, "-")}-${format(new Date(), "yyyy-MM-dd")}.csv`
+        const fileName = `ligacoes-${sanitizeCsvFilenameSegment(workspace.name)}-${format(new Date(), "yyyy-MM-dd")}.csv`
 
         return new NextResponse(csvWithBom, {
             headers: {

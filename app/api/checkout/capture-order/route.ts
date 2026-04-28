@@ -13,8 +13,35 @@ const captureOrderSchema = z.object({
     orderId: z.string().min(1),
 })
 
+type PayPalCaptureResult = {
+    purchase_units?: {
+        payments?: {
+            captures?: {
+                amount?: {
+                    value?: string
+                    currency_code?: string
+                }
+            }[]
+        }
+    }[]
+}
+
 function getErrorMessage(error: unknown): string {
     return error instanceof Error ? error.message : "Failed to capture payment"
+}
+
+function getCapturedAmount(captureResult: unknown): { value: string; currency: string } | null {
+    const result = captureResult as PayPalCaptureResult
+    const capturedAmount = result.purchase_units?.[0]?.payments?.captures?.[0]?.amount
+
+    if (!capturedAmount?.value || !capturedAmount.currency_code) {
+        return null
+    }
+
+    return {
+        value: capturedAmount.value,
+        currency: capturedAmount.currency_code,
+    }
 }
 
 export async function POST(request: NextRequest) {
@@ -59,7 +86,11 @@ export async function POST(request: NextRequest) {
                 userId: session.user.id,
                 status: "pending",
             },
-            select: { id: true },
+            select: {
+                id: true,
+                total: true,
+                currency: true,
+            },
         })
 
         if (!pendingPurchase) {
@@ -78,6 +109,20 @@ export async function POST(request: NextRequest) {
         if (capture.result.status !== "COMPLETED") {
             return NextResponse.json(
                 { error: "Payment not completed" },
+                { status: 400 }
+            )
+        }
+
+        const capturedAmount = getCapturedAmount(capture.result)
+        const expectedTotal = Number(pendingPurchase.total).toFixed(2)
+
+        if (
+            !capturedAmount ||
+            capturedAmount.value !== expectedTotal ||
+            capturedAmount.currency !== pendingPurchase.currency
+        ) {
+            return NextResponse.json(
+                { error: "Payment amount mismatch" },
                 { status: 400 }
             )
         }

@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import {
     canUpgradeStatus,
+    getTrackingBaseUrl,
     TRACKING_LEAD_STATUS_MAP,
 } from '@/lib/constants/tracking.constants'
 
@@ -13,6 +14,24 @@ import {
 
 interface RouteParams {
     params: Promise<{ id: string }>
+}
+
+function getSafeRedirectUrl(originalUrl: string | null): string {
+    if (!originalUrl) {
+        return getTrackingBaseUrl()
+    }
+
+    try {
+        const parsedUrl = new URL(originalUrl)
+
+        if (parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:') {
+            return parsedUrl.toString()
+        }
+    } catch {
+        return getTrackingBaseUrl()
+    }
+
+    return getTrackingBaseUrl()
 }
 
 // ============================================
@@ -26,11 +45,7 @@ export async function GET(
     const { id: emailSendId } = await params
     const { searchParams } = new URL(request.url)
     const originalUrl = searchParams.get('url')
-
-    // Fallback URL if none provided
-    const redirectUrl = originalUrl
-        ? decodeURIComponent(originalUrl)
-        : '/'
+    const redirectUrl = getSafeRedirectUrl(originalUrl)
 
     console.log(`[Tracking] Processing click for: ${emailSendId} → ${originalUrl}`)
 
