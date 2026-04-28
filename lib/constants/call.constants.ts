@@ -144,13 +144,13 @@ export function getCallResultOptions(): Array<{
 
 export function getPositiveResults(): CallResult[] {
     return Object.entries(CALL_RESULT_CONFIG)
-        .filter(([_, config]) => config.isPositive)
+        .filter(([, config]) => config.isPositive)
         .map(([value]) => value as CallResult)
 }
 
 export function getResultsRequiringFollowUp(): CallResult[] {
     return Object.entries(CALL_RESULT_CONFIG)
-        .filter(([_, config]) => config.requiresFollowUp)
+        .filter(([, config]) => config.requiresFollowUp)
         .map(([value]) => value as CallResult)
 }
 

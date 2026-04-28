@@ -1,7 +1,6 @@
 // components/layout/header.tsx
 "use client"
 
-import { useEffect, useState } from "react"
 import { Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
@@ -23,11 +22,6 @@ interface HeaderProps {
 
 export function Header({ user }: HeaderProps) {
     const { setTheme } = useTheme()
-    const [mounted, setMounted] = useState(false)
-
-    useEffect(() => {
-        setMounted(true)
-    }, [])
 
     const initials = user?.name
         ?.split(" ")
@@ -39,11 +33,7 @@ export function Header({ user }: HeaderProps) {
     return (
         <header className="flex h-16 items-center justify-between border-b bg-background px-6">
             <div className="flex items-center gap-4">
-                {mounted ? (
-                    <WorkspaceSwitcher />
-                ) : (
-                    <div className="h-9 w-[200px] bg-muted animate-pulse rounded-md" />
-                )}
+                <WorkspaceSwitcher />
 
                 <div className="hidden md:block">
                     <h1 className="text-lg font-semibold">
@@ -53,30 +43,26 @@ export function Header({ user }: HeaderProps) {
             </div>
 
             <div className="flex items-center gap-4">
-                {mounted ? (
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="outline" size="icon">
-                                <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                                <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                                <span className="sr-only">Alternar tema</span>
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => setTheme("light")}>
-                                Claro
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => setTheme("dark")}>
-                                Escuro
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => setTheme("system")}>
-                                Sistema
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                ) : (
-                    <div className="h-9 w-9 bg-muted animate-pulse rounded-md" />
-                )}
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="outline" size="icon">
+                            <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                            <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                            <span className="sr-only">Alternar tema</span>
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => setTheme("light")}>
+                            Claro
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setTheme("dark")}>
+                            Escuro
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setTheme("system")}>
+                            Sistema
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
 
                 <Avatar>
                     <AvatarFallback>{initials}</AvatarFallback>

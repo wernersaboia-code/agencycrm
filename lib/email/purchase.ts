@@ -63,7 +63,6 @@ function getSystemSmtpConfig(): SmtpConfig {
 export async function sendPurchaseConfirmationEmail({
                                                         userId,
                                                         purchaseId,
-                                                        accessToken,
                                                         accessUrl,
                                                     }: SendPurchaseConfirmationParams) {
     try {
@@ -105,7 +104,7 @@ export async function sendPurchaseConfirmationEmail({
 
         // 🆕 Tentar obter SMTP do workspace do usuário
         let smtpConfig: SmtpConfig | null = null
-        let workspace = await prisma.workspace.findFirst({
+        const workspace = await prisma.workspace.findFirst({
             where: { userId },
             select: {
                 senderName: true,

@@ -3,7 +3,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useForm, SubmitHandler } from "react-hook-form"
+import { useForm, SubmitHandler, type Resolver } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { Loader2 } from "lucide-react"
@@ -87,7 +87,7 @@ export function WorkspaceModal({
     const isEditing = !!workspace
 
     const form = useForm<WorkspaceFormValues>({
-        resolver: zodResolver(workspaceSchema) as any,
+        resolver: zodResolver(workspaceSchema) as Resolver<WorkspaceFormValues>,
         defaultValues: {
             name: "",
             description: "",
@@ -142,7 +142,7 @@ export function WorkspaceModal({
             } else {
                 toast.error(result.error || "Erro ao salvar")
             }
-        } catch (error) {
+        } catch {
             toast.error("Erro ao salvar cliente")
         } finally {
             setIsLoading(false)

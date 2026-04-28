@@ -18,7 +18,7 @@ export async function GET() {
         })
 
         return NextResponse.json({ role: dbUser?.role || "USER" })
-    } catch (error) {
+    } catch {
         return NextResponse.json({ role: null }, { status: 500 })
     }
 }

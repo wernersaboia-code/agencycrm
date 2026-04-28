@@ -1,6 +1,8 @@
 // components/ui/flag-icon.tsx
 "use client"
 
+import Image from "next/image"
+
 interface FlagIconProps {
     code: string
     className?: string
@@ -17,11 +19,12 @@ export function FlagIcon({ code, className = "", size = "md" }: FlagIconProps) {
     const flagUrl = `https://flagcdn.com/w40/${code.toLowerCase()}.png`
 
     return (
-        <img
+        <Image
             src={flagUrl}
             alt={code}
+            width={40}
+            height={30}
             className={`${sizes[size]} rounded-sm object-cover shadow-sm ${className}`}
-            loading="lazy"
             style={{ imageRendering: "crisp-edges" }}
         />
     )

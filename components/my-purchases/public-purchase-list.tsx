@@ -1,7 +1,6 @@
 // components/my-purchases/public-purchase-list.tsx
 "use client"
 
-import { useState } from "react"
 import { PublicPurchaseCard } from "@/components/marketplace/public-purchase-card"
 import { Package, FileSpreadsheet, Download } from "lucide-react"
 
@@ -37,8 +36,6 @@ interface PublicPurchaseListProps {
 }
 
 export function PublicPurchaseList({ purchases, userEmail }: PublicPurchaseListProps) {
-    const [expandedId, setExpandedId] = useState<string | null>(null)
-
     const totalLeads = purchases.reduce((acc, p) =>
         acc + p.items.reduce((sum, item) => sum + item.leadsCount, 0
         ), 0)

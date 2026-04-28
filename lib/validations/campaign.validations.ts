@@ -1,7 +1,7 @@
 // lib/validations/campaign.validations.ts
 
 import { z } from "zod"
-import { CampaignStatus, LeadStatus } from "@prisma/client"
+import { LeadStatus } from "@prisma/client"
 
 // ============================================================
 // SEQUENCE STEP SCHEMA

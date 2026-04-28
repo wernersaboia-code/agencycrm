@@ -1,6 +1,7 @@
 // components/purchases/import-to-crm-modal.tsx
 "use client"
 
+import Image from "next/image"
 import { useState } from "react"
 import { Building2, CheckCircle2, ChevronRight, Database, Loader2, Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -180,9 +181,11 @@ export function ImportToCRMModal({
                                                             style={{ backgroundColor: workspace.color }}
                                                         >
                                                             {workspace.logo ? (
-                                                                <img
+                                                                <Image
                                                                     src={workspace.logo}
                                                                     alt={workspace.name}
+                                                                    width={40}
+                                                                    height={40}
                                                                     className="w-full h-full object-cover rounded-lg"
                                                                 />
                                                             ) : (

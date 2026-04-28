@@ -2,7 +2,7 @@
 "use client"
 
 import { useState } from "react"
-import { useForm } from "react-hook-form"
+import { useForm, type Resolver } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { Button } from "@/components/ui/button"
@@ -77,7 +77,7 @@ export function WorkspaceSettings({ workspace }: WorkspaceSettingsProps) {
         setValue,
         formState: { errors, isDirty },
     } = useForm<WorkspaceFormData>({
-        resolver: zodResolver(workspaceSchema) as any,
+        resolver: zodResolver(workspaceSchema) as Resolver<WorkspaceFormData>,
         defaultValues: {
             name: workspace.name,
             description: workspace.description || "",

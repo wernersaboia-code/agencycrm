@@ -1,9 +1,34 @@
 // types/paypal.d.ts
 declare module '@paypal/checkout-server-sdk' {
+    type PayPalRequestBody = Record<string, unknown>
+
+    type PayPalEnvironment = object
+
+    interface PayPalRequest {
+        requestBody?: (body: PayPalRequestBody) => void
+    }
+
+    interface PayPalOrderResult {
+        id: string
+        status?: string
+        payer?: {
+            payer_id?: string
+            email_address?: string
+            name?: {
+                given_name?: string
+                surname?: string
+            }
+        }
+    }
+
+    interface PayPalHttpResponse<T = PayPalOrderResult> {
+        result: T
+    }
+
     export namespace core {
         export class PayPalHttpClient {
-            constructor(environment: any)
-            execute(request: any): Promise<any>
+            constructor(environment: PayPalEnvironment)
+            execute<T = PayPalOrderResult>(request: PayPalRequest): Promise<PayPalHttpResponse<T>>
         }
 
         export class SandboxEnvironment {
@@ -16,14 +41,14 @@ declare module '@paypal/checkout-server-sdk' {
     }
 
     export namespace orders {
-        export class OrdersCreateRequest {
+        export class OrdersCreateRequest implements PayPalRequest {
             prefer(value: string): void
-            requestBody(body: any): void
+            requestBody(body: PayPalRequestBody): void
         }
 
-        export class OrdersCaptureRequest {
+        export class OrdersCaptureRequest implements PayPalRequest {
             constructor(orderId: string)
-            requestBody(body: any): void
+            requestBody(body: PayPalRequestBody): void
         }
 
         export class OrdersGetRequest {
@@ -32,15 +57,15 @@ declare module '@paypal/checkout-server-sdk' {
     }
 
     export namespace payments {
-        export class CapturesRefundRequest {
+        export class CapturesRefundRequest implements PayPalRequest {
             constructor(captureId: string)
-            requestBody(body: any): void
+            requestBody(body: PayPalRequestBody): void
         }
     }
 }
 
 declare module '@paypal/react-paypal-js' {
-    import { ComponentType } from 'react'
+    import { ComponentType, ReactNode } from 'react'
 
     export interface PayPalScriptProviderProps {
         options: {
@@ -50,7 +75,7 @@ declare module '@paypal/react-paypal-js' {
             vault?: boolean
             commit?: boolean
         }
-        children: React.ReactNode
+        children: ReactNode
     }
 
     export const PayPalScriptProvider: ComponentType<PayPalScriptProviderProps>
@@ -65,7 +90,7 @@ declare module '@paypal/react-paypal-js' {
         }
         createOrder?: () => Promise<string>
         onApprove?: (data: { orderID: string; payerID?: string }) => Promise<void>
-        onError?: (err: any) => void
+        onError?: (err: Record<string, unknown>) => void
         onCancel?: () => void
     }
 

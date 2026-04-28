@@ -7,24 +7,25 @@ import { ptBR } from "date-fns/locale"
 import { Crown, X } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { useState, useEffect, useRef } from "react"
+import { useState } from "react"
+
+interface DismissedState {
+    workspaceId: string | null
+    dismissed: boolean
+}
 
 export function TrialBanner() {
     const { activeWorkspace } = useWorkspace()  // 🆕 Corrigido: activeWorkspace em vez de workspace
-    const [dismissed, setDismissed] = useState(false)
-    const prevWorkspaceId = useRef<string | null>(null)
-
-    // Resetar dismissed quando workspace mudar (sem causar loop)
-    useEffect(() => {
-        if (activeWorkspace?.id && activeWorkspace.id !== prevWorkspaceId.current) {
-            prevWorkspaceId.current = activeWorkspace.id
-            setDismissed(false)
-        }
-    }, [activeWorkspace?.id])
+    const [dismissedState, setDismissedState] = useState<DismissedState>({
+        workspaceId: null,
+        dismissed: false,
+    })
 
     if (!activeWorkspace || activeWorkspace.plan !== "TRIAL" || !activeWorkspace.trialEndsAt) {
         return null
     }
+
+    const dismissed = dismissedState.workspaceId === activeWorkspace.id && dismissedState.dismissed
 
     if (dismissed) return null
 
@@ -56,7 +57,7 @@ export function TrialBanner() {
     return (
         <div className={`border-b ${getBannerStyle()} px-4 py-3 relative`}>
             <button
-                onClick={() => setDismissed(true)}
+                onClick={() => setDismissedState({ workspaceId: activeWorkspace.id, dismissed: true })}
                 className="absolute right-2 top-1/2 -translate-y-1/2 p-1 hover:bg-black/5 rounded"
             >
                 <X className="h-4 w-4" />
