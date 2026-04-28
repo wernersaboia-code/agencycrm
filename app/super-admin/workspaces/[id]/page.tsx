@@ -4,7 +4,6 @@ import { notFound } from "next/navigation"
 import Link from "next/link"
 import {
     ArrowLeft,
-    Building2,
     Users,
     Send,
     Phone,
@@ -16,7 +15,6 @@ import {
 } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Separator } from "@/components/ui/separator"
 import { Progress } from "@/components/ui/progress"

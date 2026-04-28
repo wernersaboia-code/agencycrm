@@ -84,7 +84,7 @@ export function ExportWorkspaceButton({ workspaceId, workspaceName }: ExportWork
             }
 
             toast.success(`Exportação ${format.toUpperCase()} concluída!`)
-        } catch (error) {
+        } catch {
             toast.error("Erro ao exportar dados")
         } finally {
             setIsLoading(false)

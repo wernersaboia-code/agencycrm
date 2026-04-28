@@ -12,11 +12,8 @@ import {
     Phone,
     BarChart3,
     Send,
-    KeyRound,
 } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Separator } from "@/components/ui/separator"
 import { getUserDetails, getUserStats } from "@/actions/admin/users"

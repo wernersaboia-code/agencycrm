@@ -66,7 +66,6 @@ export function LeadsUploadModal({ listId, listName, trigger }: LeadsUploadModal
     const router = useRouter()
     const [open, setOpen] = useState(false)
     const [step, setStep] = useState<UploadStep>("select")
-    const [file, setFile] = useState<File | null>(null)
     const [parsedRows, setParsedRows] = useState<ParsedRow[]>([])
     const [columnMapping, setColumnMapping] = useState<Record<string, string | null>>({})
     const [progress, setProgress] = useState(0)
@@ -79,7 +78,6 @@ export function LeadsUploadModal({ listId, listName, trigger }: LeadsUploadModal
         if (!isOpen) {
             setTimeout(() => {
                 setStep("select")
-                setFile(null)
                 setParsedRows([])
                 setColumnMapping({})
                 setProgress(0)
@@ -117,7 +115,6 @@ export function LeadsUploadModal({ listId, listName, trigger }: LeadsUploadModal
             return
         }
 
-        setFile(selectedFile)
         setIsLoading(true)
 
         // Parse CSV

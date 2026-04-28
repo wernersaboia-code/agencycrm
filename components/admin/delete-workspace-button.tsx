@@ -43,7 +43,7 @@ export function DeleteWorkspaceButton({ workspaceId, workspaceName }: DeleteWork
             toast.success("Workspace excluído com sucesso")
             router.push("/super-admin/workspaces")
             router.refresh()
-        } catch (error) {
+        } catch {
             toast.error("Erro ao excluir workspace")
         } finally {
             setIsLoading(false)

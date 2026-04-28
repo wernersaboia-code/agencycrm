@@ -47,7 +47,7 @@ export function UserRoleSelect({ userId, currentRole }: UserRoleSelectProps) {
             setRole(newRole)
             toast.success(`Role alterada para ${roleLabels[newRole]}`)
             router.refresh()
-        } catch (error) {
+        } catch {
             toast.error("Erro ao alterar role")
         } finally {
             setIsLoading(false)

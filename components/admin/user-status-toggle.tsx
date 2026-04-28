@@ -41,7 +41,7 @@ export function UserStatusToggle({ userId, currentStatus }: UserStatusToggleProp
             setStatus(newStatus)
             toast.success(`Status alterado para ${statusConfig[newStatus].label}`)
             router.refresh()
-        } catch (error) {
+        } catch {
             toast.error("Erro ao alterar status")
         } finally {
             setIsLoading(false)

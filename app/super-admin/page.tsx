@@ -6,7 +6,6 @@ import {
     Building2,
     Mail,
     Phone,
-    TrendingUp,
     Package,
     ShoppingCart,
     DollarSign

@@ -83,7 +83,7 @@ export function TransferWorkspaceModal({
             toast.success(`Workspace transferido para ${selectedUser.name || selectedUser.email}`)
             setOpen(false)
             router.refresh()
-        } catch (error) {
+        } catch {
             toast.error("Erro ao transferir workspace")
         } finally {
             setIsLoading(false)

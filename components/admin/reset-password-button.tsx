@@ -33,7 +33,7 @@ export function ResetPasswordButton({ email }: ResetPasswordButtonProps) {
             await sendPasswordReset(email)
             setSent(true)
             toast.success("Email de reset enviado!")
-        } catch (error) {
+        } catch {
             toast.error("Erro ao enviar email de reset")
         } finally {
             setIsLoading(false)

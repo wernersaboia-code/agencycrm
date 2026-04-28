@@ -8,7 +8,6 @@ import * as XLSX from "xlsx"
 import {
     Upload,
     FileSpreadsheet,
-    Download,
     CheckCircle2,
     X,
     AlertCircle,

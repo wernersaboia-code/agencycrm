@@ -29,6 +29,7 @@ import { UserRoleSelect } from "@/components/admin/user-role-select"
 import { UserStatusToggle } from "@/components/admin/user-status-toggle"
 import { formatDistanceToNow } from "date-fns"
 import { ptBR } from "date-fns/locale"
+import { UserRole, UserStatus } from "@prisma/client"
 
 interface UsersPageProps {
     searchParams: Promise<{
@@ -37,6 +38,16 @@ interface UsersPageProps {
         status?: string
         page?: string
     }>
+}
+
+function parseUserRole(role?: string): UserRole | "ALL" | undefined {
+    if (!role || role === "ALL") return role as "ALL" | undefined
+    return Object.values(UserRole).includes(role as UserRole) ? (role as UserRole) : undefined
+}
+
+function parseUserStatus(status?: string): UserStatus | "ALL" | undefined {
+    if (!status || status === "ALL") return status as "ALL" | undefined
+    return Object.values(UserStatus).includes(status as UserStatus) ? (status as UserStatus) : undefined
 }
 
 export default async function UsersPage({ searchParams }: UsersPageProps) {
@@ -107,8 +118,8 @@ export default async function UsersPage({ searchParams }: UsersPageProps) {
             <Suspense fallback={<UsersTableSkeleton />}>
                 <UsersTable
                     search={params.search}
-                    role={params.role as any}
-                    status={params.status as any}
+                    role={parseUserRole(params.role)}
+                    status={parseUserStatus(params.status)}
                     page={params.page ? parseInt(params.page) : 1}
                 />
             </Suspense>
@@ -124,14 +135,14 @@ async function UsersTable({
                               page,
                           }: {
     search?: string
-    role?: string
-    status?: string
+    role?: UserRole | "ALL"
+    status?: UserStatus | "ALL"
     page: number
 }) {
     const { users, total, pages, currentPage } = await getUsers({
         search,
-        role: role as any,
-        status: status as any,
+        role,
+        status,
         page,
     })
 

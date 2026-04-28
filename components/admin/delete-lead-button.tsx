@@ -34,7 +34,7 @@ export function DeleteLeadButton({ leadId, listId }: DeleteLeadButtonProps) {
             await deleteMarketplaceLead(leadId, listId)
             toast.success("Lead removido")
             router.refresh()
-        } catch (error) {
+        } catch {
             toast.error("Erro ao remover lead")
         } finally {
             setIsLoading(false)
