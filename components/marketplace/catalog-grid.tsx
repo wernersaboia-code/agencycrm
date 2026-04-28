@@ -1,8 +1,9 @@
 // components/marketplace/catalog-grid.tsx
 import { ListCard } from "./list-card"
+import type { MarketplaceListCardData } from "./list-card"
 
 interface CatalogGridProps {
-    lists: any[]
+    lists: MarketplaceListCardData[]
 }
 
 export function CatalogGrid({ lists }: CatalogGridProps) {

@@ -9,11 +9,10 @@ import {
 } from "@/components/ui/table"
 
 interface ListPreviewProps {
-    listId: string
     previewData: unknown
 }
 
-export function ListPreview({ listId, previewData }: ListPreviewProps) {
+export function ListPreview({ previewData }: ListPreviewProps) {
     // Preview mockado por enquanto
     const mockPreview = [
         { company: "Metro AG", city: "Düsseldorf", email: "con****@metro.de" },

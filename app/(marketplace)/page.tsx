@@ -1,6 +1,7 @@
 // app/(marketing)/page.tsx.bak
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import type { LucideIcon } from "lucide-react"
 import {
     ShoppingBag,
     Database,
@@ -8,7 +9,6 @@ import {
     Download,
     Shield,
     TrendingUp,
-    CheckCircle,
     ArrowRight
 } from "lucide-react"
 
@@ -143,7 +143,22 @@ export default function EasyProspectLanding() {
     )
 }
 
-function StatCard({ value, label, icon: Icon }: { value: string; label: string; icon: any }) {
+interface IconCardProps {
+    icon: LucideIcon
+}
+
+interface StatCardProps extends IconCardProps {
+    value: string
+    label: string
+}
+
+interface StepCardProps extends IconCardProps {
+    step: number
+    title: string
+    description: string
+}
+
+function StatCard({ value, label, icon: Icon }: StatCardProps) {
     return (
         <div className="text-center">
             <div className="w-16 h-16 rounded-full bg-[#4a2c5a]/10 flex items-center justify-center mx-auto mb-4">
@@ -155,7 +170,7 @@ function StatCard({ value, label, icon: Icon }: { value: string; label: string; 
     )
 }
 
-function StepCard({ step, title, description, icon: Icon }: any) {
+function StepCard({ step, title, description, icon: Icon }: StepCardProps) {
     return (
         <div className="text-center p-6">
             <div className="w-20 h-20 rounded-full bg-[#4a2c5a] text-white flex items-center justify-center mx-auto mb-6 text-2xl font-bold">

@@ -11,31 +11,33 @@ import { FlagIcon } from "@/components/ui/flag-icon"
 import { useCart } from "@/contexts/cart-context"
 
 // Definir tipo específico para previewData
-interface PreviewLead {
+export interface PreviewLead {
     companyName: string
     country: string
     sector?: string | null
     emailGeneral?: string | null
 }
 
+export interface MarketplaceListCardData {
+    id: string
+    name: string
+    slug: string
+    description: string | null
+    category: string
+    countries: string[]
+    industries: string[]
+    totalLeads: number
+    price: number
+    currency: string
+    isActive: boolean
+    isFeatured: boolean
+    previewData: unknown
+    createdAt: Date
+    updatedAt: Date
+}
+
 interface ListCardProps {
-    list: {
-        id: string
-        name: string
-        slug: string
-        description: string | null
-        category: string
-        countries: string[]
-        industries: string[]
-        totalLeads: number
-        price: number
-        currency: string
-        isActive: boolean
-        isFeatured: boolean
-        previewData: PreviewLead[] | null
-        createdAt: Date
-        updatedAt: Date
-    }
+    list: MarketplaceListCardData
 }
 
 export function ListCard({ list }: ListCardProps) {
