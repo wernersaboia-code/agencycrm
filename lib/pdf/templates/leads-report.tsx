@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text -- @react-pdf/renderer Image does not support alt props. */
 // lib/pdf/templates/leads-report.tsx
 import React from "react"
 import {

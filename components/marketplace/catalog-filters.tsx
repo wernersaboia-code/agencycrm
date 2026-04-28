@@ -1,7 +1,6 @@
 // components/marketplace/catalog-filters.tsx
 "use client"
 
-import { Button } from "@/components/ui/button"
 import {
     Select,
     SelectContent,

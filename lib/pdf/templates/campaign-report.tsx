@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text -- @react-pdf/renderer Image does not support alt props. */
 // lib/pdf/templates/campaign-report.tsx
 import React from "react"
 import {
@@ -153,7 +154,6 @@ function StatusBadge({ status }: { status: string }) {
 // Componente para renderizar uma página de envios
 function SendsPage({
                        sends,
-                       startIndex,
                        isFirstPage,
                        workspace,
                        campaign,
@@ -162,7 +162,6 @@ function SendsPage({
                        currentPage,
                    }: {
     sends: EmailSendData[]
-    startIndex: number
     isFirstPage: boolean
     workspace: CampaignReportData["workspace"]
     campaign: CampaignReportData["campaign"]
@@ -348,16 +347,15 @@ export function CampaignReportPDF({ data }: { data: CampaignReportData }) {
     const FIRST_PAGE_LIMIT = 15
     const OTHER_PAGES_LIMIT = 25
 
-    const pages: { sends: EmailSendData[]; startIndex: number; isFirstPage: boolean }[] = []
+    const pages: { sends: EmailSendData[]; isFirstPage: boolean }[] = []
 
     if (sends.length <= FIRST_PAGE_LIMIT) {
         // Tudo cabe na primeira página
-        pages.push({ sends, startIndex: 0, isFirstPage: true })
+        pages.push({ sends, isFirstPage: true })
     } else {
         // Primeira página
         pages.push({
             sends: sends.slice(0, FIRST_PAGE_LIMIT),
-            startIndex: 0,
             isFirstPage: true
         })
 
@@ -367,7 +365,6 @@ export function CampaignReportPDF({ data }: { data: CampaignReportData }) {
             const pageSends = sends.slice(currentIndex, currentIndex + OTHER_PAGES_LIMIT)
             pages.push({
                 sends: pageSends,
-                startIndex: currentIndex,
                 isFirstPage: false
             })
             currentIndex += OTHER_PAGES_LIMIT
@@ -380,7 +377,6 @@ export function CampaignReportPDF({ data }: { data: CampaignReportData }) {
                 <SendsPage
                     key={pageIndex}
                     sends={page.sends}
-                    startIndex={page.startIndex}
                     isFirstPage={page.isFirstPage}
                     workspace={workspace}
                     campaign={campaign}

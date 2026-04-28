@@ -8,12 +8,11 @@ import { PayPalButtonsWrapper } from "@/components/checkout/paypal-buttons"
 import { formatCurrency } from "@/lib/utils"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
-import { Button } from "@/components/ui/button"
 import { ArrowLeft, Lock, Shield, Building2, Users } from "lucide-react"
 import Link from "next/link"
 
 export default function CheckoutPage() {
-    const { items, total, clearCart } = useCart()
+    const { items, total } = useCart()
     const router = useRouter()
 
     useEffect(() => {

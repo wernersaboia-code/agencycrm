@@ -1,7 +1,7 @@
 // contexts/cart-context.tsx
 "use client"
 
-import { createContext, useContext, useState, useEffect, ReactNode } from "react"
+import { createContext, useContext, useMemo, useState, useSyncExternalStore, ReactNode } from "react"
 import { toast } from "sonner"
 
 export interface CartItem {
@@ -30,34 +30,54 @@ interface CartContextType {
 const CartContext = createContext<CartContextType | undefined>(undefined)
 
 const CART_STORAGE_KEY = "leadstore-cart"
+const EMPTY_CART = "[]"
+const cartListeners = new Set<() => void>()
+
+function getCartSnapshot() {
+    if (typeof window === "undefined") {
+        return EMPTY_CART
+    }
+
+    return window.localStorage.getItem(CART_STORAGE_KEY) ?? EMPTY_CART
+}
+
+function subscribeToCart(listener: () => void) {
+    cartListeners.add(listener)
+
+    return () => {
+        cartListeners.delete(listener)
+    }
+}
+
+function notifyCartListeners() {
+    cartListeners.forEach((listener) => listener())
+}
+
+function parseCartItems(snapshot: string): CartItem[] {
+    try {
+        const parsed = JSON.parse(snapshot)
+        return Array.isArray(parsed) ? parsed : []
+    } catch {
+        return []
+    }
+}
+
+function writeCartItems(items: CartItem[]) {
+    window.localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items))
+    notifyCartListeners()
+}
 
 export function CartProvider({ children }: { children: ReactNode }) {
-    const [items, setItems] = useState<CartItem[]>([])
+    const cartSnapshot = useSyncExternalStore(subscribeToCart, getCartSnapshot, () => EMPTY_CART)
+    const items = useMemo(() => parseCartItems(cartSnapshot), [cartSnapshot])
     const [isOpen, setIsOpen] = useState(false)
-    const [isHydrated, setIsHydrated] = useState(false)
 
-    // Carregar do localStorage
-    useEffect(() => {
-        const stored = localStorage.getItem(CART_STORAGE_KEY)
-        if (stored) {
-            try {
-                setItems(JSON.parse(stored))
-            } catch (e) {
-                console.error("Erro ao carregar carrinho:", e)
-            }
-        }
-        setIsHydrated(true)
-    }, [])
-
-    // Salvar no localStorage
-    useEffect(() => {
-        if (isHydrated) {
-            localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items))
-        }
-    }, [items, isHydrated])
+    const setCartItems = (updater: (current: CartItem[]) => CartItem[]) => {
+        writeCartItems(updater(parseCartItems(getCartSnapshot())))
+    }
 
     const addItem = (item: Omit<CartItem, "quantity">) => {
-        setItems((current) => {
+        setCartItems((current) => {
             const exists = current.find((i) => i.id === item.id)
 
             if (exists) {
@@ -78,7 +98,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
 
     const removeItem = (id: string) => {
-        setItems((current) => {
+        setCartItems((current) => {
             const item = current.find((i) => i.id === id)
             if (item) {
                 toast.success(`"${item.name}" removido do carrinho`)
@@ -93,7 +113,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
             return
         }
 
-        setItems((current) =>
+        setCartItems((current) =>
             current.map((item) =>
                 item.id === id ? { ...item, quantity } : item
             )
@@ -101,7 +121,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
 
     const clearCart = () => {
-        setItems([])
+        writeCartItems([])
         toast.success("Carrinho limpo")
     }
 

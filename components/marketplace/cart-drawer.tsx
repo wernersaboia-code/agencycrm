@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
-import { X, ShoppingBag, ArrowRight } from "lucide-react"
+import { ShoppingBag, ArrowRight } from "lucide-react"
 import Link from "next/link"
 import { CartItem } from "./cart-item"
 

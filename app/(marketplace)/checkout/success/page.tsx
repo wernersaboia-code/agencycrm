@@ -1,6 +1,6 @@
 // app/(marketplace)/checkout/success/page.tsx.bak
-import { Suspense } from "react"
 import { prisma } from "@/lib/prisma"
+import type { Prisma } from "@prisma/client"
 import { createServerClient } from "@supabase/ssr"
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
@@ -12,6 +12,12 @@ import { formatCurrency } from "@/lib/utils"
 interface SuccessPageProps {
     searchParams: Promise<{ purchaseId?: string }>
 }
+
+type PurchaseItemWithList = Prisma.PurchaseItemGetPayload<{
+    include: {
+        list: true
+    }
+}>
 
 export const metadata = {
     title: "Compra Confirmada | LeadStore",
@@ -96,7 +102,7 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
                         </div>
 
                         <div className="space-y-3 mb-4">
-                            {purchase.items.map((item: any) => (
+                            {purchase.items.map((item: PurchaseItemWithList) => (
                                 <div key={item.id} className="flex justify-between items-center">
                                     <div>
                                         <div className="font-medium text-gray-800 text-sm">

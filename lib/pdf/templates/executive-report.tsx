@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text -- @react-pdf/renderer Image does not support alt props. */
 // lib/pdf/templates/executive-report.tsx
 import React from "react"
 import {
@@ -221,7 +222,7 @@ function CoverPage({ data }: { data: ExecutiveReportData }) {
 }
 
 function SummaryPage({ data }: { data: ExecutiveReportData }) {
-    const { workspace, leads, campaigns, calls, period, generatedAt } = data
+    const { workspace, leads, campaigns, calls, period } = data
 
     const initials = workspace.name
         .split(" ")

@@ -2,7 +2,6 @@
 import { Suspense } from "react"
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
-import { FileText } from "lucide-react"
 import { ReportsClient } from "./reports-client"
 import { Skeleton } from "@/components/ui/skeleton"
 import { prisma } from "@/lib/prisma"
