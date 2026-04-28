@@ -948,7 +948,10 @@ export async function getLeadsForCampaign(
             return { success: false, error: "Não autorizado" }
         }
 
-        const where: Prisma.LeadWhereInput = { workspaceId }
+        const where: Prisma.LeadWhereInput = {
+            workspaceId,
+            workspace: { userId: user.id },
+        }
 
         if (options?.status && options.status.length > 0) {
             where.status = { in: options.status }

@@ -84,6 +84,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
                     // Garantir que o cookie está salvo
                     setWorkspaceCookie(workspaceToSet.id)
                     localStorage.setItem("activeWorkspaceId", workspaceToSet.id)
+                    void persistActiveWorkspace(workspaceToSet.id)
                 }
             }
         } catch (error) {
@@ -100,6 +101,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
         // Salvar em AMBOS: localStorage e cookie
         localStorage.setItem("activeWorkspaceId", workspace.id)
         setWorkspaceCookie(workspace.id)
+        void persistActiveWorkspace(workspace.id)
     }
 
     // Carregar ao montar
@@ -132,4 +134,20 @@ export function useWorkspace() {
     }
 
     return context
+}
+
+async function persistActiveWorkspace(workspaceId: string): Promise<void> {
+    try {
+        const response = await fetch("/api/workspaces/active", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ workspaceId }),
+        })
+
+        if (!response.ok) {
+            console.error("Erro ao persistir workspace ativo")
+        }
+    } catch (error) {
+        console.error("Erro ao persistir workspace ativo:", error)
+    }
 }

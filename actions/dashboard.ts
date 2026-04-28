@@ -325,6 +325,15 @@ export async function getEmailsOverTime(
             return { success: false, error: "Não autorizado" }
         }
 
+        const workspace = await prisma.workspace.findFirst({
+            where: { id: workspaceId, userId: user.id },
+            select: { id: true },
+        })
+
+        if (!workspace) {
+            return { success: false, error: "Workspace não encontrado" }
+        }
+
         const results: EmailsOverTime[] = []
         const now = new Date()
 
