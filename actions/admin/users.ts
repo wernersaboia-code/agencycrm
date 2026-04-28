@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache"
 import { prisma } from "@/lib/prisma"
 import { createClient } from "@/lib/supabase/server"
 import { requireAdmin } from "@/lib/auth"
-import type { Prisma, UserRole, UserStatus } from "@prisma/client"
+import { UserRole, UserStatus, type Prisma } from "@prisma/client"
 
 // ==================== TIPOS ====================
 
@@ -56,6 +56,61 @@ export interface UsersFilters {
     limit?: number
 }
 
+function normalizePagination(page = 1, limit = 20) {
+    return {
+        page: Math.max(1, Math.floor(page)),
+        limit: Math.min(100, Math.max(1, Math.floor(limit))),
+    }
+}
+
+async function assertAdminCanChangeUserAccess(
+    currentAdminId: string,
+    targetUserId: string,
+    nextAccess: { role?: UserRole; status?: UserStatus }
+) {
+    if (currentAdminId === targetUserId) {
+        if (nextAccess.role && nextAccess.role !== "ADMIN") {
+            throw new Error("Voce nao pode remover seu proprio acesso admin")
+        }
+
+        if (nextAccess.status && nextAccess.status !== "ACTIVE") {
+            throw new Error("Voce nao pode desativar seu proprio usuario")
+        }
+    }
+
+    const targetUser = await prisma.user.findUnique({
+        where: { id: targetUserId },
+        select: { role: true, status: true },
+    })
+
+    if (!targetUser) {
+        throw new Error("Usuario nao encontrado")
+    }
+
+    const nextRole = nextAccess.role ?? targetUser.role
+    const nextStatus = nextAccess.status ?? targetUser.status
+    const removesActiveAdminAccess =
+        targetUser.role === "ADMIN" &&
+        targetUser.status === "ACTIVE" &&
+        (nextRole !== "ADMIN" || nextStatus !== "ACTIVE")
+
+    if (!removesActiveAdminAccess) {
+        return
+    }
+
+    const remainingActiveAdmins = await prisma.user.count({
+        where: {
+            id: { not: targetUserId },
+            role: "ADMIN",
+            status: "ACTIVE",
+        },
+    })
+
+    if (remainingActiveAdmins === 0) {
+        throw new Error("Nao e possivel remover o ultimo admin ativo")
+    }
+}
+
 // ==================== LISTAR USUÁRIOS ====================
 
 export async function getUsers(filters: UsersFilters = {}) {
@@ -69,7 +124,8 @@ export async function getUsers(filters: UsersFilters = {}) {
         limit = 20,
     } = filters
 
-    const skip = (page - 1) * limit
+    const pagination = normalizePagination(page, limit)
+    const skip = (pagination.page - 1) * pagination.limit
 
     // Construir where clause
     const where: Prisma.UserWhereInput = {}
@@ -94,7 +150,7 @@ export async function getUsers(filters: UsersFilters = {}) {
             where,
             orderBy: { createdAt: "desc" },
             skip,
-            take: limit,
+            take: pagination.limit,
             select: {
                 id: true,
                 email: true,
@@ -123,8 +179,8 @@ export async function getUsers(filters: UsersFilters = {}) {
     return {
         users: serializedUsers,
         total,
-        pages: Math.ceil(total / limit),
-        currentPage: page,
+        pages: Math.ceil(total / pagination.limit),
+        currentPage: pagination.page,
     }
 }
 
@@ -171,7 +227,13 @@ export async function getUserDetails(userId: string): Promise<UserDetails | null
 // ==================== ALTERAR ROLE ====================
 
 export async function updateUserRole(userId: string, role: UserRole) {
-    await requireAdmin()
+    const admin = await requireAdmin()
+
+    if (!Object.values(UserRole).includes(role)) {
+        throw new Error("Role invalida")
+    }
+
+    await assertAdminCanChangeUserAccess(admin.id, userId, { role })
 
     await prisma.user.update({
         where: { id: userId },
@@ -187,7 +249,13 @@ export async function updateUserRole(userId: string, role: UserRole) {
 // ==================== ALTERAR STATUS ====================
 
 export async function updateUserStatus(userId: string, status: UserStatus) {
-    await requireAdmin()
+    const admin = await requireAdmin()
+
+    if (!Object.values(UserStatus).includes(status)) {
+        throw new Error("Status invalido")
+    }
+
+    await assertAdminCanChangeUserAccess(admin.id, userId, { status })
 
     await prisma.user.update({
         where: { id: userId },

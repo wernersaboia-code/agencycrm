@@ -176,6 +176,10 @@ export async function requireAdmin(): Promise<AuthenticatedDbUser> {
         throw new Error('Acesso negado')
     }
 
+    if (user.status !== 'ACTIVE') {
+        throw new Error('Usuario inativo')
+    }
+
     return user
 }
 

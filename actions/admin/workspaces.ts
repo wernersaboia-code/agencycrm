@@ -79,6 +79,13 @@ export interface WorkspacesFilters {
     limit?: number
 }
 
+function normalizePagination(page = 1, limit = 20) {
+    return {
+        page: Math.max(1, Math.floor(page)),
+        limit: Math.min(100, Math.max(1, Math.floor(limit))),
+    }
+}
+
 // ==================== LISTAR WORKSPACES ====================
 
 export async function getWorkspaces(filters: WorkspacesFilters = {}) {
@@ -91,7 +98,8 @@ export async function getWorkspaces(filters: WorkspacesFilters = {}) {
         limit = 20,
     } = filters
 
-    const skip = (page - 1) * limit
+    const pagination = normalizePagination(page, limit)
+    const skip = (pagination.page - 1) * pagination.limit
 
     // Construir where clause
     const where: Prisma.WorkspaceWhereInput = {}
@@ -113,7 +121,7 @@ export async function getWorkspaces(filters: WorkspacesFilters = {}) {
             where,
             orderBy: { createdAt: "desc" },
             skip,
-            take: limit,
+            take: pagination.limit,
             select: {
                 id: true,
                 name: true,
@@ -149,8 +157,8 @@ export async function getWorkspaces(filters: WorkspacesFilters = {}) {
     return {
         workspaces: serialized,
         total,
-        pages: Math.ceil(total / limit),
-        currentPage: page,
+        pages: Math.ceil(total / pagination.limit),
+        currentPage: pagination.page,
     }
 }
 
@@ -290,10 +298,15 @@ export async function transferWorkspace(workspaceId: string, newUserId: string) 
     // Verificar se o novo usuário existe
     const newUser = await prisma.user.findUnique({
         where: { id: newUserId },
+        select: { id: true, status: true },
     })
 
     if (!newUser) {
         throw new Error("Usuário não encontrado")
+    }
+
+    if (newUser.status !== "ACTIVE") {
+        throw new Error("Nao e possivel transferir para usuario inativo")
     }
 
     // Transferir

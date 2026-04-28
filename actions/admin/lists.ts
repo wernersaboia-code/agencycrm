@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma"
 import { requireAdmin } from "@/lib/auth"
 import type { MarketplaceLeadData } from "@/lib/constants/marketplace-csv.constants"
 import type { LeadList } from "@prisma/client"
+import { z } from "zod"
 
 interface CreateListData {
     name: string
@@ -19,6 +20,19 @@ interface CreateListData {
     isActive: boolean
     isFeatured: boolean
 }
+
+const listDataSchema = z.object({
+    name: z.string().trim().min(3).max(160),
+    slug: z.string().trim().min(3).max(180).regex(/^[a-z0-9-]+$/),
+    description: z.string().trim().max(5000).optional(),
+    category: z.string().trim().min(1).max(80),
+    countries: z.array(z.string().trim().min(2).max(3)).min(1).max(100),
+    industries: z.array(z.string().trim().min(1).max(80)).max(100),
+    price: z.number().finite().positive().max(999999),
+    currency: z.enum(["EUR", "USD", "BRL"]),
+    isActive: z.boolean(),
+    isFeatured: z.boolean(),
+})
 
 // Tipo serializado para retornar ao client
 interface SerializedList {
@@ -66,19 +80,20 @@ function revalidateListPaths(listSlug?: string) {
 
 export async function createList(data: CreateListData): Promise<SerializedList> {
     await requireAdmin()
+    const validated = listDataSchema.parse(data)
 
     const list = await prisma.leadList.create({
         data: {
-            name: data.name,
-            slug: data.slug,
-            description: data.description || null,
-            category: data.category,
-            countries: data.countries,
-            industries: data.industries,
-            price: data.price,
-            currency: data.currency,
-            isActive: data.isActive,
-            isFeatured: data.isFeatured,
+            name: validated.name,
+            slug: validated.slug,
+            description: validated.description || null,
+            category: validated.category,
+            countries: validated.countries,
+            industries: validated.industries,
+            price: validated.price,
+            currency: validated.currency,
+            isActive: validated.isActive,
+            isFeatured: validated.isFeatured,
         },
     })
 
@@ -89,20 +104,21 @@ export async function createList(data: CreateListData): Promise<SerializedList> 
 
 export async function updateList(id: string, data: CreateListData): Promise<SerializedList> {
     await requireAdmin()
+    const validated = listDataSchema.parse(data)
 
     const list = await prisma.leadList.update({
         where: { id },
         data: {
-            name: data.name,
-            slug: data.slug,
-            description: data.description || null,
-            category: data.category,
-            countries: data.countries,
-            industries: data.industries,
-            price: data.price,
-            currency: data.currency,
-            isActive: data.isActive,
-            isFeatured: data.isFeatured,
+            name: validated.name,
+            slug: validated.slug,
+            description: validated.description || null,
+            category: validated.category,
+            countries: validated.countries,
+            industries: validated.industries,
+            price: validated.price,
+            currency: validated.currency,
+            isActive: validated.isActive,
+            isFeatured: validated.isFeatured,
         },
     })
 
@@ -139,6 +155,15 @@ export async function toggleListActive(id: string, isActive: boolean) {
 
 export async function uploadLeadsToList(listId: string, leads: MarketplaceLeadData[]) {
     await requireAdmin()
+
+    const listExists = await prisma.leadList.findUnique({
+        where: { id: listId },
+        select: { id: true },
+    })
+
+    if (!listExists) {
+        throw new Error("Lista nao encontrada")
+    }
 
     // Criar leads em batch
     const created = await prisma.marketplaceLead.createMany({
@@ -213,8 +238,17 @@ export async function uploadLeadsToList(listId: string, leads: MarketplaceLeadDa
 export async function deleteMarketplaceLead(leadId: string, listId: string) {
     await requireAdmin()
 
+    const lead = await prisma.marketplaceLead.findFirst({
+        where: { id: leadId, listId },
+        select: { id: true },
+    })
+
+    if (!lead) {
+        throw new Error("Lead nao encontrado")
+    }
+
     await prisma.marketplaceLead.delete({
-        where: { id: leadId },
+        where: { id: lead.id },
     })
 
     // Atualizar contador
@@ -264,18 +298,26 @@ function maskEmail(email: string): string {
     return `${maskedLocal}@${domain}`
 }
 
+function normalizePagination(page = 1, limit = 50) {
+    return {
+        page: Math.max(1, Math.floor(page)),
+        limit: Math.min(100, Math.max(1, Math.floor(limit))),
+    }
+}
+
 // Buscar leads de uma lista
 export async function getListLeads(listId: string, page: number = 1, limit: number = 50) {
     await requireAdmin()
 
-    const skip = (page - 1) * limit
+    const pagination = normalizePagination(page, limit)
+    const skip = (pagination.page - 1) * pagination.limit
 
     const [leads, total] = await Promise.all([
         prisma.marketplaceLead.findMany({
             where: { listId },
             orderBy: { createdAt: "desc" },
             skip,
-            take: limit,
+            take: pagination.limit,
         }),
         prisma.marketplaceLead.count({
             where: { listId },
@@ -285,8 +327,8 @@ export async function getListLeads(listId: string, page: number = 1, limit: numb
     return {
         leads,
         total,
-        pages: Math.ceil(total / limit),
-        currentPage: page,
+        pages: Math.ceil(total / pagination.limit),
+        currentPage: pagination.page,
     }
 }
 

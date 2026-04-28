@@ -20,10 +20,10 @@ export default async function SuperAdminLayout({
 
     const dbUser = await prisma.user.findUnique({
         where: { id: user.id },
-        select: { role: true, name: true, email: true }
+        select: { role: true, status: true, name: true, email: true }
     })
 
-    if (dbUser?.role !== "ADMIN") {
+    if (dbUser?.role !== "ADMIN" || dbUser.status !== "ACTIVE") {
         redirect("/dashboard")
     }
 
