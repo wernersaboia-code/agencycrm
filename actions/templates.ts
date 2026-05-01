@@ -5,6 +5,7 @@
 import { revalidatePath } from "next/cache"
 import { prisma } from "@/lib/prisma"
 import { getAuthenticatedUser } from "@/lib/auth"
+import { z } from "zod"
 import {
     createTemplateSchema,
     updateTemplateSchema,
@@ -51,6 +52,15 @@ export async function getTemplates(
     }
 ): Promise<ActionResult<TemplateWithStats[]>> {
     try {
+        const parsedWorkspaceId = idSchema.safeParse(workspaceId)
+        const parsedOptions = getTemplatesOptionsSchema.safeParse(options)
+        if (!parsedWorkspaceId.success || !parsedOptions.success) {
+            return { success: false, error: "Filtros invÃ¡lidos" }
+        }
+
+        workspaceId = parsedWorkspaceId.data
+        options = parsedOptions.data
+
         const user = await getAuthenticatedUser()
         if (!user) {
             return { success: false, error: "Não autorizado" }
@@ -103,6 +113,11 @@ export async function getTemplateById(
     id: string
 ): Promise<ActionResult<TemplateWithStats>> {
     try {
+        const parsedId = idSchema.safeParse(id)
+        if (!parsedId.success) {
+            return { success: false, error: "Template invÃ¡lido" }
+        }
+
         const user = await getAuthenticatedUser()
         if (!user) {
             return { success: false, error: "Não autorizado" }
@@ -110,7 +125,7 @@ export async function getTemplateById(
 
         const template = await prisma.emailTemplate.findFirst({
             where: {
-                id,
+                id: parsedId.data,
                 workspace: { userId: user.id },
             },
             include: {
@@ -184,6 +199,11 @@ export async function updateTemplate(
     data: UpdateTemplateData
 ): Promise<ActionResult> {
     try {
+        const parsedId = idSchema.safeParse(id)
+        if (!parsedId.success) {
+            return { success: false, error: "Template invÃ¡lido" }
+        }
+
         const user = await getAuthenticatedUser()
         if (!user) {
             return { success: false, error: "Não autorizado" }
@@ -198,7 +218,7 @@ export async function updateTemplate(
         // Verificar se o template existe e pertence ao usuário
         const existingTemplate = await prisma.emailTemplate.findFirst({
             where: {
-                id,
+                id: parsedId.data,
                 workspace: { userId: user.id },
             },
         })
@@ -209,7 +229,7 @@ export async function updateTemplate(
 
         // Atualizar
         await prisma.emailTemplate.update({
-            where: { id },
+            where: { id: parsedId.data },
             data: validated.data,
         })
 
@@ -223,6 +243,11 @@ export async function updateTemplate(
 
 export async function deleteTemplate(id: string): Promise<ActionResult> {
     try {
+        const parsedId = idSchema.safeParse(id)
+        if (!parsedId.success) {
+            return { success: false, error: "Template invÃ¡lido" }
+        }
+
         const user = await getAuthenticatedUser()
         if (!user) {
             return { success: false, error: "Não autorizado" }
@@ -231,7 +256,7 @@ export async function deleteTemplate(id: string): Promise<ActionResult> {
         // Verificar se o template existe e pertence ao usuário
         const template = await prisma.emailTemplate.findFirst({
             where: {
-                id,
+                id: parsedId.data,
                 workspace: { userId: user.id },
             },
             include: {
@@ -252,7 +277,7 @@ export async function deleteTemplate(id: string): Promise<ActionResult> {
         }
 
         // Excluir
-        await prisma.emailTemplate.delete({ where: { id } })
+        await prisma.emailTemplate.delete({ where: { id: parsedId.data } })
 
         revalidatePath("/templates")
         return { success: true }
@@ -264,6 +289,11 @@ export async function deleteTemplate(id: string): Promise<ActionResult> {
 
 export async function duplicateTemplate(id: string): Promise<ActionResult<{ id: string }>> {
     try {
+        const parsedId = idSchema.safeParse(id)
+        if (!parsedId.success) {
+            return { success: false, error: "Template invÃ¡lido" }
+        }
+
         const user = await getAuthenticatedUser()
         if (!user) {
             return { success: false, error: "Não autorizado" }
@@ -272,7 +302,7 @@ export async function duplicateTemplate(id: string): Promise<ActionResult<{ id: 
         // Buscar template original
         const original = await prisma.emailTemplate.findFirst({
             where: {
-                id,
+                id: parsedId.data,
                 workspace: { userId: user.id },
             },
         })
@@ -303,6 +333,11 @@ export async function duplicateTemplate(id: string): Promise<ActionResult<{ id: 
 
 export async function toggleTemplateActive(id: string): Promise<ActionResult> {
     try {
+        const parsedId = idSchema.safeParse(id)
+        if (!parsedId.success) {
+            return { success: false, error: "Template invÃ¡lido" }
+        }
+
         const user = await getAuthenticatedUser()
         if (!user) {
             return { success: false, error: "Não autorizado" }
@@ -310,7 +345,7 @@ export async function toggleTemplateActive(id: string): Promise<ActionResult> {
 
         const template = await prisma.emailTemplate.findFirst({
             where: {
-                id,
+                id: parsedId.data,
                 workspace: { userId: user.id },
             },
         })
@@ -320,7 +355,7 @@ export async function toggleTemplateActive(id: string): Promise<ActionResult> {
         }
 
         await prisma.emailTemplate.update({
-            where: { id },
+            where: { id: parsedId.data },
             data: { isActive: !template.isActive },
         })
 
@@ -331,3 +366,10 @@ export async function toggleTemplateActive(id: string): Promise<ActionResult> {
         return { success: false, error: "Erro ao alterar status" }
     }
 }
+
+const idSchema = z.string().min(1).max(200)
+const getTemplatesOptionsSchema = z.object({
+    category: z.nativeEnum(TemplateCategory).optional(),
+    search: z.string().trim().max(120).optional(),
+    isActive: z.boolean().optional(),
+}).optional()

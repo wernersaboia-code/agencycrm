@@ -5,6 +5,7 @@
 import { revalidatePath } from "next/cache"
 import { prisma } from "@/lib/prisma"
 import { requireAuth } from "@/lib/auth"
+import { z } from "zod"
 
 type SerializableWorkspace = {
     createdAt: Date | string
@@ -20,6 +21,16 @@ export type WorkspaceFormData = {
     senderName?: string | null
     senderEmail?: string | null
 }
+
+const idSchema = z.string().min(1).max(200)
+const workspaceFormSchema = z.object({
+    name: z.string().trim().min(1).max(120),
+    description: z.string().trim().max(1000).optional().nullable().transform((value) => value || null),
+    color: z.string().regex(/^#[0-9A-Fa-f]{6}$/).default("#3B82F6"),
+    logo: z.string().url().max(2048).optional().nullable().transform((value) => value || null),
+    senderName: z.string().trim().max(120).optional().nullable().transform((value) => value || null),
+    senderEmail: z.string().email().max(255).optional().nullable().transform((value) => value || null),
+})
 
 // Função para serializar workspace
 function serializeWorkspace<T extends SerializableWorkspace>(
@@ -49,16 +60,16 @@ async function getAuthenticatedUser() {
 // CREATE - Criar workspace
 export async function createWorkspace(data: WorkspaceFormData) {
     try {
+        const validated = workspaceFormSchema.safeParse(data)
+        if (!validated.success) {
+            return { success: false, error: validated.error.issues[0]?.message ?? "Dados invÃ¡lidos" }
+        }
+
         const user = await getAuthenticatedUser()
 
         const workspace = await prisma.workspace.create({
             data: {
-                name: data.name.trim(),
-                description: data.description?.trim() || null,
-                color: data.color || "#3B82F6",
-                logo: data.logo || null,
-                senderName: data.senderName?.trim() || null,
-                senderEmail: data.senderEmail?.trim() || null,
+                ...validated.data,
                 userId: user.id,
             },
         })
@@ -105,11 +116,16 @@ export async function getWorkspaces() {
 // READ - Buscar workspace por ID
 export async function getWorkspaceById(id: string) {
     try {
+        const parsedId = idSchema.safeParse(id)
+        if (!parsedId.success) {
+            return { success: false, error: "Workspace invÃ¡lido" }
+        }
+
         const user = await getAuthenticatedUser()
 
         const workspace = await prisma.workspace.findFirst({
             where: {
-                id,
+                id: parsedId.data,
                 userId: user.id,
             },
             include: {
@@ -145,11 +161,17 @@ export async function getWorkspaceById(id: string) {
 // UPDATE - Atualizar workspace
 export async function updateWorkspace(id: string, data: WorkspaceFormData) {
     try {
+        const parsedId = idSchema.safeParse(id)
+        const validated = workspaceFormSchema.safeParse(data)
+        if (!parsedId.success || !validated.success) {
+            return { success: false, error: validated.error?.issues[0]?.message ?? "Dados invÃ¡lidos" }
+        }
+
         const user = await getAuthenticatedUser()
 
         // Verificar se pertence ao usuário
         const existing = await prisma.workspace.findFirst({
-            where: { id, userId: user.id },
+            where: { id: parsedId.data, userId: user.id },
         })
 
         if (!existing) {
@@ -157,19 +179,12 @@ export async function updateWorkspace(id: string, data: WorkspaceFormData) {
         }
 
         const workspace = await prisma.workspace.update({
-            where: { id },
-            data: {
-                name: data.name.trim(),
-                description: data.description?.trim() || null,
-                color: data.color || "#3B82F6",
-                logo: data.logo || null,
-                senderName: data.senderName?.trim() || null,
-                senderEmail: data.senderEmail?.trim() || null,
-            },
+            where: { id: parsedId.data },
+            data: validated.data,
         })
 
         revalidatePath("/workspaces")
-        revalidatePath(`/workspaces/${id}`)
+        revalidatePath(`/workspaces/${parsedId.data}`)
         return { success: true, data: serializeWorkspace(workspace) }
     } catch (error) {
         console.error("Erro ao atualizar workspace:", error)
@@ -180,11 +195,16 @@ export async function updateWorkspace(id: string, data: WorkspaceFormData) {
 // DELETE - Excluir workspace
 export async function deleteWorkspace(id: string) {
     try {
+        const parsedId = idSchema.safeParse(id)
+        if (!parsedId.success) {
+            return { success: false, error: "Workspace invÃ¡lido" }
+        }
+
         const user = await getAuthenticatedUser()
 
         // Verificar se pertence ao usuário
         const existing = await prisma.workspace.findFirst({
-            where: { id, userId: user.id },
+            where: { id: parsedId.data, userId: user.id },
             include: {
                 _count: {
                     select: {
@@ -201,11 +221,11 @@ export async function deleteWorkspace(id: string) {
 
         // Avisar se tem dados
         if (existing._count.leads > 0 || existing._count.campaigns > 0) {
-            console.log(`Excluindo workspace ${id} com ${existing._count.leads} leads e ${existing._count.campaigns} campanhas`)
+            console.log(`Excluindo workspace ${parsedId.data} com ${existing._count.leads} leads e ${existing._count.campaigns} campanhas`)
         }
 
         await prisma.workspace.delete({
-            where: { id },
+            where: { id: parsedId.data },
         })
 
         revalidatePath("/workspaces")
@@ -219,11 +239,16 @@ export async function deleteWorkspace(id: string) {
 // Estatísticas do workspace
 export async function getWorkspaceStats(workspaceId: string) {
     try {
+        const parsedWorkspaceId = idSchema.safeParse(workspaceId)
+        if (!parsedWorkspaceId.success) {
+            return { success: false, error: "Workspace invÃ¡lido" }
+        }
+
         const user = await getAuthenticatedUser()
 
         // Verificar se pertence ao usuário
         const workspace = await prisma.workspace.findFirst({
-            where: { id: workspaceId, userId: user.id },
+            where: { id: parsedWorkspaceId.data, userId: user.id },
         })
 
         if (!workspace) {
@@ -238,17 +263,17 @@ export async function getWorkspaceStats(workspaceId: string) {
             totalEmailsSent,
             totalCalls,
         ] = await Promise.all([
-            prisma.lead.count({ where: { workspaceId } }),
+            prisma.lead.count({ where: { workspaceId: parsedWorkspaceId.data } }),
             prisma.lead.groupBy({
                 by: ["status"],
-                where: { workspaceId },
+                where: { workspaceId: parsedWorkspaceId.data },
                 _count: true,
             }),
-            prisma.campaign.count({ where: { workspaceId } }),
+            prisma.campaign.count({ where: { workspaceId: parsedWorkspaceId.data } }),
             prisma.emailSend.count({
-                where: { campaign: { workspaceId } },
+                where: { campaign: { workspaceId: parsedWorkspaceId.data } },
             }),
-            prisma.call.count({ where: { workspaceId } }),
+            prisma.call.count({ where: { workspaceId: parsedWorkspaceId.data } }),
         ])
 
         return {

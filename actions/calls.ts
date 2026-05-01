@@ -5,8 +5,10 @@
 import { revalidatePath } from "next/cache"
 import { prisma } from "@/lib/prisma"
 import { getAuthenticatedUser } from "@/lib/auth"
+import { z } from "zod"
 import {
     createCallSchema,
+    callFilterSchema,
     updateCallSchema,
     CreateCallInput,
     UpdateCallInput,
@@ -92,6 +94,16 @@ export async function getCalls(
     workspaceId: string,
     filters?: CallFilters
 ): Promise<SerializedCallWithLead[]> {
+    const parsedWorkspaceId = idSchema.safeParse(workspaceId)
+    const parsedFilters = callFilterSchema.safeParse(filters ?? {})
+
+    if (!parsedWorkspaceId.success || !parsedFilters.success) {
+        return []
+    }
+
+    workspaceId = parsedWorkspaceId.data
+    filters = parsedFilters.data as CallFilters
+
     const hasAccess = await verifyWorkspaceAccess(workspaceId)
     if (!hasAccess) return []
 
@@ -124,7 +136,7 @@ export async function getCalls(
     }
 
     if (filters?.search) {
-        const searchTerm = filters.search.trim()
+        const searchTerm = filters.search.trim().slice(0, 120)
         where.OR = [
             { notes: { contains: searchTerm, mode: "insensitive" } },
             { lead: { firstName: { contains: searchTerm, mode: "insensitive" } } },
@@ -147,12 +159,15 @@ export async function getCalls(
 // ============================================
 
 export async function getCallById(id: string): Promise<SerializedCallWithLead | null> {
+    const parsedId = idSchema.safeParse(id)
+    if (!parsedId.success) return null
+
     const user = await getAuthenticatedUser()
     if (!user) return null
 
     const call = await prisma.call.findFirst({
         where: {
-            id,
+            id: parsedId.data,
             workspace: { userId: user.id },
         },
         include: callInclude,
@@ -166,12 +181,15 @@ export async function getCallById(id: string): Promise<SerializedCallWithLead | 
 // ============================================
 
 export async function getCallsByLead(leadId: string): Promise<SerializedCallWithLead[]> {
+    const parsedLeadId = idSchema.safeParse(leadId)
+    if (!parsedLeadId.success) return []
+
     const user = await getAuthenticatedUser()
     if (!user) return []
 
     const calls = await prisma.call.findMany({
         where: {
-            leadId,
+            leadId: parsedLeadId.data,
             workspace: { userId: user.id },
         },
         include: callInclude,
@@ -186,12 +204,15 @@ export async function getCallsByLead(leadId: string): Promise<SerializedCallWith
 // ============================================
 
 export async function getCallsByCampaign(campaignId: string): Promise<SerializedCallWithLead[]> {
+    const parsedCampaignId = idSchema.safeParse(campaignId)
+    if (!parsedCampaignId.success) return []
+
     const user = await getAuthenticatedUser()
     if (!user) return []
 
     const calls = await prisma.call.findMany({
         where: {
-            campaignId,
+            campaignId: parsedCampaignId.data,
             campaign: {
                 workspace: { userId: user.id },
             },
@@ -400,6 +421,21 @@ export async function deleteCall(id: string): Promise<ActionResult<void>> {
 export async function getPendingCallbacks(
     workspaceId: string
 ): Promise<CallbacksSummary> {
+    const parsedWorkspaceId = idSchema.safeParse(workspaceId)
+    if (!parsedWorkspaceId.success) {
+        return {
+            overdue: [],
+            today: [],
+            thisWeek: [],
+            later: [],
+            overdueCount: 0,
+            todayCount: 0,
+            thisWeekCount: 0,
+            laterCount: 0,
+        }
+    }
+    workspaceId = parsedWorkspaceId.data
+
     const hasAccess = await verifyWorkspaceAccess(workspaceId)
     if (!hasAccess) {
         return {
@@ -496,6 +532,17 @@ export async function getCallStats(
     avgDuration: number
     pendingCallbacks: number
 }> {
+    const parsedWorkspaceId = idSchema.safeParse(workspaceId)
+    if (!parsedWorkspaceId.success) {
+        return {
+            total: 0,
+            byResult: {} as Record<CallResult, number>,
+            avgDuration: 0,
+            pendingCallbacks: 0,
+        }
+    }
+    workspaceId = parsedWorkspaceId.data
+
     const hasAccess = await verifyWorkspaceAccess(workspaceId)
     if (!hasAccess) {
         return {
@@ -562,6 +609,16 @@ export async function getCampaignCallStats(campaignId: string): Promise<{
     interested: number
     meetingsScheduled: number
 }> {
+    const parsedCampaignId = idSchema.safeParse(campaignId)
+    if (!parsedCampaignId.success) {
+        return {
+            total: 0,
+            byResult: {} as Record<CallResult, number>,
+            interested: 0,
+            meetingsScheduled: 0,
+        }
+    }
+
     const user = await getAuthenticatedUser()
     if (!user) {
         return {
@@ -574,7 +631,7 @@ export async function getCampaignCallStats(campaignId: string): Promise<{
 
     const calls = await prisma.call.findMany({
         where: {
-            campaignId,
+            campaignId: parsedCampaignId.data,
             campaign: {
                 workspace: { userId: user.id },
             },
@@ -608,6 +665,13 @@ export async function getCallsPerDayData(
     workspaceId: string,
     days: number = 30
 ): Promise<{ date: string; total: number; answered: number; interested: number }[]> {
+    const parsedWorkspaceId = idSchema.safeParse(workspaceId)
+    const parsedDays = daysSchema.safeParse(days)
+    if (!parsedWorkspaceId.success || !parsedDays.success) return []
+
+    workspaceId = parsedWorkspaceId.data
+    days = parsedDays.data
+
     const hasAccess = await verifyWorkspaceAccess(workspaceId)
     if (!hasAccess) return []
 
@@ -665,6 +729,11 @@ export async function getCallsPerDayData(
 export async function getCallsByResultData(
     workspaceId: string
 ): Promise<{ result: CallResult; label: string; count: number; color: string }[]> {
+    const parsedWorkspaceId = idSchema.safeParse(workspaceId)
+    if (!parsedWorkspaceId.success) return []
+
+    workspaceId = parsedWorkspaceId.data
+
     const hasAccess = await verifyWorkspaceAccess(workspaceId)
     if (!hasAccess) return []
 
@@ -704,6 +773,13 @@ export async function getCallsDurationData(
     workspaceId: string,
     days: number = 30
 ): Promise<{ date: string; avgDuration: number; totalCalls: number }[]> {
+    const parsedWorkspaceId = idSchema.safeParse(workspaceId)
+    const parsedDays = daysSchema.safeParse(days)
+    if (!parsedWorkspaceId.success || !parsedDays.success) return []
+
+    workspaceId = parsedWorkspaceId.data
+    days = parsedDays.data
+
     const hasAccess = await verifyWorkspaceAccess(workspaceId)
     if (!hasAccess) return []
 
@@ -766,6 +842,20 @@ export async function getCallsConversionData(
     interestedRate: number
     meetingRate: number
 }> {
+    const parsedWorkspaceId = idSchema.safeParse(workspaceId)
+    if (!parsedWorkspaceId.success) {
+        return {
+            totalCalls: 0,
+            answered: 0,
+            interested: 0,
+            meetingsScheduled: 0,
+            answeredRate: 0,
+            interestedRate: 0,
+            meetingRate: 0,
+        }
+    }
+    workspaceId = parsedWorkspaceId.data
+
     const hasAccess = await verifyWorkspaceAccess(workspaceId)
     if (!hasAccess) {
         return {
@@ -803,3 +893,6 @@ export async function getCallsConversionData(
         meetingRate: totalCalls > 0 ? Math.round((meetingsScheduled / totalCalls) * 100) : 0,
     }
 }
+
+const idSchema = z.string().min(1).max(200)
+const daysSchema = z.number().int().min(1).max(365).default(30)

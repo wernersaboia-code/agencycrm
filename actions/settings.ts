@@ -4,12 +4,19 @@
 import { revalidatePath } from "next/cache"
 import { prisma } from "@/lib/prisma"
 import { requireAuth } from "@/lib/auth"
+import { z } from "zod"
 
 // ==================== HELPERS ====================
 
 async function getAuthenticatedUser() {
     return requireAuth()
 }
+
+const profileUpdateSchema = z.object({
+    name: z.string().trim().max(120).optional(),
+    language: z.string().trim().min(2).max(20).default("pt-BR"),
+    timezone: z.string().trim().min(1).max(100).default("America/Sao_Paulo"),
+})
 
 // ==================== PERFIL ====================
 
@@ -54,14 +61,19 @@ export async function updateUserProfile(data: {
     timezone?: string
 }) {
     try {
+        const validated = profileUpdateSchema.safeParse(data)
+        if (!validated.success) {
+            return { success: false, error: validated.error.issues[0]?.message ?? "Dados invÃ¡lidos" }
+        }
+
         const authUser = await getAuthenticatedUser()
 
         const user = await prisma.user.update({
             where: { id: authUser.id },
             data: {
-                name: data.name?.trim() || null,
-                language: data.language || "pt-BR",
-                timezone: data.timezone || "America/Sao_Paulo",
+                name: validated.data.name || null,
+                language: validated.data.language,
+                timezone: validated.data.timezone,
             },
         })
 
