@@ -3,9 +3,8 @@ import { NextRequest, NextResponse } from "next/server"
 import { paypalClient } from "@/lib/paypal"
 import paypal from "@paypal/checkout-server-sdk"
 import { prisma } from "@/lib/prisma"
-import { createServerClient } from "@supabase/ssr"
-import { cookies } from "next/headers"
 import { z } from "zod"
+import { getAuthenticatedDbUser } from "@/lib/auth"
 
 const createOrderSchema = z.object({
     items: z.array(z.object({
@@ -16,25 +15,9 @@ const createOrderSchema = z.object({
 
 export async function POST(request: NextRequest) {
     try {
-        const cookieStore = await cookies()
-        const supabase = createServerClient(
-            process.env.NEXT_PUBLIC_SUPABASE_URL!,
-            process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-            {
-                cookies: {
-                    getAll() {
-                        return cookieStore.getAll()
-                    },
-                    setAll() {},
-                },
-            }
-        )
+        const user = await getAuthenticatedDbUser()
 
-        const {
-            data: { session },
-        } = await supabase.auth.getSession()
-
-        if (!session) {
+        if (!user || user.status !== "ACTIVE") {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
         }
 
@@ -122,13 +105,13 @@ export async function POST(request: NextRequest) {
         // Criar registro de Purchase no DB (status: pending)
         const purchase = await prisma.purchase.create({
             data: {
-                userId: session.user.id,
+                userId: user.id,
                 paypalOrderId: order.result.id,
                 status: "pending",
                 subtotal,
                 total: subtotal,
                 currency,
-                buyerEmail: session.user.email,
+                buyerEmail: user.email,
                 items: {
                     create: purchaseItems.map((item) => ({
                         listId: item.listId,

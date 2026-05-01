@@ -4,7 +4,7 @@
 
 import { revalidatePath } from "next/cache"
 import { prisma } from "@/lib/prisma"
-import { createClient } from "@/lib/supabase/server"
+import { requireAuth } from "@/lib/auth"
 
 type SerializableWorkspace = {
     createdAt: Date | string
@@ -43,31 +43,7 @@ function serializeWorkspace<T extends SerializableWorkspace>(
 
 // Obter usuário autenticado E garantir que existe na tabela users
 async function getAuthenticatedUser() {
-    const supabase = await createClient()
-    const { data: { user }, error } = await supabase.auth.getUser()
-
-    if (error || !user) {
-        throw new Error("Usuário não autenticado")
-    }
-
-    // Verificar se o usuário existe na tabela users
-    let dbUser = await prisma.user.findUnique({
-        where: { id: user.id },
-    })
-
-    // Se não existe, criar
-    if (!dbUser) {
-        dbUser = await prisma.user.create({
-            data: {
-                id: user.id, // Usar o mesmo ID do Supabase Auth
-                email: user.email!,
-                name: user.user_metadata?.name || user.email?.split("@")[0] || "Usuário",
-            },
-        })
-        console.log("Usuário criado na tabela users:", dbUser.id)
-    }
-
-    return dbUser
+    return requireAuth()
 }
 
 // CREATE - Criar workspace

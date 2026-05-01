@@ -3,11 +3,10 @@ import { NextRequest, NextResponse } from "next/server"
 import { paypalClient } from "@/lib/paypal"
 import paypal from "@paypal/checkout-server-sdk"
 import { prisma } from "@/lib/prisma"
-import { createServerClient } from "@supabase/ssr"
-import { cookies } from "next/headers"
 import { generatePurchaseAccessToken, generateMagicLinkUrl } from "@/lib/auth/magic-link"
 import { sendPurchaseConfirmationEmail } from "@/lib/email/purchase"
 import { z } from "zod"
+import { getAuthenticatedDbUser } from "@/lib/auth"
 
 const captureOrderSchema = z.object({
     orderId: z.string().min(1),
@@ -49,28 +48,12 @@ export async function POST(request: NextRequest) {
     let sessionUserId: string | undefined
 
     try {
-        const cookieStore = await cookies()
-        const supabase = createServerClient(
-            process.env.NEXT_PUBLIC_SUPABASE_URL!,
-            process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-            {
-                cookies: {
-                    getAll() {
-                        return cookieStore.getAll()
-                    },
-                    setAll() {},
-                },
-            }
-        )
+        const user = await getAuthenticatedDbUser()
 
-        const {
-            data: { session },
-        } = await supabase.auth.getSession()
-
-        if (!session) {
+        if (!user || user.status !== "ACTIVE") {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
         }
-        sessionUserId = session.user.id
+        sessionUserId = user.id
 
         const parsedBody = captureOrderSchema.safeParse(await request.json())
 
@@ -83,7 +66,7 @@ export async function POST(request: NextRequest) {
         const pendingPurchase = await prisma.purchase.findFirst({
             where: {
                 paypalOrderId: orderId,
-                userId: session.user.id,
+                userId: user.id,
                 status: "pending",
             },
             select: {
@@ -150,7 +133,7 @@ export async function POST(request: NextRequest) {
 
         // 🆕 Gerar token mágico para acesso às compras
         const accessToken = await generatePurchaseAccessToken(
-            session.user.id,
+            user.id,
             purchase.id, // Token específico para esta compra
             24 // 24 horas de validade
         )
@@ -160,7 +143,7 @@ export async function POST(request: NextRequest) {
 
         // 🆕 Enviar email de confirmação (assíncrono - não bloqueia a resposta)
         sendPurchaseConfirmationEmail({
-            userId: session.user.id,
+            userId: user.id,
             purchaseId: purchase.id,
             accessToken,
             accessUrl,

@@ -1,9 +1,8 @@
 // app/api/purchases/[id]/download-excel/route.ts
 import { NextRequest, NextResponse } from "next/server"
-import { createServerClient } from "@supabase/ssr"
-import { cookies } from "next/headers"
 import { generatePurchaseExcel } from "@/lib/exports/purchase-export"
 import * as XLSX from "xlsx"
+import { getAuthenticatedUserId } from "@/lib/auth"
 
 export async function GET(
     request: NextRequest,
@@ -11,30 +10,13 @@ export async function GET(
 ) {
     try {
         const { id } = await params
-        const cookieStore = await cookies()
+        const userId = await getAuthenticatedUserId()
 
-        const supabase = createServerClient(
-            process.env.NEXT_PUBLIC_SUPABASE_URL!,
-            process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-            {
-                cookies: {
-                    getAll() {
-                        return cookieStore.getAll()
-                    },
-                    setAll() {},
-                },
-            }
-        )
-
-        const {
-            data: { session },
-        } = await supabase.auth.getSession()
-
-        if (!session) {
+        if (!userId) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
         }
 
-        const { data, filename } = await generatePurchaseExcel(id, session.user.id)
+        const { data, filename } = await generatePurchaseExcel(id, userId)
 
         // Criar workbook
         const ws = XLSX.utils.json_to_sheet(data)

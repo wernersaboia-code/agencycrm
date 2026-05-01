@@ -1,19 +1,18 @@
 // app/api/workspaces/route.ts
 import { NextResponse } from "next/server"
-import { createClient } from "@/lib/supabase/server"
 import { prisma } from "@/lib/prisma"
+import { getAuthenticatedUserId } from "@/lib/auth"
 
 export async function GET() {
     try {
-        const supabase = await createClient()
-        const { data: { user }, error } = await supabase.auth.getUser()
+        const userId = await getAuthenticatedUserId()
 
-        if (error || !user) {
+        if (!userId) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
         }
 
         const workspaces = await prisma.workspace.findMany({
-            where: { userId: user.id },
+            where: { userId },
             select: {
                 id: true,
                 name: true,

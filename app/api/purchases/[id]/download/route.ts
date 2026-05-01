@@ -1,8 +1,7 @@
 // app/api/purchases/[id]/download/route.ts
 import { NextRequest, NextResponse } from "next/server"
-import { createServerClient } from "@supabase/ssr"
-import { cookies } from "next/headers"
 import { generatePurchaseCSV } from "@/lib/exports/purchase-export"
+import { getAuthenticatedUserId } from "@/lib/auth"
 
 export async function GET(
     request: NextRequest,
@@ -10,30 +9,13 @@ export async function GET(
 ) {
     try {
         const { id } = await params
-        const cookieStore = await cookies()
+        const userId = await getAuthenticatedUserId()
 
-        const supabase = createServerClient(
-            process.env.NEXT_PUBLIC_SUPABASE_URL!,
-            process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-            {
-                cookies: {
-                    getAll() {
-                        return cookieStore.getAll()
-                    },
-                    setAll() {},
-                },
-            }
-        )
-
-        const {
-            data: { session },
-        } = await supabase.auth.getSession()
-
-        if (!session) {
+        if (!userId) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
         }
 
-        const { csv, filename } = await generatePurchaseCSV(id, session.user.id)
+        const { csv, filename } = await generatePurchaseCSV(id, userId)
 
         return new NextResponse(csv, {
             headers: {

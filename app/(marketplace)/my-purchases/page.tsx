@@ -1,40 +1,17 @@
 // app/(marketplace)/my-purchases/page.tsx.bak
 import { Suspense } from "react"
 import { redirect } from "next/navigation"
-import { createServerClient } from "@supabase/ssr"
-import { cookies } from "next/headers"
 import { ShoppingBag, Package, Database, ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { getUserPurchases } from "@/actions/checkout"
 import { PublicPurchaseCard } from "@/components/marketplace/public-purchase-card"
 import { validatePurchaseAccessToken } from "@/lib/auth/magic-link"
+import { getAuthenticatedUserId } from "@/lib/auth"
 
 export const metadata = {
     title: "Minhas Compras | Easy Prospect",
     description: "Acesse e baixe suas listas de leads",
-}
-
-async function getSession() {
-    const cookieStore = await cookies()
-
-    const supabase = createServerClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-        {
-            cookies: {
-                getAll() {
-                    return cookieStore.getAll()
-                },
-                setAll() {
-                    // Em Server Components, não podemos setar cookies
-                },
-            },
-        }
-    )
-
-    const { data: { session } } = await supabase.auth.getSession()
-    return { session }
 }
 
 interface PageProps {
@@ -213,9 +190,9 @@ async function PurchasesContent({ searchParams }: PageProps) {
     }
 
     // 🆕 Se não tem token, verificar sessão normal
-    const { session } = await getSession()
+    const userId = await getAuthenticatedUserId()
 
-    if (!session) {
+    if (!userId) {
         redirect("/sign-in?redirect=/my-purchases")
     }
 

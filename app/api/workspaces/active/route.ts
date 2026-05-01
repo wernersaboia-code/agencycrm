@@ -1,19 +1,8 @@
 // app/api/workspaces/active/route.ts
 import { NextResponse } from "next/server"
-import { createClient } from "@/lib/supabase/server"
 import { prisma } from "@/lib/prisma"
 import { cookies } from "next/headers"
-
-async function getAuthenticatedUserId() {
-    const supabase = await createClient()
-    const { data: { user }, error } = await supabase.auth.getUser()
-
-    if (error || !user) {
-        return null
-    }
-
-    return user.id
-}
+import { getAuthenticatedUserId } from "@/lib/auth"
 
 export async function GET() {
     try {

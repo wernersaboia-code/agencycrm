@@ -2,10 +2,9 @@
 "use server"
 
 import { prisma } from "@/lib/prisma"
-import { createServerClient } from "@supabase/ssr"
-import { cookies } from "next/headers"
 import { Decimal } from "@prisma/client/runtime/library"
 import type { Prisma } from "@prisma/client"
+import { getAuthenticatedDbUser } from "@/lib/auth"
 
 type PurchaseWithItems = Prisma.PurchaseGetPayload<{
     include: {
@@ -40,31 +39,13 @@ export interface UserPurchase {
 }
 
 async function getSession() {
-    const cookieStore = await cookies()
+    const user = await getAuthenticatedDbUser()
 
-    const supabase = createServerClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-        {
-            cookies: {
-                getAll() {
-                    return cookieStore.getAll()
-                },
-                setAll(cookiesToSet) {
-                    try {
-                        cookiesToSet.forEach(({ name, value, options }) =>
-                            cookieStore.set(name, value, options)
-                        )
-                    } catch {
-                        // Em Server Actions, não podemos setar cookies
-                    }
-                },
-            },
-        }
-    )
+    if (!user || user.status !== "ACTIVE") {
+        return { session: null }
+    }
 
-    const { data: { session } } = await supabase.auth.getSession()
-    return { session, supabase }
+    return { session: { user: { id: user.id, email: user.email } } }
 }
 
 export async function createPurchase(listId: string) {

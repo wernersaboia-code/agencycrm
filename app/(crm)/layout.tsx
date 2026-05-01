@@ -1,13 +1,13 @@
 // app/(crm)/layout.tsx
 
 import { redirect } from "next/navigation"
-import { createClient } from "@/lib/supabase/server"
 import { Sidebar } from "@/components/layout/sidebar"
 import { Header } from "@/components/layout/header"
 import { WorkspaceProvider } from "@/contexts/workspace-context"
 import { ActiveCallWrapper } from "@/components/calls/ActiveCallWrapper"
 import { TrialBanner } from "@/components/crm/trial-banner"
 import { prisma } from "@/lib/prisma"
+import { getAuthenticatedDbUser } from "@/lib/auth"
 
 export const dynamic = "force-dynamic"
 
@@ -16,10 +16,13 @@ export default async function DashboardLayout({
                                               }: {
     children: React.ReactNode
 }) {
-    const supabase = await createClient()
-    const { data: { user }, error } = await supabase.auth.getUser()
+    const user = await getAuthenticatedDbUser()
 
-    if (error || !user) {
+    if (!user) {
+        redirect("/sign-in")
+    }
+
+    if (user.status !== "ACTIVE") {
         redirect("/sign-in")
     }
 

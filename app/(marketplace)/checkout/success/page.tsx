@@ -1,13 +1,12 @@
 // app/(marketplace)/checkout/success/page.tsx.bak
 import { prisma } from "@/lib/prisma"
 import type { Prisma } from "@prisma/client"
-import { createServerClient } from "@supabase/ssr"
-import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
 import { CheckCircle, Download, ArrowRight, Mail, ShoppingBag } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { formatCurrency } from "@/lib/utils"
+import { getAuthenticatedUserId } from "@/lib/auth"
 
 interface SuccessPageProps {
     searchParams: Promise<{ purchaseId?: string }>
@@ -24,37 +23,13 @@ export const metadata = {
     description: "Sua compra foi confirmada com sucesso",
 }
 
-async function getSession() {
-    const cookieStore = await cookies()
-
-    const supabase = createServerClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-        {
-            cookies: {
-                getAll() {
-                    return cookieStore.getAll()
-                },
-                setAll() {
-                    // Em Server Components, não podemos setar cookies
-                },
-            },
-        }
-    )
-
-    const { data: { session } } = await supabase.auth.getSession()
-    return { session }
-}
-
 export default async function SuccessPage({ searchParams }: SuccessPageProps) {
     const { purchaseId } = await searchParams
-    const { session } = await getSession()
+    const userId = await getAuthenticatedUserId()
 
-    if (!session) {
+    if (!userId) {
         redirect("/sign-in")
     }
-
-    const userId = session.user.id
 
     if (!purchaseId) {
         redirect("/catalog")

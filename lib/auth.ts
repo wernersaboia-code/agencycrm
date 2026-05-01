@@ -47,6 +47,7 @@ export async function getAuthenticatedUser(): Promise<AuthenticatedUser | null> 
                 id: true,
                 email: true,
                 name: true,
+                status: true,
             }
         })
 
@@ -64,8 +65,13 @@ export async function getAuthenticatedUser(): Promise<AuthenticatedUser | null> 
                     id: true,
                     email: true,
                     name: true,
+                    status: true,
                 }
             })
+        }
+
+        if (user.status !== 'ACTIVE') {
+            return null
         }
 
         return user
@@ -125,13 +131,7 @@ export async function getAuthenticatedDbUser(): Promise<AuthenticatedDbUser | nu
  * @returns true se autenticado, false caso contrário
  */
 export async function isAuthenticated(): Promise<boolean> {
-    try {
-        const supabase = await createClient()
-        const { data: { user }, error } = await supabase.auth.getUser()
-        return !error && !!user
-    } catch {
-        return false
-    }
+    return (await getAuthenticatedUser()) !== null
 }
 
 /**
@@ -141,9 +141,8 @@ export async function isAuthenticated(): Promise<boolean> {
  */
 export async function getAuthenticatedUserId(): Promise<string | null> {
     try {
-        const supabase = await createClient()
-        const { data: { user }, error } = await supabase.auth.getUser()
-        return !error && user ? user.id : null
+        const user = await getAuthenticatedUser()
+        return user?.id ?? null
     } catch {
         return null
     }
