@@ -125,6 +125,16 @@ export async function getAuthenticatedDbUser(): Promise<AuthenticatedDbUser | nu
     return user
 }
 
+export async function getAuthenticatedActiveDbUser(): Promise<AuthenticatedDbUser | null> {
+    const user = await getAuthenticatedDbUser()
+
+    if (!user || user.status !== 'ACTIVE') {
+        return null
+    }
+
+    return user
+}
+
 /**
  * Verifica se existe um usuário autenticado (mais leve, sem buscar no banco)
  *
@@ -165,7 +175,7 @@ export async function requireAuth(): Promise<AuthenticatedUser> {
 }
 
 export async function requireAdmin(): Promise<AuthenticatedDbUser> {
-    const user = await getAuthenticatedDbUser()
+    const user = await getAuthenticatedActiveDbUser()
 
     if (!user) {
         throw new Error('Nao autenticado')
@@ -173,10 +183,6 @@ export async function requireAdmin(): Promise<AuthenticatedDbUser> {
 
     if (user.role !== 'ADMIN') {
         throw new Error('Acesso negado')
-    }
-
-    if (user.status !== 'ACTIVE') {
-        throw new Error('Usuario inativo')
     }
 
     return user

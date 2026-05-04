@@ -6,7 +6,7 @@ import { prisma } from "@/lib/prisma"
 import { generatePurchaseAccessToken, generateMagicLinkUrl } from "@/lib/auth/magic-link"
 import { sendPurchaseConfirmationEmail } from "@/lib/email/purchase"
 import { z } from "zod"
-import { getAuthenticatedDbUser } from "@/lib/auth"
+import { getAuthenticatedActiveDbUser } from "@/lib/auth"
 
 const captureOrderSchema = z.object({
     orderId: z.string().min(1),
@@ -48,9 +48,9 @@ export async function POST(request: NextRequest) {
     let sessionUserId: string | undefined
 
     try {
-        const user = await getAuthenticatedDbUser()
+        const user = await getAuthenticatedActiveDbUser()
 
-        if (!user || user.status !== "ACTIVE") {
+        if (!user) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
         }
         sessionUserId = user.id

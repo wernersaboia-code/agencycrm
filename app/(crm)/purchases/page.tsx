@@ -1,7 +1,7 @@
 // app/(crm)/purchases/page.tsx.bak
 import { Suspense } from "react"
 import { redirect } from "next/navigation"
-import { createClient } from "@/lib/supabase/server"
+import { getAuthenticatedUserId } from "@/lib/auth"
 import { getUserPurchases } from "@/actions/checkout"
 import type { UserPurchase } from "@/actions/checkout"
 import { PurchaseCard } from "@/components/purchases/purchase-card"
@@ -14,20 +14,10 @@ export const metadata = {
     description: "Acesse suas listas de leads compradas",
 }
 
-async function getSession() {
-    const supabase = await createClient()
-
-    const {
-        data: { session },
-    } = await supabase.auth.getSession()
-
-    return { session }
-}
-
 export default async function PurchasesPage() {
-    const { session } = await getSession()
+    const userId = await getAuthenticatedUserId()
 
-    if (!session) {
+    if (!userId) {
         redirect("/sign-in?redirect=/purchases")
     }
 

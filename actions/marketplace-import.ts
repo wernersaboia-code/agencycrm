@@ -2,15 +2,8 @@
 "use server"
 
 import { prisma } from "@/lib/prisma"
-import { createClient } from "@/lib/supabase/server"
+import { requireAuth } from "@/lib/auth"
 import { LeadSource, LeadStatus } from "@prisma/client"
-
-async function getSession() {
-    const supabase = await createClient()
-
-    const { data: { session } } = await supabase.auth.getSession()
-    return { session, supabase }
-}
 
 interface ImportToWorkspaceParams {
     purchaseItemId: string
@@ -33,13 +26,8 @@ export async function importMarketplaceLeadsToWorkspace({
     const errors: string[] = []
 
     try {
-        const { session } = await getSession()
-
-        if (!session) {
-            throw new Error("Usuário não autenticado")
-        }
-
-        const userId = session.user.id
+        const user = await requireAuth()
+        const userId = user.id
 
         // Verificar se o workspace pertence ao usuário
         const workspace = await prisma.workspace.findFirst({
@@ -172,15 +160,11 @@ export async function importMarketplaceLeadsToWorkspace({
 
 export async function getUserWorkspaces() {
     try {
-        const { session } = await getSession()
-
-        if (!session) {
-            return []
-        }
+        const user = await requireAuth()
 
         const workspaces = await prisma.workspace.findMany({
             where: {
-                userId: session.user.id,
+                userId: user.id,
             },
             select: {
                 id: true,

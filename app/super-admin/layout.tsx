@@ -1,8 +1,7 @@
 // app/super-admin/layout.tsx
 
 import { redirect } from "next/navigation"
-import { createClient } from "@/lib/supabase/server"
-import { prisma } from "@/lib/prisma"
+import { getAuthenticatedDbUser } from "@/lib/auth"
 import { AdminSidebar } from "@/components/admin/admin-sidebar"
 import { AdminHeader } from "@/components/admin/admin-header"
 
@@ -11,19 +10,13 @@ export default async function SuperAdminLayout({
                                                }: {
     children: React.ReactNode
 }) {
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
+    const dbUser = await getAuthenticatedDbUser()
 
-    if (!user) {
+    if (!dbUser) {
         redirect("/sign-in")
     }
 
-    const dbUser = await prisma.user.findUnique({
-        where: { id: user.id },
-        select: { role: true, status: true, name: true, email: true }
-    })
-
-    if (dbUser?.role !== "ADMIN" || dbUser.status !== "ACTIVE") {
+    if (dbUser.role !== "ADMIN" || dbUser.status !== "ACTIVE") {
         redirect("/dashboard")
     }
 

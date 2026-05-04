@@ -6,12 +6,6 @@ import { prisma } from "@/lib/prisma"
 import { requireAuth } from "@/lib/auth"
 import { z } from "zod"
 
-// ==================== HELPERS ====================
-
-async function getAuthenticatedUser() {
-    return requireAuth()
-}
-
 const profileUpdateSchema = z.object({
     name: z.string().trim().max(120).optional(),
     language: z.string().trim().min(2).max(20).default("pt-BR"),
@@ -22,7 +16,7 @@ const profileUpdateSchema = z.object({
 
 export async function getUserProfile() {
     try {
-        const authUser = await getAuthenticatedUser()
+        const authUser = await requireAuth()
 
         const user = await prisma.user.findUnique({
             where: { id: authUser.id },
@@ -66,7 +60,7 @@ export async function updateUserProfile(data: {
             return { success: false, error: validated.error.issues[0]?.message ?? "Dados invÃ¡lidos" }
         }
 
-        const authUser = await getAuthenticatedUser()
+        const authUser = await requireAuth()
 
         const user = await prisma.user.update({
             where: { id: authUser.id },
@@ -91,7 +85,7 @@ export async function updateUserProfile(data: {
 
 export async function getAccountStats() {
     try {
-        const user = await getAuthenticatedUser()
+        const user = await requireAuth()
 
         // Buscar workspaces do usuário
         const workspaces = await prisma.workspace.findMany({

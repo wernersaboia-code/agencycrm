@@ -7,7 +7,7 @@ import { WorkspaceProvider } from "@/contexts/workspace-context"
 import { ActiveCallWrapper } from "@/components/calls/ActiveCallWrapper"
 import { TrialBanner } from "@/components/crm/trial-banner"
 import { prisma } from "@/lib/prisma"
-import { getAuthenticatedDbUser } from "@/lib/auth"
+import { getAuthenticatedActiveDbUser } from "@/lib/auth"
 
 export const dynamic = "force-dynamic"
 
@@ -16,13 +16,9 @@ export default async function DashboardLayout({
                                               }: {
     children: React.ReactNode
 }) {
-    const user = await getAuthenticatedDbUser()
+    const user = await getAuthenticatedActiveDbUser()
 
     if (!user) {
-        redirect("/sign-in")
-    }
-
-    if (user.status !== "ACTIVE") {
         redirect("/sign-in")
     }
 

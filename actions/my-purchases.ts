@@ -2,27 +2,15 @@
 "use server"
 
 import { prisma } from "@/lib/prisma"
-import { createClient } from "@/lib/supabase/server"
-
-async function getSession() {
-    const supabase = await createClient()
-
-    const { data: { session } } = await supabase.auth.getSession()
-    return { session, supabase }
-}
+import { requireAuth } from "@/lib/auth"
 
 export async function getPurchasesByUser(userId: string) {
     try {
         // Verificar se o usuário atual tem permissão
-        const { session } = await getSession()
-
-        // Se não tem sessão, não pode acessar
-        if (!session) {
-            return []
-        }
+        const user = await requireAuth()
 
         // Só permite acessar se for o próprio usuário
-        if (session.user.id !== userId) {
+        if (user.id !== userId) {
             return []
         }
 
@@ -78,16 +66,12 @@ export async function getPurchasesByUser(userId: string) {
 
 export async function getPurchaseById(purchaseId: string) {
     try {
-        const { session } = await getSession()
-
-        if (!session) {
-            return null
-        }
+        const user = await requireAuth()
 
         const purchase = await prisma.purchase.findUnique({
             where: {
                 id: purchaseId,
-                userId: session.user.id,
+                userId: user.id,
             },
             include: {
                 items: {

@@ -8,7 +8,7 @@ import {
 } from "@paypal/paypal-server-sdk"
 import { prisma } from "@/lib/prisma"
 import { z } from "zod"
-import { getAuthenticatedDbUser } from "@/lib/auth"
+import { getAuthenticatedActiveDbUser } from "@/lib/auth"
 import { getPublicAppUrl } from "@/lib/env"
 
 const createOrderSchema = z.object({
@@ -20,9 +20,9 @@ const createOrderSchema = z.object({
 
 export async function POST(request: NextRequest) {
     try {
-        const user = await getAuthenticatedDbUser()
+        const user = await getAuthenticatedActiveDbUser()
 
-        if (!user || user.status !== "ACTIVE") {
+        if (!user) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
         }
 

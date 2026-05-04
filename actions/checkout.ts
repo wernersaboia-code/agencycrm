@@ -4,7 +4,7 @@
 import { prisma } from "@/lib/prisma"
 import { Decimal } from "@prisma/client/runtime/library"
 import type { Prisma } from "@prisma/client"
-import { getAuthenticatedDbUser } from "@/lib/auth"
+import { getAuthenticatedActiveDbUser } from "@/lib/auth"
 
 type PurchaseWithItems = Prisma.PurchaseGetPayload<{
     include: {
@@ -38,21 +38,15 @@ export interface UserPurchase {
     }[]
 }
 
-async function getSession() {
-    const user = await getAuthenticatedDbUser()
-
-    if (!user || user.status !== "ACTIVE") {
-        return { session: null }
-    }
-
-    return { session: { user: { id: user.id, email: user.email } } }
+async function getActiveCheckoutUser() {
+    return getAuthenticatedActiveDbUser()
 }
 
 export async function createPurchase(listId: string) {
     try {
-        const { session } = await getSession()
+        const user = await getActiveCheckoutUser()
 
-        if (!session) {
+        if (!user) {
             return {
                 success: false,
                 error: "Usuário não autenticado",
@@ -60,7 +54,7 @@ export async function createPurchase(listId: string) {
             }
         }
 
-        const userId = session.user.id
+        const userId = user.id
 
         // Buscar lista
         const list = await prisma.leadList.findUnique({
@@ -131,13 +125,13 @@ export async function createPurchase(listId: string) {
 
 export async function getPurchase(purchaseId: string) {
     try {
-        const { session } = await getSession()
+        const user = await getActiveCheckoutUser()
 
-        if (!session) {
+        if (!user) {
             return null
         }
 
-        const userId = session.user.id
+        const userId = user.id
 
         const purchase = await prisma.purchase.findUnique({
             where: { id: purchaseId, userId },
@@ -180,13 +174,13 @@ export async function getPurchase(purchaseId: string) {
 
 export async function getUserPurchases() {
     try {
-        const { session } = await getSession()
+        const user = await getActiveCheckoutUser()
 
-        if (!session) {
+        if (!user) {
             return []
         }
 
-        const userId = session.user.id
+        const userId = user.id
 
         const purchases = await prisma.purchase.findMany({
             where: { userId },

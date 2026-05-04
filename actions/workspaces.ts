@@ -52,11 +52,6 @@ function serializeWorkspace<T extends SerializableWorkspace>(
     }
 }
 
-// Obter usuário autenticado E garantir que existe na tabela users
-async function getAuthenticatedUser() {
-    return requireAuth()
-}
-
 // CREATE - Criar workspace
 export async function createWorkspace(data: WorkspaceFormData) {
     try {
@@ -65,7 +60,7 @@ export async function createWorkspace(data: WorkspaceFormData) {
             return { success: false, error: validated.error.issues[0]?.message ?? "Dados invÃ¡lidos" }
         }
 
-        const user = await getAuthenticatedUser()
+        const user = await requireAuth()
 
         const workspace = await prisma.workspace.create({
             data: {
@@ -85,7 +80,7 @@ export async function createWorkspace(data: WorkspaceFormData) {
 // READ - Listar workspaces do usuário
 export async function getWorkspaces() {
     try {
-        const user = await getAuthenticatedUser()
+        const user = await requireAuth()
 
         const workspaces = await prisma.workspace.findMany({
             where: { userId: user.id },
@@ -121,7 +116,7 @@ export async function getWorkspaceById(id: string) {
             return { success: false, error: "Workspace invÃ¡lido" }
         }
 
-        const user = await getAuthenticatedUser()
+        const user = await requireAuth()
 
         const workspace = await prisma.workspace.findFirst({
             where: {
@@ -167,7 +162,7 @@ export async function updateWorkspace(id: string, data: WorkspaceFormData) {
             return { success: false, error: validated.error?.issues[0]?.message ?? "Dados invÃ¡lidos" }
         }
 
-        const user = await getAuthenticatedUser()
+        const user = await requireAuth()
 
         // Verificar se pertence ao usuário
         const existing = await prisma.workspace.findFirst({
@@ -200,7 +195,7 @@ export async function deleteWorkspace(id: string) {
             return { success: false, error: "Workspace invÃ¡lido" }
         }
 
-        const user = await getAuthenticatedUser()
+        const user = await requireAuth()
 
         // Verificar se pertence ao usuário
         const existing = await prisma.workspace.findFirst({
@@ -244,7 +239,7 @@ export async function getWorkspaceStats(workspaceId: string) {
             return { success: false, error: "Workspace invÃ¡lido" }
         }
 
-        const user = await getAuthenticatedUser()
+        const user = await requireAuth()
 
         // Verificar se pertence ao usuário
         const workspace = await prisma.workspace.findFirst({
