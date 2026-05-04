@@ -1,4 +1,6 @@
 // lib/email/templates/purchase-confirmation.ts
+import { getPublicAppUrl } from "@/lib/env"
+
 interface PurchaseConfirmationTemplateData {
     userName: string
     purchaseId: string
@@ -16,6 +18,7 @@ interface PurchaseConfirmationTemplateData {
 export function generatePurchaseConfirmationEmail(
     data: PurchaseConfirmationTemplateData
 ): { subject: string; html: string } {
+    const appUrl = getPublicAppUrl()
     const formattedDate = data.purchaseDate.toLocaleDateString("pt-BR", {
         day: "2-digit",
         month: "2-digit",
@@ -133,7 +136,7 @@ export function generatePurchaseConfirmationEmail(
                 <p style="color: rgba(255,255,255,0.95); font-size: 14px; margin: 0 0 16px;">
                   Use nosso CRM gratuito para gerenciar campanhas, enviar emails e fazer ligações
                 </p>
-                <a href="${process.env.NEXT_PUBLIC_APP_URL}/dashboard" 
+                <a href="${appUrl}/dashboard" 
                    style="display: inline-block; background-color: #ffffff; color: #2ec4b6; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-weight: 600; font-size: 14px;">
                   Acessar CRM Grátis →
                 </a>

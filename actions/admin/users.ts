@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma"
 import { createClient } from "@/lib/supabase/server"
 import { requireAdmin } from "@/lib/auth"
 import { UserRole, UserStatus, type Prisma } from "@prisma/client"
+import { getPublicAppUrl } from "@/lib/env"
 
 // ==================== TIPOS ====================
 
@@ -276,7 +277,7 @@ export async function sendPasswordReset(email: string) {
     const supabase = await createClient()
 
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/reset-password`,
+        redirectTo: `${getPublicAppUrl()}/reset-password`,
     })
 
     if (error) {

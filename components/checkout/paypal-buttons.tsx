@@ -5,6 +5,7 @@ import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { useCart } from "@/contexts/cart-context"
+import { getOptionalPublicPaypalClientId } from "@/lib/env"
 
 interface PayPalButtonsWrapperProps {
     items: Array<{ listId: string; quantity: number }>
@@ -27,8 +28,9 @@ function getErrorMessage(error: unknown, fallback: string): string {
 export function PayPalButtonsWrapper({ items }: PayPalButtonsWrapperProps) {
     const router = useRouter()
     const { clearCart } = useCart()
+    const paypalClientId = getOptionalPublicPaypalClientId()
 
-    if (!process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID) {
+    if (!paypalClientId) {
         return (
             <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-center">
                 <p className="text-red-600 text-sm">
@@ -41,7 +43,7 @@ export function PayPalButtonsWrapper({ items }: PayPalButtonsWrapperProps) {
     return (
         <PayPalScriptProvider
             options={{
-                clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID,
+                clientId: paypalClientId,
                 currency: "EUR",
                 intent: "capture",
             }}

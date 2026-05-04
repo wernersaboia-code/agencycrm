@@ -9,6 +9,7 @@ import {
 import { prisma } from "@/lib/prisma"
 import { z } from "zod"
 import { getAuthenticatedDbUser } from "@/lib/auth"
+import { getPublicAppUrl } from "@/lib/env"
 
 const createOrderSchema = z.object({
     items: z.array(z.object({
@@ -66,6 +67,7 @@ export async function POST(request: NextRequest) {
 
         const currency = lists[0].currency
         const total = subtotal.toFixed(2)
+        const appUrl = getPublicAppUrl()
 
         const order = await paypalOrders().createOrder({
             prefer: "return=representation",
@@ -98,8 +100,8 @@ export async function POST(request: NextRequest) {
                     brandName: "LeadStore",
                     landingPage: OrderApplicationContextLandingPage.NoPreference,
                     userAction: OrderApplicationContextUserAction.PayNow,
-                    returnUrl: `${process.env.NEXT_PUBLIC_APP_URL}/checkout/success`,
-                    cancelUrl: `${process.env.NEXT_PUBLIC_APP_URL}/checkout/cancel`,
+                    returnUrl: `${appUrl}/checkout/success`,
+                    cancelUrl: `${appUrl}/checkout/cancel`,
                 },
             },
         })

@@ -2,27 +2,11 @@
 "use server"
 
 import { prisma } from "@/lib/prisma"
-import { createServerClient } from "@supabase/ssr"
-import { cookies } from "next/headers"
+import { createClient } from "@/lib/supabase/server"
 import { LeadSource, LeadStatus } from "@prisma/client"
 
 async function getSession() {
-    const cookieStore = await cookies()
-
-    const supabase = createServerClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-        {
-            cookies: {
-                getAll() {
-                    return cookieStore.getAll()
-                },
-                setAll() {
-                    // Em Server Actions, não podemos setar cookies
-                },
-            },
-        }
-    )
+    const supabase = await createClient()
 
     const { data: { session } } = await supabase.auth.getSession()
     return { session, supabase }

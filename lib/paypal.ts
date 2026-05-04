@@ -1,18 +1,18 @@
 // lib/paypal.ts
 import { Client, Environment, OrdersController } from "@paypal/paypal-server-sdk"
+import { getPaypalServerConfig } from "@/lib/server-env"
 
-function getPaypalEnvironment() {
-    return process.env.PAYPAL_MODE === "live"
+function getPaypalEnvironment(mode: string) {
+    return mode === "live"
         ? Environment.Production
         : Environment.Sandbox
 }
 
 function createPaypalClient() {
-    const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!
-    const clientSecret = process.env.PAYPAL_CLIENT_SECRET!
+    const { clientId, clientSecret, mode } = getPaypalServerConfig()
 
     return new Client({
-        environment: getPaypalEnvironment(),
+        environment: getPaypalEnvironment(mode),
         clientCredentialsAuthCredentials: {
             oAuthClientId: clientId,
             oAuthClientSecret: clientSecret,
