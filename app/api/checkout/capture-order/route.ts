@@ -1,7 +1,7 @@
 // app/api/checkout/capture-order/route.ts
 import { NextRequest, NextResponse } from "next/server"
-import { paypalClient } from "@/lib/paypal"
-import paypal from "@paypal/checkout-server-sdk"
+import { paypalOrders } from "@/lib/paypal"
+import { OrderStatus } from "@paypal/paypal-server-sdk"
 import { prisma } from "@/lib/prisma"
 import { generatePurchaseAccessToken, generateMagicLinkUrl } from "@/lib/auth/magic-link"
 import { sendPurchaseConfirmationEmail } from "@/lib/email/purchase"
@@ -13,12 +13,12 @@ const captureOrderSchema = z.object({
 })
 
 type PayPalCaptureResult = {
-    purchase_units?: {
+    purchaseUnits?: {
         payments?: {
             captures?: {
                 amount?: {
                     value?: string
-                    currency_code?: string
+                    currencyCode?: string
                 }
             }[]
         }
@@ -31,15 +31,15 @@ function getErrorMessage(error: unknown): string {
 
 function getCapturedAmount(captureResult: unknown): { value: string; currency: string } | null {
     const result = captureResult as PayPalCaptureResult
-    const capturedAmount = result.purchase_units?.[0]?.payments?.captures?.[0]?.amount
+    const capturedAmount = result.purchaseUnits?.[0]?.payments?.captures?.[0]?.amount
 
-    if (!capturedAmount?.value || !capturedAmount.currency_code) {
+    if (!capturedAmount?.value || !capturedAmount.currencyCode) {
         return null
     }
 
     return {
         value: capturedAmount.value,
-        currency: capturedAmount.currency_code,
+        currency: capturedAmount.currencyCode,
     }
 }
 
@@ -83,13 +83,13 @@ export async function POST(request: NextRequest) {
             )
         }
 
-        // Capturar pagamento no PayPal
-        const requestCapture = new paypal.orders.OrdersCaptureRequest(orderId)
-        requestCapture.requestBody({})
+        const capture = await paypalOrders().captureOrder({
+            id: orderId,
+            prefer: "return=representation",
+            body: {},
+        })
 
-        const capture = await paypalClient().execute(requestCapture)
-
-        if (capture.result.status !== "COMPLETED") {
+        if (capture.result.status !== OrderStatus.Completed) {
             return NextResponse.json(
                 { error: "Payment not completed" },
                 { status: 400 }
@@ -116,10 +116,10 @@ export async function POST(request: NextRequest) {
             data: {
                 status: "paid",
                 paidAt: new Date(),
-                paypalPayerId: capture.result.payer?.payer_id,
-                buyerEmail: capture.result.payer?.email_address,
-                buyerName: capture.result.payer?.name?.given_name
-                    ? `${capture.result.payer.name.given_name} ${capture.result.payer.name.surname || ""}`.trim()
+                paypalPayerId: capture.result.payer?.payerId,
+                buyerEmail: capture.result.payer?.emailAddress,
+                buyerName: capture.result.payer?.name?.givenName
+                    ? `${capture.result.payer.name.givenName} ${capture.result.payer.name.surname || ""}`.trim()
                     : null,
             },
             include: {

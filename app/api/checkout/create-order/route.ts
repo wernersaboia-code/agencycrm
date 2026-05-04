@@ -1,7 +1,11 @@
 // app/api/checkout/create-order/route.ts
 import { NextRequest, NextResponse } from "next/server"
-import { paypalClient } from "@/lib/paypal"
-import paypal from "@paypal/checkout-server-sdk"
+import { paypalOrders } from "@/lib/paypal"
+import {
+    CheckoutPaymentIntent,
+    OrderApplicationContextLandingPage,
+    OrderApplicationContextUserAction,
+} from "@paypal/paypal-server-sdk"
 import { prisma } from "@/lib/prisma"
 import { z } from "zod"
 import { getAuthenticatedDbUser } from "@/lib/auth"
@@ -63,19 +67,18 @@ export async function POST(request: NextRequest) {
         const currency = lists[0].currency
         const total = subtotal.toFixed(2)
 
-        // Criar ordem no PayPal
-        const requestOrder = new paypal.orders.OrdersCreateRequest()
-        requestOrder.prefer("return=representation")
-        requestOrder.requestBody({
-            intent: "CAPTURE",
-            purchase_units: [
+        const order = await paypalOrders().createOrder({
+            prefer: "return=representation",
+            body: {
+                intent: CheckoutPaymentIntent.Capture,
+                purchaseUnits: [
                 {
                     amount: {
-                        currency_code: currency,
+                        currencyCode: currency,
                         value: total,
                         breakdown: {
-                            item_total: {
-                                currency_code: currency,
+                            itemTotal: {
+                                currencyCode: currency,
                                 value: total,
                             },
                         },
@@ -83,24 +86,23 @@ export async function POST(request: NextRequest) {
                     items: purchaseItems.map((item) => ({
                         name: item.name,
                         description: `${item.leadsCount.toLocaleString()} leads`,
-                        unit_amount: {
-                            currency_code: currency,
+                        unitAmount: {
+                            currencyCode: currency,
                             value: item.price.toFixed(2),
                         },
                         quantity: item.quantity.toString(),
                     })),
                 },
             ],
-            application_context: {
-                brand_name: "LeadStore",
-                landing_page: "NO_PREFERENCE",
-                user_action: "PAY_NOW",
-                return_url: `${process.env.NEXT_PUBLIC_APP_URL}/checkout/success`,
-                cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/checkout/cancel`,
+                applicationContext: {
+                    brandName: "LeadStore",
+                    landingPage: OrderApplicationContextLandingPage.NoPreference,
+                    userAction: OrderApplicationContextUserAction.PayNow,
+                    returnUrl: `${process.env.NEXT_PUBLIC_APP_URL}/checkout/success`,
+                    cancelUrl: `${process.env.NEXT_PUBLIC_APP_URL}/checkout/cancel`,
+                },
             },
         })
-
-        const order = await paypalClient().execute(requestOrder)
 
         // Criar registro de Purchase no DB (status: pending)
         const purchase = await prisma.purchase.create({

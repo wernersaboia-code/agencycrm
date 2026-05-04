@@ -1,20 +1,27 @@
 // lib/paypal.ts
-import paypal from "@paypal/checkout-server-sdk"
+import { Client, Environment, OrdersController } from "@paypal/paypal-server-sdk"
 
-// Configurar ambiente
-function environment() {
+function getPaypalEnvironment() {
+    return process.env.PAYPAL_MODE === "live"
+        ? Environment.Production
+        : Environment.Sandbox
+}
+
+function createPaypalClient() {
     const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!
     const clientSecret = process.env.PAYPAL_CLIENT_SECRET!
 
-    if (process.env.PAYPAL_MODE === "live") {
-        return new paypal.core.LiveEnvironment(clientId, clientSecret)
-    }
-    return new paypal.core.SandboxEnvironment(clientId, clientSecret)
+    return new Client({
+        environment: getPaypalEnvironment(),
+        clientCredentialsAuthCredentials: {
+            oAuthClientId: clientId,
+            oAuthClientSecret: clientSecret,
+        },
+    })
 }
 
-// Cliente PayPal
-export function paypalClient() {
-    return new paypal.core.PayPalHttpClient(environment())
+export function paypalOrders() {
+    return new OrdersController(createPaypalClient())
 }
 
 // Verificar assinatura do webhook (segurança)
