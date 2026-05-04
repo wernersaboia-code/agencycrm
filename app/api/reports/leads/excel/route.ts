@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { getAuthenticatedUser } from "@/lib/auth"
 import { format } from "date-fns"
-import * as XLSX from "xlsx"
+import writeXlsxFile from "write-excel-file/node"
 import {
     buildLeadReportWhere,
     leadReportQuerySchema,
@@ -96,43 +96,36 @@ export async function GET(request: NextRequest) {
             "Criado em": format(lead.createdAt, "dd/MM/yyyy HH:mm"),
         }))
 
-        // Criar workbook
-        const workbook = XLSX.utils.book_new()
-        const worksheet = XLSX.utils.json_to_sheet(data)
-
-        // Ajustar largura das colunas
-        const colWidths = [
-            { wch: 15 }, // Nome
-            { wch: 15 }, // Sobrenome
-            { wch: 30 }, // Email
-            { wch: 15 }, // Telefone
-            { wch: 15 }, // Celular
-            { wch: 25 }, // Empresa
-            { wch: 20 }, // Cargo
-            { wch: 25 }, // Website
-            { wch: 18 }, // CNPJ
-            { wch: 15 }, // Segmento
-            { wch: 12 }, // Porte
-            { wch: 30 }, // Endereço
-            { wch: 15 }, // Cidade
-            { wch: 10 }, // Estado
-            { wch: 10 }, // CEP
-            { wch: 12 }, // País
-            { wch: 15 }, // Status
-            { wch: 12 }, // Origem
-            { wch: 40 }, // Notas
-            { wch: 18 }, // Criado em
+        const headers = [
+            "Nome",
+            "Sobrenome",
+            "Email",
+            "Telefone",
+            "Celular",
+            "Empresa",
+            "Cargo",
+            "Website",
+            "CNPJ/Tax ID",
+            "Segmento",
+            "Porte",
+            "Endereco",
+            "Cidade",
+            "Estado",
+            "CEP",
+            "Pais",
+            "Status",
+            "Origem",
+            "Notas",
+            "Criado em",
         ]
-        worksheet["!cols"] = colWidths
-
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Leads")
-
-        // Gerar buffer
-        const buffer = XLSX.write(workbook, { type: "buffer", bookType: "xlsx" })
+        const buffer = await writeXlsxFile([
+            headers,
+            ...data.map((row) => headers.map((header) => row[header as keyof typeof row] ?? "")),
+        ]).toBuffer()
 
         const fileName = `leads-${workspace.name.toLowerCase().replace(/\s+/g, "-")}-${format(new Date(), "yyyy-MM-dd")}.xlsx`
 
-        return new NextResponse(buffer, {
+        return new NextResponse(new Uint8Array(buffer), {
             headers: {
                 "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 "Content-Disposition": `attachment; filename="${fileName}"`,

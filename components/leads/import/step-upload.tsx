@@ -122,8 +122,8 @@ export function StepUpload({ onComplete }: StepUploadProps) {
     }
 
     // Download templates
-    const handleDownloadExcel = () => {
-        const blob = generateExcelTemplate()
+    const handleDownloadExcel = async () => {
+        const blob = await generateExcelTemplate()
         const url = URL.createObjectURL(blob)
         const a = document.createElement('a')
         a.href = url
@@ -159,7 +159,7 @@ export function StepUpload({ onComplete }: StepUploadProps) {
     // Ícone do tipo de arquivo
     const getFileIcon = () => {
         if (!parsedData) return <FileSpreadsheet className="h-6 w-6 text-green-600" />
-        if (parsedData.fileType === 'xlsx' || parsedData.fileType === 'xls') {
+        if (parsedData.fileType === 'xlsx') {
             return <FileSpreadsheet className="h-6 w-6 text-green-600" />
         }
         return <FileText className="h-6 w-6 text-blue-600" />
@@ -209,7 +209,7 @@ export function StepUpload({ onComplete }: StepUploadProps) {
                     >
                         <input
                             type="file"
-                            accept=".csv,.txt,.xlsx,.xls"
+                            accept=".csv,.txt,.xlsx"
                             onChange={handleFileInput}
                             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                             disabled={isProcessing}
@@ -238,7 +238,7 @@ export function StepUpload({ onComplete }: StepUploadProps) {
                             </p>
                             <p className="text-sm text-muted-foreground mb-4">ou clique para selecionar</p>
                             <p className="text-xs text-muted-foreground">
-                                Formatos aceitos: CSV, Excel (.xlsx, .xls), TXT • Máximo 10MB
+                                Formatos aceitos: CSV, Excel (.xlsx), TXT • Máximo 10MB
                             </p>
                         </div>
                     </div>

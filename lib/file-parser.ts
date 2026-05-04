@@ -1,7 +1,8 @@
 // lib/file-parser.ts
 
 import Papa from 'papaparse'
-import * as XLSX from 'xlsx'
+import { readSheet } from 'read-excel-file/browser'
+import writeXlsxFile from 'write-excel-file/browser'
 import { IMPORT_TEMPLATE_HEADERS, IMPORT_TEMPLATE_EXAMPLE } from './constants/csv-mapping.constants'
 
 // ============================================================
@@ -13,7 +14,7 @@ export interface ParsedFile {
     rows: Record<string, string>[]
     totalRows: number
     fileName: string
-    fileType: 'csv' | 'xlsx' | 'xls' | 'txt'
+    fileType: 'csv' | 'xlsx' | 'txt'
 }
 
 export interface ParseError {
@@ -29,7 +30,7 @@ export type ParseResult =
 // CONSTANTES
 // ============================================================
 
-const SUPPORTED_EXTENSIONS = ['.csv', '.xlsx', '.xls', '.txt']
+const SUPPORTED_EXTENSIONS = ['.csv', '.xlsx', '.txt']
 const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10MB
 
 // ============================================================
@@ -402,27 +403,7 @@ async function parseCSV(file: File): Promise<ParseResult> {
 
 async function parseExcel(file: File): Promise<ParseResult> {
     try {
-        const arrayBuffer = await file.arrayBuffer()
-        const workbook = XLSX.read(arrayBuffer, { type: 'array' })
-
-        const firstSheetName = workbook.SheetNames[0]
-        if (!firstSheetName) {
-            return {
-                success: false,
-                error: {
-                    message: 'Arquivo Excel vazio',
-                    details: 'O arquivo não contém nenhuma planilha',
-                },
-            }
-        }
-
-        const worksheet = workbook.Sheets[firstSheetName]
-
-        const jsonData = XLSX.utils.sheet_to_json<unknown[]>(worksheet, {
-            header: 1,
-            defval: '',
-            blankrows: false,
-        })
+        const jsonData = await readSheet(file)
 
         if (jsonData.length === 0) {
             return {
@@ -466,8 +447,6 @@ async function parseExcel(file: File): Promise<ParseResult> {
             }
         }
 
-        const fileType = file.name.toLowerCase().endsWith('.xlsx') ? 'xlsx' : 'xls'
-
         return {
             success: true,
             data: {
@@ -475,7 +454,7 @@ async function parseExcel(file: File): Promise<ParseResult> {
                 rows,
                 totalRows: rows.length,
                 fileName: file.name,
-                fileType,
+                fileType: 'xlsx',
             },
         }
     } catch (error) {
@@ -517,7 +496,7 @@ export async function parseFile(file: File): Promise<ParseResult> {
         }
     }
 
-    if (extension === '.xlsx' || extension === '.xls') {
+    if (extension === '.xlsx') {
         return parseExcel(file)
     }
 
@@ -665,21 +644,11 @@ export function processForImport(
 // GERAÇÃO DE TEMPLATES
 // ============================================================
 
-export function generateExcelTemplate(): Blob {
-    const worksheet = XLSX.utils.aoa_to_sheet([
+export async function generateExcelTemplate(): Promise<Blob> {
+    return writeXlsxFile([
         IMPORT_TEMPLATE_HEADERS,
         IMPORT_TEMPLATE_EXAMPLE,
-    ])
-
-    worksheet['!cols'] = IMPORT_TEMPLATE_HEADERS.map(() => ({ wch: 20 }))
-
-    const workbook = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Leads')
-
-    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' })
-    return new Blob([excelBuffer], {
-        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    })
+    ]).toBlob()
 }
 
 export function generateCSVTemplate(): string {

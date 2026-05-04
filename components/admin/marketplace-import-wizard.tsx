@@ -4,7 +4,8 @@
 import { useState, useCallback } from "react"
 import { toast } from "sonner"
 import Papa from "papaparse"
-import * as XLSX from "xlsx"
+import { readSheet } from "read-excel-file/browser"
+import writeXlsxFile from "write-excel-file/browser"
 import {
     Upload,
     FileSpreadsheet,
@@ -172,34 +173,44 @@ export function MarketplaceImportWizard({
         })
     }
 
-    const parseExcel = (file: File): Promise<ParsedFile> => {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader()
-            reader.onload = (e) => {
-                try {
-                    const data = e.target?.result
-                    const workbook = XLSX.read(data, { type: "array" })
-                    const firstSheetName = workbook.SheetNames[0]
-                    const worksheet = workbook.Sheets[firstSheetName]
-                    const jsonData = XLSX.utils.sheet_to_json<Record<string, string>>(worksheet, {
-                        defval: "",
-                    })
+    const parseExcel = async (file: File): Promise<ParsedFile> => {
+        const sheet = await readSheet(file)
 
-                    const headers = jsonData.length > 0 ? Object.keys(jsonData[0]) : []
-
-                    resolve({
-                        headers,
-                        rows: jsonData,
-                        fileName: file.name,
-                        fileType: "excel",
-                    })
-                } catch (error) {
-                    reject(error)
-                }
+        if (sheet.length === 0) {
+            return {
+                headers: [],
+                rows: [],
+                fileName: file.name,
+                fileType: "excel",
             }
-            reader.onerror = reject
-            reader.readAsArrayBuffer(file)
+        }
+
+        const rows: Record<string, string>[] = []
+        const headers = sheet[0]
+            .map((value) => String(value ?? "").trim())
+            .filter(Boolean)
+
+        sheet.slice(1).forEach((values) => {
+            const parsedRow: Record<string, string> = {}
+            let hasData = false
+
+            headers.forEach((header, index) => {
+                const value = String(values[index] ?? "").trim()
+                parsedRow[header] = value
+                if (value) hasData = true
+            })
+
+            if (hasData) {
+                rows.push(parsedRow)
+            }
         })
+
+        return {
+            headers,
+            rows,
+            fileName: file.name,
+            fileType: "excel",
+        }
     }
 
     const handleFileSelect = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -208,10 +219,10 @@ export function MarketplaceImportWizard({
 
         const fileName = file.name.toLowerCase()
         const isCSV = fileName.endsWith(".csv")
-        const isExcel = fileName.endsWith(".xlsx") || fileName.endsWith(".xls")
+        const isExcel = fileName.endsWith(".xlsx")
 
         if (!isCSV && !isExcel) {
-            toast.error("Formato não suportado. Use CSV ou Excel (.xlsx, .xls)")
+            toast.error("Formato não suportado. Use CSV ou Excel (.xlsx)")
             return
         }
 
@@ -245,7 +256,7 @@ export function MarketplaceImportWizard({
         }
     }, [])
 
-    const handleDownloadTemplate = (type: "csv" | "excel") => {
+    const handleDownloadTemplate = async (type: "csv" | "excel") => {
         if (type === "csv") {
             const csvContent = [
                 MARKETPLACE_CSV_TEMPLATE_HEADERS.join(","),
@@ -260,13 +271,16 @@ export function MarketplaceImportWizard({
             link.click()
             URL.revokeObjectURL(url)
         } else {
-            const ws = XLSX.utils.aoa_to_sheet([
+            const blob = await writeXlsxFile([
                 MARKETPLACE_CSV_TEMPLATE_HEADERS,
                 MARKETPLACE_CSV_TEMPLATE_EXAMPLE,
-            ])
-            const wb = XLSX.utils.book_new()
-            XLSX.utils.book_append_sheet(wb, ws, "Leads")
-            XLSX.writeFile(wb, "marketplace_leads_template.xlsx")
+            ]).toBlob()
+            const url = URL.createObjectURL(blob)
+            const link = document.createElement("a")
+            link.href = url
+            link.download = "marketplace_leads_template.xlsx"
+            link.click()
+            URL.revokeObjectURL(url)
         }
 
         toast.success(`Template ${type.toUpperCase()} baixado!`)
@@ -471,11 +485,11 @@ export function MarketplaceImportWizard({
                                     Arraste um arquivo ou clique para selecionar
                                 </h3>
                                 <p className="text-sm text-muted-foreground mb-4">
-                                    Formatos aceitos: CSV, Excel (.xlsx, .xls)
+                                    Formatos aceitos: CSV, Excel (.xlsx)
                                 </p>
                                 <Input
                                     type="file"
-                                    accept=".csv,.xlsx,.xls"
+                                    accept=".csv,.xlsx"
                                     onChange={handleFileSelect}
                                     disabled={isLoading}
                                     className="hidden"
