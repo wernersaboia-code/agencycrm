@@ -3,10 +3,23 @@
 "use client"
 
 import { useState, useCallback, useMemo } from "react"
-import { Plus, Phone, RefreshCw } from "lucide-react"
+import {
+    AlertCircle,
+    ArrowRight,
+    CalendarClock,
+    CheckCircle2,
+    Clock,
+    Plus,
+    Phone,
+    RefreshCw,
+    Target,
+} from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Progress } from "@/components/ui/progress"
 import { CallsList } from "@/components/calls/CallsList"
 import { CallFilters } from "@/components/calls/CallFilters"
 import { CallStats } from "@/components/calls/CallStats"
@@ -18,6 +31,7 @@ import { SerializedCallWithLead, CallbacksSummary } from "@/types/call.types"
 import { ExportCallsButtons } from "@/components/reports/export-calls-buttons"
 import { CallResult } from "@prisma/client"
 import { CallsDashboard } from "@/components/calls/CallsDashboard"
+import { cn } from "@/lib/utils"
 
 // ============================================
 // TYPES
@@ -64,6 +78,7 @@ export function CallsClient({
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
     const [editingCall, setEditingCall] = useState<SerializedCallWithLead | null>(null)
     const [selectedLeadId, setSelectedLeadId] = useState<string | null>(null)
+    const [queueFilter, setQueueFilter] = useState<CallQueueFilter>("ALL")
 
     const [filters, setFilters] = useState<CallFiltersState>({
         search: "",
@@ -79,6 +94,24 @@ export function CallsClient({
 
     const filteredCalls = useMemo(() => {
         return calls.filter((call) => {
+            if (queueFilter === "CALLBACKS" && !call.followUpAt) {
+                return false
+            }
+
+            if (
+                queueFilter === "POSITIVE" &&
+                !["INTERESTED", "CALLBACK", "MEETING_SCHEDULED"].includes(call.result)
+            ) {
+                return false
+            }
+
+            if (
+                queueFilter === "ATTENTION" &&
+                !["NO_ANSWER", "BUSY", "VOICEMAIL", "WRONG_NUMBER"].includes(call.result)
+            ) {
+                return false
+            }
+
             // Filtro de busca
             if (filters.search) {
                 const searchLower = filters.search.toLowerCase()
@@ -129,7 +162,7 @@ export function CallsClient({
 
             return true
         })
-    }, [calls, filters])
+    }, [calls, filters, queueFilter])
 
     // ============================================
     // HANDLERS
@@ -215,13 +248,66 @@ export function CallsClient({
         callbacks.overdue.length +
         callbacks.today.length +
         callbacks.thisWeek.length
+    const totalCallbacksIncludingLater = totalCallbacks + callbacks.later.length
+    const positiveCalls =
+        (stats.byResult.INTERESTED || 0) +
+        (stats.byResult.CALLBACK || 0) +
+        (stats.byResult.MEETING_SCHEDULED || 0)
+    const attentionCalls =
+        (stats.byResult.NO_ANSWER || 0) +
+        (stats.byResult.BUSY || 0) +
+        (stats.byResult.VOICEMAIL || 0) +
+        (stats.byResult.WRONG_NUMBER || 0)
+    const actionProgress = Math.round(
+        ((Number(stats.total > 0) + Number(positiveCalls > 0) + Number(totalCallbacksIncludingLater === 0)) / 3) * 100
+    )
+    const queueItems = [
+        {
+            label: "Callbacks",
+            value: totalCallbacksIncludingLater,
+            description: totalCallbacks > 0
+                ? `${callbacks.overdue.length} atrasado${callbacks.overdue.length !== 1 ? "s" : ""}, ${callbacks.today.length} hoje.`
+                : "Sem retornos urgentes agora.",
+            icon: CalendarClock,
+            filter: "CALLBACKS" as CallQueueFilter,
+            tone: totalCallbacks > 0 ? "warning" : "success",
+        },
+        {
+            label: "Resultados positivos",
+            value: positiveCalls,
+            description: "Interessados, retornos e reuniões agendadas.",
+            icon: Target,
+            filter: "POSITIVE" as CallQueueFilter,
+            tone: positiveCalls > 0 ? "success" : "default",
+        },
+        {
+            label: "Precisam atenção",
+            value: attentionCalls,
+            description: "Não atendeu, ocupado, caixa postal ou número errado.",
+            icon: AlertCircle,
+            filter: "ATTENTION" as CallQueueFilter,
+            tone: attentionCalls > 0 ? "warning" : "success",
+        },
+    ]
 
     const hasActiveFilters =
+        queueFilter !== "ALL" ||
         filters.search !== "" ||
         filters.result !== "ALL" ||
         filters.dateRange !== "all" ||
         filters.dateFrom !== "" ||
         filters.dateTo !== ""
+
+    const clearAllFilters = () => {
+        setQueueFilter("ALL")
+        setFilters({
+            search: "",
+            result: "ALL",
+            dateRange: "all",
+            dateFrom: "",
+            dateTo: "",
+        })
+    }
 
     return (
         <div className="space-y-6">
@@ -262,6 +348,58 @@ export function CallsClient({
                 </div>
             </div>
 
+            <Card className={totalCallbacks > 0 ? "border-amber-300 dark:border-amber-900" : "border-emerald-300 dark:border-emerald-900"}>
+                <CardHeader className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                    <div className="space-y-2">
+                        <div className="flex flex-wrap items-center gap-2">
+                            <CardTitle>Fila comercial</CardTitle>
+                            <Badge variant={totalCallbacks > 0 ? "outline" : "default"}>
+                                {totalCallbacks > 0 ? `${totalCallbacks} urgente${totalCallbacks !== 1 ? "s" : ""}` : "Em dia"}
+                            </Badge>
+                        </div>
+                        <CardDescription>
+                            Priorize retornos, resultados quentes e ligações que precisam de nova tentativa.
+                        </CardDescription>
+                    </div>
+                    <div className="w-full space-y-2 lg:w-64">
+                        <div className="flex items-center justify-between text-sm">
+                            <span className="text-muted-foreground">Prontidão</span>
+                            <span className="font-medium">{actionProgress}%</span>
+                        </div>
+                        <Progress value={actionProgress} />
+                    </div>
+                </CardHeader>
+                <CardContent className="grid gap-3 md:grid-cols-3">
+                    {queueItems.map((item) => (
+                        <button
+                            key={item.label}
+                            type="button"
+                            onClick={() => setQueueFilter(queueFilter === item.filter ? "ALL" : item.filter)}
+                            className={cn(
+                                "flex min-h-[112px] items-start justify-between gap-3 rounded-lg border bg-background p-4 text-left transition-colors hover:bg-muted/50",
+                                queueFilter === item.filter && "ring-2 ring-primary",
+                                item.tone === "warning" && "border-amber-300 bg-amber-50/50 dark:border-amber-900 dark:bg-amber-950/20",
+                                item.tone === "success" && "border-emerald-300 bg-emerald-50/50 dark:border-emerald-900 dark:bg-emerald-950/20"
+                            )}
+                        >
+                            <span className="flex min-w-0 gap-3">
+                                {item.tone === "success" ? (
+                                    <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
+                                ) : (
+                                    <item.icon className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
+                                )}
+                                <span className="space-y-1">
+                                    <span className="block font-medium leading-tight">{item.label}</span>
+                                    <span className="block text-2xl font-bold">{item.value}</span>
+                                    <span className="block text-sm text-muted-foreground">{item.description}</span>
+                                </span>
+                            </span>
+                            <ArrowRight className="mt-1 h-4 w-4 shrink-0 text-muted-foreground" />
+                        </button>
+                    ))}
+                </CardContent>
+            </Card>
+
             {/* Stats */}
             <CallStats stats={stats} />
 
@@ -279,6 +417,18 @@ export function CallsClient({
             {/* Filters */}
             <CallFilters filters={filters} onFilterChange={handleFilterChange} />
 
+            {queueFilter !== "ALL" && (
+                <div className="flex flex-wrap items-center gap-2">
+                    <Badge variant="outline" className="gap-2">
+                        <Clock className="h-3.5 w-3.5" />
+                        Fila: {queueItems.find((item) => item.filter === queueFilter)?.label}
+                    </Badge>
+                    <Button variant="ghost" size="sm" onClick={() => setQueueFilter("ALL")}>
+                        Remover fila
+                    </Button>
+                </div>
+            )}
+
             {/* Lista */}
             <CallsList
                 calls={filteredCalls}
@@ -286,15 +436,7 @@ export function CallsClient({
                 onEdit={handleEditCall}
                 onDelete={handleDeleteCall}
                 onCreate={() => handleOpenModal()}
-                onClearFilters={() =>
-                    setFilters({
-                        search: "",
-                        result: "ALL",
-                        dateRange: "all",
-                        dateFrom: "",
-                        dateTo: "",
-                    })
-                }
+                onClearFilters={clearAllFilters}
                 hasActiveFilters={hasActiveFilters}
             />
 
@@ -310,3 +452,5 @@ export function CallsClient({
         </div>
     )
 }
+
+type CallQueueFilter = "ALL" | "CALLBACKS" | "POSITIVE" | "ATTENTION"

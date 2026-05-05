@@ -117,6 +117,12 @@ export function CallCard({ call, onEdit, onDelete }: CallCardProps) {
                                         {formatCallDuration(call.duration)}
                   </span>
                                 )}
+                                {call.campaign && (
+                                    <span className="flex items-center gap-1">
+                    <Calendar className="h-3.5 w-3.5" />
+                                        {call.campaign.name}
+                  </span>
+                                )}
                             </div>
 
                             {/* Notas (se houver) */}
@@ -160,7 +166,14 @@ export function CallCard({ call, onEdit, onDelete }: CallCardProps) {
                         </div>
 
                         {/* Ações */}
-                        <DropdownMenu>
+                        <div className="flex shrink-0 items-center gap-2">
+                            {followUpDate && (
+                                <Button variant={isOverdue ? "default" : "outline"} size="sm" onClick={() => onEdit(call)}>
+                                    <Clock className="h-4 w-4 mr-2" />
+                                    Retorno
+                                </Button>
+                            )}
+                            <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button variant="ghost" size="icon" className="shrink-0">
                                     <MoreHorizontal className="h-4 w-4" />
@@ -181,7 +194,8 @@ export function CallCard({ call, onEdit, onDelete }: CallCardProps) {
                                     Excluir
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
-                        </DropdownMenu>
+                            </DropdownMenu>
+                        </div>
                     </div>
                 </CardContent>
             </Card>

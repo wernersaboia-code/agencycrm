@@ -7,6 +7,7 @@ import { format } from "date-fns"
 import { ptBR } from "date-fns/locale"
 import {
     AlertTriangle,
+    ArrowRight,
     Calendar,
     ChevronDown,
     ChevronUp,
@@ -68,29 +69,32 @@ function CallbackItem({
     return (
         <button
             onClick={onClick}
-            className="w-full flex items-center justify-between p-3 rounded-lg bg-background hover:bg-muted/50 transition-colors text-left"
+            className="w-full flex items-center justify-between gap-3 p-3 rounded-lg bg-background hover:bg-muted/50 transition-colors text-left"
         >
-            <div className="flex items-center gap-3">
+            <div className="flex min-w-0 items-center gap-3">
                 <div className="p-2 rounded-full bg-primary/10">
                     <Phone className="h-4 w-4 text-primary" />
                 </div>
-                <div>
-                    <p className="font-medium text-sm">{leadName}</p>
+                <div className="min-w-0">
+                    <p className="truncate text-sm font-medium">{leadName}</p>
                     {callback.lead.company && (
-                        <p className="text-xs text-muted-foreground">{callback.lead.company}</p>
+                        <p className="truncate text-xs text-muted-foreground">{callback.lead.company}</p>
                     )}
                 </div>
             </div>
-            {followUpDate && (
-                <div className="text-right">
-                    <p className="text-xs text-muted-foreground">
-                        {format(followUpDate, "HH:mm", { locale: ptBR })}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                        {format(followUpDate, "dd/MM", { locale: ptBR })}
-                    </p>
-                </div>
-            )}
+            <div className="flex shrink-0 items-center gap-3">
+                {followUpDate && (
+                    <div className="text-right">
+                        <p className="text-xs text-muted-foreground">
+                            {format(followUpDate, "HH:mm", { locale: ptBR })}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                            {format(followUpDate, "dd/MM", { locale: ptBR })}
+                        </p>
+                    </div>
+                )}
+                <ArrowRight className="h-4 w-4 text-muted-foreground" />
+            </div>
         </button>
     )
 }
@@ -185,8 +189,17 @@ export function PendingCallbacks({ callbacks, onCallbackClick }: PendingCallback
         <div className="space-y-3">
             <div className="flex items-center gap-2">
                 <Clock className="h-5 w-5 text-muted-foreground" />
-                <h2 className="font-medium">Callbacks Pendentes</h2>
+                <h2 className="font-medium">Callbacks pendentes</h2>
                 <Badge variant="secondary">{totalCount}</Badge>
+            </div>
+            <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+                <Badge variant={callbacks.overdue.length > 0 ? "destructive" : "outline"}>
+                    {callbacks.overdue.length} atrasado{callbacks.overdue.length !== 1 ? "s" : ""}
+                </Badge>
+                <Badge variant="outline">
+                    {callbacks.today.length} hoje
+                </Badge>
+                <span>Abra um callback para registrar a próxima tentativa ou atualizar o resultado.</span>
             </div>
 
             <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
