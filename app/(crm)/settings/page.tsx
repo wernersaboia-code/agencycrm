@@ -1,7 +1,7 @@
 // app/(crm)/settings/page.tsx.bak
 import { redirect } from "next/navigation"
 import { cookies } from "next/headers"
-import { getAuthenticatedUser } from "@/lib/auth"
+import { getAuthenticatedUser, requireWorkspaceAccess } from "@/lib/auth"
 import { getUserProfile, getAccountStats } from "@/actions/settings"
 import { prisma } from "@/lib/prisma"
 import { SettingsClient } from "./settings-client"
@@ -21,12 +21,15 @@ export default async function SettingsPage() {
         redirect("/workspaces")
     }
 
+    try {
+        await requireWorkspaceAccess(activeWorkspaceId)
+    } catch {
+        redirect("/workspaces")
+    }
+
     // Buscar dados completos do workspace
-    const workspace = await prisma.workspace.findFirst({
-        where: {
-            id: activeWorkspaceId,
-            userId: user.id,
-        },
+    const workspace = await prisma.workspace.findUnique({
+        where: { id: activeWorkspaceId },
         select: {
             id: true,
             name: true,

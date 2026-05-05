@@ -3,9 +3,9 @@
 import { Suspense } from "react"
 import { redirect } from "next/navigation"
 import { getAuthenticatedUser } from "@/lib/auth"
+import { getActiveOrFirstWorkspaceId } from "@/lib/workspace-selection"
 import { getCampaigns } from "@/actions/campaigns"
 import { getTemplates } from "@/actions/templates"
-import { prisma } from "@/lib/prisma"
 import { CampaignsClient } from "./campaigns-client"
 import { Skeleton } from "@/components/ui/skeleton"
 
@@ -76,21 +76,15 @@ export default async function CampaignsPage() {
         redirect("/sign-in")
     }
 
-    // Buscar o primeiro workspace do usuário
-    const firstWorkspace = await prisma.workspace.findFirst({
-        where: { userId: user.id },
-        select: { id: true },
-        orderBy: { createdAt: "asc" },
-    })
-
-    if (!firstWorkspace) {
+    const workspaceId = await getActiveOrFirstWorkspaceId(user.id)
+    if (!workspaceId) {
         redirect("/workspaces?message=create-first")
     }
 
     return (
         <div className="container py-6 space-y-6">
             <Suspense fallback={<CampaignsLoading />}>
-                <CampaignsData workspaceId={firstWorkspace.id} />
+                <CampaignsData workspaceId={workspaceId} />
             </Suspense>
         </div>
     )

@@ -1,7 +1,9 @@
 // app/(crm)/calls/page.tsx.bak
 
 import { Suspense } from "react"
-import { cookies } from "next/headers"
+import { redirect } from "next/navigation"
+import { getAuthenticatedUser } from "@/lib/auth"
+import { getActiveOrFirstWorkspaceId } from "@/lib/workspace-selection"
 import { getCalls, getCallStats, getPendingCallbacks } from "@/actions/calls"
 import { CallsClient } from "./calls-client"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -12,9 +14,12 @@ export const metadata = {
 }
 
 async function CallsContent() {
-    const cookieStore = await cookies()
-    const workspaceId = cookieStore.get("activeWorkspaceId")?.value
+    const user = await getAuthenticatedUser()
+    if (!user) {
+        redirect("/sign-in")
+    }
 
+    const workspaceId = await getActiveOrFirstWorkspaceId(user.id)
     if (!workspaceId) {
         return (
             <div className="flex flex-col items-center justify-center py-12">

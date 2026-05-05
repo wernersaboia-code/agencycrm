@@ -2,7 +2,7 @@
 "use server"
 
 import { prisma } from "@/lib/prisma"
-import { requireAuth } from "@/lib/auth"
+import { requireAuth, requireWorkspaceAccess } from "@/lib/auth"
 import { LeadSource, LeadStatus } from "@prisma/client"
 
 interface ImportToWorkspaceParams {
@@ -26,15 +26,11 @@ export async function importMarketplaceLeadsToWorkspace({
     const errors: string[] = []
 
     try {
-        const user = await requireAuth()
+        const user = await requireWorkspaceAccess(workspaceId)
         const userId = user.id
 
-        // Verificar se o workspace pertence ao usuário
-        const workspace = await prisma.workspace.findFirst({
-            where: {
-                id: workspaceId,
-                userId,
-            },
+        const workspace = await prisma.workspace.findUnique({
+            where: { id: workspaceId },
             select: {
                 id: true,
                 name: true,
@@ -42,7 +38,7 @@ export async function importMarketplaceLeadsToWorkspace({
         })
 
         if (!workspace) {
-            throw new Error("Workspace não encontrado ou sem permissão")
+            throw new Error("Workspace não encontrado")
         }
 
         // Buscar o item da compra com a lista

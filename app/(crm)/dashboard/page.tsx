@@ -1,9 +1,8 @@
 // app/(crm)/dashboard/page.tsx.bak
 import { Suspense } from "react"
 import { redirect } from "next/navigation"
-import { cookies } from "next/headers"
 import { getAuthenticatedUser } from "@/lib/auth"
-import { prisma } from "@/lib/prisma"
+import { getActiveOrFirstWorkspaceId } from "@/lib/workspace-selection"
 import {
     getDashboardStats,
     getRecentCampaigns,
@@ -50,25 +49,9 @@ export default async function DashboardPage() {
         redirect("/sign-in")
     }
 
-    // Tentar pegar workspace do cookie
-    const cookieStore = await cookies()
-    const activeWorkspaceId = cookieStore.get("activeWorkspaceId")?.value
-
-    let workspaceId = activeWorkspaceId
-
-    // Se não tiver cookie, buscar primeiro workspace
+    const workspaceId = await getActiveOrFirstWorkspaceId(user.id)
     if (!workspaceId) {
-        const firstWorkspace = await prisma.workspace.findFirst({
-            where: { userId: user.id },
-            select: { id: true },
-            orderBy: { createdAt: "asc" },
-        })
-
-        if (!firstWorkspace) {
-            redirect("/workspaces?message=create-first")
-        }
-
-        workspaceId = firstWorkspace.id
+        redirect("/workspaces?message=create-first")
     }
 
     return (

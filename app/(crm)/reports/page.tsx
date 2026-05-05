@@ -5,7 +5,7 @@ import { redirect } from "next/navigation"
 import { ReportsClient } from "./reports-client"
 import { Skeleton } from "@/components/ui/skeleton"
 import { prisma } from "@/lib/prisma"
-import { getAuthenticatedUser } from "@/lib/auth"
+import { getAuthenticatedUser, requireWorkspaceAccess } from "@/lib/auth"
 
 export const metadata = {
     title: "Relatórios | AgencyCRM",
@@ -26,9 +26,14 @@ async function ReportsContent() {
         redirect("/workspaces")
     }
 
-    // Verificar se workspace pertence ao usuário
-    const workspace = await prisma.workspace.findFirst({
-        where: { id: workspaceId, userId: user.id },
+    try {
+        await requireWorkspaceAccess(workspaceId)
+    } catch {
+        redirect("/workspaces")
+    }
+
+    const workspace = await prisma.workspace.findUnique({
+        where: { id: workspaceId },
         select: {
             id: true,
             name: true,

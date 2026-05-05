@@ -4,7 +4,7 @@
 
 import { revalidatePath } from "next/cache"
 import { prisma } from "@/lib/prisma"
-import { requireAuth } from "@/lib/auth"
+import { requireAuth, requireWorkspaceAccess } from "@/lib/auth"
 import { z } from "zod"
 
 type SerializableWorkspace = {
@@ -116,13 +116,10 @@ export async function getWorkspaceById(id: string) {
             return { success: false, error: "Workspace invÃ¡lido" }
         }
 
-        const user = await requireAuth()
+        await requireWorkspaceAccess(parsedId.data)
 
-        const workspace = await prisma.workspace.findFirst({
-            where: {
-                id: parsedId.data,
-                userId: user.id,
-            },
+        const workspace = await prisma.workspace.findUnique({
+            where: { id: parsedId.data },
             include: {
                 _count: {
                     select: {
@@ -162,14 +159,9 @@ export async function updateWorkspace(id: string, data: WorkspaceFormData) {
             return { success: false, error: validated.error?.issues[0]?.message ?? "Dados invÃ¡lidos" }
         }
 
-        const user = await requireAuth()
-
-        // Verificar se pertence ao usuário
-        const existing = await prisma.workspace.findFirst({
-            where: { id: parsedId.data, userId: user.id },
-        })
-
-        if (!existing) {
+        try {
+            await requireWorkspaceAccess(parsedId.data)
+        } catch {
             return { success: false, error: "Workspace não encontrado" }
         }
 
@@ -195,11 +187,14 @@ export async function deleteWorkspace(id: string) {
             return { success: false, error: "Workspace invÃ¡lido" }
         }
 
-        const user = await requireAuth()
+        try {
+            await requireWorkspaceAccess(parsedId.data)
+        } catch {
+            return { success: false, error: "Workspace não encontrado" }
+        }
 
-        // Verificar se pertence ao usuário
-        const existing = await prisma.workspace.findFirst({
-            where: { id: parsedId.data, userId: user.id },
+        const existing = await prisma.workspace.findUniqueOrThrow({
+            where: { id: parsedId.data },
             include: {
                 _count: {
                     select: {
@@ -209,10 +204,6 @@ export async function deleteWorkspace(id: string) {
                 },
             },
         })
-
-        if (!existing) {
-            return { success: false, error: "Workspace não encontrado" }
-        }
 
         // Avisar se tem dados
         if (existing._count.leads > 0 || existing._count.campaigns > 0) {
@@ -239,14 +230,9 @@ export async function getWorkspaceStats(workspaceId: string) {
             return { success: false, error: "Workspace invÃ¡lido" }
         }
 
-        const user = await requireAuth()
-
-        // Verificar se pertence ao usuário
-        const workspace = await prisma.workspace.findFirst({
-            where: { id: parsedWorkspaceId.data, userId: user.id },
-        })
-
-        if (!workspace) {
+        try {
+            await requireWorkspaceAccess(parsedWorkspaceId.data)
+        } catch {
             return { success: false, error: "Workspace não encontrado" }
         }
 

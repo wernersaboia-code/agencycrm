@@ -4,6 +4,21 @@ import { prisma } from "@/lib/prisma"
 import { cookies } from "next/headers"
 import { getAuthenticatedUserId } from "@/lib/auth"
 
+const activeWorkspaceSelect = {
+    id: true,
+    name: true,
+    description: true,
+    color: true,
+    logo: true,
+    senderName: true,
+    senderEmail: true,
+    createdAt: true,
+    updatedAt: true,
+    plan: true,
+    trialEndsAt: true,
+    subscriptionStatus: true,
+} as const
+
 export async function GET() {
     try {
         const userId = await getAuthenticatedUserId()
@@ -22,39 +37,13 @@ export async function GET() {
                 userId,
                 ...(user?.activeWorkspaceId ? { id: user.activeWorkspaceId } : {}),
             },
-            select: {
-                id: true,
-                name: true,
-                description: true,
-                color: true,
-                logo: true,
-                senderName: true,
-                senderEmail: true,
-                createdAt: true,
-                updatedAt: true,
-                plan: true,
-                trialEndsAt: true,
-                subscriptionStatus: true,
-            },
+            select: activeWorkspaceSelect,
             orderBy: { createdAt: "asc" },
         })
 
         const fallbackWorkspace = workspace ?? await prisma.workspace.findFirst({
             where: { userId },
-            select: {
-                id: true,
-                name: true,
-                description: true,
-                color: true,
-                logo: true,
-                senderName: true,
-                senderEmail: true,
-                createdAt: true,
-                updatedAt: true,
-                plan: true,
-                trialEndsAt: true,
-                subscriptionStatus: true,
-            },
+            select: activeWorkspaceSelect,
             orderBy: { createdAt: "asc" },
         })
 
