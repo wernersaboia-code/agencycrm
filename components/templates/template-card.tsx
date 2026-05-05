@@ -99,9 +99,16 @@ export function TemplateCard({
                                 <CardTitle className="text-base line-clamp-1">
                                     {template.name}
                                 </CardTitle>
-                                <Badge variant="outline" className="text-xs font-normal">
-                                    {categoryConfig.label}
-                                </Badge>
+                                <div className="flex flex-wrap gap-1">
+                                    <Badge variant="outline" className="text-xs font-normal">
+                                        {categoryConfig.label}
+                                    </Badge>
+                                    {!template.isActive && (
+                                        <Badge variant="secondary" className="text-xs font-normal">
+                                            Inativo
+                                        </Badge>
+                                    )}
+                                </div>
                             </div>
                         </div>
 
@@ -170,12 +177,12 @@ export function TemplateCard({
             <span className="text-xs text-muted-foreground">
               Atualizado em {formattedDate}
             </span>
-                        {template._count.campaigns > 0 && (
-                            <Badge variant="secondary" className="text-xs">
-                                <Mail className="h-3 w-3 mr-1" />
-                                {template._count.campaigns}
-                            </Badge>
-                        )}
+                        <Badge variant={template._count.campaigns > 0 ? "secondary" : "outline"} className="text-xs">
+                            <Mail className="h-3 w-3 mr-1" />
+                            {template._count.campaigns > 0
+                                ? template._count.campaigns
+                                : "Sem campanhas"}
+                        </Badge>
                     </div>
                 </CardContent>
             </Card>
@@ -220,12 +227,12 @@ export function TemplateCard({
 
                 {/* Meta */}
                 <div className="hidden sm:flex items-center gap-4 text-sm text-muted-foreground shrink-0">
-                    {template._count.campaigns > 0 && (
-                        <div className="flex items-center gap-1">
-                            <Mail className="h-4 w-4" />
-                            {template._count.campaigns}
-                        </div>
-                    )}
+                    <div className="flex items-center gap-1">
+                        <Mail className="h-4 w-4" />
+                        {template._count.campaigns > 0
+                            ? template._count.campaigns
+                            : "Sem campanhas"}
+                    </div>
                     <span>{formattedDate}</span>
                 </div>
 

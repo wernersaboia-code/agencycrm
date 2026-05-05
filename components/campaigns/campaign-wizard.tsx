@@ -192,16 +192,19 @@ export function CampaignWizard({
         return templates.find((t) => t.id === data.templateId)
     }, [templates, data.templateId])
 
+    const activeTemplates = useMemo(() => {
+        return templates.filter((t) => t.isActive)
+    }, [templates])
+
     const templatesForEditor = useMemo(() => {
-        return templates
-            .filter((t) => t.isActive)
+        return activeTemplates
             .map((t) => ({
                 id: t.id,
                 name: t.name,
                 subject: t.subject,
                 body: t.body,
             }))
-    }, [templates])
+    }, [activeTemplates])
 
     const filteredLeads = useMemo(() => {
         return leads.filter((lead) => {
@@ -478,18 +481,17 @@ export function CampaignWizard({
                                         <div className="space-y-4">
                                             <Label>Selecione o Template *</Label>
 
-                                            {templates.length === 0 ? (
+                                            {activeTemplates.length === 0 ? (
                                                 <Alert>
                                                     <AlertCircle className="h-4 w-4" />
                                                     <AlertTitle>Nenhum template disponível</AlertTitle>
                                                     <AlertDescription>
-                                                        Você precisa criar pelo menos um template antes de criar uma campanha.
+                                                        Você precisa criar ou ativar pelo menos um template antes de criar uma campanha.
                                                     </AlertDescription>
                                                 </Alert>
                                             ) : (
                                                 <div className="grid gap-3 md:grid-cols-2">
-                                                    {templates
-                                                        .filter((t) => t.isActive)
+                                                    {activeTemplates
                                                         .map((template) => {
                                                             const categoryConfig = getCategoryConfig(template.category)
                                                             const isSelected = data.templateId === template.id

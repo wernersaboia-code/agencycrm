@@ -5,12 +5,15 @@
 import { useState, useMemo } from "react"
 import { useRouter } from "next/navigation"
 import {
+    ArrowRight,
+    CheckCircle2,
     Plus,
     Search,
     Send,
     MousePointer,
     Eye,
     AlertTriangle,
+    AlertCircle,
     Filter,
     Megaphone,
     FileText,
@@ -27,7 +30,15 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import { Card, CardContent } from "@/components/ui/card"
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Progress } from "@/components/ui/progress"
 import { EmptyState } from "@/components/common/empty-state"
 import { CampaignCard } from "@/components/campaigns/campaign-card"
 import { CampaignWizard } from "@/components/campaigns/campaign-wizard"
@@ -113,14 +124,15 @@ export function CampaignsClient({
             clickRate: totals.opened > 0 ? (totals.clicked / totals.opened) * 100 : 0,
         }
     }, [campaigns])
+    const activeTemplatesCount = templates.filter((template) => template.isActive).length
 
     // ============================================================
     // HANDLERS
     // ============================================================
 
     const handleCreate = () => {
-        if (templates.length === 0) {
-            toast.error("Crie pelo menos um template antes de criar uma campanha")
+        if (activeTemplatesCount === 0) {
+            toast.error("Crie ou ative pelo menos um template antes de criar uma campanha")
             router.push("/templates")
             return
         }
@@ -205,6 +217,38 @@ export function CampaignsClient({
         router.push(`/campaigns/${campaign.id}`)
     }
 
+    const readinessItems = [
+        {
+            label: "Template ativo",
+            description: activeTemplatesCount > 0
+                ? `${activeTemplatesCount} template${activeTemplatesCount !== 1 ? "s" : ""} ativo${activeTemplatesCount !== 1 ? "s" : ""} para campanhas.`
+                : "Ative um template para liberar a criação.",
+            done: activeTemplatesCount > 0,
+            action: activeTemplatesCount > 0 ? "Criar campanha" : "Ir para templates",
+            onClick: activeTemplatesCount > 0 ? handleCreate : () => router.push("/templates"),
+        },
+        {
+            label: "Rascunhos",
+            description: globalStats.draft > 0
+                ? `${globalStats.draft} aguardando revisão ou envio.`
+                : "Nenhuma campanha pendente agora.",
+            done: globalStats.draft > 0,
+            action: globalStats.draft > 0 ? "Ver rascunhos" : "Nova campanha",
+            onClick: globalStats.draft > 0 ? () => setStatusFilter("DRAFT") : handleCreate,
+        },
+        {
+            label: "Envios realizados",
+            description: globalStats.totalSent > 0
+                ? `${globalStats.totalSent.toLocaleString()} email${globalStats.totalSent !== 1 ? "s" : ""} enviados.`
+                : "Envie uma campanha para gerar métricas.",
+            done: globalStats.totalSent > 0,
+            action: globalStats.totalSent > 0 ? "Ver enviadas" : "Preparar envio",
+            onClick: globalStats.totalSent > 0 ? () => setStatusFilter("SENT") : handleCreate,
+        },
+    ]
+    const completedReadinessItems = readinessItems.filter((item) => item.done).length
+    const readinessProgress = Math.round((completedReadinessItems / readinessItems.length) * 100)
+
     const hasActiveFilters = search !== "" || statusFilter !== "ALL"
 
     // ============================================================
@@ -232,6 +276,53 @@ export function CampaignsClient({
                     Nova Campanha
                 </Button>
             </div>
+
+            <Card className={activeTemplatesCount > 0 ? "border-emerald-300 dark:border-emerald-900" : "border-amber-300 dark:border-amber-900"}>
+                <CardHeader className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                    <div className="space-y-2">
+                        <div className="flex flex-wrap items-center gap-2">
+                            <CardTitle>Prontidão das campanhas</CardTitle>
+                            <Badge variant={activeTemplatesCount > 0 ? "default" : "outline"}>
+                                {completedReadinessItems}/{readinessItems.length} completo
+                            </Badge>
+                        </div>
+                        <CardDescription>
+                            Veja se este cliente já tem base suficiente para criar, enviar e medir campanhas.
+                        </CardDescription>
+                    </div>
+                    <div className="w-full space-y-2 lg:w-64">
+                        <div className="flex items-center justify-between text-sm">
+                            <span className="text-muted-foreground">Progresso</span>
+                            <span className="font-medium">{readinessProgress}%</span>
+                        </div>
+                        <Progress value={readinessProgress} />
+                    </div>
+                </CardHeader>
+                <CardContent className="grid gap-3 md:grid-cols-3">
+                    {readinessItems.map((item) => (
+                        <button
+                            key={item.label}
+                            type="button"
+                            onClick={item.onClick}
+                            className="flex min-h-[108px] items-start justify-between gap-3 rounded-lg border bg-background p-4 text-left transition-colors hover:bg-muted/50"
+                        >
+                            <span className="flex min-w-0 gap-3">
+                                {item.done ? (
+                                    <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
+                                ) : (
+                                    <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
+                                )}
+                                <span className="space-y-1">
+                                    <span className="block font-medium leading-tight">{item.label}</span>
+                                    <span className="block text-sm text-muted-foreground">{item.description}</span>
+                                    <span className="block text-sm font-medium text-primary">{item.action}</span>
+                                </span>
+                            </span>
+                            <ArrowRight className="mt-1 h-4 w-4 shrink-0 text-muted-foreground" />
+                        </button>
+                    ))}
+                </CardContent>
+            </Card>
 
             {/* Estatísticas */}
             {campaigns.length > 0 && (
@@ -332,17 +423,17 @@ export function CampaignsClient({
                     title={campaigns.length === 0 ? "Nenhuma campanha criada" : "Nenhuma campanha encontrada"}
                     description={
                         campaigns.length === 0
-                            ? templates.length === 0
-                                ? "Crie um template primeiro para montar sua primeira campanha com mais rapidez."
+                            ? activeTemplatesCount === 0
+                                ? "Crie ou ative um template primeiro para montar sua primeira campanha com mais rapidez."
                                 : "Use seus templates para criar uma campanha e acompanhar envio, abertura e cliques."
                             : "Ajuste a busca ou o status para encontrar campanhas neste cliente."
                     }
                     primaryAction={
                         campaigns.length === 0
                             ? {
-                                label: templates.length === 0 ? "Criar template" : "Criar campanha",
-                                icon: templates.length === 0 ? FileText : Plus,
-                                onClick: templates.length === 0 ? () => router.push("/templates") : handleCreate,
+                                label: activeTemplatesCount === 0 ? "Criar template" : "Criar campanha",
+                                icon: activeTemplatesCount === 0 ? FileText : Plus,
+                                onClick: activeTemplatesCount === 0 ? () => router.push("/templates") : handleCreate,
                             }
                             : hasActiveFilters
                                 ? {
@@ -357,7 +448,7 @@ export function CampaignsClient({
                                 : undefined
                     }
                     secondaryAction={
-                        campaigns.length === 0 && templates.length === 0
+                        campaigns.length === 0 && activeTemplatesCount === 0
                             ? {
                                 label: "Ver leads",
                                 variant: "outline",

@@ -5,6 +5,10 @@
 import { useState, useMemo } from "react"
 import { useRouter } from "next/navigation"
 import {
+    AlertCircle,
+    ArrowRight,
+    CheckCircle2,
+    CopyCheck,
     Plus,
     Search,
     Mail,
@@ -18,6 +22,15 @@ import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Progress } from "@/components/ui/progress"
 import {
     Select,
     SelectContent,
@@ -55,6 +68,7 @@ export function TemplatesClient({ templates, workspaceId }: TemplatesClientProps
     // Estado
     const [search, setSearch] = useState("")
     const [categoryFilter, setCategoryFilter] = useState<string>("ALL")
+    const [statusFilter, setStatusFilter] = useState<"ALL" | "ACTIVE" | "INACTIVE">("ALL")
     const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
     const [modalOpen, setModalOpen] = useState(false)
     const [editingTemplate, setEditingTemplate] = useState<TemplateWithStats | null>(null)
@@ -77,16 +91,28 @@ export function TemplatesClient({ templates, workspaceId }: TemplatesClientProps
                 return false
             }
 
+            if (statusFilter === "ACTIVE" && !template.isActive) {
+                return false
+            }
+
+            if (statusFilter === "INACTIVE" && template.isActive) {
+                return false
+            }
+
             return true
         })
-    }, [templates, search, categoryFilter])
+    }, [templates, search, categoryFilter, statusFilter])
 
     // Estatísticas
     const stats = useMemo(() => {
+        const inCampaigns = templates.filter((t) => t._count.campaigns > 0).length
+
         return {
             total: templates.length,
             active: templates.filter((t) => t.isActive).length,
             inactive: templates.filter((t) => !t.isActive).length,
+            inCampaigns,
+            unused: templates.length - inCampaigns,
         }
     }, [templates])
 
@@ -152,7 +178,45 @@ export function TemplatesClient({ templates, workspaceId }: TemplatesClientProps
         router.refresh()
     }
 
-    const hasActiveFilters = search !== "" || categoryFilter !== "ALL"
+    const readinessItems = [
+        {
+            label: "Template ativo",
+            description: stats.active > 0
+                ? `${stats.active} pronto${stats.active !== 1 ? "s" : ""} para campanhas.`
+                : "Crie ou ative ao menos um template.",
+            done: stats.active > 0,
+            action: "Criar template",
+            onClick: handleCreate,
+        },
+        {
+            label: "Uso em campanhas",
+            description: stats.inCampaigns > 0
+                ? `${stats.inCampaigns} template${stats.inCampaigns !== 1 ? "s" : ""} já conectado${stats.inCampaigns !== 1 ? "s" : ""}.`
+                : "Use um template em uma campanha para iniciar envios.",
+            done: stats.inCampaigns > 0,
+            action: "Ver campanhas",
+            onClick: () => router.push("/campaigns"),
+        },
+        {
+            label: "Templates inativos",
+            description: stats.inactive === 0
+                ? "Nenhum template parado agora."
+                : `${stats.inactive} aguardando ativação ou revisão.`,
+            done: stats.total > 0 && stats.inactive === 0,
+            action: stats.inactive > 0 ? "Ver inativos" : "Revisar ativos",
+            onClick: () => setStatusFilter(stats.inactive > 0 ? "INACTIVE" : "ACTIVE"),
+        },
+    ]
+    const completedReadinessItems = readinessItems.filter((item) => item.done).length
+    const readinessProgress = Math.round((completedReadinessItems / readinessItems.length) * 100)
+
+    const clearFilters = () => {
+        setSearch("")
+        setCategoryFilter("ALL")
+        setStatusFilter("ALL")
+    }
+
+    const hasActiveFilters = search !== "" || categoryFilter !== "ALL" || statusFilter !== "ALL"
 
     // ============================================================
     // RENDER
@@ -176,6 +240,72 @@ export function TemplatesClient({ templates, workspaceId }: TemplatesClientProps
                     <Plus className="h-4 w-4 mr-2" />
                     Novo Template
                 </Button>
+            </div>
+
+            <Card className={stats.active > 0 ? "border-emerald-300 dark:border-emerald-900" : "border-amber-300 dark:border-amber-900"}>
+                <CardHeader className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                    <div className="space-y-2">
+                        <div className="flex flex-wrap items-center gap-2">
+                            <CardTitle>Prontidão da biblioteca</CardTitle>
+                            <Badge variant={stats.active > 0 ? "default" : "outline"}>
+                                {completedReadinessItems}/{readinessItems.length} completo
+                            </Badge>
+                        </div>
+                        <CardDescription>
+                            Templates ativos e conectados reduzem atrito na criação de campanhas.
+                        </CardDescription>
+                    </div>
+                    <div className="w-full space-y-2 lg:w-64">
+                        <div className="flex items-center justify-between text-sm">
+                            <span className="text-muted-foreground">Progresso</span>
+                            <span className="font-medium">{readinessProgress}%</span>
+                        </div>
+                        <Progress value={readinessProgress} />
+                    </div>
+                </CardHeader>
+                <CardContent className="grid gap-3 md:grid-cols-3">
+                    {readinessItems.map((item) => (
+                        <button
+                            key={item.label}
+                            type="button"
+                            onClick={item.onClick}
+                            className="flex min-h-[108px] items-start justify-between gap-3 rounded-lg border bg-background p-4 text-left transition-colors hover:bg-muted/50"
+                        >
+                            <span className="flex min-w-0 gap-3">
+                                {item.done ? (
+                                    <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
+                                ) : (
+                                    <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
+                                )}
+                                <span className="space-y-1">
+                                    <span className="block font-medium leading-tight">{item.label}</span>
+                                    <span className="block text-sm text-muted-foreground">{item.description}</span>
+                                    <span className="block text-sm font-medium text-primary">{item.action}</span>
+                                </span>
+                            </span>
+                            <ArrowRight className="mt-1 h-4 w-4 shrink-0 text-muted-foreground" />
+                        </button>
+                    ))}
+                </CardContent>
+            </Card>
+
+            <div className="grid gap-4 md:grid-cols-4">
+                <div className="rounded-lg border bg-card p-4">
+                    <p className="text-sm text-muted-foreground">Total</p>
+                    <p className="text-2xl font-bold">{stats.total}</p>
+                </div>
+                <div className="rounded-lg border bg-card p-4">
+                    <p className="text-sm text-muted-foreground">Ativos</p>
+                    <p className="text-2xl font-bold">{stats.active}</p>
+                </div>
+                <div className="rounded-lg border bg-card p-4">
+                    <p className="text-sm text-muted-foreground">Em campanhas</p>
+                    <p className="text-2xl font-bold">{stats.inCampaigns}</p>
+                </div>
+                <div className="rounded-lg border bg-card p-4">
+                    <p className="text-sm text-muted-foreground">Sem uso</p>
+                    <p className="text-2xl font-bold">{stats.unused}</p>
+                </div>
             </div>
 
             {/* Filtros */}
@@ -202,6 +332,18 @@ export function TemplatesClient({ templates, workspaceId }: TemplatesClientProps
                                 {config.label}
                             </SelectItem>
                         ))}
+                    </SelectContent>
+                </Select>
+
+                <Select value={statusFilter} onValueChange={(value) => setStatusFilter(value as typeof statusFilter)}>
+                    <SelectTrigger className="w-full sm:w-[160px]">
+                        <CopyCheck className="h-4 w-4 mr-2" />
+                        <SelectValue placeholder="Status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="ALL">Todos status</SelectItem>
+                        <SelectItem value="ACTIVE">Ativos</SelectItem>
+                        <SelectItem value="INACTIVE">Inativos</SelectItem>
                     </SelectContent>
                 </Select>
 
@@ -233,7 +375,7 @@ export function TemplatesClient({ templates, workspaceId }: TemplatesClientProps
                     description={
                         templates.length === 0
                             ? "Crie modelos reutilizáveis para acelerar campanhas e manter mensagens consistentes."
-                            : "Ajuste a busca ou a categoria para encontrar templates neste cliente."
+                            : "Ajuste a busca, categoria ou status para encontrar templates neste cliente."
                     }
                     primaryAction={
                         templates.length === 0
@@ -247,10 +389,7 @@ export function TemplatesClient({ templates, workspaceId }: TemplatesClientProps
                                     label: "Limpar filtros",
                                     icon: X,
                                     variant: "outline",
-                                    onClick: () => {
-                                        setSearch("")
-                                        setCategoryFilter("ALL")
-                                    },
+                                    onClick: clearFilters,
                                 }
                                 : undefined
                     }
