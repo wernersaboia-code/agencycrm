@@ -35,6 +35,8 @@ interface EmailSendsListProps {
     emailSends: EmailSendDetails[]
     isLoading?: boolean
     onRefresh?: () => void
+    emptyTitle?: string
+    emptyDescription?: string
 }
 
 // ============================================
@@ -109,13 +111,26 @@ function getLeadName(lead: EmailSendDetails["lead"]): string {
 export function EmailSendsList({
                                    emailSends,
                                    isLoading,
-                                   onRefresh
+                                   onRefresh,
+                                   emptyTitle = "Nenhum email enviado ainda",
+                                   emptyDescription = "Os destinatários aparecerão aqui quando a campanha tiver envios registrados.",
                                }: EmailSendsListProps) {
+    const summary = emailSends.reduce(
+        (acc, send) => ({
+            opened: acc.opened + (send.openedAt ? 1 : 0),
+            clicked: acc.clicked + (send.clickedAt ? 1 : 0),
+            replied: acc.replied + (send.repliedAt ? 1 : 0),
+            bounced: acc.bounced + (send.bouncedAt || send.status === "BOUNCED" ? 1 : 0),
+        }),
+        { opened: 0, clicked: 0, replied: 0, bounced: 0 }
+    )
+
     if (emailSends.length === 0) {
         return (
             <div className="text-center py-12 text-muted-foreground">
                 <Mail className="h-12 w-12 mx-auto mb-4 opacity-20" />
-                <p>Nenhum email enviado ainda</p>
+                <p className="font-medium text-foreground">{emptyTitle}</p>
+                <p className="mx-auto mt-1 max-w-md text-sm">{emptyDescription}</p>
             </div>
         )
     }
@@ -143,6 +158,25 @@ export function EmailSendsList({
                 )}
             </div>
 
+            <div className="grid gap-3 sm:grid-cols-4">
+                <div className="rounded-md border bg-muted/20 p-3">
+                    <p className="text-xs text-muted-foreground">Abertos</p>
+                    <p className="text-lg font-semibold">{summary.opened}</p>
+                </div>
+                <div className="rounded-md border bg-muted/20 p-3">
+                    <p className="text-xs text-muted-foreground">Cliques</p>
+                    <p className="text-lg font-semibold">{summary.clicked}</p>
+                </div>
+                <div className="rounded-md border bg-muted/20 p-3">
+                    <p className="text-xs text-muted-foreground">Respostas</p>
+                    <p className="text-lg font-semibold">{summary.replied}</p>
+                </div>
+                <div className="rounded-md border bg-muted/20 p-3">
+                    <p className="text-xs text-muted-foreground">Bounces</p>
+                    <p className="text-lg font-semibold">{summary.bounced}</p>
+                </div>
+            </div>
+
             {/* Table */}
             <div className="rounded-md border">
                 <Table>
@@ -153,6 +187,7 @@ export function EmailSendsList({
                             <TableHead>Enviado</TableHead>
                             <TableHead>Aberto</TableHead>
                             <TableHead>Clicou</TableHead>
+                            <TableHead>Resposta</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -213,6 +248,17 @@ export function EmailSendsList({
                                         {send.clickedAt ? (
                                             <span className="text-purple-600 font-medium">
                         {formatDate(send.clickedAt)}
+                      </span>
+                                        ) : (
+                                            <span className="text-muted-foreground">-</span>
+                                        )}
+                                    </TableCell>
+
+                                    {/* Replied */}
+                                    <TableCell className="text-sm">
+                                        {send.repliedAt ? (
+                                            <span className="text-indigo-600 font-medium">
+                        {formatDate(send.repliedAt)}
                       </span>
                                         ) : (
                                             <span className="text-muted-foreground">-</span>

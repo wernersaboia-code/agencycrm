@@ -8,7 +8,10 @@ import { useRouter } from "next/navigation"
 import { format } from "date-fns"
 import { ptBR } from "date-fns/locale"
 import {
+    AlertCircle,
+    ArrowRight,
     ArrowLeft,
+    CheckCircle2,
     Send,
     Copy,
     Trash2,
@@ -18,12 +21,16 @@ import {
     Phone,
     Plus,
     ThumbsUp,
+    Users,
+    MousePointerClick,
+    MailOpen,
 } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Progress } from "@/components/ui/progress"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
     AlertDialog,
@@ -137,6 +144,7 @@ export function CampaignDetailClient({
     const [showSendDialog, setShowSendDialog] = useState<boolean>(false)
     const [isCallModalOpen, setIsCallModalOpen] = useState<boolean>(false)
     const [editingCall, setEditingCall] = useState<SerializedCallWithLead | null>(null)
+    const [activeTab, setActiveTab] = useState<string>("sends")
 
     const statusConfig = getStatusConfig(campaign.status)
     const StatusIcon = statusConfig.icon
@@ -149,6 +157,55 @@ export function CampaignDetailClient({
         (send) => send.status === "PENDING"
     ).length
     const stepsCount = campaign._count?.steps || 1
+    const deliveredCount = Math.max(campaign.totalSent - campaign.totalBounced, 0)
+    const openedCount = campaign.emailSends.filter((send) => send.openedAt !== null).length
+    const clickedCount = campaign.emailSends.filter((send) => send.clickedAt !== null).length
+    const repliedCount = campaign.emailSends.filter((send) => send.repliedAt !== null).length
+    const bouncedSends = campaign.emailSends.filter((send) => send.bouncedAt !== null || send.status === "BOUNCED")
+    const openedSends = campaign.emailSends.filter((send) => send.openedAt !== null)
+    const clickedSends = campaign.emailSends.filter((send) => send.clickedAt !== null)
+    const repliedSends = campaign.emailSends.filter((send) => send.repliedAt !== null)
+    const deliveryProgress = campaign.totalRecipients > 0
+        ? Math.round((campaign.totalSent / campaign.totalRecipients) * 100)
+        : 0
+    const engagementProgress = deliveredCount > 0
+        ? Math.round((openedCount / deliveredCount) * 100)
+        : 0
+    const clickProgress = openedCount > 0
+        ? Math.round((clickedCount / openedCount) * 100)
+        : 0
+
+    const followUpActions = [
+        {
+            label: canSend ? "Enviar campanha" : "Atualizar dados",
+            description: canSend
+                ? `${pendingCount || campaign.totalRecipients} destinatário${(pendingCount || campaign.totalRecipients) !== 1 ? "s" : ""} aguardando envio.`
+                : "Sincronize métricas antes de tomar a próxima decisão.",
+            icon: canSend ? Send : RefreshCw,
+            tone: canSend ? "warning" : "default",
+            onClick: canSend ? () => handleSendClick() : () => handleRefresh(),
+        },
+        {
+            label: repliedCount > 0 ? "Ver respostas" : clickedCount > 0 ? "Ver cliques" : "Ver aberturas",
+            description: repliedCount > 0
+                ? `${repliedCount} lead${repliedCount !== 1 ? "s" : ""} responderam.`
+                : clickedCount > 0
+                    ? `${clickedCount} lead${clickedCount !== 1 ? "s" : ""} clicaram em links.`
+                    : `${openedCount} lead${openedCount !== 1 ? "s" : ""} abriram o email.`,
+            icon: repliedCount > 0 ? ThumbsUp : clickedCount > 0 ? MousePointerClick : MailOpen,
+            tone: repliedCount > 0 || clickedCount > 0 || openedCount > 0 ? "success" : "default",
+            onClick: () => setActiveTab(repliedCount > 0 ? "replied" : clickedCount > 0 ? "clicked" : "opened"),
+        },
+        {
+            label: callStats.total > 0 ? "Revisar ligações" : "Registrar ligação",
+            description: callStats.total > 0
+                ? `${callStats.interested} interessado${callStats.interested !== 1 ? "s" : ""} e ${callStats.meetingsScheduled} reunião${callStats.meetingsScheduled !== 1 ? "ões" : ""}.`
+                : "Transforme sinais de interesse em acompanhamento comercial.",
+            icon: Phone,
+            tone: callStats.interested > 0 || callStats.meetingsScheduled > 0 ? "success" : "default",
+            onClick: callStats.total > 0 ? () => setActiveTab("calls") : () => handleOpenCallModal(),
+        },
+    ]
 
     // ============================================
     // HANDLERS
@@ -431,8 +488,89 @@ export function CampaignDetailClient({
             {/* Metrics */}
             <CampaignMetrics metrics={metrics} />
 
+            <div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Próximas ações</CardTitle>
+                        <CardDescription>
+                            O que merece atenção agora nesta campanha
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent className="grid gap-3 md:grid-cols-3">
+                        {followUpActions.map((action) => (
+                            <button
+                                key={action.label}
+                                type="button"
+                                onClick={action.onClick}
+                                className={cn(
+                                    "flex min-h-[116px] items-start justify-between gap-3 rounded-lg border bg-background p-4 text-left transition-colors hover:bg-muted/50",
+                                    action.tone === "warning" && "border-amber-300 bg-amber-50/50 dark:border-amber-900 dark:bg-amber-950/20",
+                                    action.tone === "success" && "border-emerald-300 bg-emerald-50/50 dark:border-emerald-900 dark:bg-emerald-950/20"
+                                )}
+                            >
+                                <span className="flex min-w-0 gap-3">
+                                    {action.tone === "success" ? (
+                                        <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
+                                    ) : action.tone === "warning" ? (
+                                        <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
+                                    ) : (
+                                        <action.icon className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
+                                    )}
+                                    <span className="space-y-1">
+                                        <span className="block font-medium leading-tight">{action.label}</span>
+                                        <span className="block text-sm text-muted-foreground">{action.description}</span>
+                                    </span>
+                                </span>
+                                <ArrowRight className="mt-1 h-4 w-4 shrink-0 text-muted-foreground" />
+                            </button>
+                        ))}
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Funil da campanha</CardTitle>
+                        <CardDescription>
+                            Entrega, abertura e cliques em relação ao passo anterior
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <div className="space-y-2">
+                            <div className="flex items-center justify-between text-sm">
+                                <span className="flex items-center gap-2 text-muted-foreground">
+                                    <Users className="h-4 w-4" />
+                                    Enviados
+                                </span>
+                                <span className="font-medium">{campaign.totalSent}/{campaign.totalRecipients}</span>
+                            </div>
+                            <Progress value={deliveryProgress} />
+                        </div>
+                        <div className="space-y-2">
+                            <div className="flex items-center justify-between text-sm">
+                                <span className="flex items-center gap-2 text-muted-foreground">
+                                    <MailOpen className="h-4 w-4" />
+                                    Aberturas
+                                </span>
+                                <span className="font-medium">{openedCount}/{deliveredCount}</span>
+                            </div>
+                            <Progress value={engagementProgress} />
+                        </div>
+                        <div className="space-y-2">
+                            <div className="flex items-center justify-between text-sm">
+                                <span className="flex items-center gap-2 text-muted-foreground">
+                                    <MousePointerClick className="h-4 w-4" />
+                                    Cliques
+                                </span>
+                                <span className="font-medium">{clickedCount}/{openedCount}</span>
+                            </div>
+                            <Progress value={clickProgress} />
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+
             {/* Tabs */}
-            <Tabs defaultValue="sends" className="space-y-4">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
                 <TabsList>
                     <TabsTrigger value="sends">
                         <Mail className="h-4 w-4 mr-2" />
@@ -443,6 +581,12 @@ export function CampaignDetailClient({
                     </TabsTrigger>
                     <TabsTrigger value="clicked">
                         Clicaram ({campaign.totalClicked})
+                    </TabsTrigger>
+                    <TabsTrigger value="replied">
+                        Responderam ({repliedCount})
+                    </TabsTrigger>
+                    <TabsTrigger value="bounced">
+                        Bounces ({bouncedSends.length})
                     </TabsTrigger>
                     <TabsTrigger value="calls">
                         <Phone className="h-4 w-4 mr-2" />
@@ -472,11 +616,11 @@ export function CampaignDetailClient({
                         </CardHeader>
                         <CardContent>
                             <EmailSendsList
-                                emailSends={campaign.emailSends.filter(
-                                    (send: EmailSend) => send.openedAt !== null
-                                )}
+                                emailSends={openedSends}
                                 isLoading={isRefreshing}
                                 onRefresh={handleRefresh}
+                                emptyTitle="Nenhuma abertura registrada"
+                                emptyDescription="Quando leads abrirem o email, eles aparecerão aqui para acompanhamento."
                             />
                         </CardContent>
                     </Card>
@@ -489,11 +633,51 @@ export function CampaignDetailClient({
                         </CardHeader>
                         <CardContent>
                             <EmailSendsList
-                                emailSends={campaign.emailSends.filter(
-                                    (send: EmailSend) => send.clickedAt !== null
-                                )}
+                                emailSends={clickedSends}
                                 isLoading={isRefreshing}
                                 onRefresh={handleRefresh}
+                                emptyTitle="Nenhum clique registrado"
+                                emptyDescription="Cliques indicam leads com maior intenção para priorizar contato."
+                            />
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+
+                <TabsContent value="replied">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Responderam</CardTitle>
+                            <CardDescription>
+                                Leads que responderam a campanha e merecem prioridade comercial
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <EmailSendsList
+                                emailSends={repliedSends}
+                                isLoading={isRefreshing}
+                                onRefresh={handleRefresh}
+                                emptyTitle="Nenhuma resposta registrada"
+                                emptyDescription="Respostas aparecerão aqui quando os leads retornarem o contato."
+                            />
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+
+                <TabsContent value="bounced">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Bounces</CardTitle>
+                            <CardDescription>
+                                Emails com falha de entrega para revisar a qualidade da base
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <EmailSendsList
+                                emailSends={bouncedSends}
+                                isLoading={isRefreshing}
+                                onRefresh={handleRefresh}
+                                emptyTitle="Nenhum bounce registrado"
+                                emptyDescription="Ótimo sinal: até agora não há falhas de entrega nesta campanha."
                             />
                         </CardContent>
                     </Card>

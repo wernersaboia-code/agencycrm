@@ -56,10 +56,10 @@ function MetricCard({
                         trend,
                     }: MetricCardProps) {
     return (
-        <Card>
+        <Card className="min-h-[118px]">
             <CardContent className="p-4">
                 <div className="flex items-center justify-between">
-                    <div>
+                    <div className="min-w-0">
                         <p className="text-sm text-muted-foreground">{label}</p>
                         <div className="flex items-center gap-2">
                             <p className="text-2xl font-bold">{value}</p>
@@ -68,11 +68,11 @@ function MetricCard({
                             )}
                         </div>
                         {subValue && (
-                            <p className="text-xs text-muted-foreground mt-1">{subValue}</p>
+                            <p className="mt-1 text-xs text-muted-foreground">{subValue}</p>
                         )}
                     </div>
                     <div className={cn(
-                        "h-10 w-10 rounded-full bg-muted flex items-center justify-center",
+                        "flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-muted",
                         iconColor
                     )}>
                         {icon}
@@ -188,7 +188,7 @@ interface MetricCompactProps {
 
 function MetricCompact({ icon, value, label, colorClass }: MetricCompactProps) {
     return (
-        <div className="text-center">
+        <div className="min-w-0 text-center">
             <div className={cn("flex items-center justify-center gap-1", colorClass)}>
                 {icon}
                 <span className="font-semibold">{value}</span>
