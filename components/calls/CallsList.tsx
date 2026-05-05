@@ -2,10 +2,11 @@
 
 "use client"
 
-import { Phone, PhoneOff } from "lucide-react"
+import { Phone, PhoneOff, Plus, X } from "lucide-react"
 import { CallCard } from "./CallCard"
 import { SerializedCallWithLead } from "@/types/call.types"
 import { Skeleton } from "@/components/ui/skeleton"
+import { EmptyState } from "@/components/common/empty-state"
 
 // ============================================
 // TYPES
@@ -16,6 +17,9 @@ interface CallsListProps {
     isLoading: boolean
     onEdit: (call: SerializedCallWithLead) => void
     onDelete: (callId: string) => void
+    onCreate?: () => void
+    onClearFilters?: () => void
+    hasActiveFilters?: boolean
 }
 
 // ============================================
@@ -36,17 +40,41 @@ function CallsListSkeleton() {
 // EMPTY STATE
 // ============================================
 
-function CallsListEmpty() {
+function CallsListEmpty({
+                            hasActiveFilters,
+                            onCreate,
+                            onClearFilters,
+                        }: {
+    hasActiveFilters?: boolean
+    onCreate?: () => void
+    onClearFilters?: () => void
+}) {
     return (
-        <div className="flex flex-col items-center justify-center py-12 text-center">
-            <div className="rounded-full bg-muted p-4 mb-4">
-                <PhoneOff className="h-8 w-8 text-muted-foreground" />
-            </div>
-            <h3 className="text-lg font-medium">Nenhuma ligação encontrada</h3>
-            <p className="text-sm text-muted-foreground mt-1 max-w-sm">
-                Registre sua primeira ligação clicando no botão Nova Ligação acima.
-            </p>
-        </div>
+        <EmptyState
+            icon={PhoneOff}
+            title={hasActiveFilters ? "Nenhuma ligação encontrada" : "Nenhuma ligação registrada"}
+            description={
+                hasActiveFilters
+                    ? "Ajuste os filtros para localizar ligações deste cliente."
+                    : "Registre ligações para acompanhar respostas, callbacks e oportunidades em andamento."
+            }
+            primaryAction={
+                hasActiveFilters && onClearFilters
+                    ? {
+                        label: "Limpar filtros",
+                        icon: X,
+                        variant: "outline",
+                        onClick: onClearFilters,
+                    }
+                    : onCreate
+                        ? {
+                            label: "Registrar ligação",
+                            icon: Plus,
+                            onClick: onCreate,
+                        }
+                        : undefined
+            }
+        />
     )
 }
 
@@ -54,13 +82,27 @@ function CallsListEmpty() {
 // MAIN COMPONENT
 // ============================================
 
-export function CallsList({ calls, isLoading, onEdit, onDelete }: CallsListProps) {
+export function CallsList({
+                              calls,
+                              isLoading,
+                              onEdit,
+                              onDelete,
+                              onCreate,
+                              onClearFilters,
+                              hasActiveFilters,
+                          }: CallsListProps) {
     if (isLoading) {
         return <CallsListSkeleton />
     }
 
     if (calls.length === 0) {
-        return <CallsListEmpty />
+        return (
+            <CallsListEmpty
+                hasActiveFilters={hasActiveFilters}
+                onCreate={onCreate}
+                onClearFilters={onClearFilters}
+            />
+        )
     }
 
     return (

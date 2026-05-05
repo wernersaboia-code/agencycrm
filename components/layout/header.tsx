@@ -37,7 +37,7 @@ export function Header({ user }: HeaderProps) {
 
                 <div className="hidden md:block">
                     <h1 className="text-lg font-semibold">
-                        Olá, {user?.name || "Usuário"}! 👋
+                        Olá, {user?.name || "Usuário"}
                     </h1>
                 </div>
             </div>

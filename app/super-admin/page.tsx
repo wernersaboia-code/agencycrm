@@ -1,6 +1,7 @@
 // app/super-admin/page.tsx.bak
 
 import { Suspense } from "react"
+import Link from "next/link"
 import {
     Users,
     Building2,
@@ -8,10 +9,15 @@ import {
     Phone,
     Package,
     ShoppingCart,
-    DollarSign
+    DollarSign,
+    ArrowRight,
+    ListPlus,
+    Store,
+    UserCog,
 } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Button } from "@/components/ui/button"
 import { getGlobalStats } from "@/actions/admin/global-stats"
 
 export default async function SuperAdminDashboardPage() {
@@ -30,31 +36,12 @@ export default async function SuperAdminDashboardPage() {
                 <GlobalStatsGrid />
             </Suspense>
 
-            {/* Seções adicionais podem vir aqui */}
             <div className="grid gap-6 md:grid-cols-2">
-                {/* Atividade Recente */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Atividade Recente</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <p className="text-sm text-muted-foreground">
-                            Em breve: logs de atividade do sistema
-                        </p>
-                    </CardContent>
-                </Card>
+                <Suspense fallback={<PanelSkeleton />}>
+                    <OperationsPanel />
+                </Suspense>
 
-                {/* Ações Rápidas */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Ações Rápidas</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-2">
-                        <p className="text-sm text-muted-foreground">
-                            Em breve: atalhos para ações comuns
-                        </p>
-                    </CardContent>
-                </Card>
+                <QuickActions />
             </div>
         </div>
     )
@@ -170,5 +157,140 @@ function StatsGridSkeleton() {
                 </Card>
             ))}
         </div>
+    )
+}
+
+async function OperationsPanel() {
+    const stats = await getGlobalStats()
+
+    const checks = [
+        {
+            title: "Usuários ativos",
+            value: `${stats.activeUsers}/${stats.totalUsers}`,
+            detail: `${stats.usersThisMonth} novos este mês`,
+            href: "/super-admin/users",
+        },
+        {
+            title: "Marketplace",
+            value: stats.totalLists,
+            detail: `${stats.totalLeadsMarketplace.toLocaleString()} leads publicados`,
+            href: "/super-admin/marketplace/lists",
+        },
+        {
+            title: "Receita do mês",
+            value: `€${stats.revenueThisMonth.toLocaleString()}`,
+            detail: `${stats.purchasesThisMonth} vendas pagas`,
+            href: "/super-admin/marketplace/purchases",
+        },
+        {
+            title: "Engajamento CRM",
+            value: `${stats.openRate}%`,
+            detail: `${stats.emailsSent.toLocaleString()} emails nos últimos 30 dias`,
+            href: "/super-admin/workspaces",
+        },
+    ]
+
+    return (
+        <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle>Operação</CardTitle>
+                <Button variant="ghost" size="sm" asChild>
+                    <Link href="/super-admin/marketplace">
+                        Marketplace
+                        <ArrowRight className="ml-1 h-4 w-4" />
+                    </Link>
+                </Button>
+            </CardHeader>
+            <CardContent className="space-y-3">
+                {checks.map((check) => (
+                    <Link
+                        key={check.title}
+                        href={check.href}
+                        className="flex items-center justify-between rounded-lg border p-3 transition-colors hover:bg-muted/50"
+                    >
+                        <div>
+                            <p className="font-medium">{check.title}</p>
+                            <p className="text-sm text-muted-foreground">{check.detail}</p>
+                        </div>
+                        <div className="text-right">
+                            <p className="text-lg font-semibold">{check.value}</p>
+                            <ArrowRight className="ml-auto mt-1 h-4 w-4 text-muted-foreground" />
+                        </div>
+                    </Link>
+                ))}
+            </CardContent>
+        </Card>
+    )
+}
+
+function QuickActions() {
+    const actions = [
+        {
+            title: "Criar lista marketplace",
+            description: "Publicar uma nova lista de leads para venda",
+            href: "/super-admin/marketplace/lists/new",
+            icon: ListPlus,
+        },
+        {
+            title: "Revisar usuários",
+            description: "Ver contas, status e permissões",
+            href: "/super-admin/users",
+            icon: UserCog,
+        },
+        {
+            title: "Acompanhar vendas",
+            description: "Consultar compras e receita do marketplace",
+            href: "/super-admin/marketplace/purchases",
+            icon: ShoppingCart,
+        },
+        {
+            title: "Gerenciar catálogo",
+            description: "Editar listas e leads disponíveis",
+            href: "/super-admin/marketplace",
+            icon: Store,
+        },
+    ]
+
+    return (
+        <Card>
+            <CardHeader>
+                <CardTitle>Ações rápidas</CardTitle>
+            </CardHeader>
+            <CardContent className="grid gap-3">
+                {actions.map((action) => (
+                    <Link
+                        key={action.href}
+                        href={action.href}
+                        className="flex items-center justify-between rounded-lg border p-3 transition-colors hover:bg-muted/50"
+                    >
+                        <div className="flex items-center gap-3">
+                            <div className="flex h-9 w-9 items-center justify-center rounded-md bg-muted">
+                                <action.icon className="h-4 w-4 text-muted-foreground" />
+                            </div>
+                            <div>
+                                <p className="font-medium">{action.title}</p>
+                                <p className="text-sm text-muted-foreground">{action.description}</p>
+                            </div>
+                        </div>
+                        <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                    </Link>
+                ))}
+            </CardContent>
+        </Card>
+    )
+}
+
+function PanelSkeleton() {
+    return (
+        <Card>
+            <CardHeader>
+                <Skeleton className="h-5 w-28" />
+            </CardHeader>
+            <CardContent className="space-y-3">
+                {Array.from({ length: 4 }).map((_, i) => (
+                    <Skeleton key={i} className="h-16 rounded-lg" />
+                ))}
+            </CardContent>
+        </Card>
     )
 }

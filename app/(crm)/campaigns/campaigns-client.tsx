@@ -13,6 +13,8 @@ import {
     AlertTriangle,
     Filter,
     Megaphone,
+    FileText,
+    X,
 } from "lucide-react"
 import { toast } from "sonner"
 
@@ -26,6 +28,7 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { Card, CardContent } from "@/components/ui/card"
+import { EmptyState } from "@/components/common/empty-state"
 import { CampaignCard } from "@/components/campaigns/campaign-card"
 import { CampaignWizard } from "@/components/campaigns/campaign-wizard"
 import { SendConfirmationDialog } from "@/components/campaigns/send-confirmation-dialog"
@@ -202,6 +205,8 @@ export function CampaignsClient({
         router.push(`/campaigns/${campaign.id}`)
     }
 
+    const hasActiveFilters = search !== "" || statusFilter !== "ALL"
+
     // ============================================================
     // RENDER
     // ============================================================
@@ -322,25 +327,45 @@ export function CampaignsClient({
 
             {/* Lista de Campanhas */}
             {filteredCampaigns.length === 0 ? (
-                <div className="text-center py-12 border rounded-lg bg-muted/30">
-                    <Megaphone className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                    <h3 className="font-medium text-lg mb-2">
-                        {campaigns.length === 0
-                            ? "Nenhuma campanha criada"
-                            : "Nenhuma campanha encontrada"}
-                    </h3>
-                    <p className="text-muted-foreground mb-4">
-                        {campaigns.length === 0
-                            ? "Crie sua primeira campanha para começar a enviar emails."
-                            : "Tente ajustar os filtros de busca."}
-                    </p>
-                    {campaigns.length === 0 && (
-                        <Button onClick={handleCreate}>
-                            <Plus className="h-4 w-4 mr-2" />
-                            Criar Campanha
-                        </Button>
-                    )}
-                </div>
+                <EmptyState
+                    icon={campaigns.length === 0 ? Megaphone : Search}
+                    title={campaigns.length === 0 ? "Nenhuma campanha criada" : "Nenhuma campanha encontrada"}
+                    description={
+                        campaigns.length === 0
+                            ? templates.length === 0
+                                ? "Crie um template primeiro para montar sua primeira campanha com mais rapidez."
+                                : "Use seus templates para criar uma campanha e acompanhar envio, abertura e cliques."
+                            : "Ajuste a busca ou o status para encontrar campanhas neste cliente."
+                    }
+                    primaryAction={
+                        campaigns.length === 0
+                            ? {
+                                label: templates.length === 0 ? "Criar template" : "Criar campanha",
+                                icon: templates.length === 0 ? FileText : Plus,
+                                onClick: templates.length === 0 ? () => router.push("/templates") : handleCreate,
+                            }
+                            : hasActiveFilters
+                                ? {
+                                    label: "Limpar filtros",
+                                    icon: X,
+                                    variant: "outline",
+                                    onClick: () => {
+                                        setSearch("")
+                                        setStatusFilter("ALL")
+                                    },
+                                }
+                                : undefined
+                    }
+                    secondaryAction={
+                        campaigns.length === 0 && templates.length === 0
+                            ? {
+                                label: "Ver leads",
+                                variant: "outline",
+                                onClick: () => router.push("/leads"),
+                            }
+                            : undefined
+                    }
+                />
             ) : (
                 <div className="space-y-4">
                     {filteredCampaigns.map((campaign) => (

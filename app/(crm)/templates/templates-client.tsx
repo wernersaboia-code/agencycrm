@@ -11,7 +11,8 @@ import {
     Filter,
     LayoutGrid,
     List,
-    FileText
+    FileText,
+    X,
 } from "lucide-react"
 import { toast } from "sonner"
 
@@ -26,6 +27,7 @@ import {
 } from "@/components/ui/select"
 import { TemplateCard } from "@/components/templates/template-card"
 import { TemplateModal } from "@/components/templates/template-modal"
+import { EmptyState } from "@/components/common/empty-state"
 import {
     deleteTemplate,
     duplicateTemplate,
@@ -150,6 +152,8 @@ export function TemplatesClient({ templates, workspaceId }: TemplatesClientProps
         router.refresh()
     }
 
+    const hasActiveFilters = search !== "" || categoryFilter !== "ALL"
+
     // ============================================================
     // RENDER
     // ============================================================
@@ -223,27 +227,43 @@ export function TemplatesClient({ templates, workspaceId }: TemplatesClientProps
 
             {/* Lista de Templates */}
             {filteredTemplates.length === 0 ? (
-                <div className="text-center py-12 border rounded-lg bg-muted/30">
-                    <FileText className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                    <h3 className="font-medium text-lg mb-2">
-                        {templates.length === 0
-                            ? "Nenhum template criado"
-                            : "Nenhum template encontrado"
-                        }
-                    </h3>
-                    <p className="text-muted-foreground mb-4">
-                        {templates.length === 0
-                            ? "Crie seu primeiro template de email para começar a enviar campanhas."
-                            : "Tente ajustar os filtros de busca."
-                        }
-                    </p>
-                    {templates.length === 0 && (
-                        <Button onClick={handleCreate}>
-                            <Plus className="h-4 w-4 mr-2" />
-                            Criar Template
-                        </Button>
-                    )}
-                </div>
+                <EmptyState
+                    icon={templates.length === 0 ? FileText : Search}
+                    title={templates.length === 0 ? "Nenhum template criado" : "Nenhum template encontrado"}
+                    description={
+                        templates.length === 0
+                            ? "Crie modelos reutilizáveis para acelerar campanhas e manter mensagens consistentes."
+                            : "Ajuste a busca ou a categoria para encontrar templates neste cliente."
+                    }
+                    primaryAction={
+                        templates.length === 0
+                            ? {
+                                label: "Criar template",
+                                icon: Plus,
+                                onClick: handleCreate,
+                            }
+                            : hasActiveFilters
+                                ? {
+                                    label: "Limpar filtros",
+                                    icon: X,
+                                    variant: "outline",
+                                    onClick: () => {
+                                        setSearch("")
+                                        setCategoryFilter("ALL")
+                                    },
+                                }
+                                : undefined
+                    }
+                    secondaryAction={
+                        templates.length === 0
+                            ? {
+                                label: "Ver campanhas",
+                                variant: "outline",
+                                onClick: () => router.push("/campaigns"),
+                            }
+                            : undefined
+                    }
+                />
             ) : (
                 <div
                     className={

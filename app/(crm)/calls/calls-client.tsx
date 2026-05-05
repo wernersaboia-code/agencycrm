@@ -216,6 +216,13 @@ export function CallsClient({
         callbacks.today.length +
         callbacks.thisWeek.length
 
+    const hasActiveFilters =
+        filters.search !== "" ||
+        filters.result !== "ALL" ||
+        filters.dateRange !== "all" ||
+        filters.dateFrom !== "" ||
+        filters.dateTo !== ""
+
     return (
         <div className="space-y-6">
             {/* Header */}
@@ -278,6 +285,17 @@ export function CallsClient({
                 isLoading={isLoading}
                 onEdit={handleEditCall}
                 onDelete={handleDeleteCall}
+                onCreate={() => handleOpenModal()}
+                onClearFilters={() =>
+                    setFilters({
+                        search: "",
+                        result: "ALL",
+                        dateRange: "all",
+                        dateFrom: "",
+                        dateTo: "",
+                    })
+                }
+                hasActiveFilters={hasActiveFilters}
             />
 
             {/* Modal */}

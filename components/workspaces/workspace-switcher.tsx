@@ -84,6 +84,7 @@ export function WorkspaceSwitcher() {
                                     onSelect={() => {
                                         setActiveWorkspace(workspace)
                                         setOpen(false)
+                                        router.refresh()
                                     }}
                                 >
                                     <div
@@ -112,6 +113,15 @@ export function WorkspaceSwitcher() {
                             >
                                 <Building2 className="mr-2 h-4 w-4" />
                                 Gerenciar clientes
+                            </CommandItem>
+                            <CommandItem
+                                onSelect={() => {
+                                    setOpen(false)
+                                    router.push("/workspaces?new=true")
+                                }}
+                            >
+                                <Plus className="mr-2 h-4 w-4" />
+                                Novo cliente
                             </CommandItem>
                         </CommandGroup>
                     </CommandList>
