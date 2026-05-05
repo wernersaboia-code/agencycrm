@@ -82,6 +82,18 @@ export interface CallbacksSummary {
     thisWeekCount: number
 }
 
+export interface DashboardGuidance {
+    hasSmtpConfigured: boolean
+    hasSenderConfigured: boolean
+    templatesCount: number
+    activeTemplatesCount: number
+    newLeadsWithoutContactCount: number
+    activeCampaignsCount: number
+    draftCampaignsCount: number
+    pendingCallbacksCount: number
+    overdueCallbacksCount: number
+}
+
 type DashboardCallbackCall = Omit<Prisma.CallGetPayload<{
     include: {
         lead: {
@@ -431,5 +443,96 @@ export async function getDashboardCallbacks(
     } catch (error) {
         console.error("Erro ao buscar callbacks:", error)
         return { success: false, error: "Erro ao buscar callbacks" }
+    }
+}
+
+export async function getDashboardGuidance(
+    workspaceId: string
+): Promise<{ success: boolean; data?: DashboardGuidance; error?: string }> {
+    try {
+        try {
+            await requireWorkspaceAccess(workspaceId)
+        } catch {
+            return { success: false, error: "Workspace nÃ£o encontrado" }
+        }
+
+        const now = new Date()
+        const todayStart = startOfDay(now)
+
+        const [
+            workspace,
+            templatesCount,
+            activeTemplatesCount,
+            newLeadsWithoutContactCount,
+            activeCampaignsCount,
+            draftCampaignsCount,
+            pendingCallbacksCount,
+            overdueCallbacksCount,
+        ] = await Promise.all([
+            prisma.workspace.findUnique({
+                where: { id: workspaceId },
+                select: {
+                    smtpUser: true,
+                    smtpPass: true,
+                    senderName: true,
+                    senderEmail: true,
+                },
+            }),
+            prisma.emailTemplate.count({ where: { workspaceId } }),
+            prisma.emailTemplate.count({ where: { workspaceId, isActive: true } }),
+            prisma.lead.count({
+                where: {
+                    workspaceId,
+                    status: "NEW",
+                    calls: { none: {} },
+                    emailSends: { none: {} },
+                },
+            }),
+            prisma.campaign.count({
+                where: {
+                    workspaceId,
+                    status: { in: ["SENDING", "SCHEDULED"] },
+                },
+            }),
+            prisma.campaign.count({
+                where: {
+                    workspaceId,
+                    status: "DRAFT",
+                },
+            }),
+            prisma.call.count({
+                where: {
+                    workspaceId,
+                    followUpAt: { not: null },
+                },
+            }),
+            prisma.call.count({
+                where: {
+                    workspaceId,
+                    followUpAt: {
+                        not: null,
+                        lt: todayStart,
+                    },
+                },
+            }),
+        ])
+
+        return {
+            success: true,
+            data: {
+                hasSmtpConfigured: Boolean(workspace?.smtpUser && workspace.smtpPass),
+                hasSenderConfigured: Boolean(workspace?.senderName && workspace.senderEmail),
+                templatesCount,
+                activeTemplatesCount,
+                newLeadsWithoutContactCount,
+                activeCampaignsCount,
+                draftCampaignsCount,
+                pendingCallbacksCount,
+                overdueCallbacksCount,
+            },
+        }
+    } catch (error) {
+        console.error("Erro ao buscar orientaÃ§Ãµes do dashboard:", error)
+        return { success: false, error: "Erro ao buscar orientaÃ§Ãµes" }
     }
 }

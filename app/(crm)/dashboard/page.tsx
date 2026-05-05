@@ -9,6 +9,7 @@ import {
     getRecentLeads,
     getEmailsOverTime,
     getDashboardCallbacks,
+    getDashboardGuidance,
 } from "@/actions/dashboard"
 import { DashboardClient } from "./dashboard-client"
 import { DashboardSkeleton } from "./dashboard-skeleton"
@@ -18,13 +19,14 @@ import { DashboardSkeleton } from "./dashboard-skeleton"
 // ============================================================
 
 async function DashboardData({ workspaceId }: { workspaceId: string }) {
-    const [statsResult, campaignsResult, leadsResult, emailsResult, callbacksResult] =
+    const [statsResult, campaignsResult, leadsResult, emailsResult, callbacksResult, guidanceResult] =
         await Promise.all([
             getDashboardStats(workspaceId),
             getRecentCampaigns(workspaceId),
             getRecentLeads(workspaceId),
             getEmailsOverTime(workspaceId),
             getDashboardCallbacks(workspaceId),
+            getDashboardGuidance(workspaceId),
         ])
 
     return (
@@ -34,6 +36,7 @@ async function DashboardData({ workspaceId }: { workspaceId: string }) {
             leads={leadsResult.success ? leadsResult.data! : []}
             emailsOverTime={emailsResult.success ? emailsResult.data! : []}
             callbacks={callbacksResult.success ? callbacksResult.data! : null}
+            guidance={guidanceResult.success ? guidanceResult.data! : null}
         />
     )
 }

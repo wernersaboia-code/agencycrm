@@ -2,6 +2,7 @@
 "use client"
 
 import Link from "next/link"
+import type { ElementType } from "react"
 import { format, formatDistanceToNow } from "date-fns"
 import { ptBR } from "date-fns/locale"
 import {
@@ -16,6 +17,10 @@ import {
     Calendar,
     Clock,
     Send,
+    Settings,
+    FileText,
+    Upload,
+    CheckCircle2,
 } from "lucide-react"
 import {
     AreaChart,
@@ -30,6 +35,7 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Progress } from "@/components/ui/progress"
 import { cn } from "@/lib/utils"
 import { LEAD_STATUS_CONFIG } from "@/lib/constants/lead.constants"
 import { LeadStatus } from "@prisma/client"
@@ -40,6 +46,7 @@ import type {
     RecentLead,
     EmailsOverTime,
     CallbacksSummary,
+    DashboardGuidance,
 } from "@/actions/dashboard"
 
 // ============================================================
@@ -52,6 +59,7 @@ interface DashboardClientProps {
     leads: RecentLead[]
     emailsOverTime: EmailsOverTime[]
     callbacks: CallbacksSummary | null
+    guidance: DashboardGuidance | null
 }
 
 // ============================================================
@@ -99,6 +107,270 @@ function CustomTooltip({ active, payload, label }: ChartTooltipProps) {
     return null
 }
 
+interface ActionCard {
+    title: string
+    description: string
+    href: string
+    label: string
+    icon: ElementType
+    tone: "default" | "warning" | "success"
+}
+
+function buildActionCards(
+    stats: DashboardStats,
+    guidance: DashboardGuidance | null,
+    callbacks: CallbacksSummary | null
+): ActionCard[] {
+    const overdueCallbacks = guidance?.overdueCallbacksCount ?? callbacks?.overdueCount ?? 0
+    const todayCallbacks = callbacks?.todayCount ?? 0
+    const newLeadsWithoutContact = guidance?.newLeadsWithoutContactCount ?? 0
+
+    const actions: ActionCard[] = []
+
+    if (overdueCallbacks > 0) {
+        actions.push({
+            title: `${overdueCallbacks} callback${overdueCallbacks !== 1 ? "s" : ""} atrasado${overdueCallbacks !== 1 ? "s" : ""}`,
+            description: "Priorize retornos pendentes para não perder oportunidades em andamento.",
+            href: "/calls",
+            label: "Ver callbacks",
+            icon: AlertTriangle,
+            tone: "warning",
+        })
+    } else if (todayCallbacks > 0) {
+        actions.push({
+            title: `${todayCallbacks} retorno${todayCallbacks !== 1 ? "s" : ""} para hoje`,
+            description: "Revise sua agenda de ligações antes de avançar em novas prospecções.",
+            href: "/calls",
+            label: "Abrir ligações",
+            icon: Calendar,
+            tone: "default",
+        })
+    }
+
+    if (stats.totalLeads === 0) {
+        actions.push({
+            title: "Adicione seus primeiros leads",
+            description: "Importe uma lista ou cadastre leads manualmente para iniciar o fluxo comercial.",
+            href: "/leads/import",
+            label: "Importar leads",
+            icon: Upload,
+            tone: "default",
+        })
+    } else if (newLeadsWithoutContact > 0) {
+        actions.push({
+            title: `${newLeadsWithoutContact} lead${newLeadsWithoutContact !== 1 ? "s" : ""} novo${newLeadsWithoutContact !== 1 ? "s" : ""} sem contato`,
+            description: "Transforme leads novos em conversas antes que esfriem.",
+            href: "/leads",
+            label: "Ver leads",
+            icon: Users,
+            tone: "default",
+        })
+    }
+
+    if (guidance && guidance.templatesCount === 0) {
+        actions.push({
+            title: "Crie um template de email",
+            description: "Templates deixam campanhas mais rápidas e consistentes para cada cliente.",
+            href: "/templates",
+            label: "Criar template",
+            icon: FileText,
+            tone: "default",
+        })
+    } else if (guidance && guidance.activeTemplatesCount === 0) {
+        actions.push({
+            title: "Ative um template",
+            description: "Você tem templates cadastrados, mas nenhum ativo para novas campanhas.",
+            href: "/templates",
+            label: "Revisar templates",
+            icon: FileText,
+            tone: "warning",
+        })
+    }
+
+    if (guidance && (!guidance.hasSmtpConfigured || !guidance.hasSenderConfigured)) {
+        actions.push({
+            title: "Configure o envio de emails",
+            description: "Complete remetente e SMTP para enviar campanhas com segurança.",
+            href: "/settings",
+            label: "Configurar envio",
+            icon: Settings,
+            tone: "warning",
+        })
+    }
+
+    if (stats.totalLeads > 0 && guidance && guidance.activeTemplatesCount > 0 && guidance.activeCampaignsCount === 0) {
+        actions.push({
+            title: guidance.draftCampaignsCount > 0 ? "Revise campanhas em rascunho" : "Crie uma campanha ativa",
+            description: guidance.draftCampaignsCount > 0
+                ? "Há campanhas preparadas que ainda não estão gerando envios."
+                : "Combine leads e templates para iniciar uma cadência de contato.",
+            href: "/campaigns",
+            label: guidance.draftCampaignsCount > 0 ? "Ver rascunhos" : "Criar campanha",
+            icon: Send,
+            tone: "default",
+        })
+    }
+
+    if (actions.length === 0) {
+        actions.push({
+            title: "Operação em dia",
+            description: "Sem pendências críticas agora. Acompanhe métricas e mantenha o ritmo de prospecção.",
+            href: "/leads",
+            label: "Ver pipeline",
+            icon: CheckCircle2,
+            tone: "success",
+        })
+    }
+
+    return actions.slice(0, 4)
+}
+
+function ActionPlan({
+                        stats,
+                        guidance,
+                        callbacks,
+                    }: {
+    stats: DashboardStats
+    guidance: DashboardGuidance | null
+    callbacks: CallbacksSummary | null
+}) {
+    const actions = buildActionCards(stats, guidance, callbacks)
+
+    return (
+        <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+                <div>
+                    <CardTitle>Próximas ações</CardTitle>
+                    <CardDescription>O que merece atenção agora neste cliente</CardDescription>
+                </div>
+                <Button variant="ghost" size="sm" asChild>
+                    <Link href="/leads">
+                        Pipeline
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
+                </Button>
+            </CardHeader>
+            <CardContent className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+                {actions.map((action) => (
+                    <Link
+                        key={`${action.href}-${action.title}`}
+                        href={action.href}
+                        className={cn(
+                            "group flex min-h-[150px] flex-col justify-between rounded-lg border p-4 transition-colors hover:bg-muted/50",
+                            action.tone === "warning" && "border-amber-300 bg-amber-50/50 dark:border-amber-900 dark:bg-amber-950/20",
+                            action.tone === "success" && "border-emerald-300 bg-emerald-50/50 dark:border-emerald-900 dark:bg-emerald-950/20"
+                        )}
+                    >
+                        <div>
+                            <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-md bg-background shadow-sm">
+                                <action.icon className="h-4 w-4 text-muted-foreground" />
+                            </div>
+                            <h3 className="font-semibold leading-tight">{action.title}</h3>
+                            <p className="mt-1 text-sm text-muted-foreground">{action.description}</p>
+                        </div>
+                        <span className="mt-4 flex items-center text-sm font-medium">
+                            {action.label}
+                            <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                        </span>
+                    </Link>
+                ))}
+            </CardContent>
+        </Card>
+    )
+}
+
+function SetupChecklist({
+                            stats,
+                            guidance,
+                        }: {
+    stats: DashboardStats
+    guidance: DashboardGuidance | null
+}) {
+    if (!guidance) return null
+
+    const steps = [
+        {
+            label: "Adicionar leads",
+            done: stats.totalLeads > 0,
+            href: "/leads/import",
+            action: "Importar",
+        },
+        {
+            label: "Criar template",
+            done: guidance.activeTemplatesCount > 0,
+            href: "/templates",
+            action: "Criar",
+        },
+        {
+            label: "Configurar envio",
+            done: guidance.hasSmtpConfigured && guidance.hasSenderConfigured,
+            href: "/settings",
+            action: "Configurar",
+        },
+        {
+            label: "Ativar campanha",
+            done: guidance.activeCampaignsCount > 0 || stats.totalEmailsSent > 0,
+            href: "/campaigns",
+            action: "Campanhas",
+        },
+    ]
+
+    const completed = steps.filter((step) => step.done).length
+    const progress = Math.round((completed / steps.length) * 100)
+
+    if (completed === steps.length && stats.totalEmailsSent > 0) {
+        return null
+    }
+
+    return (
+        <Card>
+            <CardHeader>
+                <div className="flex items-center justify-between gap-4">
+                    <div>
+                        <CardTitle>Primeiros passos</CardTitle>
+                        <CardDescription>Prepare este cliente para gerar e acompanhar contatos</CardDescription>
+                    </div>
+                    <Badge variant="secondary">{completed}/{steps.length}</Badge>
+                </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+                <Progress value={progress} />
+                <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+                    {steps.map((step) => (
+                        <Link
+                            key={step.label}
+                            href={step.href}
+                            className={cn(
+                                "flex items-center justify-between rounded-lg border p-3 transition-colors hover:bg-muted/50",
+                                step.done && "bg-muted/30"
+                            )}
+                        >
+                            <div className="flex items-center gap-3">
+                                <div
+                                    className={cn(
+                                        "flex h-7 w-7 items-center justify-center rounded-full border",
+                                        step.done
+                                            ? "border-emerald-500 bg-emerald-500 text-white"
+                                            : "bg-background text-muted-foreground"
+                                    )}
+                                >
+                                    {step.done ? <CheckCircle2 className="h-4 w-4" /> : <ArrowRight className="h-4 w-4" />}
+                                </div>
+                                <div>
+                                    <p className="text-sm font-medium">{step.label}</p>
+                                    <p className="text-xs text-muted-foreground">
+                                        {step.done ? "Concluído" : step.action}
+                                    </p>
+                                </div>
+                            </div>
+                        </Link>
+                    ))}
+                </div>
+            </CardContent>
+        </Card>
+    )
+}
+
 // ============================================================
 // COMPONENTE
 // ============================================================
@@ -109,6 +381,7 @@ export function DashboardClient({
                                     leads,
                                     emailsOverTime,
                                     callbacks,
+                                    guidance,
                                 }: DashboardClientProps) {
     // Se não tiver stats, mostrar estado vazio
     if (!stats) {
@@ -134,6 +407,9 @@ export function DashboardClient({
                     Visão geral das suas campanhas e leads
                 </p>
             </div>
+
+            <ActionPlan stats={stats} guidance={guidance} callbacks={callbacks} />
+            <SetupChecklist stats={stats} guidance={guidance} />
 
             {/* Stats Cards - Primeira Linha */}
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
