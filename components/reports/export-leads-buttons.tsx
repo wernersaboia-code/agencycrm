@@ -12,6 +12,11 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Download, FileSpreadsheet, FileText, Loader2 } from "lucide-react"
 import { toast } from "sonner"
+import {
+    createReportFileName,
+    downloadResponseBlob,
+    type ReportFormat,
+} from "@/lib/reports/export-client"
 
 interface ExportLeadsButtonsProps {
     workspaceId: string
@@ -27,9 +32,9 @@ export function ExportLeadsButtons({
                                        workspaceId,
                                        filters = {}
                                    }: ExportLeadsButtonsProps) {
-    const [isExporting, setIsExporting] = useState<"pdf" | "csv" | "excel" | null>(null)
+    const [isExporting, setIsExporting] = useState<ReportFormat | null>(null)
 
-    const buildUrl = (type: "pdf" | "csv" | "excel") => {
+    const buildUrl = (type: ReportFormat) => {
         const params = new URLSearchParams({ workspaceId })
 
         if (filters.status) params.set("status", filters.status)
@@ -40,7 +45,7 @@ export function ExportLeadsButtons({
         return `/api/reports/leads/${type}?${params.toString()}`
     }
 
-    const handleExport = async (type: "pdf" | "csv" | "excel") => {
+    const handleExport = async (type: ReportFormat) => {
         setIsExporting(type)
 
         try {
@@ -51,25 +56,8 @@ export function ExportLeadsButtons({
                 throw new Error(error.error || "Erro ao exportar")
             }
 
-            // Download do arquivo
-            const blob = await response.blob()
-            const url = window.URL.createObjectURL(blob)
-            const a = document.createElement("a")
-            a.href = url
-
-            const extensions: Record<string, string> = {
-                pdf: "pdf",
-                csv: "csv",
-                excel: "xlsx",
-            }
-            a.download = `leads-export.${extensions[type]}`
-
-            document.body.appendChild(a)
-            a.click()
-            window.URL.revokeObjectURL(url)
-            document.body.removeChild(a)
-
-            toast.success(`Leads exportados com sucesso!`)
+            await downloadResponseBlob(response, createReportFileName(["leads"], type))
+            toast.success("Leads exportados com sucesso!")
         } catch (error) {
             console.error("Export error:", error)
             toast.error(error instanceof Error ? error.message : "Erro ao exportar")
@@ -98,7 +86,7 @@ export function ExportLeadsButtons({
             <DropdownMenuContent align="end">
                 <DropdownMenuItem onClick={() => handleExport("pdf")}>
                     <FileText className="mr-2 h-4 w-4" />
-                    Relatorio PDF
+                    Relatório PDF
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => handleExport("csv")}>

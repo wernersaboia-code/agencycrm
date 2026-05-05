@@ -11,6 +11,11 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Download, FileText, FileSpreadsheet, Loader2 } from "lucide-react"
 import { toast } from "sonner"
+import {
+    createReportFileName,
+    downloadResponseBlob,
+    type ReportFormat,
+} from "@/lib/reports/export-client"
 
 interface ExportCampaignButtonsProps {
     campaignId: string
@@ -21,9 +26,9 @@ export function ExportCampaignButtons({
                                           campaignId,
                                           campaignName
                                       }: ExportCampaignButtonsProps) {
-    const [isExporting, setIsExporting] = useState<"pdf" | "csv" | null>(null)
+    const [isExporting, setIsExporting] = useState<Extract<ReportFormat, "pdf" | "csv"> | null>(null)
 
-    const handleExport = async (type: "pdf" | "csv") => {
+    const handleExport = async (type: Extract<ReportFormat, "pdf" | "csv">) => {
         setIsExporting(type)
 
         try {
@@ -34,16 +39,7 @@ export function ExportCampaignButtons({
                 throw new Error(error.error || "Erro ao gerar relatório")
             }
 
-            // Download do arquivo
-            const blob = await response.blob()
-            const url = window.URL.createObjectURL(blob)
-            const a = document.createElement("a")
-            a.href = url
-            a.download = `relatorio-${campaignName.toLowerCase().replace(/\s+/g, "-")}.${type}`
-            document.body.appendChild(a)
-            a.click()
-            window.URL.revokeObjectURL(url)
-            document.body.removeChild(a)
+            await downloadResponseBlob(response, createReportFileName(["campanha", campaignName], type))
 
             toast.success(`Relatório ${type.toUpperCase()} gerado com sucesso!`)
         } catch (error) {

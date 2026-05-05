@@ -4,6 +4,9 @@
 import { useState } from "react"
 import { format, subDays, startOfMonth, endOfMonth, subMonths } from "date-fns"
 import {
+    AlertCircle,
+    ArrowRight,
+    CheckCircle2,
     FileText,
     Users,
     Mail,
@@ -14,6 +17,7 @@ import {
     Calendar,
     Loader2,
     BarChart3,
+    ClipboardList,
 } from "lucide-react"
 import { toast } from "sonner"
 
@@ -36,6 +40,9 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
+import { Progress } from "@/components/ui/progress"
+import { cn } from "@/lib/utils"
+import { createReportFileName, downloadResponseBlob } from "@/lib/reports/export-client"
 
 // ============================================================
 // TIPOS
@@ -89,6 +96,44 @@ export function ReportsClient({ workspace, campaigns, stats }: ReportsClientProp
     const [dateTo, setDateTo] = useState("")
     const [selectedCampaign, setSelectedCampaign] = useState("all")
     const [isExporting, setIsExporting] = useState<ExportingState | null>(null)
+    const hasLeads = stats.leads > 0
+    const hasCalls = stats.calls > 0
+    const hasCampaigns = stats.campaigns > 0 || stats.emailsSent > 0
+    const hasOperationalData = hasLeads || hasCalls || hasCampaigns
+    const readinessItems = [
+        {
+            label: "Base de leads",
+            description: hasLeads
+                ? `${stats.leads} lead${stats.leads !== 1 ? "s" : ""} na base para análise.`
+                : "Importe leads para gerar relatórios úteis.",
+            done: hasLeads,
+            reportType: "leads" as ReportType,
+            action: hasLeads ? "Exportar leads" : "Importar leads",
+            href: hasLeads ? null : "/leads/import",
+        },
+        {
+            label: "Atividade comercial",
+            description: hasCalls
+                ? `${stats.calls} ligação${stats.calls !== 1 ? "ões" : ""} registrada${stats.calls !== 1 ? "s" : ""}.`
+                : "Registre ligações para medir callbacks e conversão.",
+            done: hasCalls,
+            reportType: "calls" as ReportType,
+            action: hasCalls ? "Exportar ligações" : "Ver ligações",
+            href: hasCalls ? null : "/calls",
+        },
+        {
+            label: "Performance consolidada",
+            description: hasCampaigns
+                ? `${stats.emailsSent} email${stats.emailsSent !== 1 ? "s" : ""} enviado${stats.emailsSent !== 1 ? "s" : ""}.`
+                : "Envie campanhas para enriquecer o relatório executivo.",
+            done: hasOperationalData,
+            reportType: "executive" as ReportType,
+            action: "Gerar executivo",
+            href: null,
+        },
+    ]
+    const completedReadinessItems = readinessItems.filter((item) => item.done).length
+    const readinessProgress = Math.round((completedReadinessItems / readinessItems.length) * 100)
 
     // ============================================================
     // HELPERS
@@ -170,22 +215,7 @@ export function ReportsClient({ workspace, campaigns, stats }: ReportsClientProp
                 throw new Error(error.error || "Erro ao gerar relatório")
             }
 
-            const blob = await response.blob()
-            const downloadUrl = window.URL.createObjectURL(blob)
-            const a = document.createElement("a")
-            a.href = downloadUrl
-
-            const extensions: Record<ExportType, string> = {
-                pdf: "pdf",
-                csv: "csv",
-                excel: "xlsx",
-            }
-            a.download = `relatorio-${reportType}-${format(new Date(), "yyyy-MM-dd")}.${extensions[exportType]}`
-
-            document.body.appendChild(a)
-            a.click()
-            window.URL.revokeObjectURL(downloadUrl)
-            document.body.removeChild(a)
+            await downloadResponseBlob(response, createReportFileName(["relatorio", reportType], exportType))
 
             toast.success("Relatório gerado com sucesso!")
         } catch (error) {
@@ -200,6 +230,15 @@ export function ReportsClient({ workspace, campaigns, stats }: ReportsClientProp
         if (!isExporting) return false
         if (format) return isExporting.type === type && isExporting.format === format
         return isExporting.type === type
+    }
+
+    const handleReadinessAction = (item: (typeof readinessItems)[number]) => {
+        if (item.href) {
+            window.location.href = item.href
+            return
+        }
+
+        handleExport(item.reportType, item.reportType === "executive" ? "pdf" : "pdf")
     }
 
     // ============================================================
@@ -279,6 +318,59 @@ export function ReportsClient({ workspace, campaigns, stats }: ReportsClientProp
             </div>
 
             {/* Filtros de período */}
+            <Card className={hasOperationalData ? "border-emerald-300 dark:border-emerald-900" : "border-amber-300 dark:border-amber-900"}>
+                <CardHeader className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                    <div className="space-y-2">
+                        <div className="flex flex-wrap items-center gap-2">
+                            <CardTitle>Prontidão dos relatórios</CardTitle>
+                            <Badge variant={hasOperationalData ? "default" : "outline"}>
+                                {completedReadinessItems}/{readinessItems.length} completo
+                            </Badge>
+                        </div>
+                        <CardDescription>
+                            Veja se este cliente já tem dados suficientes para relatórios operacionais e executivos.
+                        </CardDescription>
+                    </div>
+                    <div className="w-full space-y-2 lg:w-64">
+                        <div className="flex items-center justify-between text-sm">
+                            <span className="text-muted-foreground">Cobertura</span>
+                            <span className="font-medium">{readinessProgress}%</span>
+                        </div>
+                        <Progress value={readinessProgress} />
+                    </div>
+                </CardHeader>
+                <CardContent className="grid gap-3 md:grid-cols-3">
+                    {readinessItems.map((item) => (
+                        <button
+                            key={item.label}
+                            type="button"
+                            onClick={() => handleReadinessAction(item)}
+                            disabled={isExporting !== null}
+                            className={cn(
+                                "flex min-h-[116px] items-start justify-between gap-3 rounded-lg border bg-background p-4 text-left transition-colors hover:bg-muted/50 disabled:cursor-not-allowed disabled:opacity-60",
+                                item.done
+                                    ? "border-emerald-300 bg-emerald-50/50 dark:border-emerald-900 dark:bg-emerald-950/20"
+                                    : "border-amber-300 bg-amber-50/50 dark:border-amber-900 dark:bg-amber-950/20"
+                            )}
+                        >
+                            <span className="flex min-w-0 gap-3">
+                                {item.done ? (
+                                    <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
+                                ) : (
+                                    <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
+                                )}
+                                <span className="space-y-1">
+                                    <span className="block font-medium leading-tight">{item.label}</span>
+                                    <span className="block text-sm text-muted-foreground">{item.description}</span>
+                                    <span className="block text-sm font-medium text-primary">{item.action}</span>
+                                </span>
+                            </span>
+                            <ArrowRight className="mt-1 h-4 w-4 shrink-0 text-muted-foreground" />
+                        </button>
+                    ))}
+                </CardContent>
+            </Card>
+
             <Card>
                 <CardHeader className="pb-3">
                     <CardTitle className="text-base flex items-center gap-2">
@@ -529,18 +621,22 @@ export function ReportsClient({ workspace, campaigns, stats }: ReportsClientProp
                 {/* Dica */}
                 <Card className="bg-muted/50">
                     <CardHeader>
-                        <CardTitle className="text-base">💡 Dica</CardTitle>
+                        <CardTitle className="flex items-center gap-2 text-base">
+                            <ClipboardList className="h-4 w-4" />
+                            Qual relatório usar?
+                        </CardTitle>
                     </CardHeader>
                     <CardContent className="text-sm text-muted-foreground space-y-2">
                         <p>
-                            <strong>Relatório Executivo:</strong> Ideal para enviar ao seu cliente como
-                            prestação de contas mensal.
+                            <strong>Executivo:</strong> melhor para prestação de contas, reunião com cliente
+                            e leitura consolidada do mês.
                         </p>
                         <p>
-                            <strong>PDF:</strong> Melhor para apresentações e envio por email.
+                            <strong>Leads:</strong> melhor para revisar base, segmentar contatos e encontrar
+                            oportunidades de qualificação.
                         </p>
                         <p>
-                            <strong>CSV/Excel:</strong> Melhor para análises e importação em outras ferramentas.
+                            <strong>Ligações:</strong> melhor para auditar follow-ups, callbacks e produtividade comercial.
                         </p>
                     </CardContent>
                 </Card>

@@ -12,6 +12,11 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Download, FileText, Loader2 } from "lucide-react"
 import { toast } from "sonner"
+import {
+    createReportFileName,
+    downloadResponseBlob,
+    type ReportFormat,
+} from "@/lib/reports/export-client"
 
 interface ExportCallsButtonsProps {
     workspaceId: string
@@ -27,9 +32,9 @@ export function ExportCallsButtons({
                                        workspaceId,
                                        filters = {}
                                    }: ExportCallsButtonsProps) {
-    const [isExporting, setIsExporting] = useState<"pdf" | "csv" | null>(null)
+    const [isExporting, setIsExporting] = useState<Extract<ReportFormat, "pdf" | "csv"> | null>(null)
 
-    const buildUrl = (type: "pdf" | "csv") => {
+    const buildUrl = (type: Extract<ReportFormat, "pdf" | "csv">) => {
         const params = new URLSearchParams({ workspaceId })
 
         if (filters.startDate) params.set("startDate", filters.startDate)
@@ -40,7 +45,7 @@ export function ExportCallsButtons({
         return `/api/reports/calls/${type}?${params.toString()}`
     }
 
-    const handleExport = async (type: "pdf" | "csv") => {
+    const handleExport = async (type: Extract<ReportFormat, "pdf" | "csv">) => {
         setIsExporting(type)
 
         try {
@@ -51,15 +56,7 @@ export function ExportCallsButtons({
                 throw new Error(error.error || "Erro ao exportar")
             }
 
-            const blob = await response.blob()
-            const url = window.URL.createObjectURL(blob)
-            const a = document.createElement("a")
-            a.href = url
-            a.download = `ligacoes-export.${type}`
-            document.body.appendChild(a)
-            a.click()
-            window.URL.revokeObjectURL(url)
-            document.body.removeChild(a)
+            await downloadResponseBlob(response, createReportFileName(["ligacoes"], type))
 
             toast.success(`Ligações exportadas com sucesso!`)
         } catch (error) {
@@ -90,7 +87,7 @@ export function ExportCallsButtons({
             <DropdownMenuContent align="end">
                 <DropdownMenuItem onClick={() => handleExport("pdf")}>
                     <FileText className="mr-2 h-4 w-4" />
-                    Relatorio PDF
+                    Relatório PDF
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => handleExport("csv")}>
