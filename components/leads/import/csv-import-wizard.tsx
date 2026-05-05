@@ -12,6 +12,9 @@ import {
     Columns,
     Eye,
     Loader2,
+    ArrowRight,
+    Mail,
+    Users,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -248,9 +251,20 @@ export function CSVImportWizard() {
                                     <div className="text-sm text-muted-foreground">Erros</div>
                                 </div>
                             </div>
-                            <Button onClick={() => router.push('/leads')}>
-                                Ver Leads
-                            </Button>
+                            <div className="flex flex-col justify-center gap-2 sm:flex-row">
+                                <Button onClick={() => router.push('/leads')}>
+                                    <Users className="h-4 w-4 mr-2" />
+                                    Ver leads
+                                </Button>
+                                <Button variant="outline" onClick={() => router.push('/templates')}>
+                                    <Mail className="h-4 w-4 mr-2" />
+                                    Criar template
+                                </Button>
+                                <Button variant="outline" onClick={() => router.push('/dashboard')}>
+                                    Dashboard
+                                    <ArrowRight className="h-4 w-4 ml-2" />
+                                </Button>
+                            </div>
                         </div>
                     </CardContent>
                 </Card>

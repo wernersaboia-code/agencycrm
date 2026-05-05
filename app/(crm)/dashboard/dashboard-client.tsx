@@ -191,7 +191,7 @@ function buildActionCards(
         actions.push({
             title: "Configure o envio de emails",
             description: "Complete remetente e SMTP para enviar campanhas com segurança.",
-            href: "/settings",
+            href: "/settings?tab=email",
             label: "Configurar envio",
             icon: Settings,
             tone: "warning",
@@ -304,7 +304,7 @@ function SetupChecklist({
         {
             label: "Configurar envio",
             done: guidance.hasSmtpConfigured && guidance.hasSenderConfigured,
-            href: "/settings",
+            href: "/settings?tab=email",
             action: "Configurar",
         },
         {

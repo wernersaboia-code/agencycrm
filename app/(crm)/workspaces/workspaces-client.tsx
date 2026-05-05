@@ -2,8 +2,8 @@
 
 "use client"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import {
     Plus,
     MoreHorizontal,
@@ -14,6 +14,8 @@ import {
     Phone,
     ExternalLink,
     Building2,
+    ArrowRight,
+    Settings,
 } from "lucide-react"
 import { toast } from "sonner"
 
@@ -39,6 +41,7 @@ import {
 import { WorkspaceModal } from "@/components/workspaces/workspace-modal"
 import { deleteWorkspace } from "@/actions/workspaces"
 import { useWorkspace } from "@/contexts/workspace-context"
+import { EmptyState } from "@/components/common/empty-state"
 
 type Workspace = {
     id: string
@@ -63,6 +66,7 @@ interface WorkspacesClientProps {
 
 export function WorkspacesClient({ initialWorkspaces }: WorkspacesClientProps) {
     const router = useRouter()
+    const searchParams = useSearchParams()
     const { setActiveWorkspace, refreshWorkspaces } = useWorkspace()
 
     const [workspaces, setWorkspaces] = useState<Workspace[]>(initialWorkspaces)
@@ -70,6 +74,19 @@ export function WorkspacesClient({ initialWorkspaces }: WorkspacesClientProps) {
     const [editingWorkspace, setEditingWorkspace] = useState<Workspace | null>(null)
     const [deletingWorkspace, setDeletingWorkspace] = useState<Workspace | null>(null)
     const [isDeleting, setIsDeleting] = useState(false)
+
+    useEffect(() => {
+        if (searchParams.get("new") === "true") {
+            setEditingWorkspace(null)
+            setIsModalOpen(true)
+            router.replace("/workspaces", { scroll: false })
+        }
+    }, [router, searchParams])
+
+    const handleCreate = () => {
+        setEditingWorkspace(null)
+        setIsModalOpen(true)
+    }
 
     const handleEdit = (workspace: Workspace) => {
         setEditingWorkspace(workspace)
@@ -98,7 +115,7 @@ export function WorkspacesClient({ initialWorkspaces }: WorkspacesClientProps) {
         }
     }
 
-    const handleAccess = (workspace: Workspace) => {
+    const handleAccess = (workspace: Workspace, destination: string = "/dashboard") => {
         // Converter para o tipo do contexto (sem _count)
         setActiveWorkspace({
             id: workspace.id,
@@ -111,7 +128,7 @@ export function WorkspacesClient({ initialWorkspaces }: WorkspacesClientProps) {
             createdAt: workspace.createdAt,
             updatedAt: workspace.updatedAt,
         })
-        router.push("/leads")
+        router.push(destination)
     }
 
     const handleSuccess = async () => {
@@ -127,10 +144,7 @@ export function WorkspacesClient({ initialWorkspaces }: WorkspacesClientProps) {
         <>
             {/* Botão Novo */}
             <div className="flex justify-end">
-                <Button onClick={() => {
-                    setEditingWorkspace(null)
-                    setIsModalOpen(true)
-                }}>
+                <Button onClick={handleCreate}>
                     <Plus className="h-4 w-4 mr-2" />
                     Novo Cliente
                 </Button>
@@ -138,21 +152,16 @@ export function WorkspacesClient({ initialWorkspaces }: WorkspacesClientProps) {
 
             {/* Lista de Workspaces */}
             {workspaces.length === 0 ? (
-                <Card>
-                    <CardContent className="flex flex-col items-center justify-center py-12">
-                        <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center mb-4">
-                            <Building2 className="h-6 w-6 text-muted-foreground" />
-                        </div>
-                        <h3 className="text-lg font-semibold mb-1">Nenhum cliente ainda</h3>
-                        <p className="text-muted-foreground text-center mb-4">
-                            Comece criando seu primeiro cliente para gerenciar leads e campanhas.
-                        </p>
-                        <Button onClick={() => setIsModalOpen(true)}>
-                            <Plus className="h-4 w-4 mr-2" />
-                            Criar primeiro cliente
-                        </Button>
-                    </CardContent>
-                </Card>
+                <EmptyState
+                    icon={Building2}
+                    title="Nenhum cliente ainda"
+                    description="Crie o primeiro cliente para organizar leads, templates, campanhas, ligações e relatórios em um só lugar."
+                    primaryAction={{
+                        label: "Criar primeiro cliente",
+                        icon: Plus,
+                        onClick: handleCreate,
+                    }}
+                />
             ) : (
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                     {workspaces.map((workspace) => (
@@ -231,11 +240,29 @@ export function WorkspacesClient({ initialWorkspaces }: WorkspacesClientProps) {
 
                                 <Button
                                     className="w-full mt-4"
-                                    variant="outline"
                                     onClick={() => handleAccess(workspace)}
                                 >
-                                    Acessar Cliente
+                                    Abrir dashboard
+                                    <ArrowRight className="h-4 w-4 ml-2" />
                                 </Button>
+                                <div className="grid grid-cols-2 gap-2 mt-2">
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => handleAccess(workspace, "/leads")}
+                                    >
+                                        <Users className="h-4 w-4 mr-2" />
+                                        Leads
+                                    </Button>
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => handleAccess(workspace, "/settings")}
+                                    >
+                                        <Settings className="h-4 w-4 mr-2" />
+                                        Ajustes
+                                    </Button>
+                                </div>
                             </CardContent>
                         </Card>
                     ))}
