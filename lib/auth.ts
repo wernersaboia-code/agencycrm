@@ -174,6 +174,10 @@ export async function requireAuth(): Promise<AuthenticatedUser> {
     return user
 }
 
+export function isAuthenticationError(error: unknown): boolean {
+    return error instanceof Error && error.message.toLowerCase().includes('autentic')
+}
+
 export async function requireAdmin(): Promise<AuthenticatedDbUser> {
     const user = await getAuthenticatedActiveDbUser()
 

@@ -3,7 +3,7 @@
 
 import { revalidatePath } from "next/cache"
 import { prisma } from "@/lib/prisma"
-import { getAuthenticatedUser } from "@/lib/auth"
+import { getAuthenticatedUser, requireWorkspaceAccess } from "@/lib/auth"
 import { testSmtpConnection, type SmtpConfig } from "@/lib/email"
 import { encryptSecret } from "@/lib/secrets"
 import { z } from "zod"
@@ -42,6 +42,15 @@ const smtpSettingsSchema = z.object({
 
 export type SmtpSettingsData = z.infer<typeof smtpSettingsSchema>
 
+async function hasWorkspaceAccess(workspaceId: string): Promise<boolean> {
+    try {
+        await requireWorkspaceAccess(workspaceId)
+        return true
+    } catch {
+        return false
+    }
+}
+
 // ============================================================
 // QUERIES
 // ============================================================
@@ -51,13 +60,13 @@ export type SmtpSettingsData = z.infer<typeof smtpSettingsSchema>
  */
 export async function getWorkspaceSettings(workspaceId: string) {
     try {
-        const user = await getAuthenticatedUser()
-        if (!user) {
+        const canAccessWorkspace = await hasWorkspaceAccess(workspaceId)
+        if (!canAccessWorkspace) {
             return null
         }
 
-        const workspace = await prisma.workspace.findFirst({
-            where: { id: workspaceId, userId: user.id },
+        const workspace = await prisma.workspace.findUnique({
+            where: { id: workspaceId },
             select: {
                 id: true,
                 name: true,
@@ -94,13 +103,13 @@ export async function getWorkspaceSmtpSettings(
     senderEmail: string | null
 }>> {
     try {
-        const user = await getAuthenticatedUser()
-        if (!user) {
-            return { success: false, error: "Não autorizado" }
+        const canAccessWorkspace = await hasWorkspaceAccess(workspaceId)
+        if (!canAccessWorkspace) {
+            return { success: false, error: "Workspace não encontrado" }
         }
 
-        const workspace = await prisma.workspace.findFirst({
-            where: { id: workspaceId, userId: user.id },
+        const workspace = await prisma.workspace.findUnique({
+            where: { id: workspaceId },
             select: {
                 id: true,
                 name: true,
@@ -137,17 +146,8 @@ export async function updateWorkspaceSettings(
     data: WorkspaceSettingsData
 ): Promise<ActionResult> {
     try {
-        const user = await getAuthenticatedUser()
-        if (!user) {
-            return { success: false, error: "Não autorizado" }
-        }
-
-        // Verificar se o workspace pertence ao usuário
-        const workspace = await prisma.workspace.findFirst({
-            where: { id: workspaceId, userId: user.id },
-        })
-
-        if (!workspace) {
+        const canAccessWorkspace = await hasWorkspaceAccess(workspaceId)
+        if (!canAccessWorkspace) {
             return { success: false, error: "Workspace não encontrado" }
         }
 
@@ -180,17 +180,8 @@ export async function updateWorkspaceLogo(
     logoUrl: string | null
 ): Promise<ActionResult> {
     try {
-        const user = await getAuthenticatedUser()
-        if (!user) {
-            return { success: false, error: "Não autorizado" }
-        }
-
-        // Verificar se o workspace pertence ao usuário
-        const workspace = await prisma.workspace.findFirst({
-            where: { id: workspaceId, userId: user.id },
-        })
-
-        if (!workspace) {
+        const canAccessWorkspace = await hasWorkspaceAccess(workspaceId)
+        if (!canAccessWorkspace) {
             return { success: false, error: "Workspace não encontrado" }
         }
 
@@ -222,23 +213,14 @@ export async function saveSmtpSettings(
     data: SmtpSettingsData
 ): Promise<ActionResult> {
     try {
-        const user = await getAuthenticatedUser()
-        if (!user) {
-            return { success: false, error: "Não autorizado" }
-        }
-
         // Validar dados
         const validated = smtpSettingsSchema.safeParse(data)
         if (!validated.success) {
             return { success: false, error: validated.error.issues[0].message }
         }
 
-        // Verificar se o workspace pertence ao usuário
-        const workspace = await prisma.workspace.findFirst({
-            where: { id: workspaceId, userId: user.id },
-        })
-
-        if (!workspace) {
+        const canAccessWorkspace = await hasWorkspaceAccess(workspaceId)
+        if (!canAccessWorkspace) {
             return { success: false, error: "Workspace não encontrado" }
         }
 
@@ -314,16 +296,8 @@ export async function testSmtpSettings(
  */
 export async function clearSmtpSettings(workspaceId: string): Promise<ActionResult> {
     try {
-        const user = await getAuthenticatedUser()
-        if (!user) {
-            return { success: false, error: "Não autorizado" }
-        }
-
-        const workspace = await prisma.workspace.findFirst({
-            where: { id: workspaceId, userId: user.id },
-        })
-
-        if (!workspace) {
+        const canAccessWorkspace = await hasWorkspaceAccess(workspaceId)
+        if (!canAccessWorkspace) {
             return { success: false, error: "Workspace não encontrado" }
         }
 

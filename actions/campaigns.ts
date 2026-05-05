@@ -4,7 +4,7 @@
 
 import { revalidatePath } from "next/cache"
 import { prisma } from "@/lib/prisma"
-import { getAuthenticatedUser } from "@/lib/auth"
+import { getAuthenticatedUser, requireWorkspaceAccess } from "@/lib/auth"
 import {
     createCampaignSchema,
     updateCampaignSchema,
@@ -80,16 +80,9 @@ export async function getCampaigns(
     }
 ): Promise<ActionResult<CampaignWithRelations[]>> {
     try {
-        const user = await getAuthenticatedUser()
-        if (!user) {
-            return { success: false, error: "Não autorizado" }
-        }
-
-        const workspace = await prisma.workspace.findFirst({
-            where: { id: workspaceId, userId: user.id },
-        })
-
-        if (!workspace) {
+        try {
+            await requireWorkspaceAccess(workspaceId)
+        } catch {
             return { success: false, error: "Workspace não encontrado" }
         }
 
@@ -198,21 +191,14 @@ export async function createCampaign(
     data: CreateCampaignData
 ): Promise<ActionResult<{ id: string }>> {
     try {
-        const user = await getAuthenticatedUser()
-        if (!user) {
-            return { success: false, error: "Não autorizado" }
-        }
-
         const validated = createCampaignSchema.safeParse(data)
         if (!validated.success) {
             return { success: false, error: validated.error.issues[0].message }
         }
 
-        const workspace = await prisma.workspace.findFirst({
-            where: { id: validated.data.workspaceId, userId: user.id },
-        })
-
-        if (!workspace) {
+        try {
+            await requireWorkspaceAccess(validated.data.workspaceId)
+        } catch {
             return { success: false, error: "Workspace não encontrado" }
         }
 

@@ -4,7 +4,7 @@
 
 import { revalidatePath } from "next/cache"
 import { prisma } from "@/lib/prisma"
-import { getAuthenticatedUser } from "@/lib/auth"
+import { getAuthenticatedUser, requireWorkspaceAccess } from "@/lib/auth"
 import { z } from "zod"
 import {
     createCallSchema,
@@ -38,14 +38,12 @@ interface ActionResult<T = void> {
 // ============================================
 
 async function verifyWorkspaceAccess(workspaceId: string): Promise<boolean> {
-    const user = await getAuthenticatedUser()
-    if (!user) return false
-
-    const workspace = await prisma.workspace.findFirst({
-        where: { id: workspaceId, userId: user.id },
-    })
-
-    return !!workspace
+    try {
+        await requireWorkspaceAccess(workspaceId)
+        return true
+    } catch {
+        return false
+    }
 }
 
 function getLeadStatusFromCallResult(result: CallResult): LeadStatus | null {

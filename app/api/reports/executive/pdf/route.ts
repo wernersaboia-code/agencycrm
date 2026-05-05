@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { renderToBuffer } from "@react-pdf/renderer"
 import { prisma } from "@/lib/prisma"
-import { getAuthenticatedUser } from "@/lib/auth"
+import { isAuthenticationError, requireWorkspaceAccess } from "@/lib/auth"
 import { ExecutiveReportPDF } from "@/lib/pdf/templates/executive-report"
 import { format } from "date-fns"
 import {
@@ -42,12 +42,6 @@ import { getCountryName } from "@/lib/constants/countries.constants"
 
 export async function GET(request: NextRequest) {
     try {
-        const user = await getAuthenticatedUser()
-
-        if (!user) {
-            return NextResponse.json({ error: "Não autorizado" }, { status: 401 })
-        }
-
         const parsedParams = executiveReportQuerySchema.safeParse(
             searchParamsToObject(request.nextUrl.searchParams)
         )
@@ -62,15 +56,18 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ error: "Workspace não informado" }, { status: 400 })
         }
 
-        // Verificar workspace
-        const workspace = await prisma.workspace.findFirst({
-            where: { id: workspaceId, userId: user.id },
+        try {
+            await requireWorkspaceAccess(workspaceId)
+        } catch (error) {
+            const status = isAuthenticationError(error) ? 401 : 404
+            const message = status === 401 ? "Não autorizado" : "Workspace não encontrado"
+            return NextResponse.json({ error: message }, { status })
+        }
+
+        const workspace = await prisma.workspace.findUniqueOrThrow({
+            where: { id: workspaceId },
             select: { id: true, name: true, logo: true, color: true },
         })
-
-        if (!workspace) {
-            return NextResponse.json({ error: "Workspace não encontrado" }, { status: 404 })
-        }
 
         // Definir período
         const { start, end } = getExecutiveReportPeriod(parsedParams.data)

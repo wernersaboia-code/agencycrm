@@ -4,7 +4,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { prisma } from '@/lib/prisma'
-import { getAuthenticatedUser } from '@/lib/auth'
+import { getAuthenticatedUser, requireWorkspaceAccess } from '@/lib/auth'
 import { z } from 'zod'
 import {
     createLeadSchema,
@@ -164,11 +164,6 @@ export async function getLeads(params: GetLeadsParams): Promise<ActionResult<{
     stats: LeadStats
 }>> {
     try {
-        const user = await getAuthenticatedUser()
-        if (!user) {
-            return { success: false, error: 'Não autenticado' }
-        }
-
         const parsedParams = getLeadsParamsSchema.safeParse(params)
         if (!parsedParams.success) {
             return { success: false, error: getFirstZodError(parsedParams.error) }
@@ -184,11 +179,9 @@ export async function getLeads(params: GetLeadsParams): Promise<ActionResult<{
             pageSize
         } = parsedParams.data
 
-        const workspace = await prisma.workspace.findFirst({
-            where: { id: workspaceId, userId: user.id }
-        })
-
-        if (!workspace) {
+        try {
+            await requireWorkspaceAccess(workspaceId)
+        } catch {
             return { success: false, error: 'Workspace não encontrado' }
         }
 
@@ -323,21 +316,14 @@ export async function getLeadEmailSends(leadId: string): Promise<{
 
 export async function createLead(data: CreateLeadData): Promise<ActionResult<LeadWithRelations>> {
     try {
-        const user = await getAuthenticatedUser()
-        if (!user) {
-            return { success: false, error: 'Não autenticado' }
-        }
-
         const validation = createLeadSchema.safeParse(data)
         if (!validation.success) {
             return { success: false, error: getFirstZodError(validation.error) }
         }
 
-        const workspace = await prisma.workspace.findFirst({
-            where: { id: data.workspaceId, userId: user.id }
-        })
-
-        if (!workspace) {
+        try {
+            await requireWorkspaceAccess(validation.data.workspaceId)
+        } catch {
             return { success: false, error: 'Workspace não encontrado' }
         }
 
@@ -517,16 +503,9 @@ export async function importLeads(
         const validatedWorkspaceId = parsedImport.data.workspaceId
         const validatedLeads = parsedImport.data.leads
 
-        const user = await getAuthenticatedUser()
-        if (!user) {
-            return { success: false, error: 'Não autenticado' }
-        }
-
-        const workspace = await prisma.workspace.findFirst({
-            where: { id: validatedWorkspaceId, userId: user.id }
-        })
-
-        if (!workspace) {
+        try {
+            await requireWorkspaceAccess(validatedWorkspaceId)
+        } catch {
             return { success: false, error: 'Workspace não encontrado' }
         }
 

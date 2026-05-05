@@ -1,7 +1,7 @@
 // app/api/reports/calls/csv/route.ts
 import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
-import { getAuthenticatedUser } from "@/lib/auth"
+import { isAuthenticationError, requireWorkspaceAccess } from "@/lib/auth"
 import { format } from "date-fns"
 import {
     buildCallReportWhere,
@@ -31,12 +31,6 @@ function formatDuration(seconds: number | null): string {
 
 export async function GET(request: NextRequest) {
     try {
-        const user = await getAuthenticatedUser()
-
-        if (!user) {
-            return NextResponse.json({ error: "Não autorizado" }, { status: 401 })
-        }
-
         const parsedParams = callReportQuerySchema.safeParse(
             searchParamsToObject(request.nextUrl.searchParams)
         )
@@ -51,13 +45,17 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ error: "Workspace não informado" }, { status: 400 })
         }
 
-        const workspace = await prisma.workspace.findFirst({
-            where: { id: workspaceId, userId: user.id },
-        })
-
-        if (!workspace) {
-            return NextResponse.json({ error: "Workspace não encontrado" }, { status: 404 })
+        try {
+            await requireWorkspaceAccess(workspaceId)
+        } catch (error) {
+            const status = isAuthenticationError(error) ? 401 : 404
+            const message = status === 401 ? "Não autorizado" : "Workspace não encontrado"
+            return NextResponse.json({ error: message }, { status })
         }
+
+        const workspace = await prisma.workspace.findUniqueOrThrow({
+            where: { id: workspaceId },
+        })
 
         // Montar filtros
         const where = buildCallReportWhere(parsedParams.data)

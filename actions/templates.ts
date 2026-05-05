@@ -4,7 +4,7 @@
 
 import { revalidatePath } from "next/cache"
 import { prisma } from "@/lib/prisma"
-import { getAuthenticatedUser } from "@/lib/auth"
+import { getAuthenticatedUser, requireWorkspaceAccess } from "@/lib/auth"
 import { z } from "zod"
 import {
     createTemplateSchema,
@@ -61,17 +61,9 @@ export async function getTemplates(
         workspaceId = parsedWorkspaceId.data
         options = parsedOptions.data
 
-        const user = await getAuthenticatedUser()
-        if (!user) {
-            return { success: false, error: "Não autorizado" }
-        }
-
-        // Verificar se o workspace pertence ao usuário
-        const workspace = await prisma.workspace.findFirst({
-            where: { id: workspaceId, userId: user.id },
-        })
-
-        if (!workspace) {
+        try {
+            await requireWorkspaceAccess(workspaceId)
+        } catch {
             return { success: false, error: "Workspace não encontrado" }
         }
 
@@ -154,23 +146,15 @@ export async function createTemplate(
     data: CreateTemplateData
 ): Promise<ActionResult<{ id: string }>> {
     try {
-        const user = await getAuthenticatedUser()
-        if (!user) {
-            return { success: false, error: "Não autorizado" }
-        }
-
         // Validar dados
         const validated = createTemplateSchema.safeParse(data)
         if (!validated.success) {
             return { success: false, error: validated.error.issues[0].message }
         }
 
-        // Verificar se o workspace pertence ao usuário
-        const workspace = await prisma.workspace.findFirst({
-            where: { id: validated.data.workspaceId, userId: user.id },
-        })
-
-        if (!workspace) {
+        try {
+            await requireWorkspaceAccess(validated.data.workspaceId)
+        } catch {
             return { success: false, error: "Workspace não encontrado" }
         }
 
