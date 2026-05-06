@@ -4,14 +4,19 @@ import { prisma } from "@/lib/prisma"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import {
+    AlertCircle,
     Package,
     Users,
     ShoppingCart,
     TrendingUp,
     ArrowRight,
-    Plus
+    Plus,
+    CheckCircle2,
+    Store,
 } from "lucide-react"
 import { formatCurrency } from "@/lib/utils"
+import { Badge } from "@/components/ui/badge"
+import { Progress } from "@/components/ui/progress"
 
 export default async function MarketplacePage() {
     const [listsCount, leadsCount, purchasesCount, revenue, recentLists] = await Promise.all([
@@ -61,6 +66,39 @@ export default async function MarketplacePage() {
             color: "text-amber-600"
         },
     ]
+    const publishedLists = recentLists.filter((list) => list.isActive && list._count.leads > 0).length
+    const emptyRecentLists = recentLists.filter((list) => list._count.leads === 0).length
+    const marketplaceChecks = [
+        {
+            title: "Listas publicadas",
+            description: listsCount > 0
+                ? `${listsCount} lista${listsCount !== 1 ? "s" : ""} no catálogo`
+                : "Crie a primeira lista para iniciar o catálogo.",
+            href: "/super-admin/marketplace/lists",
+            done: listsCount > 0,
+            value: listsCount,
+        },
+        {
+            title: "Estoque de leads",
+            description: leadsCount > 0
+                ? `${leadsCount.toLocaleString()} lead${leadsCount !== 1 ? "s" : ""} disponíveis`
+                : "Adicione leads às listas antes de vender.",
+            href: "/super-admin/marketplace/lists",
+            done: leadsCount > 0,
+            value: leadsCount.toLocaleString(),
+        },
+        {
+            title: "Vendas pagas",
+            description: purchasesCount > 0
+                ? `${purchasesCount} compra${purchasesCount !== 1 ? "s" : ""} concluída${purchasesCount !== 1 ? "s" : ""}`
+                : "Nenhuma compra paga registrada ainda.",
+            href: "/super-admin/marketplace/purchases",
+            done: purchasesCount > 0,
+            value: purchasesCount,
+        },
+    ]
+    const completedChecks = marketplaceChecks.filter((check) => check.done).length
+    const readiness = Math.round((completedChecks / marketplaceChecks.length) * 100)
 
     return (
         <div className="space-y-6">
@@ -98,6 +136,55 @@ export default async function MarketplacePage() {
                     </Link>
                 ))}
             </div>
+
+            <Card className={readiness >= 67 ? "border-emerald-300 dark:border-emerald-900" : "border-amber-300 dark:border-amber-900"}>
+                <CardHeader className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                    <div className="space-y-2">
+                        <div className="flex flex-wrap items-center gap-2">
+                            <CardTitle className="flex items-center gap-2">
+                                <Store className="h-5 w-5" />
+                                Prontidão do marketplace
+                            </CardTitle>
+                            <Badge variant={readiness >= 67 ? "default" : "outline"}>
+                                {completedChecks}/{marketplaceChecks.length} completo
+                            </Badge>
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                            {publishedLists} lista{publishedLists !== 1 ? "s" : ""} recente{publishedLists !== 1 ? "s" : ""} com leads.
+                            {emptyRecentLists > 0 ? ` ${emptyRecentLists} recente${emptyRecentLists !== 1 ? "s" : ""} ainda sem leads.` : " Nenhuma lista recente vazia."}
+                        </p>
+                    </div>
+                    <div className="w-full space-y-2 lg:w-64">
+                        <div className="flex items-center justify-between text-sm">
+                            <span className="text-muted-foreground">Cobertura</span>
+                            <span className="font-medium">{readiness}%</span>
+                        </div>
+                        <Progress value={readiness} />
+                    </div>
+                </CardHeader>
+                <CardContent className="grid gap-3 md:grid-cols-3">
+                    {marketplaceChecks.map((check) => (
+                        <Link
+                            key={check.title}
+                            href={check.href}
+                            className="flex min-h-[104px] items-start justify-between gap-3 rounded-lg border bg-background p-4 transition-colors hover:bg-muted/50"
+                        >
+                            <span className="flex min-w-0 gap-3">
+                                {check.done ? (
+                                    <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
+                                ) : (
+                                    <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
+                                )}
+                                <span>
+                                    <span className="block font-medium">{check.title}</span>
+                                    <span className="block text-sm text-muted-foreground">{check.description}</span>
+                                </span>
+                            </span>
+                            <span className="text-xl font-semibold">{check.value}</span>
+                        </Link>
+                    ))}
+                </CardContent>
+            </Card>
 
             {/* Quick Actions + Recent Lists */}
             <div className="grid gap-6 lg:grid-cols-2">

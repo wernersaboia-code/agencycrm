@@ -2,7 +2,17 @@
 
 import { Suspense } from "react"
 import Link from "next/link"
-import { Building2, Search, Filter } from "lucide-react"
+import {
+    ArrowRight,
+    Building2,
+    CheckCircle2,
+    FileText,
+    Filter,
+    Megaphone,
+    Phone,
+    Search,
+    Users,
+} from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
@@ -101,7 +111,83 @@ async function WorkspacesTable({
         )
     }
 
+    const withoutLeads = workspaces.filter((workspace) => workspace._count.leads === 0).length
+    const withoutCampaigns = workspaces.filter((workspace) => workspace._count.campaigns === 0).length
+    const withoutCalls = workspaces.filter((workspace) => workspace._count.calls === 0).length
+    const withoutTemplates = workspaces.filter((workspace) => workspace._count.emailTemplates === 0).length
+    const activeWorkspaces = workspaces.filter((workspace) =>
+        workspace._count.leads > 0 ||
+        workspace._count.campaigns > 0 ||
+        workspace._count.calls > 0
+    ).length
+    const workspaceSignals = [
+        {
+            label: "Sem leads",
+            value: withoutLeads,
+            description: "Clientes ainda sem base importada.",
+            icon: Users,
+            tone: withoutLeads > 0 ? "warning" : "success",
+        },
+        {
+            label: "Sem templates",
+            value: withoutTemplates,
+            description: "Clientes sem modelos para campanhas.",
+            icon: FileText,
+            tone: withoutTemplates > 0 ? "warning" : "success",
+        },
+        {
+            label: "Sem campanhas",
+            value: withoutCampaigns,
+            description: "Clientes que ainda não ativaram envios.",
+            icon: Megaphone,
+            tone: withoutCampaigns > 0 ? "warning" : "success",
+        },
+        {
+            label: "Sem ligações",
+            value: withoutCalls,
+            description: "Clientes sem acompanhamento comercial.",
+            icon: Phone,
+            tone: withoutCalls > 0 ? "warning" : "success",
+        },
+    ]
+
     return (
+        <div className="space-y-4">
+        <Card className={activeWorkspaces === workspaces.length ? "border-emerald-300 dark:border-emerald-900" : "border-amber-300 dark:border-amber-900"}>
+            <CardHeader className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                <div>
+                    <CardTitle>Saúde dos workspaces</CardTitle>
+                    <p className="text-sm text-muted-foreground">
+                        {activeWorkspaces}/{workspaces.length} workspaces desta página já têm alguma operação registrada.
+                    </p>
+                </div>
+                <Badge variant={activeWorkspaces === workspaces.length ? "default" : "outline"}>
+                    {activeWorkspaces === workspaces.length ? "Operação ativa" : "Há clientes travados"}
+                </Badge>
+            </CardHeader>
+            <CardContent className="grid gap-3 md:grid-cols-4">
+                {workspaceSignals.map((signal) => (
+                    <div
+                        key={signal.label}
+                        className="flex min-h-[96px] items-start justify-between gap-3 rounded-lg border bg-background p-4"
+                    >
+                        <span className="flex min-w-0 gap-3">
+                            {signal.tone === "success" ? (
+                                <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
+                            ) : (
+                                <signal.icon className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
+                            )}
+                            <span>
+                                <span className="block font-medium">{signal.label}</span>
+                                <span className="block text-sm text-muted-foreground">{signal.description}</span>
+                            </span>
+                        </span>
+                        <span className="text-xl font-semibold">{signal.value}</span>
+                    </div>
+                ))}
+            </CardContent>
+        </Card>
+
         <Card>
             <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>Workspaces ({total})</CardTitle>
@@ -191,6 +277,7 @@ async function WorkspacesTable({
                                         <Button variant="ghost" size="sm" asChild>
                                             <Link href={`/super-admin/workspaces/${workspace.id}`}>
                                                 Ver detalhes
+                                                <ArrowRight className="ml-2 h-4 w-4" />
                                             </Link>
                                         </Button>
                                     </TableCell>
@@ -226,6 +313,7 @@ async function WorkspacesTable({
                 )}
             </CardContent>
         </Card>
+        </div>
     )
 }
 

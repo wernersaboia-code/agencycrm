@@ -2,7 +2,17 @@
 
 import { Suspense } from "react"
 import Link from "next/link"
-import { Users, Search, Filter } from "lucide-react"
+import {
+    AlertCircle,
+    ArrowRight,
+    Building2,
+    CheckCircle2,
+    Clock,
+    Filter,
+    Search,
+    ShieldCheck,
+    Users,
+} from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
@@ -160,7 +170,90 @@ async function UsersTable({
         )
     }
 
+    const admins = users.filter((user) => user.role === "ADMIN").length
+    const pendingUsers = users.filter((user) => user.status === "PENDING").length
+    const inactiveUsers = users.filter((user) => user.status === "INACTIVE").length
+    const usersWithoutWorkspace = users.filter((user) => user._count.workspaces === 0).length
+    const nowTime = new Date().getTime()
+    const staleUsers = users.filter((user) => {
+        if (!user.lastLoginAt) return true
+        const lastLoginAt = new Date(user.lastLoginAt)
+        const daysSinceLogin = (nowTime - lastLoginAt.getTime()) / (1000 * 60 * 60 * 24)
+        return daysSinceLogin >= 30
+    }).length
+    const userSignals = [
+        {
+            label: "Pendentes",
+            value: pendingUsers,
+            description: "Contas aguardando conclusão ou liberação.",
+            icon: Clock,
+            tone: pendingUsers > 0 ? "warning" : "success",
+            href: "/super-admin/users?status=PENDING",
+        },
+        {
+            label: "Inativos",
+            value: inactiveUsers,
+            description: "Usuários sem acesso ativo à plataforma.",
+            icon: AlertCircle,
+            tone: inactiveUsers > 0 ? "warning" : "success",
+            href: "/super-admin/users?status=INACTIVE",
+        },
+        {
+            label: "Sem workspace",
+            value: usersWithoutWorkspace,
+            description: "Usuários que ainda não operam nenhum cliente.",
+            icon: Building2,
+            tone: usersWithoutWorkspace > 0 ? "warning" : "success",
+            href: "/super-admin/users",
+        },
+        {
+            label: "Admins",
+            value: admins,
+            description: "Contas com permissão administrativa.",
+            icon: ShieldCheck,
+            tone: admins > 0 ? "default" : "warning",
+            href: "/super-admin/users?role=ADMIN",
+        },
+    ]
+
     return (
+        <div className="space-y-4">
+        <Card className={pendingUsers + inactiveUsers + usersWithoutWorkspace > 0 ? "border-amber-300 dark:border-amber-900" : "border-emerald-300 dark:border-emerald-900"}>
+            <CardHeader className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                <div>
+                    <CardTitle>Visão de usuários</CardTitle>
+                    <p className="text-sm text-muted-foreground">
+                        {users.length} nesta página, {total} no total. {staleUsers} sem login recente ou nunca acessaram.
+                    </p>
+                </div>
+                <Badge variant={pendingUsers + inactiveUsers + usersWithoutWorkspace > 0 ? "outline" : "default"}>
+                    {pendingUsers + inactiveUsers + usersWithoutWorkspace > 0 ? "Revisar acessos" : "Acessos em dia"}
+                </Badge>
+            </CardHeader>
+            <CardContent className="grid gap-3 md:grid-cols-4">
+                {userSignals.map((signal) => (
+                    <Link
+                        key={signal.label}
+                        href={signal.href}
+                        className="flex min-h-[96px] items-start justify-between gap-3 rounded-lg border bg-background p-4 transition-colors hover:bg-muted/50"
+                    >
+                        <span className="flex min-w-0 gap-3">
+                            {signal.tone === "success" ? (
+                                <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
+                            ) : (
+                                <signal.icon className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
+                            )}
+                            <span>
+                                <span className="block font-medium">{signal.label}</span>
+                                <span className="block text-sm text-muted-foreground">{signal.description}</span>
+                            </span>
+                        </span>
+                        <span className="text-xl font-semibold">{signal.value}</span>
+                    </Link>
+                ))}
+            </CardContent>
+        </Card>
+
         <Card>
             <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>Usuários ({total})</CardTitle>
@@ -245,6 +338,7 @@ async function UsersTable({
                                         <Button variant="ghost" size="sm" asChild>
                                             <Link href={`/super-admin/users/${user.id}`}>
                                                 Ver detalhes
+                                                <ArrowRight className="ml-2 h-4 w-4" />
                                             </Link>
                                         </Button>
                                     </TableCell>
@@ -284,6 +378,7 @@ async function UsersTable({
                 )}
             </CardContent>
         </Card>
+        </div>
     )
 }
 

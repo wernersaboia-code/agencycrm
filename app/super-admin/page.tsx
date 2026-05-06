@@ -3,6 +3,8 @@
 import { Suspense } from "react"
 import Link from "next/link"
 import {
+    Activity,
+    AlertCircle,
     Users,
     Building2,
     Mail,
@@ -14,10 +16,13 @@ import {
     ListPlus,
     Store,
     UserCog,
+    CheckCircle2,
 } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Progress } from "@/components/ui/progress"
 import { getGlobalStats } from "@/actions/admin/global-stats"
 
 export default async function SuperAdminDashboardPage() {
@@ -34,6 +39,10 @@ export default async function SuperAdminDashboardPage() {
             {/* Stats */}
             <Suspense fallback={<StatsGridSkeleton />}>
                 <GlobalStatsGrid />
+            </Suspense>
+
+            <Suspense fallback={<PanelSkeleton />}>
+                <GlobalReadinessPanel />
             </Suspense>
 
             <div className="grid gap-6 md:grid-cols-2">
@@ -157,6 +166,98 @@ function StatsGridSkeleton() {
                 </Card>
             ))}
         </div>
+    )
+}
+
+async function GlobalReadinessPanel() {
+    const stats = await getGlobalStats()
+    const activeUserRate = stats.totalUsers > 0
+        ? Math.round((stats.activeUsers / stats.totalUsers) * 100)
+        : 0
+    const callAnswerRate = stats.totalCalls > 0
+        ? Math.round((stats.callsAnswered / stats.totalCalls) * 100)
+        : 0
+    const checks = [
+        {
+            title: "Base de usuários",
+            description: `${activeUserRate}% dos usuários estão ativos`,
+            href: "/super-admin/users",
+            done: stats.totalUsers > 0 && activeUserRate >= 70,
+            value: `${stats.activeUsers}/${stats.totalUsers}`,
+        },
+        {
+            title: "Catálogo marketplace",
+            description: `${stats.totalLists} listas ativas com ${stats.totalLeadsMarketplace.toLocaleString()} leads`,
+            href: "/super-admin/marketplace/lists",
+            done: stats.totalLists > 0 && stats.totalLeadsMarketplace > 0,
+            value: stats.totalLists,
+        },
+        {
+            title: "Receita do mês",
+            description: `${stats.purchasesThisMonth} venda${stats.purchasesThisMonth !== 1 ? "s" : ""} paga${stats.purchasesThisMonth !== 1 ? "s" : ""}`,
+            href: "/super-admin/marketplace/purchases",
+            done: stats.revenueThisMonth > 0,
+            value: `€${stats.revenueThisMonth.toLocaleString()}`,
+        },
+        {
+            title: "Engajamento CRM",
+            description: `${stats.openRate}% abertura, ${callAnswerRate}% atendimento`,
+            href: "/super-admin/workspaces",
+            done: stats.emailsSent > 0 || stats.totalCalls > 0,
+            value: stats.emailsSent.toLocaleString(),
+        },
+    ]
+    const completedChecks = checks.filter((check) => check.done).length
+    const readiness = Math.round((completedChecks / checks.length) * 100)
+
+    return (
+        <Card className={readiness >= 75 ? "border-emerald-300 dark:border-emerald-900" : "border-amber-300 dark:border-amber-900"}>
+            <CardHeader className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                <div className="space-y-2">
+                    <div className="flex flex-wrap items-center gap-2">
+                        <CardTitle className="flex items-center gap-2">
+                            <Activity className="h-5 w-5" />
+                            Saúde da operação
+                        </CardTitle>
+                        <Badge variant={readiness >= 75 ? "default" : "outline"}>
+                            {completedChecks}/{checks.length} em dia
+                        </Badge>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                        Sinais rápidos para priorizar suporte, catálogo, receita e adoção do CRM.
+                    </p>
+                </div>
+                <div className="w-full space-y-2 lg:w-64">
+                    <div className="flex items-center justify-between text-sm">
+                        <span className="text-muted-foreground">Prontidão</span>
+                        <span className="font-medium">{readiness}%</span>
+                    </div>
+                    <Progress value={readiness} />
+                </div>
+            </CardHeader>
+            <CardContent className="grid gap-3 md:grid-cols-4">
+                {checks.map((check) => (
+                    <Link
+                        key={check.title}
+                        href={check.href}
+                        className="flex min-h-[112px] items-start justify-between gap-3 rounded-lg border bg-background p-4 transition-colors hover:bg-muted/50"
+                    >
+                        <span className="flex min-w-0 gap-3">
+                            {check.done ? (
+                                <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
+                            ) : (
+                                <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
+                            )}
+                            <span className="space-y-1">
+                                <span className="block font-medium leading-tight">{check.title}</span>
+                                <span className="block text-sm text-muted-foreground">{check.description}</span>
+                            </span>
+                        </span>
+                        <span className="text-right text-lg font-semibold">{check.value}</span>
+                    </Link>
+                ))}
+            </CardContent>
+        </Card>
     )
 }
 
