@@ -35,13 +35,13 @@ export default async function DashboardLayout({
 
     // Se não tem workspace, redireciona para criar
     if (!workspace) {
-        redirect("/crm/sign-up")
+        redirect("/workspaces?message=create-first")
     }
 
     // Verificar trial expirado
     if (workspace.plan === "TRIAL" && workspace.trialEndsAt) {
         if (new Date() > workspace.trialEndsAt) {
-            redirect("/crm/trial-expired")
+            redirect("/trial-expired")
         }
     }
 

@@ -27,32 +27,32 @@ import { useEffect, useState } from "react"
 const mainMenuItems = [
     {
         title: "Dashboard",
-        href: "/crm/dashboard",
+        href: "/dashboard",
         icon: LayoutDashboard,
     },
     {
         title: "Leads",
-        href: "/crm/leads",
+        href: "/leads",
         icon: Users,
     },
     {
         title: "Campanhas",
-        href: "/crm/campaigns",
+        href: "/campaigns",
         icon: Mail,
     },
     {
         title: "Templates",
-        href: "/crm/templates",
+        href: "/templates",
         icon: FileText,
     },
     {
         title: "Ligações",
-        href: "/crm/calls",
+        href: "/calls",
         icon: Phone,
     },
     {
         title: "Relatórios",
-        href: "/crm/reports",
+        href: "/reports",
         icon: BarChart3,
     },
 ]
@@ -60,12 +60,12 @@ const mainMenuItems = [
 const managementMenuItems = [
     {
         title: "Clientes",
-        href: "/crm/workspaces",
+        href: "/workspaces",
         icon: Building2,
     },
     {
         title: "Configurações",
-        href: "/crm/settings",
+        href: "/settings",
         icon: Settings,
     },
 ]
@@ -102,7 +102,7 @@ export function Sidebar() {
         <div className="flex h-full w-64 flex-col border-r bg-muted/40">
             {/* Logo */}
             <div className="flex h-16 items-center border-b px-6">
-                <Link href="/crm/dashboard" className="flex items-center gap-2">
+                <Link href="/dashboard" className="flex items-center gap-2">
                     <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
                         <span className="text-lg font-bold text-primary-foreground">A</span>
                     </div>

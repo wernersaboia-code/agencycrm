@@ -2,6 +2,7 @@
 "use client"
 
 import { useState, Suspense } from "react"
+import type { FormEvent } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { toast } from "sonner"
@@ -30,10 +31,48 @@ function SignInForm() {
 
     // Detectar contexto (marketplace vs crm)
     const from = searchParams.get("from")
-    const redirectTo = searchParams.get("redirect") || (from === "marketplace" ? "/my-purchases" : "/dashboard")
+    const explicitRedirect = searchParams.get("redirect")
     const isMarketplace = from === "marketplace" || searchParams.get("marketplace") === "true"
 
-    async function handleSubmit(e: React.FormEvent) {
+    function normalizeRedirect(path: string) {
+        if (path === "/crm" || path === "/crm/dashboard") {
+            return "/dashboard"
+        }
+
+        if (path.startsWith("/crm/")) {
+            return path.replace(/^\/crm/, "")
+        }
+
+        return path
+    }
+
+    async function getPostLoginRedirect() {
+        if (explicitRedirect) {
+            return normalizeRedirect(explicitRedirect)
+        }
+
+        if (isMarketplace) {
+            return "/my-purchases"
+        }
+
+        try {
+            const response = await fetch("/api/user/role", { cache: "no-store" })
+
+            if (response.ok) {
+                const data = await response.json() as { role?: string | null }
+
+                if (data.role === "ADMIN") {
+                    return "/super-admin"
+                }
+            }
+        } catch {
+            // Se a consulta de perfil falhar, usa o destino padrão do CRM.
+        }
+
+        return "/dashboard"
+    }
+
+    async function handleSubmit(e: FormEvent) {
         e.preventDefault()
         setIsLoading(true)
 
@@ -49,6 +88,8 @@ function SignInForm() {
                 toast.error(error.message)
                 return
             }
+
+            const redirectTo = await getPostLoginRedirect()
 
             toast.success("Login realizado com sucesso!")
             router.push(redirectTo)
@@ -141,12 +182,19 @@ function SignInForm() {
                     </p>
 
                     {!isMarketplace && (
-                        <div className="text-center">
+                        <div className="space-y-2 text-center">
                             <Link
                                 href="/sign-in?from=marketplace"
                                 className="text-sm text-[#2ec4b6] hover:underline"
                             >
                                 ← Acessar área de compras
+                            </Link>
+                            <br />
+                            <Link
+                                href="/sign-in?redirect=/super-admin"
+                                className="text-sm text-violet-600 hover:underline"
+                            >
+                                Acessar como super-admin
                             </Link>
                         </div>
                     )}

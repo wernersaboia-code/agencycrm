@@ -45,7 +45,7 @@ export default function TrialExpiredPage() {
                                 </li>
                             </ul>
                             <Button className="w-full" asChild>
-                                <Link href="/crm/pricing">
+                                <Link href="/pricing">
                                     Ver Planos
                                     <ArrowRight className="h-4 w-4 ml-2" />
                                 </Link>
@@ -74,8 +74,8 @@ export default function TrialExpiredPage() {
                                 </li>
                             </ul>
                             <Button variant="outline" className="w-full" asChild>
-                                <Link href="/crm/export-data">
-                                    Exportar Dados
+                                <Link href="/reports">
+                                    Abrir relatórios
                                 </Link>
                             </Button>
                         </div>

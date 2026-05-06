@@ -166,7 +166,7 @@ export default function PricingPage() {
                         className="bg-yellow-400 hover:bg-yellow-500 text-blue-900 font-bold"
                         asChild
                     >
-                        <Link href="/crm/sign-up">
+                        <Link href="/sign-up">
                             Criar Conta Grátis
                         </Link>
                     </Button>
@@ -206,7 +206,7 @@ function PricingCard({ name, description, monthlyPrice, yearlyPrice, features, c
                     variant={popular ? 'default' : 'outline'}
                     asChild
                 >
-                    <Link href="/crm/sign-up">
+                    <Link href="/sign-up">
                         {cta}
                     </Link>
                 </Button>

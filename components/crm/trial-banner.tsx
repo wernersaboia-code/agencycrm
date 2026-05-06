@@ -87,7 +87,7 @@ export function TrialBanner() {
                     className={getButtonStyle()}
                     asChild
                 >
-                    <Link href="/crm/pricing">
+                    <Link href="/pricing">
                         {daysLeft <= 0 ? "Escolher Plano" : "Assinar Agora"}
                     </Link>
                 </Button>
