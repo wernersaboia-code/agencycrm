@@ -3,7 +3,9 @@
 import { notFound } from "next/navigation"
 import Link from "next/link"
 import {
+    AlertCircle,
     ArrowLeft,
+    CheckCircle2,
     Users,
     Send,
     Phone,
@@ -56,6 +58,35 @@ export default async function WorkspaceDetailsPage({ params }: WorkspaceDetailsP
         NOT_INTERESTED: "bg-red-500",
         CONVERTED: "bg-purple-500",
     }
+    const readinessChecks = [
+        {
+            label: "Leads",
+            description: stats.totalLeads > 0 ? `${stats.totalLeads.toLocaleString()} na base.` : "Sem leads importados.",
+            done: stats.totalLeads > 0,
+        },
+        {
+            label: "Templates",
+            description: workspace._count.emailTemplates > 0 ? `${workspace._count.emailTemplates} modelo${workspace._count.emailTemplates !== 1 ? "s" : ""}.` : "Sem templates de email.",
+            done: workspace._count.emailTemplates > 0,
+        },
+        {
+            label: "Envio configurado",
+            description: workspace.smtpProvider ? `SMTP ${workspace.smtpProvider}.` : "SMTP ainda não configurado.",
+            done: Boolean(workspace.smtpProvider),
+        },
+        {
+            label: "Campanhas",
+            description: stats.campaignsSent > 0 ? `${stats.campaignsSent} enviada${stats.campaignsSent !== 1 ? "s" : ""}.` : "Nenhuma campanha enviada.",
+            done: stats.campaignsSent > 0,
+        },
+        {
+            label: "Ligações",
+            description: stats.totalCalls > 0 ? `${stats.callsAnswered}/${stats.totalCalls} atendidas.` : "Sem ligações registradas.",
+            done: stats.totalCalls > 0,
+        },
+    ]
+    const completedReadiness = readinessChecks.filter((check) => check.done).length
+    const readiness = Math.round((completedReadiness / readinessChecks.length) * 100)
 
     return (
         <div className="space-y-6">
@@ -102,6 +133,39 @@ export default async function WorkspaceDetailsPage({ params }: WorkspaceDetailsP
                     </div>
                 </div>
             </div>
+
+            <Card className={readiness >= 80 ? "border-emerald-300 dark:border-emerald-900" : "border-amber-300 dark:border-amber-900"}>
+                <CardHeader className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                    <div>
+                        <CardTitle>Prontidão operacional</CardTitle>
+                        <p className="mt-1 text-sm text-muted-foreground">
+                            Fundamentos que indicam se este cliente está pronto para operar campanhas e acompanhamento.
+                        </p>
+                    </div>
+                    <div className="w-full space-y-2 lg:w-64">
+                        <div className="flex items-center justify-between text-sm">
+                            <span className="text-muted-foreground">Cobertura</span>
+                            <span className="font-medium">{readiness}%</span>
+                        </div>
+                        <Progress value={readiness} />
+                    </div>
+                </CardHeader>
+                <CardContent className="grid gap-3 md:grid-cols-5">
+                    {readinessChecks.map((check) => (
+                        <div key={check.label} className="flex min-h-[98px] gap-3 rounded-lg border bg-background p-4">
+                            {check.done ? (
+                                <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
+                            ) : (
+                                <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
+                            )}
+                            <div>
+                                <p className="font-medium leading-tight">{check.label}</p>
+                                <p className="mt-1 text-sm text-muted-foreground">{check.description}</p>
+                            </div>
+                        </div>
+                    ))}
+                </CardContent>
+            </Card>
 
             {/* Info + Owner */}
             <div className="grid gap-6 md:grid-cols-3">

@@ -10,10 +10,11 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { ShoppingCart, DollarSign, TrendingUp, Clock } from "lucide-react"
+import { AlertCircle, CheckCircle2, ShoppingCart, DollarSign, TrendingUp, Clock } from "lucide-react"
 import { formatCurrency } from "@/lib/utils"
 import { format } from "date-fns"
 import { ptBR } from "date-fns/locale"
+import { Progress } from "@/components/ui/progress"
 
 export default async function PurchasesPage() {
     const [purchases, stats] = await Promise.all([
@@ -43,6 +44,10 @@ export default async function PurchasesPage() {
     const pendingCount = await prisma.purchase.count({
         where: { status: "pending" }
     })
+    const failedCount = purchases.filter((purchase) => purchase.status === "failed").length
+    const refundedCount = purchases.filter((purchase) => purchase.status === "refunded").length
+    const paidCount = purchases.filter((purchase) => purchase.status === "paid").length
+    const paidRate = purchases.length > 0 ? Math.round((paidCount / purchases.length) * 100) : 0
 
     return (
         <div className="space-y-6">
@@ -105,6 +110,47 @@ export default async function PurchasesPage() {
                     </CardContent>
                 </Card>
             </div>
+
+            <Card className={pendingCount + failedCount + refundedCount > 0 ? "border-amber-300 dark:border-amber-900" : "border-emerald-300 dark:border-emerald-900"}>
+                <CardHeader className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                    <div>
+                        <CardTitle>Saúde das vendas</CardTitle>
+                        <p className="mt-1 text-sm text-muted-foreground">
+                            Acompanhe pagamentos concluídos, pendências e falhas recentes do marketplace.
+                        </p>
+                    </div>
+                    <div className="w-full space-y-2 lg:w-64">
+                        <div className="flex items-center justify-between text-sm">
+                            <span className="text-muted-foreground">Pagas</span>
+                            <span className="font-medium">{paidRate}%</span>
+                        </div>
+                        <Progress value={paidRate} />
+                    </div>
+                </CardHeader>
+                <CardContent className="grid gap-3 md:grid-cols-4">
+                    {[
+                        { label: "Pagas", value: paidCount, done: paidCount > 0, description: "Compras concluídas." },
+                        { label: "Pendentes", value: pendingCount, done: pendingCount === 0, description: "Aguardando confirmação." },
+                        { label: "Falhas", value: failedCount, done: failedCount === 0, description: "Pagamentos não concluídos." },
+                        { label: "Reembolsos", value: refundedCount, done: refundedCount === 0, description: "Compras devolvidas." },
+                    ].map((item) => (
+                        <div key={item.label} className="flex min-h-[96px] items-start justify-between gap-3 rounded-lg border bg-background p-4">
+                            <span className="flex min-w-0 gap-3">
+                                {item.done ? (
+                                    <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
+                                ) : (
+                                    <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
+                                )}
+                                <span>
+                                    <span className="block font-medium">{item.label}</span>
+                                    <span className="block text-sm text-muted-foreground">{item.description}</span>
+                                </span>
+                            </span>
+                            <span className="text-xl font-semibold">{item.value}</span>
+                        </div>
+                    ))}
+                </CardContent>
+            </Card>
 
             {/* Tabela */}
             <Card>

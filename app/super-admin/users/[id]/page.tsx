@@ -3,7 +3,10 @@
 import { notFound } from "next/navigation"
 import Link from "next/link"
 import {
+    AlertCircle,
     ArrowLeft,
+    ArrowRight,
+    CheckCircle2,
     Mail,
     Calendar,
     Clock,
@@ -16,6 +19,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Separator } from "@/components/ui/separator"
+import { Progress } from "@/components/ui/progress"
 import { getUserDetails, getUserStats } from "@/actions/admin/users"
 import { UserRoleSelect } from "@/components/admin/user-role-select"
 import { UserStatusToggle } from "@/components/admin/user-status-toggle"
@@ -45,6 +49,32 @@ export default async function UserDetailsPage({ params }: UserDetailsPageProps) 
         .join("")
         .toUpperCase()
         .slice(0, 2) || user.email[0].toUpperCase()
+    const readinessChecks = [
+        {
+            label: "Acesso ativo",
+            description: user.status === "ACTIVE" ? "Usuário pode acessar a plataforma." : "Revise o status antes de cobrar uso.",
+            done: user.status === "ACTIVE",
+        },
+        {
+            label: "Workspace criado",
+            description: user._count.workspaces > 0 ? `${user._count.workspaces} workspace${user._count.workspaces !== 1 ? "s" : ""}.` : "Usuário ainda não opera nenhum cliente.",
+            done: user._count.workspaces > 0,
+        },
+        {
+            label: "Uso registrado",
+            description: stats.totalLeads + stats.totalCampaigns + stats.totalCalls > 0
+                ? "Há atividade operacional vinculada."
+                : "Ainda não há leads, campanhas ou ligações.",
+            done: stats.totalLeads + stats.totalCampaigns + stats.totalCalls > 0,
+        },
+        {
+            label: "Login conhecido",
+            description: user.lastLoginAt ? "Último acesso registrado." : "Usuário nunca acessou.",
+            done: Boolean(user.lastLoginAt),
+        },
+    ]
+    const completedReadiness = readinessChecks.filter((check) => check.done).length
+    const readiness = Math.round((completedReadiness / readinessChecks.length) * 100)
 
     return (
         <div className="space-y-6">
@@ -76,6 +106,39 @@ export default async function UserDetailsPage({ params }: UserDetailsPageProps) 
                     <ResetPasswordButton email={user.email} />
                 </div>
             </div>
+
+            <Card className={readiness >= 75 ? "border-emerald-300 dark:border-emerald-900" : "border-amber-300 dark:border-amber-900"}>
+                <CardHeader className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                    <div>
+                        <CardTitle>Prontidão do usuário</CardTitle>
+                        <p className="mt-1 text-sm text-muted-foreground">
+                            Sinais para suporte, cobrança de adoção e revisão de acesso.
+                        </p>
+                    </div>
+                    <div className="w-full space-y-2 lg:w-64">
+                        <div className="flex items-center justify-between text-sm">
+                            <span className="text-muted-foreground">Cobertura</span>
+                            <span className="font-medium">{readiness}%</span>
+                        </div>
+                        <Progress value={readiness} />
+                    </div>
+                </CardHeader>
+                <CardContent className="grid gap-3 md:grid-cols-4">
+                    {readinessChecks.map((check) => (
+                        <div key={check.label} className="flex min-h-[98px] gap-3 rounded-lg border bg-background p-4">
+                            {check.done ? (
+                                <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
+                            ) : (
+                                <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
+                            )}
+                            <div>
+                                <p className="font-medium leading-tight">{check.label}</p>
+                                <p className="mt-1 text-sm text-muted-foreground">{check.description}</p>
+                            </div>
+                        </div>
+                    ))}
+                </CardContent>
+            </Card>
 
             {/* Info + Stats */}
             <div className="grid gap-6 md:grid-cols-3">
@@ -192,8 +255,9 @@ export default async function UserDetailsPage({ params }: UserDetailsPageProps) 
                     ) : (
                         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                             {user.workspaces.map((workspace) => (
-                                <div
+                                <Link
                                     key={workspace.id}
+                                    href={`/super-admin/workspaces/${workspace.id}`}
                                     className="p-4 border rounded-lg hover:bg-muted/50 transition-colors"
                                 >
                                     <div className="flex items-center gap-3 mb-3">
@@ -217,7 +281,11 @@ export default async function UserDetailsPage({ params }: UserDetailsPageProps) 
                                             <p className="text-xs text-muted-foreground">Ligações</p>
                                         </div>
                                     </div>
-                                </div>
+                                    <div className="mt-3 flex items-center justify-between text-sm font-medium text-primary">
+                                        Ver workspace
+                                        <ArrowRight className="h-4 w-4" />
+                                    </div>
+                                </Link>
                             ))}
                         </div>
                     )}
