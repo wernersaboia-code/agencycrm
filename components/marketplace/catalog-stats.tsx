@@ -1,50 +1,63 @@
-// components/marketplace/catalog-stats.tsx
-import { Building2, Users, CheckCircle, Globe } from "lucide-react"
+import { Building2, Filter, FileDown, Layers3 } from "lucide-react"
 
 interface CatalogStatsProps {
     total: number
+    visibleLeadTotal: number
+    activeFilterCount: number
+    page: number
+    pages: number
 }
 
-export function CatalogStats({ total }: CatalogStatsProps) {
+export function CatalogStats({
+    total,
+    visibleLeadTotal,
+    activeFilterCount,
+    page,
+    pages,
+}: CatalogStatsProps) {
     const stats = [
         {
             icon: Building2,
             value: total.toLocaleString(),
-            label: "Listas Encontradas",
-            color: "text-blue-500"
+            label: "Listas encontradas",
+            color: "text-blue-600",
+            bg: "bg-blue-50",
         },
         {
-            icon: Users,
-            value: "10k+",
-            label: "Leads Disponíveis",
-            color: "text-yellow-500"
+            icon: FileDown,
+            value: visibleLeadTotal.toLocaleString(),
+            label: "Leads nesta página",
+            color: "text-emerald-600",
+            bg: "bg-emerald-50",
         },
         {
-            icon: CheckCircle,
-            value: "85%+",
-            label: "Verificados",
-            color: "text-orange-500"
+            icon: Filter,
+            value: activeFilterCount.toString(),
+            label: "Filtros ativos",
+            color: "text-amber-600",
+            bg: "bg-amber-50",
         },
         {
-            icon: Globe,
-            value: "16",
-            label: "Países",
-            color: "text-purple-500"
-        }
+            icon: Layers3,
+            value: `${page}/${Math.max(pages, 1)}`,
+            label: "Página atual",
+            color: "text-violet-600",
+            bg: "bg-violet-50",
+        },
     ]
 
     return (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
             {stats.map((stat) => (
                 <div
                     key={stat.label}
-                    className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex items-center gap-4"
+                    className="flex items-center gap-3 rounded-lg border border-gray-200 bg-white p-4 shadow-sm"
                 >
-                    <div className={`w-12 h-12 rounded-lg bg-gray-50 flex items-center justify-center ${stat.color}`}>
-                        <stat.icon className="h-6 w-6" />
+                    <div className={`flex h-10 w-10 items-center justify-center rounded-md ${stat.bg} ${stat.color}`}>
+                        <stat.icon className="h-5 w-5" />
                     </div>
-                    <div>
-                        <div className="text-2xl font-bold text-gray-800">{stat.value}</div>
+                    <div className="min-w-0">
+                        <div className="text-xl font-bold text-gray-900">{stat.value}</div>
                         <div className="text-sm text-gray-500">{stat.label}</div>
                     </div>
                 </div>

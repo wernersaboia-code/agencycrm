@@ -1,14 +1,13 @@
-// components/marketplace/marketplace-header.tsx
 "use client"
 
 import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { toast } from "sonner"
+import { LayoutDashboard, LogOut, Menu, ShoppingBag, User } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { User, Menu, ShoppingBag, LogOut } from "lucide-react"
 import { CartBadge } from "@/components/marketplace/cart-badge"
 import { useAuth } from "@/hooks/useAuth"
 import { createClient } from "@/lib/supabase/client"
-import { useRouter } from "next/navigation"
-import { toast } from "sonner"
 import {
     Sheet,
     SheetContent,
@@ -37,65 +36,66 @@ export function MarketplaceHeader() {
 
     return (
         <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-            <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-                {/* Logo */}
+            <div className="container mx-auto flex h-16 items-center justify-between px-4">
                 <Link href="/" className="flex items-center gap-2">
-                    <div className="h-8 w-8 rounded-lg bg-emerald-600 flex items-center justify-center">
-                        <span className="text-white font-bold text-lg">L</span>
+                    <div className="flex h-8 w-8 items-center justify-center rounded-md bg-emerald-600">
+                        <span className="text-lg font-bold text-white">L</span>
                     </div>
-                    <span className="font-bold text-xl hidden sm:block">Easy Prospect</span>
+                    <span className="hidden text-xl font-bold sm:block">LeadStore</span>
                 </Link>
 
-                {/* Desktop Nav */}
-                <nav className="hidden md:flex items-center gap-6">
+                <nav className="hidden items-center gap-6 md:flex">
                     <Link
                         href="/catalog"
-                        className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                        className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
                     >
                         Catálogo
                     </Link>
                     <Link
                         href="/#como-funciona"
-                        className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                        className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
                     >
-                        Como Funciona
+                        Como funciona
+                    </Link>
+                    <Link
+                        href="/pricing"
+                        className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                    >
+                        Planos CRM
                     </Link>
                     {isAuthenticated && (
                         <Link
                             href="/my-purchases"
-                            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                            className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
                         >
-                            Minhas Compras
+                            Minhas compras
                         </Link>
                     )}
                 </nav>
 
-                {/* Actions */}
                 <div className="flex items-center gap-2">
-                    {/* Cart Badge */}
                     <CartBadge />
 
-                    {/* Auth Actions */}
                     {!isLoading && (
                         <>
                             {isAuthenticated ? (
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
                                         <Button variant="outline" size="sm">
-                                            <User className="h-4 w-4 mr-2" />
-                                            Minha Conta
+                                            <User className="h-4 w-4" />
+                                            Minha conta
                                         </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end" className="w-56">
                                         <DropdownMenuItem asChild>
                                             <Link href="/my-purchases" className="cursor-pointer">
                                                 <ShoppingBag className="h-4 w-4 mr-2" />
-                                                Minhas Compras
+                                                Minhas compras
                                             </Link>
                                         </DropdownMenuItem>
                                         <DropdownMenuItem asChild>
                                             <Link href="/dashboard" className="cursor-pointer">
-                                                <User className="h-4 w-4 mr-2" />
+                                                <LayoutDashboard className="h-4 w-4 mr-2" />
                                                 Acessar CRM
                                             </Link>
                                         </DropdownMenuItem>
@@ -112,7 +112,7 @@ export function MarketplaceHeader() {
                             ) : (
                                 <Button variant="outline" size="sm" asChild>
                                     <Link href="/sign-in?from=marketplace">
-                                        <User className="h-4 w-4 mr-2" />
+                                        <User className="h-4 w-4" />
                                         Entrar
                                     </Link>
                                 </Button>
@@ -120,7 +120,6 @@ export function MarketplaceHeader() {
                         </>
                     )}
 
-                    {/* Mobile Menu */}
                     <Sheet>
                         <SheetTrigger asChild>
                             <Button variant="ghost" size="icon" className="md:hidden">
@@ -128,18 +127,21 @@ export function MarketplaceHeader() {
                             </Button>
                         </SheetTrigger>
                         <SheetContent side="right">
-                            <nav className="flex flex-col gap-4 mt-8">
+                            <nav className="mt-8 flex flex-col gap-4">
                                 <Link href="/catalog" className="text-lg font-medium">
                                     Catálogo
                                 </Link>
                                 <Link href="/#como-funciona" className="text-lg font-medium">
-                                    Como Funciona
+                                    Como funciona
+                                </Link>
+                                <Link href="/pricing" className="text-lg font-medium">
+                                    Planos CRM
                                 </Link>
                                 {isAuthenticated && (
                                     <>
                                         <hr />
                                         <Link href="/my-purchases" className="text-lg font-medium">
-                                            Minhas Compras
+                                            Minhas compras
                                         </Link>
                                         <Link href="/dashboard" className="text-lg font-medium">
                                             Acessar CRM
@@ -147,7 +149,7 @@ export function MarketplaceHeader() {
                                         <hr />
                                         <button
                                             onClick={handleSignOut}
-                                            className="text-lg font-medium text-left text-red-600"
+                                            className="text-left text-lg font-medium text-red-600"
                                         >
                                             Sair
                                         </button>

@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { formatCurrency } from "@/lib/utils"
-import { Building2, Globe, CheckCircle, ArrowRight, ShoppingCart } from "lucide-react"
+import { Building2, Globe, CheckCircle, ArrowRight, ShoppingCart, CalendarClock } from "lucide-react"
 import { FlagIcon } from "@/components/ui/flag-icon"
 import { useCart } from "@/contexts/cart-context"
 
@@ -42,6 +42,11 @@ interface ListCardProps {
 
 export function ListCard({ list }: ListCardProps) {
     const { addItem } = useCart()
+    const pricePerLead = list.totalLeads > 0 ? list.price / list.totalLeads : 0
+    const updatedAt = new Date(list.updatedAt).toLocaleDateString("pt-BR", {
+        month: "short",
+        year: "numeric",
+    })
 
     const handleAddToCart = (e: React.MouseEvent) => {
         e.preventDefault() // Evitar navegação
@@ -56,7 +61,7 @@ export function ListCard({ list }: ListCardProps) {
     }
 
     return (
-        <Card className="h-full hover:shadow-lg transition-shadow border-gray-200 hover:border-[#2ec4b6] group">
+        <Card className="group h-full border-gray-200 transition-shadow hover:border-[#2ec4b6] hover:shadow-lg">
             <CardContent className="p-5 flex flex-col h-full">
                 {/* Header */}
                 <Link href={`/list/${list.slug}`} className="flex-1">
@@ -70,6 +75,9 @@ export function ListCard({ list }: ListCardProps) {
                             <h3 className="font-semibold text-gray-800 line-clamp-2 group-hover:text-[#2ec4b6] transition-colors">
                                 {list.name}
                             </h3>
+                            <p className="mt-2 line-clamp-2 text-sm text-gray-500">
+                                {list.description || "Base pronta para prospecção com empresas qualificadas."}
+                            </p>
                         </div>
                         <div className="flex items-center gap-1">
                             {list.countries.slice(0, 3).map((code) => (
@@ -102,6 +110,10 @@ export function ListCard({ list }: ListCardProps) {
                             <CheckCircle className="h-4 w-4 text-[#2ec4b6]" />
                             <span>Emails verificados</span>
                         </div>
+                        <div className="flex items-center gap-2 text-sm text-gray-600">
+                            <CalendarClock className="h-4 w-4 text-gray-400" />
+                            <span>Atualizada em {updatedAt}</span>
+                        </div>
                     </div>
 
                     {/* Setores */}
@@ -128,6 +140,9 @@ export function ListCard({ list }: ListCardProps) {
                             <span className="text-2xl font-bold text-[#4a2c5a]">
                                 {formatCurrency(list.price, list.currency)}
                             </span>
+                            <div className="text-xs text-gray-500">
+                                {formatCurrency(pricePerLead, list.currency)} por lead
+                            </div>
                         </div>
                         <Link
                             href={`/list/${list.slug}`}

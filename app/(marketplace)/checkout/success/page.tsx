@@ -1,12 +1,12 @@
-// app/(marketplace)/checkout/success/page.tsx.bak
-import { prisma } from "@/lib/prisma"
-import type { Prisma } from "@prisma/client"
-import { redirect } from "next/navigation"
-import { CheckCircle, Download, ArrowRight, Mail, ShoppingBag } from "lucide-react"
 import Link from "next/link"
+import { redirect } from "next/navigation"
+import type { ComponentType } from "react"
+import type { Prisma } from "@prisma/client"
+import { prisma } from "@/lib/prisma"
+import { getAuthenticatedUserId } from "@/lib/auth"
 import { Button } from "@/components/ui/button"
 import { formatCurrency } from "@/lib/utils"
-import { getAuthenticatedUserId } from "@/lib/auth"
+import { ArrowRight, CheckCircle, Download, Mail, Rocket, ShoppingBag } from "lucide-react"
 
 interface SuccessPageProps {
     searchParams: Promise<{ purchaseId?: string }>
@@ -35,108 +35,130 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
         redirect("/catalog")
     }
 
-    // Buscar compra
     const purchase = await prisma.purchase.findUnique({
         where: { id: purchaseId, userId },
         include: {
             items: {
                 include: {
-                    list: true
-                }
-            }
-        }
+                    list: true,
+                },
+            },
+        },
     })
 
     if (!purchase) {
         redirect("/catalog")
     }
 
+    const totalLeads = purchase.items.reduce(
+        (sum: number, item: PurchaseItemWithList) => sum + item.list.totalLeads,
+        0
+    )
+
     return (
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
-            <div className="max-w-2xl w-full">
-                {/* Card de Sucesso */}
-                <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 text-center">
-                    {/* Ícone de Sucesso */}
-                    <div className="w-20 h-20 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-6">
-                        <CheckCircle className="h-10 w-10 text-emerald-600" />
+        <div className="min-h-screen bg-gray-50 px-4 py-10">
+            <div className="mx-auto max-w-3xl">
+                <div className="rounded-lg border border-gray-200 bg-white p-8 text-center shadow-sm">
+                    <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-md bg-emerald-100">
+                        <CheckCircle className="h-9 w-9 text-emerald-600" />
                     </div>
 
-                    {/* Título */}
-                    <h1 className="text-2xl font-bold text-gray-800 mb-2">
-                        Compra Confirmada!
+                    <h1 className="mb-2 text-3xl font-bold text-gray-950">
+                        Compra confirmada
                     </h1>
-                    <p className="text-gray-500 mb-8">
-                        Obrigado pela sua compra. Você já pode acessar suas listas.
+                    <p className="mx-auto mb-8 max-w-xl text-gray-500">
+                        Seu pedido foi aprovado e as listas já estão disponíveis para download.
                     </p>
 
-                    {/* Resumo */}
-                    <div className="bg-gray-50 rounded-xl p-6 mb-8 text-left">
-                        <div className="flex justify-between items-center mb-4 pb-4 border-b border-gray-200">
-                            <span className="text-sm text-gray-500">Número do Pedido</span>
-                            <span className="font-mono text-sm font-medium">{purchase.id.slice(0, 8)}...</span>
+                    <div className="mb-8 rounded-lg border border-gray-200 bg-gray-50 p-5 text-left">
+                        <div className="mb-4 flex flex-col gap-3 border-b border-gray-200 pb-4 sm:flex-row sm:items-center sm:justify-between">
+                            <div>
+                                <span className="text-sm text-gray-500">Pedido</span>
+                                <div className="font-mono text-sm font-medium text-gray-900">
+                                    #{purchase.id.slice(0, 8)}
+                                </div>
+                            </div>
+                            <div className="text-left sm:text-right">
+                                <span className="text-sm text-gray-500">Leads liberados</span>
+                                <div className="font-semibold text-gray-900">{totalLeads.toLocaleString()}</div>
+                            </div>
                         </div>
 
-                        <div className="space-y-3 mb-4">
+                        <div className="mb-4 space-y-3">
                             {purchase.items.map((item: PurchaseItemWithList) => (
-                                <div key={item.id} className="flex justify-between items-center">
-                                    <div>
-                                        <div className="font-medium text-gray-800 text-sm">
+                                <div key={item.id} className="flex items-center justify-between gap-4">
+                                    <div className="min-w-0">
+                                        <div className="truncate font-medium text-gray-900">
                                             {item.list.name}
                                         </div>
                                         <div className="text-xs text-gray-500">
                                             {item.list.totalLeads.toLocaleString()} leads
                                         </div>
                                     </div>
-                                    <span className="font-medium text-gray-800">
+                                    <span className="shrink-0 font-medium text-gray-900">
                                         {formatCurrency(Number(item.price), purchase.currency)}
                                     </span>
                                 </div>
                             ))}
                         </div>
 
-                        <hr className="border-gray-200 mb-4" />
-
-                        <div className="flex justify-between items-center">
-                            <span className="font-semibold text-gray-800">Total Pago</span>
+                        <div className="flex items-center justify-between border-t border-gray-200 pt-4">
+                            <span className="font-semibold text-gray-900">Total pago</span>
                             <span className="text-xl font-bold text-[#4a2c5a]">
                                 {formatCurrency(Number(purchase.total), purchase.currency)}
                             </span>
                         </div>
                     </div>
 
-                    {/* Ações */}
-                    <div className="space-y-3">
-                        <Button className="w-full h-12 bg-[#4a2c5a] hover:bg-[#5d3a70]" asChild>
+                    <div className="grid gap-3 sm:grid-cols-3">
+                        <NextStep icon={Download} title="Baixe" text="Acesse CSV ou Excel em Minhas Compras." />
+                        <NextStep icon={Rocket} title="Prospecção" text="Importe os leads no CRM e crie campanhas." />
+                        <NextStep icon={Mail} title="Confirmação" text="O recibo foi enviado para seu email." />
+                    </div>
+
+                    <div className="mt-8 space-y-3">
+                        <Button className="h-12 w-full bg-[#4a2c5a] hover:bg-[#5d3a70]" asChild>
                             <Link href="/my-purchases">
-                                <ShoppingBag className="h-5 w-5 mr-2" />
-                                Acessar Minhas Compras
+                                <ShoppingBag className="h-5 w-5" />
+                                Acessar minhas compras
                             </Link>
                         </Button>
 
-                        <div className="grid grid-cols-2 gap-3">
+                        <div className="grid gap-3 sm:grid-cols-2">
                             <Button variant="outline" className="h-12" asChild>
                                 <Link href="/dashboard">
-                                    <Download className="h-5 w-5 mr-2" />
                                     Usar CRM
                                 </Link>
                             </Button>
 
                             <Button variant="outline" className="h-12" asChild>
                                 <Link href="/catalog">
-                                    Continuar Comprando
-                                    <ArrowRight className="h-5 w-5 ml-2" />
+                                    Continuar comprando
+                                    <ArrowRight className="h-5 w-5" />
                                 </Link>
                             </Button>
                         </div>
                     </div>
-
-                    {/* Email de Confirmação */}
-                    <div className="mt-8 flex items-center justify-center gap-2 text-sm text-gray-500">
-                        <Mail className="h-4 w-4" />
-                        Enviamos um email de confirmação para seu cadastro
-                    </div>
                 </div>
             </div>
+        </div>
+    )
+}
+
+function NextStep({
+    icon: Icon,
+    title,
+    text,
+}: {
+    icon: ComponentType<{ className?: string }>
+    title: string
+    text: string
+}) {
+    return (
+        <div className="rounded-lg border border-gray-200 bg-white p-4 text-left">
+            <Icon className="mb-3 h-5 w-5 text-[#2ec4b6]" />
+            <div className="font-semibold text-gray-900">{title}</div>
+            <p className="mt-1 text-sm text-gray-500">{text}</p>
         </div>
     )
 }
