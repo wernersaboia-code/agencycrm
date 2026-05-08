@@ -131,10 +131,10 @@ export function TemplatesClient({ templates, workspaceId }: TemplatesClientProps
         const result = await duplicateTemplate(template.id)
 
         if (result.success) {
-            toast.success("Template duplicado com sucesso!")
+            toast.success("Modelo duplicado com sucesso!")
             router.refresh()
         } else {
-            toast.error(result.error || "Erro ao duplicar template")
+            toast.error(result.error || "Erro ao duplicar modelo")
         }
     }
 
@@ -144,8 +144,8 @@ export function TemplatesClient({ templates, workspaceId }: TemplatesClientProps
         if (result.success) {
             toast.success(
                 template.isActive
-                    ? "Template desativado"
-                    : "Template ativado"
+                    ? "Modelo desativado"
+                    : "Modelo ativado"
             )
             router.refresh()
         } else {
@@ -154,17 +154,17 @@ export function TemplatesClient({ templates, workspaceId }: TemplatesClientProps
     }
 
     const handleDelete = async (template: TemplateWithStats) => {
-        if (!confirm(`Excluir template ${template.name}?`)) return
+        if (!confirm(`Excluir modelo "${template.name}"?`)) return
 
         setIsDeleting(template.id)
         const result = await deleteTemplate(template.id)
         setIsDeleting(null)
 
         if (result.success) {
-            toast.success("Template excluído!")
+            toast.success("Modelo excluído!")
             router.refresh()
         } else {
-            toast.error(result.error || "Erro ao excluir template")
+            toast.error(result.error || "Erro ao excluir modelo")
         }
     }
 
@@ -180,27 +180,27 @@ export function TemplatesClient({ templates, workspaceId }: TemplatesClientProps
 
     const readinessItems = [
         {
-            label: "Template ativo",
+            label: "Modelo ativo",
             description: stats.active > 0
                 ? `${stats.active} pronto${stats.active !== 1 ? "s" : ""} para campanhas.`
-                : "Crie ou ative ao menos um template.",
+                : "Crie ou ative ao menos um modelo.",
             done: stats.active > 0,
-            action: "Criar template",
+            action: "Criar modelo",
             onClick: handleCreate,
         },
         {
             label: "Uso em campanhas",
             description: stats.inCampaigns > 0
-                ? `${stats.inCampaigns} template${stats.inCampaigns !== 1 ? "s" : ""} já conectado${stats.inCampaigns !== 1 ? "s" : ""}.`
-                : "Use um template em uma campanha para iniciar envios.",
+                ? `${stats.inCampaigns} modelo${stats.inCampaigns !== 1 ? "s" : ""} já conectado${stats.inCampaigns !== 1 ? "s" : ""}.`
+                : "Use um modelo em uma campanha para iniciar envios.",
             done: stats.inCampaigns > 0,
             action: "Ver campanhas",
             onClick: () => router.push("/campaigns"),
         },
         {
-            label: "Templates inativos",
+            label: "Modelos inativos",
             description: stats.inactive === 0
-                ? "Nenhum template parado agora."
+                ? "Nenhum modelo parado agora."
                 : `${stats.inactive} aguardando ativação ou revisão.`,
             done: stats.total > 0 && stats.inactive === 0,
             action: stats.inactive > 0 ? "Ver inativos" : "Revisar ativos",
@@ -229,16 +229,16 @@ export function TemplatesClient({ templates, workspaceId }: TemplatesClientProps
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
                         <Mail className="h-6 w-6" />
-                        Templates de Email
+                        Modelos de e-mail
                     </h1>
                     <p className="text-muted-foreground">
-                        {stats.total} template{stats.total !== 1 ? "s" : ""} • {stats.active} ativo{stats.active !== 1 ? "s" : ""}
+                        {stats.total} modelo{stats.total !== 1 ? "s" : ""} • {stats.active} ativo{stats.active !== 1 ? "s" : ""}
                     </p>
                 </div>
 
                 <Button onClick={handleCreate}>
                     <Plus className="h-4 w-4 mr-2" />
-                    Novo Template
+                    Novo modelo
                 </Button>
             </div>
 
@@ -252,7 +252,7 @@ export function TemplatesClient({ templates, workspaceId }: TemplatesClientProps
                             </Badge>
                         </div>
                         <CardDescription>
-                            Templates ativos e conectados reduzem atrito na criação de campanhas.
+                            Modelos ativos e conectados reduzem atrito na criação de campanhas.
                         </CardDescription>
                     </div>
                     <div className="w-full space-y-2 lg:w-64">
@@ -313,7 +313,7 @@ export function TemplatesClient({ templates, workspaceId }: TemplatesClientProps
                 <div className="relative flex-1 max-w-sm">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
-                        placeholder="Buscar templates..."
+                        placeholder="Buscar modelos..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         className="pl-9"
@@ -371,16 +371,16 @@ export function TemplatesClient({ templates, workspaceId }: TemplatesClientProps
             {filteredTemplates.length === 0 ? (
                 <EmptyState
                     icon={templates.length === 0 ? FileText : Search}
-                    title={templates.length === 0 ? "Nenhum template criado" : "Nenhum template encontrado"}
+                    title={templates.length === 0 ? "Nenhum modelo criado" : "Nenhum modelo encontrado"}
                     description={
                         templates.length === 0
                             ? "Crie modelos reutilizáveis para acelerar campanhas e manter mensagens consistentes."
-                            : "Ajuste a busca, categoria ou status para encontrar templates neste cliente."
+                            : "Ajuste a busca, categoria ou status para encontrar modelos neste cliente."
                     }
                     primaryAction={
                         templates.length === 0
                             ? {
-                                label: "Criar template",
+                                label: "Criar modelo",
                                 icon: Plus,
                                 onClick: handleCreate,
                             }

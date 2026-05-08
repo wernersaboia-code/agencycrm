@@ -40,11 +40,11 @@ export function DeleteWorkspaceButton({ workspaceId, workspaceName }: DeleteWork
         setIsLoading(true)
         try {
             await deleteWorkspace(workspaceId)
-            toast.success("Workspace excluído com sucesso")
+            toast.success("Empresa/conta excluída com sucesso")
             router.push("/super-admin/workspaces")
             router.refresh()
         } catch {
-            toast.error("Erro ao excluir workspace")
+            toast.error("Erro ao excluir empresa/conta")
         } finally {
             setIsLoading(false)
         }
@@ -62,7 +62,7 @@ export function DeleteWorkspaceButton({ workspaceId, workspaceName }: DeleteWork
                 <AlertDialogHeader>
                     <AlertDialogTitle className="flex items-center gap-2 text-destructive">
                         <AlertTriangle className="h-5 w-5" />
-                        Excluir Workspace
+                        Excluir empresa/conta
                     </AlertDialogTitle>
                     <AlertDialogDescription asChild>
                         <div className="space-y-3">

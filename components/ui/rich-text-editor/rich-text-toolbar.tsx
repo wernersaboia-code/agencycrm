@@ -28,6 +28,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { getVariableChipHtml } from "@/lib/constants/template.constants"
 
 interface RichTextToolbarProps {
     editor: Editor
@@ -56,7 +57,7 @@ export function RichTextToolbar({ editor, disabled }: RichTextToolbarProps) {
     }
 
     const insertVariable = (variable: string) => {
-        editor.chain().focus().insertContent(`{{${variable}}}`).run()
+        editor.chain().focus().insertContent(getVariableChipHtml(variable)).run()
     }
 
     return (
@@ -221,7 +222,7 @@ export function RichTextToolbar({ editor, disabled }: RichTextToolbarProps) {
 
             <Separator orientation="vertical" className="mx-1 h-6" />
 
-            {/* Variables */}
+            {/* Custom fields */}
             <VariableDropdown onSelect={insertVariable} disabled={disabled} />
         </div>
     )

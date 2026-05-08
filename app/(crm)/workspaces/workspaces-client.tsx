@@ -155,7 +155,7 @@ export function WorkspacesClient({ initialWorkspaces }: WorkspacesClientProps) {
                 <EmptyState
                     icon={Building2}
                     title="Nenhum cliente ainda"
-                    description="Crie o primeiro cliente para organizar leads, templates, campanhas, ligações e relatórios em um só lugar."
+                    description="Crie o primeiro cliente para organizar leads, modelos, campanhas, ligações e relatórios em um só lugar."
                     primaryAction={{
                         label: "Criar primeiro cliente",
                         icon: Plus,

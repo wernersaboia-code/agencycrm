@@ -8,13 +8,13 @@ interface CheckoutFormProps {
 }
 
 const MOCK_USER_DATA = {
-    name: "Usuario Teste",
+    name: "Usuário Teste",
     email: "usuario@exemplo.com",
     company: "Empresa Ltda",
 }
 
 export function CheckoutForm({ userId }: CheckoutFormProps) {
-    // TODO: Buscar dados reais do usuario da sessao/Supabase.
+    // TODO: Buscar dados reais do usuário da sessão/Supabase.
     const userData = MOCK_USER_DATA
     void userId
 
@@ -40,12 +40,12 @@ export function CheckoutForm({ userId }: CheckoutFormProps) {
                 <Building className="h-5 w-5 text-gray-400" />
                 <div>
                     <div className="text-xs text-gray-500">Empresa</div>
-                    <div className="font-medium text-gray-800">{userData.company || "Nao informado"}</div>
+                    <div className="font-medium text-gray-800">{userData.company || "Não informado"}</div>
                 </div>
             </div>
 
             <p className="text-xs text-gray-500 pt-2">
-                Estes dados serao usados na nota fiscal e confirmacao de compra.
+                Estes dados serão usados na nota fiscal e confirmação de compra.
             </p>
         </div>
     )

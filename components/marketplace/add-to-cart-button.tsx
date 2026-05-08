@@ -38,7 +38,7 @@ export function AddToCartButton({ list }: AddToCartButtonProps) {
             onClick={handleAddToCart}
         >
             <ShoppingCart className="h-5 w-5 mr-2" />
-            Adicionar ao Carrinho
+            Adicionar ao carrinho
         </Button>
     )
 }

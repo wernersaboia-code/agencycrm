@@ -30,7 +30,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
-import { getCategoryConfig } from "@/lib/constants/template.constants"
+import { getCategoryConfig, replaceVariables, PREVIEW_LEAD } from "@/lib/constants/template.constants"
 import type { TemplateWithStats } from "@/actions/templates"
 
 // ============================================================
@@ -64,11 +64,12 @@ export function TemplateCard({
     const CategoryIcon = categoryConfig.icon
 
     // Extrair preview do body (remover HTML e limitar caracteres)
-    const bodyPreview = template.body
+    const bodyPreview = replaceVariables(template.body, PREVIEW_LEAD)
         .replace(/<[^>]*>/g, " ")
         .replace(/\s+/g, " ")
         .trim()
         .slice(0, 150)
+    const subjectPreview = replaceVariables(template.subject, PREVIEW_LEAD)
 
     const formattedDate = format(
         new Date(template.updatedAt),
@@ -161,12 +162,12 @@ export function TemplateCard({
                     {/* Assunto */}
                     <div className="space-y-1">
                         <p className="text-xs font-medium text-muted-foreground">Assunto:</p>
-                        <p className="text-sm line-clamp-2">{template.subject}</p>
+                        <p className="text-sm line-clamp-2">{subjectPreview}</p>
                     </div>
 
                     {/* Preview do corpo */}
                     <div className="space-y-1">
-                        <p className="text-xs font-medium text-muted-foreground">Preview:</p>
+                        <p className="text-xs font-medium text-muted-foreground">Prévia:</p>
                         <p className="text-xs text-muted-foreground line-clamp-2">
                             {bodyPreview}...
                         </p>
@@ -221,7 +222,7 @@ export function TemplateCard({
                         )}
                     </div>
                     <p className="text-sm text-muted-foreground truncate">
-                        {template.subject}
+                        {subjectPreview}
                     </p>
                 </div>
 

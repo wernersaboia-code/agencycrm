@@ -1,397 +1,276 @@
-// app/super-admin/page.tsx.bak
-
-import { Suspense } from "react"
 import Link from "next/link"
+import type { ComponentType } from "react"
 import {
-    Activity,
-    AlertCircle,
-    Users,
-    Building2,
-    Mail,
-    Phone,
-    Package,
-    ShoppingCart,
-    DollarSign,
     ArrowRight,
-    ListPlus,
+    BarChart3,
+    Building2,
+    LifeBuoy,
+    Package,
+    Settings,
+    ShoppingCart,
     Store,
-    UserCog,
-    CheckCircle2,
+    Users,
 } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Skeleton } from "@/components/ui/skeleton"
-import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
+import { Button } from "@/components/ui/button"
 import { getGlobalStats } from "@/actions/admin/global-stats"
+import { formatCurrency } from "@/lib/utils"
 
 export default async function SuperAdminDashboardPage() {
-    return (
-        <div className="space-y-6">
-            {/* Header */}
-            <div>
-                <h1 className="text-3xl font-bold">Dashboard Global</h1>
-                <p className="text-muted-foreground">
-                    Visão geral de todo o sistema
-                </p>
-            </div>
-
-            {/* Stats */}
-            <Suspense fallback={<StatsGridSkeleton />}>
-                <GlobalStatsGrid />
-            </Suspense>
-
-            <Suspense fallback={<PanelSkeleton />}>
-                <GlobalReadinessPanel />
-            </Suspense>
-
-            <div className="grid gap-6 md:grid-cols-2">
-                <Suspense fallback={<PanelSkeleton />}>
-                    <OperationsPanel />
-                </Suspense>
-
-                <QuickActions />
-            </div>
-        </div>
-    )
-}
-
-// Componente que busca e renderiza os stats
-async function GlobalStatsGrid() {
     const stats = await getGlobalStats()
 
-    const cards = [
+    const mainActions = [
         {
-            title: "Usuários",
-            value: stats.totalUsers,
-            subtitle: `${stats.activeUsers} ativos`,
-            icon: Users,
-            color: "text-blue-600",
-            bgColor: "bg-blue-50 dark:bg-blue-950/30",
-        },
-        {
-            title: "Workspaces",
-            value: stats.totalWorkspaces,
-            subtitle: `${stats.workspacesThisMonth} este mês`,
-            icon: Building2,
-            color: "text-purple-600",
-            bgColor: "bg-purple-50 dark:bg-purple-950/30",
-        },
-        {
-            title: "Leads (CRM)",
-            value: stats.totalLeadsCRM.toLocaleString(),
-            subtitle: `${stats.leadsThisMonth} este mês`,
-            icon: Users,
-            color: "text-emerald-600",
-            bgColor: "bg-emerald-50 dark:bg-emerald-950/30",
-        },
-        {
-            title: "Leads (Marketplace)",
-            value: stats.totalLeadsMarketplace.toLocaleString(),
-            subtitle: `em ${stats.totalLists} listas`,
+            title: "Gerenciar listas de leads",
+            description: "Criar, editar e publicar listas que aparecem no catálogo.",
+            href: "/super-admin/marketplace/lists",
             icon: Package,
-            color: "text-amber-600",
-            bgColor: "bg-amber-50 dark:bg-amber-950/30",
+            tone: "primary",
         },
         {
-            title: "Campanhas (30d)",
-            value: stats.campaignsSent,
-            subtitle: `${stats.emailsSent.toLocaleString()} emails`,
-            icon: Mail,
-            color: "text-indigo-600",
-            bgColor: "bg-indigo-50 dark:bg-indigo-950/30",
-        },
-        {
-            title: "Ligações (30d)",
-            value: stats.totalCalls,
-            subtitle: `${stats.callsAnswered} atendidas`,
-            icon: Phone,
-            color: "text-cyan-600",
-            bgColor: "bg-cyan-50 dark:bg-cyan-950/30",
-        },
-        {
-            title: "Vendas (Marketplace)",
-            value: stats.totalPurchases,
-            subtitle: `${stats.purchasesThisMonth} este mês`,
-            icon: ShoppingCart,
-            color: "text-pink-600",
-            bgColor: "bg-pink-50 dark:bg-pink-950/30",
-        },
-        {
-            title: "Receita Total",
-            value: `€${stats.totalRevenue.toLocaleString()}`,
-            subtitle: `€${stats.revenueThisMonth.toLocaleString()} este mês`,
-            icon: DollarSign,
-            color: "text-green-600",
-            bgColor: "bg-green-50 dark:bg-green-950/30",
-        },
-    ]
-
-    return (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            {cards.map((card) => (
-                <Card key={card.title} className={card.bgColor}>
-                    <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">
-                            {card.title}
-                        </CardTitle>
-                        <card.icon className={`h-4 w-4 ${card.color}`} />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">{card.value}</div>
-                        <p className="text-xs text-muted-foreground mt-1">
-                            {card.subtitle}
-                        </p>
-                    </CardContent>
-                </Card>
-            ))}
-        </div>
-    )
-}
-
-// Skeleton para loading
-function StatsGridSkeleton() {
-    return (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            {Array.from({ length: 8 }).map((_, i) => (
-                <Card key={i}>
-                    <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <Skeleton className="h-4 w-20" />
-                        <Skeleton className="h-4 w-4" />
-                    </CardHeader>
-                    <CardContent>
-                        <Skeleton className="h-8 w-16 mb-1" />
-                        <Skeleton className="h-3 w-24" />
-                    </CardContent>
-                </Card>
-            ))}
-        </div>
-    )
-}
-
-async function GlobalReadinessPanel() {
-    const stats = await getGlobalStats()
-    const activeUserRate = stats.totalUsers > 0
-        ? Math.round((stats.activeUsers / stats.totalUsers) * 100)
-        : 0
-    const callAnswerRate = stats.totalCalls > 0
-        ? Math.round((stats.callsAnswered / stats.totalCalls) * 100)
-        : 0
-    const checks = [
-        {
-            title: "Base de usuários",
-            description: `${activeUserRate}% dos usuários estão ativos`,
-            href: "/super-admin/users",
-            done: stats.totalUsers > 0 && activeUserRate >= 70,
-            value: `${stats.activeUsers}/${stats.totalUsers}`,
-        },
-        {
-            title: "Catálogo marketplace",
-            description: `${stats.totalLists} listas ativas com ${stats.totalLeadsMarketplace.toLocaleString()} leads`,
-            href: "/super-admin/marketplace/lists",
-            done: stats.totalLists > 0 && stats.totalLeadsMarketplace > 0,
-            value: stats.totalLists,
-        },
-        {
-            title: "Receita do mês",
-            description: `${stats.purchasesThisMonth} venda${stats.purchasesThisMonth !== 1 ? "s" : ""} paga${stats.purchasesThisMonth !== 1 ? "s" : ""}`,
-            href: "/super-admin/marketplace/purchases",
-            done: stats.revenueThisMonth > 0,
-            value: `€${stats.revenueThisMonth.toLocaleString()}`,
-        },
-        {
-            title: "Engajamento CRM",
-            description: `${stats.openRate}% abertura, ${callAnswerRate}% atendimento`,
-            href: "/super-admin/workspaces",
-            done: stats.emailsSent > 0 || stats.totalCalls > 0,
-            value: stats.emailsSent.toLocaleString(),
-        },
-    ]
-    const completedChecks = checks.filter((check) => check.done).length
-    const readiness = Math.round((completedChecks / checks.length) * 100)
-
-    return (
-        <Card className={readiness >= 75 ? "border-emerald-300 dark:border-emerald-900" : "border-amber-300 dark:border-amber-900"}>
-            <CardHeader className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                <div className="space-y-2">
-                    <div className="flex flex-wrap items-center gap-2">
-                        <CardTitle className="flex items-center gap-2">
-                            <Activity className="h-5 w-5" />
-                            Saúde da operação
-                        </CardTitle>
-                        <Badge variant={readiness >= 75 ? "default" : "outline"}>
-                            {completedChecks}/{checks.length} em dia
-                        </Badge>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                        Sinais rápidos para priorizar suporte, catálogo, receita e adoção do CRM.
-                    </p>
-                </div>
-                <div className="w-full space-y-2 lg:w-64">
-                    <div className="flex items-center justify-between text-sm">
-                        <span className="text-muted-foreground">Prontidão</span>
-                        <span className="font-medium">{readiness}%</span>
-                    </div>
-                    <Progress value={readiness} />
-                </div>
-            </CardHeader>
-            <CardContent className="grid gap-3 md:grid-cols-4">
-                {checks.map((check) => (
-                    <Link
-                        key={check.title}
-                        href={check.href}
-                        className="flex min-h-[112px] items-start justify-between gap-3 rounded-lg border bg-background p-4 transition-colors hover:bg-muted/50"
-                    >
-                        <span className="flex min-w-0 gap-3">
-                            {check.done ? (
-                                <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
-                            ) : (
-                                <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
-                            )}
-                            <span className="space-y-1">
-                                <span className="block font-medium leading-tight">{check.title}</span>
-                                <span className="block text-sm text-muted-foreground">{check.description}</span>
-                            </span>
-                        </span>
-                        <span className="text-right text-lg font-semibold">{check.value}</span>
-                    </Link>
-                ))}
-            </CardContent>
-        </Card>
-    )
-}
-
-async function OperationsPanel() {
-    const stats = await getGlobalStats()
-
-    const checks = [
-        {
-            title: "Usuários ativos",
-            value: `${stats.activeUsers}/${stats.totalUsers}`,
-            detail: `${stats.usersThisMonth} novos este mês`,
-            href: "/super-admin/users",
-        },
-        {
-            title: "Marketplace",
-            value: stats.totalLists,
-            detail: `${stats.totalLeadsMarketplace.toLocaleString()} leads publicados`,
-            href: "/super-admin/marketplace/lists",
-        },
-        {
-            title: "Receita do mês",
-            value: `€${stats.revenueThisMonth.toLocaleString()}`,
-            detail: `${stats.purchasesThisMonth} vendas pagas`,
-            href: "/super-admin/marketplace/purchases",
-        },
-        {
-            title: "Engajamento CRM",
-            value: `${stats.openRate}%`,
-            detail: `${stats.emailsSent.toLocaleString()} emails nos últimos 30 dias`,
-            href: "/super-admin/workspaces",
-        },
-    ]
-
-    return (
-        <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>Operação</CardTitle>
-                <Button variant="ghost" size="sm" asChild>
-                    <Link href="/super-admin/marketplace">
-                        Marketplace
-                        <ArrowRight className="ml-1 h-4 w-4" />
-                    </Link>
-                </Button>
-            </CardHeader>
-            <CardContent className="space-y-3">
-                {checks.map((check) => (
-                    <Link
-                        key={check.title}
-                        href={check.href}
-                        className="flex items-center justify-between rounded-lg border p-3 transition-colors hover:bg-muted/50"
-                    >
-                        <div>
-                            <p className="font-medium">{check.title}</p>
-                            <p className="text-sm text-muted-foreground">{check.detail}</p>
-                        </div>
-                        <div className="text-right">
-                            <p className="text-lg font-semibold">{check.value}</p>
-                            <ArrowRight className="ml-auto mt-1 h-4 w-4 text-muted-foreground" />
-                        </div>
-                    </Link>
-                ))}
-            </CardContent>
-        </Card>
-    )
-}
-
-function QuickActions() {
-    const actions = [
-        {
-            title: "Criar lista marketplace",
-            description: "Publicar uma nova lista de leads para venda",
-            href: "/super-admin/marketplace/lists/new",
-            icon: ListPlus,
-        },
-        {
-            title: "Revisar usuários",
-            description: "Ver contas, status e permissões",
-            href: "/super-admin/users",
-            icon: UserCog,
-        },
-        {
-            title: "Acompanhar vendas",
-            description: "Consultar compras e receita do marketplace",
+            title: "Ver vendas",
+            description: "Consultar compras realizadas, valores e pedidos dos clientes.",
             href: "/super-admin/marketplace/purchases",
             icon: ShoppingCart,
+            tone: "default",
         },
         {
-            title: "Gerenciar catálogo",
-            description: "Editar listas e leads disponíveis",
-            href: "/super-admin/marketplace",
+            title: "Gerenciar usuários",
+            description: "Ver contas, status, permissões e acessos ao sistema.",
+            href: "/super-admin/users",
+            icon: Users,
+            tone: "default",
+        },
+        {
+            title: "Empresas e contas",
+            description: "Acompanhar workspaces, responsáveis e uso do CRM.",
+            href: "/super-admin/workspaces",
+            icon: Building2,
+            tone: "default",
+        },
+    ] as const
+
+    const metrics = [
+        {
+            label: "Listas ativas",
+            value: stats.totalLists.toLocaleString("pt-BR"),
+            detail: `${stats.totalLeadsMarketplace.toLocaleString("pt-BR")} leads publicados`,
             icon: Store,
         },
+        {
+            label: "Vendas pagas",
+            value: stats.totalPurchases.toLocaleString("pt-BR"),
+            detail: `${stats.purchasesThisMonth.toLocaleString("pt-BR")} este mês`,
+            icon: ShoppingCart,
+        },
+        {
+            label: "Receita total",
+            value: formatCurrency(stats.totalRevenue, "EUR"),
+            detail: `${formatCurrency(stats.revenueThisMonth, "EUR")} este mês`,
+            icon: BarChart3,
+        },
+        {
+            label: "Usuários ativos",
+            value: `${stats.activeUsers}/${stats.totalUsers}`,
+            detail: `${stats.usersThisMonth.toLocaleString("pt-BR")} novos este mês`,
+            icon: Users,
+        },
     ]
 
     return (
-        <Card>
-            <CardHeader>
-                <CardTitle>Ações rápidas</CardTitle>
-            </CardHeader>
-            <CardContent className="grid gap-3">
-                {actions.map((action) => (
-                    <Link
-                        key={action.href}
-                        href={action.href}
-                        className="flex items-center justify-between rounded-lg border p-3 transition-colors hover:bg-muted/50"
-                    >
-                        <div className="flex items-center gap-3">
-                            <div className="flex h-9 w-9 items-center justify-center rounded-md bg-muted">
-                                <action.icon className="h-4 w-4 text-muted-foreground" />
-                            </div>
-                            <div>
-                                <p className="font-medium">{action.title}</p>
-                                <p className="text-sm text-muted-foreground">{action.description}</p>
-                            </div>
-                        </div>
-                        <ArrowRight className="h-4 w-4 text-muted-foreground" />
-                    </Link>
+        <div className="space-y-6">
+            <section className="rounded-lg border bg-white p-6 shadow-sm">
+                <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+                    <div>
+                        <Badge variant="outline" className="mb-3 border-emerald-200 bg-emerald-50 text-emerald-700">
+                            Área Administrativa
+                        </Badge>
+                        <h1 className="text-3xl font-bold tracking-tight">
+                            O que você quer fazer agora?
+                        </h1>
+                        <p className="mt-2 max-w-2xl text-muted-foreground">
+                            Comece pelas tarefas principais do dia: listas, vendas, usuários e contas.
+                        </p>
+                    </div>
+                    <Button variant="outline" asChild>
+                        <Link href="/">
+                            Voltar para a página inicial
+                        </Link>
+                    </Button>
+                </div>
+            </section>
+
+            <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+                {mainActions.map((action) => (
+                    <AdminActionCard key={action.href} {...action} />
                 ))}
+            </section>
+
+            <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+                {metrics.map((metric) => (
+                    <MetricCard key={metric.label} {...metric} />
+                ))}
+            </section>
+
+            <section className="grid gap-6 lg:grid-cols-[1fr_360px]">
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Resumo rápido</CardTitle>
+                    </CardHeader>
+                    <CardContent className="grid gap-3 md:grid-cols-2">
+                        <SummaryLink
+                            title="Catálogo do marketplace"
+                            description={`${stats.totalLists} listas ativas para venda`}
+                            href="/super-admin/marketplace"
+                            icon={Store}
+                        />
+                        <SummaryLink
+                            title="Relatórios"
+                            description="Acompanhar receita, uso e desempenho"
+                            href="/super-admin/analytics"
+                            icon={BarChart3}
+                        />
+                        <SummaryLink
+                            title="Suporte"
+                            description="Acessar rotinas de apoio e atendimento"
+                            href="/super-admin/support"
+                            icon={LifeBuoy}
+                        />
+                        <SummaryLink
+                            title="Configurações"
+                            description="Ajustar preferências da administração"
+                            href="/super-admin/settings"
+                            icon={Settings}
+                        />
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Atalhos importantes</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                        <Button className="w-full justify-between bg-emerald-600 hover:bg-emerald-700" asChild>
+                            <Link href="/super-admin/marketplace/lists/new">
+                                Criar nova lista
+                                <ArrowRight className="h-4 w-4" />
+                            </Link>
+                        </Button>
+                        <Button variant="outline" className="w-full justify-between" asChild>
+                            <Link href="/super-admin/marketplace/purchases">
+                                Consultar vendas
+                                <ArrowRight className="h-4 w-4" />
+                            </Link>
+                        </Button>
+                        <Button variant="outline" className="w-full justify-between" asChild>
+                            <Link href="/super-admin/users">
+                                Ver usuários
+                                <ArrowRight className="h-4 w-4" />
+                            </Link>
+                        </Button>
+                    </CardContent>
+                </Card>
+            </section>
+        </div>
+    )
+}
+
+function AdminActionCard({
+    title,
+    description,
+    href,
+    icon: Icon,
+    tone,
+}: {
+    title: string
+    description: string
+    href: string
+    icon: ComponentType<{ className?: string }>
+    tone: "primary" | "default"
+}) {
+    const isPrimary = tone === "primary"
+
+    return (
+        <Link
+            href={href}
+            className={`group flex min-h-52 flex-col justify-between rounded-lg border p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ${
+                isPrimary
+                    ? "border-emerald-600 bg-emerald-600 text-white"
+                    : "border-gray-200 bg-white text-gray-950 hover:border-emerald-300"
+            }`}
+        >
+            <div>
+                <div
+                    className={`mb-5 flex h-12 w-12 items-center justify-center rounded-md ${
+                        isPrimary ? "bg-white/15 text-white" : "bg-emerald-50 text-emerald-700"
+                    }`}
+                >
+                    <Icon className="h-6 w-6" />
+                </div>
+                <h2 className="text-xl font-semibold leading-tight">{title}</h2>
+                <p className={`mt-3 text-sm leading-6 ${isPrimary ? "text-white/85" : "text-muted-foreground"}`}>
+                    {description}
+                </p>
+            </div>
+            <div className="mt-5 flex items-center justify-between text-sm font-semibold">
+                Abrir
+                <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+            </div>
+        </Link>
+    )
+}
+
+function MetricCard({
+    label,
+    value,
+    detail,
+    icon: Icon,
+}: {
+    label: string
+    value: string
+    detail: string
+    icon: ComponentType<{ className?: string }>
+}) {
+    return (
+        <Card>
+            <CardContent className="flex items-center gap-4 p-5">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-emerald-50 text-emerald-700">
+                    <Icon className="h-5 w-5" />
+                </div>
+                <div className="min-w-0">
+                    <p className="text-sm text-muted-foreground">{label}</p>
+                    <p className="truncate text-2xl font-bold">{value}</p>
+                    <p className="truncate text-xs text-muted-foreground">{detail}</p>
+                </div>
             </CardContent>
         </Card>
     )
 }
 
-function PanelSkeleton() {
+function SummaryLink({
+    title,
+    description,
+    href,
+    icon: Icon,
+}: {
+    title: string
+    description: string
+    href: string
+    icon: ComponentType<{ className?: string }>
+}) {
     return (
-        <Card>
-            <CardHeader>
-                <Skeleton className="h-5 w-28" />
-            </CardHeader>
-            <CardContent className="space-y-3">
-                {Array.from({ length: 4 }).map((_, i) => (
-                    <Skeleton key={i} className="h-16 rounded-lg" />
-                ))}
-            </CardContent>
-        </Card>
+        <Link
+            href={href}
+            className="flex items-start gap-3 rounded-lg border p-4 transition-colors hover:bg-muted/50"
+        >
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-muted">
+                <Icon className="h-5 w-5 text-muted-foreground" />
+            </div>
+            <div className="min-w-0">
+                <p className="font-semibold">{title}</p>
+                <p className="mt-1 text-sm leading-6 text-muted-foreground">{description}</p>
+            </div>
+        </Link>
     )
 }

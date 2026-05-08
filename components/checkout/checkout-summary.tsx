@@ -24,7 +24,7 @@ export function CheckoutSummary({ list }: CheckoutSummaryProps) {
 
     return (
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 sticky top-6">
-            <h3 className="font-semibold text-gray-800 mb-4">Resumo do Pedido</h3>
+            <h3 className="font-semibold text-gray-800 mb-4">Resumo do pedido</h3>
 
             {/* Lista */}
             <div className="mb-6 pb-6 border-b border-gray-100">

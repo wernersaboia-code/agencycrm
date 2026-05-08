@@ -80,11 +80,11 @@ export function TransferWorkspaceModal({
         setIsLoading(true)
         try {
             await transferWorkspace(workspaceId, selectedUser.id)
-            toast.success(`Workspace transferido para ${selectedUser.name || selectedUser.email}`)
+            toast.success(`Empresa/conta transferida para ${selectedUser.name || selectedUser.email}`)
             setOpen(false)
             router.refresh()
         } catch {
-            toast.error("Erro ao transferir workspace")
+            toast.error("Erro ao transferir empresa/conta")
         } finally {
             setIsLoading(false)
         }
@@ -107,16 +107,16 @@ export function TransferWorkspaceModal({
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Transferir Workspace</DialogTitle>
+                    <DialogTitle>Transferir empresa/conta</DialogTitle>
                     <DialogDescription>
-                        Transfira &quot;{workspaceName}&quot; para outro usuário. O novo dono terá acesso completo.
+                        Transfira &quot;{workspaceName}&quot; para outro usuário. O novo responsável terá acesso completo.
                     </DialogDescription>
                 </DialogHeader>
 
                 <div className="space-y-4 py-4">
-                    {/* Dono atual */}
+                    {/* Responsável atual */}
                     <div className="p-3 bg-muted rounded-lg">
-                        <Label className="text-xs text-muted-foreground">Dono Atual</Label>
+                        <Label className="text-xs text-muted-foreground">Responsável atual</Label>
                         <div className="flex items-center gap-2 mt-1">
                             <Avatar className="h-6 w-6">
                                 <AvatarFallback className="text-xs">
@@ -131,7 +131,7 @@ export function TransferWorkspaceModal({
 
                     {/* Busca */}
                     <div className="space-y-2">
-                        <Label>Novo Proprietário</Label>
+                        <Label>Novo responsável</Label>
                         <div className="relative">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                             <Input
@@ -213,7 +213,7 @@ export function TransferWorkspaceModal({
                                 Transferindo...
                             </>
                         ) : (
-                            "Confirmar Transferência"
+                            "Confirmar transferência"
                         )}
                     </Button>
                 </DialogFooter>

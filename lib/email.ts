@@ -232,11 +232,43 @@ export function replaceEmailVariables(
         "meuEmail",
     ]
 
+    const readableLabels: Record<string, string> = {
+        firstName: "Primeiro Nome",
+        lastName: "Sobrenome",
+        fullName: "Nome Completo",
+        email: "Email",
+        phone: "Telefone",
+        company: "Empresa",
+        jobTitle: "Cargo",
+        industry: "Segmento",
+        website: "Website",
+        city: "Cidade",
+        state: "Estado",
+        country: "País",
+        meuNome: "Meu Nome",
+        minhaEmpresa: "Minha Empresa",
+        meuEmail: "Meu Email",
+    }
+
+    const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+
     // Substituir variáveis em inglês
     variables.forEach((key) => {
         const regex = new RegExp(`{{\\s*${key}\\s*}}`, "gi")
         const value = data[key] || ""
         result = result.replace(regex, value)
+
+        const readableLabel = readableLabels[key]
+        if (readableLabel) {
+            const readableRegex = new RegExp(`\\[\\[\\s*${escapeRegExp(readableLabel)}\\s*\\]\\]`, "gi")
+            result = result.replace(readableRegex, value)
+        }
+
+        const chipRegex = new RegExp(
+            `<span\\b(?=[^>]*data-template-variable=["']${escapeRegExp(key)}["'])[^>]*>.*?<\\/span>`,
+            "gi"
+        )
+        result = result.replace(chipRegex, value)
     })
 
     // Aliases em português para variáveis do lead

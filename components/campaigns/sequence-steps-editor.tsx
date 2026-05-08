@@ -65,9 +65,9 @@ export function SequenceStepsEditor({
         <div className="space-y-4">
             <div className="flex items-center justify-between">
                 <div>
-                    <h3 className="font-medium">Steps da Sequência</h3>
+                    <h3 className="font-medium">Etapas da sequência</h3>
                     <p className="text-sm text-muted-foreground">
-                        {steps.length} de {MAX_SEQUENCE_STEPS} steps configurados
+                        {steps.length} de {MAX_SEQUENCE_STEPS} etapas configuradas
                     </p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -80,7 +80,7 @@ export function SequenceStepsEditor({
                         disabled={!canAddStep}
                     >
                         <Plus className="h-4 w-4 mr-2" />
-                        Adicionar Step
+                        Adicionar etapa
                     </Button>
                 </div>
             </div>
@@ -89,7 +89,7 @@ export function SequenceStepsEditor({
                 <Alert>
                     <AlertCircle className="h-4 w-4" />
                     <AlertDescription>
-                        Adicione pelo menos um step para criar a sequência, ou use um template pronto.
+                        Adicione pelo menos uma etapa para criar a sequência, ou use um modelo pronto.
                     </AlertDescription>
                 </Alert>
             ) : (
@@ -110,7 +110,7 @@ export function SequenceStepsEditor({
 
             {!canAddStep && (
                 <p className="text-sm text-muted-foreground text-center">
-                    Limite de {MAX_SEQUENCE_STEPS} steps atingido
+                    Limite de {MAX_SEQUENCE_STEPS} etapas atingido
                 </p>
             )}
         </div>

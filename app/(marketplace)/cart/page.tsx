@@ -13,6 +13,7 @@ import {
     Building2,
     CheckCircle2,
     FileDown,
+    HelpCircle,
     ShieldCheck,
     ShoppingBag,
     Trash2,
@@ -65,7 +66,7 @@ export default function CartPage() {
                                 Revisar carrinho
                             </h1>
                             <p className="mt-2 text-gray-500">
-                                {itemCount} {itemCount === 1 ? "lista selecionada" : "listas selecionadas"} com {totalLeads.toLocaleString()} leads no total.
+                                {itemCount} {itemCount === 1 ? "lista selecionada" : "listas selecionadas"} com {totalLeads.toLocaleString("pt-BR")} leads no total.
                             </p>
                         </div>
 
@@ -192,6 +193,7 @@ export default function CartPage() {
                                 <TrustItem icon={ShieldCheck} text="Pagamento processado pelo PayPal" />
                                 <TrustItem icon={CheckCircle2} text="Pedido salvo na sua conta" />
                                 <TrustItem icon={FileDown} text="Download liberado após confirmação" />
+                                <TrustItem icon={HelpCircle} text="Você revisa o pedido antes de pagar" />
                             </div>
                         </CardContent>
                     </Card>

@@ -1,16 +1,13 @@
-// app/(auth)/sign-in/page.tsx.bak
 "use client"
 
-import { useState, Suspense } from "react"
-import type { FormEvent } from "react"
-import { useRouter, useSearchParams } from "next/navigation"
+import { Suspense, useMemo, useState } from "react"
+import type { ComponentType, FormEvent } from "react"
 import Link from "next/link"
+import { useRouter, useSearchParams } from "next/navigation"
+import { Building2, CheckCircle2, Loader2, ShieldCheck, ShoppingBag } from "lucide-react"
 import { toast } from "sonner"
-import { Loader2, ShoppingBag, Building2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import {
     Card,
     CardContent,
@@ -19,8 +16,93 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
-
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { createClient } from "@/lib/supabase/client"
+import { cn } from "@/lib/utils"
+
+type AccessArea = {
+    id: "crm" | "purchases" | "admin"
+    title: string
+    shortTitle: string
+    description: string
+    redirect: string
+    signInHref: string
+    buttonLabel: string
+    icon: ComponentType<{ className?: string }>
+}
+
+const accessAreas: AccessArea[] = [
+    {
+        id: "admin",
+        title: "Área Administrativa",
+        shortTitle: "Área Administrativa",
+        description: "Gerenciar listas, usuários, vendas e configurações.",
+        redirect: "/super-admin",
+        signInHref: "/sign-in?redirect=/super-admin",
+        buttonLabel: "Entrar na Área Administrativa",
+        icon: ShieldCheck,
+    },
+    {
+        id: "crm",
+        title: "CRM",
+        shortTitle: "Entrar no CRM",
+        description: "Leads, campanhas, chamadas, relatórios e rotina comercial.",
+        redirect: "/dashboard",
+        signInHref: "/sign-in?redirect=/dashboard",
+        buttonLabel: "Entrar no CRM",
+        icon: Building2,
+    },
+    {
+        id: "purchases",
+        title: "Minhas compras",
+        shortTitle: "Ver compras",
+        description: "Listas compradas, pedidos e downloads de arquivos.",
+        redirect: "/my-purchases",
+        signInHref: "/sign-in?redirect=/my-purchases",
+        buttonLabel: "Entrar em Minhas compras",
+        icon: ShoppingBag,
+    },
+]
+
+function normalizeRedirect(path: string) {
+    if (path === "/crm" || path === "/crm/dashboard") {
+        return "/dashboard"
+    }
+
+    if (path.startsWith("/crm/")) {
+        return path.replace(/^\/crm/, "")
+    }
+
+    return path
+}
+
+function getAreaFromRedirect(redirect: string | null, from: string | null) {
+    if (from === "marketplace") {
+        return "purchases"
+    }
+
+    if (!redirect) {
+        return "admin"
+    }
+
+    const normalizedRedirect = normalizeRedirect(redirect)
+
+    if (
+        normalizedRedirect === "/my-purchases" ||
+        normalizedRedirect.startsWith("/my-purchases/") ||
+        normalizedRedirect.startsWith("/checkout") ||
+        normalizedRedirect.startsWith("/cart")
+    ) {
+        return "purchases"
+    }
+
+    if (normalizedRedirect === "/super-admin" || normalizedRedirect.startsWith("/super-admin/")) {
+        return "admin"
+    }
+
+    return "crm"
+}
 
 function SignInForm() {
     const router = useRouter()
@@ -29,48 +111,13 @@ function SignInForm() {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
 
-    // Detectar contexto (marketplace vs crm)
-    const from = searchParams.get("from")
     const explicitRedirect = searchParams.get("redirect")
-    const isMarketplace = from === "marketplace" || searchParams.get("marketplace") === "true"
-
-    function normalizeRedirect(path: string) {
-        if (path === "/crm" || path === "/crm/dashboard") {
-            return "/dashboard"
-        }
-
-        if (path.startsWith("/crm/")) {
-            return path.replace(/^\/crm/, "")
-        }
-
-        return path
-    }
-
-    async function getPostLoginRedirect() {
-        if (explicitRedirect) {
-            return normalizeRedirect(explicitRedirect)
-        }
-
-        if (isMarketplace) {
-            return "/my-purchases"
-        }
-
-        try {
-            const response = await fetch("/api/user/role", { cache: "no-store" })
-
-            if (response.ok) {
-                const data = await response.json() as { role?: string | null }
-
-                if (data.role === "ADMIN") {
-                    return "/super-admin"
-                }
-            }
-        } catch {
-            // Se a consulta de perfil falhar, usa o destino padrão do CRM.
-        }
-
-        return "/dashboard"
-    }
+    const selectedAreaId = getAreaFromRedirect(explicitRedirect, searchParams.get("from"))
+    const selectedArea = useMemo(
+        () => accessAreas.find((area) => area.id === selectedAreaId) ?? accessAreas[0],
+        [selectedAreaId]
+    )
+    const SelectedIcon = selectedArea.icon
 
     async function handleSubmit(e: FormEvent) {
         e.preventDefault()
@@ -89,7 +136,9 @@ function SignInForm() {
                 return
             }
 
-            const redirectTo = await getPostLoginRedirect()
+            const redirectTo = explicitRedirect
+                ? normalizeRedirect(explicitRedirect)
+                : selectedArea.redirect
 
             toast.success("Login realizado com sucesso!")
             router.push(redirectTo)
@@ -102,115 +151,137 @@ function SignInForm() {
     }
 
     return (
-        <Card className="w-full max-w-md">
-            <CardHeader className="space-y-1 text-center">
-                <div className="flex justify-center mb-4">
-                    {isMarketplace ? (
-                        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#4a2c5a] to-[#5d3a70] flex items-center justify-center">
-                            <ShoppingBag className="h-8 w-8 text-white" />
-                        </div>
-                    ) : (
-                        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
-                            <Building2 className="h-8 w-8 text-white" />
-                        </div>
-                    )}
-                </div>
-                <CardTitle className="text-2xl font-bold">
-                    {isMarketplace ? "Acessar Minhas Compras" : "Acessar CRM"}
-                </CardTitle>
-                <CardDescription>
-                    {isMarketplace
-                        ? "Entre para acessar suas listas de leads compradas"
-                        : "Digite seu email e senha para acessar sua conta"
-                    }
-                </CardDescription>
-            </CardHeader>
-            <form onSubmit={handleSubmit}>
-                <CardContent className="space-y-4">
-                    <div className="space-y-2">
-                        <Label htmlFor="email">Email</Label>
-                        <Input
-                            id="email"
-                            type="email"
-                            placeholder="seu@email.com"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                            disabled={isLoading}
-                        />
-                    </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="password">Senha</Label>
-                        <Input
-                            id="password"
-                            type="password"
-                            placeholder="••••••••"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                            disabled={isLoading}
-                        />
-                    </div>
-
-                    {isMarketplace && (
-                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                            <p className="text-sm text-blue-800">
-                                <strong>💡 Dica:</strong> Você também pode usar o link mágico
-                                enviado no email de confirmação da sua compra!
-                            </p>
-                        </div>
-                    )}
-                </CardContent>
-                <CardFooter className="flex flex-col space-y-4">
-                    <Button
-                        type="submit"
-                        className={`w-full ${isMarketplace ? 'bg-[#4a2c5a] hover:bg-[#5d3a70]' : ''}`}
-                        disabled={isLoading}
-                    >
-                        {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                        {isMarketplace ? "Entrar e Ver Compras" : "Entrar no CRM"}
-                    </Button>
-
-                    <p className="text-sm text-muted-foreground text-center">
-                        Não tem uma conta?{" "}
-                        <Link
-                            href={`/sign-up${isMarketplace ? '?from=marketplace' : ''}`}
-                            className="text-primary hover:underline"
-                        >
-                            Criar conta
-                        </Link>
+        <div className="mx-auto grid w-full max-w-4xl gap-6 lg:grid-cols-[1fr_420px] lg:items-start">
+            <section className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
+                <div className="mb-5">
+                    <p className="text-sm font-semibold uppercase tracking-wider text-emerald-700">
+                        Escolha para onde entrar
                     </p>
+                    <h1 className="mt-2 text-2xl font-bold tracking-tight text-gray-950">
+                        Acessos principais
+                    </h1>
+                    <p className="mt-2 text-sm leading-6 text-gray-600">
+                        A Área Administrativa aparece primeiro para facilitar a rotina de quem trabalha no sistema.
+                        CRM e compras continuam separados logo abaixo.
+                    </p>
+                </div>
 
-                    {!isMarketplace && (
-                        <div className="space-y-2 text-center">
+                <div className="grid gap-3">
+                    {accessAreas.map((area) => {
+                        const Icon = area.icon
+                        const isSelected = area.id === selectedArea.id
+
+                        return (
                             <Link
-                                href="/sign-in?from=marketplace"
-                                className="text-sm text-[#2ec4b6] hover:underline"
+                                key={area.id}
+                                href={area.signInHref}
+                                className={cn(
+                                    "flex gap-4 rounded-lg border p-4 transition hover:border-emerald-300 hover:bg-emerald-50/60",
+                                    isSelected
+                                        ? "border-emerald-500 bg-emerald-50"
+                                        : "border-gray-200 bg-white"
+                                )}
                             >
-                                ← Acessar área de compras
+                                <div
+                                    className={cn(
+                                        "flex h-11 w-11 shrink-0 items-center justify-center rounded-md",
+                                        isSelected
+                                            ? "bg-emerald-600 text-white"
+                                            : "bg-gray-100 text-gray-600"
+                                    )}
+                                >
+                                    <Icon className="h-5 w-5" />
+                                </div>
+                                <div className="min-w-0 flex-1">
+                                    <div className="flex items-center gap-2">
+                                        <h2 className="font-semibold text-gray-950">{area.title}</h2>
+                                        {isSelected && (
+                                            <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                                        )}
+                                    </div>
+                                    <p className="mt-1 text-sm leading-6 text-gray-600">
+                                        {area.description}
+                                    </p>
+                                </div>
                             </Link>
-                            <br />
-                            <Link
-                                href="/sign-in?redirect=/super-admin"
-                                className="text-sm text-violet-600 hover:underline"
-                            >
-                                Acessar como super-admin
-                            </Link>
+                        )
+                    })}
+                </div>
+            </section>
+
+            <Card className="w-full rounded-lg">
+                <CardHeader className="space-y-1 text-center">
+                    <div className="mb-4 flex justify-center">
+                        <div className="flex h-16 w-16 items-center justify-center rounded-md bg-emerald-600">
+                            <SelectedIcon className="h-8 w-8 text-white" />
                         </div>
-                    )}
-                </CardFooter>
-            </form>
-        </Card>
+                    </div>
+                    <CardTitle className="text-2xl font-bold">
+                        {selectedArea.shortTitle}
+                    </CardTitle>
+                    <CardDescription>
+                        Digite seu email e senha para acessar esta área.
+                    </CardDescription>
+                </CardHeader>
+                <form onSubmit={handleSubmit}>
+                    <CardContent className="space-y-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="email">Email</Label>
+                            <Input
+                                id="email"
+                                type="email"
+                                placeholder="seu@email.com"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                                disabled={isLoading}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="password">Senha</Label>
+                            <Input
+                                id="password"
+                                type="password"
+                                placeholder="********"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                                disabled={isLoading}
+                            />
+                        </div>
+                    </CardContent>
+                    <CardFooter className="flex flex-col space-y-4">
+                        <Button
+                            type="submit"
+                            className="w-full bg-emerald-600 hover:bg-emerald-700"
+                            disabled={isLoading}
+                        >
+                            {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
+                            {selectedArea.buttonLabel}
+                        </Button>
+
+                        <p className="text-center text-sm text-muted-foreground">
+                            Não tem uma conta?{" "}
+                            <Link href="/sign-up" className="text-primary hover:underline">
+                                Criar conta
+                            </Link>
+                        </p>
+                    </CardFooter>
+                </form>
+            </Card>
+        </div>
     )
 }
 
 export default function SignInPage() {
     return (
-        <Suspense fallback={
-            <div className="flex items-center justify-center min-h-screen">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            </div>
-        }>
+        <Suspense
+            fallback={
+                <div className="flex min-h-screen items-center justify-center">
+                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                </div>
+            }
+        >
             <SignInForm />
         </Suspense>
     )

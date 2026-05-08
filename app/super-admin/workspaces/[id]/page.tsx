@@ -97,7 +97,7 @@ export default async function WorkspaceDetailsPage({ params }: WorkspaceDetailsP
                     className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4"
                 >
                     <ArrowLeft className="h-4 w-4 mr-1" />
-                    Voltar para workspaces
+                    Voltar para empresas/contas
                 </Link>
 
                 <div className="flex items-start justify-between">
@@ -174,7 +174,7 @@ export default async function WorkspaceDetailsPage({ params }: WorkspaceDetailsP
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                             <User className="h-5 w-5" />
-                            Proprietário
+                            Responsável
                         </CardTitle>
                     </CardHeader>
                     <CardContent>

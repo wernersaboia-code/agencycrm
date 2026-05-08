@@ -3,6 +3,7 @@
 import { Suspense } from "react"
 import Link from "next/link"
 import {
+    ArrowLeft,
     ArrowRight,
     Building2,
     CheckCircle2,
@@ -44,12 +45,26 @@ export default async function WorkspacesPage({ searchParams }: WorkspacesPagePro
     return (
         <div className="space-y-6">
             {/* Header */}
-            <div>
-                <h1 className="text-3xl font-bold">Gestão de Workspaces</h1>
-                <p className="text-muted-foreground">
-                    Visualize e gerencie todos os workspaces do sistema
-                </p>
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                <div>
+                    <h1 className="text-3xl font-bold">Empresas/Contas</h1>
+                    <p className="text-muted-foreground">
+                        Visualize as empresas e contas que usam o CRM.
+                    </p>
+                </div>
+                <Button variant="outline" asChild>
+                    <Link href="/super-admin">
+                        <ArrowLeft className="h-4 w-4" />
+                        Voltar ao painel
+                    </Link>
+                </Button>
             </div>
+
+            <Card className="border-emerald-200 bg-emerald-50">
+                <CardContent className="p-4 text-sm text-emerald-900">
+                    Use esta tela para acompanhar quais empresas já têm leads, campanhas, ligações e modelos de email cadastrados.
+                </CardContent>
+            </Card>
 
             {/* Filtros */}
             <Card>
@@ -60,7 +75,7 @@ export default async function WorkspacesPage({ searchParams }: WorkspacesPagePro
                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                                 <Input
                                     name="search"
-                                    placeholder="Buscar por nome do workspace ou dono..."
+                                    placeholder="Buscar por empresa/conta ou responsável..."
                                     defaultValue={params.search}
                                     className="pl-10"
                                 />
@@ -102,9 +117,9 @@ async function WorkspacesTable({
             <Card>
                 <CardContent className="py-12 text-center">
                     <Building2 className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                    <h3 className="text-lg font-medium mb-2">Nenhum workspace encontrado</h3>
+                    <h3 className="text-lg font-medium mb-2">Nenhuma empresa/conta encontrada</h3>
                     <p className="text-muted-foreground">
-                        {search ? "Tente ajustar a busca" : "Ainda não há workspaces cadastrados"}
+                        {search ? "Tente ajustar a busca" : "Ainda não há empresas/contas cadastradas"}
                     </p>
                 </CardContent>
             </Card>
@@ -156,9 +171,9 @@ async function WorkspacesTable({
         <Card className={activeWorkspaces === workspaces.length ? "border-emerald-300 dark:border-emerald-900" : "border-amber-300 dark:border-amber-900"}>
             <CardHeader className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                 <div>
-                    <CardTitle>Saúde dos workspaces</CardTitle>
+                    <CardTitle>Saúde das empresas/contas</CardTitle>
                     <p className="text-sm text-muted-foreground">
-                        {activeWorkspaces}/{workspaces.length} workspaces desta página já têm alguma operação registrada.
+                        {activeWorkspaces}/{workspaces.length} empresas/contas desta página já têm alguma operação registrada.
                     </p>
                 </div>
                 <Badge variant={activeWorkspaces === workspaces.length ? "default" : "outline"}>
@@ -190,14 +205,14 @@ async function WorkspacesTable({
 
         <Card>
             <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>Workspaces ({total})</CardTitle>
+                <CardTitle>Empresas/Contas ({total})</CardTitle>
             </CardHeader>
             <CardContent>
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead>Workspace</TableHead>
-                            <TableHead>Dono</TableHead>
+                            <TableHead>Empresa/Conta</TableHead>
+                            <TableHead>Responsável</TableHead>
                             <TableHead className="text-center">Leads</TableHead>
                             <TableHead className="text-center">Campanhas</TableHead>
                             <TableHead className="text-center">Ligações</TableHead>

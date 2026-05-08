@@ -105,15 +105,15 @@ export default async function MarketplacePage() {
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold">Marketplace</h1>
+                    <h1 className="text-3xl font-bold">Catálogo e vendas</h1>
                     <p className="text-muted-foreground">
-                        Gerencie listas de leads e acompanhe vendas
+                        Gerencie listas de leads e acompanhe vendas do catálogo público.
                     </p>
                 </div>
                 <Button asChild>
                     <Link href="/super-admin/marketplace/lists/new">
                         <Plus className="h-4 w-4 mr-2" />
-                        Nova Lista
+                        Criar nova lista
                     </Link>
                 </Button>
             </div>
@@ -186,12 +186,18 @@ export default async function MarketplacePage() {
                 </CardContent>
             </Card>
 
+            <Card className="border-emerald-200 bg-emerald-50">
+                <CardContent className="p-4 text-sm text-emerald-900">
+                    Para vender uma base, crie uma lista, adicione leads e deixe a lista ativa no catálogo.
+                </CardContent>
+            </Card>
+
             {/* Quick Actions + Recent Lists */}
             <div className="grid gap-6 lg:grid-cols-2">
                 {/* Quick Actions */}
                 <Card>
                     <CardHeader>
-                        <CardTitle>Ações Rápidas</CardTitle>
+                        <CardTitle>Ações rápidas</CardTitle>
                     </CardHeader>
                     <CardContent className="grid gap-3">
                         <Link
@@ -203,7 +209,7 @@ export default async function MarketplacePage() {
                                     <Package className="h-5 w-5 text-violet-600" />
                                 </div>
                                 <div>
-                                    <p className="font-medium">Criar Nova Lista</p>
+                                    <p className="font-medium">Criar nova lista</p>
                                     <p className="text-sm text-muted-foreground">
                                         Adicione uma nova lista ao catálogo
                                     </p>
@@ -221,7 +227,7 @@ export default async function MarketplacePage() {
                                     <Users className="h-5 w-5 text-blue-600" />
                                 </div>
                                 <div>
-                                    <p className="font-medium">Gerenciar Listas</p>
+                                    <p className="font-medium">Gerenciar listas de leads</p>
                                     <p className="text-sm text-muted-foreground">
                                         Edite listas e adicione leads
                                     </p>
@@ -239,7 +245,7 @@ export default async function MarketplacePage() {
                                     <ShoppingCart className="h-5 w-5 text-green-600" />
                                 </div>
                                 <div>
-                                    <p className="font-medium">Ver Vendas</p>
+                                    <p className="font-medium">Ver vendas</p>
                                     <p className="text-sm text-muted-foreground">
                                         Acompanhe todas as compras realizadas
                                     </p>
@@ -253,7 +259,7 @@ export default async function MarketplacePage() {
                 {/* Recent Lists */}
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between">
-                        <CardTitle>Listas Recentes</CardTitle>
+                        <CardTitle>Listas recentes</CardTitle>
                         <Button variant="ghost" size="sm" asChild>
                             <Link href="/super-admin/marketplace/lists">
                                 Ver todas

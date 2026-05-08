@@ -91,7 +91,7 @@ export function AppearanceSettings() {
             {/* Preview do tema */}
             <Card>
                 <CardHeader>
-                    <CardTitle>Preview</CardTitle>
+                    <CardTitle>Prévia</CardTitle>
                     <CardDescription>
                         Veja como os elementos aparecem com o tema atual
                     </CardDescription>

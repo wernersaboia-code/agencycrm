@@ -4,6 +4,7 @@ import { useState } from "react"
 import type { FormEvent } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
 import { Search } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -33,24 +34,29 @@ export function CatalogSearch({ defaultValue = "", variant = "light" }: CatalogS
     }
 
     return (
-        <form onSubmit={handleSearch} className="relative">
-            <Search
-                className={cn(
-                    "absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2",
-                    isDark ? "text-white/70" : "text-muted-foreground"
-                )}
-            />
-            <Input
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Buscar por nome, país, setor ou descrição"
-                className={cn(
-                    "h-11 rounded-md pl-12",
-                    isDark
-                        ? "border-white/20 bg-white/10 text-white placeholder:text-white/70 focus:bg-white/20 focus:border-white/40"
-                        : "border-gray-200 bg-white text-gray-900 placeholder:text-gray-500"
-                )}
-            />
+        <form onSubmit={handleSearch} className="flex flex-col gap-2 sm:flex-row">
+            <div className="relative flex-1">
+                <Search
+                    className={cn(
+                        "absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2",
+                        isDark ? "text-white/70" : "text-muted-foreground"
+                    )}
+                />
+                <Input
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    placeholder="Buscar por nome, país, setor ou descrição"
+                    className={cn(
+                        "h-11 rounded-md pl-12",
+                        isDark
+                            ? "border-white/20 bg-white/10 text-white placeholder:text-white/70 focus:bg-white/20 focus:border-white/40"
+                            : "border-gray-200 bg-white text-gray-900 placeholder:text-gray-500"
+                    )}
+                />
+            </div>
+            <Button type="submit" className="h-11 bg-emerald-600 hover:bg-emerald-700">
+                Buscar
+            </Button>
         </form>
     )
 }

@@ -69,7 +69,7 @@ export function SequenceStepCard({
                         </div>
                         <div className="flex-1">
                             <p className="font-medium">
-                                {step.subject || `Step ${stepNumber}`}
+                                {step.subject || `Etapa ${stepNumber}`}
                             </p>
                             {!isFirst && (
                                 <p className="text-sm text-muted-foreground flex items-center gap-1">
@@ -78,7 +78,7 @@ export function SequenceStepCard({
                                     {step.delayDays > 0 && step.delayHours > 0 && " e "}
                                     {step.delayHours > 0 && `${step.delayHours} hora${step.delayHours > 1 ? "s" : ""}`}
                                     {step.delayDays === 0 && step.delayHours === 0 && "Imediatamente"}
-                                    {" após o anterior"}
+                                    {" após a etapa anterior"}
                                 </p>
                             )}
                             {isFirst && (
@@ -117,7 +117,7 @@ export function SequenceStepCard({
                 {/* Content */}
                 <CollapsibleContent>
                     <div className="p-4 space-y-4">
-                        {/* Delay e Condição (não mostra no primeiro step) */}
+                        {/* Delay e condição (não mostra na primeira etapa) */}
                         {!isFirst && (
                             <div className="grid grid-cols-3 gap-4">
                                 <div className="space-y-2">
@@ -163,16 +163,16 @@ export function SequenceStepCard({
 
                         {/* Template */}
                         <div className="space-y-2">
-                            <Label>Template (opcional)</Label>
+                            <Label>Modelo de e-mail (opcional)</Label>
                             <Select
                                 value={step.templateId || "none"}
                                 onValueChange={handleTemplateChange}
                             >
                                 <SelectTrigger>
-                                    <SelectValue placeholder="Selecione um template ou escreva do zero" />
+                                    <SelectValue placeholder="Selecione um modelo ou escreva do zero" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="none">Sem template</SelectItem>
+                                    <SelectItem value="none">Sem modelo</SelectItem>
                                     {templates.map((template) => (
                                         <SelectItem key={template.id} value={template.id}>
                                             {template.name}
@@ -188,17 +188,17 @@ export function SequenceStepCard({
                             <Input
                                 value={step.subject}
                                 onChange={(e) => onUpdate({ subject: e.target.value })}
-                                placeholder="Ex: Acompanhamento - {{empresa}}"
+                                placeholder="Ex: Acompanhamento para [[Empresa]]"
                             />
                         </div>
 
                         {/* Conteúdo */}
                         <div className="space-y-2">
-                            <Label>Conteúdo do email *</Label>
+                            <Label>Mensagem *</Label>
                             <RichTextEditor
                                 content={step.content}
                                 onChange={(content) => onUpdate({ content })}
-                                placeholder="Escreva o conteúdo do email..."
+                                placeholder="Escreva a mensagem como ela deve chegar ao lead..."
                             />
                         </div>
                     </div>

@@ -56,8 +56,8 @@ export default async function UserDetailsPage({ params }: UserDetailsPageProps) 
             done: user.status === "ACTIVE",
         },
         {
-            label: "Workspace criado",
-            description: user._count.workspaces > 0 ? `${user._count.workspaces} workspace${user._count.workspaces !== 1 ? "s" : ""}.` : "Usuário ainda não opera nenhum cliente.",
+            label: "Empresa/conta criada",
+            description: user._count.workspaces > 0 ? `${user._count.workspaces} empresa/conta${user._count.workspaces !== 1 ? "s" : ""}.` : "Usuário ainda não opera nenhum cliente.",
             done: user._count.workspaces > 0,
         },
         {
@@ -150,7 +150,7 @@ export default async function UserDetailsPage({ params }: UserDetailsPageProps) 
                     <CardContent className="space-y-4">
                         <div className="space-y-2">
                             <label className="text-sm font-medium text-muted-foreground">
-                                Role
+                                Permissão
                             </label>
                             <UserRoleSelect
                                 userId={user.id}
@@ -239,18 +239,18 @@ export default async function UserDetailsPage({ params }: UserDetailsPageProps) 
                 </Card>
             </div>
 
-            {/* Workspaces */}
+            {/* Empresas/Contas */}
             <Card>
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                         <Building2 className="h-5 w-5" />
-                        Workspaces ({user._count.workspaces})
+                        Empresas/Contas ({user._count.workspaces})
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
                     {user.workspaces.length === 0 ? (
                         <p className="text-center text-muted-foreground py-8">
-                            Este usuário não possui workspaces.
+                            Este usuário não possui empresas/contas.
                         </p>
                     ) : (
                         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -282,7 +282,7 @@ export default async function UserDetailsPage({ params }: UserDetailsPageProps) 
                                         </div>
                                     </div>
                                     <div className="mt-3 flex items-center justify-between text-sm font-medium text-primary">
-                                        Ver workspace
+                                        Ver empresa/conta
                                         <ArrowRight className="h-4 w-4" />
                                     </div>
                                 </Link>

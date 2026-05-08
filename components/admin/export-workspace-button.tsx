@@ -106,11 +106,11 @@ export function ExportWorkspaceButton({ workspaceId, workspaceName }: ExportWork
             <DropdownMenuContent>
                 <DropdownMenuItem onClick={() => handleExport("json")}>
                     <FileJson className="h-4 w-4 mr-2" />
-                    Exportar JSON (Completo)
+                    Exportar JSON completo
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => handleExport("csv")}>
                     <FileSpreadsheet className="h-4 w-4 mr-2" />
-                    Exportar CSV (Leads)
+                    Exportar CSV de leads
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>

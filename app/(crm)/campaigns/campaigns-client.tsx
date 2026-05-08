@@ -132,7 +132,7 @@ export function CampaignsClient({
 
     const handleCreate = () => {
         if (activeTemplatesCount === 0) {
-            toast.error("Crie ou ative pelo menos um template antes de criar uma campanha")
+            toast.error("Crie ou ative pelo menos um modelo de e-mail antes de criar uma campanha")
             router.push("/templates")
             return
         }
@@ -219,12 +219,12 @@ export function CampaignsClient({
 
     const readinessItems = [
         {
-            label: "Template ativo",
+            label: "Modelo ativo",
             description: activeTemplatesCount > 0
-                ? `${activeTemplatesCount} template${activeTemplatesCount !== 1 ? "s" : ""} ativo${activeTemplatesCount !== 1 ? "s" : ""} para campanhas.`
-                : "Ative um template para liberar a criação.",
+                ? `${activeTemplatesCount} modelo${activeTemplatesCount !== 1 ? "s" : ""} ativo${activeTemplatesCount !== 1 ? "s" : ""} para campanhas.`
+                : "Ative um modelo para liberar a criação.",
             done: activeTemplatesCount > 0,
-            action: activeTemplatesCount > 0 ? "Criar campanha" : "Ir para templates",
+            action: activeTemplatesCount > 0 ? "Criar campanha" : "Ir para modelos",
             onClick: activeTemplatesCount > 0 ? handleCreate : () => router.push("/templates"),
         },
         {
@@ -424,14 +424,14 @@ export function CampaignsClient({
                     description={
                         campaigns.length === 0
                             ? activeTemplatesCount === 0
-                                ? "Crie ou ative um template primeiro para montar sua primeira campanha com mais rapidez."
-                                : "Use seus templates para criar uma campanha e acompanhar envio, abertura e cliques."
+                                ? "Crie ou ative um modelo primeiro para montar sua primeira campanha com mais rapidez."
+                                : "Use seus modelos para criar uma campanha e acompanhar envio, abertura e cliques."
                             : "Ajuste a busca ou o status para encontrar campanhas neste cliente."
                     }
                     primaryAction={
                         campaigns.length === 0
                             ? {
-                                label: activeTemplatesCount === 0 ? "Criar template" : "Criar campanha",
+                                label: activeTemplatesCount === 0 ? "Criar modelo" : "Criar campanha",
                                 icon: activeTemplatesCount === 0 ? FileText : Plus,
                                 onClick: activeTemplatesCount === 0 ? () => router.push("/templates") : handleCreate,
                             }

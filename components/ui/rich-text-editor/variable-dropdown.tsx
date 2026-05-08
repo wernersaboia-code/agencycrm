@@ -11,33 +11,12 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { TEMPLATE_VARIABLE_GROUPS } from "@/lib/constants/template.constants"
 
 interface VariableDropdownProps {
     onSelect: (variable: string) => void
     disabled?: boolean
 }
-
-const TEMPLATE_VARIABLES = [
-    {
-        category: "Lead",
-        variables: [
-            { key: "firstName", label: "Primeiro Nome", example: "João" },
-            { key: "lastName", label: "Sobrenome", example: "Silva" },
-            { key: "fullName", label: "Nome Completo", example: "João Silva" },
-            { key: "email", label: "Email", example: "joao@empresa.com" },
-            { key: "phone", label: "Telefone", example: "(11) 99999-9999" },
-            { key: "position", label: "Cargo", example: "Diretor de Marketing" },
-        ],
-    },
-    {
-        category: "Empresa",
-        variables: [
-            { key: "company", label: "Nome da Empresa", example: "Empresa ABC" },
-            { key: "segment", label: "Segmento", example: "Tecnologia" },
-            { key: "country", label: "País", example: "Brasil" },
-        ],
-    },
-]
 
 export function VariableDropdown({ onSelect, disabled }: VariableDropdownProps) {
     return (
@@ -50,24 +29,24 @@ export function VariableDropdown({ onSelect, disabled }: VariableDropdownProps) 
                     className="gap-2"
                 >
                     <Variable className="h-4 w-4" />
-                    Variável
+                    Campo personalizado
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-64">
-                {TEMPLATE_VARIABLES.map((category, index) => (
-                    <div key={category.category}>
+                {TEMPLATE_VARIABLE_GROUPS.map((category, index) => (
+                    <div key={category.label}>
                         {index > 0 && <DropdownMenuSeparator />}
-                        <DropdownMenuLabel>{category.category}</DropdownMenuLabel>
+                        <DropdownMenuLabel>{category.label}</DropdownMenuLabel>
                         {category.variables.map((variable) => (
                             <DropdownMenuItem
                                 key={variable.key}
                                 onClick={() => onSelect(variable.key)}
-                                className="flex justify-between"
+                                className="flex flex-col items-start gap-0.5"
                             >
                                 <span>{variable.label}</span>
-                                <code className="text-xs text-muted-foreground bg-muted px-1 rounded">
-                                    {`{{${variable.key}}}`}
-                                </code>
+                                <span className="text-xs text-muted-foreground">
+                                    Exemplo: {variable.example}
+                                </span>
                             </DropdownMenuItem>
                         ))}
                     </div>

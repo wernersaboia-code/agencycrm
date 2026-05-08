@@ -26,7 +26,7 @@ import { useEffect, useState } from "react"
 
 const mainMenuItems = [
     {
-        title: "Dashboard",
+        title: "Painel",
         href: "/dashboard",
         icon: LayoutDashboard,
     },
@@ -41,7 +41,7 @@ const mainMenuItems = [
         icon: Mail,
     },
     {
-        title: "Templates",
+        title: "Modelos de e-mail",
         href: "/templates",
         icon: FileText,
     },
@@ -185,7 +185,7 @@ export function Sidebar() {
                                     )}
                                 >
                                     <ShieldCheck className="h-4 w-4" />
-                                    Super Admin
+                                    Área Administrativa
                                 </Link>
                             </div>
                         </>

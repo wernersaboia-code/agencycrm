@@ -13,7 +13,6 @@ import {
     LogOut,
     LifeBuoy,
     BarChart3,
-    Store,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -38,34 +37,31 @@ interface MenuSection {
 
 const menuSections: MenuSection[] = [
     {
-        label: "Visão Geral",
+        label: "Início",
         items: [
-            { title: "Dashboard", href: "/super-admin", icon: LayoutDashboard, exact: true },
+            { title: "Painel inicial", href: "/super-admin", icon: LayoutDashboard, exact: true },
         ],
     },
     {
-        label: "Gestão",
+        label: "Administração",
         items: [
             { title: "Usuários", href: "/super-admin/users", icon: Users },
-            { title: "Workspaces", href: "/super-admin/workspaces", icon: Building2 },
+            { title: "Empresas/Contas", href: "/super-admin/workspaces", icon: Building2 },
         ],
     },
     {
-        label: "Marketplace",
+        label: "Leads e vendas",
         items: [
-            { title: "Visão Geral", href: "/super-admin/marketplace", icon: Store, exact: true },
-            { title: "Listas", href: "/super-admin/marketplace/lists", icon: Package },
+            { title: "Listas de leads", href: "/super-admin/marketplace/lists", icon: Package },
             { title: "Vendas", href: "/super-admin/marketplace/purchases", icon: ShoppingCart },
         ],
     },
-    {
-        label: "Sistema",
-        items: [
-            { title: "Suporte", href: "/super-admin/support", icon: LifeBuoy },
-            { title: "Analytics", href: "/super-admin/analytics", icon: BarChart3 },
-            { title: "Configurações", href: "/super-admin/settings", icon: Settings },
-        ],
-    },
+]
+
+const secondaryItems: MenuItem[] = [
+    { title: "Suporte", href: "/super-admin/support", icon: LifeBuoy },
+    { title: "Relatórios", href: "/super-admin/analytics", icon: BarChart3 },
+    { title: "Configurações", href: "/super-admin/settings", icon: Settings },
 ]
 
 // ==================== COMPONENTE ====================
@@ -97,7 +93,7 @@ export function AdminSidebar() {
                     </div>
                     <div>
                         <span className="text-lg font-bold text-white">AgencyCRM</span>
-                        <span className="block text-xs text-violet-400">Super Admin</span>
+                        <span className="block text-xs text-violet-400">Área Administrativa</span>
                     </div>
                 </Link>
             </div>
@@ -138,8 +134,28 @@ export function AdminSidebar() {
                 </nav>
             </ScrollArea>
 
-            {/* Logout */}
             <div className="border-t border-violet-800 p-3">
+                <div className="mb-3 grid gap-1">
+                    {secondaryItems.map((item) => {
+                        const isActive = isItemActive(item.href, item.exact)
+
+                        return (
+                            <Link
+                                key={item.href}
+                                href={item.href}
+                                className={cn(
+                                    "flex items-center gap-2 rounded-md px-3 py-2 text-xs font-medium transition-colors",
+                                    isActive
+                                        ? "bg-violet-500 text-white"
+                                        : "text-violet-300 hover:bg-violet-800 hover:text-white"
+                                )}
+                            >
+                                <item.icon className="h-3.5 w-3.5" />
+                                {item.title}
+                            </Link>
+                        )
+                    })}
+                </div>
                 <Button
                     variant="ghost"
                     className="w-full justify-start gap-3 text-violet-200 hover:bg-violet-800 hover:text-white"

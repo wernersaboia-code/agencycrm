@@ -175,7 +175,7 @@ export function SettingsClient({ profile, workspace, stats }: SettingsClientProp
                     <p className="text-2xl font-bold">{stats.totalCampaigns}</p>
                 </div>
                 <div className="rounded-lg border bg-card p-4">
-                    <p className="text-sm text-muted-foreground">Templates</p>
+                    <p className="text-sm text-muted-foreground">Modelos</p>
                     <p className="text-2xl font-bold">{stats.totalTemplates}</p>
                 </div>
                 <div className="rounded-lg border bg-card p-4">

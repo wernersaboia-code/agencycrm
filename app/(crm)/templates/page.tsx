@@ -42,7 +42,7 @@ async function TemplatesData({ workspaceId }: { workspaceId: string }) {
     if (!result.success || !result.data) {
         return (
             <div className="text-center py-12">
-                <p className="text-muted-foreground">Erro ao carregar templates</p>
+                <p className="text-muted-foreground">Erro ao carregar modelos</p>
             </div>
         )
     }

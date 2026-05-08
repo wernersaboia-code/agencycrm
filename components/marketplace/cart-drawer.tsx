@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
-import { ShoppingBag, ArrowRight } from "lucide-react"
+import { ShoppingBag, ArrowRight, ShieldCheck } from "lucide-react"
 import Link from "next/link"
 import { CartItem } from "./cart-item"
 
@@ -22,7 +22,7 @@ export function CartDrawer() {
                     <div className="flex items-center justify-between">
                         <SheetTitle className="flex items-center gap-2">
                             <ShoppingBag className="h-5 w-5 text-[#2ec4b6]" />
-                            Seu Carrinho
+                            Seu carrinho
                             {itemCount > 0 && (
                                 <span className="text-sm font-normal text-muted-foreground">
                   ({itemCount} {itemCount === 1 ? "item" : "itens"})
@@ -46,7 +46,7 @@ export function CartDrawer() {
                                 Adicione listas de leads para começar
                             </p>
                             <Button asChild onClick={closeCart}>
-                                <Link href="/catalog">Ver Catálogo</Link>
+                                <Link href="/catalog">Ver catálogo</Link>
                             </Button>
                         </div>
                     ) : (
@@ -79,7 +79,7 @@ export function CartDrawer() {
                                 onClick={closeCart}
                             >
                                 <Link href="/cart">
-                                    Finalizar Compra
+                                    Revisar carrinho
                                     <ArrowRight className="h-5 w-5 ml-2" />
                                 </Link>
                             </Button>
@@ -89,13 +89,14 @@ export function CartDrawer() {
                                 asChild
                                 onClick={closeCart}
                             >
-                                <Link href="/catalog">Continuar Comprando</Link>
+                                <Link href="/catalog">Continuar comprando</Link>
                             </Button>
                         </div>
 
                         {/* Secure Badge */}
                         <p className="text-xs text-center text-muted-foreground">
-                            🔒 Pagamento seguro via PayPal
+                            <ShieldCheck className="mr-1 inline h-3.5 w-3.5 text-emerald-600" />
+                            Pagamento seguro via PayPal
                         </p>
                     </div>
                 )}

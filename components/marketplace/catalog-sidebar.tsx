@@ -83,7 +83,7 @@ export function CatalogSidebar({
             params.delete(key)
         }
 
-        params.delete("page") // Reset página ao filtrar
+        params.delete("page")
         router.push(`/catalog?${params.toString()}`)
     }
 
@@ -117,6 +117,13 @@ export function CatalogSidebar({
 
     return (
         <div className="space-y-6">
+            <div>
+                <h2 className="text-lg font-semibold text-gray-900">Filtros</h2>
+                <p className="mt-1 text-sm text-gray-500">
+                    Refine o catálogo por perfil da lista.
+                </p>
+            </div>
+
             {/* Filtro de Categoria */}
             <div>
                 <button
@@ -286,9 +293,9 @@ export function CatalogSidebar({
             {hasActiveFilters && (
                 <button
                     onClick={clearFilters}
-                    className="w-full py-2 text-sm text-[#4a2c5a] hover:bg-purple-50 rounded-lg transition-colors"
+                    className="w-full rounded-md border border-gray-200 bg-white py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
                 >
-                    Limpar Filtros
+                    Limpar filtros
                 </button>
             )}
         </div>

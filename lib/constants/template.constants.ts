@@ -107,6 +107,79 @@ export const TEMPLATE_VARIABLES: TemplateVariable[] = [
     { key: "country", label: "País", description: "País do lead", example: "Brasil" },
 ]
 
+export const TEMPLATE_VARIABLE_GROUPS = [
+    {
+        label: "Contato",
+        variables: TEMPLATE_VARIABLES.filter((variable) =>
+            ["firstName", "lastName", "fullName", "email", "phone"].includes(variable.key)
+        ),
+    },
+    {
+        label: "Empresa",
+        variables: TEMPLATE_VARIABLES.filter((variable) =>
+            ["company", "jobTitle", "industry", "website"].includes(variable.key)
+        ),
+    },
+    {
+        label: "Localização",
+        variables: TEMPLATE_VARIABLES.filter((variable) =>
+            ["city", "state", "country"].includes(variable.key)
+        ),
+    },
+]
+
+export function getTemplateVariableLabel(key: string): string {
+    return TEMPLATE_VARIABLES.find((variable) => variable.key === key)?.label || key
+}
+
+export function getSubjectVariableToken(key: string): string {
+    return `[[${getTemplateVariableLabel(key)}]]`
+}
+
+export function getVariableChipHtml(key: string): string {
+    const label = getTemplateVariableLabel(key)
+
+    return `<span data-template-variable="${key}" class="inline-flex rounded bg-primary/10 px-1.5 py-0.5 text-primary" contenteditable="false">${label}</span>`
+}
+
+function escapeRegExp(value: string): string {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+}
+
+export function renderTemplateVariablesForEditor(text: string): string {
+    let result = text
+
+    TEMPLATE_VARIABLES.forEach((variable) => {
+        const chip = getVariableChipHtml(variable.key)
+        const legacyRegex = new RegExp(`{{\\s*${variable.key}\\s*}}`, "gi")
+        result = result.replace(legacyRegex, chip)
+
+        const readableRegex = new RegExp(`\\[\\[\\s*${escapeRegExp(variable.label)}\\s*\\]\\]`, "gi")
+        result = result.replace(readableRegex, chip)
+    })
+
+    const aliases: Record<string, string> = {
+        nome: "firstName",
+        sobrenome: "lastName",
+        nomeCompleto: "fullName",
+        telefone: "phone",
+        empresa: "company",
+        cargo: "jobTitle",
+        segmento: "industry",
+        site: "website",
+        cidade: "city",
+        estado: "state",
+        pais: "country",
+    }
+
+    Object.entries(aliases).forEach(([alias, key]) => {
+        const aliasRegex = new RegExp(`{{\\s*${alias}\\s*}}`, "gi")
+        result = result.replace(aliasRegex, getVariableChipHtml(key))
+    })
+
+    return result
+}
+
 // ============================================================
 // HELPERS
 // ============================================================
@@ -159,6 +232,36 @@ export function replaceVariables(
     TEMPLATE_VARIABLES.forEach((variable) => {
         const regex = new RegExp(`{{\\s*${variable.key}\\s*}}`, "gi")
         const value = data[variable.key] || `[${variable.label}]`
+        result = result.replace(regex, value)
+
+        const readableRegex = new RegExp(`\\[\\[\\s*${escapeRegExp(variable.label)}\\s*\\]\\]`, "gi")
+        result = result.replace(readableRegex, value)
+
+        const chipRegex = new RegExp(
+            `<span\\b(?=[^>]*data-template-variable=["']${escapeRegExp(variable.key)}["'])[^>]*>.*?<\\/span>`,
+            "gi"
+        )
+        result = result.replace(chipRegex, value)
+    })
+
+    const aliases: Record<string, string> = {
+        nome: "firstName",
+        sobrenome: "lastName",
+        nomeCompleto: "fullName",
+        telefone: "phone",
+        empresa: "company",
+        cargo: "jobTitle",
+        segmento: "industry",
+        site: "website",
+        cidade: "city",
+        estado: "state",
+        pais: "country",
+    }
+
+    Object.entries(aliases).forEach(([alias, key]) => {
+        const variable = TEMPLATE_VARIABLES.find((item) => item.key === key)
+        const regex = new RegExp(`{{\\s*${alias}\\s*}}`, "gi")
+        const value = data[key] || `[${variable?.label || alias}]`
         result = result.replace(regex, value)
     })
 

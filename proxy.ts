@@ -137,85 +137,37 @@ export async function proxy(request: NextRequest) {
             const url = request.nextUrl.clone()
             const redirectParam = request.nextUrl.searchParams.get("redirect")
 
-            // Se veio do marketplace, vai para my-purchases
-            if (redirectParam?.startsWith("/my-purchases") || redirectParam?.startsWith("/checkout")) {
-                url.pathname = redirectParam
-            }
-            // Se veio do CRM, vai para dashboard do CRM
-            else if (redirectParam?.startsWith("/crm")) {
-                url.pathname = redirectParam
-            }
-            // Se está acessando /sign-in diretamente
-            else {
-                // Verificar se é uma rota do CRM ou Marketplace pelo referer
-                const referer = request.headers.get("referer") || ""
+            if (redirectParam?.startsWith("/") && !redirectParam.startsWith("//")) {
+                const redirectUrl = new URL(redirectParam, request.url)
+                const allowedRedirects = [
+                    "/dashboard",
+                    "/crm",
+                    "/my-purchases",
+                    "/checkout",
+                    "/cart",
+                    "/super-admin",
+                ]
+                const isAllowedRedirect = allowedRedirects.some((path) =>
+                    redirectUrl.pathname === path || redirectUrl.pathname.startsWith(`${path}/`)
+                )
 
-                if (referer.includes("/crm")) {
-                    url.pathname = "/crm/dashboard"
-                } else if (referer.includes("/catalog") || referer.includes("/cart") || referer.includes("/checkout")) {
-                    url.pathname = "/my-purchases"
-                } else {
-                    // Default: CRM dashboard
-                    url.pathname = "/crm/dashboard"
+                if (isAllowedRedirect) {
+                    url.pathname = redirectUrl.pathname
+                    url.search = redirectUrl.search
+                    return NextResponse.redirect(url)
                 }
             }
 
+            // Se está acessando /sign-in diretamente, ou se o redirect não é permitido.
+            const referer = request.headers.get("referer") || ""
+
+            if (referer.includes("/catalog") || referer.includes("/cart") || referer.includes("/checkout")) {
+                url.pathname = "/my-purchases"
+            } else {
+                url.pathname = "/super-admin"
+            }
+
             return NextResponse.redirect(url)
-        }
-
-        // ============================================
-        // REDIRECIONAR ROTAS LEGADAS PARA NOVAS ROTAS
-        // ============================================
-        if (user) {
-            const url = request.nextUrl.clone()
-            let shouldRedirect = false
-
-            // Redirecionar /dashboard para /crm/dashboard
-            if (pathname === '/dashboard' || pathname.startsWith('/dashboard/')) {
-                url.pathname = pathname.replace('/dashboard', '/crm/dashboard')
-                shouldRedirect = true
-            }
-            // Redirecionar /leads para /crm/leads
-            else if (pathname === '/leads' || pathname.startsWith('/leads/')) {
-                url.pathname = pathname.replace('/leads', '/crm/leads')
-                shouldRedirect = true
-            }
-            // Redirecionar /campaigns para /crm/campaigns
-            else if (pathname === '/campaigns' || pathname.startsWith('/campaigns/')) {
-                url.pathname = pathname.replace('/campaigns', '/crm/campaigns')
-                shouldRedirect = true
-            }
-            // Redirecionar /templates para /crm/templates
-            else if (pathname === '/templates' || pathname.startsWith('/templates/')) {
-                url.pathname = pathname.replace('/templates', '/crm/templates')
-                shouldRedirect = true
-            }
-            // Redirecionar /calls para /crm/calls
-            else if (pathname === '/calls' || pathname.startsWith('/calls/')) {
-                url.pathname = pathname.replace('/calls', '/crm/calls')
-                shouldRedirect = true
-            }
-            // Redirecionar /reports para /crm/reports
-            else if (pathname === '/reports' || pathname.startsWith('/reports/')) {
-                url.pathname = pathname.replace('/reports', '/crm/reports')
-                shouldRedirect = true
-            }
-            // Redirecionar /settings para /crm/settings
-            else if (pathname === '/settings' || pathname.startsWith('/settings/')) {
-                url.pathname = pathname.replace('/settings', '/crm/settings')
-                shouldRedirect = true
-            }
-            // Redirecionar /workspaces para /crm/workspaces
-            else if (pathname === '/workspaces' || pathname.startsWith('/workspaces/')) {
-                url.pathname = pathname.replace('/workspaces', '/crm/workspaces')
-                shouldRedirect = true
-            }
-
-            if (shouldRedirect) {
-                // Preservar query params
-                url.search = request.nextUrl.search
-                return NextResponse.redirect(url)
-            }
         }
 
     } catch (error) {

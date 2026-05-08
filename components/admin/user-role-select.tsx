@@ -22,9 +22,9 @@ interface UserRoleSelectProps {
 }
 
 const roleLabels: Record<UserRole, string> = {
-    USER: "User",
-    MANAGER: "Manager",
-    ADMIN: "Admin",
+    USER: "Usuário",
+    MANAGER: "Gerente",
+    ADMIN: "Administrador",
 }
 
 const roleColors: Record<UserRole, string> = {
@@ -45,10 +45,10 @@ export function UserRoleSelect({ userId, currentRole }: UserRoleSelectProps) {
         try {
             await updateUserRole(userId, newRole)
             setRole(newRole)
-            toast.success(`Role alterada para ${roleLabels[newRole]}`)
+            toast.success(`Permissão alterada para ${roleLabels[newRole]}`)
             router.refresh()
         } catch {
-            toast.error("Erro ao alterar role")
+            toast.error("Erro ao alterar permissão")
         } finally {
             setIsLoading(false)
         }
@@ -68,9 +68,9 @@ export function UserRoleSelect({ userId, currentRole }: UserRoleSelectProps) {
                 )}
             </SelectTrigger>
             <SelectContent>
-                <SelectItem value="USER">User</SelectItem>
-                <SelectItem value="MANAGER">Manager</SelectItem>
-                <SelectItem value="ADMIN">Admin</SelectItem>
+                <SelectItem value="USER">Usuário</SelectItem>
+                <SelectItem value="MANAGER">Gerente</SelectItem>
+                <SelectItem value="ADMIN">Administrador</SelectItem>
             </SelectContent>
         </Select>
     )

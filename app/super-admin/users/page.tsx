@@ -4,6 +4,7 @@ import { Suspense } from "react"
 import Link from "next/link"
 import {
     AlertCircle,
+    ArrowLeft,
     ArrowRight,
     Building2,
     CheckCircle2,
@@ -66,12 +67,26 @@ export default async function UsersPage({ searchParams }: UsersPageProps) {
     return (
         <div className="space-y-6">
             {/* Header */}
-            <div>
-                <h1 className="text-3xl font-bold">Gestão de Usuários</h1>
-                <p className="text-muted-foreground">
-                    Gerencie todos os usuários do sistema
-                </p>
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                <div>
+                    <h1 className="text-3xl font-bold">Usuários</h1>
+                    <p className="text-muted-foreground">
+                        Gerencie pessoas, permissões e status de acesso.
+                    </p>
+                </div>
+                <Button variant="outline" asChild>
+                    <Link href="/super-admin">
+                        <ArrowLeft className="h-4 w-4" />
+                        Voltar ao painel
+                    </Link>
+                </Button>
             </div>
+
+            <Card className="border-emerald-200 bg-emerald-50">
+                <CardContent className="p-4 text-sm text-emerald-900">
+                    Use esta tela para liberar acessos, revisar usuários pendentes e ajustar permissões administrativas.
+                </CardContent>
+            </Card>
 
             {/* Filtros */}
             <Card>
@@ -90,16 +105,16 @@ export default async function UsersPage({ searchParams }: UsersPageProps) {
                             </div>
                         </div>
 
-                        {/* Filtro Role */}
+                        {/* Filtro de permissão */}
                         <Select name="role" defaultValue={params.role || "ALL"}>
                             <SelectTrigger className="w-[150px]">
-                                <SelectValue placeholder="Role" />
+                                <SelectValue placeholder="Permissão" />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="ALL">Todas Roles</SelectItem>
-                                <SelectItem value="USER">User</SelectItem>
-                                <SelectItem value="MANAGER">Manager</SelectItem>
-                                <SelectItem value="ADMIN">Admin</SelectItem>
+                                <SelectItem value="ALL">Todas</SelectItem>
+                                <SelectItem value="USER">Usuário</SelectItem>
+                                <SelectItem value="MANAGER">Gerente</SelectItem>
+                                <SelectItem value="ADMIN">Administrador</SelectItem>
                             </SelectContent>
                         </Select>
 
@@ -201,7 +216,7 @@ async function UsersTable({
         {
             label: "Sem workspace",
             value: usersWithoutWorkspace,
-            description: "Usuários que ainda não operam nenhum cliente.",
+            description: "Usuários que ainda não operam nenhuma empresa/conta.",
             icon: Building2,
             tone: usersWithoutWorkspace > 0 ? "warning" : "success",
             href: "/super-admin/users",
@@ -263,9 +278,9 @@ async function UsersTable({
                     <TableHeader>
                         <TableRow>
                             <TableHead>Usuário</TableHead>
-                            <TableHead>Role</TableHead>
+                            <TableHead>Permissão</TableHead>
                             <TableHead>Status</TableHead>
-                            <TableHead className="text-center">Workspaces</TableHead>
+                            <TableHead className="text-center">Empresas/Contas</TableHead>
                             <TableHead>Cadastro</TableHead>
                             <TableHead>Último Acesso</TableHead>
                             <TableHead className="text-right">Ações</TableHead>

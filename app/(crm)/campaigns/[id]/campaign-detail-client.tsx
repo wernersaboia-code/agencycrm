@@ -429,8 +429,8 @@ export function CampaignDetailClient({
                                 <Mail className="h-5 w-5 text-blue-600" />
                             </div>
                             <div>
-                                <p className="text-sm text-muted-foreground">Template</p>
-                                <p className="font-medium">{campaign.template?.name || "Sem template"}</p>
+                                <p className="text-sm text-muted-foreground">Modelo</p>
+                                <p className="font-medium">{campaign.template?.name || "Sem modelo"}</p>
                             </div>
                         </div>
                     </CardContent>

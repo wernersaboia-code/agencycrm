@@ -684,11 +684,11 @@ export function ListForm({ list }: ListFormProps) {
                                 {isEditing ? "Salvando..." : "Criando..."}
                             </>
                         ) : isEditing ? (
-                            "Salvar Alterações"
+                            "Salvar alterações"
                         ) : hasPreparedLeads ? (
-                            `Criar Lista com ${preparedLeads.length} Leads`
+                            `Criar lista com ${preparedLeads.length} leads`
                         ) : (
-                            "Criar Lista"
+                            "Criar lista"
                         )}
                     </Button>
                     <Button
@@ -708,7 +708,7 @@ export function ListForm({ list }: ListFormProps) {
                 onOpenChange={setShowImportWizard}
                 mode={isEditing ? "import" : "prepare"}
                 listId={list?.id}
-                listName={form.watch("name") || "Nova Lista"}
+                listName={form.watch("name") || "Nova lista"}
                 onSuccess={handleImportSuccess}
                 onLeadsPrepared={handleLeadsPrepared}
             />

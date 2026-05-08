@@ -242,24 +242,24 @@ export function CampaignWizard({
 
         if (data.type === "single") {
             if (!data.templateId) {
-                toast.error("Selecione um template")
+                    toast.error("Selecione um modelo de e-mail")
                 return false
             }
         } else {
             // Sequence
             if (data.steps.length === 0) {
-                toast.error("Adicione pelo menos um step na sequência")
+                toast.error("Adicione pelo menos uma etapa na sequência")
                 return false
             }
 
             for (let i = 0; i < data.steps.length; i++) {
                 const s = data.steps[i]
                 if (!s.subject.trim()) {
-                    toast.error(`Step ${i + 1}: Digite o assunto do email`)
+                    toast.error(`Etapa ${i + 1}: digite o assunto do e-mail`)
                     return false
                 }
                 if (!s.content.trim()) {
-                    toast.error(`Step ${i + 1}: Digite o conteúdo do email`)
+                    toast.error(`Etapa ${i + 1}: digite a mensagem do e-mail`)
                     return false
                 }
             }
@@ -420,9 +420,9 @@ export function CampaignWizard({
                 </div>
 
                 <div className="text-center text-sm text-muted-foreground mb-4">
-                    {step === 1 && "Configuração da Campanha"}
-                    {step === 2 && "Selecionar Destinatários"}
-                    {step === 3 && "Revisar e Enviar"}
+                    {step === 1 && "Mensagem da campanha"}
+                    {step === 2 && "Selecionar destinatários"}
+                    {step === 3 && "Revisar e enviar"}
                 </div>
 
                 <Separator />
@@ -479,14 +479,14 @@ export function CampaignWizard({
                                     <>
                                         {/* Seleção de Template (Single) */}
                                         <div className="space-y-4">
-                                            <Label>Selecione o Template *</Label>
+                                            <Label>Selecione o modelo de e-mail *</Label>
 
                                             {activeTemplates.length === 0 ? (
                                                 <Alert>
                                                     <AlertCircle className="h-4 w-4" />
-                                                    <AlertTitle>Nenhum template disponível</AlertTitle>
+                                                    <AlertTitle>Nenhum modelo disponível</AlertTitle>
                                                     <AlertDescription>
-                                                        Você precisa criar ou ativar pelo menos um template antes de criar uma campanha.
+                                                        Você precisa criar ou ativar pelo menos um modelo antes de criar uma campanha.
                                                     </AlertDescription>
                                                 </Alert>
                                             ) : (
@@ -536,7 +536,7 @@ export function CampaignWizard({
                                                                     </CardHeader>
                                                                     <CardContent>
                                                                         <p className="text-sm text-muted-foreground line-clamp-2">
-                                                                            {template.subject}
+                                                                            {replaceVariables(template.subject, PREVIEW_LEAD)}
                                                                         </p>
                                                                     </CardContent>
                                                                 </Card>
@@ -551,7 +551,7 @@ export function CampaignWizard({
                                             <>
                                                 <Separator />
                                                 <div className="space-y-3">
-                                                    <Label>Preview do Email</Label>
+                                                    <Label>Prévia do e-mail</Label>
                                                     <Card className="bg-muted/30">
                                                         <CardHeader className="pb-2">
                                                             <CardDescription>
@@ -569,7 +569,7 @@ export function CampaignWizard({
                                                         </CardContent>
                                                     </Card>
                                                     <p className="text-xs text-muted-foreground">
-                                                        * Preview usando dados de exemplo.
+                                                        * Prévia usando dados de exemplo.
                                                     </p>
                                                 </div>
                                             </>
@@ -790,13 +790,13 @@ export function CampaignWizard({
                                                     {data.type === "single" ? (
                                                         <>
                                                             <Mail className="h-4 w-4 text-muted-foreground" />
-                                                            <span className="font-medium">Email Único</span>
+                                                            <span className="font-medium">E-mail único</span>
                                                         </>
                                                     ) : (
                                                         <>
                                                             <RefreshCw className="h-4 w-4 text-muted-foreground" />
                                                             <span className="font-medium">
-                                Sequência ({data.steps.length} steps)
+                                Sequência ({data.steps.length} etapa{data.steps.length !== 1 ? "s" : ""})
                               </span>
                                                         </>
                                                     )}
@@ -810,7 +810,7 @@ export function CampaignWizard({
                                             )}
                                             {data.type === "single" && selectedTemplate && (
                                                 <div>
-                                                    <Label className="text-muted-foreground">Template</Label>
+                                                    <Label className="text-muted-foreground">Modelo</Label>
                                                     <p className="font-medium">{selectedTemplate.name}</p>
                                                 </div>
                                             )}
@@ -828,7 +828,7 @@ export function CampaignWizard({
                                         <CardHeader>
                                             <CardTitle className="flex items-center gap-2">
                                                 <RefreshCw className="h-5 w-5" />
-                                                Steps da Sequência
+                                                Etapas da sequência
                                             </CardTitle>
                                         </CardHeader>
                                         <CardContent>
@@ -884,7 +884,7 @@ export function CampaignWizard({
                                         <CardHeader>
                                             <CardTitle className="flex items-center gap-2">
                                                 <Mail className="h-5 w-5" />
-                                                Preview do Email
+                                                Prévia do e-mail
                                             </CardTitle>
                                             <CardDescription>
                                                 Assunto: {replaceVariables(selectedTemplate.subject, PREVIEW_LEAD)}

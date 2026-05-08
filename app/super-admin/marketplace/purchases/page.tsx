@@ -10,11 +10,13 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { AlertCircle, CheckCircle2, ShoppingCart, DollarSign, TrendingUp, Clock } from "lucide-react"
+import { AlertCircle, ArrowLeft, CheckCircle2, ShoppingCart, DollarSign, TrendingUp, Clock } from "lucide-react"
 import { formatCurrency } from "@/lib/utils"
 import { format } from "date-fns"
 import { ptBR } from "date-fns/locale"
 import { Progress } from "@/components/ui/progress"
+import { Button } from "@/components/ui/button"
+import Link from "next/link"
 
 export default async function PurchasesPage() {
     const [purchases, stats] = await Promise.all([
@@ -52,18 +54,32 @@ export default async function PurchasesPage() {
     return (
         <div className="space-y-6">
             {/* Header */}
-            <div>
-                <h1 className="text-3xl font-bold">Vendas</h1>
-                <p className="text-muted-foreground">
-                    Acompanhe todas as compras do marketplace
-                </p>
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                <div>
+                    <h1 className="text-3xl font-bold">Vendas</h1>
+                    <p className="text-muted-foreground">
+                        Veja quem comprou, o que foi comprado, o valor e a situação do pagamento.
+                    </p>
+                </div>
+                <Button variant="outline" asChild>
+                    <Link href="/super-admin">
+                        <ArrowLeft className="h-4 w-4" />
+                        Voltar ao painel
+                    </Link>
+                </Button>
             </div>
+
+            <Card className="border-emerald-200 bg-emerald-50">
+                <CardContent className="p-4 text-sm text-emerald-900">
+                    Use esta tela para conferir vendas pagas, pagamentos pendentes e quais listas cada cliente comprou.
+                </CardContent>
+            </Card>
 
             {/* Stats */}
             <div className="grid gap-4 md:grid-cols-4">
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium">Total de Vendas</CardTitle>
+                        <CardTitle className="text-sm font-medium">Vendas pagas</CardTitle>
                         <ShoppingCart className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
@@ -73,7 +89,7 @@ export default async function PurchasesPage() {
 
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium">Receita Total</CardTitle>
+                        <CardTitle className="text-sm font-medium">Valor total vendido</CardTitle>
                         <DollarSign className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
@@ -85,7 +101,7 @@ export default async function PurchasesPage() {
 
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium">Ticket Médio</CardTitle>
+                        <CardTitle className="text-sm font-medium">Valor médio por venda</CardTitle>
                         <TrendingUp className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
@@ -102,7 +118,7 @@ export default async function PurchasesPage() {
 
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium">Pendentes</CardTitle>
+                        <CardTitle className="text-sm font-medium">Aguardando pagamento</CardTitle>
                         <Clock className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
@@ -155,7 +171,7 @@ export default async function PurchasesPage() {
             {/* Tabela */}
             <Card>
                 <CardHeader>
-                    <CardTitle>Histórico de Compras</CardTitle>
+                    <CardTitle>Compras realizadas</CardTitle>
                 </CardHeader>
                 <CardContent>
                     {purchases.length === 0 ? (

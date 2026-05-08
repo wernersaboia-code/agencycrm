@@ -13,7 +13,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { AlertCircle, CheckCircle2, Edit, Plus, Star, Users } from "lucide-react"
+import { AlertCircle, ArrowLeft, CheckCircle2, Edit, Plus, Star, Users } from "lucide-react"
 import { formatCurrency } from "@/lib/utils"
 import { DeleteListButton } from "@/components/admin/delete-list-button"
 
@@ -72,20 +72,34 @@ export default async function MarketplaceListsPage() {
 
     return (
         <div className="space-y-6">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                 <div>
                     <h1 className="text-3xl font-bold">Listas de Leads</h1>
                     <p className="text-muted-foreground">
-                        Gerencie as listas disponíveis no marketplace
+                        Gerencie as listas disponíveis no catálogo público.
                     </p>
                 </div>
-                <Link href="/super-admin/marketplace/lists/new">
-                    <Button>
-                        <Plus className="h-4 w-4 mr-2" />
-                        Nova Lista
+                <div className="flex flex-col gap-2 sm:flex-row">
+                    <Button variant="outline" asChild>
+                        <Link href="/super-admin">
+                            <ArrowLeft className="h-4 w-4" />
+                            Voltar ao painel
+                        </Link>
                     </Button>
-                </Link>
+                    <Button className="bg-emerald-600 hover:bg-emerald-700" asChild>
+                        <Link href="/super-admin/marketplace/lists/new">
+                            <Plus className="h-4 w-4" />
+                            Criar nova lista
+                        </Link>
+                    </Button>
+                </div>
             </div>
+
+            <Card className="border-emerald-200 bg-emerald-50">
+                <CardContent className="p-4 text-sm text-emerald-900">
+                    Para publicar uma nova base, clique em <strong>Criar nova lista</strong>. Depois, confira se a lista tem leads e está marcada como ativa.
+                </CardContent>
+            </Card>
 
             <Card className={readiness >= 75 ? "border-emerald-300 dark:border-emerald-900" : "border-amber-300 dark:border-amber-900"}>
                 <CardHeader className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
@@ -147,7 +161,7 @@ export default async function MarketplaceListsPage() {
                                     <Link href="/super-admin/marketplace/lists/new">
                                         <Button>
                                             <Plus className="h-4 w-4 mr-2" />
-                                            Criar Primeira Lista
+                                            Criar primeira lista
                                         </Button>
                                     </Link>
                                 </TableCell>
@@ -192,7 +206,7 @@ export default async function MarketplaceListsPage() {
                                     <TableCell className="text-right">
                                         <div className="flex justify-end gap-1">
                                             <Link href={`/super-admin/marketplace/lists/${list.id}/leads`}>
-                                                <Button variant="ghost" size="icon" title="Ver Leads">
+                                                <Button variant="ghost" size="icon" title="Ver leads">
                                                     <Users className="h-4 w-4" />
                                                 </Button>
                                             </Link>

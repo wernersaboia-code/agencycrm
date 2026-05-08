@@ -36,7 +36,7 @@ export function CampaignTypeSelector({ value, onChange }: CampaignTypeSelectorPr
                         "font-medium",
                         value === "single" ? "text-primary" : "text-foreground"
                     )}>
-                        Email Único
+                        E-mail único
                     </p>
                     <p className="text-sm text-muted-foreground mt-1">
                         Envio simples, uma única mensagem
@@ -71,7 +71,7 @@ export function CampaignTypeSelector({ value, onChange }: CampaignTypeSelectorPr
                         Sequência
                     </p>
                     <p className="text-sm text-muted-foreground mt-1">
-                        Múltiplos emails automáticos
+                        Vários e-mails automáticos
                     </p>
                 </div>
             </button>

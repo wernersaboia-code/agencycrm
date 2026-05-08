@@ -10,7 +10,6 @@ import { Building2, Globe, CheckCircle, ArrowRight, ShoppingCart, CalendarClock 
 import { FlagIcon } from "@/components/ui/flag-icon"
 import { useCart } from "@/contexts/cart-context"
 
-// Definir tipo específico para previewData
 export interface PreviewLead {
     companyName: string
     country: string
@@ -49,7 +48,7 @@ export function ListCard({ list }: ListCardProps) {
     })
 
     const handleAddToCart = (e: React.MouseEvent) => {
-        e.preventDefault() // Evitar navegação
+        e.preventDefault()
         addItem({
             id: list.id,
             name: list.name,
@@ -161,7 +160,7 @@ export function ListCard({ list }: ListCardProps) {
                         className="w-full hover:bg-[#2ec4b6] hover:text-white hover:border-[#2ec4b6] transition-colors"
                     >
                         <ShoppingCart className="h-4 w-4 mr-2" />
-                        Adicionar ao Carrinho
+                        Adicionar ao carrinho
                     </Button>
                 </div>
             </CardContent>

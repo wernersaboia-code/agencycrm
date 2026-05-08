@@ -22,7 +22,7 @@ import { getAuthenticatedUserId } from "@/lib/auth"
 import { formatCurrency } from "@/lib/utils"
 
 export const metadata = {
-    title: "Minhas Compras | Easy Prospect",
+    title: "Minhas compras | LeadStore",
     description: "Acesse e baixe suas listas de leads",
 }
 

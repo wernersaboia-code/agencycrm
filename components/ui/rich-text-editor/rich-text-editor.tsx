@@ -9,6 +9,7 @@ import Underline from "@tiptap/extension-underline"
 import { useEffect } from "react"
 import { cn } from "@/lib/utils"
 import { RichTextToolbar } from "./rich-text-toolbar"
+import { renderTemplateVariablesForEditor } from "@/lib/constants/template.constants"
 
 interface RichTextEditorProps {
     content: string
@@ -21,10 +22,12 @@ interface RichTextEditorProps {
 export function RichTextEditor({
                                    content,
                                    onChange,
-                                   placeholder = "Escreva o conteúdo do email...",
+    placeholder = "Escreva a mensagem como ela deve chegar ao lead...",
                                    className,
                                    disabled = false,
                                }: RichTextEditorProps) {
+    const editorContent = renderTemplateVariablesForEditor(content)
+
     const editor = useEditor({
         extensions: [
             StarterKit.configure({
@@ -43,7 +46,7 @@ export function RichTextEditor({
                 placeholder,
             }),
         ],
-        content,
+        content: editorContent,
         editable: !disabled,
         immediatelyRender: false, // ← ADICIONADO: Evita erro de SSR/hydration
         onUpdate: ({ editor }) => {
@@ -54,7 +57,10 @@ export function RichTextEditor({
                 class: cn(
                     "prose prose-sm max-w-none min-h-[200px] p-4 focus:outline-none",
                     "prose-p:my-2 prose-ul:my-2 prose-ol:my-2 prose-li:my-0",
-                    "[&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6"
+                    "[&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6",
+                    "[&_span[data-template-variable]]:inline-flex [&_span[data-template-variable]]:rounded",
+                    "[&_span[data-template-variable]]:bg-primary/10 [&_span[data-template-variable]]:px-1.5",
+                    "[&_span[data-template-variable]]:py-0.5 [&_span[data-template-variable]]:text-primary"
                 ),
             },
         },
@@ -62,10 +68,10 @@ export function RichTextEditor({
 
     // Atualiza o conteúdo quando prop muda (ex: ao editar template existente)
     useEffect(() => {
-        if (editor && content !== editor.getHTML()) {
-            editor.commands.setContent(content)
+        if (editor && editorContent !== editor.getHTML()) {
+            editor.commands.setContent(editorContent)
         }
-    }, [content, editor])
+    }, [editorContent, editor])
 
     if (!editor) {
         return (

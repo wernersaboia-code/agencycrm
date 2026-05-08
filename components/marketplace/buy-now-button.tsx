@@ -31,7 +31,6 @@ export function BuyNowButton({ list }: BuyNowButtonProps) {
             totalLeads: list.totalLeads,
         })
 
-        // Redirecionar para checkout
         router.push("/checkout")
     }
 
@@ -42,7 +41,7 @@ export function BuyNowButton({ list }: BuyNowButtonProps) {
             onClick={handleBuyNow}
         >
             <ShoppingCart className="h-5 w-5 mr-2" />
-            Comprar Agora
+            Comprar agora
         </Button>
     )
 }

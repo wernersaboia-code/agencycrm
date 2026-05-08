@@ -19,7 +19,7 @@ import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 
 export const metadata = {
-    title: "Configurações | Super Admin",
+    title: "Configurações | Área Administrativa",
     description: "Configurações operacionais e saúde das integrações do sistema.",
 }
 

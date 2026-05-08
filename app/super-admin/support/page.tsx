@@ -4,8 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 
 export const metadata = {
-    title: "Suporte | Super Admin",
-    description: "Central operacional de suporte do super-admin.",
+    title: "Suporte | Área Administrativa",
+    description: "Central operacional de suporte da área administrativa.",
 }
 
 export default function SuperAdminSupportPage() {
@@ -14,7 +14,7 @@ export default function SuperAdminSupportPage() {
             <div>
                 <h1 className="text-3xl font-bold tracking-tight">Suporte</h1>
                 <p className="text-muted-foreground">
-                    Atalhos para investigar problemas de usuários, workspaces e configuração.
+                    Atalhos para investigar problemas de usuários, empresas/contas e configuração.
                 </p>
             </div>
 
@@ -26,7 +26,7 @@ export default function SuperAdminSupportPage() {
                     icon={Users}
                 />
                 <SupportCard
-                    title="Workspaces"
+                    title="Empresas/Contas"
                     description="Revise dados, limites, campanhas e leads."
                     href="/super-admin/workspaces"
                     icon={LifeBuoy}
@@ -48,7 +48,7 @@ export default function SuperAdminSupportPage() {
                 </CardHeader>
                 <CardContent className="space-y-2 text-sm text-muted-foreground">
                     <p>1. Confirme se o usuário está ativo em Usuários.</p>
-                    <p>2. Confira workspace, plano, limites e dados de envio.</p>
+                    <p>2. Confira empresa/conta, plano, limites e dados de envio.</p>
                     <p>3. Use Configurações para validar ambiente, PayPal, Supabase e chaves críticas.</p>
                 </CardContent>
             </Card>

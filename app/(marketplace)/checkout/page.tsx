@@ -56,7 +56,7 @@ export default function CheckoutPage() {
                         <div>
                             <h1 className="text-3xl font-bold text-gray-950">Checkout</h1>
                             <p className="mt-2 text-gray-500">
-                                Finalize o pagamento para liberar {totalLeads.toLocaleString()} leads em CSV e Excel.
+                                Finalize o pagamento para liberar {totalLeads.toLocaleString("pt-BR")} leads em CSV e Excel.
                             </p>
                         </div>
 

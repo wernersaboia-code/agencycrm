@@ -169,19 +169,19 @@ function buildActionCards(
 
     if (guidance && guidance.templatesCount === 0) {
         actions.push({
-            title: "Crie um template de email",
-            description: "Templates deixam campanhas mais rápidas e consistentes para cada cliente.",
+            title: "Crie um modelo de e-mail",
+            description: "Modelos deixam campanhas mais rápidas e consistentes para cada cliente.",
             href: "/templates",
-            label: "Criar template",
+            label: "Criar modelo",
             icon: FileText,
             tone: "default",
         })
     } else if (guidance && guidance.activeTemplatesCount === 0) {
         actions.push({
-            title: "Ative um template",
-            description: "Você tem templates cadastrados, mas nenhum ativo para novas campanhas.",
+            title: "Ative um modelo",
+            description: "Você tem modelos cadastrados, mas nenhum ativo para novas campanhas.",
             href: "/templates",
-            label: "Revisar templates",
+            label: "Revisar modelos",
             icon: FileText,
             tone: "warning",
         })
@@ -203,7 +203,7 @@ function buildActionCards(
             title: guidance.draftCampaignsCount > 0 ? "Revise campanhas em rascunho" : "Crie uma campanha ativa",
             description: guidance.draftCampaignsCount > 0
                 ? "Há campanhas preparadas que ainda não estão gerando envios."
-                : "Combine leads e templates para iniciar uma cadência de contato.",
+                : "Combine leads e modelos para iniciar uma cadência de contato.",
             href: "/campaigns",
             label: guidance.draftCampaignsCount > 0 ? "Ver rascunhos" : "Criar campanha",
             icon: Send,
@@ -296,7 +296,7 @@ function SetupChecklist({
             action: "Importar",
         },
         {
-            label: "Criar template",
+            label: "Criar modelo",
             done: guidance.activeTemplatesCount > 0,
             href: "/templates",
             action: "Criar",
@@ -402,7 +402,7 @@ export function DashboardClient({
         <div className="space-y-6">
             {/* Header */}
             <div>
-                <h1 className="text-3xl font-bold">Dashboard</h1>
+                <h1 className="text-3xl font-bold">Painel do CRM</h1>
                 <p className="text-muted-foreground">
                     Visão geral das suas campanhas e leads
                 </p>

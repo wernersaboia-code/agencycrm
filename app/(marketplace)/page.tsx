@@ -2,6 +2,7 @@ import Link from "next/link"
 import {
     ArrowRight,
     BadgeCheck,
+    Building2,
     CheckCircle2,
     CreditCard,
     Database,
@@ -10,6 +11,7 @@ import {
     Globe2,
     Search,
     ShieldCheck,
+    ShoppingBag,
     SlidersHorizontal,
 } from "lucide-react"
 import { getFilterCounts, getMarketplaceLists } from "@/actions/marketplace"
@@ -94,6 +96,46 @@ export default async function LeadStoreHome() {
                     <MetricCard icon={Globe2} value={countryTotal.toLocaleString("pt-BR")} label="mercados mapeados" />
                     <MetricCard icon={SlidersHorizontal} value={industryTotal.toLocaleString("pt-BR")} label="setores disponíveis" />
                     <MetricCard icon={FileSpreadsheet} value={categoryTotal.toLocaleString("pt-BR")} label="categorias de dados" />
+                </div>
+            </section>
+
+            <section className="bg-white py-8">
+                <div className="container mx-auto px-4">
+                    <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-5 md:p-6">
+                        <div className="mb-5">
+                            <p className="text-sm font-semibold uppercase tracking-wider text-emerald-700">
+                                Acessos diretos
+                            </p>
+                            <h2 className="mt-1 text-2xl font-bold tracking-tight text-gray-950">
+                                Escolha exatamente para onde entrar.
+                            </h2>
+                            <p className="mt-2 max-w-2xl text-sm leading-6 text-gray-600">
+                                Três caminhos separados para evitar confusão: CRM, compras e administração.
+                            </p>
+                        </div>
+
+                        <div className="grid gap-3 md:grid-cols-3">
+                            <DirectAccessCard
+                                icon={Building2}
+                                title="Entrar no CRM"
+                                description="Leads, campanhas, chamadas e relatórios."
+                                href="/sign-in?redirect=/dashboard"
+                            />
+                            <DirectAccessCard
+                                icon={ShoppingBag}
+                                title="Minhas compras"
+                                description="Pedidos, listas compradas e downloads."
+                                href="/my-purchases"
+                            />
+                            <DirectAccessCard
+                                icon={ShieldCheck}
+                                title="Área Administrativa"
+                                description="Usuários, listas, vendas e configurações."
+                                href="/super-admin"
+                                featured
+                            />
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -403,6 +445,46 @@ function MetricCard({
                 <div className="text-sm text-gray-500">{label}</div>
             </div>
         </div>
+    )
+}
+
+function DirectAccessCard({
+    icon: Icon,
+    title,
+    description,
+    href,
+    featured = false,
+}: {
+    icon: React.ComponentType<{ className?: string }>
+    title: string
+    description: string
+    href: string
+    featured?: boolean
+}) {
+    return (
+        <Link
+            href={href}
+            className={`group rounded-lg border p-4 transition hover:-translate-y-0.5 hover:shadow-sm ${
+                featured
+                    ? "border-emerald-600 bg-emerald-600 text-white hover:bg-emerald-700"
+                    : "border-gray-200 bg-white text-gray-950 hover:border-emerald-300"
+            }`}
+        >
+            <div
+                className={`mb-4 flex h-11 w-11 items-center justify-center rounded-md ${
+                    featured ? "bg-white/15 text-white" : "bg-emerald-50 text-emerald-700"
+                }`}
+            >
+                <Icon className="h-5 w-5" />
+            </div>
+            <div className="flex items-center justify-between gap-3">
+                <h3 className="text-lg font-semibold">{title}</h3>
+                <ArrowRight className="h-5 w-5 shrink-0 transition-transform group-hover:translate-x-1" />
+            </div>
+            <p className={`mt-2 text-sm leading-6 ${featured ? "text-white/85" : "text-gray-600"}`}>
+                {description}
+            </p>
+        </Link>
     )
 }
 

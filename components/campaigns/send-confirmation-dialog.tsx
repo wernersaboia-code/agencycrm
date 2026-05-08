@@ -98,7 +98,7 @@ export function SendConfirmationDialog({
                         </div>
                         <div>
                             <AlertDialogTitle className="text-lg">
-                                Confirmar Envio de Campanha
+                                Confirmar envio da campanha
                             </AlertDialogTitle>
                             <AlertDialogDescription className="text-sm">
                                 Esta ação não pode ser desfeita.
@@ -123,12 +123,12 @@ export function SendConfirmationDialog({
                                 {isSequence ? (
                                     <>
                                         <RefreshCw className="h-3 w-3" />
-                                        Sequência ({stepsCount} steps)
+                                        Sequência ({stepsCount} etapa{stepsCount !== 1 ? "s" : ""})
                                     </>
                                 ) : (
                                     <>
                                         <Mail className="h-3 w-3" />
-                                        Email Único
+                                        E-mail único
                                     </>
                                 )}
                             </Badge>
@@ -136,7 +136,7 @@ export function SendConfirmationDialog({
 
                         {templateName && (
                             <div className="flex items-center justify-between">
-                                <span className="text-sm text-muted-foreground">Template</span>
+                                <span className="text-sm text-muted-foreground">Modelo</span>
                                 <span className="font-medium text-sm">{templateName}</span>
                             </div>
                         )}
@@ -158,8 +158,8 @@ export function SendConfirmationDialog({
                             {isSequence ? (
                                 <>
                                     <strong>Atenção:</strong> O primeiro email será enviado
-                                    imediatamente para {totalPending} lead(s). Os próximos steps
-                                    serão enviados automaticamente conforme os delays configurados.
+                                    imediatamente para {totalPending} lead(s). As próximas etapas
+                                    serão enviadas automaticamente conforme os intervalos configurados.
                                 </>
                             ) : (
                                 <>
@@ -195,7 +195,7 @@ export function SendConfirmationDialog({
                         ) : (
                             <>
                                 <Send className="h-4 w-4" />
-                                Confirmar Envio
+                                Confirmar envio
                             </>
                         )}
                     </Button>

@@ -191,11 +191,15 @@ export default async function ListPage({ params }: ListPageProps) {
 
                         <div className="mb-6 rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm text-gray-600">
                             <div className="font-semibold text-gray-900">
-                                {list.totalLeads.toLocaleString()} leads incluídos
+                                {list.totalLeads.toLocaleString("pt-BR")} leads incluídos
                             </div>
                             <p className="mt-1">
-                                Compra avulsa, sem assinatura. O acesso fica disponível na área Minhas Compras.
+                                Compra avulsa, sem assinatura. O acesso fica disponível na área Minhas compras.
                             </p>
+                        </div>
+
+                        <div className="mb-6 rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900">
+                            Antes de comprar, confira a cobertura, a prévia dos dados e o preço por lead. Depois da aprovação do pagamento, o download fica disponível na sua conta.
                         </div>
 
                         <div className="space-y-3">

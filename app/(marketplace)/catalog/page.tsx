@@ -46,15 +46,13 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
     const requestedPage = Number.parseInt(params.page || "1", 10)
     const page = Number.isFinite(requestedPage) && requestedPage > 0 ? requestedPage : 1
 
-    const { lists, total, pages } = await getMarketplaceLists({
+    const { lists, total, pages, filterCounts } = await getCatalogData({
         countries,
         industries,
         category,
         search,
         page,
     })
-
-    const filterCounts = await getFilterCounts()
     const visibleLeadTotal = lists.reduce((sum, list) => sum + list.totalLeads, 0)
     const activeFilterCount = countries.length + industries.length + (category ? 1 : 0) + (search ? 1 : 0)
 
@@ -138,7 +136,7 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
                                 Listas disponíveis
                             </h2>
                             <p className="text-sm text-gray-500">
-                                {total.toLocaleString()} resultado{total === 1 ? "" : "s"} para os critérios atuais
+                                {total.toLocaleString("pt-BR")} resultado{total === 1 ? "" : "s"} para os critérios atuais
                             </p>
                         </div>
                         {pages > 1 && (
@@ -171,6 +169,36 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
             </div>
         </div>
     )
+}
+
+async function getCatalogData(params: {
+    countries: string[]
+    industries: string[]
+    category?: string
+    search: string
+    page: number
+}) {
+    try {
+        const [{ lists, total, pages }, filterCounts] = await Promise.all([
+            getMarketplaceLists(params),
+            getFilterCounts(),
+        ])
+
+        return { lists, total, pages, filterCounts }
+    } catch (error) {
+        console.error("Failed to load catalog data", error)
+
+        return {
+            lists: [],
+            total: 0,
+            pages: 0,
+            filterCounts: {
+                countryCounts: {},
+                industryCounts: {},
+                categoryCounts: {},
+            },
+        }
+    }
 }
 
 function TrustStep({

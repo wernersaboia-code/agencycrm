@@ -24,8 +24,8 @@ export const templateFormSchema = z.object({
 
     body: z
         .string()
-        .min(1, "Corpo do email é obrigatório")
-        .max(50000, "Corpo deve ter no máximo 50.000 caracteres"),
+        .min(1, "Mensagem é obrigatória")
+        .max(50000, "Mensagem deve ter no máximo 50.000 caracteres"),
 
     isActive: z.boolean().default(true),
 })

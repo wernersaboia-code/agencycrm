@@ -61,7 +61,7 @@ export default function ImportLeadsPage() {
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="text-sm text-muted-foreground">
-                        Depois da importação, revise leads novos e prepare um template para iniciar campanhas.
+                        Depois da importação, revise leads novos e prepare um modelo de e-mail para iniciar campanhas.
                     </CardContent>
                 </Card>
             </div>
@@ -83,7 +83,7 @@ export default function ImportLeadsPage() {
                         <Button variant="outline" className="w-full justify-start" asChild>
                             <Link href="/templates">
                                 <Mail className="mr-2 h-4 w-4" />
-                                Criar template
+                                Criar modelo
                             </Link>
                         </Button>
                         <p className="text-xs text-muted-foreground">

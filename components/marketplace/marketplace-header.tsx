@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
-import { LayoutDashboard, LogOut, Menu, ShoppingBag, User } from "lucide-react"
+import { LayoutDashboard, LogOut, Menu, ShieldCheck, ShoppingBag, User } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { CartBadge } from "@/components/marketplace/cart-badge"
 import { useAuth } from "@/hooks/useAuth"
@@ -63,14 +63,6 @@ export function MarketplaceHeader() {
                     >
                         Planos CRM
                     </Link>
-                    {isAuthenticated && (
-                        <Link
-                            href="/my-purchases"
-                            className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-                        >
-                            Minhas compras
-                        </Link>
-                    )}
                 </nav>
 
                 <div className="flex items-center gap-2">
@@ -99,6 +91,12 @@ export function MarketplaceHeader() {
                                                 Acessar CRM
                                             </Link>
                                         </DropdownMenuItem>
+                                        <DropdownMenuItem asChild>
+                                            <Link href="/super-admin" className="cursor-pointer">
+                                                <ShieldCheck className="h-4 w-4 mr-2" />
+                                                Área administrativa
+                                            </Link>
+                                        </DropdownMenuItem>
                                         <DropdownMenuSeparator />
                                         <DropdownMenuItem
                                             onClick={handleSignOut}
@@ -111,7 +109,7 @@ export function MarketplaceHeader() {
                                 </DropdownMenu>
                             ) : (
                                 <Button variant="outline" size="sm" asChild>
-                                    <Link href="/sign-in?from=marketplace">
+                                    <Link href="/sign-in">
                                         <User className="h-4 w-4" />
                                         Entrar
                                     </Link>
@@ -146,6 +144,9 @@ export function MarketplaceHeader() {
                                         <Link href="/dashboard" className="text-lg font-medium">
                                             Acessar CRM
                                         </Link>
+                                        <Link href="/super-admin" className="text-lg font-medium">
+                                            Área administrativa
+                                        </Link>
                                         <hr />
                                         <button
                                             onClick={handleSignOut}
@@ -158,7 +159,7 @@ export function MarketplaceHeader() {
                                 {!isAuthenticated && (
                                     <>
                                         <hr />
-                                        <Link href="/sign-in?from=marketplace" className="text-lg font-medium">
+                                        <Link href="/sign-in" className="text-lg font-medium">
                                             Entrar
                                         </Link>
                                     </>

@@ -21,8 +21,8 @@ import { Progress } from "@/components/ui/progress"
 import { formatCurrency } from "@/lib/utils"
 
 export const metadata = {
-    title: "Analytics | Super Admin",
-    description: "Indicadores globais de adoção, marketplace e engajamento.",
+    title: "Relatórios | Área Administrativa",
+    description: "Indicadores globais de adoção, catálogo e engajamento.",
 }
 
 type AnalyticsData = Awaited<ReturnType<typeof getAnalyticsData>>
@@ -196,9 +196,9 @@ export default async function SuperAdminAnalyticsPage() {
         <div className="space-y-6">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Analytics</h1>
+                    <h1 className="text-3xl font-bold tracking-tight">Relatórios</h1>
                     <p className="text-muted-foreground">
-                        Indicadores globais de adoção, CRM, marketplace e receita dos últimos 30 dias.
+                        Indicadores globais de adoção, CRM, catálogo e receita dos últimos 30 dias.
                     </p>
                 </div>
                 <div className="flex gap-2">
@@ -298,14 +298,14 @@ export default async function SuperAdminAnalyticsPage() {
                             href="/super-admin/workspaces"
                         />
                         <Signal
-                            title="Marketplace"
+                            title="Catálogo"
                             value={marketplaceMomentum}
                             description={`${data.marketplaceLists} listas ativas, ${data.purchasesLast30} vendas em 30d`}
                             healthy={marketplaceMomentum > 0}
                             href="/super-admin/marketplace"
                         />
                         <Signal
-                            title="Workspaces"
+                            title="Empresas/Contas"
                             value={data.workspacesTotal}
                             description={`${data.workspacesLast30} criados nos últimos 30 dias`}
                             healthy={data.workspacesTotal > 0}
@@ -437,7 +437,7 @@ function TopWorkspaces({ data }: { data: AnalyticsData }) {
             <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="flex items-center gap-2">
                     <Building2 className="h-5 w-5" />
-                    Workspaces por volume
+                    Empresas/Contas por volume
                 </CardTitle>
                 <Button variant="ghost" size="sm" asChild>
                     <Link href="/super-admin/workspaces">
@@ -447,7 +447,7 @@ function TopWorkspaces({ data }: { data: AnalyticsData }) {
             </CardHeader>
             <CardContent className="space-y-3">
                 {data.topWorkspaces.length === 0 ? (
-                    <EmptyText text="Nenhum workspace encontrado." />
+                    <EmptyText text="Nenhuma empresa/conta encontrada." />
                 ) : (
                     data.topWorkspaces.map((workspace) => (
                         <Link

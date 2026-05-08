@@ -24,7 +24,6 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import {
     Select,
     SelectContent,
@@ -33,11 +32,13 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-} from "@/components/ui/tooltip"
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Switch } from "@/components/ui/switch"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -55,8 +56,9 @@ import {
 } from "@/lib/validations/template.validations"
 import {
     TEMPLATE_CATEGORY_CONFIG,
-    TEMPLATE_VARIABLES,
+    TEMPLATE_VARIABLE_GROUPS,
     PREVIEW_LEAD,
+    getSubjectVariableToken,
     replaceVariables,
 } from "@/lib/constants/template.constants"
 
@@ -123,7 +125,8 @@ export function TemplateModal({
     const insertVariableInSubject = useCallback(
         (variable: string) => {
             const currentValue = watchSubject || ""
-            setValue("subject", currentValue + `{{${variable}}}`, { shouldDirty: true })
+            const prefix = currentValue && !currentValue.endsWith(" ") ? " " : ""
+            setValue("subject", currentValue + prefix + getSubjectVariableToken(variable), { shouldDirty: true })
         },
         [watchSubject, setValue]
     )
@@ -139,7 +142,7 @@ export function TemplateModal({
             if (isEditing) {
                 const result = await updateTemplate(template.id, data)
                 if (result.success) {
-                    toast.success("Template atualizado!")
+                    toast.success("Modelo atualizado!")
                     onSuccess()
                 } else {
                     toast.error(result.error || "Erro ao atualizar")
@@ -150,7 +153,7 @@ export function TemplateModal({
                     workspaceId,
                 })
                 if (result.success) {
-                    toast.success("Template criado!")
+                    toast.success("Modelo criado!")
                     onSuccess()
                 } else {
                     toast.error(result.error || "Erro ao criar")
@@ -179,12 +182,12 @@ export function TemplateModal({
             <DialogContent className="max-w-4xl max-h-[90vh] flex flex-col">
                 <DialogHeader>
                     <DialogTitle>
-                        {isEditing ? "Editar Template" : "Novo Template"}
+                        {isEditing ? "Editar modelo de e-mail" : "Novo modelo de e-mail"}
                     </DialogTitle>
                     <DialogDescription>
                         {isEditing
-                            ? "Atualize as informações do template de email."
-                            : "Crie um novo template para usar em suas campanhas."}
+                            ? "Ajuste o texto como uma mensagem normal. Os campos personalizados entram automaticamente para cada lead."
+                            : "Escreva uma mensagem reutilizável para campanhas, follow-ups e contatos futuros."}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -194,10 +197,10 @@ export function TemplateModal({
                     className="flex-1 flex flex-col min-h-0"
                 >
                     <TabsList className="grid w-full grid-cols-2">
-                        <TabsTrigger value="edit">Editar</TabsTrigger>
+                        <TabsTrigger value="edit">Escrever</TabsTrigger>
                         <TabsTrigger value="preview">
                             <Eye className="h-4 w-4 mr-2" />
-                            Preview
+                            Prévia
                         </TabsTrigger>
                     </TabsList>
 
@@ -213,10 +216,10 @@ export function TemplateModal({
                                             name="name"
                                             render={({ field }) => (
                                                 <FormItem>
-                                                    <FormLabel>Nome do Template *</FormLabel>
+                                                    <FormLabel>Nome interno *</FormLabel>
                                                     <FormControl>
                                                         <Input
-                                                            placeholder="Ex: Primeiro Contato"
+                                                            placeholder="Ex: Primeiro contato"
                                                             {...field}
                                                         />
                                                     </FormControl>
@@ -265,54 +268,51 @@ export function TemplateModal({
                                         name="subject"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <div className="flex items-center justify-between">
-                                                    <FormLabel>Assunto do Email *</FormLabel>
-                                                    <TooltipProvider>
-                                                        <Tooltip>
-                                                            <TooltipTrigger asChild>
-                                                                <Button
-                                                                    type="button"
-                                                                    variant="ghost"
-                                                                    size="sm"
-                                                                    className="h-6 text-xs"
-                                                                >
-                                                                    <Sparkles className="h-3 w-3 mr-1" />
-                                                                    Inserir variável
-                                                                </Button>
-                                                            </TooltipTrigger>
-                                                            <TooltipContent
-                                                                side="bottom"
-                                                                className="w-64 p-2"
+                                                <div className="flex items-center justify-between gap-3">
+                                                    <FormLabel>Assunto do e-mail *</FormLabel>
+                                                    <DropdownMenu>
+                                                        <DropdownMenuTrigger asChild>
+                                                            <Button
+                                                                type="button"
+                                                                variant="outline"
+                                                                size="sm"
+                                                                className="h-8 gap-2 text-xs"
                                                             >
-                                                                <div className="space-y-1">
-                                                                    <p className="font-medium text-xs mb-2">
-                                                                        Clique para inserir:
-                                                                    </p>
-                                                                    <div className="flex flex-wrap gap-1">
-                                                                        {TEMPLATE_VARIABLES.slice(0, 6).map((v) => (
-                                                                            <Badge
-                                                                                key={v.key}
-                                                                                variant="secondary"
-                                                                                className="cursor-pointer hover:bg-primary hover:text-primary-foreground text-xs"
-                                                                                onClick={() =>
-                                                                                    insertVariableInSubject(v.key)
-                                                                                }
-                                                                            >
-                                                                                {`{{${v.key}}}`}
-                                                                            </Badge>
-                                                                        ))}
-                                                                    </div>
+                                                                <Sparkles className="h-3.5 w-3.5" />
+                                                                Inserir campo
+                                                            </Button>
+                                                        </DropdownMenuTrigger>
+                                                        <DropdownMenuContent align="end" className="w-72">
+                                                            {TEMPLATE_VARIABLE_GROUPS.map((group, index) => (
+                                                                <div key={group.label}>
+                                                                    {index > 0 && <DropdownMenuSeparator />}
+                                                                    <DropdownMenuLabel>{group.label}</DropdownMenuLabel>
+                                                                    {group.variables.map((variable) => (
+                                                                        <DropdownMenuItem
+                                                                            key={variable.key}
+                                                                            onClick={() => insertVariableInSubject(variable.key)}
+                                                                            className="flex flex-col items-start gap-0.5"
+                                                                        >
+                                                                            <span>{variable.label}</span>
+                                                                            <span className="text-xs text-muted-foreground">
+                                                                                Exemplo: {variable.example}
+                                                                            </span>
+                                                                        </DropdownMenuItem>
+                                                                    ))}
                                                                 </div>
-                                                            </TooltipContent>
-                                                        </Tooltip>
-                                                    </TooltipProvider>
+                                                            ))}
+                                                        </DropdownMenuContent>
+                                                    </DropdownMenu>
                                                 </div>
                                                 <FormControl>
                                                     <Input
-                                                        placeholder="Ex: Olá {{firstName}}, temos uma proposta!"
+                                                        placeholder="Ex: Olá [[Primeiro Nome]], tenho uma ideia para a [[Empresa]]"
                                                         {...field}
                                                     />
                                                 </FormControl>
+                                                <p className="text-xs text-muted-foreground">
+                                                    Escreva livremente. Use “Inserir campo” apenas quando quiser personalizar por lead.
+                                                </p>
                                                 <FormMessage />
                                             </FormItem>
                                         )}
@@ -324,12 +324,12 @@ export function TemplateModal({
                                         name="body"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>Corpo do Email *</FormLabel>
+                                                <FormLabel>Mensagem *</FormLabel>
                                                 <FormControl>
                                                     <RichTextEditor
                                                         content={field.value}
                                                         onChange={field.onChange}
-                                                        placeholder="Escreva o conteúdo do seu email..."
+                                                        placeholder="Escreva a mensagem como ela deve chegar ao lead..."
                                                     />
                                                 </FormControl>
                                                 <FormMessage />
@@ -340,10 +340,9 @@ export function TemplateModal({
                                                     <div className="text-xs text-blue-700 dark:text-blue-300">
                                                         <p className="font-medium mb-1">Dica:</p>
                                                         <p>
-                                                            Use o botão <strong>Variável</strong> na barra
-                                                            de ferramentas para inserir campos dinâmicos como
-                                                            nome, empresa, etc. Eles serão substituídos
-                                                            automaticamente pelos dados de cada lead.
+                                                            Use <strong>Campo personalizado</strong> para colocar
+                                                            nome, empresa, cargo e outros dados sem digitar códigos.
+                                                            A prévia mostra como o e-mail chega para uma pessoa real.
                                                         </p>
                                                     </div>
                                                 </div>
@@ -359,11 +358,10 @@ export function TemplateModal({
                                             <FormItem className="flex items-center justify-between rounded-lg border p-4">
                                                 <div className="space-y-0.5">
                                                     <FormLabel className="text-base">
-                                                        Template Ativo
+                                                        Modelo ativo
                                                     </FormLabel>
                                                     <p className="text-sm text-muted-foreground">
-                                                        Templates inativos não aparecem na seleção de
-                                                        campanhas
+                                                        Modelos inativos não aparecem na seleção de campanhas.
                                                     </p>
                                                 </div>
                                                 <FormControl>
@@ -388,8 +386,8 @@ export function TemplateModal({
                                 <div className="flex items-center gap-2 p-3 bg-amber-50 dark:bg-amber-950 rounded-md">
                                     <Info className="h-4 w-4 text-amber-500" />
                                     <p className="text-sm text-amber-700 dark:text-amber-300">
-                                        Preview usando dados de exemplo. As variáveis serão
-                                        substituídas pelos dados reais dos leads.
+                                        Prévia com dados de exemplo. Na campanha, esses campos serão
+                                        preenchidos com os dados reais de cada lead.
                                     </p>
                                 </div>
 
@@ -439,14 +437,13 @@ export function TemplateModal({
                                 {/* Dados usados no preview */}
                                 <div className="p-4 border rounded-lg bg-muted/30">
                                     <h4 className="font-medium text-sm mb-3">
-                                        Dados usados no preview:
+                                        Campos personalizados nesta prévia:
                                     </h4>
-                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
-                                        {Object.entries(PREVIEW_LEAD).map(([key, value]) => (
-                                            <div key={key} className="flex gap-1">
-                                                <code className="text-muted-foreground">{`{{${key}}}`}</code>
-                                                <span>→</span>
-                                                <span className="font-medium">{value}</span>
+                                    <div className="grid gap-2 text-xs sm:grid-cols-2">
+                                        {TEMPLATE_VARIABLE_GROUPS.flatMap((group) => group.variables).map((variable) => (
+                                            <div key={variable.key} className="flex items-center justify-between gap-3 rounded border bg-background px-3 py-2">
+                                                <span className="text-muted-foreground">{variable.label}</span>
+                                                <span className="font-medium">{PREVIEW_LEAD[variable.key as keyof typeof PREVIEW_LEAD]}</span>
                                             </div>
                                         ))}
                                     </div>
@@ -466,7 +463,7 @@ export function TemplateModal({
                         disabled={isSubmitting}
                     >
                         {isSubmitting && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-                        {isEditing ? "Salvar Alterações" : "Criar Template"}
+                        {isEditing ? "Salvar alterações" : "Criar modelo"}
                     </Button>
                 </div>
             </DialogContent>

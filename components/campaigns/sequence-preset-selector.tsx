@@ -70,17 +70,17 @@ export function SequencePresetSelector({ onSelect }: SequencePresetSelectorProps
             <DialogTrigger asChild>
                 <Button type="button" variant="outline" size="sm">
                     <Sparkles className="h-4 w-4 mr-2" />
-                    Usar template pronto
+                    Usar modelo pronto
                 </Button>
             </DialogTrigger>
             <DialogContent className="max-w-2xl max-h-[80vh] flex flex-col">
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
                         <Sparkles className="h-5 w-5 text-yellow-500" />
-                        Templates de Sequência
+                        Modelos de sequência
                     </DialogTitle>
                     <DialogDescription>
-                        Escolha um template pronto e personalize conforme sua necessidade.
+                        Escolha um modelo pronto e personalize conforme sua necessidade.
                     </DialogDescription>
                 </DialogHeader>
 
@@ -136,7 +136,7 @@ export function SequencePresetSelector({ onSelect }: SequencePresetSelectorProps
                                                 <div className="flex items-center gap-2">
                                                     <h4 className="font-medium">{preset.name}</h4>
                                                     <Badge variant="secondary" className="text-xs">
-                                                        {preset.steps.length} emails
+                                                        {preset.steps.length} e-mail{preset.steps.length !== 1 ? "s" : ""}
                                                     </Badge>
                                                 </div>
                                                 <p className="text-sm text-muted-foreground">
@@ -205,7 +205,7 @@ export function SequencePresetSelector({ onSelect }: SequencePresetSelectorProps
                                                     ))}
                                                 </div>
                                                 <p className="text-xs text-muted-foreground mt-3">
-                                                    💡 Você poderá editar todos os textos após selecionar.
+                                                    Você poderá editar todos os textos após selecionar.
                                                 </p>
                                             </div>
                                         </CollapsibleContent>
