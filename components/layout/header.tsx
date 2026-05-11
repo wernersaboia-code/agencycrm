@@ -31,12 +31,12 @@ export function Header({ user }: HeaderProps) {
         .slice(0, 2) || "U"
 
     return (
-        <header className="flex h-16 items-center justify-between border-b bg-background px-6">
+        <header className="flex h-16 items-center justify-between border-b border-border/80 bg-card/95 px-5 backdrop-blur md:px-6">
             <div className="flex items-center gap-4">
                 <WorkspaceSwitcher />
 
                 <div className="hidden md:block">
-                    <h1 className="text-lg font-semibold">
+                    <h1 className="text-base font-semibold text-foreground">
                         Olá, {user?.name || "Usuário"}
                     </h1>
                 </div>

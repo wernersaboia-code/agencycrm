@@ -152,15 +152,15 @@ function SignInForm() {
 
     return (
         <div className="mx-auto grid w-full max-w-4xl gap-6 lg:grid-cols-[1fr_420px] lg:items-start">
-            <section className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
+            <section className="rounded-lg border border-border bg-card p-5 shadow-[0_1px_2px_rgba(20,40,36,0.04)]">
                 <div className="mb-5">
-                    <p className="text-sm font-semibold uppercase tracking-wider text-emerald-700">
+                    <p className="text-sm font-bold uppercase text-primary">
                         Escolha para onde entrar
                     </p>
-                    <h1 className="mt-2 text-2xl font-bold tracking-tight text-gray-950">
+                    <h1 className="mt-2 text-2xl font-bold tracking-normal text-foreground">
                         Acessos principais
                     </h1>
-                    <p className="mt-2 text-sm leading-6 text-gray-600">
+                    <p className="mt-2 text-sm leading-6 text-muted-foreground">
                         A Área Administrativa aparece primeiro para facilitar a rotina de quem trabalha no sistema.
                         CRM e compras continuam separados logo abaixo.
                     </p>
@@ -176,30 +176,30 @@ function SignInForm() {
                                 key={area.id}
                                 href={area.signInHref}
                                 className={cn(
-                                    "flex gap-4 rounded-lg border p-4 transition hover:border-emerald-300 hover:bg-emerald-50/60",
+                                    "flex gap-4 rounded-lg border p-4 transition hover:border-primary/30 hover:bg-secondary/60",
                                     isSelected
-                                        ? "border-emerald-500 bg-emerald-50"
-                                        : "border-gray-200 bg-white"
+                                        ? "border-primary bg-secondary"
+                                        : "border-border bg-card"
                                 )}
                             >
                                 <div
                                     className={cn(
                                         "flex h-11 w-11 shrink-0 items-center justify-center rounded-md",
                                         isSelected
-                                            ? "bg-emerald-600 text-white"
-                                            : "bg-gray-100 text-gray-600"
+                                            ? "bg-primary text-primary-foreground"
+                                            : "bg-secondary text-muted-foreground"
                                     )}
                                 >
                                     <Icon className="h-5 w-5" />
                                 </div>
                                 <div className="min-w-0 flex-1">
                                     <div className="flex items-center gap-2">
-                                        <h2 className="font-semibold text-gray-950">{area.title}</h2>
+                                        <h2 className="font-semibold text-foreground">{area.title}</h2>
                                         {isSelected && (
-                                            <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                                            <CheckCircle2 className="h-4 w-4 text-primary" />
                                         )}
                                     </div>
-                                    <p className="mt-1 text-sm leading-6 text-gray-600">
+                                    <p className="mt-1 text-sm leading-6 text-muted-foreground">
                                         {area.description}
                                     </p>
                                 </div>
@@ -212,8 +212,8 @@ function SignInForm() {
             <Card className="w-full rounded-lg">
                 <CardHeader className="space-y-1 text-center">
                     <div className="mb-4 flex justify-center">
-                        <div className="flex h-16 w-16 items-center justify-center rounded-md bg-emerald-600">
-                            <SelectedIcon className="h-8 w-8 text-white" />
+                        <div className="flex h-16 w-16 items-center justify-center rounded-md bg-primary">
+                            <SelectedIcon className="h-8 w-8 text-primary-foreground" />
                         </div>
                     </div>
                     <CardTitle className="text-2xl font-bold">
@@ -253,7 +253,7 @@ function SignInForm() {
                     <CardFooter className="flex flex-col space-y-4">
                         <Button
                             type="submit"
-                            className="w-full bg-emerald-600 hover:bg-emerald-700"
+                            className="w-full"
                             disabled={isLoading}
                         >
                             {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}

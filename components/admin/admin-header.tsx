@@ -25,8 +25,8 @@ const headerConfigs = {
     "super-admin": {
         badge: "Área Administrativa",
         title: "Painel de administração",
-        badgeColors: "bg-violet-50 text-violet-700 border-violet-200 dark:bg-violet-950 dark:text-violet-300 dark:border-violet-800",
-        avatarColors: "bg-violet-100 text-violet-700 dark:bg-violet-900 dark:text-violet-300",
+        badgeColors: "bg-[#e8eafe] text-[#3b3f82] border-[#cfd3fa] dark:bg-[#3b3f82]/30 dark:text-[#dfe2ff] dark:border-[#3b3f82]",
+        avatarColors: "bg-[#e8eafe] text-[#3b3f82] dark:bg-[#3b3f82]/35 dark:text-[#dfe2ff]",
     },
 }
 
@@ -56,13 +56,13 @@ export function AdminHeader({ user, variant = "leadstore" }: AdminHeaderProps) {
         .slice(0, 2) || "A"
 
     return (
-        <header className="flex h-16 items-center justify-between border-b bg-background px-6">
+        <header className="flex h-16 items-center justify-between border-b border-border/80 bg-card/95 px-5 backdrop-blur md:px-6">
             <div className="flex items-center gap-4">
                 <Badge variant="outline" className={cn(config.badgeColors)}>
                     {config.badge}
                 </Badge>
                 <div className="hidden md:block">
-                    <h1 className="text-lg font-semibold">
+                    <h1 className="text-base font-semibold">
                         {config.title}
                     </h1>
                 </div>

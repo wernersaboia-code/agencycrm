@@ -5,10 +5,11 @@ import { NextResponse, type NextRequest } from "next/server"
 export async function proxy(request: NextRequest) {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    const pathname = request.nextUrl.pathname
 
     if (!supabaseUrl || !supabaseAnonKey) {
         console.error('Missing Supabase environment variables')
-        return NextResponse.next()
+        return new NextResponse('Authentication configuration missing', { status: 503 })
     }
 
     let supabaseResponse = NextResponse.next({
@@ -37,8 +38,6 @@ export async function proxy(request: NextRequest) {
             },
         }
     )
-
-    const pathname = request.nextUrl.pathname
 
     // ============================================
     // ROTAS PÚBLICAS - Easy Prospect (Marketplace)

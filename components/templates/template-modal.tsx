@@ -61,6 +61,7 @@ import {
     getSubjectVariableToken,
     replaceVariables,
 } from "@/lib/constants/template.constants"
+import { sanitizeHtmlForPreview } from "@/lib/utils/html-sanitizer"
 
 // ============================================================
 // TIPOS
@@ -424,7 +425,7 @@ export function TemplateModal({
                                         {previewBody ? (
                                             <div
                                                 className="prose prose-sm dark:prose-invert max-w-none"
-                                                dangerouslySetInnerHTML={{ __html: previewBody }}
+                                                dangerouslySetInnerHTML={{ __html: sanitizeHtmlForPreview(previewBody) }}
                                             />
                                         ) : (
                                             <p className="text-muted-foreground italic">

@@ -84,12 +84,12 @@ export function AdminSidebar() {
     }
 
     return (
-        <div className="flex h-full w-64 flex-col border-r bg-violet-950">
+        <div className="flex h-full w-64 flex-col border-r border-[#5559a0] bg-[#25285f]">
             {/* Logo */}
-            <div className="flex h-16 items-center border-b border-violet-800 px-6">
+            <div className="flex h-16 items-center border-b border-[#5559a0] px-5">
                 <Link href="/super-admin" className="flex items-center gap-2">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-500">
-                        <span className="text-lg font-bold text-white">A</span>
+                    <div className="flex h-8 w-8 items-center justify-center rounded-md bg-[#e8eafe]">
+                        <span className="text-lg font-bold text-[#25285f]">A</span>
                     </div>
                     <div>
                         <span className="text-lg font-bold text-white">AgencyCRM</span>
@@ -103,7 +103,7 @@ export function AdminSidebar() {
                 <nav className="flex flex-col gap-1">
                     {menuSections.map((section, sectionIndex) => (
                         <div key={section.label} className="mb-2">
-                            <p className="px-3 text-xs font-semibold uppercase tracking-wider mb-2 text-violet-400">
+                            <p className="mb-2 px-3 text-xs font-bold uppercase text-[#cfd3fa]/75">
                                 {section.label}
                             </p>
 
@@ -114,10 +114,10 @@ export function AdminSidebar() {
                                         key={item.href}
                                         href={item.href}
                                         className={cn(
-                                            "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                                            "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
                                             isActive
-                                                ? "bg-violet-500 text-white"
-                                                : "text-violet-200 hover:bg-violet-800 hover:text-white"
+                                                ? "bg-[#e8eafe] text-[#25285f]"
+                                                : "text-[#dfe2ff]/80 hover:bg-[#3b3f82] hover:text-white"
                                         )}
                                     >
                                         <item.icon className="h-4 w-4" />
@@ -127,14 +127,14 @@ export function AdminSidebar() {
                             })}
 
                             {sectionIndex < menuSections.length - 1 && (
-                                <Separator className="my-3 bg-violet-800" />
+                                <Separator className="my-3 bg-[#5559a0]" />
                             )}
                         </div>
                     ))}
                 </nav>
             </ScrollArea>
 
-            <div className="border-t border-violet-800 p-3">
+            <div className="border-t border-[#5559a0] p-3">
                 <div className="mb-3 grid gap-1">
                     {secondaryItems.map((item) => {
                         const isActive = isItemActive(item.href, item.exact)
@@ -146,8 +146,8 @@ export function AdminSidebar() {
                                 className={cn(
                                     "flex items-center gap-2 rounded-md px-3 py-2 text-xs font-medium transition-colors",
                                     isActive
-                                        ? "bg-violet-500 text-white"
-                                        : "text-violet-300 hover:bg-violet-800 hover:text-white"
+                                        ? "bg-[#e8eafe] text-[#25285f]"
+                                        : "text-[#dfe2ff]/75 hover:bg-[#3b3f82] hover:text-white"
                                 )}
                             >
                                 <item.icon className="h-3.5 w-3.5" />
@@ -158,7 +158,7 @@ export function AdminSidebar() {
                 </div>
                 <Button
                     variant="ghost"
-                    className="w-full justify-start gap-3 text-violet-200 hover:bg-violet-800 hover:text-white"
+                    className="w-full justify-start gap-3 text-[#dfe2ff]/80 hover:bg-[#3b3f82] hover:text-white"
                     onClick={handleLogout}
                 >
                     <LogOut className="h-4 w-4" />

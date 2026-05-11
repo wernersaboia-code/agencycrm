@@ -21,14 +21,14 @@ export default async function SuperAdminLayout({
     }
 
     return (
-        <div className="flex h-screen">
+        <div className="flex h-screen bg-background">
             <AdminSidebar />
             <div className="flex-1 flex flex-col overflow-hidden">
                 <AdminHeader
                     user={{ name: dbUser.name, email: dbUser.email }}
                     variant="super-admin"
                 />
-                <main className="flex-1 overflow-y-auto p-6 bg-muted/30">
+                <main className="flex-1 overflow-y-auto bg-background p-5 md:p-6">
                     {children}
                 </main>
             </div>

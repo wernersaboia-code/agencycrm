@@ -61,6 +61,7 @@ import type { TemplateWithStats } from "@/actions/templates"
 import { getCategoryConfig } from "@/lib/constants/template.constants"
 import { LEAD_STATUS_CONFIG } from "@/lib/constants/lead.constants"
 import { replaceVariables, PREVIEW_LEAD } from "@/lib/constants/template.constants"
+import { sanitizeHtmlForPreview } from "@/lib/utils/html-sanitizer"
 import { cn } from "@/lib/utils"
 import type { SequenceStep } from "@/types/campaign.types"
 
@@ -563,7 +564,7 @@ export function CampaignWizard({
                                                             <div
                                                                 className="prose prose-sm dark:prose-invert max-w-none"
                                                                 dangerouslySetInnerHTML={{
-                                                                    __html: replaceVariables(selectedTemplate.body, PREVIEW_LEAD),
+                                                                    __html: sanitizeHtmlForPreview(replaceVariables(selectedTemplate.body, PREVIEW_LEAD)),
                                                                 }}
                                                             />
                                                         </CardContent>
@@ -894,7 +895,7 @@ export function CampaignWizard({
                                             <div
                                                 className="prose prose-sm dark:prose-invert max-w-none p-4 bg-muted/30 rounded-lg"
                                                 dangerouslySetInnerHTML={{
-                                                    __html: replaceVariables(selectedTemplate.body, PREVIEW_LEAD),
+                                                    __html: sanitizeHtmlForPreview(replaceVariables(selectedTemplate.body, PREVIEW_LEAD)),
                                                 }}
                                             />
                                         </CardContent>

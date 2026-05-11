@@ -237,7 +237,7 @@ function ActionPlan({
     const actions = buildActionCards(stats, guidance, callbacks)
 
     return (
-        <Card>
+        <Card className="border-primary/15">
             <CardHeader className="flex flex-row items-center justify-between">
                 <div>
                     <CardTitle>Próximas ações</CardTitle>
@@ -256,19 +256,19 @@ function ActionPlan({
                         key={`${action.href}-${action.title}`}
                         href={action.href}
                         className={cn(
-                            "group flex min-h-[150px] flex-col justify-between rounded-lg border p-4 transition-colors hover:bg-muted/50",
+                            "group flex min-h-[150px] flex-col justify-between rounded-lg border bg-card p-4 transition-colors hover:border-primary/25 hover:bg-secondary/50",
                             action.tone === "warning" && "border-amber-300 bg-amber-50/50 dark:border-amber-900 dark:bg-amber-950/20",
                             action.tone === "success" && "border-emerald-300 bg-emerald-50/50 dark:border-emerald-900 dark:bg-emerald-950/20"
                         )}
                     >
                         <div>
-                            <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-md bg-background shadow-sm">
-                                <action.icon className="h-4 w-4 text-muted-foreground" />
+                            <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-md bg-secondary text-primary">
+                                <action.icon className="h-4 w-4" />
                             </div>
                             <h3 className="font-semibold leading-tight">{action.title}</h3>
                             <p className="mt-1 text-sm text-muted-foreground">{action.description}</p>
                         </div>
-                        <span className="mt-4 flex items-center text-sm font-medium">
+                        <span className="mt-4 flex items-center text-sm font-semibold text-primary">
                             {action.label}
                             <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                         </span>
@@ -323,7 +323,7 @@ function SetupChecklist({
     }
 
     return (
-        <Card>
+        <Card className="border-primary/15">
             <CardHeader>
                 <div className="flex items-center justify-between gap-4">
                     <div>
@@ -341,8 +341,8 @@ function SetupChecklist({
                             key={step.label}
                             href={step.href}
                             className={cn(
-                                "flex items-center justify-between rounded-lg border p-3 transition-colors hover:bg-muted/50",
-                                step.done && "bg-muted/30"
+                                "flex items-center justify-between rounded-lg border bg-card p-3 transition-colors hover:border-primary/25 hover:bg-secondary/50",
+                                step.done && "bg-secondary/60"
                             )}
                         >
                             <div className="flex items-center gap-3">
@@ -402,7 +402,7 @@ export function DashboardClient({
         <div className="space-y-6">
             {/* Header */}
             <div>
-                <h1 className="text-3xl font-bold">Painel do CRM</h1>
+                <h1 className="text-3xl font-bold tracking-normal">Painel do CRM</h1>
                 <p className="text-muted-foreground">
                     Visão geral das suas campanhas e leads
                 </p>
@@ -414,7 +414,7 @@ export function DashboardClient({
             {/* Stats Cards - Primeira Linha */}
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 {/* Leads */}
-                <Card>
+                <Card className="border-l-4 border-l-primary/70">
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
                         <CardTitle className="text-sm font-medium text-muted-foreground">
                             Total de Leads
@@ -430,7 +430,7 @@ export function DashboardClient({
                 </Card>
 
                 {/* Campanhas */}
-                <Card>
+                <Card className="border-l-4 border-l-chart-2">
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
                         <CardTitle className="text-sm font-medium text-muted-foreground">
                             Campanhas
@@ -446,7 +446,7 @@ export function DashboardClient({
                 </Card>
 
                 {/* Emails */}
-                <Card>
+                <Card className="border-l-4 border-l-chart-3">
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
                         <CardTitle className="text-sm font-medium text-muted-foreground">
                             Emails Enviados
@@ -469,7 +469,7 @@ export function DashboardClient({
                 </Card>
 
                 {/* Ligações */}
-                <Card>
+                <Card className="border-l-4 border-l-chart-4">
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
                         <CardTitle className="text-sm font-medium text-muted-foreground">
                             Ligações
@@ -513,24 +513,24 @@ export function DashboardClient({
                                         type="monotone"
                                         dataKey="sent"
                                         name="Enviados"
-                                        stroke="#3b82f6"
-                                        fill="#3b82f6"
+                                        stroke="var(--chart-1)"
+                                        fill="var(--chart-1)"
                                         fillOpacity={0.2}
                                     />
                                     <Area
                                         type="monotone"
                                         dataKey="opened"
                                         name="Abertos"
-                                        stroke="#22c55e"
-                                        fill="#22c55e"
+                                        stroke="var(--chart-2)"
+                                        fill="var(--chart-2)"
                                         fillOpacity={0.2}
                                     />
                                     <Area
                                         type="monotone"
                                         dataKey="clicked"
                                         name="Clicados"
-                                        stroke="#f59e0b"
-                                        fill="#f59e0b"
+                                        stroke="var(--chart-4)"
+                                        fill="var(--chart-4)"
                                         fillOpacity={0.2}
                                     />
                                 </AreaChart>

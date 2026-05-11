@@ -4,7 +4,7 @@
 import { prisma } from "@/lib/prisma"
 import { Decimal } from "@prisma/client/runtime/library"
 import type { Prisma } from "@prisma/client"
-import { getAuthenticatedActiveDbUser } from "@/lib/auth"
+import { getAuthenticatedActiveDbUser, requireAdmin } from "@/lib/auth"
 
 type PurchaseWithItems = Prisma.PurchaseGetPayload<{
     include: {
@@ -226,6 +226,8 @@ export async function updatePurchaseStatus(
     paypalOrderId?: string
 ) {
     try {
+        await requireAdmin()
+
         await prisma.purchase.update({
             where: { id: purchaseId },
             data: {

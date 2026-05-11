@@ -245,8 +245,7 @@ function isPaypalReady(configs: ConfigStatus[]) {
 
 function maskSecret(value?: string) {
     if (!value) return undefined
-    if (value.length <= 8) return "Configurado"
-    return `${value.slice(0, 4)}...${value.slice(-4)}`
+    return "Configurado"
 }
 
 function maskUrl(value?: string) {
