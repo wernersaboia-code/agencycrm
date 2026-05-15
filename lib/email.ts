@@ -203,6 +203,15 @@ export async function sendEmail(
     return sendEmailResend(paramsWithTracking)
 }
 
+function escapeHtml(value: string): string {
+    return value
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;")
+}
+
 /**
  * Substitui variáveis no template
  */
@@ -255,20 +264,21 @@ export function replaceEmailVariables(
     // Substituir variáveis em inglês
     variables.forEach((key) => {
         const regex = new RegExp(`{{\\s*${key}\\s*}}`, "gi")
-        const value = data[key] || ""
-        result = result.replace(regex, value)
+        const rawValue = data[key] || ""
+        const escapedValue = escapeHtml(rawValue)
+        result = result.replace(regex, escapedValue)
 
         const readableLabel = readableLabels[key]
         if (readableLabel) {
             const readableRegex = new RegExp(`\\[\\[\\s*${escapeRegExp(readableLabel)}\\s*\\]\\]`, "gi")
-            result = result.replace(readableRegex, value)
+            result = result.replace(readableRegex, escapedValue)
         }
 
         const chipRegex = new RegExp(
             `<span\\b(?=[^>]*data-template-variable=["']${escapeRegExp(key)}["'])[^>]*>.*?<\\/span>`,
             "gi"
         )
-        result = result.replace(chipRegex, value)
+        result = result.replace(chipRegex, escapedValue)
     })
 
     // Aliases em português para variáveis do lead
@@ -289,13 +299,14 @@ export function replaceEmailVariables(
     // Substituir aliases em português
     Object.entries(aliases).forEach(([alias, key]) => {
         const regex = new RegExp(`{{\\s*${alias}\\s*}}`, "gi")
-        const value = data[key] || ""
-        result = result.replace(regex, value)
+        const rawValue = data[key] || ""
+        const escapedValue = escapeHtml(rawValue)
+        result = result.replace(regex, escapedValue)
     })
 
     // Construir fullName se não existir
     if (!data.fullName && (data.firstName || data.lastName)) {
-        const fullName = [data.firstName, data.lastName].filter(Boolean).join(" ")
+        const fullName = escapeHtml([data.firstName, data.lastName].filter(Boolean).join(" "))
         result = result.replace(/\{\{\s*fullName\s*\}\}/gi, fullName)
         result = result.replace(/\{\{\s*nomeCompleto\s*\}\}/gi, fullName)
     }

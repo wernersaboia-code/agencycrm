@@ -28,7 +28,7 @@ const nextConfig: NextConfig = {
         const securityHeaders = [
             {
                 key: 'Content-Security-Policy',
-                value: "base-uri 'self'; object-src 'none'; frame-ancestors 'none'",
+                value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://*.supabase.co https://api.paypal.com https://api.resend.com; frame-src 'self' https://www.paypal.com https://www.sandbox.paypal.com; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'",
             },
             {
                 key: 'Referrer-Policy',

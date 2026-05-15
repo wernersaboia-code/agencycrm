@@ -37,7 +37,8 @@ function setWorkspaceCookie(workspaceId: string): void {
     const expires = new Date()
     expires.setFullYear(expires.getFullYear() + 1)
 
-    document.cookie = `activeWorkspaceId=${workspaceId}; path=/; expires=${expires.toUTCString()}; SameSite=Lax`
+    const secure = location.protocol === "https:" ? "; Secure" : ""
+    document.cookie = `activeWorkspaceId=${workspaceId}; path=/; expires=${expires.toUTCString()}; SameSite=Lax${secure}`
 }
 
 // ============================================

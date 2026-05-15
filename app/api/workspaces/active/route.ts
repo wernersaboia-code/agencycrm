@@ -59,6 +59,8 @@ export async function GET() {
             cookieStore.set("activeWorkspaceId", fallbackWorkspace.id, {
                 path: "/",
                 sameSite: "lax",
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
                 maxAge: 60 * 60 * 24 * 365,
             })
         }
@@ -108,6 +110,8 @@ export async function POST(request: Request) {
         cookieStore.set("activeWorkspaceId", workspace.id, {
             path: "/",
             sameSite: "lax",
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
             maxAge: 60 * 60 * 24 * 365,
         })
 

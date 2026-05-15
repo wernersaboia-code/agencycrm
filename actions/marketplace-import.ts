@@ -84,49 +84,77 @@ export async function importMarketplaceLeadsToWorkspace({
         let skipped = 0
         const importBatch = `marketplace_${purchaseItem.listId}_${Date.now()}`
 
-        // Importar cada lead
+        // Coletar emails para verificar duplicados em batch
+        const emails = marketplaceLeads
+            .map((mLead) => mLead.emailGeneral)
+            .filter((email): email is string => email !== null)
+
+        const existingLeads = emails.length > 0
+            ? await prisma.lead.findMany({
+                where: {
+                    workspaceId,
+                    email: { in: emails },
+                },
+                select: { email: true },
+            })
+            : []
+
+        const existingEmails = new Set(existingLeads.map((l) => l.email))
+
+        // Separar leads para criar (batch)
+        const leadsToCreate: Array<{
+            workspaceId: string
+            firstName: string
+            lastName: string | null
+            email: string
+            phone: string | null
+            company: string | null
+            jobTitle: string | null
+            website: string | null
+            country: string | null
+            industry: string | null
+            status: LeadStatus
+            source: LeadSource
+            importBatch: string
+            importedAt: Date
+            notes: string
+        }> = []
+
         for (const mLead of marketplaceLeads) {
+            if (mLead.emailGeneral && existingEmails.has(mLead.emailGeneral)) {
+                skipped++
+                continue
+            }
+
+            leadsToCreate.push({
+                workspaceId,
+                firstName: mLead.manager?.split(" ")[0] || mLead.companyName || "Contato",
+                lastName: mLead.manager?.split(" ").slice(1).join(" ") || null,
+                email: mLead.emailGeneral || `${mLead.companyName?.toLowerCase().replace(/\s+/g, ".")}@unknown.com`,
+                phone: mLead.phoneGeneral || mLead.phonePurchasing || null,
+                company: mLead.companyName,
+                jobTitle: mLead.manager ? "Manager" : null,
+                website: mLead.website,
+                country: mLead.country,
+                industry: mLead.sector,
+                status: LeadStatus.NEW,
+                source: LeadSource.MARKETPLACE,
+                importBatch,
+                importedAt: new Date(),
+                notes: `Importado do Easy Prospect - Lista: ${purchaseItem.list.name}`,
+            })
+        }
+
+        // Importar em batches de 100
+        const BATCH_SIZE = 100
+        for (let i = 0; i < leadsToCreate.length; i += BATCH_SIZE) {
+            const batch = leadsToCreate.slice(i, i + BATCH_SIZE)
             try {
-                // Verificar se o lead já existe no workspace (por email)
-                if (mLead.emailGeneral) {
-                    const existingLead = await prisma.lead.findFirst({
-                        where: {
-                            workspaceId,
-                            email: mLead.emailGeneral,
-                        },
-                    })
-
-                    if (existingLead) {
-                        skipped++
-                        continue
-                    }
-                }
-
-                // Mapear campos do MarketplaceLead para Lead do CRM
-                await prisma.lead.create({
-                    data: {
-                        workspaceId,
-                        firstName: mLead.manager?.split(" ")[0] || mLead.companyName || "Contato",
-                        lastName: mLead.manager?.split(" ").slice(1).join(" ") || null,
-                        email: mLead.emailGeneral || `${mLead.companyName?.toLowerCase().replace(/\s+/g, ".")}@unknown.com`,
-                        phone: mLead.phoneGeneral || mLead.phonePurchasing || null,
-                        company: mLead.companyName,
-                        jobTitle: mLead.manager ? "Manager" : null,
-                        website: mLead.website,
-                        country: mLead.country,
-                        industry: mLead.sector,
-                        status: LeadStatus.NEW,
-                        source: LeadSource.MARKETPLACE,
-                        importBatch,
-                        importedAt: new Date(),
-                        notes: `Importado do Easy Prospect - Lista: ${purchaseItem.list.name}`,
-                    },
-                })
-
-                imported++
+                await prisma.lead.createMany({ data: batch, skipDuplicates: true })
+                imported += batch.length
             } catch (error) {
-                errors.push(`Erro ao importar lead ${mLead.companyName}: ${error}`)
-                console.error("Erro ao importar lead:", error)
+                errors.push(`Erro ao importar batch ${i}: ${error}`)
+                console.error("Erro ao importar batch:", error)
             }
         }
 
