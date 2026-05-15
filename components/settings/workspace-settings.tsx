@@ -77,6 +77,7 @@ export function WorkspaceSettings({ workspace }: WorkspaceSettingsProps) {
         setValue,
         formState: { errors, isDirty },
     } = useForm<WorkspaceFormData>({
+        mode: "onBlur",
         resolver: zodResolver(workspaceSchema) as Resolver<WorkspaceFormData>,
         defaultValues: {
             name: workspace.name,

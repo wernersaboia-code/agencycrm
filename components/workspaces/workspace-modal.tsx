@@ -87,6 +87,7 @@ export function WorkspaceModal({
     const isEditing = !!workspace
 
     const form = useForm<WorkspaceFormValues>({
+        mode: "onBlur",
         resolver: zodResolver(workspaceSchema) as Resolver<WorkspaceFormValues>,
         defaultValues: {
             name: "",
@@ -289,7 +290,7 @@ export function WorkspaceModal({
                             >
                                 Cancelar
                             </Button>
-                            <Button type="submit" disabled={isLoading}>
+                            <Button type="submit" disabled={isLoading || !form.formState.isDirty}>
                                 {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                                 {isEditing ? "Salvar" : "Criar Cliente"}
                             </Button>

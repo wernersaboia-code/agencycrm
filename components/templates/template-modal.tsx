@@ -43,7 +43,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Switch } from "@/components/ui/switch"
 import { ScrollArea } from "@/components/ui/scroll-area"
 
-import { RichTextEditor } from "@/components/ui/rich-text-editor"
+import dynamic from "next/dynamic"
+import { Skeleton } from "@/components/ui/skeleton"
+
+const RichTextEditor = dynamic(() => import("@/components/ui/rich-text-editor").then((mod) => mod.RichTextEditor), {
+    ssr: false,
+    loading: () => <Skeleton className="h-[200px] w-full" />,
+})
 import {
     createTemplate,
     updateTemplate,
@@ -93,6 +99,7 @@ export function TemplateModal({
 
     // Form
     const form = useForm<TemplateFormData>({
+        mode: "onBlur",
         resolver: zodResolver(templateFormSchema) as Resolver<TemplateFormData>,
         defaultValues: DEFAULT_TEMPLATE_VALUES,
     })
@@ -461,7 +468,7 @@ export function TemplateModal({
                     </Button>
                     <Button
                         onClick={form.handleSubmit(onSubmit)}
-                        disabled={isSubmitting}
+                        disabled={isSubmitting || !form.formState.isDirty}
                     >
                         {isSubmitting && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
                         {isEditing ? "Salvar alterações" : "Criar modelo"}

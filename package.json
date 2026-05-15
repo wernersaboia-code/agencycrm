@@ -38,6 +38,8 @@
     "@tiptap/starter-kit": "^3.22.5",
     "@types/dompurify": "^3.0.5",
     "@types/jsdom": "^28.0.3",
+    "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.0.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",

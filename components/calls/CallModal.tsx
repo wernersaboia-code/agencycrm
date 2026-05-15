@@ -149,6 +149,7 @@ export function CallModal({
     // ============================================
 
     const form = useForm<CallFormValues>({
+        mode: "onBlur",
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         resolver: zodResolver(callFormSchema) as any,
         defaultValues: {
@@ -693,7 +694,7 @@ export function CallModal({
                             >
                                 Cancelar
                             </Button>
-                            <Button type="submit" disabled={isSubmitting || !selectedLead}>
+                            <Button type="submit" disabled={isSubmitting || !selectedLead || !form.formState.isDirty}>
                                 {isSubmitting && (
                                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                                 )}

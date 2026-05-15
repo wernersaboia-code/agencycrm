@@ -146,6 +146,7 @@ export function ListForm({ list }: ListFormProps) {
     )
 
     const form = useForm<ListFormData>({
+        mode: "onBlur",
         resolver: zodResolver(listSchema) as Resolver<ListFormData>,
         defaultValues: {
             name: list?.name || "",
@@ -677,7 +678,7 @@ export function ListForm({ list }: ListFormProps) {
 
                 {/* Botões de Ação */}
                 <div className="flex gap-4">
-                    <Button type="submit" disabled={isLoading}>
+                    <Button type="submit" disabled={isLoading || !form.formState.isDirty}>
                         {isLoading ? (
                             <>
                                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />

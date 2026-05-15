@@ -71,6 +71,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 
+import { EmptyState } from "@/components/common/empty-state"
 import { LeadModal } from "@/components/leads/lead-modal"
 import { LeadStatusBadge } from "@/components/leads/lead-status-badge"
 import { ClickToCallButton } from "@/components/calls/ClickToCallButton"
@@ -171,51 +172,6 @@ function StatsCard({
                 )}
             </CardContent>
         </Card>
-    )
-}
-
-function EmptyState({
-                        hasFilters,
-                        onClearFilters,
-                        onAddLead,
-                        onImport,
-                    }: {
-    hasFilters: boolean
-    onClearFilters: () => void
-    onAddLead: () => void
-    onImport: () => void
-}) {
-    return (
-        <div className="flex flex-col items-center justify-center py-12">
-            <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center mb-4">
-                <Users className="h-6 w-6 text-muted-foreground" />
-            </div>
-            <h3 className="text-lg font-semibold mb-1">
-                {hasFilters ? "Nenhum lead encontrado" : "Nenhum lead ainda"}
-            </h3>
-            <p className="text-muted-foreground text-center mb-4 max-w-sm">
-                {hasFilters
-                    ? "Tente ajustar os filtros de busca."
-                    : "Comece adicionando seu primeiro lead ou importe de uma planilha."}
-            </p>
-            {hasFilters ? (
-                <Button variant="outline" onClick={onClearFilters}>
-                    <X className="h-4 w-4 mr-2" />
-                    Limpar Filtros
-                </Button>
-            ) : (
-                <div className="flex gap-2">
-                    <Button onClick={onAddLead}>
-                        <Plus className="h-4 w-4 mr-2" />
-                        Adicionar Lead
-                    </Button>
-                    <Button variant="outline" onClick={onImport}>
-                        <Upload className="h-4 w-4 mr-2" />
-                        Importar CSV
-                    </Button>
-                </div>
-            )}
-        </div>
     )
 }
 
@@ -762,12 +718,36 @@ export function LeadsClient() {
                     {isLoading ? (
                         <LoadingTable />
                     ) : leads.length === 0 ? (
-                        <EmptyState
-                            hasFilters={hasActiveFilters}
-                            onClearFilters={handleClearFilters}
-                            onAddLead={() => setIsModalOpen(true)}
-                            onImport={() => router.push('/leads/import')}
-                        />
+                        hasActiveFilters ? (
+                            <EmptyState
+                                icon={Users}
+                                title="Nenhum lead encontrado"
+                                description="Tente ajustar os filtros de busca."
+                                secondaryAction={{
+                                    label: "Limpar Filtros",
+                                    onClick: handleClearFilters,
+                                    icon: X,
+                                    variant: "outline",
+                                }}
+                            />
+                        ) : (
+                            <EmptyState
+                                icon={Users}
+                                title="Nenhum lead ainda"
+                                description="Comece adicionando seu primeiro lead ou importe de uma planilha."
+                                primaryAction={{
+                                    label: "Adicionar Lead",
+                                    onClick: () => setIsModalOpen(true),
+                                    icon: Plus,
+                                }}
+                                secondaryAction={{
+                                    label: "Importar CSV",
+                                    onClick: () => router.push('/leads/import'),
+                                    icon: Upload,
+                                    variant: "outline",
+                                }}
+                            />
+                        )
                     ) : (
                         <div className="relative">
                             {/* Indicador de scroll */}

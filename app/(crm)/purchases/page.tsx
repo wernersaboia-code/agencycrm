@@ -5,6 +5,7 @@ import { getAuthenticatedUserId } from "@/lib/auth"
 import { getUserPurchases } from "@/actions/checkout"
 import type { UserPurchase } from "@/actions/checkout"
 import { PurchaseCard } from "@/components/purchases/purchase-card"
+import { PurchasesEmptyState } from "@/components/purchases/purchases-empty-state"
 import { ShoppingBag, ArrowLeft, Sparkles } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -73,7 +74,7 @@ export default async function PurchasesPage() {
             <div className="max-w-7xl mx-auto px-6 py-8">
                 <Suspense fallback={<PurchasesSkeleton />}>
                     {purchases.length === 0 ? (
-                        <EmptyState />
+                        <PurchasesEmptyState />
                     ) : (
                         <div className="space-y-4">
                             {/* Stats */}
@@ -108,30 +109,6 @@ export default async function PurchasesPage() {
                     )}
                 </Suspense>
             </div>
-        </div>
-    )
-}
-
-// Empty State
-function EmptyState() {
-    return (
-        <div className="text-center py-16">
-            <div className="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-6">
-                <ShoppingBag className="h-12 w-12 text-gray-400" />
-            </div>
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">
-                Nenhuma compra ainda
-            </h2>
-            <p className="text-gray-500 mb-8 max-w-md mx-auto">
-                Explore nosso catálogo e encontre as melhores listas de leads para
-                impulsionar seu negócio
-            </p>
-            <Button asChild size="lg" className="bg-[#4a2c5a] hover:bg-[#5d3a70]">
-                <Link href="/catalog">
-                    <Sparkles className="h-5 w-5 mr-2" />
-                    Explorar Catálogo
-                </Link>
-            </Button>
         </div>
     )
 }

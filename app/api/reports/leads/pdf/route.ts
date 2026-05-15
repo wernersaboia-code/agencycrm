@@ -68,6 +68,7 @@ export async function GET(request: NextRequest) {
         const leads = await prisma.lead.findMany({
             where,
             orderBy: { createdAt: "desc" },
+            take: 10000,
         })
 
         // Calcular estatísticas

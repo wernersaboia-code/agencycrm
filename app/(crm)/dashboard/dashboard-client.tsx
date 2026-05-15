@@ -2,6 +2,7 @@
 "use client"
 
 import Link from "next/link"
+import dynamic from "next/dynamic"
 import type { ElementType } from "react"
 import { format, formatDistanceToNow } from "date-fns"
 import { ptBR } from "date-fns/locale"
@@ -22,20 +23,12 @@ import {
     Upload,
     CheckCircle2,
 } from "lucide-react"
-import {
-    AreaChart,
-    Area,
-    XAxis,
-    YAxis,
-    CartesianGrid,
-    Tooltip,
-    ResponsiveContainer,
-} from "recharts"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
+import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
 import { LEAD_STATUS_CONFIG } from "@/lib/constants/lead.constants"
 import { LeadStatus } from "@prisma/client"
@@ -48,6 +41,11 @@ import type {
     CallbacksSummary,
     DashboardGuidance,
 } from "@/actions/dashboard"
+
+const DashboardEmailChart = dynamic(() => import("./dashboard-email-chart"), {
+    ssr: false,
+    loading: () => <Skeleton className="h-[200px] w-full" />,
+})
 
 // ============================================================
 // TIPOS
@@ -77,34 +75,6 @@ const campaignStatusConfig: Record<string, { label: string; color: string }> = {
     SENT: { label: "Enviada", color: "bg-green-100 text-green-700" },
     PAUSED: { label: "Pausada", color: "bg-orange-100 text-orange-700" },
     CANCELLED: { label: "Cancelada", color: "bg-red-100 text-red-700" },
-}
-
-interface ChartTooltipPayload {
-    color?: string
-    name?: string
-    value?: string | number
-}
-
-interface ChartTooltipProps {
-    active?: boolean
-    payload?: ChartTooltipPayload[]
-    label?: string
-}
-
-function CustomTooltip({ active, payload, label }: ChartTooltipProps) {
-    if (active && payload && payload.length) {
-        return (
-            <div className="bg-card border rounded-lg p-3 shadow-lg">
-                <p className="font-medium mb-1">{label}</p>
-                {payload.map((entry, index) => (
-                    <p key={index} className="text-sm" style={{ color: entry.color }}>
-                        {entry.name}: <span className="font-medium">{entry.value}</span>
-                    </p>
-                ))}
-            </div>
-        )
-    }
-    return null
 }
 
 interface ActionCard {
@@ -502,44 +472,7 @@ export function DashboardClient({
                         <CardDescription>Enviados, abertos e clicados</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        {chartData.some((d) => d.sent > 0) ? (
-                            <ResponsiveContainer width="100%" height={200}>
-                                <AreaChart data={chartData}>
-                                    <CartesianGrid strokeDasharray="3 3" />
-                                    <XAxis dataKey="date" tick={{ fontSize: 12 }} />
-                                    <YAxis tick={{ fontSize: 12 }} />
-                                    <Tooltip content={<CustomTooltip />} />
-                                    <Area
-                                        type="monotone"
-                                        dataKey="sent"
-                                        name="Enviados"
-                                        stroke="var(--chart-1)"
-                                        fill="var(--chart-1)"
-                                        fillOpacity={0.2}
-                                    />
-                                    <Area
-                                        type="monotone"
-                                        dataKey="opened"
-                                        name="Abertos"
-                                        stroke="var(--chart-2)"
-                                        fill="var(--chart-2)"
-                                        fillOpacity={0.2}
-                                    />
-                                    <Area
-                                        type="monotone"
-                                        dataKey="clicked"
-                                        name="Clicados"
-                                        stroke="var(--chart-4)"
-                                        fill="var(--chart-4)"
-                                        fillOpacity={0.2}
-                                    />
-                                </AreaChart>
-                            </ResponsiveContainer>
-                        ) : (
-                            <div className="flex items-center justify-center h-[200px] text-muted-foreground">
-                                Nenhum email enviado no período
-                            </div>
-                        )}
+                        <DashboardEmailChart data={chartData} />
                     </CardContent>
                 </Card>
 

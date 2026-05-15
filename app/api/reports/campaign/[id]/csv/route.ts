@@ -25,6 +25,7 @@ export async function GET(
             },
             include: {
                 emailSends: {
+                    take: 10000,
                     include: {
                         lead: {
                             select: {

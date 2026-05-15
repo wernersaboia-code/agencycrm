@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button"
 import { getUserPurchases } from "@/actions/checkout"
 import type { UserPurchase } from "@/actions/checkout"
 import { PublicPurchaseCard } from "@/components/marketplace/public-purchase-card"
+import { MyPurchasesEmptyState } from "@/components/marketplace/my-purchases-empty-state"
 import { validatePurchaseAccessToken } from "@/lib/auth/magic-link"
 import { getAuthenticatedUserId } from "@/lib/auth"
 import { formatCurrency } from "@/lib/utils"
@@ -152,7 +153,7 @@ function PurchasesDashboard({
 
             <div className="container mx-auto px-4 py-8">
                 {purchases.length === 0 ? (
-                    <EmptyState />
+                    <MyPurchasesEmptyState />
                 ) : (
                     <div className="grid gap-6 lg:grid-cols-[1fr_320px] lg:items-start">
                         <div className="space-y-4">
@@ -205,27 +206,6 @@ function getPurchaseStats(purchases: UserPurchase[]) {
             totalLeads: 0,
             totalSpent: 0,
         }
-    )
-}
-
-function EmptyState() {
-    return (
-        <div className="rounded-lg border border-gray-200 bg-white p-10 text-center shadow-sm">
-            <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-md bg-gray-100">
-                <ShoppingBag className="h-8 w-8 text-gray-400" />
-            </div>
-            <h2 className="mb-2 text-2xl font-bold text-gray-900">
-                Nenhuma compra ainda
-            </h2>
-            <p className="mx-auto mb-7 max-w-md text-sm text-gray-500">
-                Explore o catálogo, selecione uma base compatível com sua campanha e volte aqui para baixar os arquivos.
-            </p>
-            <Button className="bg-[#4a2c5a] hover:bg-[#5d3a70]" asChild>
-                <Link href="/catalog">
-                    Explorar catálogo
-                </Link>
-            </Button>
-        </div>
     )
 }
 

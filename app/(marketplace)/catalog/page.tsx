@@ -7,6 +7,8 @@ import { CatalogStats } from "@/components/marketplace/catalog-stats"
 import { getMarketplaceLists, getFilterCounts } from "@/actions/marketplace"
 import { CheckCircle2, Download, ShieldCheck, SlidersHorizontal } from "lucide-react"
 
+export const revalidate = 300
+
 export const metadata = {
     title: "Catálogo de Listas | LeadStore",
     description: "Explore nosso catálogo de listas de leads qualificados para comércio exterior.",

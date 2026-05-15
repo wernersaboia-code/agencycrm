@@ -18,7 +18,13 @@ import {
     CollapsibleContent,
     CollapsibleTrigger,
 } from "@/components/ui/collapsible"
-import { RichTextEditor } from "@/components/ui/rich-text-editor"
+import dynamic from "next/dynamic"
+import { Skeleton } from "@/components/ui/skeleton"
+
+const RichTextEditor = dynamic(() => import("@/components/ui/rich-text-editor").then((mod) => mod.RichTextEditor), {
+    ssr: false,
+    loading: () => <Skeleton className="h-[200px] w-full" />,
+})
 import { STEP_CONDITIONS, type SequenceStep, type StepCondition } from "@/types/campaign.types"
 
 interface SequenceStepCardProps {

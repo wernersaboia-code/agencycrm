@@ -20,6 +20,8 @@ import { Badge } from "@/components/ui/badge"
 import { FlagIcon } from "@/components/ui/flag-icon"
 import { formatCurrency } from "@/lib/utils"
 
+export const revalidate = 300
+
 type HomeList = Awaited<ReturnType<typeof getMarketplaceLists>>["lists"][number]
 type FilterCounts = Awaited<ReturnType<typeof getFilterCounts>>
 

@@ -257,6 +257,10 @@ model Lead {
 
   @@unique([email, workspaceId])
   @@index([workspaceId])
+  @@index([workspaceId, status])
+  @@index([workspaceId, createdAt])
+  @@index([workspaceId, country])
+  @@index([workspaceId, industry])
   @@index([status])
   @@index([source])
   @@index([country])
@@ -461,6 +465,8 @@ model EmailSend {
   createdAt DateTime  @default(now())
 
   @@index([campaignId])
+  @@index([campaignId, status])
+  @@index([campaignId, leadId, stepId])
   @@index([leadId])
   @@index([stepId])
   @@index([status])
@@ -493,6 +499,7 @@ model Call {
 
   @@index([leadId])
   @@index([workspaceId])
+  @@index([workspaceId, calledAt])
   @@index([campaignId])
   @@index([calledAt])
   @@map("calls")
@@ -629,6 +636,7 @@ model Purchase {
   purchaseAccessTokens PurchaseAccessToken[]
 
   @@index([userId])
+  @@index([userId, status])
   @@index([status])
   @@map("purchases")
 }

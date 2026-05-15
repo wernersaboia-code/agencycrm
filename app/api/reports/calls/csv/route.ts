@@ -80,6 +80,7 @@ export async function GET(request: NextRequest) {
                 },
             },
             orderBy: { calledAt: "desc" },
+            take: 10000,
         })
 
         // Gerar CSV

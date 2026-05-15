@@ -174,6 +174,7 @@ export function LeadModal({
     const isEditing = !!lead
 
     const form = useForm<LeadFormData>({
+        mode: "onBlur",
         resolver: zodResolver(leadFormSchema) as Resolver<LeadFormData>,
         defaultValues: DEFAULT_LEAD_VALUES,
     })
@@ -831,7 +832,7 @@ export function LeadModal({
                             >
                                 Cancelar
                             </Button>
-                            <Button type="submit" disabled={isLoading}>
+                            <Button type="submit" disabled={isLoading || !form.formState.isDirty}>
                                 {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                                 {isEditing ? "Salvar" : "Criar Lead"}
                             </Button>
