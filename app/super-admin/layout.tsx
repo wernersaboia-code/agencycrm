@@ -28,7 +28,7 @@ export default async function SuperAdminLayout({
                     user={{ name: dbUser.name, email: dbUser.email }}
                     variant="super-admin"
                 />
-                <main className="flex-1 overflow-y-auto bg-background p-5 md:p-6">
+                <main id="main-content" className="flex-1 overflow-y-auto bg-background p-5 md:p-6">
                     {children}
                 </main>
             </div>

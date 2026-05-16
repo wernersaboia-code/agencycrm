@@ -9,6 +9,7 @@ import {
     Download,
     FileSpreadsheet,
     Globe2,
+    MessageCircle,
     Search,
     ShieldCheck,
     ShoppingBag,
@@ -36,7 +37,7 @@ export default async function LeadStoreHome() {
 
     return (
         <div className="min-h-screen bg-white text-gray-950">
-            <section className="border-b border-gray-200 bg-[linear-gradient(180deg,#f8fafc_0%,#ffffff_82%)]">
+            <section className="border-b border-gray-200 hero-gradient">
                 <div className="container mx-auto px-4 py-12 md:py-16 lg:py-20">
                     <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_460px] lg:items-center">
                         <div className="max-w-3xl">
@@ -230,6 +231,37 @@ export default async function LeadStoreHome() {
                         <ConfidenceItem icon={CreditCard} text="Pagamento via PayPal com pedido registrado" />
                         <ConfidenceItem icon={FileSpreadsheet} text="Exportação em formatos compatíveis com CRM" />
                         <ConfidenceItem icon={BadgeCheck} text="Prévia de dados antes da compra" />
+                    </div>
+                </div>
+            </section>
+
+            <section className="bg-white py-14">
+                <div className="container mx-auto px-4">
+                    <div className="mx-auto max-w-2xl text-center">
+                        <p className="text-sm font-semibold uppercase tracking-wider text-emerald-700">
+                            Números que importam
+                        </p>
+                        <h2 className="mt-2 text-3xl font-bold tracking-tight text-gray-950 md:text-4xl">
+                            Confiança construída com resultados.
+                        </h2>
+                    </div>
+
+                    <div className="mt-10 grid gap-4 md:grid-cols-3">
+                        <StatCard
+                            icon={ShoppingBag}
+                            value={`${total.toLocaleString("pt-BR")}+`}
+                            label="listas vendidas"
+                        />
+                        <StatCard
+                            icon={BadgeCheck}
+                            value="100%"
+                            label="Dados verificados de qualidade"
+                        />
+                        <StatCard
+                            icon={MessageCircle}
+                            value="24/7"
+                            label="Suporte em português"
+                        />
                     </div>
                 </div>
             </section>
@@ -563,6 +595,28 @@ function PreviewRow({
             <span className="truncate font-medium text-gray-800">{company}</span>
             <span className="truncate text-gray-500">{market}</span>
             <span className="truncate font-mono text-gray-500">{email}</span>
+        </div>
+    )
+}
+
+function StatCard({
+    icon: Icon,
+    value,
+    label,
+}: {
+    icon: React.ComponentType<{ className?: string }>
+    value: string
+    label: string
+}) {
+    return (
+        <div className="flex flex-col items-center gap-3 rounded-lg border border-gray-200 bg-white p-6 text-center shadow-sm">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-50 text-emerald-700">
+                <Icon className="h-6 w-6" />
+            </div>
+            <div>
+                <div className="text-2xl font-bold text-gray-950">{value}</div>
+                <div className="text-sm text-gray-500">{label}</div>
+            </div>
         </div>
     )
 }

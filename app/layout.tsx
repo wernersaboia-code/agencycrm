@@ -40,6 +40,8 @@ export const metadata: Metadata = {
         images: ["/opengraph-image.png"],
     },
     robots: { index: true, follow: true },
+    icons: { icon: "/icon.svg" },
+    manifest: "/manifest.json",
 }
 
 export default function RootLayout({

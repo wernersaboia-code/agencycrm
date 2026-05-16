@@ -4,6 +4,7 @@ import { notFound } from "next/navigation"
 import { getCampaignById } from "@/actions/campaigns"
 import { getCallsByCampaign, getCampaignCallStats } from "@/actions/calls"
 import { CampaignDetailClient } from "./campaign-detail-client"
+import { Breadcrumbs } from "@/components/ui/breadcrumb"
 
 // ============================================
 // TYPES
@@ -50,10 +51,16 @@ export default async function CampaignDetailPage({ params }: PageProps) {
     }
 
     return (
-        <CampaignDetailClient
-            campaign={campaign}
-            initialCalls={calls}
-            initialCallStats={callStats}
-        />
+        <div className="container mx-auto py-6 space-y-4">
+            <Breadcrumbs items={[
+                { label: "Campanhas", href: "/campaigns" },
+                { label: result.data.name }
+            ]} />
+            <CampaignDetailClient
+                campaign={campaign}
+                initialCalls={calls}
+                initialCallStats={callStats}
+            />
+        </div>
     )
 }

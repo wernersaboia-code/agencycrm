@@ -10,6 +10,9 @@ import { prisma } from "@/lib/prisma"
 import { z } from "zod"
 import { getAuthenticatedActiveDbUser } from "@/lib/auth"
 import { getPublicAppUrl } from "@/lib/env"
+import { rateLimit, getClientIp } from "@/lib/rate-limit"
+
+const rateLimiter = rateLimit(500)
 
 const createOrderSchema = z.object({
     items: z.array(z.object({
@@ -20,6 +23,8 @@ const createOrderSchema = z.object({
 
 export async function POST(request: NextRequest) {
     try {
+        await rateLimiter.check(getClientIp(request), 10, 60_000) // 10 requests per minute
+
         const user = await getAuthenticatedActiveDbUser()
 
         if (!user) {

@@ -192,15 +192,33 @@ export async function sendEmail(
         ? injectTrackingIntoEmail(params.html, params.emailSendId)
         : params.html
 
-    const paramsWithTracking = { ...params, html: htmlWithTracking }
+    // Append unsubscribe footer if emailSendId is present (campaign emails)
+    const htmlWithUnsubscribe = params.emailSendId
+        ? appendUnsubscribeFooter(htmlWithTracking)
+        : htmlWithTracking
+
+    const paramsFinal = { ...params, html: htmlWithUnsubscribe }
 
     // Se tem configuração SMTP válida, usa SMTP
     if (smtpConfig?.user && smtpConfig?.pass) {
-        return sendEmailSmtp(smtpConfig, paramsWithTracking)
+        return sendEmailSmtp(smtpConfig, paramsFinal)
     }
 
     // Senão, usa Resend como fallback
-    return sendEmailResend(paramsWithTracking)
+    return sendEmailResend(paramsFinal)
+}
+
+function appendUnsubscribeFooter(html: string): string {
+    const unsubscribeUrl = `${process.env.NEXT_PUBLIC_APP_URL || "https://easyprospect.com"}/unsubscribe`
+    const footer = `
+        <div style="margin-top:32px;padding-top:16px;border-top:1px solid #e5e7eb;color:#9ca3af;font-size:12px;line-height:1.5;">
+            <p>Se não deseja mais receber e-mails, <a href="${unsubscribeUrl}" style="color:#6b7280;text-decoration:underline;">clique aqui para cancelar sua inscrição</a>.</p>
+        </div>
+    `
+    if (html.toLowerCase().includes("</body>")) {
+        return html.replace(/<\/body>/i, `${footer}</body>`)
+    }
+    return html + footer
 }
 
 function escapeHtml(value: string): string {

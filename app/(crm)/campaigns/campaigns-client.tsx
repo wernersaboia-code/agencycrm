@@ -159,11 +159,17 @@ export function CampaignsClient({
     const handleConfirmSend = async () => {
         if (!sendingCampaign) return
 
+        const isFirstSend = globalStats.totalSent === 0
+
         setIsLoading(sendingCampaign.id)
         try {
             const result = await sendCampaign(sendingCampaign.id)
             if (result.success) {
-                toast.success("Campanha enviada com sucesso!")
+                if (isFirstSend) {
+                    toast.success("🎉 Sua primeira campanha foi enviada! Monitore as métricas e acompanhe os resultados.")
+                } else {
+                    toast.success("Campanha enviada com sucesso!")
+                }
                 setSendingCampaign(null)
                 router.refresh()
             } else {

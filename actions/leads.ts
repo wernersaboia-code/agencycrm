@@ -3,8 +3,6 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { prisma } from '@/lib/prisma'
-import { getAuthenticatedUser, requireWorkspaceAccess } from '@/lib/auth'
 import { z } from 'zod'
 import {
     createLeadSchema,
@@ -12,113 +10,35 @@ import {
     type CreateLeadData,
     type UpdateLeadData
 } from '@/lib/validations/lead.validations'
-import { sanitizeLeadData } from '@/lib/utils/lead.utils'
-import type { LeadStatus, CompanySize } from '@prisma/client'
+import type { LeadStatus } from '@prisma/client'
 import { LeadStatus as LeadStatusEnum } from '@prisma/client'
+import { ActionResult, success, failure } from '@/lib/types/actions'
+import {
+    createServiceContext,
+    createWorkspaceServiceContext,
+} from '@/lib/auth/context'
+import {
+    getLeads as getLeadsService,
+    getLeadById as getLeadByIdService,
+    getLeadEmailSends as getLeadEmailSendsService,
+    createLead as createLeadService,
+    updateLead as updateLeadService,
+    deleteLead as deleteLeadService,
+    deleteMultipleLeads as deleteMultipleLeadsService,
+    importLeads as importLeadsService,
+    type LeadWithRelations,
+    type LeadStats,
+    type GetLeadsParams,
+    type ImportLeadData,
+    type ImportResult,
+} from '@/lib/services/leads.service'
 
 // ============================================================
-// TIPOS
+// SCHEMAS
 // ============================================================
 
-export interface ActionResult<T = void> {
-    success: boolean
-    data?: T
-    error?: string
-}
-
-export interface GetLeadsParams {
-    workspaceId: string
-    search?: string
-    status?: LeadStatus
-    country?: string
-    industry?: string
-    page?: number
-    pageSize?: number
-}
-
-export interface LeadWithRelations {
-    id: string
-    firstName: string
-    lastName: string | null
-    email: string
-    phone: string | null
-    mobile: string | null
-    company: string | null
-    jobTitle: string | null
-    website: string | null
-    taxId: string | null
-    industry: string | null
-    companySize: CompanySize | null
-    address: string | null
-    city: string | null
-    state: string | null
-    postalCode: string | null
-    country: string | null
-    status: LeadStatus
-    source: string
-    notes: string | null
-    workspaceId: string
-    createdAt: Date
-    updatedAt: Date
-}
-
-interface LeadStats {
-    total: number
-    new: number
-    interested: number
-    converted: number
-}
-
-export interface ImportLeadData {
-    firstName: string
-    lastName?: string | null
-    email: string
-    phone?: string | null
-    mobile?: string | null
-    company?: string | null
-    jobTitle?: string | null
-    website?: string | null
-    taxId?: string | null
-    industry?: string | null
-    companySize?: string | null
-    address?: string | null
-    city?: string | null
-    state?: string | null
-    postalCode?: string | null
-    country?: string | null
-    notes?: string | null
-}
-
-export interface ImportResult {
-    success: boolean
-    imported: number
-    duplicates: number
-    errors: number
-    errorDetails: Array<{
-        row: number
-        email: string
-        reason: string
-    }>
-}
-
-// ============================================================
-// HELPERS
-// ============================================================
-
-function getFirstZodError(error: { issues: Array<{ message: string }> }): string {
-    return error.issues[0]?.message ?? 'Dados inválidos'
-}
-
-function isValidCompanySize(value: string | null | undefined): boolean {
-    if (!value) return false
-    const validSizes = ['MICRO', 'SMALL', 'MEDIUM', 'LARGE', 'ENTERPRISE']
-    return validSizes.includes(value.toUpperCase())
-}
-
-function generateImportBatchId(): string {
-    return `import_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`
-}
-
+const idSchema = z.string().min(1).max(200)
+const idListSchema = z.array(idSchema).min(1).max(500)
 const getLeadsParamsSchema = z.object({
     workspaceId: z.string().min(1),
     search: z.string().trim().max(120).optional(),
@@ -129,30 +49,9 @@ const getLeadsParamsSchema = z.object({
     pageSize: z.number().int().min(1).max(100).default(50),
 })
 
-const idSchema = z.string().min(1).max(200)
-const idListSchema = z.array(idSchema).min(1).max(500)
-const importLeadsSchema = z.object({
-    workspaceId: idSchema,
-    leads: z.array(z.object({
-        firstName: z.string().max(100).optional().nullable(),
-        lastName: z.string().max(100).optional().nullable(),
-        email: z.string().email().max(255),
-        phone: z.string().max(30).optional().nullable(),
-        mobile: z.string().max(30).optional().nullable(),
-        company: z.string().max(200).optional().nullable(),
-        jobTitle: z.string().max(100).optional().nullable(),
-        website: z.string().max(255).optional().nullable(),
-        taxId: z.string().max(50).optional().nullable(),
-        industry: z.string().max(100).optional().nullable(),
-        companySize: z.string().max(20).optional().nullable(),
-        address: z.string().max(300).optional().nullable(),
-        city: z.string().max(100).optional().nullable(),
-        state: z.string().max(100).optional().nullable(),
-        postalCode: z.string().max(20).optional().nullable(),
-        country: z.string().max(2).optional().nullable(),
-        notes: z.string().max(5000).optional().nullable(),
-    })).min(1).max(5000),
-})
+function getFirstZodError(error: { issues: Array<{ message: string }> }): string {
+    return error.issues[0]?.message ?? 'Dados inválidos'
+}
 
 // ============================================================
 // QUERIES
@@ -163,115 +62,46 @@ export async function getLeads(params: GetLeadsParams): Promise<ActionResult<{
     total: number
     stats: LeadStats
 }>> {
+    const parsedParams = getLeadsParamsSchema.safeParse(params)
+    if (!parsedParams.success) {
+        return failure(getFirstZodError(parsedParams.error))
+    }
+
+    const auth = await createWorkspaceServiceContext(parsedParams.data.workspaceId)
+    if (!auth.ok) {
+        return failure(auth.error)
+    }
+
     try {
-        const parsedParams = getLeadsParamsSchema.safeParse(params)
-        if (!parsedParams.success) {
-            return { success: false, error: getFirstZodError(parsedParams.error) }
-        }
-
-        const {
-            workspaceId,
-            search,
-            status,
-            country,
-            industry,
-            page,
-            pageSize
-        } = parsedParams.data
-
-        try {
-            await requireWorkspaceAccess(workspaceId)
-        } catch {
-            return { success: false, error: 'Workspace não encontrado' }
-        }
-
-        const where = {
-            workspaceId,
-            ...(status && { status }),
-            ...(country && { country }),
-            ...(industry && { industry }),
-            ...(search && {
-                OR: [
-                    { firstName: { contains: search, mode: 'insensitive' as const } },
-                    { lastName: { contains: search, mode: 'insensitive' as const } },
-                    { email: { contains: search, mode: 'insensitive' as const } },
-                    { company: { contains: search, mode: 'insensitive' as const } },
-                ]
-            })
-        }
-
-        const [leads, total, stats] = await Promise.all([
-            prisma.lead.findMany({
-                where,
-                orderBy: { createdAt: 'desc' },
-                skip: (page - 1) * pageSize,
-                take: pageSize,
-                include: {
-                    _count: {
-                        select: {
-                            emailSends: true,
-                            calls: true,
-                        }
-                    }
-                }
-            }),
-            prisma.lead.count({ where }),
-            getLeadStats(workspaceId),
-        ])
-
-        return {
-            success: true,
-            data: {
-                leads: leads as unknown as LeadWithRelations[],
-                total,
-                stats
-            }
-        }
+        const data = await getLeadsService(auth.ctx.prisma, parsedParams.data)
+        return success(data)
     } catch (error) {
         console.error('Erro ao buscar leads:', error)
-        return { success: false, error: 'Erro ao buscar leads' }
+        return failure('Erro ao buscar leads')
     }
 }
 
 export async function getLeadById(id: string): Promise<ActionResult<LeadWithRelations>> {
+    const parsedId = idSchema.safeParse(id)
+    if (!parsedId.success) {
+        return failure('Lead inválido')
+    }
+
+    const auth = await createServiceContext()
+    if (!auth.ok) {
+        return failure(auth.error)
+    }
+
     try {
-        const parsedId = idSchema.safeParse(id)
-        if (!parsedId.success) {
-            return { success: false, error: 'Lead invÃ¡lido' }
-        }
-
-        const user = await getAuthenticatedUser()
-        if (!user) {
-            return { success: false, error: 'Não autenticado' }
-        }
-
-        const lead = await prisma.lead.findFirst({
-            where: {
-                id: parsedId.data,
-                workspace: { userId: user.id }
-            }
-        })
-
+        const lead = await getLeadByIdService(auth.ctx.prisma, auth.ctx, parsedId.data)
         if (!lead) {
-            return { success: false, error: 'Lead não encontrado' }
+            return failure('Lead não encontrado')
         }
-
-        return { success: true, data: lead as unknown as LeadWithRelations }
+        return success(lead)
     } catch (error) {
         console.error('Erro ao buscar lead:', error)
-        return { success: false, error: 'Erro ao buscar lead' }
+        return failure('Erro ao buscar lead')
     }
-}
-
-async function getLeadStats(workspaceId: string): Promise<LeadStats> {
-    const [total, newCount, interested, converted] = await Promise.all([
-        prisma.lead.count({ where: { workspaceId } }),
-        prisma.lead.count({ where: { workspaceId, status: 'NEW' } }),
-        prisma.lead.count({ where: { workspaceId, status: 'INTERESTED' } }),
-        prisma.lead.count({ where: { workspaceId, status: 'CONVERTED' } }),
-    ])
-
-    return { total, new: newCount, interested, converted }
 }
 
 export async function getLeadEmailSends(leadId: string): Promise<{
@@ -282,32 +112,12 @@ export async function getLeadEmailSends(leadId: string): Promise<{
     openedAt: string | null
     clickedAt: string | null
 }[]> {
-    const user = await getAuthenticatedUser()
-    if (!user) return []
+    const auth = await createServiceContext()
+    if (!auth.ok) {
+        return []
+    }
 
-    const emailSends = await prisma.emailSend.findMany({
-        where: {
-            leadId,
-            campaign: {
-                workspace: { userId: user.id },
-            },
-        },
-        include: {
-            campaign: {
-                select: { name: true },
-            },
-        },
-        orderBy: { createdAt: "desc" },
-    })
-
-    return emailSends.map((send) => ({
-        id: send.id,
-        campaignName: send.campaign.name,
-        status: send.status,
-        sentAt: send.sentAt?.toISOString() ?? null,
-        openedAt: send.openedAt?.toISOString() ?? null,
-        clickedAt: send.clickedAt?.toISOString() ?? null,
-    }))
+    return getLeadEmailSendsService(auth.ctx.prisma, auth.ctx, leadId)
 }
 
 // ============================================================
@@ -315,43 +125,26 @@ export async function getLeadEmailSends(leadId: string): Promise<{
 // ============================================================
 
 export async function createLead(data: CreateLeadData): Promise<ActionResult<LeadWithRelations>> {
+    const validation = createLeadSchema.safeParse(data)
+    if (!validation.success) {
+        return failure(getFirstZodError(validation.error))
+    }
+
+    const auth = await createWorkspaceServiceContext(validation.data.workspaceId)
+    if (!auth.ok) {
+        return failure(auth.error)
+    }
+
     try {
-        const validation = createLeadSchema.safeParse(data)
-        if (!validation.success) {
-            return { success: false, error: getFirstZodError(validation.error) }
-        }
-
-        try {
-            await requireWorkspaceAccess(validation.data.workspaceId)
-        } catch {
-            return { success: false, error: 'Workspace não encontrado' }
-        }
-
-        const existingLead = await prisma.lead.findUnique({
-            where: {
-                email_workspaceId: {
-                    email: data.email,
-                    workspaceId: data.workspaceId
-                }
-            }
-        })
-
-        if (existingLead) {
-            return { success: false, error: 'Já existe um lead com este email' }
-        }
-
-        const sanitizedData = sanitizeLeadData(validation.data)
-
-        const lead = await prisma.lead.create({
-            data: sanitizedData as Parameters<typeof prisma.lead.create>[0]['data']
-        })
-
+        const lead = await createLeadService(auth.ctx.prisma, validation.data)
         revalidatePath('/leads')
-
-        return { success: true, data: lead as unknown as LeadWithRelations }
+        return success(lead)
     } catch (error) {
+        if (error instanceof Error && error.message === 'DUPLICATE_EMAIL') {
+            return failure('Já existe um lead com este email')
+        }
         console.error('Erro ao criar lead:', error)
-        return { success: false, error: 'Erro ao criar lead' }
+        return failure('Erro ao criar lead')
     }
 }
 
@@ -359,90 +152,56 @@ export async function updateLead(
     id: string,
     data: UpdateLeadData
 ): Promise<ActionResult<LeadWithRelations>> {
+    const validation = updateLeadSchema.safeParse(data)
+    if (!validation.success) {
+        return failure(getFirstZodError(validation.error))
+    }
+
+    const auth = await createServiceContext()
+    if (!auth.ok) {
+        return failure(auth.error)
+    }
+
     try {
-        const user = await getAuthenticatedUser()
-        if (!user) {
-            return { success: false, error: 'Não autenticado' }
-        }
-
-        const validation = updateLeadSchema.safeParse(data)
-        if (!validation.success) {
-            return { success: false, error: getFirstZodError(validation.error) }
-        }
-
-        const existingLead = await prisma.lead.findFirst({
-            where: {
-                id,
-                workspace: { userId: user.id }
-            }
-        })
-
-        if (!existingLead) {
-            return { success: false, error: 'Lead não encontrado' }
-        }
-
-        if (data.email && data.email !== existingLead.email) {
-            const duplicateEmail = await prisma.lead.findFirst({
-                where: {
-                    email: data.email,
-                    workspaceId: existingLead.workspaceId,
-                    NOT: { id }
-                }
-            })
-
-            if (duplicateEmail) {
-                return { success: false, error: 'Já existe um lead com este email' }
-            }
-        }
-
-        const sanitizedData = sanitizeLeadData(validation.data)
-
-        const lead = await prisma.lead.update({
-            where: { id },
-            data: sanitizedData as Parameters<typeof prisma.lead.update>[0]['data']
-        })
-
+        const lead = await updateLeadService(auth.ctx.prisma, auth.ctx, id, validation.data)
         revalidatePath('/leads')
         revalidatePath(`/leads/${id}`)
-
-        return { success: true, data: lead as unknown as LeadWithRelations }
+        return success(lead)
     } catch (error) {
+        if (error instanceof Error) {
+            if (error.message === 'LEAD_NOT_FOUND') {
+                return failure('Lead não encontrado')
+            }
+            if (error.message === 'DUPLICATE_EMAIL') {
+                return failure('Já existe um lead com este email')
+            }
+        }
         console.error('Erro ao atualizar lead:', error)
-        return { success: false, error: 'Erro ao atualizar lead' }
+        return failure('Erro ao atualizar lead')
     }
 }
 
 export async function deleteLead(id: string): Promise<ActionResult> {
+    const parsedId = idSchema.safeParse(id)
+    if (!parsedId.success) {
+        return failure('Lead inválido')
+    }
+
+    const auth = await createServiceContext()
+    if (!auth.ok) {
+        return failure(auth.error)
+    }
+
     try {
-        const parsedId = idSchema.safeParse(id)
-        if (!parsedId.success) {
-            return { success: false, error: 'Lead invÃ¡lido' }
-        }
-
-        const user = await getAuthenticatedUser()
-        if (!user) {
-            return { success: false, error: 'Não autenticado' }
-        }
-
-        const lead = await prisma.lead.findFirst({
-            where: {
-                id: parsedId.data,
-                workspace: { userId: user.id }
-            }
-        })
-
-        if (!lead) {
-            return { success: false, error: 'Lead não encontrado' }
-        }
-
-        await prisma.lead.delete({ where: { id: parsedId.data } })
-
+        await deleteLeadService(auth.ctx.prisma, auth.ctx, parsedId.data)
         revalidatePath('/leads')
-
-        return { success: true }
+        return success(undefined)
     } catch (error) {
+        if (error instanceof Error && error.message === 'LEAD_NOT_FOUND') {
+            return failure('Lead não encontrado')
+        }
         console.error('Erro ao excluir lead:', error)
-        return { success: false, error: 'Erro ao excluir lead' }
+        return failure('Erro ao excluir lead')
     }
 }
 
@@ -452,188 +211,48 @@ export async function updateLeadStatus(
 ): Promise<ActionResult<LeadWithRelations>> {
     const parsedStatus = z.nativeEnum(LeadStatusEnum).safeParse(status)
     if (!parsedStatus.success) {
-        return { success: false, error: 'Status invÃ¡lido' }
+        return failure('Status inválido')
     }
 
     return updateLead(id, { status })
 }
 
 export async function deleteMultipleLeads(ids: string[]): Promise<ActionResult<{ deleted: number }>> {
+    const parsedIds = idListSchema.safeParse(ids)
+    if (!parsedIds.success) {
+        return failure(getFirstZodError(parsedIds.error))
+    }
+
+    const auth = await createServiceContext()
+    if (!auth.ok) {
+        return failure(auth.error)
+    }
+
     try {
-        const user = await getAuthenticatedUser()
-        if (!user) {
-            return { success: false, error: 'Não autenticado' }
-        }
-
-        const parsedIds = idListSchema.safeParse(ids)
-        if (!parsedIds.success) {
-            return { success: false, error: getFirstZodError(parsedIds.error) }
-        }
-
-        const result = await prisma.lead.deleteMany({
-            where: {
-                id: { in: parsedIds.data },
-                workspace: { userId: user.id }
-            }
-        })
-
+        const count = await deleteMultipleLeadsService(auth.ctx.prisma, auth.ctx, parsedIds.data)
         revalidatePath('/leads')
-
-        return { success: true, data: { deleted: result.count } }
+        return success({ deleted: count })
     } catch (error) {
         console.error('Erro ao excluir leads:', error)
-        return { success: false, error: 'Erro ao excluir leads' }
+        return failure('Erro ao excluir leads')
     }
 }
-
-// ============================================================
-// IMPORTAÇÃO EM LOTE
-// ============================================================
 
 export async function importLeads(
     workspaceId: string,
     leads: ImportLeadData[]
 ): Promise<ActionResult<ImportResult>> {
+    const auth = await createWorkspaceServiceContext(workspaceId)
+    if (!auth.ok) {
+        return failure(auth.error)
+    }
+
     try {
-        const parsedImport = importLeadsSchema.safeParse({ workspaceId, leads })
-        if (!parsedImport.success) {
-            return { success: false, error: getFirstZodError(parsedImport.error) }
-        }
-
-        const validatedWorkspaceId = parsedImport.data.workspaceId
-        const validatedLeads = parsedImport.data.leads
-
-        try {
-            await requireWorkspaceAccess(validatedWorkspaceId)
-        } catch {
-            return { success: false, error: 'Workspace não encontrado' }
-        }
-
-        const importBatch = generateImportBatchId()
-        const importedAt = new Date()
-
-        let imported = 0
-        let duplicates = 0
-        let errors = 0
-        const errorDetails: ImportResult['errorDetails'] = []
-
-        const existingEmails = await prisma.lead.findMany({
-            where: { workspaceId: validatedWorkspaceId },
-            select: { email: true }
-        })
-        const existingEmailSet = new Set(existingEmails.map(e => e.email.toLowerCase()))
-
-        const leadsToCreate: Array<{
-            firstName: string
-            lastName: string | null
-            email: string
-            phone: string | null
-            mobile: string | null
-            company: string | null
-            jobTitle: string | null
-            website: string | null
-            taxId: string | null
-            industry: string | null
-            companySize: CompanySize | null
-            address: string | null
-            city: string | null
-            state: string | null
-            postalCode: string | null
-            country: string | null
-            notes: string | null
-            status: 'NEW'
-            source: 'IMPORT'
-            workspaceId: string
-            importBatch: string
-            importedAt: Date
-        }> = []
-
-        validatedLeads.forEach((lead, index) => {
-            const email = lead.email?.trim().toLowerCase()
-
-            if (!email) {
-                errors++
-                errorDetails.push({
-                    row: index + 1,
-                    email: lead.email || '(vazio)',
-                    reason: 'Email é obrigatório'
-                })
-                return
-            }
-
-            if (!lead.firstName?.trim()) {
-                errors++
-                errorDetails.push({
-                    row: index + 1,
-                    email,
-                    reason: 'Nome é obrigatório'
-                })
-                return
-            }
-
-            if (existingEmailSet.has(email)) {
-                duplicates++
-                return
-            }
-
-            existingEmailSet.add(email)
-
-            let validCompanySize: CompanySize | null = null
-            if (lead.companySize && isValidCompanySize(lead.companySize)) {
-                validCompanySize = lead.companySize.toUpperCase() as CompanySize
-            }
-
-            leadsToCreate.push({
-                firstName: lead.firstName.trim(),
-                lastName: lead.lastName?.trim() || null,
-                email,
-                phone: lead.phone?.trim() || null,
-                mobile: lead.mobile?.trim() || null,
-                company: lead.company?.trim() || null,
-                jobTitle: lead.jobTitle?.trim() || null,
-                website: lead.website?.trim() || null,
-                taxId: lead.taxId?.trim() || null,
-                industry: lead.industry?.trim() || null,
-                companySize: validCompanySize,
-                address: lead.address?.trim() || null,
-                city: lead.city?.trim() || null,
-                state: lead.state?.trim() || null,
-                postalCode: lead.postalCode?.trim() || null,
-                country: lead.country?.trim()?.toUpperCase()?.substring(0, 2) || null,
-                notes: lead.notes?.trim() || null,
-                status: 'NEW',
-                source: 'IMPORT',
-                workspaceId: validatedWorkspaceId,
-                importBatch,
-                importedAt,
-            })
-        })
-
-        const BATCH_SIZE = 100
-        for (let i = 0; i < leadsToCreate.length; i += BATCH_SIZE) {
-            const batch = leadsToCreate.slice(i, i + BATCH_SIZE)
-            await prisma.lead.createMany({
-                data: batch,
-                skipDuplicates: true,
-            })
-        }
-
-        imported = leadsToCreate.length
-
+        const result = await importLeadsService(auth.ctx.prisma, workspaceId, leads)
         revalidatePath('/leads')
-
-        return {
-            success: true,
-            data: {
-                success: true,
-                imported,
-                duplicates,
-                errors,
-                errorDetails: errorDetails.slice(0, 50),
-            }
-        }
+        return success(result)
     } catch (error) {
         console.error('Erro ao importar leads:', error)
-        return { success: false, error: 'Erro ao importar leads' }
+        return failure('Erro ao importar leads')
     }
 }

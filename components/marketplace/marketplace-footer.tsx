@@ -22,7 +22,7 @@ export function MarketplaceFooter() {
                         <ul className="space-y-2 text-sm text-muted-foreground">
                             <li><Link href="/catalog" className="hover:text-foreground">Catálogo</Link></li>
                             <li><Link href="/#como-funciona" className="hover:text-foreground">Como funciona</Link></li>
-                            <li><Link href="/pricing" className="hover:text-foreground">Planos CRM</Link></li>
+                            <li><Link href="/crm/pricing" className="hover:text-foreground">Planos CRM</Link></li>
                         </ul>
                     </div>
 
@@ -31,14 +31,16 @@ export function MarketplaceFooter() {
                         <ul className="space-y-2 text-sm text-muted-foreground">
                             <li><Link href="/my-purchases" className="hover:text-foreground">Minhas compras</Link></li>
                             <li><Link href="/dashboard" className="hover:text-foreground">Acessar CRM</Link></li>
+                            <li><Link href="/sign-in" className="hover:text-foreground">Entrar</Link></li>
                         </ul>
                     </div>
 
                     <div>
                         <h4 className="mb-4 font-semibold">Legal</h4>
                         <ul className="space-y-2 text-sm text-muted-foreground">
-                            <li><Link href="#" className="hover:text-foreground">Termos de uso</Link></li>
-                            <li><Link href="#" className="hover:text-foreground">Privacidade</Link></li>
+                            <li><Link href="/terms" className="hover:text-foreground">Termos de uso</Link></li>
+                            <li><Link href="/privacy" className="hover:text-foreground">Privacidade</Link></li>
+                            <li><Link href="/contact" className="hover:text-foreground">Contato</Link></li>
                         </ul>
                     </div>
                 </div>
@@ -50,3 +52,4 @@ export function MarketplaceFooter() {
         </footer>
     )
 }
+

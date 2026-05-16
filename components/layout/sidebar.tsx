@@ -26,16 +26,19 @@ const mainMenuItems = [
         title: "Painel",
         href: "/dashboard",
         icon: LayoutDashboard,
+        shortcut: "G D",
     },
     {
         title: "Leads",
         href: "/leads",
         icon: Users,
+        shortcut: "G L",
     },
     {
         title: "Campanhas",
         href: "/campaigns",
         icon: Mail,
+        shortcut: "G C",
     },
     {
         title: "Modelos de e-mail",
@@ -104,7 +107,7 @@ export function Sidebar() {
                                     key={item.href}
                                     href={item.href}
                                     className={cn(
-                                        "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                                        "group flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
                                         isActive
                                             ? "bg-sidebar-primary text-sidebar-primary-foreground"
                                             : "text-sidebar-foreground/72 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
@@ -112,6 +115,11 @@ export function Sidebar() {
                                 >
                                     <item.icon className="h-4 w-4" />
                                     {item.title}
+                                    {item.shortcut && (
+                                        <kbd className="ml-auto hidden text-[10px] text-sidebar-foreground/40 group-hover:inline-flex md:inline-flex items-center rounded border border-sidebar-border px-1.5 py-0.5 font-mono">
+                                            {item.shortcut}
+                                        </kbd>
+                                    )}
                                 </Link>
                             )
                         })}

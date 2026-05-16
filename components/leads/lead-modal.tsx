@@ -243,7 +243,11 @@ export function LeadModal({
                 : await createLead({ ...values, workspaceId: activeWorkspace.id })
 
             if (result.success) {
-                toast.success(isEditing ? "Lead atualizado!" : "Lead criado!")
+                if (!isEditing && result.data) {
+                    toast.success("🎉 Seu primeiro lead foi cadastrado! Agora crie uma campanha para começar a prospectar.")
+                } else {
+                    toast.success(isEditing ? "Lead atualizado!" : "Lead criado!")
+                }
                 onOpenChange(false)
                 onSuccess?.()
             } else {
@@ -281,6 +285,17 @@ export function LeadModal({
         }
     }
 
+    const handleFormSubmit = form.handleSubmit(onSubmit, onInvalid)
+
+    useEffect(() => {
+        const handler = () => {
+            form.handleSubmit(onSubmit, onInvalid)()
+        }
+        window.addEventListener("submit-active-form", handler)
+        return () => window.removeEventListener("submit-active-form", handler)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [onSubmit, onInvalid, activeWorkspace, isEditing, lead?.id])
+
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-[700px] max-h-[90vh] flex flex-col">
@@ -298,7 +313,7 @@ export function LeadModal({
 
                 <Form {...form}>
                     <form
-                        onSubmit={form.handleSubmit(onSubmit, onInvalid)}
+                        onSubmit={handleFormSubmit}
                         className="flex flex-col flex-1 overflow-hidden"
                     >
                         {/* Alerta de erros */}

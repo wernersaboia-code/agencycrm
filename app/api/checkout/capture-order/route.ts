@@ -7,6 +7,9 @@ import { generatePurchaseAccessToken, generateMagicLinkUrl } from "@/lib/auth/ma
 import { sendPurchaseConfirmationEmail } from "@/lib/email/purchase"
 import { z } from "zod"
 import { getAuthenticatedActiveDbUser } from "@/lib/auth"
+import { rateLimit, getClientIp } from "@/lib/rate-limit"
+
+const rateLimiter = rateLimit(500)
 
 const captureOrderSchema = z.object({
     orderId: z.string().min(1),
@@ -44,10 +47,12 @@ function getCapturedAmount(captureResult: unknown): { value: string; currency: s
 }
 
 export async function POST(request: NextRequest) {
-    let orderId: string | undefined
-    let sessionUserId: string | undefined
+    let sessionUserId: string | null = null
+    let orderId: string | null = null
 
     try {
+        await rateLimiter.check(getClientIp(request), 10, 60_000) // 10 requests per minute
+
         const user = await getAuthenticatedActiveDbUser()
 
         if (!user) {
@@ -160,7 +165,7 @@ export async function POST(request: NextRequest) {
         console.error("Error capturing order:", error)
 
         // Atualizar status para failed se houver erro
-        if (orderId) {
+        if (orderId && sessionUserId) {
             await prisma.purchase.updateMany({
                 where: {
                     paypalOrderId: orderId,

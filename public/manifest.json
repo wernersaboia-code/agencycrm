@@ -1,0 +1,12 @@
+{
+  "name": "LeadStore & AgencyCRM",
+  "short_name": "LeadStore",
+  "description": "Leads qualificados de comércio exterior e CRM para prospecção B2B",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F5F7F8",
+  "theme_color": "#164A45",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

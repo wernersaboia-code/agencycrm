@@ -5,6 +5,8 @@ import { Sidebar } from "@/components/layout/sidebar"
 import { Header } from "@/components/layout/header"
 import { WorkspaceProvider } from "@/contexts/workspace-context"
 import { ActiveCallWrapper } from "@/components/calls/ActiveCallWrapper"
+import { CommandPalette } from "@/components/layout/command-palette"
+import { CrmHotkeys } from "@/components/layout/CrmHotkeys"
 import { TrialBanner } from "@/components/crm/trial-banner"
 import { prisma } from "@/lib/prisma"
 import { getAuthenticatedActiveDbUser } from "@/lib/auth"
@@ -55,13 +57,15 @@ export default async function DashboardLayout({
                     <Sidebar />
                     <div className="flex-1 flex flex-col overflow-hidden">
                         <Header user={user} />
-                        <main className="flex-1 overflow-y-auto bg-background p-5 md:p-6">
+                        <main id="main-content" className="flex-1 overflow-y-auto bg-background p-5 md:p-6">
                             {children}
                         </main>
                     </div>
                 </div>
             </div>
+            <CrmHotkeys />
             <ActiveCallWrapper />
+            <CommandPalette />
         </WorkspaceProvider>
     )
 }

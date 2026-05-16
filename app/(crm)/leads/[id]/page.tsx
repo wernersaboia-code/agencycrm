@@ -4,6 +4,7 @@ import { notFound } from "next/navigation"
 import { getLeadById, getLeadEmailSends } from "@/actions/leads"
 import { getCallsByLead } from "@/actions/calls"
 import { LeadDetailClient } from "./lead-detail-client"
+import { Breadcrumbs } from "@/components/ui/breadcrumb"
 
 // ============================================
 // TYPES
@@ -33,6 +34,8 @@ export default async function LeadDetailPage({ params }: LeadDetailPageProps) {
         getLeadEmailSends(id),
     ])
 
+    const fullName = `${lead.firstName} ${lead.lastName || ""}`.trim()
+
     // Serializa as datas para o client component
     const serializedLead = {
         id: lead.id,
@@ -61,10 +64,16 @@ export default async function LeadDetailPage({ params }: LeadDetailPageProps) {
     }
 
     return (
-        <LeadDetailClient
-            lead={serializedLead}
-            initialCalls={calls}
-            initialEmailSends={emailSends}
-        />
+        <div className="container mx-auto py-6 space-y-4">
+            <Breadcrumbs items={[
+                { label: "Leads", href: "/leads" },
+                { label: fullName }
+            ]} />
+            <LeadDetailClient
+                lead={serializedLead}
+                initialCalls={calls}
+                initialEmailSends={emailSends}
+            />
+        </div>
     )
 }

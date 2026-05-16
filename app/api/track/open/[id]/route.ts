@@ -8,6 +8,9 @@ import {
     canUpgradeStatus,
     TRACKING_LEAD_STATUS_MAP,
 } from '@/lib/constants/tracking.constants'
+import { rateLimit, getClientIp } from "@/lib/rate-limit"
+
+const rateLimiter = rateLimit(1000)
 
 // ============================================
 // TYPES
@@ -36,6 +39,12 @@ export async function GET(
     request: NextRequest,
     { params }: RouteParams
 ): Promise<NextResponse> {
+    try {
+        await rateLimiter.check(getClientIp(request), 100, 60_000) // 100 requests per minute
+    } catch {
+        return createPixelResponse()
+    }
+
     const { id: emailSendId } = await params
 
     console.log(`[Tracking] Processing open for: ${emailSendId}`)

@@ -61,7 +61,7 @@ import type { TemplateWithStats } from "@/actions/templates"
 import { getCategoryConfig } from "@/lib/constants/template.constants"
 import { LEAD_STATUS_CONFIG } from "@/lib/constants/lead.constants"
 import { replaceVariables, PREVIEW_LEAD } from "@/lib/constants/template.constants"
-import { sanitizeHtmlForPreview } from "@/lib/utils/html-sanitizer"
+import { sanitizeHtmlForPreview } from "@/lib/utils/html-sanitizer.client"
 import { cn } from "@/lib/utils"
 import type { SequenceStep } from "@/types/campaign.types"
 

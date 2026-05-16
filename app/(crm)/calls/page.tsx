@@ -7,6 +7,7 @@ import { getActiveOrFirstWorkspaceId } from "@/lib/workspace-selection"
 import { getCalls, getCallStats, getPendingCallbacks } from "@/actions/calls"
 import { CallsClient } from "./calls-client"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Breadcrumbs } from "@/components/ui/breadcrumb"
 
 export const metadata = {
     title: "Ligações | AgencyCRM",
@@ -37,12 +38,17 @@ async function CallsContent() {
     ])
 
     return (
-        <CallsClient
-            initialCalls={calls}
-            initialStats={stats}
-            initialCallbacks={callbacks}
-            workspaceId={workspaceId}
-        />
+        <>
+            <Breadcrumbs items={[
+                { label: "Ligações" }
+            ]} />
+            <CallsClient
+                initialCalls={calls}
+                initialStats={stats}
+                initialCallbacks={callbacks}
+                workspaceId={workspaceId}
+            />
+        </>
     )
 }
 

@@ -12,8 +12,11 @@ import {
     type UpdateCampaignData,
 } from "@/lib/validations/campaign.validations"
 import { CampaignStatus, LeadStatus, type Prisma } from "@prisma/client"
-import { sendEmail, replaceEmailVariables } from "@/lib/email"
-import { decryptSecret } from "@/lib/secrets"
+
+import {
+    sendSingleCampaign,
+    sendSequenceFirstStep,
+} from "@/lib/services/campaigns.service"
 
 // ============================================================
 // TIPOS
@@ -522,21 +525,6 @@ export async function sendCampaign(id: string): Promise<ActionResult> {
             return { success: false, error: "Campanha não pode ser enviada neste status" }
         }
 
-        // Preparar configuração SMTP
-        const smtpPass = decryptSecret(campaign.workspace.smtpPass)
-        const smtpConfig = campaign.workspace.smtpUser && smtpPass
-            ? {
-                provider: campaign.workspace.smtpProvider,
-                host: campaign.workspace.smtpHost,
-                port: campaign.workspace.smtpPort,
-                user: campaign.workspace.smtpUser,
-                pass: smtpPass,
-                secure: campaign.workspace.smtpSecure,
-                senderName: campaign.workspace.senderName,
-                senderEmail: campaign.workspace.senderEmail,
-            }
-            : null
-
         // ============================================================
         // CAMPANHA SINGLE
         // ============================================================
@@ -558,78 +546,14 @@ export async function sendCampaign(id: string): Promise<ActionResult> {
                 data: { status: "SENDING" },
             })
 
-            let totalSent = 0
-            let totalBounced = 0
-
-            for (const emailSend of campaign.emailSends) {
-                const lead = emailSend.lead
-
-                const leadData = {
-                    firstName: lead.firstName,
-                    lastName: lead.lastName || "",
-                    fullName: [lead.firstName, lead.lastName].filter(Boolean).join(" "),
-                    email: lead.email,
-                    phone: lead.phone || "",
-                    company: lead.company || "",
-                    jobTitle: lead.jobTitle || "",
-                    industry: lead.industry || "",
-                    website: lead.website || "",
-                    city: lead.city || "",
-                    state: lead.state || "",
-                    country: lead.country || "",
-                    meuNome: campaign.workspace.senderName || "",
-                    minhaEmpresa: campaign.workspace.name || "",
-                    meuEmail: campaign.workspace.senderEmail || campaign.workspace.smtpUser || "",
-                }
-
-                const personalizedSubject = replaceEmailVariables(subject, leadData)
-                const personalizedBody = replaceEmailVariables(body, leadData)
-
-                const result = await sendEmail(
-                    {
-                        to: lead.email,
-                        subject: personalizedSubject,
-                        html: personalizedBody,
-                        tags: [
-                            { name: "campaign_id", value: campaign.id },
-                            { name: "lead_id", value: lead.id },
-                        ],
-                        emailSendId: emailSend.id,
-                    },
-                    smtpConfig
-                )
-
-                if (result.success) {
-                    await prisma.emailSend.update({
-                        where: { id: emailSend.id },
-                        data: {
-                            status: "SENT",
-                            sentAt: new Date(),
-                            resendId: result.id,
-                        },
-                    })
-                    totalSent++
-
-                    if (lead.status === "NEW") {
-                        await prisma.lead.update({
-                            where: { id: lead.id },
-                            data: { status: "CONTACTED" },
-                        })
-                    }
-                } else {
-                    await prisma.emailSend.update({
-                        where: { id: emailSend.id },
-                        data: {
-                            status: "BOUNCED",
-                            bouncedAt: new Date(),
-                            bounceReason: result.error,
-                        },
-                    })
-                    totalBounced++
-                }
-
-                await new Promise((resolve) => setTimeout(resolve, 100))
-            }
+            const sendResult = await sendSingleCampaign(prisma, {
+                id: campaign.id,
+                subject,
+                body,
+                template: campaign.template,
+                workspace: campaign.workspace,
+                emailSends: campaign.emailSends,
+            })
 
             // Atualizar campanha - SENT para single
             await prisma.campaign.update({
@@ -637,8 +561,8 @@ export async function sendCampaign(id: string): Promise<ActionResult> {
                 data: {
                     status: "SENT",
                     sentAt: new Date(),
-                    totalSent,
-                    totalBounced,
+                    totalSent: sendResult.totalSent,
+                    totalBounced: sendResult.totalBounced,
                 },
             })
 
@@ -661,121 +585,12 @@ export async function sendCampaign(id: string): Promise<ActionResult> {
                 data: { status: "SENDING" },
             })
 
-            // Ativar todos os enrollments
-            await prisma.campaignEnrollment.updateMany({
-                where: { campaignId: id },
-                data: { status: "active" },
+            const sendResult = await sendSequenceFirstStep(prisma, {
+                id: campaign.id,
+                workspace: campaign.workspace,
+                steps: campaign.steps,
+                enrollments: campaign.enrollments,
             })
-
-            let totalSent = 0
-            let totalBounced = 0
-
-            // Enviar primeiro step para todos os leads
-            for (const enrollment of campaign.enrollments) {
-                const lead = enrollment.lead
-
-                const leadData = {
-                    firstName: lead.firstName,
-                    lastName: lead.lastName || "",
-                    fullName: [lead.firstName, lead.lastName].filter(Boolean).join(" "),
-                    email: lead.email,
-                    phone: lead.phone || "",
-                    company: lead.company || "",
-                    jobTitle: lead.jobTitle || "",
-                    industry: lead.industry || "",
-                    website: lead.website || "",
-                    city: lead.city || "",
-                    state: lead.state || "",
-                    country: lead.country || "",
-                    meuNome: campaign.workspace.senderName || "",
-                    minhaEmpresa: campaign.workspace.name || "",
-                    meuEmail: campaign.workspace.senderEmail || campaign.workspace.smtpUser || "",
-                }
-
-                const personalizedSubject = replaceEmailVariables(firstStep.subject, leadData)
-                const personalizedBody = replaceEmailVariables(firstStep.content, leadData)
-
-                // Criar registro de envio
-                console.log('[Campaign] Criando EmailSend para lead:', lead.id)
-                const emailSend = await prisma.emailSend.create({
-                    data: {
-                        campaignId: campaign.id,
-                        leadId: lead.id,
-                        stepId: firstStep.id,
-                        stepNumber: 1,
-                        status: "PENDING",
-                    },
-                })
-                console.log('[Campaign] EmailSend criado:', emailSend.id)
-
-                const result = await sendEmail(
-                    {
-                        to: lead.email,
-                        subject: personalizedSubject,
-                        html: personalizedBody,
-                        tags: [
-                            { name: "campaign_id", value: campaign.id },
-                            { name: "lead_id", value: lead.id },
-                            { name: "step_id", value: firstStep.id },
-                        ],
-                        emailSendId: emailSend.id,
-                    },
-                    smtpConfig
-                )
-
-                if (result.success) {
-                    await prisma.emailSend.update({
-                        where: { id: emailSend.id },
-                        data: {
-                            status: "SENT",
-                            sentAt: new Date(),
-                            resendId: result.id,
-                        },
-                    })
-                    totalSent++
-
-                    // Calcular próximo envio
-                    const nextStep = campaign.steps.find((s) => s.order === 2)
-                    if (nextStep) {
-                        const nextSendAt = new Date()
-                        nextSendAt.setDate(nextSendAt.getDate() + nextStep.delayDays)
-                        nextSendAt.setHours(nextSendAt.getHours() + nextStep.delayHours)
-
-                        await prisma.campaignEnrollment.update({
-                            where: { id: enrollment.id },
-                            data: { nextSendAt },
-                        })
-                    } else {
-                        // Só tinha 1 step - completar
-                        await prisma.campaignEnrollment.update({
-                            where: { id: enrollment.id },
-                            data: {
-                                status: "completed",
-                                completedAt: new Date(),
-                            },
-                        })
-                    }
-
-                    if (lead.status === "NEW") {
-                        await prisma.lead.update({
-                            where: { id: lead.id },
-                            data: { status: "CONTACTED" },
-                        })
-                    }
-                } else {
-                    await prisma.emailSend.update({
-                        where: { id: emailSend.id },
-                        data: {
-                            status: "BOUNCED",
-                            bouncedAt: new Date(),
-                            bounceReason: result.error,
-                        },
-                    })
-                    totalBounced++
-                }
-
-                await new Promise((resolve) => setTimeout(resolve, 100))
-            }
 
             // Verificar se tem mais steps
             const hasMoreSteps = campaign.steps.length > 1
@@ -783,10 +598,9 @@ export async function sendCampaign(id: string): Promise<ActionResult> {
             await prisma.campaign.update({
                 where: { id },
                 data: {
-                    totalSent,
-                    totalBounced,
+                    totalSent: sendResult.totalSent,
+                    totalBounced: sendResult.totalBounced,
                     sentAt: new Date(),
-                    // Se tem mais steps, fica SENDING. Se só tinha 1, vai para SENT.
                     status: hasMoreSteps ? "SENDING" : "SENT",
                 },
             })

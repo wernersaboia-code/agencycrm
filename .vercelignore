@@ -27,8 +27,8 @@ node_modules
 .DS_Store
 Thumbs.db
 
-# Prisma (migrations locais)
-prisma/migrations
+# Prisma (seed scripts)
+prisma/seed-templates.ts
 
 # Testes
 coverage

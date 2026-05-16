@@ -67,7 +67,7 @@ import {
     getSubjectVariableToken,
     replaceVariables,
 } from "@/lib/constants/template.constants"
-import { sanitizeHtmlForPreview } from "@/lib/utils/html-sanitizer"
+import { sanitizeHtmlForPreview } from "@/lib/utils/html-sanitizer.client"
 
 // ============================================================
 // TIPOS

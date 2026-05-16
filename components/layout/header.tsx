@@ -64,7 +64,7 @@ export function Header({ user }: HeaderProps) {
                     </DropdownMenuContent>
                 </DropdownMenu>
 
-                <Avatar>
+                <Avatar aria-label={`Usuário ${user?.name || ""}`}>
                     <AvatarFallback>{initials}</AvatarFallback>
                 </Avatar>
             </div>

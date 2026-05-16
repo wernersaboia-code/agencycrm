@@ -258,11 +258,17 @@ export function CampaignDetailClient({
     }
 
     const handleConfirmSend = async (): Promise<void> => {
+        const isFirstSend = campaign.totalSent === 0
+
         setIsLoading(true)
         try {
             const result = await sendCampaign(campaign.id)
             if (result.success) {
-                toast.success("Campanha enviada com sucesso!")
+                if (isFirstSend) {
+                    toast.success("🎉 Sua primeira campanha foi enviada! Monitore as métricas e acompanhe os resultados.")
+                } else {
+                    toast.success("Campanha enviada com sucesso!")
+                }
                 setShowSendDialog(false)
                 await handleRefresh()
             } else {

@@ -7,6 +7,9 @@ import {
     getTrackingBaseUrl,
     TRACKING_LEAD_STATUS_MAP,
 } from '@/lib/constants/tracking.constants'
+import { rateLimit, getClientIp } from "@/lib/rate-limit"
+
+const rateLimiter = rateLimit(1000)
 
 // ============================================
 // TYPES
@@ -17,21 +20,29 @@ interface RouteParams {
 }
 
 function getSafeRedirectUrl(originalUrl: string | null): string {
+    const baseUrl = getTrackingBaseUrl()
     if (!originalUrl) {
-        return getTrackingBaseUrl()
+        return baseUrl
     }
 
     try {
         const parsedUrl = new URL(originalUrl)
+        const allowedHosts = [
+            new URL(baseUrl).hostname,
+            "localhost",
+        ]
 
-        if (parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:') {
+        if (
+            (parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:') &&
+            allowedHosts.includes(parsedUrl.hostname)
+        ) {
             return parsedUrl.toString()
         }
     } catch {
-        return getTrackingBaseUrl()
+        return baseUrl
     }
 
-    return getTrackingBaseUrl()
+    return baseUrl
 }
 
 // ============================================
@@ -42,6 +53,12 @@ export async function GET(
     request: NextRequest,
     { params }: RouteParams
 ): Promise<NextResponse> {
+    try {
+        await rateLimiter.check(getClientIp(request), 60, 60_000) // 60 clicks per minute
+    } catch {
+        return NextResponse.redirect(getTrackingBaseUrl())
+    }
+
     const { id: emailSendId } = await params
     const { searchParams } = new URL(request.url)
     const originalUrl = searchParams.get('url')
