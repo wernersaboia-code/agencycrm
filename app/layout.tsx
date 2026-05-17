@@ -1,22 +1,11 @@
 // app/layout.tsx
 import type { Metadata } from "next"
-import { Inter, JetBrains_Mono } from "next/font/google"
+import { GeistSans } from "geist/font/sans"
+import { GeistMono } from "geist/font/mono"
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import "./globals.css"
 import { Providers } from "./providers"
-
-const inter = Inter({
-    subsets: ["latin"],
-    variable: "--font-inter",
-    display: "swap",
-})
-
-const mono = JetBrains_Mono({
-    subsets: ["latin"],
-    variable: "--font-mono",
-    display: "swap",
-})
 
 export const metadata: Metadata = {
     metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://easyprospect.com"),
@@ -56,7 +45,7 @@ export default function RootLayout({
             <link rel="preconnect" href="https://flagcdn.com" />
             <link rel="preconnect" href="https://api.paypal.com" />
         </head>
-        <body className={`${inter.variable} ${mono.variable} font-sans antialiased`}>
+        <body className={`${GeistSans.variable} ${GeistMono.variable} font-sans antialiased`}>
         <a
             href="#main-content"
             className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground"
