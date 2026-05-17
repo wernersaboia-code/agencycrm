@@ -2,7 +2,6 @@ import Link from "next/link"
 import {
     ArrowRight,
     BadgeCheck,
-    Building2,
     CheckCircle2,
     CreditCard,
     Database,
@@ -41,7 +40,7 @@ export default async function LeadStoreHome() {
                 <div className="container mx-auto px-4 py-12 md:py-16 lg:py-20">
                     <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_460px] lg:items-center">
                         <div className="max-w-3xl">
-                            <Badge className="mb-5 rounded-md border-emerald-200 bg-emerald-50 px-3 py-1 text-emerald-700 hover:bg-emerald-50">
+                            <Badge className="mb-5 rounded-md border-indigo-200 bg-indigo-50 px-3 py-1 text-indigo-700 hover:bg-indigo-50">
                                 <ShieldCheck className="h-3.5 w-3.5" />
                                 Marketplace de leads B2B verificados
                             </Badge>
@@ -74,7 +73,7 @@ export default async function LeadStoreHome() {
                                 </div>
                                 <Button
                                     type="submit"
-                                    className="h-11 bg-emerald-600 px-5 text-white hover:bg-emerald-700"
+                                    className="h-11 bg-indigo-600 px-5 text-white hover:bg-indigo-700"
                                 >
                                     Buscar listas
                                     <ArrowRight className="h-4 w-4" />
@@ -102,51 +101,11 @@ export default async function LeadStoreHome() {
                 </div>
             </section>
 
-            <section className="bg-white py-8">
-                <div className="container mx-auto px-4">
-                    <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-5 md:p-6">
-                        <div className="mb-5">
-                            <p className="text-sm font-semibold uppercase tracking-wider text-emerald-700">
-                                Acessos diretos
-                            </p>
-                            <h2 className="mt-1 text-2xl font-bold tracking-tight text-gray-950">
-                                Escolha exatamente para onde entrar.
-                            </h2>
-                            <p className="mt-2 max-w-2xl text-sm leading-6 text-gray-600">
-                                Três caminhos separados para evitar confusão: CRM, compras e administração.
-                            </p>
-                        </div>
-
-                        <div className="grid gap-3 md:grid-cols-3">
-                            <DirectAccessCard
-                                icon={Building2}
-                                title="Entrar no CRM"
-                                description="Leads, campanhas, chamadas e relatórios."
-                                href="/sign-in?redirect=/dashboard"
-                            />
-                            <DirectAccessCard
-                                icon={ShoppingBag}
-                                title="Minhas compras"
-                                description="Pedidos, listas compradas e downloads."
-                                href="/my-purchases"
-                            />
-                            <DirectAccessCard
-                                icon={ShieldCheck}
-                                title="Área Administrativa"
-                                description="Usuários, listas, vendas e configurações."
-                                href="/super-admin"
-                                featured
-                            />
-                        </div>
-                    </div>
-                </div>
-            </section>
-
             <section className="bg-gray-50 py-14 md:py-18">
                 <div className="container mx-auto px-4">
                     <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                         <div>
-                            <p className="text-sm font-semibold uppercase tracking-wider text-emerald-700">
+                            <p className="text-sm font-semibold uppercase tracking-wider text-indigo-700">
                                 Catálogo em destaque
                             </p>
                             <h2 className="mt-2 text-3xl font-bold tracking-tight text-gray-950 md:text-4xl">
@@ -184,7 +143,7 @@ export default async function LeadStoreHome() {
             <section id="como-funciona" className="bg-white py-14 md:py-18">
                 <div className="container mx-auto px-4">
                     <div className="mx-auto max-w-2xl text-center">
-                        <p className="text-sm font-semibold uppercase tracking-wider text-emerald-700">
+                        <p className="text-sm font-semibold uppercase tracking-wider text-indigo-700">
                             Como funciona
                         </p>
                         <h2 className="mt-2 text-3xl font-bold tracking-tight text-gray-950 md:text-4xl">
@@ -215,7 +174,7 @@ export default async function LeadStoreHome() {
             <section className="border-y border-gray-200 bg-gray-950 text-white">
                 <div className="container mx-auto grid gap-8 px-4 py-14 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-center">
                     <div>
-                        <p className="text-sm font-semibold uppercase tracking-wider text-emerald-300">
+                        <p className="text-sm font-semibold uppercase tracking-wider text-indigo-300">
                             Confiança operacional
                         </p>
                         <h2 className="mt-2 text-3xl font-bold tracking-tight md:text-4xl">
@@ -238,7 +197,7 @@ export default async function LeadStoreHome() {
             <section className="bg-white py-14">
                 <div className="container mx-auto px-4">
                     <div className="mx-auto max-w-2xl text-center">
-                        <p className="text-sm font-semibold uppercase tracking-wider text-emerald-700">
+                        <p className="text-sm font-semibold uppercase tracking-wider text-indigo-700">
                             Números que importam
                         </p>
                         <h2 className="mt-2 text-3xl font-bold tracking-tight text-gray-950 md:text-4xl">
@@ -277,7 +236,7 @@ export default async function LeadStoreHome() {
                                 Explore o catálogo e encontre leads qualificados para sua próxima campanha internacional.
                             </p>
                         </div>
-                        <Button className="bg-emerald-600 text-white hover:bg-emerald-700" asChild>
+                        <Button className="bg-indigo-600 text-white hover:bg-indigo-700" asChild>
                             <Link href="/catalog">
                                 Explorar catálogo
                                 <ArrowRight className="h-4 w-4" />
@@ -333,17 +292,17 @@ function HeroCatalogPreview({
                     <div className="text-sm font-semibold text-gray-900">Prévia do catálogo</div>
                     <div className="text-xs text-gray-500">{total.toLocaleString("pt-BR")} listas disponíveis</div>
                 </div>
-                <Badge className="rounded-md bg-emerald-600 hover:bg-emerald-600">
+                <Badge className="rounded-md bg-indigo-600 hover:bg-indigo-600">
                     Atualizado
                 </Badge>
             </div>
 
             {list ? (
                 <div className="space-y-4">
-                    <div className="rounded-lg border border-emerald-200 bg-emerald-50/70 p-4">
+                    <div className="rounded-lg border border-indigo-200 bg-indigo-50/70 p-4">
                         <div className="mb-3 flex items-start justify-between gap-4">
                             <div>
-                                <Badge variant="outline" className="mb-2 rounded-md bg-white text-emerald-700">
+                                <Badge variant="outline" className="mb-2 rounded-md bg-white text-indigo-700">
                                     {list.category}
                                 </Badge>
                                 <h2 className="line-clamp-2 text-lg font-bold text-gray-950">
@@ -393,7 +352,7 @@ function FeaturedListCard({ list }: { list: HomeList }) {
     return (
         <Link
             href={`/list/${list.slug}`}
-            className="group flex h-full flex-col rounded-lg border border-gray-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md"
+            className="group flex h-full flex-col rounded-lg border border-gray-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-indigo-300 hover:shadow-md"
         >
             <div className="mb-4 flex items-start justify-between gap-4">
                 <Badge variant="outline" className="rounded-md text-gray-600">
@@ -402,7 +361,7 @@ function FeaturedListCard({ list }: { list: HomeList }) {
                 <CountryCluster countries={list.countries} />
             </div>
 
-            <h3 className="line-clamp-2 text-lg font-semibold text-gray-950 transition-colors group-hover:text-emerald-700">
+            <h3 className="line-clamp-2 text-lg font-semibold text-gray-950 transition-colors group-hover:text-indigo-700">
                 {list.name}
             </h3>
             <p className="mt-2 line-clamp-2 text-sm leading-6 text-gray-500">
@@ -439,7 +398,7 @@ function FeaturedListCard({ list }: { list: HomeList }) {
                         {formatCurrency(pricePerLead, list.currency)} por lead
                     </div>
                 </div>
-                <ArrowRight className="h-5 w-5 text-emerald-600 transition-transform group-hover:translate-x-1" />
+                <ArrowRight className="h-5 w-5 text-indigo-600 transition-transform group-hover:translate-x-1" />
             </div>
         </Link>
     )
@@ -454,7 +413,7 @@ function TrustNote({
 }) {
     return (
         <span className="inline-flex items-center gap-2">
-            <Icon className="h-4 w-4 text-emerald-600" />
+            <Icon className="h-4 w-4 text-indigo-600" />
             {text}
         </span>
     )
@@ -471,7 +430,7 @@ function MetricCard({
 }) {
     return (
         <div className="flex items-center gap-3 rounded-lg border border-gray-200 bg-white p-4">
-            <div className="flex h-10 w-10 items-center justify-center rounded-md bg-emerald-50 text-emerald-700">
+            <div className="flex h-10 w-10 items-center justify-center rounded-md bg-indigo-50 text-indigo-700">
                 <Icon className="h-5 w-5" />
             </div>
             <div>
@@ -500,13 +459,13 @@ function DirectAccessCard({
             href={href}
             className={`group rounded-lg border p-4 transition hover:-translate-y-0.5 hover:shadow-sm ${
                 featured
-                    ? "border-emerald-600 bg-emerald-600 text-white hover:bg-emerald-700"
-                    : "border-gray-200 bg-white text-gray-950 hover:border-emerald-300"
+                    ? "border-indigo-600 bg-indigo-600 text-white hover:bg-indigo-700"
+                    : "border-gray-200 bg-white text-gray-950 hover:border-indigo-300"
             }`}
         >
             <div
                 className={`mb-4 flex h-11 w-11 items-center justify-center rounded-md ${
-                    featured ? "bg-white/15 text-white" : "bg-emerald-50 text-emerald-700"
+                    featured ? "bg-white/15 text-white" : "bg-indigo-50 text-indigo-700"
                 }`}
             >
                 <Icon className="h-5 w-5" />
@@ -533,7 +492,7 @@ function ProcessStep({
 }) {
     return (
         <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-            <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-md bg-emerald-50 text-emerald-700">
+            <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-md bg-indigo-50 text-indigo-700">
                 <Icon className="h-5 w-5" />
             </div>
             <h3 className="text-xl font-semibold text-gray-950">{title}</h3>
@@ -551,7 +510,7 @@ function ConfidenceItem({
 }) {
     return (
         <div className="flex items-center gap-3 rounded-lg border border-white/10 bg-white/5 p-4">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-emerald-400/15 text-emerald-300">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-indigo-400/15 text-indigo-300">
                 <Icon className="h-5 w-5" />
             </div>
             <span className="text-sm font-medium text-gray-100">{text}</span>
@@ -610,7 +569,7 @@ function StatCard({
 }) {
     return (
         <div className="flex flex-col items-center gap-3 rounded-lg border border-gray-200 bg-white p-6 text-center shadow-sm">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-50 text-emerald-700">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-indigo-50 text-indigo-700">
                 <Icon className="h-6 w-6" />
             </div>
             <div>
