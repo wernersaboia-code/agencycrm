@@ -228,7 +228,7 @@ function ActionPlan({
                         className={cn(
                             "group flex min-h-[150px] flex-col justify-between rounded-lg border bg-card p-4 transition-colors hover:border-primary/25 hover:bg-secondary/50",
                             action.tone === "warning" && "border-amber-300 bg-amber-50/50 dark:border-amber-900 dark:bg-amber-950/20",
-                            action.tone === "success" && "border-emerald-300 bg-emerald-50/50 dark:border-emerald-900 dark:bg-emerald-950/20"
+                            action.tone === "success" && "border-indigo-300 bg-indigo-50/50 dark:border-indigo-900 dark:bg-indigo-950/20"
                         )}
                     >
                         <div>
@@ -320,7 +320,7 @@ function SetupChecklist({
                                     className={cn(
                                         "flex h-7 w-7 items-center justify-center rounded-full border",
                                         step.done
-                                            ? "border-emerald-500 bg-emerald-500 text-white"
+                                            ? "border-indigo-500 bg-indigo-500 text-white"
                                             : "bg-background text-muted-foreground"
                                     )}
                                 >
@@ -390,8 +390,8 @@ export function DashboardClient({
                             Total de Leads
                         </CardTitle>
                         <span className="relative flex h-2 w-2">
-                            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
-                            <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
+                            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-indigo-400 opacity-75"></span>
+                            <span className="relative inline-flex h-2 w-2 rounded-full bg-indigo-500"></span>
                         </span>
                         <Users className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>

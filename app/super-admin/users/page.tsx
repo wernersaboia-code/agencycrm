@@ -82,8 +82,8 @@ export default async function UsersPage({ searchParams }: UsersPageProps) {
                 </Button>
             </div>
 
-            <Card className="border-emerald-200 bg-emerald-50">
-                <CardContent className="p-4 text-sm text-emerald-900">
+            <Card className="border-indigo-200 bg-indigo-50">
+                <CardContent className="p-4 text-sm text-indigo-900">
                     Use esta tela para liberar acessos, revisar usuários pendentes e ajustar permissões administrativas.
                 </CardContent>
             </Card>
@@ -233,7 +233,7 @@ async function UsersTable({
 
     return (
         <div className="space-y-4">
-        <Card className={pendingUsers + inactiveUsers + usersWithoutWorkspace > 0 ? "border-amber-300 dark:border-amber-900" : "border-emerald-300 dark:border-emerald-900"}>
+        <Card className={pendingUsers + inactiveUsers + usersWithoutWorkspace > 0 ? "border-amber-300 dark:border-amber-900" : "border-indigo-300 dark:border-indigo-900"}>
             <CardHeader className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                 <div>
                     <CardTitle>Visão de usuários</CardTitle>
@@ -254,7 +254,7 @@ async function UsersTable({
                     >
                         <span className="flex min-w-0 gap-3">
                             {signal.tone === "success" ? (
-                                <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
+                                <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-indigo-600" />
                             ) : (
                                 <signal.icon className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
                             )}

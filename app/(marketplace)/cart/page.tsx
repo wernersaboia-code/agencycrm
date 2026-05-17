@@ -85,7 +85,7 @@ export default function CartPage() {
                         <Card key={item.id} className="overflow-hidden border-gray-200">
                             <CardContent className="p-5">
                                 <div className="flex flex-col gap-5 sm:flex-row">
-                                    <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-md bg-gradient-to-br from-emerald-500 to-teal-600">
+                                    <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-md bg-gradient-to-br from-indigo-500 to-teal-600">
                                         <Building2 className="h-8 w-8 text-white" />
                                     </div>
 

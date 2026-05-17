@@ -46,9 +46,9 @@ export const LEAD_STATUS_CONFIG: Record<
     },
     REPLIED: {
         label: 'Respondeu',
-        color: 'emerald',
-        bgColor: 'bg-emerald-100 dark:bg-emerald-900',
-        textColor: 'text-emerald-700 dark:text-emerald-300',
+        color: 'indigo',
+        bgColor: 'bg-indigo-100 dark:bg-indigo-900',
+        textColor: 'text-indigo-700 dark:text-indigo-300',
         description: 'Respondeu email',
     },
     CALLED: {

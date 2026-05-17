@@ -38,7 +38,7 @@ export function MarketplaceHeader() {
         <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="container mx-auto flex h-16 items-center justify-between px-4">
                 <Link href="/" className="flex items-center gap-2">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-md bg-emerald-600">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-md bg-indigo-600">
                         <span className="text-lg font-bold text-white">L</span>
                     </div>
                     <span className="hidden text-xl font-bold sm:block">LeadStore</span>

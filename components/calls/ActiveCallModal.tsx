@@ -127,7 +127,7 @@ export function ActiveCallModal({ onEndCall, onCancel }: ActiveCallModalProps) {
 
                 <div className="space-y-6 py-4">
                     {/* Timer Grande */}
-                    <div className="flex flex-col items-center justify-center py-6 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 rounded-xl border border-green-200 dark:border-green-800">
+                    <div className="flex flex-col items-center justify-center py-6 bg-gradient-to-br from-green-50 to-indigo-50 dark:from-green-950/20 dark:to-indigo-950/20 rounded-xl border border-green-200 dark:border-green-800">
                         <div className="flex items-center gap-2 text-green-600 mb-2">
                             <Clock className="h-5 w-5" />
                             <span className="text-sm font-medium">Duração</span>

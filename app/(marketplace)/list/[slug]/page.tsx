@@ -99,7 +99,7 @@ export default async function ListPage({ params }: ListPageProps) {
                                 <Badge variant="outline" className="border-[#2ec4b6] text-[#1ba399]">
                                     {list.category}
                                 </Badge>
-                                <span className="inline-flex items-center gap-1 rounded-md bg-emerald-50 px-2 py-1 text-xs font-medium text-emerald-700">
+                                <span className="inline-flex items-center gap-1 rounded-md bg-indigo-50 px-2 py-1 text-xs font-medium text-indigo-700">
                                     <BadgeCheck className="h-3.5 w-3.5" />
                                     Dados prontos para download
                                 </span>
@@ -198,7 +198,7 @@ export default async function ListPage({ params }: ListPageProps) {
                             </p>
                         </div>
 
-                        <div className="mb-6 rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900">
+                        <div className="mb-6 rounded-lg border border-indigo-200 bg-indigo-50 p-4 text-sm text-indigo-900">
                             Antes de comprar, confira a cobertura, a prévia dos dados e o preço por lead. Depois da aprovação do pagamento, o download fica disponível na sua conta.
                         </div>
 

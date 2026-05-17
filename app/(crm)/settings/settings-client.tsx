@@ -116,7 +116,7 @@ export function SettingsClient({ profile, workspace, stats }: SettingsClientProp
                 </p>
             </div>
 
-            <Card className={isWorkspaceReady ? "border-emerald-300 dark:border-emerald-900" : "border-amber-300 dark:border-amber-900"}>
+            <Card className={isWorkspaceReady ? "border-indigo-300 dark:border-indigo-900" : "border-amber-300 dark:border-amber-900"}>
                 <CardHeader className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                     <div className="space-y-2">
                         <div className="flex flex-wrap items-center gap-2">
@@ -151,7 +151,7 @@ export function SettingsClient({ profile, workspace, stats }: SettingsClientProp
                             className="flex min-h-[96px] items-start gap-3 rounded-lg border bg-background p-4 text-left transition-colors hover:bg-muted/50"
                         >
                             {item.done ? (
-                                <CheckCircle2 className="mt-0.5 h-5 w-5 text-emerald-600" />
+                                <CheckCircle2 className="mt-0.5 h-5 w-5 text-indigo-600" />
                             ) : (
                                 <AlertCircle className="mt-0.5 h-5 w-5 text-amber-600" />
                             )}

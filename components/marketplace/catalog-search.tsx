@@ -54,7 +54,7 @@ export function CatalogSearch({ defaultValue = "", variant = "light" }: CatalogS
                     )}
                 />
             </div>
-            <Button type="submit" className="h-11 bg-emerald-600 hover:bg-emerald-700">
+            <Button type="submit" className="h-11 bg-indigo-600 hover:bg-indigo-700">
                 Buscar
             </Button>
         </form>

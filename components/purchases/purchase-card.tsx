@@ -17,7 +17,7 @@ export function PurchaseCard({ purchase }: PurchaseCardProps) {
     const [downloading, setDownloading] = useState<string | null>(null)
 
     const statusColors: Record<string, string> = {
-        paid: "bg-emerald-100 text-emerald-700",
+        paid: "bg-indigo-100 text-indigo-700",
         pending: "bg-yellow-100 text-yellow-700",
         failed: "bg-red-100 text-red-700",
         refunded: "bg-gray-100 text-gray-700"
@@ -93,7 +93,7 @@ export function PurchaseCard({ purchase }: PurchaseCardProps) {
             >
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
+                        <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-indigo-500 to-teal-600 flex items-center justify-center">
                             <Database className="h-6 w-6 text-white" />
                         </div>
                         <div>

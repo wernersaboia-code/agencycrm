@@ -571,7 +571,7 @@ export function MarketplaceImportWizard({
                         <div className="space-y-6">
                             <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
                                 <div className="flex items-center gap-3">
-                                    <FileSpreadsheet className="h-10 w-10 text-emerald-600" />
+                                    <FileSpreadsheet className="h-10 w-10 text-indigo-600" />
                                     <div>
                                         <p className="font-medium">{parsedFile.fileName}</p>
                                         <p className="text-sm text-muted-foreground">
@@ -911,7 +911,7 @@ export function MarketplaceImportWizard({
                         <div className="py-12 space-y-8">
                             {importResult === null ? (
                                 <div className="text-center space-y-6">
-                                    <Loader2 className="mx-auto h-16 w-16 animate-spin text-emerald-600" />
+                                    <Loader2 className="mx-auto h-16 w-16 animate-spin text-indigo-600" />
                                     <div>
                                         <h3 className="text-xl font-semibold mb-2">Importando leads...</h3>
                                         <p className="text-muted-foreground">
@@ -1023,8 +1023,8 @@ function StepIndicator({
             <div
                 className={`
           flex items-center justify-center w-6 h-6 rounded-full text-xs font-medium
-          ${active ? "bg-emerald-600 text-white" : ""}
-          ${completed && !active ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300" : ""}
+          ${active ? "bg-indigo-600 text-white" : ""}
+          ${completed && !active ? "bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-300" : ""}
           ${!active && !completed ? "bg-muted text-muted-foreground" : ""}
         `}
             >

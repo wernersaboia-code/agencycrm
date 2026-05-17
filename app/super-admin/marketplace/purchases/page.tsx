@@ -69,8 +69,8 @@ export default async function PurchasesPage() {
                 </Button>
             </div>
 
-            <Card className="border-emerald-200 bg-emerald-50">
-                <CardContent className="p-4 text-sm text-emerald-900">
+            <Card className="border-indigo-200 bg-indigo-50">
+                <CardContent className="p-4 text-sm text-indigo-900">
                     Use esta tela para conferir vendas pagas, pagamentos pendentes e quais listas cada cliente comprou.
                 </CardContent>
             </Card>
@@ -127,7 +127,7 @@ export default async function PurchasesPage() {
                 </Card>
             </div>
 
-            <Card className={pendingCount + failedCount + refundedCount > 0 ? "border-amber-300 dark:border-amber-900" : "border-emerald-300 dark:border-emerald-900"}>
+            <Card className={pendingCount + failedCount + refundedCount > 0 ? "border-amber-300 dark:border-amber-900" : "border-indigo-300 dark:border-indigo-900"}>
                 <CardHeader className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                     <div>
                         <CardTitle>Saúde das vendas</CardTitle>
@@ -153,7 +153,7 @@ export default async function PurchasesPage() {
                         <div key={item.label} className="flex min-h-[96px] items-start justify-between gap-3 rounded-lg border bg-background p-4">
                             <span className="flex min-w-0 gap-3">
                                 {item.done ? (
-                                    <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
+                                    <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-indigo-600" />
                                 ) : (
                                     <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
                                 )}

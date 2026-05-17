@@ -318,7 +318,7 @@ export function ReportsClient({ workspace, campaigns, stats }: ReportsClientProp
             </div>
 
             {/* Filtros de período */}
-            <Card className={hasOperationalData ? "border-emerald-300 dark:border-emerald-900" : "border-amber-300 dark:border-amber-900"}>
+            <Card className={hasOperationalData ? "border-indigo-300 dark:border-indigo-900" : "border-amber-300 dark:border-amber-900"}>
                 <CardHeader className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                     <div className="space-y-2">
                         <div className="flex flex-wrap items-center gap-2">
@@ -349,13 +349,13 @@ export function ReportsClient({ workspace, campaigns, stats }: ReportsClientProp
                             className={cn(
                                 "flex min-h-[116px] items-start justify-between gap-3 rounded-lg border bg-background p-4 text-left transition-colors hover:bg-muted/50 disabled:cursor-not-allowed disabled:opacity-60",
                                 item.done
-                                    ? "border-emerald-300 bg-emerald-50/50 dark:border-emerald-900 dark:bg-emerald-950/20"
+                                    ? "border-indigo-300 bg-indigo-50/50 dark:border-indigo-900 dark:bg-indigo-950/20"
                                     : "border-amber-300 bg-amber-50/50 dark:border-amber-900 dark:bg-amber-950/20"
                             )}
                         >
                             <span className="flex min-w-0 gap-3">
                                 {item.done ? (
-                                    <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
+                                    <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-indigo-600" />
                                 ) : (
                                     <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
                                 )}

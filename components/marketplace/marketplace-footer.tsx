@@ -7,7 +7,7 @@ export function MarketplaceFooter() {
                 <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
                     <div className="col-span-2 md:col-span-1">
                         <Link href="/" className="mb-4 flex items-center gap-2">
-                            <div className="flex h-8 w-8 items-center justify-center rounded-md bg-emerald-600">
+                            <div className="flex h-8 w-8 items-center justify-center rounded-md bg-indigo-600">
                                 <span className="text-lg font-bold text-white">L</span>
                             </div>
                             <span className="text-xl font-bold">LeadStore</span>

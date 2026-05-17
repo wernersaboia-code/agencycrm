@@ -60,8 +60,8 @@ export default async function WorkspacesPage({ searchParams }: WorkspacesPagePro
                 </Button>
             </div>
 
-            <Card className="border-emerald-200 bg-emerald-50">
-                <CardContent className="p-4 text-sm text-emerald-900">
+            <Card className="border-indigo-200 bg-indigo-50">
+                <CardContent className="p-4 text-sm text-indigo-900">
                     Use esta tela para acompanhar quais empresas já têm leads, campanhas, ligações e modelos de email cadastrados.
                 </CardContent>
             </Card>
@@ -168,7 +168,7 @@ async function WorkspacesTable({
 
     return (
         <div className="space-y-4">
-        <Card className={activeWorkspaces === workspaces.length ? "border-emerald-300 dark:border-emerald-900" : "border-amber-300 dark:border-amber-900"}>
+        <Card className={activeWorkspaces === workspaces.length ? "border-indigo-300 dark:border-indigo-900" : "border-amber-300 dark:border-amber-900"}>
             <CardHeader className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                 <div>
                     <CardTitle>Saúde das empresas/contas</CardTitle>
@@ -188,7 +188,7 @@ async function WorkspacesTable({
                     >
                         <span className="flex min-w-0 gap-3">
                             {signal.tone === "success" ? (
-                                <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
+                                <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-indigo-600" />
                             ) : (
                                 <signal.icon className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
                             )}

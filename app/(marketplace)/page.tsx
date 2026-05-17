@@ -441,46 +441,6 @@ function MetricCard({
     )
 }
 
-function DirectAccessCard({
-    icon: Icon,
-    title,
-    description,
-    href,
-    featured = false,
-}: {
-    icon: React.ComponentType<{ className?: string }>
-    title: string
-    description: string
-    href: string
-    featured?: boolean
-}) {
-    return (
-        <Link
-            href={href}
-            className={`group rounded-lg border p-4 transition hover:-translate-y-0.5 hover:shadow-sm ${
-                featured
-                    ? "border-indigo-600 bg-indigo-600 text-white hover:bg-indigo-700"
-                    : "border-gray-200 bg-white text-gray-950 hover:border-indigo-300"
-            }`}
-        >
-            <div
-                className={`mb-4 flex h-11 w-11 items-center justify-center rounded-md ${
-                    featured ? "bg-white/15 text-white" : "bg-indigo-50 text-indigo-700"
-                }`}
-            >
-                <Icon className="h-5 w-5" />
-            </div>
-            <div className="flex items-center justify-between gap-3">
-                <h3 className="text-lg font-semibold">{title}</h3>
-                <ArrowRight className="h-5 w-5 shrink-0 transition-transform group-hover:translate-x-1" />
-            </div>
-            <p className={`mt-2 text-sm leading-6 ${featured ? "text-white/85" : "text-gray-600"}`}>
-                {description}
-            </p>
-        </Link>
-    )
-}
-
 function ProcessStep({
     icon: Icon,
     title,

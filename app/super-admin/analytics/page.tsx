@@ -230,7 +230,7 @@ export default async function SuperAdminAnalyticsPage() {
                     value={formatCurrency(data.revenueLast30, "EUR")}
                     description={`${data.purchasesLast30} compras pagas`}
                     icon={ShoppingCart}
-                    tone="emerald"
+                    tone="indigo"
                     trend={compare(data.revenueLast30, data.revenuePrevious30)}
                 />
                 <MetricCard
@@ -348,12 +348,12 @@ function MetricCard({
     value: string
     description: string
     icon: React.ComponentType<{ className?: string }>
-    tone: "blue" | "emerald" | "violet" | "amber"
+    tone: "blue" | "indigo" | "violet" | "amber"
     trend?: string
 }) {
     const tones = {
         blue: "bg-blue-50 text-blue-600",
-        emerald: "bg-emerald-50 text-emerald-600",
+        indigo: "bg-indigo-50 text-indigo-600",
         violet: "bg-violet-50 text-violet-600",
         amber: "bg-amber-50 text-amber-600",
     }
@@ -417,7 +417,7 @@ function Signal({
         >
             <div className="flex min-w-0 items-start gap-3">
                 {healthy ? (
-                    <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
+                    <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-indigo-600" />
                 ) : (
                     <Activity className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
                 )}

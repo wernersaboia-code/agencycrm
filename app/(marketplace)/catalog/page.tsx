@@ -64,7 +64,7 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
                 <div className="container mx-auto px-4 py-8">
                     <div className="grid gap-6 lg:grid-cols-[1fr_380px] lg:items-end">
                         <div>
-                            <div className="mb-3 inline-flex items-center gap-2 rounded-md border border-emerald-200 bg-emerald-50 px-3 py-1 text-sm font-medium text-emerald-700">
+                            <div className="mb-3 inline-flex items-center gap-2 rounded-md border border-indigo-200 bg-indigo-50 px-3 py-1 text-sm font-medium text-indigo-700">
                                 <ShieldCheck className="h-4 w-4" />
                                 Bases prontas para prospecção B2B
                             </div>

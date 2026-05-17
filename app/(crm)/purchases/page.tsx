@@ -89,7 +89,7 @@ export default async function PurchasesPage() {
                                     label="Total de Listas"
                                     value={totalLists.toString()}
                                     icon={ShoppingBag}
-                                    color="bg-emerald-500"
+                                    color="bg-indigo-500"
                                 />
                                 <StatCard
                                     label="Total de Leads"

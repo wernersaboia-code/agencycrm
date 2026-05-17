@@ -477,8 +477,8 @@ export function CampaignDetailClient({
                 <Card>
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
-                            <div className="h-10 w-10 rounded-full bg-emerald-100 flex items-center justify-center">
-                                <ThumbsUp className="h-5 w-5 text-emerald-600" />
+                            <div className="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
+                                <ThumbsUp className="h-5 w-5 text-indigo-600" />
                             </div>
                             <div>
                                 <p className="text-sm text-muted-foreground">Resultados</p>
@@ -511,12 +511,12 @@ export function CampaignDetailClient({
                                 className={cn(
                                     "flex min-h-[116px] items-start justify-between gap-3 rounded-lg border bg-background p-4 text-left transition-colors hover:bg-muted/50",
                                     action.tone === "warning" && "border-amber-300 bg-amber-50/50 dark:border-amber-900 dark:bg-amber-950/20",
-                                    action.tone === "success" && "border-emerald-300 bg-emerald-50/50 dark:border-emerald-900 dark:bg-emerald-950/20"
+                                    action.tone === "success" && "border-indigo-300 bg-indigo-50/50 dark:border-indigo-900 dark:bg-indigo-950/20"
                                 )}
                             >
                                 <span className="flex min-w-0 gap-3">
                                     {action.tone === "success" ? (
-                                        <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
+                                        <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-indigo-600" />
                                     ) : action.tone === "warning" ? (
                                         <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
                                     ) : (

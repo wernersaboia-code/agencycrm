@@ -48,7 +48,7 @@ export function CallsConversionFunnel({ data }: CallsConversionFunnelProps) {
             value: data.interested,
             rate: data.interestedRate,
             icon: Star,
-            color: "bg-emerald-500",
+            color: "bg-indigo-500",
             width: "w-[60%]",
         },
         {

@@ -348,7 +348,7 @@ export function CallsClient({
                 </div>
             </div>
 
-            <Card className={totalCallbacks > 0 ? "border-amber-300 dark:border-amber-900" : "border-emerald-300 dark:border-emerald-900"}>
+            <Card className={totalCallbacks > 0 ? "border-amber-300 dark:border-amber-900" : "border-indigo-300 dark:border-indigo-900"}>
                 <CardHeader className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                     <div className="space-y-2">
                         <div className="flex flex-wrap items-center gap-2">
@@ -379,12 +379,12 @@ export function CallsClient({
                                 "flex min-h-[112px] items-start justify-between gap-3 rounded-lg border bg-background p-4 text-left transition-colors hover:bg-muted/50",
                                 queueFilter === item.filter && "ring-2 ring-primary",
                                 item.tone === "warning" && "border-amber-300 bg-amber-50/50 dark:border-amber-900 dark:bg-amber-950/20",
-                                item.tone === "success" && "border-emerald-300 bg-emerald-50/50 dark:border-emerald-900 dark:bg-emerald-950/20"
+                                item.tone === "success" && "border-indigo-300 bg-indigo-50/50 dark:border-indigo-900 dark:bg-indigo-950/20"
                             )}
                         >
                             <span className="flex min-w-0 gap-3">
                                 {item.tone === "success" ? (
-                                    <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
+                                    <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-indigo-600" />
                                 ) : (
                                     <item.icon className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
                                 )}

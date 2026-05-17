@@ -96,7 +96,7 @@ function PurchasesDashboard({
 
                     <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
                         <div>
-                            <div className="mb-3 inline-flex items-center gap-2 rounded-md border border-emerald-200 bg-emerald-50 px-3 py-1 text-sm font-medium text-emerald-700">
+                            <div className="mb-3 inline-flex items-center gap-2 rounded-md border border-indigo-200 bg-indigo-50 px-3 py-1 text-sm font-medium text-indigo-700">
                                 <FileDown className="h-4 w-4" />
                                 Downloads e histórico de pedidos
                             </div>
@@ -133,7 +133,7 @@ function PurchasesDashboard({
                             label="Listas"
                             value={stats.totalLists.toString()}
                             icon={Package}
-                            tone="emerald"
+                            tone="indigo"
                         />
                         <StatCard
                             label="Leads"
@@ -239,11 +239,11 @@ function StatCard({
     label: string
     value: string
     icon: ComponentType<{ className?: string }>
-    tone: "blue" | "emerald" | "violet" | "amber"
+    tone: "blue" | "indigo" | "violet" | "amber"
 }) {
     const tones = {
         blue: "bg-blue-50 text-blue-600",
-        emerald: "bg-emerald-50 text-emerald-600",
+        indigo: "bg-indigo-50 text-indigo-600",
         violet: "bg-violet-50 text-violet-600",
         amber: "bg-amber-50 text-amber-600",
     }

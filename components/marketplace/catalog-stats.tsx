@@ -27,8 +27,8 @@ export function CatalogStats({
             icon: FileDown,
             value: visibleLeadTotal.toLocaleString(),
             label: "Leads nesta página",
-            color: "text-emerald-600",
-            bg: "bg-emerald-50",
+            color: "text-indigo-600",
+            bg: "bg-indigo-50",
         },
         {
             icon: Filter,

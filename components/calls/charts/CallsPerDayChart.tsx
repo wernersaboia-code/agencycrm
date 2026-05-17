@@ -78,7 +78,7 @@ export function CallsPerDayChart({ data }: CallsPerDayChartProps) {
                                         <p className="text-blue-600">
                                             Total: <span className="font-semibold">{payload[0]?.value}</span>
                                         </p>
-                                        <p className="text-emerald-600">
+                                        <p className="text-indigo-600">
                                             Interessados: <span className="font-semibold">{payload[1]?.value}</span>
                                         </p>
                                     </div>

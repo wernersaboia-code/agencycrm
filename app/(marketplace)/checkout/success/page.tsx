@@ -59,8 +59,8 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
         <div className="min-h-screen bg-gray-50 px-4 py-10">
             <div className="mx-auto max-w-3xl">
                 <div className="rounded-lg border border-gray-200 bg-white p-8 text-center shadow-sm">
-                    <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-md bg-emerald-100">
-                        <CheckCircle className="h-9 w-9 text-emerald-600" />
+                    <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-md bg-indigo-100">
+                        <CheckCircle className="h-9 w-9 text-indigo-600" />
                     </div>
 
                     <h1 className="mb-2 text-3xl font-bold text-gray-950">

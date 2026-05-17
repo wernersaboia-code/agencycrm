@@ -137,7 +137,7 @@ export default async function MarketplacePage() {
                 ))}
             </div>
 
-            <Card className={readiness >= 67 ? "border-emerald-300 dark:border-emerald-900" : "border-amber-300 dark:border-amber-900"}>
+            <Card className={readiness >= 67 ? "border-indigo-300 dark:border-indigo-900" : "border-amber-300 dark:border-amber-900"}>
                 <CardHeader className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                     <div className="space-y-2">
                         <div className="flex flex-wrap items-center gap-2">
@@ -171,7 +171,7 @@ export default async function MarketplacePage() {
                         >
                             <span className="flex min-w-0 gap-3">
                                 {check.done ? (
-                                    <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
+                                    <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-indigo-600" />
                                 ) : (
                                     <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
                                 )}
@@ -186,8 +186,8 @@ export default async function MarketplacePage() {
                 </CardContent>
             </Card>
 
-            <Card className="border-emerald-200 bg-emerald-50">
-                <CardContent className="p-4 text-sm text-emerald-900">
+            <Card className="border-indigo-200 bg-indigo-50">
+                <CardContent className="p-4 text-sm text-indigo-900">
                     Para vender uma base, crie uma lista, adicione leads e deixe a lista ativa no catálogo.
                 </CardContent>
             </Card>
