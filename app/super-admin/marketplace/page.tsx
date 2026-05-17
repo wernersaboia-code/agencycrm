@@ -56,7 +56,7 @@ export default async function MarketplacePage() {
             value: purchasesCount,
             icon: ShoppingCart,
             href: "/super-admin/marketplace/purchases",
-            color: "text-green-600"
+            color: "text-indigo-600"
         },
         {
             title: "Receita Total",
@@ -241,8 +241,8 @@ export default async function MarketplacePage() {
                             className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
                         >
                             <div className="flex items-center gap-3">
-                                <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
-                                    <ShoppingCart className="h-5 w-5 text-green-600" />
+                                <div className="p-2 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg">
+                                    <ShoppingCart className="h-5 w-5 text-indigo-600" />
                                 </div>
                                 <div>
                                     <p className="font-medium">Ver vendas</p>

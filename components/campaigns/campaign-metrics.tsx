@@ -64,7 +64,7 @@ function MetricCard({
                         <div className="flex items-center gap-2">
                             <p className="text-2xl font-bold">{value}</p>
                             {trend === "up" && (
-                                <TrendingUp className="h-4 w-4 text-green-500" />
+                                <TrendingUp className="h-4 w-4 text-indigo-500" />
                             )}
                         </div>
                         {subValue && (
@@ -99,7 +99,7 @@ export function CampaignMetrics({
                     icon={<MailOpen className="h-4 w-4" />}
                     value={`${metrics.openRate}%`}
                     label="Abertura"
-                    colorClass="text-green-600"
+                    colorClass="text-indigo-600"
                 />
                 <MetricCompact
                     icon={<MousePointerClick className="h-4 w-4" />}
@@ -145,7 +145,7 @@ export function CampaignMetrics({
                 value={metrics.opened}
                 subValue={`${metrics.openRate}% taxa de abertura`}
                 icon={<MailOpen className="h-5 w-5" />}
-                iconColor="text-green-500"
+                iconColor="text-indigo-500"
                 trend={metrics.openRate > 20 ? "up" : "neutral"}
             />
             <MetricCard

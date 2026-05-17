@@ -29,7 +29,7 @@ export function CheckoutSummary({ list }: CheckoutSummaryProps) {
             {/* Lista */}
             <div className="mb-6 pb-6 border-b border-gray-100">
                 <div className="flex items-start gap-3">
-                    <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-indigo-500 to-teal-600 flex items-center justify-center flex-shrink-0">
+                    <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center flex-shrink-0">
                         <Database className="h-6 w-6 text-white" />
                     </div>
                     <div className="flex-1 min-w-0">

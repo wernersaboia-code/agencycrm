@@ -573,15 +573,15 @@ export function ListForm({ list }: ListFormProps) {
                             </div>
                         ) : hasPreparedLeads ? (
                             // MODO CRIAÇÃO: Já tem leads preparados
-                            <div className="p-6 bg-green-50 dark:bg-green-950/30 rounded-lg">
+                            <div className="p-6 bg-indigo-50 dark:bg-indigo-950/30 rounded-lg">
                                 <div className="flex items-start justify-between">
                                     <div className="flex items-center gap-4">
-                                        <CheckCircle2 className="h-10 w-10 text-green-600" />
+                                        <CheckCircle2 className="h-10 w-10 text-indigo-600" />
                                         <div>
-                                            <p className="text-xl font-bold text-green-800 dark:text-green-200">
+                                            <p className="text-xl font-bold text-indigo-800 dark:text-indigo-200">
                                                 {preparedLeads.length} leads prontos!
                                             </p>
-                                            <p className="text-sm text-green-700 dark:text-green-300">
+                                            <p className="text-sm text-indigo-700 dark:text-indigo-300">
                                                 Serão importados quando você criar a lista
                                             </p>
                                         </div>
@@ -591,12 +591,12 @@ export function ListForm({ list }: ListFormProps) {
                                         variant="ghost"
                                         size="icon"
                                         onClick={handleClearPreparedLeads}
-                                        className="text-green-700 hover:text-red-600 hover:bg-red-50"
+                                        className="text-indigo-700 hover:text-red-600 hover:bg-red-50"
                                     >
                                         <Trash2 className="h-4 w-4" />
                                     </Button>
                                 </div>
-                                <div className="mt-4 pt-4 border-t border-green-200 dark:border-green-800">
+                                <div className="mt-4 pt-4 border-t border-indigo-200 dark:border-indigo-800">
                                     <Button
                                         type="button"
                                         variant="outline"

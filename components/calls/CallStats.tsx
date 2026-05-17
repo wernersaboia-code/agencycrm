@@ -60,7 +60,7 @@ function StatCard({ title, value, subtitle, icon, trend, trendValue }: StatCardP
                         <TrendingUp
                             className={`h-3 w-3 ${
                                 trend === "up"
-                                    ? "text-green-500"
+                                    ? "text-indigo-500"
                                     : trend === "down"
                                         ? "text-red-500"
                                         : "text-gray-500"
@@ -69,7 +69,7 @@ function StatCard({ title, value, subtitle, icon, trend, trendValue }: StatCardP
                         <span
                             className={
                                 trend === "up"
-                                    ? "text-green-500"
+                                    ? "text-indigo-500"
                                     : trend === "down"
                                         ? "text-red-500"
                                         : "text-gray-500"

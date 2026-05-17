@@ -92,7 +92,7 @@ export function ClickToCallButton({
                             disabled={isDisabled}
                             className={cn(
                                 "h-8 w-8",
-                                !isDisabled && "hover:bg-green-50 hover:text-green-600 hover:border-green-300",
+                                !isDisabled && "hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-300",
                                 className
                             )}
                         >
@@ -118,7 +118,7 @@ export function ClickToCallButton({
                         onClick={handleClick}
                         disabled={isDisabled}
                         className={cn(
-                            !isDisabled && "hover:bg-green-50 hover:text-green-600 hover:border-green-300",
+                            !isDisabled && "hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-300",
                             className
                         )}
                     >

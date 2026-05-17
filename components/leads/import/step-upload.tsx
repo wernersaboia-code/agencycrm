@@ -158,9 +158,9 @@ export function StepUpload({ onComplete }: StepUploadProps) {
 
     // Ícone do tipo de arquivo
     const getFileIcon = () => {
-        if (!parsedData) return <FileSpreadsheet className="h-6 w-6 text-green-600" />
+        if (!parsedData) return <FileSpreadsheet className="h-6 w-6 text-indigo-600" />
         if (parsedData.fileType === 'xlsx') {
-            return <FileSpreadsheet className="h-6 w-6 text-green-600" />
+            return <FileSpreadsheet className="h-6 w-6 text-indigo-600" />
         }
         return <FileText className="h-6 w-6 text-blue-600" />
     }
@@ -249,7 +249,7 @@ export function StepUpload({ onComplete }: StepUploadProps) {
                     <div className="border rounded-lg p-4">
                         <div className="flex items-start justify-between">
                             <div className="flex items-center gap-3">
-                                <div className="w-12 h-12 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                                <div className="w-12 h-12 rounded-lg bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center">
                                     {getFileIcon()}
                                 </div>
                                 <div>
@@ -276,7 +276,7 @@ export function StepUpload({ onComplete }: StepUploadProps) {
                                 <div className="text-xs text-muted-foreground">Colunas</div>
                             </div>
                             <div className="text-center p-3 bg-muted rounded-lg">
-                                <div className="text-2xl font-bold text-green-600">
+                                <div className="text-2xl font-bold text-indigo-600">
                                     <CheckCircle2 className="h-6 w-6 mx-auto" />
                                 </div>
                                 <div className="text-xs text-muted-foreground">Válido</div>

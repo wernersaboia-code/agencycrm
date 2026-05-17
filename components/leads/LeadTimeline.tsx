@@ -277,15 +277,15 @@ function getEventConfig(
             const email = data as EmailSendInfo
             return {
                 icon: MailOpen,
-                iconColor: "text-green-600",
-                borderColor: "border-green-200",
-                bgColor: "bg-green-50/50",
+                iconColor: "text-indigo-600",
+                borderColor: "border-indigo-200",
+                bgColor: "bg-indigo-50/50",
                 title: "Email aberto",
                 description: `Campanha: ${email.campaignName}`,
                 badge: (
                     <Badge
                         variant="outline"
-                        className="bg-green-50 text-green-700 border-green-200"
+                        className="bg-indigo-50 text-indigo-700 border-indigo-200"
                     >
                         Aberto
                     </Badge>

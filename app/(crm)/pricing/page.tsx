@@ -39,7 +39,7 @@ export default function PricingPage() {
                         </div>
                         <span className="text-sm flex items-center gap-1">
                             Anual
-                            <span className="bg-green-500 text-white text-xs px-2 py-0.5 rounded-full ml-2">
+                            <span className="bg-indigo-500 text-white text-xs px-2 py-0.5 rounded-full ml-2">
                                 -20%
                             </span>
                         </span>
@@ -215,7 +215,7 @@ function PricingCard({ name, description, monthlyPrice, yearlyPrice, features, c
                     {features.map((feature, i) => (
                         <li key={i} className="flex items-center gap-2">
                             <CheckCircle className={`h-5 w-5 flex-shrink-0 ${
-                                feature.included ? 'text-green-500' : 'text-gray-300'
+                                feature.included ? 'text-indigo-500' : 'text-gray-300'
                             }`} />
                             <span className={feature.included ? 'text-gray-700' : 'text-gray-400'}>
                                 {feature.text}

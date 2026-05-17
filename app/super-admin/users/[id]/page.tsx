@@ -217,8 +217,8 @@ export default async function UserDetailsPage({ params }: UserDetailsPageProps) 
                                 <p className="text-sm text-muted-foreground">Campanhas</p>
                             </div>
 
-                            <div className="p-4 bg-green-50 dark:bg-green-950/30 rounded-lg text-center">
-                                <Mail className="h-6 w-6 mx-auto text-green-600 mb-2" />
+                            <div className="p-4 bg-indigo-50 dark:bg-indigo-950/30 rounded-lg text-center">
+                                <Mail className="h-6 w-6 mx-auto text-indigo-600 mb-2" />
                                 <p className="text-2xl font-bold">{stats.totalEmails.toLocaleString()}</p>
                                 <p className="text-sm text-muted-foreground">Emails Enviados</p>
                             </div>

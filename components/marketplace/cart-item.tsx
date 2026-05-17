@@ -17,7 +17,7 @@ export function CartItem({ item }: CartItemProps) {
     return (
         <div className="flex gap-4 p-4 bg-white rounded-lg border border-gray-200 hover:border-[#2ec4b6] transition-colors">
             {/* Icon */}
-            <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-indigo-500 to-teal-600 flex items-center justify-center flex-shrink-0">
+            <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center flex-shrink-0">
                 <Building2 className="h-8 w-8 text-white" />
             </div>
 

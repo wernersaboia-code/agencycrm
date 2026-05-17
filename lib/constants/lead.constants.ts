@@ -61,8 +61,8 @@ export const LEAD_STATUS_CONFIG: Record<
     INTERESTED: {
         label: 'Interessado',
         color: 'green',
-        bgColor: 'bg-green-100 dark:bg-green-900',
-        textColor: 'text-green-700 dark:text-green-300',
+        bgColor: 'bg-indigo-100 dark:bg-indigo-900',
+        textColor: 'text-indigo-700 dark:text-indigo-300',
         description: 'Demonstrou interesse',
     },
     NOT_INTERESTED: {
@@ -81,9 +81,9 @@ export const LEAD_STATUS_CONFIG: Record<
     },
     CONVERTED: {
         label: 'Convertido',
-        color: 'teal',
-        bgColor: 'bg-teal-100 dark:bg-teal-900',
-        textColor: 'text-teal-700 dark:text-teal-300',
+        color: 'blue',
+        bgColor: 'bg-blue-100 dark:bg-blue-900',
+        textColor: 'text-blue-700 dark:text-blue-300',
         description: 'Virou cliente',
     },
     UNSUBSCRIBED: {

@@ -88,9 +88,9 @@ export function StepPreview({
                         <div className="text-3xl font-bold">{total}</div>
                         <div className="text-sm text-muted-foreground">Total de linhas</div>
                     </div>
-                    <div className="p-4 rounded-lg bg-green-100 dark:bg-green-900/30 text-center">
-                        <div className="text-3xl font-bold text-green-600">{valid.length}</div>
-                        <div className="text-sm text-green-600/80">Válidos para importar</div>
+                    <div className="p-4 rounded-lg bg-indigo-100 dark:bg-indigo-900/30 text-center">
+                        <div className="text-3xl font-bold text-indigo-600">{valid.length}</div>
+                        <div className="text-sm text-indigo-600/80">Válidos para importar</div>
                     </div>
                     <div className="p-4 rounded-lg bg-red-100 dark:bg-red-900/30 text-center">
                         <div className="text-3xl font-bold text-red-600">{invalid.length}</div>
@@ -102,7 +102,7 @@ export function StepPreview({
                 <Tabs defaultValue="valid">
                     <TabsList className="grid w-full grid-cols-2">
                         <TabsTrigger value="valid" className="flex items-center gap-2">
-                            <CheckCircle2 className="h-4 w-4 text-green-600" />
+                            <CheckCircle2 className="h-4 w-4 text-indigo-600" />
                             Válidos ({valid.length})
                         </TabsTrigger>
                         <TabsTrigger value="invalid" className="flex items-center gap-2">
@@ -150,7 +150,7 @@ export function StepPreview({
                     <TabsContent value="invalid">
                         {invalid.length === 0 ? (
                             <div className="flex flex-col items-center justify-center py-12 text-center">
-                                <CheckCircle2 className="h-12 w-12 text-green-600 mb-4" />
+                                <CheckCircle2 className="h-12 w-12 text-indigo-600 mb-4" />
                                 <h3 className="text-lg font-medium">Nenhum erro encontrado!</h3>
                                 <p className="text-muted-foreground">
                                     Todos os leads estão válidos para importação.

@@ -402,7 +402,7 @@ export function CampaignWizard({
                                     step === s
                                         ? "bg-primary text-primary-foreground"
                                         : step > s
-                                            ? "bg-green-500 text-white"
+                                            ? "bg-indigo-500 text-white"
                                             : "bg-muted text-muted-foreground"
                                 )}
                             >
@@ -412,7 +412,7 @@ export function CampaignWizard({
                                 <div
                                     className={cn(
                                         "w-16 h-1 mx-2 rounded",
-                                        step > s ? "bg-green-500" : "bg-muted"
+                                        step > s ? "bg-indigo-500" : "bg-muted"
                                     )}
                                 />
                             )}

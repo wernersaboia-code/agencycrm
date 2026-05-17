@@ -40,7 +40,7 @@ export function CallsConversionFunnel({ data }: CallsConversionFunnelProps) {
             value: data.answered,
             rate: data.answeredRate,
             icon: PhoneIncoming,
-            color: "bg-green-500",
+            color: "bg-indigo-500",
             width: "w-[85%]",
         },
         {

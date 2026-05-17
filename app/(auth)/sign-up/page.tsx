@@ -73,8 +73,8 @@ function SignUpForm() {
         return (
             <Card className="w-full max-w-md">
                 <CardHeader className="text-center">
-                    <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-6">
-                        <CheckCircle className="h-12 w-12 text-green-600" />
+                    <div className="w-20 h-20 rounded-full bg-indigo-100 flex items-center justify-center mx-auto mb-6">
+                        <CheckCircle className="h-12 w-12 text-indigo-600" />
                     </div>
 
                     <CardTitle className="text-2xl font-bold">

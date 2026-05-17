@@ -72,7 +72,7 @@ const campaignStatusConfig: Record<string, { label: string; color: string }> = {
     DRAFT: { label: "Rascunho", color: "bg-gray-100 text-gray-700" },
     SCHEDULED: { label: "Agendada", color: "bg-blue-100 text-blue-700" },
     SENDING: { label: "Enviando", color: "bg-yellow-100 text-yellow-700" },
-    SENT: { label: "Enviada", color: "bg-green-100 text-green-700" },
+    SENT: { label: "Enviada", color: "bg-indigo-100 text-indigo-700" },
     PAUSED: { label: "Pausada", color: "bg-orange-100 text-orange-700" },
     CANCELLED: { label: "Cancelada", color: "bg-red-100 text-red-700" },
 }
@@ -456,7 +456,7 @@ export function DashboardClient({
               <span className="text-xs text-muted-foreground">
                 {stats.answerRate}% atendidas
               </span>
-                            <span className="text-xs text-green-600">
+                            <span className="text-xs text-indigo-600">
                 {stats.positiveRate}% positivas
               </span>
                         </div>

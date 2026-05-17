@@ -132,7 +132,7 @@ export function CampaignCard({
                     {campaign.status === "SENT" && campaign.totalSent > 0 && (
                         <div className="flex items-center gap-6 py-2 px-4 bg-muted/50 rounded-lg">
                             <div className="text-center">
-                                <div className="flex items-center justify-center gap-1 text-green-600">
+                                <div className="flex items-center justify-center gap-1 text-indigo-600">
                                     <Eye className="h-4 w-4" />
                                     <span className="font-semibold">{metrics.openRate.toFixed(0)}%</span>
                                 </div>

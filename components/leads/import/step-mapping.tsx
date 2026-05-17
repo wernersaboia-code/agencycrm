@@ -334,7 +334,7 @@ export function StepMapping({
                                         {/* Status */}
                                         <TableCell>
                                             {currentMapping ? (
-                                                <Badge variant="default" className="bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
+                                                <Badge variant="default" className="bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-300">
                                                     <Check className="h-3 w-3 mr-1" />
                                                     Mapeado
                                                 </Badge>

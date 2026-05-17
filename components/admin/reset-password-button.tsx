@@ -43,7 +43,7 @@ export function ResetPasswordButton({ email }: ResetPasswordButtonProps) {
     if (sent) {
         return (
             <Button variant="outline" disabled>
-                <Check className="h-4 w-4 mr-2 text-green-600" />
+                <Check className="h-4 w-4 mr-2 text-indigo-600" />
                 Email Enviado
             </Button>
         )

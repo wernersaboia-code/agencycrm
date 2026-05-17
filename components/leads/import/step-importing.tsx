@@ -120,14 +120,14 @@ export function StepImporting({
                     <div className={`
             w-20 h-20 rounded-full flex items-center justify-center mb-6
             ${status === 'importing' ? 'bg-primary/10' :
-                        status === 'success' ? 'bg-green-100 dark:bg-green-900/30' :
+                        status === 'success' ? 'bg-indigo-100 dark:bg-indigo-900/30' :
                             'bg-red-100 dark:bg-red-900/30'}
           `}>
                         {status === 'importing' && (
                             <Loader2 className="h-10 w-10 text-primary animate-spin" />
                         )}
                         {status === 'success' && (
-                            <CheckCircle2 className="h-10 w-10 text-green-600" />
+                            <CheckCircle2 className="h-10 w-10 text-indigo-600" />
                         )}
                         {status === 'error' && (
                             <AlertCircle className="h-10 w-10 text-red-600" />

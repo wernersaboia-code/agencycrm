@@ -238,8 +238,8 @@ export function ImportToCRMModal({
                     </div>
                 ) : (
                     <div className="space-y-4">
-                        <div className="bg-green-50 border border-green-200 rounded-lg p-6 text-center">
-                            <CheckCircle2 className="h-12 w-12 text-green-500 mx-auto mb-3" />
+                        <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-6 text-center">
+                            <CheckCircle2 className="h-12 w-12 text-indigo-500 mx-auto mb-3" />
                             <p className="text-lg font-medium text-gray-800 mb-2">
                                 Importação concluída!
                             </p>

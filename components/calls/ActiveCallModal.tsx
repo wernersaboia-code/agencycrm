@@ -115,8 +115,8 @@ export function ActiveCallModal({ onEndCall, onCancel }: ActiveCallModalProps) {
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
                         <div className="relative">
-                            <Phone className="h-5 w-5 text-green-600" />
-                            <span className="absolute -top-1 -right-1 h-2 w-2 bg-green-500 rounded-full animate-pulse" />
+                            <Phone className="h-5 w-5 text-indigo-600" />
+                            <span className="absolute -top-1 -right-1 h-2 w-2 bg-indigo-500 rounded-full animate-pulse" />
                         </div>
                         Ligação em Andamento
                     </DialogTitle>
@@ -127,15 +127,15 @@ export function ActiveCallModal({ onEndCall, onCancel }: ActiveCallModalProps) {
 
                 <div className="space-y-6 py-4">
                     {/* Timer Grande */}
-                    <div className="flex flex-col items-center justify-center py-6 bg-gradient-to-br from-green-50 to-indigo-50 dark:from-green-950/20 dark:to-indigo-950/20 rounded-xl border border-green-200 dark:border-green-800">
-                        <div className="flex items-center gap-2 text-green-600 mb-2">
+                    <div className="flex flex-col items-center justify-center py-6 bg-gradient-to-br from-indigo-50 to-indigo-50 dark:from-indigo-950/20 dark:to-indigo-950/20 rounded-xl border border-indigo-200 dark:border-indigo-800">
+                        <div className="flex items-center gap-2 text-indigo-600 mb-2">
                             <Clock className="h-5 w-5" />
                             <span className="text-sm font-medium">Duração</span>
                         </div>
                         <div
                             className={cn(
                                 "text-5xl font-mono font-bold tracking-wider",
-                                "text-green-700 dark:text-green-400"
+                                "text-indigo-700 dark:text-indigo-400"
                             )}
                         >
                             {timer.formattedTime}

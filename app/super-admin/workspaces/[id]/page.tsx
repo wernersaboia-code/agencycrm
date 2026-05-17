@@ -54,7 +54,7 @@ export default async function WorkspaceDetailsPage({ params }: WorkspaceDetailsP
     const statusColors: Record<string, string> = {
         NEW: "bg-blue-500",
         CONTACTED: "bg-yellow-500",
-        INTERESTED: "bg-green-500",
+        INTERESTED: "bg-indigo-500",
         NOT_INTERESTED: "bg-red-500",
         CONVERTED: "bg-purple-500",
     }
@@ -237,8 +237,8 @@ export default async function WorkspaceDetailsPage({ params }: WorkspaceDetailsP
                                 <p className="text-sm text-muted-foreground">Campanhas</p>
                             </div>
 
-                            <div className="p-4 bg-green-50 dark:bg-green-950/30 rounded-lg text-center">
-                                <Mail className="h-6 w-6 mx-auto text-green-600 mb-2" />
+                            <div className="p-4 bg-indigo-50 dark:bg-indigo-950/30 rounded-lg text-center">
+                                <Mail className="h-6 w-6 mx-auto text-indigo-600 mb-2" />
                                 <p className="text-2xl font-bold">{stats.totalEmails.toLocaleString()}</p>
                                 <p className="text-sm text-muted-foreground">Emails</p>
                             </div>

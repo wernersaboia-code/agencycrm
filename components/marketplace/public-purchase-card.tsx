@@ -111,7 +111,7 @@ export function PublicPurchaseCard({ purchase }: PublicPurchaseCardProps) {
             >
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div className="flex items-center gap-4">
-                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md bg-gradient-to-br from-indigo-500 to-teal-600">
+                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md bg-gradient-to-br from-indigo-500 to-blue-600">
                             <Database className="h-6 w-6 text-white" />
                         </div>
                         <div className="min-w-0">

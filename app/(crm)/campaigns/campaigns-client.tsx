@@ -350,8 +350,8 @@ export function CampaignsClient({
                     <Card>
                         <CardContent className="pt-6">
                             <div className="flex items-center gap-4">
-                                <div className="p-3 rounded-full bg-green-100 dark:bg-green-900">
-                                    <Eye className="h-5 w-5 text-green-600 dark:text-green-400" />
+                                <div className="p-3 rounded-full bg-indigo-100 dark:bg-indigo-900">
+                                    <Eye className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
                                 </div>
                                 <div>
                                     <p className="text-sm text-muted-foreground">Taxa de Abertura</p>

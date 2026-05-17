@@ -118,7 +118,7 @@ export default function CheckoutPage() {
                             <div className="space-y-4">
                                 {items.map((item) => (
                                     <div key={item.id} className="flex gap-3">
-                                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-gradient-to-br from-indigo-500 to-teal-600">
+                                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-gradient-to-br from-indigo-500 to-blue-600">
                                             <Building2 className="h-5 w-5 text-white" />
                                         </div>
                                         <div className="min-w-0 flex-1">

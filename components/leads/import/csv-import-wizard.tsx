@@ -156,14 +156,14 @@ export function CSVImportWizard() {
                                 <div
                                     key={step.key}
                                     className={`flex items-center gap-2 ${
-                                        isComplete ? 'text-green-600' :
+                                        isComplete ? 'text-indigo-600' :
                                             isCurrent ? 'text-primary' :
                                                 'text-muted-foreground'
                                     }`}
                                 >
                                     <div className={`
                     flex items-center justify-center w-8 h-8 rounded-full
-                    ${isComplete ? 'bg-green-100 dark:bg-green-900/30' :
+                    ${isComplete ? 'bg-indigo-100 dark:bg-indigo-900/30' :
                                         isCurrent ? 'bg-primary/10' :
                                             'bg-muted'}
                   `}>
@@ -180,7 +180,7 @@ export function CSVImportWizard() {
                   </span>
                                     {index < STEPS.length - 1 && (
                                         <div className={`w-8 md:w-16 h-0.5 mx-2 ${
-                                            isComplete ? 'bg-green-600' : 'bg-muted'
+                                            isComplete ? 'bg-indigo-600' : 'bg-muted'
                                         }`} />
                                     )}
                                 </div>
@@ -227,13 +227,13 @@ export function CSVImportWizard() {
                 <Card>
                     <CardContent className="py-12">
                         <div className="text-center">
-                            <div className="mx-auto w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mb-4">
-                                <Check className="h-8 w-8 text-green-600" />
+                            <div className="mx-auto w-16 h-16 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center mb-4">
+                                <Check className="h-8 w-8 text-indigo-600" />
                             </div>
                             <h3 className="text-2xl font-bold mb-2">Importação Concluída!</h3>
                             <div className="flex justify-center gap-8 my-6">
                                 <div className="text-center">
-                                    <div className="text-3xl font-bold text-green-600">
+                                    <div className="text-3xl font-bold text-indigo-600">
                                         {state.importResult.imported}
                                     </div>
                                     <div className="text-sm text-muted-foreground">Importados</div>

@@ -43,8 +43,8 @@ export const TEMPLATE_CATEGORY_CONFIG: Record<TemplateCategory, CategoryConfig> 
         label: "Proposta",
         description: "Envio de propostas comerciais",
         icon: FileText,
-        color: "text-green-600",
-        bgColor: "bg-green-100",
+        color: "text-indigo-600",
+        bgColor: "bg-indigo-100",
     },
     THANK_YOU: {
         label: "Agradecimento",

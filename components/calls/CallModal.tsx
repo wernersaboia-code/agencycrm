@@ -353,7 +353,7 @@ export function CallModal({
                         {isEditing ? "Editar Ligação" : "Registrar Ligação"}
                         {/* 🆕 Badge indicando Click-to-Call */}
                         {isFromClickToCall && !isEditing && (
-                            <Badge variant="secondary" className="ml-2 bg-green-100 text-green-700">
+                            <Badge variant="secondary" className="ml-2 bg-indigo-100 text-indigo-700">
                                 <Clock className="h-3 w-3 mr-1" />
                                 Timer
                             </Badge>

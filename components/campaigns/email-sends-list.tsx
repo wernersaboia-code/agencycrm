@@ -66,7 +66,7 @@ const STATUS_CONFIG: Record<string, {
     OPENED: {
         label: "Aberto",
         icon: <MailOpen className="h-3.5 w-3.5" />,
-        className: "bg-green-100 text-green-700",
+        className: "bg-indigo-100 text-indigo-700",
     },
     CLICKED: {
         label: "Clicou",
@@ -235,7 +235,7 @@ export function EmailSendsList({
                                     {/* Opened */}
                                     <TableCell className="text-sm">
                                         {send.openedAt ? (
-                                            <span className="text-green-600 font-medium">
+                                            <span className="text-indigo-600 font-medium">
                         {formatDate(send.openedAt)}
                       </span>
                                         ) : (

@@ -293,8 +293,8 @@ export function EmailSettings({ workspace, onUpdate }: EmailSettingsProps) {
                     <form onSubmit={form.handleSubmit(handleSave)} className="space-y-6">
                         {/* Status atual */}
                         {isConfigured && (
-                            <Alert className={testResult === "error" ? "border-red-500" : "border-green-500"}>
-                                <CheckCircle className="h-4 w-4 text-green-500" />
+                            <Alert className={testResult === "error" ? "border-red-500" : "border-indigo-500"}>
+                                <CheckCircle className="h-4 w-4 text-indigo-500" />
                                 <AlertTitle>Email configurado</AlertTitle>
                                 <AlertDescription>
                                     Emails serão enviados de: <strong>{workspace.smtpUser}</strong>

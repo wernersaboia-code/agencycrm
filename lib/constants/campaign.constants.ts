@@ -64,8 +64,8 @@ export const CAMPAIGN_STATUS_CONFIG: Record<string, CampaignStatusConfig> = {
     },
     SENT: {
         label: "Enviada",
-        color: "text-green-600",
-        bgColor: "bg-green-100",
+        color: "text-indigo-600",
+        bgColor: "bg-indigo-100",
         icon: CheckCircle,
         badgeVariant: "default",
     },

@@ -596,8 +596,8 @@ export function MarketplaceImportWizard({
                                     <p className="text-2xl font-bold">{parsedFile.headers.length}</p>
                                     <p className="text-sm text-muted-foreground">Colunas</p>
                                 </div>
-                                <div className="p-4 bg-green-50 dark:bg-green-950/30 rounded-lg text-center">
-                                    <p className="text-2xl font-bold text-green-600">{mappingStats.mapped}</p>
+                                <div className="p-4 bg-indigo-50 dark:bg-indigo-950/30 rounded-lg text-center">
+                                    <p className="text-2xl font-bold text-indigo-600">{mappingStats.mapped}</p>
                                     <p className="text-sm text-muted-foreground">Mapeadas</p>
                                 </div>
                                 <div className="p-4 bg-muted rounded-lg text-center">
@@ -707,8 +707,8 @@ export function MarketplaceImportWizard({
                                     <p className="text-3xl font-bold">{previewStats.total}</p>
                                     <p className="text-sm text-muted-foreground">Total</p>
                                 </div>
-                                <div className="p-4 bg-green-50 dark:bg-green-950/30 rounded-lg text-center">
-                                    <p className="text-3xl font-bold text-green-600">{previewStats.complete}</p>
+                                <div className="p-4 bg-indigo-50 dark:bg-indigo-950/30 rounded-lg text-center">
+                                    <p className="text-3xl font-bold text-indigo-600">{previewStats.complete}</p>
                                     <p className="text-sm text-muted-foreground">Completos</p>
                                 </div>
                                 <div className="p-4 bg-amber-50 dark:bg-amber-950/30 rounded-lg text-center">
@@ -725,7 +725,7 @@ export function MarketplaceImportWizard({
                             <Tabs defaultValue="complete" className="w-full">
                                 <TabsList className="grid w-full grid-cols-3">
                                     <TabsTrigger value="complete" className="gap-2">
-                                        <CheckCircle2 className="h-4 w-4 text-green-600" />
+                                        <CheckCircle2 className="h-4 w-4 text-indigo-600" />
                                         Completos ({previewStats.complete})
                                     </TabsTrigger>
                                     <TabsTrigger value="incomplete" className="gap-2">
@@ -786,7 +786,7 @@ export function MarketplaceImportWizard({
                                 <TabsContent value="incomplete" className="mt-4">
                                     {previewStats.incomplete === 0 ? (
                                         <div className="text-center py-12 text-muted-foreground">
-                                            <CheckCircle2 className="h-12 w-12 mx-auto mb-4 text-green-600" />
+                                            <CheckCircle2 className="h-12 w-12 mx-auto mb-4 text-indigo-600" />
                                             <p>Todos os leads têm email! 🎉</p>
                                         </div>
                                     ) : (
@@ -830,7 +830,7 @@ export function MarketplaceImportWizard({
                                 <TabsContent value="invalid" className="mt-4">
                                     {previewStats.invalid === 0 ? (
                                         <div className="text-center py-12 text-muted-foreground">
-                                            <CheckCircle2 className="h-12 w-12 mx-auto mb-4 text-green-600" />
+                                            <CheckCircle2 className="h-12 w-12 mx-auto mb-4 text-indigo-600" />
                                             <p>Nenhum erro encontrado! 🎉</p>
                                         </div>
                                     ) : (
@@ -923,9 +923,9 @@ export function MarketplaceImportWizard({
                                 </div>
                             ) : (
                                 <div className="text-center space-y-6">
-                                    <CheckCircle2 className="mx-auto h-20 w-20 text-green-600" />
+                                    <CheckCircle2 className="mx-auto h-20 w-20 text-indigo-600" />
                                     <div>
-                                        <h3 className="text-2xl font-bold text-green-600 mb-2">
+                                        <h3 className="text-2xl font-bold text-indigo-600 mb-2">
                                             {importResult.imported} leads importados!
                                         </h3>
                                         {importResult.duplicates > 0 && (
