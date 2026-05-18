@@ -188,6 +188,60 @@
   .text-pretty {
     text-wrap: pretty;
   }
+
+  /* Premium focus ring */
+  .focus-ring {
+    outline: none;
+    --tw-ring-offset-width: 2px;
+    --tw-ring-offset-color: var(--background);
+    --tw-ring-color: rgb(99 102 241 / 0.3);
+    --tw-ring-shadow: 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+    box-shadow: 0 0 #0000, 0 0 #0000, var(--tw-ring-shadow);
+    transition: box-shadow 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .focus-ring-visible:focus-visible {
+    outline: none;
+    --tw-ring-offset-width: 2px;
+    --tw-ring-offset-color: var(--background);
+    --tw-ring-color: rgb(99 102 241 / 0.3);
+    --tw-ring-shadow: 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+    box-shadow: 0 0 #0000, 0 0 #0000, var(--tw-ring-shadow);
+  }
+
+  /* Hover glow for cards */
+  .hover-glow {
+    transition: box-shadow 200ms cubic-bezier(0.4, 0, 0.2, 1), transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .hover-glow:hover {
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.04), 0 4px 6px -4px rgb(0 0 0 / 0.04), 0 0 12px rgb(99 102 241 / 0.15);
+    transform: translateY(-2px);
+  }
+
+  /* Tactile button press */
+  .press-effect {
+    transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .press-effect:active {
+    transform: scale(0.97);
+  }
+
+  /* Smooth opacity transition */
+  .fade-in {
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  /* Subtle scale on hover */
+  .hover-lift {
+    transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.04), 0 2px 4px -2px rgb(0 0 0 / 0.04);
+  }
 }
 
 @keyframes shimmer {
@@ -228,4 +282,24 @@
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(12px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
 }

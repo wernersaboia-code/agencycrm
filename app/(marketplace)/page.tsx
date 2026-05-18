@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { FlagIcon } from "@/components/ui/flag-icon"
 import { formatCurrency } from "@/lib/utils"
+import { FadeInView, StaggerContainer, StaggerItem } from "@/components/motion"
 
 export const revalidate = 300
 
@@ -140,7 +141,7 @@ export default async function LeadStoreHome() {
                 </div>
             </section>
 
-            <section id="como-funciona" className="bg-white py-14 md:py-18">
+            <FadeInView direction="up" className="bg-white py-14 md:py-18" id="como-funciona">
                 <div className="container mx-auto px-4">
                     <div className="mx-auto max-w-2xl text-center">
                         <p className="text-sm font-semibold uppercase tracking-wider text-indigo-700">
@@ -151,25 +152,31 @@ export default async function LeadStoreHome() {
                         </h2>
                     </div>
 
-                    <div className="mt-10 grid gap-4 md:grid-cols-3">
-                        <ProcessStep
-                            icon={Search}
-                            title="Filtre"
-                            description="Navegue por países, setores, categorias e termos específicos para encontrar listas compatíveis com sua campanha."
-                        />
-                        <ProcessStep
-                            icon={ShieldCheck}
-                            title="Compre"
-                            description="Revise volume, preço por lead e detalhes da lista antes de finalizar o pedido com checkout seguro."
-                        />
-                        <ProcessStep
-                            icon={Download}
-                            title="Baixe"
-                            description="Depois da confirmação, acesse os arquivos em CSV ou Excel para importar no seu fluxo comercial."
-                        />
-                    </div>
+                    <StaggerContainer className="mt-10 grid gap-4 md:grid-cols-3">
+                        <StaggerItem>
+                            <ProcessStep
+                                icon={Search}
+                                title="Filtre"
+                                description="Navegue por países, setores, categorias e termos específicos para encontrar listas compatíveis com sua campanha."
+                            />
+                        </StaggerItem>
+                        <StaggerItem>
+                            <ProcessStep
+                                icon={ShieldCheck}
+                                title="Compre"
+                                description="Revise volume, preço por lead e detalhes da lista antes de finalizar o pedido com checkout seguro."
+                            />
+                        </StaggerItem>
+                        <StaggerItem>
+                            <ProcessStep
+                                icon={Download}
+                                title="Baixe"
+                                description="Depois da confirmação, acesse os arquivos em CSV ou Excel para importar no seu fluxo comercial."
+                            />
+                        </StaggerItem>
+                    </StaggerContainer>
                 </div>
-            </section>
+            </FadeInView>
 
             <section className="border-y border-gray-200 bg-gray-950 text-white">
                 <div className="container mx-auto grid gap-8 px-4 py-14 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-center">

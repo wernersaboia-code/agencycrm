@@ -23,6 +23,7 @@ import {
     Upload,
     CheckCircle2,
 } from "lucide-react"
+import { AnimatedCounter } from "@/components/motion"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -396,7 +397,9 @@ export function DashboardClient({
                         <Users className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{stats.totalLeads}</div>
+                        <div className="text-2xl font-bold">
+                            <AnimatedCounter value={stats.totalLeads} />
+                        </div>
                         <p className="text-xs text-muted-foreground mt-1">
                             +{stats.newLeadsToday} hoje • +{stats.newLeadsWeek} na semana
                         </p>
@@ -412,7 +415,9 @@ export function DashboardClient({
                         <Send className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{stats.totalCampaigns}</div>
+                        <div className="text-2xl font-bold">
+                            <AnimatedCounter value={stats.totalCampaigns} />
+                        </div>
                         <p className="text-xs text-muted-foreground mt-1">
                             {stats.activeCampaigns} ativa{stats.activeCampaigns !== 1 ? "s" : ""}
                         </p>
@@ -428,7 +433,9 @@ export function DashboardClient({
                         <Mail className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{stats.totalEmailsSent}</div>
+                        <div className="text-2xl font-bold">
+                            <AnimatedCounter value={stats.totalEmailsSent} />
+                        </div>
                         <div className="flex items-center gap-3 mt-1">
               <span className="text-xs text-muted-foreground flex items-center gap-1">
                 <Eye className="h-3 w-3" />
@@ -451,7 +458,9 @@ export function DashboardClient({
                         <Phone className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{stats.totalCalls}</div>
+                        <div className="text-2xl font-bold">
+                            <AnimatedCounter value={stats.totalCalls} />
+                        </div>
                         <div className="flex items-center gap-3 mt-1">
               <span className="text-xs text-muted-foreground">
                 {stats.answerRate}% atendidas
