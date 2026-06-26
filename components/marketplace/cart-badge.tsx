@@ -21,10 +21,11 @@ export function CartBadge() {
             <AnimatePresence>
                 {itemCount > 0 && (
                     <motion.span
+                        key={itemCount}
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
                         exit={{ scale: 0 }}
-                        className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-[#2ec4b6] text-white text-xs flex items-center justify-center font-semibold shadow-lg"
+                        className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-indigo-600 text-white text-xs flex items-center justify-center font-semibold shadow-lg"
                     >
                         {itemCount > 9 ? "9+" : itemCount}
                     </motion.span>

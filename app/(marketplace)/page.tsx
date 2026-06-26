@@ -20,6 +20,7 @@ import { Badge } from "@/components/ui/badge"
 import { FlagIcon } from "@/components/ui/flag-icon"
 import { formatCurrency } from "@/lib/utils"
 import { FadeInView, StaggerContainer, StaggerItem } from "@/components/motion"
+import { Card3D } from "@/components/motion/card-3d"
 
 export const revalidate = 300
 
@@ -124,7 +125,9 @@ export default async function LeadStoreHome() {
                     {lists.length > 0 ? (
                         <div className="grid gap-4 md:grid-cols-3">
                             {lists.map((list) => (
-                                <FeaturedListCard key={list.id} list={list} />
+                                <Card3D key={list.id} maxTilt={4}>
+                                    <FeaturedListCard list={list} />
+                                </Card3D>
                             ))}
                         </div>
                     ) : (

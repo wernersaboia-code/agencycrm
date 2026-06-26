@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation"
 import { Sidebar } from "@/components/layout/sidebar"
 import { Header } from "@/components/layout/header"
+import { Breadcrumbs } from "@/components/layout/breadcrumbs"
 import { WorkspaceProvider } from "@/contexts/workspace-context"
 import { ActiveCallWrapper } from "@/components/calls/ActiveCallWrapper"
 import { CommandPalette } from "@/components/layout/command-palette"
@@ -58,6 +59,9 @@ export default async function DashboardLayout({
                     <div className="flex-1 flex flex-col overflow-hidden">
                         <Header user={user} />
                         <main id="main-content" className="flex-1 overflow-y-auto bg-background p-5 md:p-6">
+                            <div className="mb-4">
+                                <Breadcrumbs />
+                            </div>
                             {children}
                         </main>
                     </div>
