@@ -119,10 +119,10 @@ Segue o padrão existente (`app/super-admin/*` + `actions/admin/*` com
 `createPost`, `updatePost`, `deletePost`, `upsertTranslation`,
 `deleteTranslation`, `createCategory`, `updateCategory`, `deleteCategory`.
 Todas com `requireAdmin` e Zod validando os locales contra `BLOG_LOCALES`.
-`contentHtml` sanitizado **no servidor** antes de persistir, usando `dompurify`
-+ `jsdom` (já nas dependências do projeto) numa nova util `lib/blog/sanitize.ts`
-(allowlist de tags/atributos compatível com a saída do Tiptap). O sanitizador
-`html-sanitizer.client` existente é client-only e não serve para o servidor.
+`contentHtml` sanitizado **no servidor** antes de persistir, reusando
+`sanitizeHtmlForPreview` de `lib/utils/html-sanitizer.ts` (jsdom + dompurify,
+allowlist já compatível com a saída do Tiptap). É um sanitizador server-side
+genérico já existente — reusar em vez de criar outro (DRY).
 
 ### Upload de imagens
 Bucket público `blog` no Supabase Storage, mesmo padrão de `lib/supabase/storage.ts`
