@@ -13,6 +13,7 @@ import {
     LogOut,
     LifeBuoy,
     BarChart3,
+    FileText,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -54,6 +55,7 @@ const menuSections: MenuSection[] = [
         items: [
             { title: "Listas de leads", href: "/super-admin/marketplace/lists", icon: Package },
             { title: "Vendas", href: "/super-admin/marketplace/purchases", icon: ShoppingCart },
+            { title: "Blog", href: "/super-admin/blog", icon: FileText },
         ],
     },
 ]
