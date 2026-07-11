@@ -1,7 +1,7 @@
 // components/admin/blog/post-editor.tsx
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
@@ -17,6 +17,14 @@ type TranslationState = {
     title: string; slug: string; excerpt: string; contentHtml: string; metaDescription: string
 }
 const EMPTY: TranslationState = { title: "", slug: "", excerpt: "", contentHtml: "", metaDescription: "" }
+
+// Converte um ISO/UTC para o formato de <input type="datetime-local"> no fuso
+// LOCAL do navegador (YYYY-MM-DDTHH:mm). Precisa rodar no cliente.
+function toDatetimeLocalValue(iso: string): string {
+    const d = new Date(iso)
+    const pad = (n: number) => String(n).padStart(2, "0")
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
+}
 
 export type PostEditorInitial = {
     id?: string
@@ -38,10 +46,18 @@ export function PostEditor({
     const [cover, setCover] = useState(initial.coverImageUrl)
     const [categoryId, setCategoryId] = useState(initial.categoryId ?? "")
     const [status, setStatus] = useState(initial.status)
-    const [publishedAt, setPublishedAt] = useState(initial.publishedAt ?? "")
+    const [publishedAt, setPublishedAt] = useState("")
     const [active, setActive] = useState<BlogLocale>("pt")
     const [tr, setTr] = useState<Partial<Record<BlogLocale, TranslationState>>>(initial.translations)
     const [saving, setSaving] = useState(false)
+
+    useEffect(() => {
+        if (initial.publishedAt) {
+            setPublishedAt(toDatetimeLocalValue(initial.publishedAt))
+        }
+        // Só na montagem: converte o valor persistido para o fuso local do navegador.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     const current = tr[active] ?? EMPTY
     const setField = (field: keyof TranslationState, value: string) =>

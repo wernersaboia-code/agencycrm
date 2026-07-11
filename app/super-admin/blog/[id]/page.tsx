@@ -34,7 +34,7 @@ export default async function EditBlogPostPage({ params }: { params: Promise<{ i
                     coverImageUrl: post.coverImageUrl,
                     categoryId: post.categoryId,
                     status: post.status,
-                    publishedAt: post.publishedAt ? new Date(post.publishedAt).toISOString().slice(0, 16) : null,
+                    publishedAt: post.publishedAt ? new Date(post.publishedAt).toISOString() : null,
                     translations,
                 }}
             />
