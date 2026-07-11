@@ -43,11 +43,15 @@ export async function proxy(request: NextRequest) {
     // ============================================
     const marketplaceRoutes = [
         "/",
+        "/de",
+        "/faq",
+        "/opengraph-image",
         "/catalog",
         "/list",
         "/my-purchases",
         "/checkout",
         "/cart",
+        "/blog",
     ]
 
     const isMarketplaceRoute = marketplaceRoutes.some((route) => {
@@ -62,8 +66,6 @@ export async function proxy(request: NextRequest) {
         "/crm",
         "/crm/sign-in",
         "/crm/sign-up",
-        "/crm/pricing",
-        "/crm/features",
     ]
 
     const isCRMPublicRoute = crmPublicRoutes.some((route) =>
@@ -156,20 +158,27 @@ export async function proxy(request: NextRequest) {
                 }
             }
 
-            // Se está acessando /sign-in diretamente, ou se o redirect não é permitido.
-            const referer = request.headers.get("referer") || ""
-
-            if (referer.includes("/catalog") || referer.includes("/cart") || referer.includes("/checkout")) {
-                url.pathname = "/my-purchases"
-            } else {
-                url.pathname = "/super-admin"
-            }
+            // Se está acessando /sign-in diretamente, ou se o redirect não é
+            // permitido, leva para a área de compras (destino seguro para
+            // qualquer usuário). O super-admin é acessível pelo menu para quem
+            // tem a role — não é um bom padrão para o usuário comum.
+            url.pathname = "/my-purchases"
 
             return NextResponse.redirect(url)
         }
 
     } catch (error) {
         console.error('Middleware auth error:', error)
+
+        // Fail-closed: se a verificação de auth falhar, não liberamos rota
+        // protegida. Rotas de auth seguem acessíveis para o usuário se logar.
+        if (!isAuthRoute) {
+            const url = request.nextUrl.clone()
+            url.pathname = pathname.startsWith('/crm') ? '/crm/sign-in' : '/sign-in'
+            url.searchParams.set('redirect', pathname)
+            return NextResponse.redirect(url)
+        }
+
         return supabaseResponse
     }
 
