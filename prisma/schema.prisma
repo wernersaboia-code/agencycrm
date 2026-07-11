@@ -151,6 +151,7 @@ model User {
   workspaces           Workspace[]
   purchases            Purchase[]
   purchaseAccessTokens PurchaseAccessToken[]
+  blogPosts            BlogPost[]             @relation("BlogAuthor")
 
   @@map("users")
 }
@@ -683,4 +684,83 @@ model PurchaseAccessToken {
 
   @@index([token])
   @@index([userId])
+}
+
+model FaqSubmission {
+  id        String   @id @default(cuid())
+  name      String
+  company   String?
+  email     String
+  subject   String
+  message   String   @db.Text
+  consent   Boolean
+  locale    String   @default("de")
+  ip        String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@index([ip, createdAt])
+  @@map("faq_submissions")
+}
+
+// ==================== BLOG ====================
+
+enum BlogPostStatus {
+  DRAFT
+  PUBLISHED
+}
+
+model BlogPost {
+  id            String                 @id @default(cuid())
+  coverImageUrl String?
+  status        BlogPostStatus         @default(DRAFT)
+  publishedAt   DateTime?
+  authorId      String?
+  author        User?                  @relation("BlogAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+  categoryId    String?
+  category      BlogCategory?          @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  translations  BlogPostTranslation[]
+  createdAt     DateTime               @default(now())
+  updatedAt     DateTime               @updatedAt
+
+  @@index([status, publishedAt])
+  @@index([categoryId])
+}
+
+model BlogPostTranslation {
+  id              String   @id @default(cuid())
+  postId          String
+  post            BlogPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  locale          String
+  title           String
+  slug            String
+  excerpt         String
+  contentHtml     String   @db.Text
+  metaDescription String?
+  ogImageUrl      String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([postId, locale])
+  @@unique([locale, slug])
+  @@index([locale])
+}
+
+model BlogCategory {
+  id           String                     @id @default(cuid())
+  key          String                     @unique
+  posts        BlogPost[]
+  translations BlogCategoryTranslation[]
+  createdAt    DateTime                   @default(now())
+  updatedAt    DateTime                   @updatedAt
+}
+
+model BlogCategoryTranslation {
+  id         String       @id @default(cuid())
+  categoryId String
+  category   BlogCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  locale     String
+  name       String
+
+  @@unique([categoryId, locale])
 }
