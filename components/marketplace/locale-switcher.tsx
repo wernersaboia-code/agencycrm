@@ -3,6 +3,7 @@
 import { usePathname, useRouter } from "next/navigation"
 import { Globe2 } from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
+import { setLocaleCookie } from "@/actions/locale"
 import { Button } from "@/components/ui/button"
 import {
     DropdownMenu,
@@ -28,14 +29,18 @@ export function LocaleSwitcher() {
     const router = useRouter()
     const t = useTranslations("nav")
 
-    const switchTo = (target: "pt" | "de") => {
+    const switchTo = async (target: "pt" | "de") => {
         if (target === locale) return
+
+        await setLocaleCookie(target)
 
         if (target === "de") {
             router.push(PT_TO_DE[pathname] ?? "/de")
         } else {
             router.push(DE_TO_PT[pathname] ?? "/")
         }
+
+        router.refresh()
     }
 
     return (

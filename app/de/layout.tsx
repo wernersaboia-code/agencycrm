@@ -6,6 +6,7 @@ import { MarketplaceFooter } from "@/components/marketplace/marketplace-footer"
 import { CartProvider } from "@/contexts/cart-context"
 import { CartDrawer } from "@/components/marketplace/cart-drawer"
 import { HtmlLang } from "@/components/marketplace/html-lang"
+import { SyncLocaleCookie } from "@/components/marketplace/sync-locale-cookie"
 import deMessages from "@/messages/de.json"
 
 export const metadata: Metadata = {
@@ -29,6 +30,7 @@ export default function GermanLayout({
     return (
         <NextIntlClientProvider locale="de" messages={{ nav: deMessages.nav }}>
             <HtmlLang lang="de" />
+            <SyncLocaleCookie locale="de" />
             <CartProvider>
                 <div className="min-h-screen flex flex-col">
                     <Suspense fallback={<div className="h-16 bg-background border-b" />}>
