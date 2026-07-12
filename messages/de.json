@@ -198,5 +198,18 @@
                 "consent": "Bitte stimmen Sie der Datenschutzerklärung zu."
             }
         }
+    },
+    "cart": {
+        "title": "Ihr Warenkorb",
+        "items": "{count, plural, one {# Artikel} other {# Artikel}}",
+        "empty": "Ihr Warenkorb ist leer",
+        "emptyHint": "Fügen Sie Lead-Listen hinzu, um zu starten",
+        "seeCatalog": "Katalog ansehen",
+        "subtotal": "Zwischensumme",
+        "review": "Warenkorb prüfen",
+        "continue": "Weiter einkaufen",
+        "securePayment": "Sichere Zahlung über PayPal",
+        "leads": "{count} Leads",
+        "addToCart": "In den Warenkorb"
     }
 }

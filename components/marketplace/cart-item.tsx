@@ -6,6 +6,7 @@ import { formatCurrency } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Trash2, Building2, Users } from "lucide-react"
 import Link from "next/link"
+import { useTranslations } from "next-intl"
 
 interface CartItemProps {
     item: CartItemType
@@ -13,6 +14,7 @@ interface CartItemProps {
 
 export function CartItem({ item }: CartItemProps) {
     const { removeItem } = useCart()
+    const t = useTranslations("cart")
 
     return (
         <div className="flex gap-4 p-4 bg-white rounded-lg border border-gray-200 hover:border-[#2ec4b6] transition-colors">
@@ -31,7 +33,7 @@ export function CartItem({ item }: CartItemProps) {
                 </Link>
                 <div className="flex items-center gap-2 text-sm text-gray-500">
                     <Users className="h-3.5 w-3.5" />
-                    <span>{item.totalLeads.toLocaleString()} leads</span>
+                    <span>{t("leads", { count: item.totalLeads })}</span>
                 </div>
                 <div className="mt-2 font-bold text-[#4a2c5a]">
                     {formatCurrency(item.price, item.currency)}

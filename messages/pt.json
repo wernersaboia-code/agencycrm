@@ -198,5 +198,18 @@
                 "consent": "É necessário concordar com a Política de Privacidade."
             }
         }
+    },
+    "cart": {
+        "title": "Seu carrinho",
+        "items": "{count, plural, one {# item} other {# itens}}",
+        "empty": "Seu carrinho está vazio",
+        "emptyHint": "Adicione listas de leads para começar",
+        "seeCatalog": "Ver catálogo",
+        "subtotal": "Subtotal",
+        "review": "Revisar carrinho",
+        "continue": "Continuar comprando",
+        "securePayment": "Pagamento seguro via PayPal",
+        "leads": "{count} leads",
+        "addToCart": "Adicionar ao carrinho"
     }
 }
