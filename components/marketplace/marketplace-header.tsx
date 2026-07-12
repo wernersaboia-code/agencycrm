@@ -4,12 +4,16 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { LayoutDashboard, LogOut, Menu, ShieldCheck, ShoppingBag, User } from "lucide-react"
+import { useLocale, useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
 import { CartBadge } from "@/components/marketplace/cart-badge"
+import { LocaleSwitcher } from "@/components/marketplace/locale-switcher"
 import { useAuth } from "@/hooks/useAuth"
 import { createClient } from "@/lib/supabase/client"
+import { useState } from "react"
 import {
     Sheet,
+    SheetClose,
     SheetContent,
     SheetTrigger,
 } from "@/components/ui/sheet"
@@ -22,26 +26,33 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 export function MarketplaceHeader() {
-    const { isAuthenticated, isLoading } = useAuth()
+    const { isAuthenticated, isLoading, isAdmin } = useAuth()
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
     const router = useRouter()
+    const t = useTranslations("nav")
+    const locale = useLocale()
+
+    const homeHref = locale === "de" ? "/de" : "/"
+    const howItWorksHref = locale === "de" ? "/de#ablauf" : "/#como-funciona"
+    const faqHref = locale === "de" ? "/de/faq" : "/faq"
 
     const handleSignOut = async () => {
         const supabase = createClient()
 
         await supabase.auth.signOut()
-        toast.success("Logout realizado com sucesso")
-        router.push("/")
+        toast.success(t("signOutSuccess"))
+        router.push(homeHref)
         router.refresh()
     }
 
     return (
         <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="container mx-auto flex h-16 items-center justify-between px-4">
-                <Link href="/" className="flex items-center gap-2">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-md bg-indigo-600">
-                        <span className="text-lg font-bold text-white">L</span>
+                <Link href={homeHref} className="flex items-center gap-2">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary">
+                        <span className="text-sm font-bold text-primary-foreground">EP</span>
                     </div>
-                    <span className="hidden text-xl font-bold sm:block">LeadStore</span>
+                    <span className="hidden text-xl font-bold sm:block">Easy Prospect</span>
                 </Link>
 
                 <nav className="hidden items-center gap-6 md:flex">
@@ -49,23 +60,24 @@ export function MarketplaceHeader() {
                         href="/catalog"
                         className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
                     >
-                        Catálogo
+                        {t("catalog")}
                     </Link>
                     <Link
-                        href="/#como-funciona"
+                        href={howItWorksHref}
                         className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
                     >
-                        Como funciona
+                        {t("howItWorks")}
                     </Link>
                     <Link
-                        href="/pricing"
+                        href={faqHref}
                         className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
                     >
-                        Planos CRM
+                        {t("faq")}
                     </Link>
                 </nav>
 
                 <div className="flex items-center gap-2">
+                    <LocaleSwitcher />
                     <CartBadge />
 
                     {!isLoading && (
@@ -75,35 +87,37 @@ export function MarketplaceHeader() {
                                     <DropdownMenuTrigger asChild>
                                         <Button variant="outline" size="sm">
                                             <User className="h-4 w-4" />
-                                            Minha conta
+                                            {t("myAccount")}
                                         </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end" className="w-56">
                                         <DropdownMenuItem asChild>
                                             <Link href="/my-purchases" className="cursor-pointer">
                                                 <ShoppingBag className="h-4 w-4 mr-2" />
-                                                Minhas compras
+                                                {t("myPurchases")}
                                             </Link>
                                         </DropdownMenuItem>
                                         <DropdownMenuItem asChild>
                                             <Link href="/dashboard" className="cursor-pointer">
                                                 <LayoutDashboard className="h-4 w-4 mr-2" />
-                                                Acessar CRM
+                                                {t("accessCrm")}
                                             </Link>
                                         </DropdownMenuItem>
-                                        <DropdownMenuItem asChild>
-                                            <Link href="/super-admin" className="cursor-pointer">
-                                                <ShieldCheck className="h-4 w-4 mr-2" />
-                                                Área administrativa
-                                            </Link>
-                                        </DropdownMenuItem>
+                                        {isAdmin && (
+                                            <DropdownMenuItem asChild>
+                                                <Link href="/super-admin" className="cursor-pointer">
+                                                    <ShieldCheck className="h-4 w-4 mr-2" />
+                                                    {t("adminArea")}
+                                                </Link>
+                                            </DropdownMenuItem>
+                                        )}
                                         <DropdownMenuSeparator />
                                         <DropdownMenuItem
                                             onClick={handleSignOut}
                                             className="cursor-pointer text-red-600"
                                         >
                                             <LogOut className="h-4 w-4 mr-2" />
-                                            Sair
+                                            {t("signOut")}
                                         </DropdownMenuItem>
                                     </DropdownMenuContent>
                                 </DropdownMenu>
@@ -111,57 +125,73 @@ export function MarketplaceHeader() {
                                 <Button variant="outline" size="sm" asChild>
                                     <Link href="/sign-in">
                                         <User className="h-4 w-4" />
-                                        Entrar
+                                        {t("login")}
                                     </Link>
                                 </Button>
                             )}
                         </>
                     )}
 
-                    <Sheet>
+                    <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
                         <SheetTrigger asChild>
-                            <Button variant="ghost" size="icon" className="md:hidden" aria-label="Abrir menu">
+                            <Button variant="ghost" size="icon" className="md:hidden" aria-label={t("openMenu")}>
                                 <Menu className="h-5 w-5" />
                             </Button>
                         </SheetTrigger>
                         <SheetContent side="right">
                             <nav className="mt-8 flex flex-col gap-4">
-                                <Link href="/catalog" className="text-lg font-medium">
-                                    Catálogo
-                                </Link>
-                                <Link href="/#como-funciona" className="text-lg font-medium">
-                                    Como funciona
-                                </Link>
-                                <Link href="/pricing" className="text-lg font-medium">
-                                    Planos CRM
-                                </Link>
+                                <SheetClose asChild>
+                                    <Link href="/catalog" className="text-lg font-medium">
+                                        {t("catalog")}
+                                    </Link>
+                                </SheetClose>
+                                <SheetClose asChild>
+                                    <Link href={howItWorksHref} className="text-lg font-medium">
+                                        {t("howItWorks")}
+                                    </Link>
+                                </SheetClose>
+                                <SheetClose asChild>
+                                    <Link href={faqHref} className="text-lg font-medium">
+                                        {t("faq")}
+                                    </Link>
+                                </SheetClose>
                                 {isAuthenticated && (
                                     <>
                                         <hr />
-                                        <Link href="/my-purchases" className="text-lg font-medium">
-                                            Minhas compras
-                                        </Link>
-                                        <Link href="/dashboard" className="text-lg font-medium">
-                                            Acessar CRM
-                                        </Link>
-                                        <Link href="/super-admin" className="text-lg font-medium">
-                                            Área administrativa
-                                        </Link>
+                                        <SheetClose asChild>
+                                            <Link href="/my-purchases" className="text-lg font-medium">
+                                                {t("myPurchases")}
+                                            </Link>
+                                        </SheetClose>
+                                        <SheetClose asChild>
+                                            <Link href="/dashboard" className="text-lg font-medium">
+                                                {t("accessCrm")}
+                                            </Link>
+                                        </SheetClose>
+                                        {isAdmin && (
+                                            <SheetClose asChild>
+                                                <Link href="/super-admin" className="text-lg font-medium">
+                                                    {t("adminArea")}
+                                                </Link>
+                                            </SheetClose>
+                                        )}
                                         <hr />
                                         <button
                                             onClick={handleSignOut}
                                             className="text-left text-lg font-medium text-red-600"
                                         >
-                                            Sair
+                                            {t("signOut")}
                                         </button>
                                     </>
                                 )}
                                 {!isAuthenticated && (
                                     <>
                                         <hr />
-                                        <Link href="/sign-in" className="text-lg font-medium">
-                                            Entrar
-                                        </Link>
+                                        <SheetClose asChild>
+                                            <Link href="/sign-in" className="text-lg font-medium">
+                                                {t("login")}
+                                            </Link>
+                                        </SheetClose>
                                     </>
                                 )}
                             </nav>

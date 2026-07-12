@@ -12,13 +12,13 @@ import { BlogTeaserSection } from "@/components/landing/blog-teaser-section"
 import { FinalCtaSection } from "@/components/landing/final-cta-section"
 
 export async function generateMetadata(): Promise<Metadata> {
-    const t = await getTranslations({ locale: "pt", namespace: "landing.meta" })
+    const t = await getTranslations({ locale: "de", namespace: "landing.meta" })
 
     return {
         title: t("title"),
         description: t("description"),
         alternates: {
-            canonical: "/",
+            canonical: "/de",
             languages: {
                 "pt-BR": "/",
                 de: "/de",
@@ -28,25 +28,25 @@ export async function generateMetadata(): Promise<Metadata> {
         openGraph: {
             title: t("title"),
             description: t("description"),
-            locale: "pt_BR",
+            locale: "de_DE",
         },
     }
 }
 
-export default function EasyProspectHome() {
+export default function GermanLandingPage() {
     return (
         <div className="min-h-screen bg-white text-gray-950">
-            <HeroSection locale="pt" />
-            <IntroSection locale="pt" />
-            <TargetMarketsSection locale="pt" />
-            <BuyerProfilesSection locale="pt" />
-            <DeliverablesSection locale="pt" />
-            <DataQualitySection locale="pt" />
-            <AdvantageSection locale="pt" />
-            <HowItWorksSection locale="pt" />
-            <StatsSection locale="pt" />
-            <BlogTeaserSection locale="pt" />
-            <FinalCtaSection locale="pt" />
+            <HeroSection locale="de" />
+            <IntroSection locale="de" />
+            <TargetMarketsSection locale="de" />
+            <BuyerProfilesSection locale="de" />
+            <DeliverablesSection locale="de" />
+            <DataQualitySection locale="de" />
+            <AdvantageSection locale="de" />
+            <HowItWorksSection locale="de" />
+            <StatsSection locale="de" />
+            <BlogTeaserSection locale="de" />
+            <FinalCtaSection locale="de" />
         </div>
     )
 }

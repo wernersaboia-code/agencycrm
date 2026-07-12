@@ -5,36 +5,30 @@ import { MarketplaceHeader } from "@/components/marketplace/marketplace-header"
 import { MarketplaceFooter } from "@/components/marketplace/marketplace-footer"
 import { CartProvider } from "@/contexts/cart-context"
 import { CartDrawer } from "@/components/marketplace/cart-drawer"
-import ptMessages from "@/messages/pt.json"
+import { HtmlLang } from "@/components/marketplace/html-lang"
+import deMessages from "@/messages/de.json"
 
 export const metadata: Metadata = {
     title: {
-        absolute: "Easy Prospect - Leads Qualificados de Comércio Exterior",
+        absolute: "Easy Prospect",
         template: "%s | Easy Prospect",
     },
-    description: "Encontre compradores e fornecedores internacionais com dados verificados e prontos para prospecção.",
     openGraph: {
         type: "website",
         siteName: "Easy Prospect",
-        title: "Easy Prospect - Leads Qualificados de Comércio Exterior",
-        description: "Encontre compradores e fornecedores internacionais com dados verificados e prontos para prospecção.",
+        locale: "de_DE",
         images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
-    },
-    twitter: {
-        card: "summary_large_image",
-        title: "Easy Prospect - Leads Qualificados de Comércio Exterior",
-        description: "Encontre compradores e fornecedores internacionais com dados verificados.",
-        images: ["/opengraph-image"],
     },
 }
 
-export default function MarketplaceLayout({
-                                              children,
-                                          }: {
+export default function GermanLayout({
+    children,
+}: {
     children: React.ReactNode
 }) {
     return (
-        <NextIntlClientProvider locale="pt" messages={{ nav: ptMessages.nav }}>
+        <NextIntlClientProvider locale="de" messages={{ nav: deMessages.nav }}>
+            <HtmlLang lang="de" />
             <CartProvider>
                 <div className="min-h-screen flex flex-col">
                     <Suspense fallback={<div className="h-16 bg-background border-b" />}>
@@ -45,9 +39,8 @@ export default function MarketplaceLayout({
                         {children}
                     </main>
 
-                    <MarketplaceFooter locale="pt" />
+                    <MarketplaceFooter locale="de" />
 
-                    {/* Cart Drawer - Global */}
                     <CartDrawer />
                 </div>
             </CartProvider>
