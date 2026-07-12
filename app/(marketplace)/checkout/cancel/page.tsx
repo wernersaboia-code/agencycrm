@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import { ArrowLeft, RotateCcw, ShieldAlert, ShoppingCart } from "lucide-react"
 
 export const metadata = {
-    title: "Compra Cancelada | LeadStore",
+    title: "Compra Cancelada | Easy Prospect",
     description: "Sua compra foi cancelada",
 }
 

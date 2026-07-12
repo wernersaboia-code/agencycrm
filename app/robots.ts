@@ -4,7 +4,7 @@ export default function robots() {
             {
                 userAgent: "*",
                 allow: "/",
-                disallow: ["/dashboard", "/crm", "/super-admin", "/api/"],
+                disallow: ["/dashboard", "/crm", "/pricing", "/super-admin", "/api/"],
             },
         ],
         sitemap: `${process.env.NEXT_PUBLIC_APP_URL || "https://easyprospect.com"}/sitemap.xml`,

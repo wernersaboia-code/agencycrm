@@ -1,5 +1,5 @@
 /**
- * Design Tokens — LeadStore & AgencyCRM
+ * Design Tokens — Easy Prospect
  * Single source of truth for colors, spacing, typography, elevation, and radii.
  */
 

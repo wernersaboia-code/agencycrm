@@ -10,7 +10,7 @@ import { CheckCircle2, Download, ShieldCheck, SlidersHorizontal } from "lucide-r
 export const revalidate = 300
 
 export const metadata = {
-    title: "Catálogo de Listas | LeadStore",
+    title: "Catálogo de Listas | Easy Prospect",
     description: "Explore nosso catálogo de listas de leads qualificados para comércio exterior.",
 }
 

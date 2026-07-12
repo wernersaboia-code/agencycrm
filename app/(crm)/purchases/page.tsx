@@ -11,7 +11,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 
 export const metadata = {
-    title: "Minhas Compras | LeadStore",
+    title: "Minhas Compras | Easy Prospect",
     description: "Acesse suas listas de leads compradas",
 }
 

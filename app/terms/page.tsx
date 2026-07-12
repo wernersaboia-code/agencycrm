@@ -15,7 +15,7 @@ export default function TermsPage() {
                 <section>
                     <h2 className="text-lg font-semibold text-foreground">1. Aceitação dos termos</h2>
                     <p className="mt-2">
-                        Ao acessar ou usar a LeadStore e o AgencyCRM, você concorda com estes termos.
+                        Ao acessar ou usar a Easy Prospect, você concorda com estes termos.
                         Se não concordar, não utilize o serviço.
                     </p>
                 </section>

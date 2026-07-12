@@ -43,11 +43,11 @@ export async function generateMetadata({ params }: ListPageProps) {
     const list = await getList(slug)
 
     if (!list) {
-        return { title: "Lista não encontrada | LeadStore" }
+        return { title: "Lista não encontrada | Easy Prospect" }
     }
 
     return {
-        title: `${list.name} | LeadStore`,
+        title: `${list.name} | Easy Prospect`,
         description: list.description || `Lista com ${list.totalLeads} leads qualificados.`,
     }
 }
