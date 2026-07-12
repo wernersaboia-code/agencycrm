@@ -1,3 +1,6 @@
+"use client"
+
+import { useTranslations } from "next-intl"
 import { Building2, Filter, FileDown, Layers3 } from "lucide-react"
 
 interface CatalogStatsProps {
@@ -15,32 +18,33 @@ export function CatalogStats({
     page,
     pages,
 }: CatalogStatsProps) {
+    const t = useTranslations("catalog")
     const stats = [
         {
             icon: Building2,
             value: total.toLocaleString(),
-            label: "Listas encontradas",
+            label: t("statListsFound"),
             color: "text-blue-600",
             bg: "bg-blue-50",
         },
         {
             icon: FileDown,
             value: visibleLeadTotal.toLocaleString(),
-            label: "Leads nesta página",
+            label: t("statLeadsOnPage"),
             color: "text-indigo-600",
             bg: "bg-indigo-50",
         },
         {
             icon: Filter,
             value: activeFilterCount.toString(),
-            label: "Filtros ativos",
+            label: t("statActiveFilters"),
             color: "text-amber-600",
             bg: "bg-amber-50",
         },
         {
             icon: Layers3,
             value: `${page}/${Math.max(pages, 1)}`,
-            label: "Página atual",
+            label: t("statCurrentPage"),
             color: "text-violet-600",
             bg: "bg-violet-50",
         },

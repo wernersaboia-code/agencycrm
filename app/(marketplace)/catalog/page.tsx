@@ -1,5 +1,7 @@
 import { Suspense } from "react"
 import type { ComponentType } from "react"
+import type { Metadata } from "next"
+import { getTranslations } from "next-intl/server"
 import { CatalogSidebar } from "@/components/marketplace/catalog-sidebar"
 import { CatalogGrid } from "@/components/marketplace/catalog-grid"
 import { CatalogSearch } from "@/components/marketplace/catalog-search"
@@ -9,9 +11,13 @@ import { CheckCircle2, Download, ShieldCheck, SlidersHorizontal } from "lucide-r
 
 export const revalidate = 300
 
-export const metadata = {
-    title: "Catálogo de Listas | Easy Prospect",
-    description: "Explore nosso catálogo de listas de leads qualificados para comércio exterior.",
+export async function generateMetadata(): Promise<Metadata> {
+    const t = await getTranslations("catalog")
+
+    return {
+        title: t("metaTitle"),
+        description: t("heroSubtitle"),
+    }
 }
 
 type CatalogSearchParams = {
@@ -39,6 +45,7 @@ function buildPageHref(params: CatalogSearchParams, page: number) {
 }
 
 export default async function CatalogPage({ searchParams }: CatalogPageProps) {
+    const t = await getTranslations("catalog")
     const params = await searchParams
 
     const countries = params.countries?.split(",").filter(Boolean) || []
@@ -66,20 +73,20 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
                         <div>
                             <div className="mb-3 inline-flex items-center gap-2 rounded-md border border-indigo-200 bg-indigo-50 px-3 py-1 text-sm font-medium text-indigo-700">
                                 <ShieldCheck className="h-4 w-4" />
-                                Bases prontas para prospecção B2B
+                                {t("badge")}
                             </div>
                             <h1 className="max-w-3xl text-3xl font-bold tracking-tight text-gray-950 md:text-4xl">
-                                Encontre a lista certa antes de gastar tempo com prospecção manual
+                                {t("heroTitle")}
                             </h1>
                             <p className="mt-3 max-w-2xl text-base text-gray-600">
-                                Filtre por mercado, setor e categoria para comprar apenas os dados que fazem sentido para sua campanha.
+                                {t("heroSubtitle")}
                             </p>
                         </div>
 
                         <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
                             <div className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-700">
                                 <SlidersHorizontal className="h-4 w-4 text-[#4a2c5a]" />
-                                Busca rápida
+                                {t("quickSearch")}
                             </div>
                             <Suspense fallback={<SearchSkeleton />}>
                                 <CatalogSearch defaultValue={search} />
@@ -90,18 +97,18 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
                     <div className="mt-6 grid gap-3 md:grid-cols-3">
                         <TrustStep
                             icon={CheckCircle2}
-                            title="Compare"
-                            description="Veja volume, países e setores antes de decidir."
+                            title={t("trustCompareTitle")}
+                            description={t("trustCompareDesc")}
                         />
                         <TrustStep
                             icon={ShieldCheck}
-                            title="Compre com segurança"
-                            description="Checkout via PayPal e pedido registrado na sua conta."
+                            title={t("trustBuyTitle")}
+                            description={t("trustBuyDesc")}
                         />
                         <TrustStep
                             icon={Download}
-                            title="Baixe na hora"
-                            description="Acesse CSV ou Excel assim que o pagamento for confirmado."
+                            title={t("trustDownloadTitle")}
+                            description={t("trustDownloadDesc")}
                         />
                     </div>
                 </div>
@@ -135,15 +142,15 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
                     <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                         <div>
                             <h2 className="text-lg font-semibold text-gray-900">
-                                Listas disponíveis
+                                {t("availableLists")}
                             </h2>
                             <p className="text-sm text-gray-500">
-                                {total.toLocaleString("pt-BR")} resultado{total === 1 ? "" : "s"} para os critérios atuais
+                                {t("results", { count: total })}
                             </p>
                         </div>
                         {pages > 1 && (
                             <span className="text-sm text-gray-500">
-                                Página {page} de {pages}
+                                {t("pageOf", { page, pages })}
                             </span>
                         )}
                     </div>

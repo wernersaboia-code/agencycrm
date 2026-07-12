@@ -2,6 +2,7 @@
 "use client"
 
 import Link from "next/link"
+import { useTranslations } from "next-intl"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -40,6 +41,8 @@ interface ListCardProps {
 }
 
 export function ListCard({ list }: ListCardProps) {
+    const t = useTranslations("catalog")
+    const tCart = useTranslations("cart")
     const { addItem } = useCart()
     const pricePerLead = list.totalLeads > 0 ? list.price / list.totalLeads : 0
     const updatedAt = new Date(list.updatedAt).toLocaleDateString("pt-BR", {
@@ -68,14 +71,14 @@ export function ListCard({ list }: ListCardProps) {
                         <div className="flex-1">
                             {list.isFeatured && (
                                 <Badge className="mb-2 bg-[#4a2c5a] hover:bg-[#4a2c5a]">
-                                    Destaque
+                                    {t("featured")}
                                 </Badge>
                             )}
                             <h3 className="font-semibold text-gray-800 line-clamp-2 group-hover:text-[#2ec4b6] transition-colors">
                                 {list.name}
                             </h3>
                             <p className="mt-2 line-clamp-2 text-sm text-gray-500">
-                                {list.description || "Base pronta para prospecção com empresas qualificadas."}
+                                {list.description || t("defaultDescription")}
                             </p>
                         </div>
                         <div className="flex items-center gap-1">
@@ -99,7 +102,7 @@ export function ListCard({ list }: ListCardProps) {
                     <div className="space-y-2 mb-4">
                         <div className="flex items-center gap-2 text-sm text-gray-600">
                             <Building2 className="h-4 w-4 text-gray-400" />
-                            <span>{list.totalLeads.toLocaleString()} empresas</span>
+                            <span>{t("companies", { count: list.totalLeads })}</span>
                         </div>
                         <div className="flex items-center gap-2 text-sm text-gray-600">
                             <Globe className="h-4 w-4 text-gray-400" />
@@ -107,11 +110,11 @@ export function ListCard({ list }: ListCardProps) {
                         </div>
                         <div className="flex items-center gap-2 text-sm text-gray-600">
                             <CheckCircle className="h-4 w-4 text-[#2ec4b6]" />
-                            <span>Emails verificados</span>
+                            <span>{t("verifiedEmails")}</span>
                         </div>
                         <div className="flex items-center gap-2 text-sm text-gray-600">
                             <CalendarClock className="h-4 w-4 text-gray-400" />
-                            <span>Atualizada em {updatedAt}</span>
+                            <span>{t("updatedAt", { date: updatedAt })}</span>
                         </div>
                     </div>
 
@@ -140,14 +143,14 @@ export function ListCard({ list }: ListCardProps) {
                                 {formatCurrency(list.price, list.currency)}
                             </span>
                             <div className="text-xs text-gray-500">
-                                {formatCurrency(pricePerLead, list.currency)} por lead
+                                {t("perLead", { price: formatCurrency(pricePerLead, list.currency) })}
                             </div>
                         </div>
                         <Link
                             href={`/list/${list.slug}`}
                             className="flex items-center text-sm text-[#2ec4b6] font-medium hover:translate-x-1 transition-transform"
                         >
-                            Ver detalhes
+                            {t("seeDetails")}
                             <ArrowRight className="h-4 w-4 ml-1" />
                         </Link>
                     </div>
@@ -160,7 +163,7 @@ export function ListCard({ list }: ListCardProps) {
                         className="w-full hover:bg-[#2ec4b6] hover:text-white hover:border-[#2ec4b6] transition-colors"
                     >
                         <ShoppingCart className="h-4 w-4 mr-2" />
-                        Adicionar ao carrinho
+                        {tCart("addToCart")}
                     </Button>
                 </div>
             </CardContent>

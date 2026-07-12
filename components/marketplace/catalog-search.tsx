@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import type { FormEvent } from "react"
+import { useTranslations } from "next-intl"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -14,6 +15,7 @@ interface CatalogSearchProps {
 }
 
 export function CatalogSearch({ defaultValue = "", variant = "light" }: CatalogSearchProps) {
+    const t = useTranslations("catalog")
     const router = useRouter()
     const searchParams = useSearchParams()
     const [query, setQuery] = useState(defaultValue)
@@ -45,7 +47,7 @@ export function CatalogSearch({ defaultValue = "", variant = "light" }: CatalogS
                 <Input
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
-                    placeholder="Buscar por nome, país, setor ou descrição"
+                    placeholder={t("searchPlaceholder")}
                     className={cn(
                         "h-11 rounded-md pl-12",
                         isDark
@@ -55,7 +57,7 @@ export function CatalogSearch({ defaultValue = "", variant = "light" }: CatalogS
                 />
             </div>
             <Button type="submit" className="h-11 bg-indigo-600 hover:bg-indigo-700">
-                Buscar
+                {t("searchButton")}
             </Button>
         </form>
     )

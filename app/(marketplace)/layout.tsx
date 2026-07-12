@@ -36,7 +36,7 @@ export default async function MarketplaceLayout({
     const locale = await getLocale()
     const messages = await getMessages()
     return (
-        <NextIntlClientProvider locale={locale} messages={messages}>
+        <NextIntlClientProvider locale={locale} messages={{ nav: messages.nav, cart: messages.cart, catalog: messages.catalog }}>
             <CartProvider>
                 <div className="min-h-screen flex flex-col">
                     <Suspense fallback={<div className="h-16 bg-background border-b" />}>
