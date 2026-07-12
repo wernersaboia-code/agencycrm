@@ -8,6 +8,7 @@ import {
     TRACKING_LEAD_STATUS_MAP,
 } from '@/lib/constants/tracking.constants'
 import { rateLimit, getClientIp } from "@/lib/rate-limit"
+import { verifySignature } from "@/lib/signing"
 
 const rateLimiter = rateLimit(1000)
 
@@ -19,23 +20,22 @@ interface RouteParams {
     params: Promise<{ id: string }>
 }
 
-function getSafeRedirectUrl(originalUrl: string | null): string {
+function getSafeRedirectUrl(originalUrl: string | null, signature: string | null): string {
     const baseUrl = getTrackingBaseUrl()
     if (!originalUrl) {
         return baseUrl
     }
 
+    // A URL de destino precisa ter sido assinada por este app (o wrapper de
+    // tracking assina toda URL de clique). Isso libera links externos legítimos
+    // sem permitir open redirect a partir de parâmetros arbitrários.
+    if (!verifySignature(originalUrl, signature)) {
+        return baseUrl
+    }
+
     try {
         const parsedUrl = new URL(originalUrl)
-        const allowedHosts = [
-            new URL(baseUrl).hostname,
-            "localhost",
-        ]
-
-        if (
-            (parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:') &&
-            allowedHosts.includes(parsedUrl.hostname)
-        ) {
+        if (parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:') {
             return parsedUrl.toString()
         }
     } catch {
@@ -62,9 +62,8 @@ export async function GET(
     const { id: emailSendId } = await params
     const { searchParams } = new URL(request.url)
     const originalUrl = searchParams.get('url')
-    const redirectUrl = getSafeRedirectUrl(originalUrl)
-
-    console.log(`[Tracking] Processing click for: ${emailSendId} → ${originalUrl}`)
+    const signature = searchParams.get('sig')
+    const redirectUrl = getSafeRedirectUrl(originalUrl, signature)
 
     try {
         // Fetch current email send status
@@ -86,11 +85,8 @@ export async function GET(
         })
 
         if (!emailSend) {
-            console.log(`[Tracking] EmailSend not found: ${emailSendId}`)
             return NextResponse.redirect(redirectUrl)
         }
-
-        console.log(`[Tracking] Current state - openedAt: ${emailSend.openedAt}, clickedAt: ${emailSend.clickedAt}`)
 
         const now = new Date()
         const isFirstClick = !emailSend.clickedAt
@@ -112,7 +108,6 @@ export async function GET(
                 ...(shouldUpgradeEmailStatus && { status: 'CLICKED' }),
             },
         })
-        console.log(`[Tracking] Updated EmailSend - clickedAt and status`)
 
         // Update lead status if applicable
         if (shouldUpgradeLeadStatus) {
@@ -120,7 +115,6 @@ export async function GET(
                 where: { id: emailSend.leadId },
                 data: { status: TRACKING_LEAD_STATUS_MAP.click },
             })
-            console.log(`[Tracking] Updated Lead status to CLICKED`)
         }
 
         // Update campaign counters
@@ -131,7 +125,6 @@ export async function GET(
                     where: { id: emailSend.campaignId },
                     data: { totalClicked: { increment: 1 } },
                 })
-                console.log(`[Tracking] Incremented Campaign totalClicked`)
             }
 
             // Also increment opened if this is first interaction
@@ -140,11 +133,8 @@ export async function GET(
                     where: { id: emailSend.campaignId },
                     data: { totalOpened: { increment: 1 } },
                 })
-                console.log(`[Tracking] Incremented Campaign totalOpened (via click)`)
             }
         }
-
-        console.log(`[Tracking] ✅ Link clicked: ${emailSendId} → ${originalUrl}`)
 
         return NextResponse.redirect(redirectUrl)
 

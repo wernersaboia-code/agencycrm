@@ -20,7 +20,7 @@ type PurchaseItemWithList = Prisma.PurchaseItemGetPayload<{
 }>
 
 export const metadata = {
-    title: "Compra Confirmada | LeadStore",
+    title: "Compra Confirmada | Easy Prospect",
     description: "Sua compra foi confirmada com sucesso",
 }
 
@@ -61,8 +61,8 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
             <Confetti active />
             <div className="mx-auto max-w-3xl">
                 <div className="rounded-xl border bg-card p-8 text-center shadow-sm">
-                    <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-indigo-50 shadow-sm">
-                        <CheckCircle className="h-9 w-9 text-indigo-600" />
+                    <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 shadow-sm">
+                        <CheckCircle className="h-9 w-9 text-primary" />
                     </div>
 
                     <h1 className="mb-2 text-3xl font-bold text-card-foreground">
@@ -106,7 +106,7 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
 
                         <div className="flex items-center justify-between border-t pt-4">
                             <span className="font-semibold text-card-foreground">Total pago</span>
-                            <span className="text-xl font-bold text-indigo-600">
+                            <span className="text-xl font-bold text-primary">
                                 {formatCurrency(Number(purchase.total), purchase.currency)}
                             </span>
                         </div>
@@ -119,7 +119,7 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
                     </div>
 
                     <div className="mt-8 space-y-3">
-                        <Button className="h-12 w-full bg-indigo-600 text-white hover:bg-indigo-700" asChild>
+                        <Button className="h-12 w-full" asChild>
                             <Link href="/my-purchases">
                                 <ShoppingBag className="h-5 w-5" />
                                 Acessar minhas compras
@@ -158,7 +158,7 @@ function NextStep({
 }) {
     return (
         <div className="rounded-lg border bg-card p-4 text-left">
-            <Icon className="mb-3 h-5 w-5 text-indigo-500" />
+            <Icon className="mb-3 h-5 w-5 text-primary" />
             <div className="font-semibold text-card-foreground">{title}</div>
             <p className="mt-1 text-sm text-muted-foreground">{text}</p>
         </div>

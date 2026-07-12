@@ -4,6 +4,7 @@ import {
     getTrackingBaseUrl,
     TRACKING_ENDPOINTS
 } from '@/lib/constants/tracking.constants'
+import { sign } from '@/lib/signing'
 import type { EmailTrackingMetrics } from '@/types/tracking.types'
 
 // ============================================
@@ -34,13 +35,14 @@ export function generateTrackingUrl({
                                         originalUrl
                                     }: GenerateTrackingUrlParams): string {
     const trackingBaseUrl = getTrackingBaseUrl()
-    console.log('[Tracking] Base URL:', trackingBaseUrl) // Debug temporário
-
     const baseUrl = `${trackingBaseUrl}${TRACKING_ENDPOINTS[type]}/${emailSendId}`
 
     if (type === 'click' && originalUrl) {
         const encodedUrl = encodeURIComponent(originalUrl)
-        return `${baseUrl}?url=${encodedUrl}`
+        // Assina a URL de destino: só redirects que o próprio app gerou são
+        // honrados, o que permite links externos sem reabrir open redirect.
+        const signature = sign(originalUrl)
+        return `${baseUrl}?url=${encodedUrl}&sig=${signature}`
     }
 
     return baseUrl

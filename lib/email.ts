@@ -1,6 +1,7 @@
 // lib/email.ts
 
 import { injectTrackingIntoEmail } from '@/lib/utils/tracking.utils'
+import { sign } from '@/lib/signing'
 import { Resend } from "resend"
 import nodemailer from "nodemailer"
 import type SMTPTransport from "nodemailer/lib/smtp-transport"
@@ -149,7 +150,7 @@ export async function sendEmailResend(
             return { success: false, error: "Nenhum método de envio configurado" }
         }
 
-        const fromAddress = params.from || "AgencyCRM <onboarding@resend.dev>"
+        const fromAddress = params.from || "Easy Prospect <onboarding@resend.dev>"
 
         console.log(`📧 Enviando email via Resend para: ${params.to}`)
         console.log(`📧 De: ${fromAddress}`)
@@ -194,7 +195,7 @@ export async function sendEmail(
 
     // Append unsubscribe footer if emailSendId is present (campaign emails)
     const htmlWithUnsubscribe = params.emailSendId
-        ? appendUnsubscribeFooter(htmlWithTracking)
+        ? appendUnsubscribeFooter(htmlWithTracking, params.emailSendId)
         : htmlWithTracking
 
     const paramsFinal = { ...params, html: htmlWithUnsubscribe }
@@ -208,8 +209,12 @@ export async function sendEmail(
     return sendEmailResend(paramsFinal)
 }
 
-function appendUnsubscribeFooter(html: string): string {
-    const unsubscribeUrl = `${process.env.NEXT_PUBLIC_APP_URL || "https://easyprospect.com"}/unsubscribe`
+function appendUnsubscribeFooter(html: string, emailSendId: string): string {
+    // Link assinado e amarrado a este envio específico: a rota resolve o lead
+    // a partir do emailSendId e só age se a assinatura conferir.
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://easyprospect.com"
+    const signature = sign(emailSendId)
+    const unsubscribeUrl = `${baseUrl}/unsubscribe?sid=${emailSendId}&sig=${signature}`
     const footer = `
         <div style="margin-top:32px;padding-top:16px;border-top:1px solid #e5e7eb;color:#9ca3af;font-size:12px;line-height:1.5;">
             <p>Se não deseja mais receber e-mails, <a href="${unsubscribeUrl}" style="color:#6b7280;text-decoration:underline;">clique aqui para cancelar sua inscrição</a>.</p>

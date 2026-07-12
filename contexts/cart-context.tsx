@@ -29,7 +29,7 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined)
 
-const CART_STORAGE_KEY = "leadstore-cart"
+const CART_STORAGE_KEY = "easyprospect-cart"
 const EMPTY_CART = "[]"
 const cartListeners = new Set<() => void>()
 
@@ -85,12 +85,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
                 return current
             }
 
-            toast.success(`"${item.name}" adicionado ao carrinho!`, {
-                action: {
-                    label: "Ver carrinho",
-                    onClick: () => setIsOpen(true),
-                },
-            })
+            // O drawer abre logo abaixo (setIsOpen), então o toast é só uma
+            // confirmação leve — sem ação redundante "Ver carrinho".
+            toast.success(`"${item.name}" adicionado ao carrinho!`)
 
             return [...current, { ...item, quantity: 1 }]
         })

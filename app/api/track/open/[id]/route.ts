@@ -47,8 +47,6 @@ export async function GET(
 
     const { id: emailSendId } = await params
 
-    console.log(`[Tracking] Processing open for: ${emailSendId}`)
-
     try {
         // Fetch current email send status
         const emailSend = await prisma.emailSend.findUnique({
@@ -68,11 +66,8 @@ export async function GET(
         })
 
         if (!emailSend) {
-            console.log(`[Tracking] EmailSend not found: ${emailSendId}`)
             return createPixelResponse()
         }
-
-        console.log(`[Tracking] Current state - openedAt: ${emailSend.openedAt}, status: ${emailSend.status}`)
 
         // Only update if not already opened
         if (!emailSend.openedAt) {
@@ -90,7 +85,6 @@ export async function GET(
                     ...(shouldUpgradeEmailStatus && { status: 'OPENED' }),
                 },
             })
-            console.log(`[Tracking] Updated EmailSend status to OPENED`)
 
             // Update lead status if applicable
             if (shouldUpgradeLeadStatus) {
@@ -98,7 +92,6 @@ export async function GET(
                     where: { id: emailSend.leadId },
                     data: { status: TRACKING_LEAD_STATUS_MAP.open },
                 })
-                console.log(`[Tracking] Updated Lead status to OPENED`)
             }
 
             // Increment campaign totalOpened counter
@@ -107,12 +100,7 @@ export async function GET(
                     where: { id: emailSend.campaignId },
                     data: { totalOpened: { increment: 1 } },
                 })
-                console.log(`[Tracking] Incremented Campaign totalOpened`)
             }
-
-            console.log(`[Tracking] ✅ Email opened: ${emailSendId}`)
-        } else {
-            console.log(`[Tracking] Email already opened, skipping update`)
         }
 
         return createPixelResponse()

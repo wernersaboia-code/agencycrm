@@ -31,6 +31,22 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
         }
 
+        // Backstop persistido (cobre múltiplas instâncias serverless, onde o
+        // rate limit em memória não é compartilhado): no máximo 15 pedidos
+        // pendentes por usuário na última hora.
+        const PENDING_BACKSTOP_MAX = 15
+        const PENDING_BACKSTOP_WINDOW_MS = 60 * 60 * 1000
+        const recentPending = await prisma.purchase.count({
+            where: {
+                userId: user.id,
+                status: "pending",
+                createdAt: { gt: new Date(Date.now() - PENDING_BACKSTOP_WINDOW_MS) },
+            },
+        })
+        if (recentPending >= PENDING_BACKSTOP_MAX) {
+            return NextResponse.json({ error: "Too many pending orders" }, { status: 429 })
+        }
+
         const parsedBody = createOrderSchema.safeParse(await request.json())
 
         if (!parsedBody.success) {
@@ -102,7 +118,7 @@ export async function POST(request: NextRequest) {
                 },
             ],
                 applicationContext: {
-                    brandName: "LeadStore",
+                    brandName: "Easy Prospect",
                     landingPage: OrderApplicationContextLandingPage.NoPreference,
                     userAction: OrderApplicationContextUserAction.PayNow,
                     returnUrl: `${appUrl}/checkout/success`,
