@@ -1,0 +1,202 @@
+{
+    "common": {
+        "brand": "Easy Prospect"
+    },
+    "nav": {
+        "catalog": "Catálogo",
+        "howItWorks": "Como funciona",
+        "faq": "FAQ",
+        "login": "Entrar",
+        "myAccount": "Minha conta",
+        "myPurchases": "Minhas compras",
+        "accessCrm": "Acessar CRM",
+        "adminArea": "Área administrativa",
+        "signOut": "Sair",
+        "signOutSuccess": "Logout realizado com sucesso",
+        "openMenu": "Abrir menu",
+        "language": "Idioma"
+    },
+    "footer": {
+        "about": "Parceiros comerciais qualificados para o comércio internacional, para você expandir seus negócios.",
+        "productTitle": "Produto",
+        "catalog": "Catálogo",
+        "howItWorks": "Como funciona",
+        "faq": "FAQ",
+        "accountTitle": "Conta",
+        "myPurchases": "Minhas compras",
+        "login": "Entrar",
+        "legalTitle": "Legal",
+        "terms": "Termos de uso",
+        "privacy": "Privacidade",
+        "contact": "Contato",
+        "copyright": "© {year} Easy Prospect. Todos os direitos reservados."
+    },
+    "landing": {
+        "hero": {
+            "badge": "Marketplace de parceiros comerciais B2B verificados",
+            "title": "Listas qualificadas de importadores e distribuidores para o seu comércio internacional.",
+            "subtitle": "Encontre exatamente os parceiros comerciais que combinam com o seu produto e a sua estratégia de exportação.",
+            "ctaPrimary": "Explorar catálogo",
+            "ctaSecondary": "Como funciona",
+            "trust1": "Pronto para uso imediato",
+            "trust2": "Empresas verificadas",
+            "trust3": "Atualização periódica"
+        },
+        "intro": {
+            "lede": "Nossas listas qualificadas de importadores e distribuidores são feitas para fabricantes, produtores e detentores de marca que buscam novos parceiros comerciais no exterior.",
+            "p1": "Selecione por país, setor, região linguística ou perfil de compra e receba bancos de dados prontos para uso e atualizados periodicamente.",
+            "p2": "Nossas listas incluem exclusivamente empresas cuidadosamente verificadas, com interesse comprovado em incluir novos produtos e marcas do exterior em seu portfólio. Assim você economiza pesquisas demoradas e evita inúmeros contatos com empresas que não têm interesse em novos fornecedores."
+        },
+        "zielmaerkte": {
+            "eyebrow": "Mercados-alvo",
+            "title": "Seleção precisa pelos seus mercados-alvo.",
+            "intro": "Você recebe listas para países individuais ou regiões linguísticas completas, por exemplo:",
+            "note": "Além disso, há listas específicas por setor para diversas indústrias e grupos de produtos. Passo a passo, expandimos nossa oferta com listas qualificadas para mercados no mundo todo.",
+            "regions": [
+                { "flag": "DE", "title": "Países de língua alemã", "countries": "DE · AT · CH" },
+                { "flag": "FR", "title": "Países de língua francesa", "countries": "FR · BE · CH · LU" },
+                { "flag": "ES", "title": "Países de língua espanhola", "countries": "ES · MX · AR · CL …" },
+                { "flag": "PT", "title": "Países de língua portuguesa", "countries": "PT · BR · AO …" },
+                { "flag": "SE", "title": "Países escandinavos", "countries": "SE · NO · DK · FI · IS" },
+                { "flag": "AE", "title": "Países de língua árabe", "countries": "AE · SA · QA · KW · EG …" }
+            ]
+        },
+        "einkaufsprofile": {
+            "eyebrow": "Perfis de compra",
+            "title": "Importador não é tudo igual.",
+            "intro": "Nossos bancos de dados diferenciam vários perfis de compra:",
+            "close": "Assim você concentra suas atividades comerciais exatamente nos parceiros de negócio adequados ao seu produto.",
+            "cards": [
+                { "title": "Compra global", "body": "Empresas que buscam novos produtos e fornecedores no mundo inteiro." },
+                { "title": "Foco na UE", "body": "Importadores que compram exclusivamente dentro da União Europeia." },
+                { "title": "Orientados ao Mercosul", "body": "Empresas que importam preferencialmente do Mercosul." },
+                { "title": "Especialistas regionais", "body": "Especialistas com mercados de fornecimento claramente definidos." }
+            ]
+        },
+        "lieferumfang": {
+            "eyebrow": "O que está incluído",
+            "title": "Mais do que listas de endereços.",
+            "reportTitle": "Relatório de mercado atualizado incluso",
+            "reportBody": "Cada lista inclui um relatório de mercado atualizado, com informações valiosas sobre o setor e as oportunidades de venda no mercado-alvo.",
+            "listIntro": "Você também recebe orientações práticas sobre os seguintes temas:",
+            "close": "Assim você aumenta as chances de sucesso da sua campanha de exportação já no primeiro contato.",
+            "items": [
+                "Situação atual do mercado e da concorrência",
+                "Oportunidades de venda e distribuição",
+                "Particularidades de cada mercado",
+                "Requisitos dos potenciais parceiros comerciais",
+                "Quais informações e documentos os importadores esperam antes de uma parceria",
+                "Como abordar potenciais distribuidores de forma profissional",
+                "Quais argumentos de venda são mais promissores no primeiro contato"
+            ]
+        },
+        "daten": {
+            "eyebrow": "Qualidade dos dados",
+            "title": "Dados atualizados periodicamente.",
+            "body": "Todas as listas são mantidas e atualizadas continuamente. Novos participantes do mercado são incluídos, empresas inativas são removidas e os registros existentes são revisados regularmente. Assim você trabalha sempre com informações atuais e confiáveis."
+        },
+        "vorteil": {
+            "eyebrow": "Sua vantagem",
+            "title": "Economize tempo e aumente seu sucesso comercial.",
+            "body": "Em vez de pesquisar por semanas ou meses importadores e distribuidores adequados, você recebe imediatamente uma seleção qualificada de potenciais parceiros comerciais que combinam com o seu produto e o seu mercado-alvo. Assim você pode se concentrar no essencial — construir com sucesso o seu comércio internacional."
+        },
+        "howItWorks": {
+            "eyebrow": "Como funciona",
+            "title": "Da busca ao arquivo pronto em três passos.",
+            "steps": [
+                { "title": "Filtre", "body": "Navegue por países, regiões linguísticas, setores e perfis de compra e encontre as listas compatíveis com a sua campanha." },
+                { "title": "Compre", "body": "Revise volume, preço por lead e detalhes da lista antes de finalizar o pedido com checkout seguro." },
+                { "title": "Baixe", "body": "Depois da confirmação, acesse os arquivos em CSV ou Excel e incorpore-os ao seu processo comercial." }
+            ]
+        },
+        "zahlen": {
+            "_placeholder": "PLACEHOLDER: números fictícios do handoff — substituir por dados reais ou conectar ao backend antes do go-live.",
+            "eyebrow": "Números que importam",
+            "title": "Confiança construída com resultados.",
+            "stats": [
+                { "value": "6+", "label": "listas vendidas" },
+                { "value": "100%", "label": "qualidade de dados verificada" },
+                { "value": "24/7", "label": "suporte em português" }
+            ]
+        },
+        "blog": {
+            "eyebrow": "Mais informações",
+            "title": "Análises de mercado, relatórios setoriais e oportunidades de exportação.",
+            "intro": "No nosso blog publicamos regularmente análises de mercado, relatórios setoriais e informações sobre oportunidades de exportação, tendências comerciais e possibilidades de venda em diversos países e regiões. Assim você fica sempre por dentro dos movimentos do mercado internacional."
+        },
+        "cta": {
+            "title": "Pronto para construir o seu comércio internacional?",
+            "body": "Explore o catálogo e encontre importadores e distribuidores qualificados que combinam com o seu produto e mercado-alvo.",
+            "button": "Explorar catálogo"
+        },
+        "meta": {
+            "title": "Listas qualificadas de importadores e distribuidores para o seu comércio internacional",
+            "description": "Listas qualificadas de importadores e distribuidores por país, setor e perfil de compra. Empresas verificadas, relatórios de mercado atualizados e dados revisados periodicamente para a sua exportação."
+        }
+    },
+    "faq": {
+        "page": {
+            "title": "Perguntas frequentes",
+            "subtitle": "Respostas para as principais dúvidas sobre nossas listas de importadores e distribuidores.",
+            "metaTitle": "FAQ",
+            "metaDescription": "Respostas para perguntas frequentes sobre nossas listas de importadores e distribuidores: qualidade dos dados, formatos, pagamento e mais."
+        },
+        "_placeholder": "PLACEHOLDER: respostas provisórias — revisar/confirmar todas antes do go-live. A resposta de LGPD/GDPR está em branco de propósito.",
+        "items": [
+            {
+                "question": "De onde vêm os dados e como são verificados?",
+                "answer": "[PLACEHOLDER] Nossos dados vêm de fontes cuidadosamente avaliadas e são verificados manualmente antes de entrar em nossas listas."
+            },
+            {
+                "question": "Qual a atualidade das listas?",
+                "answer": "[PLACEHOLDER] Todas as listas são mantidas regularmente: novos participantes do mercado são incluídos, empresas inativas são removidas e os registros existentes são revisados."
+            },
+            {
+                "question": "Em quais formatos recebo os dados?",
+                "answer": "[PLACEHOLDER] Você recebe os arquivos em CSV ou Excel — prontos para uso no seu processo comercial e compatíveis com os principais CRMs."
+            },
+            {
+                "question": "Posso ver os dados antes de comprar?",
+                "answer": "[PLACEHOLDER] Sim, cada lista tem uma prévia com registros de exemplo anonimizados."
+            },
+            {
+                "question": "Como funciona o pagamento?",
+                "answer": "[PLACEHOLDER] O pagamento é feito por checkout seguro via PayPal. Após a confirmação, os arquivos ficam disponíveis para download imediatamente."
+            },
+            {
+                "question": "Para quais países e setores há listas disponíveis?",
+                "answer": "[PLACEHOLDER] Oferecemos listas para países individuais e regiões linguísticas completas, além de listas específicas por setor para diversas indústrias. A oferta é ampliada continuamente."
+            },
+            {
+                "question": "O que está incluído no relatório de mercado que acompanha a lista?",
+                "answer": "[PLACEHOLDER] Cada lista inclui um relatório de mercado atualizado com informações sobre a situação do mercado e da concorrência, oportunidades de venda e orientações práticas para abordar potenciais parceiros comerciais."
+            },
+            {
+                "question": "Como fica a proteção de dados (LGPD/GDPR)?",
+                "answer": ""
+            }
+        ],
+        "form": {
+            "title": "Não encontrou a sua pergunta?",
+            "subtitle": "Envie a sua pergunta — respondemos em breve.",
+            "name": "Nome",
+            "company": "Empresa (opcional)",
+            "email": "E-mail",
+            "subject": "Assunto",
+            "message": "Sua pergunta",
+            "consent": "Li e concordo com a <link>Política de Privacidade</link>.",
+            "submit": "Enviar pergunta",
+            "submitting": "Enviando…",
+            "success": "Obrigado! Recebemos a sua pergunta.",
+            "error": "Algo deu errado. Tente novamente.",
+            "rateLimited": "Muitas tentativas. Tente novamente mais tarde.",
+            "errors": {
+                "name": "Informe o seu nome.",
+                "email": "Informe um e-mail válido.",
+                "subject": "Informe um assunto.",
+                "message": "Sua pergunta deve ter pelo menos 10 caracteres.",
+                "consent": "É necessário concordar com a Política de Privacidade."
+            }
+        }
+    }
+}
