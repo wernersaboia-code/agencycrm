@@ -11,8 +11,10 @@ export async function getPublishedPostsForLocale(
     locale: BlogLocale,
     opts: { categoryKey?: string; page?: number; pageSize?: number } = {}
 ) {
-    const page = Math.max(1, opts.page ?? 1)
-    const pageSize = Math.min(50, Math.max(1, opts.pageSize ?? 9))
+    const rawPage = Math.floor(Number(opts.page ?? 1))
+    const page = Number.isFinite(rawPage) && rawPage > 0 ? rawPage : 1
+    const rawPageSize = Math.floor(Number(opts.pageSize ?? 9))
+    const pageSize = Number.isFinite(rawPageSize) && rawPageSize > 0 ? Math.min(50, rawPageSize) : 9
     const where = {
         ...publishedWhere(),
         translations: { some: { locale } },
