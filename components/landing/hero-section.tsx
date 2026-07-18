@@ -9,7 +9,7 @@ export async function HeroSection({ locale }: { locale: LandingLocale }) {
     const t = await getTranslations({ locale, namespace: "landing.hero" })
 
     return (
-        <section className="border-b border-gray-200 hero-gradient">
+        <section className="border-b border-border hero-gradient">
             <div className="container mx-auto px-4 py-16 md:py-20 lg:py-24">
                 <div className="mx-auto max-w-3xl text-center">
                     <Badge className="mb-5 rounded-md border-indigo-200 bg-indigo-50 px-3 py-1 text-indigo-700 hover:bg-indigo-50">
@@ -17,11 +17,11 @@ export async function HeroSection({ locale }: { locale: LandingLocale }) {
                         {t("badge")}
                     </Badge>
 
-                    <h1 className="text-4xl font-bold tracking-tight text-gray-950 md:text-5xl lg:text-6xl">
+                    <h1 className="text-4xl font-bold tracking-tight text-foreground md:text-5xl lg:text-6xl">
                         {t("title")}
                     </h1>
 
-                    <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-gray-600">
+                    <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-muted-foreground">
                         {t("subtitle")}
                     </p>
 
@@ -37,7 +37,7 @@ export async function HeroSection({ locale }: { locale: LandingLocale }) {
                         </Button>
                     </div>
 
-                    <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm text-gray-600">
+                    <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm text-muted-foreground">
                         <TrustNote icon={CheckCircle2} text={t("trust1")} />
                         <TrustNote icon={ShieldCheck} text={t("trust2")} />
                         <TrustNote icon={BadgeCheck} text={t("trust3")} />

@@ -35,7 +35,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default function GermanLandingPage() {
     return (
-        <div className="min-h-screen bg-white text-gray-950">
+        <div className="min-h-screen bg-background text-foreground">
             <HeroSection locale="de" />
             <IntroSection locale="de" />
             <TargetMarketsSection locale="de" />
