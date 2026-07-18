@@ -10,9 +10,7 @@ import { prisma } from "@/lib/prisma"
 import { z } from "zod"
 import { getAuthenticatedActiveDbUser } from "@/lib/auth"
 import { getPublicAppUrl } from "@/lib/env"
-import { rateLimit, getClientIp } from "@/lib/rate-limit"
-
-const rateLimiter = rateLimit(500)
+import { getClientIp, checkPersistentRateLimit } from "@/lib/rate-limit"
 
 const createOrderSchema = z.object({
     items: z.array(z.object({
@@ -23,12 +21,22 @@ const createOrderSchema = z.object({
 
 export async function POST(request: NextRequest) {
     try {
-        await rateLimiter.check(getClientIp(request), 10, 60_000) // 10 requests per minute
-
         const user = await getAuthenticatedActiveDbUser()
 
         if (!user) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+        }
+
+        // Rate limit persistido (compartilhado entre instâncias serverless):
+        // no máximo 10 pedidos por usuário por minuto.
+        const allowed = await checkPersistentRateLimit(
+            "checkout:create",
+            user.id || getClientIp(request),
+            10,
+            60_000
+        )
+        if (!allowed) {
+            return NextResponse.json({ error: "Too many requests" }, { status: 429 })
         }
 
         // Backstop persistido (cobre múltiplas instâncias serverless, onde o

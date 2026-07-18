@@ -3,6 +3,18 @@ import { prisma } from "@/lib/prisma"
 import { LeadStatus } from "@prisma/client"
 import { verifySignature } from "@/lib/signing"
 
+// Escapa valores antes de interpolar no HTML desta rota. sid/sig já são
+// validados por HMAC antes de chegar aqui, mas escapamos como defesa em
+// profundidade (e para o campo message, que é texto literal do código).
+function escapeHtml(value: string): string {
+    return value
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;")
+}
+
 // Resolve o lead a partir do envio assinado. Retorna null se a assinatura
 // nao conferir ou o envio nao existir.
 async function resolveLeadId(sid: string | null, sig: string | null): Promise<string | null> {
@@ -19,6 +31,10 @@ async function resolveLeadId(sid: string | null, sig: string | null): Promise<st
 }
 
 function confirmationPage(sid: string, sig: string, message?: string): NextResponse {
+    const safeSid = escapeHtml(sid)
+    const safeSig = escapeHtml(sig)
+    const safeMessage = message ? escapeHtml(message) : undefined
+
     const body = `<!doctype html>
 <html lang="pt-BR">
 <head>
@@ -39,12 +55,12 @@ function confirmationPage(sid: string, sig: string, message?: string): NextRespo
   <div class="card">
     <h1>Cancelar inscrição</h1>
     ${
-        message
-            ? `<p class="msg">${message}</p>`
+        safeMessage
+            ? `<p class="msg">${safeMessage}</p>`
             : `<p>Confirme que não deseja mais receber e-mails deste remetente.</p>
     <form method="POST">
-      <input type="hidden" name="sid" value="${sid}" />
-      <input type="hidden" name="sig" value="${sig}" />
+      <input type="hidden" name="sid" value="${safeSid}" />
+      <input type="hidden" name="sig" value="${safeSig}" />
       <button type="submit">Confirmar cancelamento</button>
     </form>`
     }

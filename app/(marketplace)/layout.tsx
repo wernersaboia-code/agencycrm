@@ -36,7 +36,10 @@ export default async function MarketplaceLayout({
     const locale = await getLocale()
     const messages = await getMessages()
     return (
-        <NextIntlClientProvider locale={locale} messages={{ nav: messages.nav, cart: messages.cart, catalog: messages.catalog }}>
+        // Repassar o pacote inteiro (~15 KB): a lista curada de namespaces já
+        // quebrou componentes client ao serem usados em páginas novas, e o
+        // ganho de payload não paga o risco.
+        <NextIntlClientProvider locale={locale} messages={messages}>
             <CartProvider>
                 <div className="min-h-screen flex flex-col">
                     <Suspense fallback={<div className="h-16 bg-background border-b" />}>

@@ -23,7 +23,7 @@ export function CartDrawer() {
                 <SheetHeader className="px-6 py-4 border-b">
                     <div className="flex items-center justify-between">
                         <SheetTitle className="flex items-center gap-2">
-                            <ShoppingBag className="h-5 w-5 text-[#2ec4b6]" />
+                            <ShoppingBag className="h-5 w-5 text-brand-accent-strong" />
                             {t("title")}
                             {itemCount > 0 && (
                                 <span className="text-sm font-normal text-muted-foreground">
@@ -38,10 +38,10 @@ export function CartDrawer() {
                 <ScrollArea className="flex-1 px-6">
                     {items.length === 0 ? (
                         <div className="flex flex-col items-center justify-center py-16 text-center">
-                            <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center mb-4">
-                                <ShoppingBag className="h-10 w-10 text-gray-400" />
+                            <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center mb-4">
+                                <ShoppingBag className="h-10 w-10 text-muted-foreground" />
                             </div>
-                            <h3 className="font-semibold text-gray-800 mb-2">
+                            <h3 className="font-semibold text-foreground mb-2">
                                 {t("empty")}
                             </h3>
                             <p className="text-sm text-muted-foreground mb-6">
@@ -62,11 +62,11 @@ export function CartDrawer() {
 
                 {/* Footer */}
                 {items.length > 0 && (
-                    <div className="border-t px-6 py-4 space-y-4 bg-gray-50">
+                    <div className="border-t px-6 py-4 space-y-4 bg-muted/40">
                         {/* Subtotal */}
                         <div className="flex items-center justify-between text-lg font-semibold">
-                            <span className="text-gray-700">{t("subtotal")}</span>
-                            <span className="text-[#4a2c5a]">
+                            <span className="text-foreground">{t("subtotal")}</span>
+                            <span className="text-brand">
                 {formatCurrency(total, items[0]?.currency || "EUR")}
               </span>
                         </div>
@@ -76,7 +76,7 @@ export function CartDrawer() {
                         {/* Buttons */}
                         <div className="space-y-2">
                             <Button
-                                className="w-full h-12 text-base bg-[#4a2c5a] hover:bg-[#3a1c4a]"
+                                className="w-full h-12 text-base bg-brand hover:bg-brand-hover"
                                 asChild
                                 onClick={closeCart}
                             >

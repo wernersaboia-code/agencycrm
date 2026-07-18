@@ -14,7 +14,11 @@
         "signOut": "Abmelden",
         "signOutSuccess": "Erfolgreich abgemeldet",
         "openMenu": "Menü öffnen",
-        "language": "Sprache"
+        "language": "Sprache",
+        "theme": "Design",
+        "themeLight": "Hell",
+        "themeDark": "Dunkel",
+        "themeSystem": "System"
     },
     "footer": {
         "about": "Qualifizierte Vertriebspartner für den internationalen Handel, damit Sie Ihr Geschäft ausbauen.",
@@ -53,12 +57,36 @@
             "intro": "Sie erhalten Listen für einzelne Länder oder komplette Sprachräume, beispielsweise:",
             "note": "Darüber hinaus stehen branchenspezifische Listen für zahlreiche Industrien und Produktgruppen zur Verfügung. Schritt für Schritt erweitern wir unser Angebot auf qualifizierte Listen für Märkte weltweit.",
             "regions": [
-                { "flag": "DE", "title": "Deutschsprachige Länder", "countries": "DE · AT · CH" },
-                { "flag": "FR", "title": "Französischsprachige Länder", "countries": "FR · BE · CH · LU" },
-                { "flag": "ES", "title": "Spanischsprachige Länder", "countries": "ES · MX · AR · CL …" },
-                { "flag": "PT", "title": "Portugiesischsprachige Länder", "countries": "PT · BR · AO …" },
-                { "flag": "SE", "title": "Skandinavische Länder", "countries": "SE · NO · DK · FI · IS" },
-                { "flag": "AE", "title": "Arabischsprachige Länder", "countries": "AE · SA · QA · KW · EG …" }
+                {
+                    "flag": "DE",
+                    "title": "Deutschsprachige Länder",
+                    "countries": "DE · AT · CH"
+                },
+                {
+                    "flag": "FR",
+                    "title": "Französischsprachige Länder",
+                    "countries": "FR · BE · CH · LU"
+                },
+                {
+                    "flag": "ES",
+                    "title": "Spanischsprachige Länder",
+                    "countries": "ES · MX · AR · CL …"
+                },
+                {
+                    "flag": "PT",
+                    "title": "Portugiesischsprachige Länder",
+                    "countries": "PT · BR · AO …"
+                },
+                {
+                    "flag": "SE",
+                    "title": "Skandinavische Länder",
+                    "countries": "SE · NO · DK · FI · IS"
+                },
+                {
+                    "flag": "AE",
+                    "title": "Arabischsprachige Länder",
+                    "countries": "AE · SA · QA · KW · EG …"
+                }
             ]
         },
         "einkaufsprofile": {
@@ -67,10 +95,22 @@
             "intro": "Unsere Datenbanken unterscheiden zwischen verschiedenen Einkaufsprofilen:",
             "close": "Dadurch können Sie Ihre Vertriebsaktivitäten exakt auf die für Ihr Produkt geeigneten Geschäftspartner konzentrieren.",
             "cards": [
-                { "title": "Weltweit einkaufend", "body": "Unternehmen, die weltweit nach neuen Produkten und Lieferanten suchen." },
-                { "title": "EU-fokussiert", "body": "Importeure, die ausschließlich innerhalb der Europäischen Union einkaufen." },
-                { "title": "Mercosur-orientiert", "body": "Unternehmen, die bevorzugt aus dem Mercosur importieren." },
-                { "title": "Regionale Spezialisten", "body": "Spezialisten mit klar definierten Beschaffungsmärkten." }
+                {
+                    "title": "Weltweit einkaufend",
+                    "body": "Unternehmen, die weltweit nach neuen Produkten und Lieferanten suchen."
+                },
+                {
+                    "title": "EU-fokussiert",
+                    "body": "Importeure, die ausschließlich innerhalb der Europäischen Union einkaufen."
+                },
+                {
+                    "title": "Mercosur-orientiert",
+                    "body": "Unternehmen, die bevorzugt aus dem Mercosur importieren."
+                },
+                {
+                    "title": "Regionale Spezialisten",
+                    "body": "Spezialisten mit klar definierten Beschaffungsmärkten."
+                }
             ]
         },
         "lieferumfang": {
@@ -104,9 +144,18 @@
             "eyebrow": "So funktioniert's",
             "title": "Vom Suchen zur fertigen Datei in drei Schritten.",
             "steps": [
-                { "title": "Filtern", "body": "Navigieren Sie nach Ländern, Sprachräumen, Branchen und Einkaufsprofilen und finden Sie die zu Ihrer Kampagne passenden Listen." },
-                { "title": "Kaufen", "body": "Prüfen Sie Umfang, Preis pro Lead und Listendetails, bevor Sie die Bestellung über den sicheren Checkout abschließen." },
-                { "title": "Herunterladen", "body": "Nach der Bestätigung greifen Sie auf die Dateien als CSV oder Excel zu und übernehmen sie in Ihren Vertriebsprozess." }
+                {
+                    "title": "Filtern",
+                    "body": "Navigieren Sie nach Ländern, Sprachräumen, Branchen und Einkaufsprofilen und finden Sie die zu Ihrer Kampagne passenden Listen."
+                },
+                {
+                    "title": "Kaufen",
+                    "body": "Prüfen Sie Umfang, Preis pro Lead und Listendetails, bevor Sie die Bestellung über den sicheren Checkout abschließen."
+                },
+                {
+                    "title": "Herunterladen",
+                    "body": "Nach der Bestätigung greifen Sie auf die Dateien als CSV oder Excel zu und übernehmen sie in Ihren Vertriebsprozess."
+                }
             ]
         },
         "zahlen": {
@@ -114,9 +163,18 @@
             "eyebrow": "Zahlen, die zählen",
             "title": "Vertrauen, aufgebaut durch Ergebnisse.",
             "stats": [
-                { "value": "6+", "label": "verkaufte Listen" },
-                { "value": "100%", "label": "geprüfte Datenqualität" },
-                { "value": "24/7", "label": "Support auf Deutsch" }
+                {
+                    "value": "6+",
+                    "label": "verkaufte Listen"
+                },
+                {
+                    "value": "100%",
+                    "label": "geprüfte Datenqualität"
+                },
+                {
+                    "value": "24/7",
+                    "label": "Support auf Deutsch"
+                }
             ]
         },
         "blog": {
@@ -210,10 +268,28 @@
         "continue": "Weiter einkaufen",
         "securePayment": "Sichere Zahlung über PayPal",
         "leads": "{count} Leads",
-        "addToCart": "In den Warenkorb"
+        "addToCart": "In den Warenkorb",
+        "openCart": "Warenkorb öffnen",
+        "openCartWithItems": "Warenkorb öffnen, {count, plural, one {# Artikel} other {# Artikel}}",
+        "removeItem": "\"{name}\" aus dem Warenkorb entfernen",
+        "pageTitle": "Warenkorb prüfen",
+        "pageSubtitle": "{count, plural, one {# ausgewählte Liste} other {# ausgewählte Listen}} mit insgesamt {leads} Leads.",
+        "summaryTitle": "Bestellübersicht",
+        "summarySubtitle": "Prüfen Sie die Positionen, bevor Sie zur Zahlung gehen.",
+        "totalLeads": "Leads gesamt",
+        "total": "Gesamt",
+        "checkout": "Kauf abschließen",
+        "clear": "Warenkorb leeren",
+        "emptyDesc": "Wählen Sie eine Liste im Katalog, um Preis, Abdeckung und Format vor dem Kauf zu prüfen.",
+        "formats": "CSV und Excel",
+        "remove": "Entfernen",
+        "trustPaypal": "Zahlung wird über PayPal abgewickelt",
+        "trustSaved": "Bestellung in Ihrem Konto gespeichert",
+        "trustDownload": "Download nach der Bestätigung freigegeben",
+        "trustReview": "Sie prüfen die Bestellung vor der Zahlung"
     },
     "catalog": {
-        "metaTitle": "Listenkatalog | Easy Prospect",
+        "metaTitle": "Listenkatalog",
         "badge": "Sofort einsatzbereite B2B-Datenbanken",
         "heroTitle": "Finden Sie die richtige Liste, bevor Sie Zeit mit manueller Recherche verlieren",
         "heroSubtitle": "Filtern Sie nach Markt, Branche und Kategorie und kaufen Sie nur die Daten, die zu Ihrer Kampagne passen.",
@@ -242,6 +318,172 @@
         "updatedAt": "Aktualisiert am {date}",
         "seeDetails": "Details ansehen",
         "perLead": "{price} pro Lead",
-        "defaultDescription": "Sofort einsatzbereite Datenbank mit qualifizierten Unternehmen."
+        "defaultDescription": "Sofort einsatzbereite Datenbank mit qualifizierten Unternehmen.",
+        "searchLabel": "Listen im Katalog suchen",
+        "filtersTitle": "Filter",
+        "filtersSubtitle": "Grenzen Sie den Katalog nach Listenprofil ein.",
+        "filtersOpen": "Filter",
+        "filtersActive": "{count, plural, one {# aktiver Filter} other {# aktive Filter}}",
+        "filterCategory": "Kategorie",
+        "filterCountries": "Länder",
+        "filterIndustries": "Branchen",
+        "loadErrorTitle": "Katalog konnte nicht geladen werden",
+        "loadErrorDesc": "Beim Abrufen der Listen ist ein Fehler aufgetreten. Bitte versuchen Sie es in Kürze erneut.",
+        "loadErrorRetry": "Erneut versuchen",
+        "previousPage": "Vorherige Seite",
+        "nextPage": "Nächste Seite",
+        "goToPage": "Zu Seite {page}",
+        "countries": {
+            "DE": "Deutschland",
+            "FR": "Frankreich",
+            "IT": "Italien",
+            "ES": "Spanien",
+            "NL": "Niederlande",
+            "BE": "Belgien",
+            "PL": "Polen",
+            "SE": "Schweden",
+            "AT": "Österreich",
+            "CH": "Schweiz",
+            "PT": "Portugal",
+            "GB": "Vereinigtes Königreich",
+            "US": "Vereinigte Staaten",
+            "CN": "China",
+            "JP": "Japan",
+            "BR": "Brasilien"
+        },
+        "industries": {
+            "food": "Lebensmittel & Getränke",
+            "tech": "Technologie",
+            "fashion": "Mode & Textil",
+            "automotive": "Automotive",
+            "health": "Gesundheit & Pharma",
+            "construction": "Bauwesen",
+            "retail": "Einzelhandel",
+            "industrial": "Industrie"
+        },
+        "categories": {
+            "importers": "Importeure",
+            "exporters": "Exporteure",
+            "manufacturers": "Hersteller",
+            "distributors": "Distributoren",
+            "retailers": "Einzelhändler",
+            "wholesalers": "Großhändler"
+        }
+    },
+    "listing": {
+        "back": "Zurück zum Katalog",
+        "featured": "Empfohlen",
+        "readyBadge": "Daten sofort zum Download bereit",
+        "quickLeads": "Leads",
+        "quickPricePerLead": "Preis/Lead",
+        "quickCountries": "Länder",
+        "quickUpdated": "Aktualisiert",
+        "coverageTitle": "Abdeckung der Liste",
+        "coverageSubtitle": "Anhand dieser Angaben prüfen Sie, ob die Datenbank zu Ihrer Kampagne passt.",
+        "fieldName": "Name",
+        "fieldCountries": "Länder",
+        "fieldTotalLeads": "Leads gesamt",
+        "fieldIndustries": "Branchen",
+        "fieldPricePerLead": "Preis pro Lead",
+        "fieldUpdatedAt": "Aktualisiert am",
+        "notInformed": "Keine Angabe",
+        "previewTitle": "Datenvorschau",
+        "previewSubtitle": "Stichprobe von {count} Datensätzen, um Struktur und Qualität vor dem Kauf zu prüfen.",
+        "includedTitle": "Enthaltene Leistungen",
+        "includedCompany": "Firmenname",
+        "includedEmail": "Verifizierte Geschäfts-E-Mail",
+        "includedPhone": "Telefon und Ansprechpartner, sofern verfügbar",
+        "includedLocation": "Land, Stadt und Website",
+        "includedIndustry": "Branche",
+        "includedFormats": "CSV- und Excel-Datei",
+        "perLead": "{price} pro Lead",
+        "leadsIncluded": "{count} Leads enthalten",
+        "oneOffNote": "Einmaliger Kauf, kein Abo. Der Zugriff bleibt im Bereich „Meine Käufe“ verfügbar.",
+        "beforeBuyNote": "Prüfen Sie vor dem Kauf Abdeckung, Datenvorschau und Preis pro Lead. Nach der Zahlungsfreigabe steht der Download in Ihrem Konto bereit.",
+        "benefitSecure": "Sichere Zahlung über PayPal",
+        "benefitImmediate": "Sofortiger Download nach der Bestätigung",
+        "benefitFresh": "Daten vor der Veröffentlichung aktualisiert",
+        "benefitRecorded": "Kauf in Ihrem Konto gespeichert",
+        "buyNow": "Jetzt kaufen",
+        "signInToBuy": "Anmelden und kaufen",
+        "notFound": "Liste nicht gefunden",
+        "metaFallbackDescription": "Liste mit {count} qualifizierten Leads."
+    },
+    "checkout": {
+        "stepCart": "Warenkorb",
+        "stepPayment": "Zahlung",
+        "stepDownload": "Download",
+        "backToCart": "Zurück zum Warenkorb",
+        "title": "Kasse",
+        "subtitle": "Schließen Sie die Zahlung ab, um {count} Leads als CSV und Excel freizuschalten.",
+        "secureTitle": "Sichere Zahlung",
+        "secureDesc": "PayPal wickelt die Zahlung ab; nach der Bestätigung wird der Kauf automatisch freigegeben.",
+        "redirectNote": "Sie werden im PayPal-Ablauf weitergeleitet, um die Transaktion zu autorisieren.",
+        "trustSecureTitle": "Sicher",
+        "trustSecureText": "Externe Zahlung über PayPal.",
+        "trustRecordedTitle": "Gespeichert",
+        "trustRecordedText": "Bestellung für späteren Zugriff gesichert.",
+        "trustImmediateTitle": "Sofort",
+        "trustImmediateText": "Download nach Freigabe verfügbar.",
+        "summaryTitle": "Übersicht",
+        "summaryItems": "{count, plural, one {# Liste} other {# Listen}} in der Bestellung",
+        "totalLeads": "Leads gesamt",
+        "total": "Gesamt",
+        "unavailable": "Die Zahlung ist vorübergehend nicht verfügbar. Bitte versuchen Sie es in einigen Minuten erneut.",
+        "sessionExpiredPay": "Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an, um den Kauf abzuschließen.",
+        "sessionExpiredOrder": "Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an, um die Bestellung zu sehen.",
+        "createFailed": "Die Zahlung konnte nicht gestartet werden. Bitte versuchen Sie es erneut.",
+        "captureFailed": "Wir konnten die Zahlung nicht bestätigen. Falls der Betrag abgebucht wurde, erscheint die Bestellung in wenigen Minuten unter „Meine Käufe“.",
+        "paymentConfirmed": "Zahlung bestätigt!",
+        "paypalError": "Fehler bei der Zahlungsabwicklung",
+        "successMetaTitle": "Kauf bestätigt",
+        "successMetaDescription": "Ihr Kauf wurde erfolgreich bestätigt",
+        "successTitle": "Kauf bestätigt",
+        "successSubtitle": "Ihre Bestellung wurde freigegeben und die Listen stehen zum Download bereit.",
+        "successOrder": "Bestellung",
+        "successLeadsReleased": "Freigeschaltete Leads",
+        "successTotalPaid": "Gezahlter Betrag",
+        "successNextDownloadTitle": "Herunterladen",
+        "successNextDownloadText": "CSV oder Excel unter „Meine Käufe“.",
+        "successNextProspectTitle": "Akquise",
+        "successNextProspectText": "Leads ins CRM importieren und Kampagnen anlegen.",
+        "successNextReceiptTitle": "Bestätigung",
+        "successNextReceiptText": "Die Rechnung wurde an Ihre E-Mail-Adresse gesendet.",
+        "successCtaPurchases": "Zu meinen Käufen",
+        "successCtaCrm": "CRM öffnen",
+        "successCtaContinue": "Weiter einkaufen",
+        "cancelMetaTitle": "Kauf abgebrochen",
+        "cancelMetaDescription": "Ihr Kauf wurde abgebrochen",
+        "cancelTitle": "Zahlung nicht abgeschlossen",
+        "cancelSubtitle": "Es wurde nichts abgebucht. Sie können den Warenkorb prüfen oder die Kasse erneut aufrufen.",
+        "cancelRetry": "Erneut versuchen",
+        "cancelReviewCart": "Warenkorb prüfen",
+        "cancelBackToCatalog": "Zurück zum Katalog"
+    },
+    "purchases": {
+        "metaTitle": "Meine Käufe",
+        "metaDescription": "Rufen Sie Ihre Lead-Listen auf und laden Sie sie herunter",
+        "back": "Zurück zum Katalog",
+        "badge": "Downloads und Bestellhistorie",
+        "title": "Meine Käufe",
+        "subtitle": "Laden Sie Ihre Listen herunter, prüfen Sie den Bestellstatus und nutzen Sie die Dateien für Ihre Kampagnen im CRM.",
+        "openCrm": "CRM öffnen",
+        "magicLinkNotice": "Zugang per Magic Link, 24 Stunden gültig.",
+        "statPurchases": "Käufe",
+        "statLists": "Listen",
+        "statLeads": "Leads",
+        "statSpent": "Investiert",
+        "nextStepsTitle": "Nächste Schritte",
+        "guidanceExcelTitle": "Als Excel herunterladen",
+        "guidanceExcelText": "Nutzen Sie Excel, wenn Sie die Spalten vor dem Import prüfen möchten.",
+        "guidanceCrmTitle": "Ins CRM importieren",
+        "guidanceCrmText": "Legen Sie eine Arbeitsliste an und verfolgen Sie die Ansprache je Kampagne.",
+        "guidanceMarketTitle": "Nach Markt priorisieren",
+        "guidanceMarketText": "Beginnen Sie mit den Ländern und Branchen, die Ihrem Angebot am nächsten sind.",
+        "loading": "Ihre Käufe werden geladen…",
+        "invalidTokenTitle": "Link ungültig oder abgelaufen",
+        "invalidTokenExpired": "Dieser Link ist abgelaufen. Fordern Sie in Ihrem Kaufbereich einen neuen Zugang an.",
+        "invalidTokenGeneric": "Dieser Link ist ungültig oder wurde bereits verwendet.",
+        "goToCatalog": "Zum Katalog"
     }
 }

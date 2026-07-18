@@ -14,3 +14,17 @@ export function resolveSiteLocale(
     if (isSiteLocale(cookieValue)) return cookieValue
     return DEFAULT_SITE_LOCALE
 }
+
+/**
+ * Tag BCP 47 para o atributo `lang` do documento e para as APIs de formatação
+ * (`Intl`), que precisam da região — "pt" sozinho não define separador decimal
+ * nem formato de data.
+ */
+const HTML_LANG: Record<SiteLocale, string> = {
+    pt: "pt-BR",
+    de: "de-DE",
+}
+
+export function toHtmlLang(locale: string | undefined): string {
+    return isSiteLocale(locale) ? HTML_LANG[locale] : HTML_LANG[DEFAULT_SITE_LOCALE]
+}

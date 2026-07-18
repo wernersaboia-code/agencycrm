@@ -28,10 +28,17 @@ const nextConfig: NextConfig = {
         ],
     },
     async headers() {
+        // 'unsafe-eval' só é necessário em dev (Turbopack/HMR usam eval para
+        // recarregar módulos). Em produção o bundle do Next não precisa dele,
+        // então removemos para reduzir a superfície de XSS.
+        const scriptSrc = process.env.NODE_ENV === 'production'
+            ? "'self' 'unsafe-inline'"
+            : "'self' 'unsafe-inline' 'unsafe-eval'"
+
         const securityHeaders = [
             {
                 key: 'Content-Security-Policy',
-                value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://*.supabase.co https://api.paypal.com https://api.resend.com; frame-src 'self' https://www.paypal.com https://www.sandbox.paypal.com; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'",
+                value: `default-src 'self'; script-src ${scriptSrc}; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://*.supabase.co https://api.paypal.com https://api.resend.com; frame-src 'self' https://www.paypal.com https://www.sandbox.paypal.com; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'`,
             },
             {
                 key: 'Referrer-Policy',

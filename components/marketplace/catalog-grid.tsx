@@ -16,14 +16,14 @@ export function CatalogGrid({ lists }: CatalogGridProps) {
 
     if (lists.length === 0) {
         return (
-            <div className="rounded-lg border border-dashed border-gray-300 bg-white px-6 py-14 text-center">
-                <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-md bg-gray-100">
-                    <SearchX className="h-6 w-6 text-gray-500" />
+            <div className="rounded-lg border border-dashed border-input bg-card px-6 py-14 text-center">
+                <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-md bg-muted">
+                    <SearchX className="h-6 w-6 text-muted-foreground" />
                 </div>
-                <h3 className="mb-2 text-lg font-semibold text-gray-900">
+                <h3 className="mb-2 text-lg font-semibold text-foreground">
                     {t("emptyTitle")}
                 </h3>
-                <p className="mx-auto mb-6 max-w-md text-sm text-gray-500">
+                <p className="mx-auto mb-6 max-w-md text-sm text-muted-foreground">
                     {t("emptyDesc")}
                 </p>
                 <Button variant="outline" asChild>

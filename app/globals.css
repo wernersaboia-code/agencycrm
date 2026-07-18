@@ -37,6 +37,11 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
+  --color-brand-hover: var(--brand-hover);
+  --color-brand-accent: var(--brand-accent);
+  --color-brand-accent-strong: var(--brand-accent-strong);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -52,6 +57,17 @@
   /* Background & Foreground */
   --background: oklch(0.985 0.005 265);
   --foreground: oklch(0.22 0.025 265);
+
+  /* Marca do marketplace. Antes espalhados como #4a2c5a / #2ec4b6 literais nas
+     páginas do funil, o que impedia qualquer adaptação a tema. */
+  --brand: oklch(0.36 0.08 320);
+  --brand-hover: oklch(0.30 0.08 320);
+  --brand-foreground: oklch(0.99 0.005 320);
+  /* Teal decorativo: reprova no contraste AA sobre branco, então é reservado a
+     ícones, bordas e preenchimentos. */
+  --brand-accent: oklch(0.75 0.11 185);
+  /* Variante escura, essa sim aprovada para texto. */
+  --brand-accent-strong: oklch(0.57 0.10 185);
 
   /* Surfaces */
   --card: oklch(1 0 0);
@@ -112,6 +128,13 @@
 .dark {
   --background: oklch(0.18 0.03 265);
   --foreground: oklch(0.94 0.018 260);
+
+  /* No escuro a marca precisa clarear para manter contraste com o fundo. */
+  --brand: oklch(0.62 0.11 320);
+  --brand-hover: oklch(0.68 0.11 320);
+  --brand-foreground: oklch(0.14 0.02 320);
+  --brand-accent: oklch(0.70 0.10 185);
+  --brand-accent-strong: oklch(0.78 0.10 185);
 
   --card: oklch(0.23 0.035 260);
   --card-foreground: oklch(0.94 0.018 260);

@@ -55,14 +55,14 @@ export function CatalogStats({
             {stats.map((stat) => (
                 <div
                     key={stat.label}
-                    className="flex items-center gap-3 rounded-lg border border-gray-200 bg-white p-4 shadow-sm"
+                    className="flex items-center gap-3 rounded-lg border border-border bg-card p-4 shadow-sm"
                 >
                     <div className={`flex h-10 w-10 items-center justify-center rounded-md ${stat.bg} ${stat.color}`}>
                         <stat.icon className="h-5 w-5" />
                     </div>
                     <div className="min-w-0">
-                        <div className="text-xl font-bold text-gray-900">{stat.value}</div>
-                        <div className="text-sm text-gray-500">{stat.label}</div>
+                        <div className="text-xl font-bold text-foreground">{stat.value}</div>
+                        <div className="text-sm text-muted-foreground">{stat.label}</div>
                     </div>
                 </div>
             ))}

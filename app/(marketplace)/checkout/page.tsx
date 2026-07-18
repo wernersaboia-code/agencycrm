@@ -4,6 +4,7 @@ import Link from "next/link"
 import { useEffect } from "react"
 import type { ComponentType } from "react"
 import { useRouter } from "next/navigation"
+import { useFormatter, useTranslations } from "next-intl"
 import { useCart } from "@/contexts/cart-context"
 import { PayPalButtonsWrapper } from "@/components/checkout/paypal-buttons"
 import { formatCurrency } from "@/lib/utils"
@@ -23,6 +24,8 @@ import {
 export default function CheckoutPage() {
     const { items, total } = useCart()
     const router = useRouter()
+    const t = useTranslations("checkout")
+    const format = useFormatter()
 
     useEffect(() => {
         if (items.length === 0) {
@@ -42,54 +45,50 @@ export default function CheckoutPage() {
     }))
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            <section className="border-b border-gray-200 bg-white">
+        <div className="min-h-screen bg-muted/40">
+            <section className="border-b bg-card">
                 <div className="container mx-auto px-4 py-6">
                     <Link
                         href="/cart"
-                        className="mb-3 inline-flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-[#4a2c5a]"
+                        className="mb-3 inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-brand"
                     >
-                        <ArrowLeft className="h-4 w-4" />
-                        Voltar ao carrinho
+                        <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+                        {t("backToCart")}
                     </Link>
                     <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                         <div>
-                            <h1 className="text-3xl font-bold text-gray-950">Checkout</h1>
-                            <p className="mt-2 text-gray-500">
-                                Finalize o pagamento para liberar {totalLeads.toLocaleString("pt-BR")} leads em CSV e Excel.
+                            <h1 className="text-3xl font-bold text-foreground">{t("title")}</h1>
+                            <p className="mt-2 text-muted-foreground">
+                                {t("subtitle", { count: format.number(totalLeads) })}
                             </p>
                         </div>
 
-                        <div className="grid grid-cols-3 gap-2 rounded-lg border border-gray-200 bg-gray-50 p-2 text-center text-sm">
-                            <CheckoutStep label="Carrinho" done />
-                            <CheckoutStep label="Pagamento" active />
-                            <CheckoutStep label="Download" />
-                        </div>
+                        <ol className="grid grid-cols-3 gap-2 rounded-lg border bg-muted/40 p-2 text-center text-sm">
+                            <CheckoutStep label={t("stepCart")} done />
+                            <CheckoutStep label={t("stepPayment")} active />
+                            <CheckoutStep label={t("stepDownload")} />
+                        </ol>
                     </div>
                 </div>
             </section>
 
             <div className="container mx-auto grid max-w-5xl gap-6 px-4 py-8 lg:grid-cols-[1fr_340px]">
                 <div className="space-y-6">
-                    <Card className="border-gray-200">
+                    <Card>
                         <CardContent className="p-6">
                             <div className="mb-5 flex items-start gap-3">
-                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-[#2ec4b6]/10 text-[#1ba399]">
-                                    <Shield className="h-5 w-5" />
+                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-brand-accent/15 text-brand-accent-strong">
+                                    <Shield className="h-5 w-5" aria-hidden="true" />
                                 </div>
                                 <div>
-                                    <h2 className="text-lg font-semibold text-gray-900">
-                                        Pagamento seguro
-                                    </h2>
-                                    <p className="mt-1 text-sm text-gray-500">
-                                        O PayPal processa o pagamento; o sistema libera a compra automaticamente após a confirmação.
-                                    </p>
+                                    <h2 className="text-lg font-semibold text-foreground">{t("secureTitle")}</h2>
+                                    <p className="mt-1 text-sm text-muted-foreground">{t("secureDesc")}</p>
                                 </div>
                             </div>
 
-                            <div className="mb-6 rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm text-blue-800">
-                                <Lock className="mr-2 inline h-4 w-4" />
-                                Você será redirecionado no próprio fluxo do PayPal para autorizar a transação.
+                            <div className="mb-6 rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm text-blue-900 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-100">
+                                <Lock className="mr-2 inline h-4 w-4" aria-hidden="true" />
+                                {t("redirectNote")}
                             </div>
 
                             <PayPalButtonsWrapper items={paypalItems} />
@@ -97,19 +96,19 @@ export default function CheckoutPage() {
                     </Card>
 
                     <div className="grid gap-3 md:grid-cols-3">
-                        <TrustItem icon={ShieldCheck} title="Seguro" text="Pagamento externo via PayPal." />
-                        <TrustItem icon={CheckCircle2} title="Registrado" text="Pedido salvo para acesso futuro." />
-                        <TrustItem icon={FileDown} title="Imediato" text="Download liberado após aprovação." />
+                        <TrustItem icon={ShieldCheck} title={t("trustSecureTitle")} text={t("trustSecureText")} />
+                        <TrustItem icon={CheckCircle2} title={t("trustRecordedTitle")} text={t("trustRecordedText")} />
+                        <TrustItem icon={FileDown} title={t("trustImmediateTitle")} text={t("trustImmediateText")} />
                     </div>
                 </div>
 
                 <aside>
-                    <Card className="sticky top-24 border-gray-200">
+                    <Card className="sticky top-24">
                         <CardContent className="space-y-6 p-6">
                             <div>
-                                <h2 className="text-xl font-bold text-gray-900">Resumo</h2>
-                                <p className="mt-1 text-sm text-gray-500">
-                                    {items.length} {items.length === 1 ? "lista" : "listas"} no pedido
+                                <h2 className="text-xl font-bold text-foreground">{t("summaryTitle")}</h2>
+                                <p className="mt-1 text-sm text-muted-foreground">
+                                    {t("summaryItems", { count: items.length })}
                                 </p>
                             </div>
 
@@ -119,17 +118,17 @@ export default function CheckoutPage() {
                                 {items.map((item) => (
                                     <div key={item.id} className="flex gap-3">
                                         <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-gradient-to-br from-indigo-500 to-blue-600">
-                                            <Building2 className="h-5 w-5 text-white" />
+                                            <Building2 className="h-5 w-5 text-white" aria-hidden="true" />
                                         </div>
                                         <div className="min-w-0 flex-1">
-                                            <h3 className="line-clamp-2 text-sm font-medium text-gray-900">
+                                            <h3 className="line-clamp-2 text-sm font-medium text-foreground">
                                                 {item.name}
                                             </h3>
-                                            <div className="mt-1 flex items-center gap-1 text-xs text-gray-500">
-                                                <Users className="h-3 w-3" />
-                                                {item.totalLeads.toLocaleString()} leads
+                                            <div className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
+                                                <Users className="h-3 w-3" aria-hidden="true" />
+                                                {format.number(item.totalLeads)} leads
                                             </div>
-                                            <div className="mt-1 font-semibold text-[#4a2c5a]">
+                                            <div className="mt-1 font-semibold text-brand">
                                                 {formatCurrency(item.price, item.currency)}
                                             </div>
                                         </div>
@@ -140,13 +139,13 @@ export default function CheckoutPage() {
                             <Separator />
 
                             <div className="space-y-2">
-                                <div className="flex justify-between text-sm text-gray-500">
-                                    <span>Total de leads</span>
-                                    <span>{totalLeads.toLocaleString()}</span>
+                                <div className="flex justify-between text-sm text-muted-foreground">
+                                    <span>{t("totalLeads")}</span>
+                                    <span>{format.number(totalLeads)}</span>
                                 </div>
                                 <div className="flex items-center justify-between text-xl font-bold">
-                                    <span className="text-gray-900">Total</span>
-                                    <span className="text-[#4a2c5a]">{formatCurrency(total, currency)}</span>
+                                    <span className="text-foreground">{t("total")}</span>
+                                    <span className="text-brand">{formatCurrency(total, currency)}</span>
                                 </div>
                             </div>
                         </CardContent>
@@ -167,17 +166,18 @@ function CheckoutStep({
     done?: boolean
 }) {
     return (
-        <div
-            className={`rounded-md px-3 py-2 font-medium ${
+        <li
+            aria-current={active ? "step" : undefined}
+            className={`list-none rounded-md px-3 py-2 font-medium ${
                 active
-                    ? "bg-[#4a2c5a] text-white"
+                    ? "bg-brand text-brand-foreground"
                     : done
-                      ? "bg-indigo-50 text-indigo-700"
-                      : "text-gray-500"
+                      ? "bg-primary/10 text-primary"
+                      : "text-muted-foreground"
             }`}
         >
             {label}
-        </div>
+        </li>
     )
 }
 
@@ -191,10 +191,10 @@ function TrustItem({
     text: string
 }) {
     return (
-        <div className="rounded-lg border border-gray-200 bg-white p-4">
-            <Icon className="mb-3 h-5 w-5 text-[#2ec4b6]" />
-            <div className="font-semibold text-gray-900">{title}</div>
-            <p className="mt-1 text-sm text-gray-500">{text}</p>
+        <div className="rounded-lg border bg-card p-4">
+            <Icon className="mb-3 h-5 w-5 text-brand-accent-strong" />
+            <div className="font-semibold text-foreground">{title}</div>
+            <p className="mt-1 text-sm text-muted-foreground">{text}</p>
         </div>
     )
 }

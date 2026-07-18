@@ -63,21 +63,21 @@ export function ListCard({ list }: ListCardProps) {
     }
 
     return (
-        <Card className="group h-full border-gray-200 transition-shadow hover:border-[#2ec4b6] hover:shadow-lg">
+        <Card className="group h-full border-border transition-shadow hover:border-brand-accent hover:shadow-lg">
             <CardContent className="p-5 flex flex-col h-full">
                 {/* Header */}
                 <Link href={`/list/${list.slug}`} className="flex-1">
                     <div className="flex items-start justify-between mb-4">
                         <div className="flex-1">
                             {list.isFeatured && (
-                                <Badge className="mb-2 bg-[#4a2c5a] hover:bg-[#4a2c5a]">
+                                <Badge className="mb-2 bg-brand hover:bg-brand">
                                     {t("featured")}
                                 </Badge>
                             )}
-                            <h3 className="font-semibold text-gray-800 line-clamp-2 group-hover:text-[#2ec4b6] transition-colors">
+                            <h3 className="font-semibold text-foreground line-clamp-2 group-hover:text-brand-accent-strong transition-colors">
                                 {list.name}
                             </h3>
-                            <p className="mt-2 line-clamp-2 text-sm text-gray-500">
+                            <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">
                                 {list.description || t("defaultDescription")}
                             </p>
                         </div>
@@ -91,7 +91,7 @@ export function ListCard({ list }: ListCardProps) {
                                 />
                             ))}
                             {list.countries.length > 3 && (
-                                <span className="text-xs text-gray-400 ml-1">
+                                <span className="text-xs text-muted-foreground ml-1">
                                     +{list.countries.length - 3}
                                 </span>
                             )}
@@ -100,20 +100,20 @@ export function ListCard({ list }: ListCardProps) {
 
                     {/* Info */}
                     <div className="space-y-2 mb-4">
-                        <div className="flex items-center gap-2 text-sm text-gray-600">
-                            <Building2 className="h-4 w-4 text-gray-400" />
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <Building2 className="h-4 w-4 text-muted-foreground" />
                             <span>{t("companies", { count: list.totalLeads })}</span>
                         </div>
-                        <div className="flex items-center gap-2 text-sm text-gray-600">
-                            <Globe className="h-4 w-4 text-gray-400" />
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <Globe className="h-4 w-4 text-muted-foreground" />
                             <span className="truncate">{list.countries.slice(0, 3).join(", ")}{list.countries.length > 3 ? ` +${list.countries.length - 3}` : ''}</span>
                         </div>
-                        <div className="flex items-center gap-2 text-sm text-gray-600">
-                            <CheckCircle className="h-4 w-4 text-[#2ec4b6]" />
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <CheckCircle className="h-4 w-4 text-brand-accent-strong" />
                             <span>{t("verifiedEmails")}</span>
                         </div>
-                        <div className="flex items-center gap-2 text-sm text-gray-600">
-                            <CalendarClock className="h-4 w-4 text-gray-400" />
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <CalendarClock className="h-4 w-4 text-muted-foreground" />
                             <span>{t("updatedAt", { date: updatedAt })}</span>
                         </div>
                     </div>
@@ -136,19 +136,19 @@ export function ListCard({ list }: ListCardProps) {
                 </Link>
 
                 {/* Footer */}
-                <div className="pt-4 border-t border-gray-100 space-y-3">
+                <div className="pt-4 border-t border-border space-y-3">
                     <div className="flex items-center justify-between">
                         <div>
-                            <span className="text-2xl font-bold text-[#4a2c5a]">
+                            <span className="text-2xl font-bold text-brand">
                                 {formatCurrency(list.price, list.currency)}
                             </span>
-                            <div className="text-xs text-gray-500">
+                            <div className="text-xs text-muted-foreground">
                                 {t("perLead", { price: formatCurrency(pricePerLead, list.currency) })}
                             </div>
                         </div>
                         <Link
                             href={`/list/${list.slug}`}
-                            className="flex items-center text-sm text-[#2ec4b6] font-medium hover:translate-x-1 transition-transform"
+                            className="flex items-center text-sm text-brand-accent-strong font-medium hover:translate-x-1 transition-transform"
                         >
                             {t("seeDetails")}
                             <ArrowRight className="h-4 w-4 ml-1" />
@@ -160,7 +160,7 @@ export function ListCard({ list }: ListCardProps) {
                         onClick={handleAddToCart}
                         variant="outline"
                         size="sm"
-                        className="w-full hover:bg-[#2ec4b6] hover:text-white hover:border-[#2ec4b6] transition-colors"
+                        className="w-full hover:bg-brand-accent hover:text-white hover:border-brand-accent transition-colors"
                     >
                         <ShoppingCart className="h-4 w-4 mr-2" />
                         {tCart("addToCart")}
