@@ -3,6 +3,7 @@
 
 import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js"
 import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 import { toast } from "sonner"
 import { useCart } from "@/contexts/cart-context"
 import { getOptionalPublicPaypalClientId } from "@/lib/env"
@@ -21,20 +22,34 @@ type CaptureOrderResponse = {
     error?: string
 }
 
-function getErrorMessage(error: unknown, fallback: string): string {
-    return error instanceof Error ? error.message : fallback
+/**
+ * Mensagens da API nunca chegam cruas ao usuário — `error: "Unauthorized"`
+ * apareceria como toast em inglês num funil PT/DE. O status manda.
+ */
+class CheckoutError extends Error {
+    constructor(message: string, readonly status: number) {
+        super(message)
+    }
+}
+
+function isSessionExpired(error: unknown): boolean {
+    return error instanceof CheckoutError && (error.status === 401 || error.status === 403)
 }
 
 export function PayPalButtonsWrapper({ items }: PayPalButtonsWrapperProps) {
     const router = useRouter()
     const { clearCart } = useCart()
+    const t = useTranslations("checkout")
     const paypalClientId = getOptionalPublicPaypalClientId()
 
     if (!paypalClientId) {
+        // O nome da variável de ambiente é problema do time, não do comprador.
+        console.error("NEXT_PUBLIC_PAYPAL_CLIENT_ID ausente — botões do PayPal não renderizados")
+
         return (
-            <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-center">
-                <p className="text-red-600 text-sm">
-                    PayPal não configurado. Adicione NEXT_PUBLIC_PAYPAL_CLIENT_ID no .env
+            <div className="rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-center">
+                <p className="text-sm text-destructive">
+                    {t("unavailable")}
                 </p>
             </div>
         )
@@ -67,12 +82,18 @@ export function PayPalButtonsWrapper({ items }: PayPalButtonsWrapperProps) {
                         const data = await response.json() as CreateOrderResponse
 
                         if (!response.ok || !data.orderId) {
-                            throw new Error(data.error || "Erro ao criar pedido")
+                            console.error("create-order failed:", response.status, data.error)
+                            throw new CheckoutError("create-order failed", response.status)
                         }
 
                         return data.orderId
                     } catch (error: unknown) {
-                        toast.error(getErrorMessage(error, "Erro ao processar pagamento"))
+                        if (isSessionExpired(error)) {
+                            toast.error(t("sessionExpiredPay"))
+                            router.push("/sign-in?redirect=/checkout")
+                        } else {
+                            toast.error(t("createFailed"))
+                        }
                         throw error
                     }
                 }}
@@ -87,7 +108,8 @@ export function PayPalButtonsWrapper({ items }: PayPalButtonsWrapperProps) {
                         const result = await response.json() as CaptureOrderResponse
 
                         if (!response.ok || !result.purchaseId) {
-                            throw new Error(result.error || "Erro ao capturar pagamento")
+                            console.error("capture-order failed:", response.status, result.error)
+                            throw new CheckoutError("capture-order failed", response.status)
                         }
 
                         // Limpar carrinho
@@ -96,14 +118,26 @@ export function PayPalButtonsWrapper({ items }: PayPalButtonsWrapperProps) {
                         // Redirecionar para página de sucesso
                         router.push(`/checkout/success?purchaseId=${result.purchaseId}`)
 
-                        toast.success("Pagamento confirmado!")
+                        toast.success(t("paymentConfirmed"))
                     } catch (error: unknown) {
-                        toast.error(getErrorMessage(error, "Erro ao confirmar pagamento"))
+                        if (isSessionExpired(error)) {
+                            toast.error(t("sessionExpiredOrder"))
+                            router.push("/sign-in?redirect=/my-purchases")
+                            return
+                        }
+
+                        // O pagamento pode ter sido aprovado no PayPal e falhado
+                        // só na confirmação do nosso lado — o usuário precisa
+                        // saber onde procurar em vez de tentar pagar de novo.
+                        toast.error(
+                            t("captureFailed"),
+                            { duration: 10000 }
+                        )
                     }
                 }}
                 onError={(err) => {
                     console.error("PayPal error:", err)
-                    toast.error("Erro no processamento do pagamento")
+                    toast.error(t("paypalError"))
                 }}
                 onCancel={() => {
                     router.push("/checkout/cancel")

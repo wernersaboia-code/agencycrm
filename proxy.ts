@@ -41,6 +41,9 @@ export async function proxy(request: NextRequest) {
     // ============================================
     // ROTAS PÚBLICAS - Easy Prospect (Marketplace)
     // ============================================
+    // Vitrine: navegável sem conta. /checkout e /my-purchases exigem sessão —
+    // o download já é vinculado à conta, então o gate acontece antes do
+    // pagamento em vez de depois do clique no PayPal.
     const marketplaceRoutes = [
         "/",
         "/de",
@@ -48,8 +51,6 @@ export async function proxy(request: NextRequest) {
         "/opengraph-image",
         "/catalog",
         "/list",
-        "/my-purchases",
-        "/checkout",
         "/cart",
         "/blog",
     ]
@@ -128,7 +129,12 @@ export async function proxy(request: NextRequest) {
                 url.pathname = "/sign-in"
             }
 
-            url.searchParams.set("redirect", pathname)
+            // A query da rota original não pertence a /sign-in — ela vai
+            // inteira dentro de `redirect`, senão /checkout/success?purchaseId=…
+            // perde o pedido para sempre.
+            const originalTarget = `${pathname}${request.nextUrl.search}`
+            url.search = ""
+            url.searchParams.set("redirect", originalTarget)
             return NextResponse.redirect(url)
         }
 

@@ -764,3 +764,19 @@ model BlogCategoryTranslation {
 
   @@unique([categoryId, locale])
 }
+
+// ==================== RATE LIMIT ====================
+//
+// Contador fixed-window para rate limiting compartilhado entre instâncias
+// serverless. A chave embute o índice da janela de tempo, então cada janela
+// é uma linha distinta. Linhas antigas são limpas pelo cron.
+
+model RateLimit {
+  key         String   @id
+  windowStart DateTime
+  count       Int      @default(0)
+  updatedAt   DateTime @updatedAt
+
+  @@index([windowStart])
+  @@map("rate_limits")
+}

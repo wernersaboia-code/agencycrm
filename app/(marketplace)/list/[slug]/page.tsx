@@ -2,6 +2,7 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import { Suspense } from "react"
 import type { ComponentType } from "react"
+import { getFormatter, getTranslations } from "next-intl/server"
 import { prisma } from "@/lib/prisma"
 import { ListPreview } from "@/components/marketplace/list-preview"
 import { BuyNowButton } from "@/components/marketplace/buy-now-button"
@@ -40,21 +41,25 @@ async function getList(slug: string) {
 
 export async function generateMetadata({ params }: ListPageProps) {
     const { slug } = await params
-    const list = await getList(slug)
+    const [list, t] = await Promise.all([getList(slug), getTranslations("listing")])
 
     if (!list) {
-        return { title: "Lista não encontrada | Easy Prospect" }
+        return { title: t("notFound") }
     }
 
     return {
-        title: `${list.name} | Easy Prospect`,
-        description: list.description || `Lista com ${list.totalLeads} leads qualificados.`,
+        title: list.name,
+        description: list.description || t("metaFallbackDescription", { count: list.totalLeads }),
     }
 }
 
 export default async function ListPage({ params }: ListPageProps) {
     const { slug } = await params
-    const list = await getList(slug)
+    const [list, t, format] = await Promise.all([
+        getList(slug),
+        getTranslations("listing"),
+        getFormatter(),
+    ])
 
     if (!list) {
         notFound()
@@ -62,7 +67,8 @@ export default async function ListPage({ params }: ListPageProps) {
 
     const price = Number(list.price)
     const pricePerLead = list.totalLeads > 0 ? price / list.totalLeads : 0
-    const updatedAt = new Date(list.updatedAt).toLocaleDateString("pt-BR", {
+    // Formatado no locale ativo: "fev. de 2026" para um leitor alemão é ruído.
+    const updatedAt = format.dateTime(new Date(list.updatedAt), {
         day: "2-digit",
         month: "short",
         year: "numeric",
@@ -77,49 +83,49 @@ export default async function ListPage({ params }: ListPageProps) {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            <div className="border-b border-gray-200 bg-white">
+        <div className="min-h-screen bg-muted/40">
+            <div className="border-b bg-card">
                 <div className="container mx-auto px-4 py-6">
                     <Link
                         href="/catalog"
-                        className="mb-5 inline-flex items-center gap-2 text-sm font-medium text-gray-600 transition-colors hover:text-[#4a2c5a]"
+                        className="mb-5 inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-brand"
                     >
-                        <ArrowLeft className="h-4 w-4" />
-                        Voltar ao catálogo
+                        <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+                        {t("back")}
                     </Link>
 
                     <div className="grid gap-6 lg:grid-cols-[1fr_360px] lg:items-start">
                         <div>
                             <div className="mb-3 flex flex-wrap items-center gap-2">
                                 {list.isFeatured && (
-                                    <Badge className="bg-[#4a2c5a] hover:bg-[#4a2c5a]">
-                                        Destaque
+                                    <Badge className="bg-brand text-brand-foreground hover:bg-brand">
+                                        {t("featured")}
                                     </Badge>
                                 )}
-                                <Badge variant="outline" className="border-[#2ec4b6] text-[#1ba399]">
+                                <Badge variant="outline" className="border-brand-accent text-brand-accent-strong">
                                     {list.category}
                                 </Badge>
-                                <span className="inline-flex items-center gap-1 rounded-md bg-indigo-50 px-2 py-1 text-xs font-medium text-indigo-700">
-                                    <BadgeCheck className="h-3.5 w-3.5" />
-                                    Dados prontos para download
+                                <span className="inline-flex items-center gap-1 rounded-md bg-primary/10 px-2 py-1 text-xs font-medium text-primary">
+                                    <BadgeCheck className="h-3.5 w-3.5" aria-hidden="true" />
+                                    {t("readyBadge")}
                                 </span>
                             </div>
-                            <h1 className="max-w-3xl text-3xl font-bold tracking-tight text-gray-950 md:text-4xl">
+                            <h1 className="max-w-3xl text-3xl font-bold tracking-tight text-foreground md:text-4xl">
                                 {list.name}
                             </h1>
                             {list.description && (
-                                <p className="mt-3 max-w-2xl text-base text-gray-600">
+                                <p className="mt-3 max-w-2xl text-base text-muted-foreground">
                                     {list.description}
                                 </p>
                             )}
                         </div>
 
-                        <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
+                        <div className="rounded-lg border bg-muted/40 p-4">
                             <div className="grid grid-cols-2 gap-3">
-                                <QuickMetric label="Leads" value={list.totalLeads.toLocaleString()} />
-                                <QuickMetric label="Preço/lead" value={formatCurrency(pricePerLead, list.currency)} />
-                                <QuickMetric label="Países" value={list.countries.length.toString()} />
-                                <QuickMetric label="Atualizada" value={updatedAt} />
+                                <QuickMetric label={t("quickLeads")} value={format.number(list.totalLeads)} />
+                                <QuickMetric label={t("quickPricePerLead")} value={formatCurrency(pricePerLead, list.currency)} />
+                                <QuickMetric label={t("quickCountries")} value={format.number(list.countries.length)} />
+                                <QuickMetric label={t("quickUpdated")} value={updatedAt} />
                             </div>
                         </div>
                     </div>
@@ -128,78 +134,68 @@ export default async function ListPage({ params }: ListPageProps) {
 
             <div className="container mx-auto grid gap-6 px-4 py-6 lg:grid-cols-[1fr_360px] lg:items-start">
                 <div className="space-y-6">
-                    <section className="rounded-lg border border-gray-200 bg-white p-6">
+                    <section className="rounded-lg border bg-card p-6">
                         <div className="mb-5 flex items-center justify-between gap-4">
                             <div>
-                                <h2 className="text-lg font-semibold text-gray-900">
-                                    Cobertura da lista
-                                </h2>
-                                <p className="text-sm text-gray-500">
-                                    Use estes sinais para validar se a base combina com sua campanha.
-                                </p>
+                                <h2 className="text-lg font-semibold text-foreground">{t("coverageTitle")}</h2>
+                                <p className="text-sm text-muted-foreground">{t("coverageSubtitle")}</p>
                             </div>
                         </div>
                         <div className="grid gap-4 sm:grid-cols-2">
-                            <DataItem label="Nome" value={list.name} icon={Building2} />
-                            <DataItem label="Países" value={list.countries.join(", ")} icon={Globe} />
-                            <DataItem label="Total de leads" value={list.totalLeads.toLocaleString()} icon={Users} />
-                            <DataItem label="Setores" value={list.industries.join(", ")} icon={Target} />
-                            <DataItem label="Preço por lead" value={formatCurrency(pricePerLead, list.currency)} icon={DollarSign} />
-                            <DataItem label="Atualizado em" value={updatedAt} icon={Calendar} />
+                            <DataItem label={t("fieldName")} value={list.name} icon={Building2} fallback={t("notInformed")} />
+                            <DataItem label={t("fieldCountries")} value={list.countries.join(", ")} icon={Globe} fallback={t("notInformed")} />
+                            <DataItem label={t("fieldTotalLeads")} value={format.number(list.totalLeads)} icon={Users} fallback={t("notInformed")} />
+                            <DataItem label={t("fieldIndustries")} value={list.industries.join(", ")} icon={Target} fallback={t("notInformed")} />
+                            <DataItem label={t("fieldPricePerLead")} value={formatCurrency(pricePerLead, list.currency)} icon={DollarSign} fallback={t("notInformed")} />
+                            <DataItem label={t("fieldUpdatedAt")} value={updatedAt} icon={Calendar} fallback={t("notInformed")} />
                         </div>
                     </section>
 
-                    <section className="rounded-lg border border-gray-200 bg-white p-6">
+                    <section className="rounded-lg border bg-card p-6">
                         <div className="mb-4 flex flex-col gap-1">
-                            <h2 className="text-lg font-semibold text-gray-900">
-                                Preview dos dados
-                            </h2>
-                            <p className="text-sm text-gray-500">
-                                Amostra de {Math.min(5, list.totalLeads)} registros para checar estrutura e qualidade antes da compra.
+                            <h2 className="text-lg font-semibold text-foreground">{t("previewTitle")}</h2>
+                            <p className="text-sm text-muted-foreground">
+                                {t("previewSubtitle", { count: Math.min(5, list.totalLeads) })}
                             </p>
                         </div>
-                        <Suspense fallback={<div className="h-48 animate-pulse rounded-lg bg-gray-100" />}>
+                        <Suspense fallback={<div className="h-48 animate-pulse rounded-lg bg-muted" />}>
                             <ListPreview previewData={list.previewData} />
                         </Suspense>
                     </section>
 
-                    <section className="rounded-lg border border-gray-200 bg-white p-6">
-                        <h2 className="mb-4 text-lg font-semibold text-gray-900">
-                            O que está incluído
-                        </h2>
+                    <section className="rounded-lg border bg-card p-6">
+                        <h2 className="mb-4 text-lg font-semibold text-foreground">{t("includedTitle")}</h2>
                         <div className="grid gap-3 sm:grid-cols-2">
-                            <IncludedItem icon={Building2} text="Nome da empresa" />
-                            <IncludedItem icon={MailCheck} text="Email comercial verificado" />
-                            <IncludedItem icon={Users} text="Telefone e contato quando disponível" />
-                            <IncludedItem icon={Globe} text="País, cidade e website" />
-                            <IncludedItem icon={Target} text="Setor de atuação" />
-                            <IncludedItem icon={FileSpreadsheet} text="Arquivo CSV e Excel" />
+                            <IncludedItem icon={Building2} text={t("includedCompany")} />
+                            <IncludedItem icon={MailCheck} text={t("includedEmail")} />
+                            <IncludedItem icon={Users} text={t("includedPhone")} />
+                            <IncludedItem icon={Globe} text={t("includedLocation")} />
+                            <IncludedItem icon={Target} text={t("includedIndustry")} />
+                            <IncludedItem icon={FileSpreadsheet} text={t("includedFormats")} />
                         </div>
                     </section>
                 </div>
 
                 <aside className="lg:sticky lg:top-24">
-                    <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+                    <div className="rounded-lg border bg-card p-6 shadow-sm">
                         <div className="mb-6">
-                            <div className="text-4xl font-bold text-[#4a2c5a]">
+                            <div className="text-4xl font-bold text-brand">
                                 {formatCurrency(price, list.currency)}
                             </div>
-                            <div className="mt-1 text-sm text-gray-500">
-                                {formatCurrency(pricePerLead, list.currency)} por lead
+                            <div className="mt-1 text-sm text-muted-foreground">
+                                {t("perLead", { price: formatCurrency(pricePerLead, list.currency) })}
                             </div>
                         </div>
 
-                        <div className="mb-6 rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm text-gray-600">
-                            <div className="font-semibold text-gray-900">
-                                {list.totalLeads.toLocaleString("pt-BR")} leads incluídos
+                        <div className="mb-6 rounded-lg border bg-muted/40 p-4 text-sm text-muted-foreground">
+                            <div className="font-semibold text-foreground">
+                                {t("leadsIncluded", { count: format.number(list.totalLeads) })}
                             </div>
-                            <p className="mt-1">
-                                Compra avulsa, sem assinatura. O acesso fica disponível na área Minhas compras.
-                            </p>
+                            <p className="mt-1">{t("oneOffNote")}</p>
                         </div>
 
-                        <div className="mb-6 rounded-lg border border-indigo-200 bg-indigo-50 p-4 text-sm text-indigo-900">
-                            Antes de comprar, confira a cobertura, a prévia dos dados e o preço por lead. Depois da aprovação do pagamento, o download fica disponível na sua conta.
+                        <div className="mb-6 rounded-lg border border-primary/30 bg-primary/10 p-4 text-sm text-foreground">
+                            {t("beforeBuyNote")}
                         </div>
 
                         <div className="space-y-3">
@@ -207,11 +203,11 @@ export default async function ListPage({ params }: ListPageProps) {
                             <AddToCartButton list={listForCart} />
                         </div>
 
-                        <div className="mt-6 space-y-3 border-t border-gray-100 pt-5">
-                            <BenefitItem icon={Shield} text="Pagamento seguro via PayPal" />
-                            <BenefitItem icon={Download} text="Download imediato após confirmação" />
-                            <BenefitItem icon={RefreshCw} text="Dados atualizados antes da publicação" />
-                            <BenefitItem icon={CheckCircle} text="Registro da compra na sua conta" />
+                        <div className="mt-6 space-y-3 border-t pt-5">
+                            <BenefitItem icon={Shield} text={t("benefitSecure")} />
+                            <BenefitItem icon={Download} text={t("benefitImmediate")} />
+                            <BenefitItem icon={RefreshCw} text={t("benefitFresh")} />
+                            <BenefitItem icon={CheckCircle} text={t("benefitRecorded")} />
                         </div>
                     </div>
                 </aside>
@@ -222,9 +218,9 @@ export default async function ListPage({ params }: ListPageProps) {
 
 function QuickMetric({ label, value }: { label: string; value: string }) {
     return (
-        <div className="rounded-md bg-white p-3">
-            <div className="text-xs font-medium uppercase text-gray-500">{label}</div>
-            <div className="mt-1 truncate text-sm font-semibold text-gray-900">{value}</div>
+        <div className="rounded-md bg-card p-3">
+            <div className="text-xs font-medium uppercase text-muted-foreground">{label}</div>
+            <div className="mt-1 truncate text-sm font-semibold text-foreground">{value}</div>
         </div>
     )
 }
@@ -233,19 +229,21 @@ function DataItem({
     label,
     value,
     icon: Icon,
+    fallback,
 }: {
     label: string
     value: string
     icon: ComponentType<{ className?: string }>
+    fallback: string
 }) {
     return (
-        <div className="flex items-start gap-3 rounded-lg border border-gray-100 bg-gray-50 p-4">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-white text-gray-500">
+        <div className="flex items-start gap-3 rounded-lg border bg-muted/40 p-4">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-card text-muted-foreground">
                 <Icon className="h-4 w-4" />
             </div>
             <div className="min-w-0 flex-1">
-                <div className="text-xs text-gray-500">{label}</div>
-                <div className="mt-1 truncate font-semibold text-gray-900">{value || "Não informado"}</div>
+                <div className="text-xs text-muted-foreground">{label}</div>
+                <div className="mt-1 truncate font-semibold text-foreground">{value || fallback}</div>
             </div>
         </div>
     )
@@ -259,8 +257,8 @@ function IncludedItem({
     text: string
 }) {
     return (
-        <div className="flex items-center gap-2 text-sm text-gray-600">
-            <Icon className="h-4 w-4 shrink-0 text-[#2ec4b6]" />
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Icon className="h-4 w-4 shrink-0 text-brand-accent-strong" />
             {text}
         </div>
     )
@@ -274,8 +272,8 @@ function BenefitItem({
     text: string
 }) {
     return (
-        <div className="flex items-start gap-2 text-sm text-gray-600">
-            <Icon className="mt-0.5 h-4 w-4 shrink-0 text-[#2ec4b6]" />
+        <div className="flex items-start gap-2 text-sm text-muted-foreground">
+            <Icon className="mt-0.5 h-4 w-4 shrink-0 text-brand-accent-strong" />
             {text}
         </div>
     )

@@ -1,3 +1,6 @@
+"use client"
+
+import { useTranslations } from "next-intl"
 import { Building2, Filter, FileDown, Layers3 } from "lucide-react"
 
 interface CatalogStatsProps {
@@ -15,32 +18,33 @@ export function CatalogStats({
     page,
     pages,
 }: CatalogStatsProps) {
+    const t = useTranslations("catalog")
     const stats = [
         {
             icon: Building2,
             value: total.toLocaleString(),
-            label: "Listas encontradas",
+            label: t("statListsFound"),
             color: "text-blue-600",
             bg: "bg-blue-50",
         },
         {
             icon: FileDown,
             value: visibleLeadTotal.toLocaleString(),
-            label: "Leads nesta página",
+            label: t("statLeadsOnPage"),
             color: "text-indigo-600",
             bg: "bg-indigo-50",
         },
         {
             icon: Filter,
             value: activeFilterCount.toString(),
-            label: "Filtros ativos",
+            label: t("statActiveFilters"),
             color: "text-amber-600",
             bg: "bg-amber-50",
         },
         {
             icon: Layers3,
             value: `${page}/${Math.max(pages, 1)}`,
-            label: "Página atual",
+            label: t("statCurrentPage"),
             color: "text-violet-600",
             bg: "bg-violet-50",
         },
@@ -51,14 +55,14 @@ export function CatalogStats({
             {stats.map((stat) => (
                 <div
                     key={stat.label}
-                    className="flex items-center gap-3 rounded-lg border border-gray-200 bg-white p-4 shadow-sm"
+                    className="flex items-center gap-3 rounded-lg border border-border bg-card p-4 shadow-sm"
                 >
                     <div className={`flex h-10 w-10 items-center justify-center rounded-md ${stat.bg} ${stat.color}`}>
                         <stat.icon className="h-5 w-5" />
                     </div>
                     <div className="min-w-0">
-                        <div className="text-xl font-bold text-gray-900">{stat.value}</div>
-                        <div className="text-sm text-gray-500">{stat.label}</div>
+                        <div className="text-xl font-bold text-foreground">{stat.value}</div>
+                        <div className="text-sm text-muted-foreground">{stat.label}</div>
                     </div>
                 </div>
             ))}

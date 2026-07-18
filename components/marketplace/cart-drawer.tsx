@@ -9,10 +9,12 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { ShoppingBag, ArrowRight, ShieldCheck } from "lucide-react"
 import Link from "next/link"
+import { useTranslations } from "next-intl"
 import { CartItem } from "./cart-item"
 
 export function CartDrawer() {
     const { items, isOpen, closeCart, total, itemCount } = useCart()
+    const t = useTranslations("cart")
 
     return (
         <Sheet open={isOpen} onOpenChange={closeCart}>
@@ -21,11 +23,11 @@ export function CartDrawer() {
                 <SheetHeader className="px-6 py-4 border-b">
                     <div className="flex items-center justify-between">
                         <SheetTitle className="flex items-center gap-2">
-                            <ShoppingBag className="h-5 w-5 text-[#2ec4b6]" />
-                            Seu carrinho
+                            <ShoppingBag className="h-5 w-5 text-brand-accent-strong" />
+                            {t("title")}
                             {itemCount > 0 && (
                                 <span className="text-sm font-normal text-muted-foreground">
-                  ({itemCount} {itemCount === 1 ? "item" : "itens"})
+                  ({t("items", { count: itemCount })})
                 </span>
                             )}
                         </SheetTitle>
@@ -36,17 +38,17 @@ export function CartDrawer() {
                 <ScrollArea className="flex-1 px-6">
                     {items.length === 0 ? (
                         <div className="flex flex-col items-center justify-center py-16 text-center">
-                            <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center mb-4">
-                                <ShoppingBag className="h-10 w-10 text-gray-400" />
+                            <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center mb-4">
+                                <ShoppingBag className="h-10 w-10 text-muted-foreground" />
                             </div>
-                            <h3 className="font-semibold text-gray-800 mb-2">
-                                Seu carrinho está vazio
+                            <h3 className="font-semibold text-foreground mb-2">
+                                {t("empty")}
                             </h3>
                             <p className="text-sm text-muted-foreground mb-6">
-                                Adicione listas de leads para começar
+                                {t("emptyHint")}
                             </p>
                             <Button asChild onClick={closeCart}>
-                                <Link href="/catalog">Ver catálogo</Link>
+                                <Link href="/catalog">{t("seeCatalog")}</Link>
                             </Button>
                         </div>
                     ) : (
@@ -60,11 +62,11 @@ export function CartDrawer() {
 
                 {/* Footer */}
                 {items.length > 0 && (
-                    <div className="border-t px-6 py-4 space-y-4 bg-gray-50">
+                    <div className="border-t px-6 py-4 space-y-4 bg-muted/40">
                         {/* Subtotal */}
                         <div className="flex items-center justify-between text-lg font-semibold">
-                            <span className="text-gray-700">Subtotal</span>
-                            <span className="text-[#4a2c5a]">
+                            <span className="text-foreground">{t("subtotal")}</span>
+                            <span className="text-brand">
                 {formatCurrency(total, items[0]?.currency || "EUR")}
               </span>
                         </div>
@@ -74,12 +76,12 @@ export function CartDrawer() {
                         {/* Buttons */}
                         <div className="space-y-2">
                             <Button
-                                className="w-full h-12 text-base bg-[#4a2c5a] hover:bg-[#3a1c4a]"
+                                className="w-full h-12 text-base bg-brand hover:bg-brand-hover"
                                 asChild
                                 onClick={closeCart}
                             >
                                 <Link href="/cart">
-                                    Revisar carrinho
+                                    {t("review")}
                                     <ArrowRight className="h-5 w-5 ml-2" />
                                 </Link>
                             </Button>
@@ -89,14 +91,14 @@ export function CartDrawer() {
                                 asChild
                                 onClick={closeCart}
                             >
-                                <Link href="/catalog">Continuar comprando</Link>
+                                <Link href="/catalog">{t("continue")}</Link>
                             </Button>
                         </div>
 
                         {/* Secure Badge */}
                         <p className="text-xs text-center text-muted-foreground">
                             <ShieldCheck className="mr-1 inline h-3.5 w-3.5 text-indigo-600" />
-                            Pagamento seguro via PayPal
+                            {t("securePayment")}
                         </p>
                     </div>
                 )}

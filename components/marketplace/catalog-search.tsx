@@ -1,7 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useId, useState, useTransition } from "react"
 import type { FormEvent } from "react"
+import { useTranslations } from "next-intl"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -14,9 +15,12 @@ interface CatalogSearchProps {
 }
 
 export function CatalogSearch({ defaultValue = "", variant = "light" }: CatalogSearchProps) {
+    const t = useTranslations("catalog")
     const router = useRouter()
     const searchParams = useSearchParams()
     const [query, setQuery] = useState(defaultValue)
+    const [isPending, startTransition] = useTransition()
+    const inputId = useId()
     const isDark = variant === "dark"
 
     const handleSearch = (e: FormEvent) => {
@@ -30,32 +34,42 @@ export function CatalogSearch({ defaultValue = "", variant = "light" }: CatalogS
         }
 
         params.delete("page")
-        router.push(`/catalog?${params.toString()}`)
+        startTransition(() => {
+            router.push(`/catalog?${params.toString()}`)
+        })
     }
 
     return (
         <form onSubmit={handleSearch} className="flex flex-col gap-2 sm:flex-row">
             <div className="relative flex-1">
+                {/* O placeholder some assim que o usuário digita — ele não serve
+                    como nome acessível do campo. */}
+                <label htmlFor={inputId} className="sr-only">
+                    {t("searchLabel")}
+                </label>
                 <Search
+                    aria-hidden="true"
                     className={cn(
                         "absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2",
                         isDark ? "text-white/70" : "text-muted-foreground"
                     )}
                 />
                 <Input
+                    id={inputId}
+                    type="search"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
-                    placeholder="Buscar por nome, país, setor ou descrição"
+                    placeholder={t("searchPlaceholder")}
                     className={cn(
                         "h-11 rounded-md pl-12",
                         isDark
                             ? "border-white/20 bg-white/10 text-white placeholder:text-white/70 focus:bg-white/20 focus:border-white/40"
-                            : "border-gray-200 bg-white text-gray-900 placeholder:text-gray-500"
+                            : "border-border bg-card text-foreground placeholder:text-muted-foreground"
                     )}
                 />
             </div>
-            <Button type="submit" className="h-11 bg-indigo-600 hover:bg-indigo-700">
-                Buscar
+            <Button type="submit" disabled={isPending} className="h-11 bg-indigo-600 hover:bg-indigo-700">
+                {t("searchButton")}
             </Button>
         </form>
     )
