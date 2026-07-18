@@ -1,19 +1,21 @@
 "use client"
 
 import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 import { ShoppingBag } from "lucide-react"
 import { EmptyState } from "@/components/common/empty-state"
 
 export function MyPurchasesEmptyState() {
     const router = useRouter()
+    const t = useTranslations("purchases")
 
     return (
         <EmptyState
             icon={ShoppingBag}
-            title="Nenhuma compra ainda"
-            description="Explore o catálogo, selecione uma base compatível com sua campanha e volte aqui para baixar os arquivos."
+            title={t("emptyTitle")}
+            description={t("emptyDescription")}
             primaryAction={{
-                label: "Explorar catálogo",
+                label: t("emptyCta"),
                 onClick: () => router.push("/catalog"),
             }}
         />

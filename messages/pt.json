@@ -484,6 +484,9 @@
         "invalidTokenTitle": "Link inválido ou expirado",
         "invalidTokenExpired": "Este link expirou. Solicite um novo acesso na sua área de compras.",
         "invalidTokenGeneric": "Este link não é válido ou já foi utilizado.",
-        "goToCatalog": "Ir para o catálogo"
+        "goToCatalog": "Ir para o catálogo",
+        "emptyTitle": "Nenhuma compra ainda",
+        "emptyDescription": "Explore o catálogo, selecione uma base compatível com sua campanha e volte aqui para baixar os arquivos.",
+        "emptyCta": "Explorar catálogo"
     }
 }
