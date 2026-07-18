@@ -1,10 +1,24 @@
 import { createServerClient } from "@supabase/ssr"
 import { NextResponse, type NextRequest } from "next/server"
+import { stripLocale } from "@/lib/i18n/strip-locale"
+
+// O encadeamento do middleware do next-intl (createIntlMiddleware) foi
+// testado e revertido nesta task: como ainda não existe app/[locale]/ para
+// as rotas do marketplace/CRM/auth, o rewrite interno que ele faz para a
+// rota com prefixo (ex.: "/sign-in" -> "/pt/sign-in") não encontra página
+// nenhuma e devolve 404 — confirmado manualmente rodando o dev server e
+// batendo em /sign-in após ligar o middleware. Ver task-3-report.md.
+// A composição com o next-intl deve ser retomada só depois que as páginas
+// forem movidas para dentro do segmento [locale].
 
 export async function proxy(request: NextRequest) {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
     const pathname = request.nextUrl.pathname
+
+    // Rotas públicas e gates de auth são avaliados sobre o caminho sem o
+    // prefixo de idioma — senão "/de/catalog" cairia no gate de sessão.
+    const { pathname: pathForMatching } = stripLocale(pathname)
 
     if (!supabaseUrl || !supabaseAnonKey) {
         console.error('Missing Supabase environment variables')
@@ -56,8 +70,8 @@ export async function proxy(request: NextRequest) {
     ]
 
     const isMarketplaceRoute = marketplaceRoutes.some((route) => {
-        if (route === "/") return pathname === "/"
-        return pathname === route || pathname.startsWith(`${route}/`)
+        if (route === "/") return pathForMatching === "/"
+        return pathForMatching === route || pathForMatching.startsWith(`${route}/`)
     })
 
     // ============================================
@@ -70,7 +84,7 @@ export async function proxy(request: NextRequest) {
     ]
 
     const isCRMPublicRoute = crmPublicRoutes.some((route) =>
-        pathname === route || pathname.startsWith(`${route}/`)
+        pathForMatching === route || pathForMatching.startsWith(`${route}/`)
     )
 
     // ============================================
@@ -78,7 +92,7 @@ export async function proxy(request: NextRequest) {
     // ============================================
     const authRoutes = ["/sign-in", "/sign-up", "/forgot-password"]
     const isAuthRoute = authRoutes.some((route) =>
-        pathname === route || pathname.startsWith(`${route}/`)
+        pathForMatching === route || pathForMatching.startsWith(`${route}/`)
     )
 
     // ============================================
@@ -117,11 +131,11 @@ export async function proxy(request: NextRequest) {
             const url = request.nextUrl.clone()
 
             // Se está tentando acessar o CRM, redireciona para /crm/sign-in
-            if (pathname.startsWith('/crm')) {
+            if (pathForMatching.startsWith('/crm')) {
                 url.pathname = "/crm/sign-in"
             }
             // Se está tentando acessar dashboard legado, redireciona para /crm/sign-in
-            else if (pathname === '/dashboard' || pathname.startsWith('/dashboard/')) {
+            else if (pathForMatching === '/dashboard' || pathForMatching.startsWith('/dashboard/')) {
                 url.pathname = "/crm/sign-in"
             }
             // Outras rotas protegidas
@@ -145,6 +159,11 @@ export async function proxy(request: NextRequest) {
 
             if (redirectParam?.startsWith("/") && !redirectParam.startsWith("//")) {
                 const redirectUrl = new URL(redirectParam, request.url)
+                // O parâmetro redirect pode carregar prefixo de idioma (ex.:
+                // "/de/checkout") — o casamento contra a whitelist precisa
+                // ignorá-lo, mas o destino do redirect (abaixo) preserva a
+                // URL real, prefixo incluso.
+                const { pathname: redirectPathForMatching } = stripLocale(redirectUrl.pathname)
                 const allowedRedirects = [
                     "/dashboard",
                     "/crm",
@@ -154,7 +173,7 @@ export async function proxy(request: NextRequest) {
                     "/super-admin",
                 ]
                 const isAllowedRedirect = allowedRedirects.some((path) =>
-                    redirectUrl.pathname === path || redirectUrl.pathname.startsWith(`${path}/`)
+                    redirectPathForMatching === path || redirectPathForMatching.startsWith(`${path}/`)
                 )
 
                 if (isAllowedRedirect) {
@@ -180,7 +199,7 @@ export async function proxy(request: NextRequest) {
         // protegida. Rotas de auth seguem acessíveis para o usuário se logar.
         if (!isAuthRoute) {
             const url = request.nextUrl.clone()
-            url.pathname = pathname.startsWith('/crm') ? '/crm/sign-in' : '/sign-in'
+            url.pathname = pathForMatching.startsWith('/crm') ? '/crm/sign-in' : '/sign-in'
             url.searchParams.set('redirect', pathname)
             return NextResponse.redirect(url)
         }
