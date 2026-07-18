@@ -36,7 +36,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default function EasyProspectHome() {
     return (
-        <div className="min-h-screen bg-white text-gray-950">
+        <div className="min-h-screen bg-background text-foreground">
             <SyncLocaleCookie locale="pt" />
             <HeroSection locale="pt" />
             <IntroSection locale="pt" />
