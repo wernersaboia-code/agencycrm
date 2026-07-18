@@ -31,22 +31,22 @@ export async function FaqPageContent({ locale }: { locale: "pt" | "de" }) {
     }
 
     return (
-        <div className="min-h-screen bg-white">
+        <div className="min-h-screen bg-background">
             <div className="container mx-auto max-w-3xl px-4 py-14 md:py-16">
-                <h1 className="text-3xl font-bold tracking-tight text-gray-950 md:text-4xl">
+                <h1 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">
                     {t("page.title")}
                 </h1>
-                <p className="mt-3 text-lg leading-8 text-gray-600">{t("page.subtitle")}</p>
+                <p className="mt-3 text-lg leading-8 text-muted-foreground">{t("page.subtitle")}</p>
 
                 <div className="mt-10">
                     <FaqAccordion items={items} />
                 </div>
 
-                <div className="mt-14 rounded-xl border border-gray-200 bg-gray-50 p-6 md:p-8">
-                    <h2 className="text-2xl font-bold tracking-tight text-gray-950">
+                <div className="mt-14 rounded-xl border border-border bg-muted/40 p-6 md:p-8">
+                    <h2 className="text-2xl font-bold tracking-tight text-foreground">
                         {labels.title}
                     </h2>
-                    <p className="mt-2 leading-7 text-gray-600">{labels.subtitle}</p>
+                    <p className="mt-2 leading-7 text-muted-foreground">{labels.subtitle}</p>
 
                     <div className="mt-6">
                         <FaqContactForm locale={locale} labels={labels} />

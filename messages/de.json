@@ -484,6 +484,9 @@
         "invalidTokenTitle": "Link ungültig oder abgelaufen",
         "invalidTokenExpired": "Dieser Link ist abgelaufen. Fordern Sie in Ihrem Kaufbereich einen neuen Zugang an.",
         "invalidTokenGeneric": "Dieser Link ist ungültig oder wurde bereits verwendet.",
-        "goToCatalog": "Zum Katalog"
+        "goToCatalog": "Zum Katalog",
+        "emptyTitle": "Noch keine Käufe",
+        "emptyDescription": "Durchstöbern Sie den Katalog, wählen Sie eine zu Ihrer Kampagne passende Liste und kehren Sie hierher zurück, um die Dateien herunterzuladen.",
+        "emptyCta": "Katalog durchstöbern"
     }
 }

@@ -161,10 +161,10 @@ export function FaqContactForm({ locale, labels }: FaqContactFormProps) {
                             form.setValue("consent", checked === true, { shouldValidate: true })
                         }
                     />
-                    <Label htmlFor="faq-consent" className="text-sm font-normal leading-6 text-gray-600">
+                    <Label htmlFor="faq-consent" className="text-sm font-normal leading-6 text-muted-foreground">
                         <span>
                             {consentBefore}
-                            <Link href="/privacy" className="underline hover:text-gray-900" target="_blank">
+                            <Link href="/privacy" className="underline hover:text-foreground" target="_blank">
                                 {consentLink}
                             </Link>
                             {consentAfter}

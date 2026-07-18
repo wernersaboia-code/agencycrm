@@ -8,14 +8,15 @@ export async function FinalCtaSection({ locale }: { locale: LandingLocale }) {
     const t = await getTranslations({ locale, namespace: "landing.cta" })
 
     return (
-        <section className="bg-white py-14">
+        <section className="bg-background py-14">
             <div className="container mx-auto px-4">
-                <div className="flex flex-col items-start justify-between gap-6 rounded-xl bg-gray-950 p-8 text-white md:flex-row md:items-center md:p-10">
+                {/* Bloco de atenção invertido: escuro no tema claro, claro no escuro. */}
+                <div className="flex flex-col items-start justify-between gap-6 rounded-xl bg-foreground p-8 text-background md:flex-row md:items-center md:p-10">
                     <div>
                         <h2 className="text-2xl font-bold tracking-tight md:text-3xl">{t("title")}</h2>
-                        <p className="mt-2 max-w-xl leading-7 text-gray-300">{t("body")}</p>
+                        <p className="mt-2 max-w-xl leading-7 text-background/70">{t("body")}</p>
                     </div>
-                    <Button size="lg" className="shrink-0 bg-white text-gray-950 hover:bg-gray-100" asChild>
+                    <Button size="lg" className="shrink-0 bg-background text-foreground hover:bg-muted" asChild>
                         <Link href="/catalog">
                             {t("button")}
                             <ArrowRight className="h-4 w-4" />
