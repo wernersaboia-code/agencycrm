@@ -1,7 +1,10 @@
 import type { Metadata } from "next"
 import { Suspense } from "react"
-import { NextIntlClientProvider } from "next-intl"
-import { getLocale, getMessages } from "next-intl/server"
+import { notFound } from "next/navigation"
+import { hasLocale, NextIntlClientProvider } from "next-intl"
+import { getMessages, setRequestLocale } from "next-intl/server"
+import { routing } from "@/lib/i18n/routing"
+import { dirForLocale, type Locale } from "@/lib/i18n/locales"
 import { MarketplaceHeader } from "@/components/marketplace/marketplace-header"
 import { MarketplaceFooter } from "@/components/marketplace/marketplace-footer"
 import { CartProvider } from "@/contexts/cart-context"
@@ -28,34 +31,48 @@ export const metadata: Metadata = {
     },
 }
 
+export function generateStaticParams() {
+    return routing.locales.map((locale) => ({ locale }))
+}
+
 export default async function MarketplaceLayout({
-                                              children,
-                                          }: {
+    children,
+    params,
+}: {
     children: React.ReactNode
+    params: Promise<{ locale: string }>
 }) {
-    const locale = await getLocale()
+    const { locale } = await params
+    if (!hasLocale(routing.locales, locale)) notFound()
+
+    // Sem isto as páginas do segmento viram dinâmicas e perdem o ISR.
+    setRequestLocale(locale)
+
     const messages = await getMessages()
+
     return (
         // Repassar o pacote inteiro (~15 KB): a lista curada de namespaces já
         // quebrou componentes client ao serem usados em páginas novas, e o
         // ganho de payload não paga o risco.
         <NextIntlClientProvider locale={locale} messages={messages}>
-            <CartProvider>
-                <div className="min-h-screen flex flex-col">
-                    <Suspense fallback={<div className="h-16 bg-background border-b" />}>
-                        <MarketplaceHeader />
-                    </Suspense>
+            <div dir={dirForLocale(locale as Locale)}>
+                <CartProvider>
+                    <div className="min-h-screen flex flex-col">
+                        <Suspense fallback={<div className="h-16 bg-background border-b" />}>
+                            <MarketplaceHeader />
+                        </Suspense>
 
-                    <main id="main-content" className="flex-1">
-                        {children}
-                    </main>
+                        <main id="main-content" className="flex-1">
+                            {children}
+                        </main>
 
-                    <MarketplaceFooter locale={locale as "pt" | "de"} />
+                        <MarketplaceFooter locale={locale as Locale} />
 
-                    {/* Cart Drawer - Global */}
-                    <CartDrawer />
-                </div>
-            </CartProvider>
+                        {/* Cart Drawer - Global */}
+                        <CartDrawer />
+                    </div>
+                </CartProvider>
+            </div>
         </NextIntlClientProvider>
     )
 }

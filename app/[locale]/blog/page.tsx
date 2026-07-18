@@ -1,14 +1,10 @@
 import { notFound } from "next/navigation"
 import Link from "next/link"
 import { prisma } from "@/lib/prisma"
-import { isBlogLocale, BLOG_LOCALES, dirForLocale, type BlogLocale } from "@/lib/blog/locales"
+import { isBlogLocale, dirForLocale, type BlogLocale } from "@/lib/blog/locales"
 import { getBlogLabels } from "@/lib/blog/i18n"
 import { getPublishedPostsForLocale } from "@/lib/blog/queries"
 import { PostCard } from "@/components/blog/post-card"
-
-export function generateStaticParams() {
-    return BLOG_LOCALES.map((locale) => ({ locale }))
-}
 
 export default async function BlogIndexPage({
     params, searchParams,

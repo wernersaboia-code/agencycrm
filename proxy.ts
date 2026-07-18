@@ -1,15 +1,10 @@
 import { createServerClient } from "@supabase/ssr"
 import { NextResponse, type NextRequest } from "next/server"
+import createIntlMiddleware from "next-intl/middleware"
+import { routing } from "@/lib/i18n/routing"
 import { stripLocale } from "@/lib/i18n/strip-locale"
 
-// O encadeamento do middleware do next-intl (createIntlMiddleware) foi
-// testado e revertido nesta task: como ainda não existe app/[locale]/ para
-// as rotas do marketplace/CRM/auth, o rewrite interno que ele faz para a
-// rota com prefixo (ex.: "/sign-in" -> "/pt/sign-in") não encontra página
-// nenhuma e devolve 404 — confirmado manualmente rodando o dev server e
-// batendo em /sign-in após ligar o middleware. Ver task-3-report.md.
-// A composição com o next-intl deve ser retomada só depois que as páginas
-// forem movidas para dentro do segmento [locale].
+const intlMiddleware = createIntlMiddleware(routing)
 
 export async function proxy(request: NextRequest) {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -60,7 +55,6 @@ export async function proxy(request: NextRequest) {
     // pagamento em vez de depois do clique no PayPal.
     const marketplaceRoutes = [
         "/",
-        "/de",
         "/faq",
         "/opengraph-image",
         "/catalog",
@@ -73,6 +67,30 @@ export async function proxy(request: NextRequest) {
         if (route === "/") return pathForMatching === "/"
         return pathForMatching === route || pathForMatching.startsWith(`${route}/`)
     })
+
+    // Rotas que vivem de fato dentro de app/[locale] — precisam do rewrite do
+    // next-intl para casar com o segmento dinâmico. "/opengraph-image" fica de
+    // fora por ser um arquivo especial na raiz de app/, sem versão por idioma.
+    const localeSegmentRoutes = ["/", "/faq", "/catalog", "/list", "/cart", "/blog", "/checkout", "/my-purchases"]
+    const isLocaleSegmentRoute = localeSegmentRoutes.some((route) => {
+        if (route === "/") return pathForMatching === "/"
+        return pathForMatching === route || pathForMatching.startsWith(`${route}/`)
+    })
+
+    // O middleware de locale só se aplica às rotas do segmento [locale]: ele
+    // reescreve a URL (prefixo as-needed) e precisa dos cookies de sessão já
+    // aplicados. Rotas fora do segmento (CRM, super-admin, auth legado) não
+    // têm página correspondente com prefixo de idioma e virariam 404 se
+    // passassem por aqui.
+    const respond = () => {
+        if (!isLocaleSegmentRoute) return supabaseResponse
+
+        const intlResponse = intlMiddleware(request)
+        for (const cookie of supabaseResponse.cookies.getAll()) {
+            intlResponse.cookies.set(cookie)
+        }
+        return intlResponse
+    }
 
     // ============================================
     // ROTAS PÚBLICAS DO CRM
@@ -110,7 +128,7 @@ export async function proxy(request: NextRequest) {
     // MARKETPLACE - sempre público, não verifica auth
     // ============================================
     if (isMarketplaceRoute) {
-        return supabaseResponse
+        return respond()
     }
 
     // ============================================
@@ -207,7 +225,7 @@ export async function proxy(request: NextRequest) {
         return supabaseResponse
     }
 
-    return supabaseResponse
+    return respond()
 }
 
 export const config = {

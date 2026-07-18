@@ -1,7 +1,8 @@
 import Link from "next/link"
 import { getTranslations } from "next-intl/server"
+import type { Locale } from "@/lib/i18n/locales"
 
-export async function MarketplaceFooter({ locale = "pt" }: { locale?: "pt" | "de" }) {
+export async function MarketplaceFooter({ locale = "pt" }: { locale?: Locale }) {
     const t = await getTranslations({ locale, namespace: "footer" })
 
     const homeHref = locale === "de" ? "/de" : "/"
