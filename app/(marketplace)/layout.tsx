@@ -1,11 +1,11 @@
 import type { Metadata } from "next"
 import { Suspense } from "react"
 import { NextIntlClientProvider } from "next-intl"
+import { getLocale, getMessages } from "next-intl/server"
 import { MarketplaceHeader } from "@/components/marketplace/marketplace-header"
 import { MarketplaceFooter } from "@/components/marketplace/marketplace-footer"
 import { CartProvider } from "@/contexts/cart-context"
 import { CartDrawer } from "@/components/marketplace/cart-drawer"
-import ptMessages from "@/messages/pt.json"
 
 export const metadata: Metadata = {
     title: {
@@ -28,13 +28,18 @@ export const metadata: Metadata = {
     },
 }
 
-export default function MarketplaceLayout({
+export default async function MarketplaceLayout({
                                               children,
                                           }: {
     children: React.ReactNode
 }) {
+    const locale = await getLocale()
+    const messages = await getMessages()
     return (
-        <NextIntlClientProvider locale="pt" messages={{ nav: ptMessages.nav }}>
+        // Repassar o pacote inteiro (~15 KB): a lista curada de namespaces já
+        // quebrou componentes client ao serem usados em páginas novas, e o
+        // ganho de payload não paga o risco.
+        <NextIntlClientProvider locale={locale} messages={messages}>
             <CartProvider>
                 <div className="min-h-screen flex flex-col">
                     <Suspense fallback={<div className="h-16 bg-background border-b" />}>
@@ -45,7 +50,7 @@ export default function MarketplaceLayout({
                         {children}
                     </main>
 
-                    <MarketplaceFooter locale="pt" />
+                    <MarketplaceFooter locale={locale as "pt" | "de"} />
 
                     {/* Cart Drawer - Global */}
                     <CartDrawer />

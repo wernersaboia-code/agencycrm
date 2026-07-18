@@ -4,6 +4,8 @@ import { GeistSans } from "geist/font/sans"
 import { GeistMono } from "geist/font/mono"
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import { getLocale } from "next-intl/server"
+import { toHtmlLang } from "@/lib/i18n/resolve-locale"
 import "./globals.css"
 import { Providers } from "./providers"
 
@@ -33,13 +35,17 @@ export const metadata: Metadata = {
     manifest: "/manifest.json",
 }
 
-export default function RootLayout({
+export default async function RootLayout({
     children,
 }: Readonly<{
     children: React.ReactNode
 }>) {
+    // Resolvido no servidor: corrigir `lang` só depois da hidratação entrega o
+    // idioma errado ao leitor de tela na primeira renderização e ao crawler.
+    const locale = await getLocale()
+
     return (
-        <html lang="pt-BR" suppressHydrationWarning>
+        <html lang={toHtmlLang(locale)} suppressHydrationWarning>
         <head>
             <link rel="preconnect" href="https://api.supabase.co" />
             <link rel="preconnect" href="https://flagcdn.com" />

@@ -1,49 +1,26 @@
 // components/marketplace/catalog-sidebar.tsx
 "use client"
 
-import { useState } from "react"
+import { useId, useState, useTransition } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
+import { useTranslations } from "next-intl"
 import { Check, ChevronDown } from "lucide-react"
 import { FlagIcon } from "@/components/ui/flag-icon"
 
-const COUNTRIES = [
-    { code: "DE", name: "Alemanha" },
-    { code: "FR", name: "França" },
-    { code: "IT", name: "Itália" },
-    { code: "ES", name: "Espanha" },
-    { code: "NL", name: "Holanda" },
-    { code: "BE", name: "Bélgica" },
-    { code: "PL", name: "Polônia" },
-    { code: "SE", name: "Suécia" },
-    { code: "AT", name: "Áustria" },
-    { code: "CH", name: "Suíça" },
-    { code: "PT", name: "Portugal" },
-    { code: "GB", name: "Reino Unido" },
-    { code: "US", name: "Estados Unidos" },
-    { code: "CN", name: "China" },
-    { code: "JP", name: "Japão" },
-    { code: "BR", name: "Brasil" },
-]
+const COUNTRY_CODES = [
+    "DE", "FR", "IT", "ES", "NL", "BE", "PL", "SE",
+    "AT", "CH", "PT", "GB", "US", "CN", "JP", "BR",
+] as const
 
-const INDUSTRIES = [
-    { id: "food", name: "Alimentos & Bebidas" },
-    { id: "tech", name: "Tecnologia" },
-    { id: "fashion", name: "Moda & Têxtil" },
-    { id: "automotive", name: "Automotivo" },
-    { id: "health", name: "Saúde & Farmácia" },
-    { id: "construction", name: "Construção" },
-    { id: "retail", name: "Varejo" },
-    { id: "industrial", name: "Industrial" },
-]
+const INDUSTRY_IDS = [
+    "food", "tech", "fashion", "automotive",
+    "health", "construction", "retail", "industrial",
+] as const
 
-const CATEGORIES = [
-    { id: "importers", name: "Importadores" },
-    { id: "exporters", name: "Exportadores" },
-    { id: "manufacturers", name: "Fabricantes" },
-    { id: "distributors", name: "Distribuidores" },
-    { id: "retailers", name: "Varejistas" },
-    { id: "wholesalers", name: "Atacadistas" },
-]
+const CATEGORY_IDS = [
+    "importers", "exporters", "manufacturers",
+    "distributors", "retailers", "wholesalers",
+] as const
 
 interface CatalogSidebarProps {
     selectedCountries: string[]
@@ -52,6 +29,31 @@ interface CatalogSidebarProps {
     countryCounts: Record<string, number>
     industryCounts: Record<string, number>
     categoryCounts: Record<string, number>
+    onNavigate?: () => void
+    /** Dentro da gaveta mobile o título já vem do SheetHeader. */
+    hideHeading?: boolean
+}
+
+/**
+ * A caixa visual é um `<span>` decorativo; o `<input>` real fica em `sr-only`
+ * (nunca `hidden`, que o tira da ordem de tabulação) e comanda a aparência via
+ * `peer-*`. Assim o filtro continua operável por teclado e leitor de tela.
+ */
+function FilterCheckbox({ checked, disabled }: { checked: boolean; disabled: boolean }) {
+    return (
+        <span
+            aria-hidden="true"
+            className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border-2 transition-colors peer-focus-visible:ring-2 peer-focus-visible:ring-ring peer-focus-visible:ring-offset-2 ${
+                checked
+                    ? "border-brand-accent-strong bg-brand-accent-strong"
+                    : disabled
+                        ? "border-border"
+                        : "border-input group-hover:border-brand-accent"
+            }`}
+        >
+            {checked && <Check className="h-3 w-3 text-white" />}
+        </span>
+    )
 }
 
 export function CatalogSidebar({
@@ -61,12 +63,18 @@ export function CatalogSidebar({
                                    countryCounts,
                                    industryCounts,
                                    categoryCounts,
+                                   onNavigate,
+                                   hideHeading = false,
                                }: CatalogSidebarProps) {
+    const t = useTranslations("catalog")
     const router = useRouter()
     const searchParams = useSearchParams()
+    const [isPending, startTransition] = useTransition()
     const [countriesOpen, setCountriesOpen] = useState(true)
     const [industriesOpen, setIndustriesOpen] = useState(true)
     const [categoriesOpen, setCategoriesOpen] = useState(true)
+
+    const panelId = useId()
 
     const updateFilters = (key: string, values: string[] | string | undefined) => {
         const params = new URLSearchParams(searchParams)
@@ -84,7 +92,13 @@ export function CatalogSidebar({
         }
 
         params.delete("page")
-        router.push(`/catalog?${params.toString()}`)
+
+        // Sem a transição a navegação do servidor não dá nenhum sinal de vida:
+        // o usuário clica no filtro e a tela fica parada até a página chegar.
+        startTransition(() => {
+            router.push(`/catalog?${params.toString()}`)
+        })
+        onNavigate?.()
     }
 
     const toggleCountry = (code: string) => {
@@ -107,195 +121,195 @@ export function CatalogSidebar({
     }
 
     const clearFilters = () => {
-        router.push("/catalog")
+        startTransition(() => {
+            router.push("/catalog")
+        })
+        onNavigate?.()
     }
 
     const hasActiveFilters =
         selectedCountries.length > 0 ||
         selectedIndustries.length > 0 ||
-        selectedCategory
+        Boolean(selectedCategory)
 
     return (
-        <div className="space-y-6">
-            <div>
-                <h2 className="text-lg font-semibold text-gray-900">Filtros</h2>
-                <p className="mt-1 text-sm text-gray-500">
-                    Refine o catálogo por perfil da lista.
-                </p>
-            </div>
+        <div className={`space-y-6 transition-opacity ${isPending ? "pointer-events-none opacity-60" : ""}`}>
+            {!hideHeading && (
+                <div>
+                    <h2 className="text-lg font-semibold text-foreground">{t("filtersTitle")}</h2>
+                    <p className="mt-1 text-sm text-muted-foreground">{t("filtersSubtitle")}</p>
+                </div>
+            )}
 
             {/* Filtro de Categoria */}
             <div>
                 <button
+                    type="button"
                     onClick={() => setCategoriesOpen(!categoriesOpen)}
-                    className="flex items-center justify-between w-full text-left font-semibold text-gray-700 mb-3"
+                    aria-expanded={categoriesOpen}
+                    aria-controls={`${panelId}-categories`}
+                    className="mb-3 flex w-full items-center justify-between text-left font-semibold text-foreground"
                 >
-                    <span>Categoria</span>
+                    <span>{t("filterCategory")}</span>
                     <ChevronDown
+                        aria-hidden="true"
                         className={`h-4 w-4 transition-transform ${categoriesOpen ? "rotate-180" : ""}`}
                     />
                 </button>
 
-                {categoriesOpen && (
+                <div id={`${panelId}-categories`} hidden={!categoriesOpen}>
                     <div className="space-y-2">
-                        {CATEGORIES.map((category) => {
-                            const count = categoryCounts[category.id] || 0
+                        {CATEGORY_IDS.map((categoryId) => {
+                            const count = categoryCounts[categoryId] || 0
                             const isDisabled = count === 0
-                            const isSelected = selectedCategory === category.id
+                            const isSelected = selectedCategory === categoryId
+                            const name = t(`categories.${categoryId}`)
 
                             return (
                                 <button
-                                    key={category.id}
-                                    onClick={() => !isDisabled && selectCategory(category.id)}
+                                    key={categoryId}
+                                    type="button"
+                                    onClick={() => selectCategory(categoryId)}
                                     disabled={isDisabled}
-                                    className={`flex items-center gap-3 w-full text-left px-2 py-1.5 rounded transition-colors ${
+                                    aria-pressed={isSelected}
+                                    className={`flex w-full items-center gap-3 rounded px-2 py-1.5 text-left transition-colors ${
                                         isDisabled
-                                            ? "opacity-40 cursor-not-allowed"
+                                            ? "cursor-not-allowed opacity-40"
                                             : isSelected
-                                                ? "bg-[#2ec4b6]/10 text-[#2ec4b6]"
-                                                : "hover:bg-gray-100"
+                                                ? "bg-brand-accent/15 text-brand-accent-strong"
+                                                : "hover:bg-muted"
                                     }`}
                                 >
-                                    <div
-                                        className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${
+                                    <span
+                                        aria-hidden="true"
+                                        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border-2 transition-colors ${
                                             isSelected
-                                                ? "border-[#2ec4b6] bg-[#2ec4b6]"
+                                                ? "border-brand-accent-strong bg-brand-accent-strong"
                                                 : isDisabled
-                                                    ? "border-gray-200"
-                                                    : "border-gray-300"
+                                                    ? "border-border"
+                                                    : "border-input"
                                         }`}
                                     >
                                         {isSelected && <Check className="h-3 w-3 text-white" />}
-                                    </div>
-                                    <span className="text-sm text-gray-600 flex-1">{category.name}</span>
-                                    <span className="text-xs text-gray-400">({count})</span>
+                                    </span>
+                                    <span className="flex-1 text-sm text-muted-foreground">{name}</span>
+                                    <span className="text-xs text-muted-foreground">({count})</span>
                                 </button>
                             )
                         })}
                     </div>
-                )}
+                </div>
             </div>
 
-            <hr className="border-gray-200" />
+            <hr className="border-border" />
 
             {/* Filtro de Países */}
             <div>
                 <button
+                    type="button"
                     onClick={() => setCountriesOpen(!countriesOpen)}
-                    className="flex items-center justify-between w-full text-left font-semibold text-gray-700 mb-3"
+                    aria-expanded={countriesOpen}
+                    aria-controls={`${panelId}-countries`}
+                    className="mb-3 flex w-full items-center justify-between text-left font-semibold text-foreground"
                 >
-                    <span>Países</span>
+                    <span>{t("filterCountries")}</span>
                     <ChevronDown
+                        aria-hidden="true"
                         className={`h-4 w-4 transition-transform ${countriesOpen ? "rotate-180" : ""}`}
                     />
                 </button>
 
-                {countriesOpen && (
+                <div id={`${panelId}-countries`} hidden={!countriesOpen}>
                     <div className="space-y-2">
-                        {COUNTRIES.map((country) => {
-                            const count = countryCounts[country.code] || 0
+                        {COUNTRY_CODES.map((code) => {
+                            const count = countryCounts[code] || 0
                             const isDisabled = count === 0
+                            const isChecked = selectedCountries.includes(code)
+                            const name = t(`countries.${code}`)
 
                             return (
                                 <label
-                                    key={country.code}
-                                    className={`flex items-center gap-3 cursor-pointer group ${
-                                        isDisabled ? "opacity-40 cursor-not-allowed" : ""
+                                    key={code}
+                                    className={`group flex items-center gap-3 ${
+                                        isDisabled ? "cursor-not-allowed opacity-40" : "cursor-pointer"
                                     }`}
                                 >
-                                    <div
-                                        className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${
-                                            selectedCountries.includes(country.code)
-                                                ? "border-[#2ec4b6] bg-[#2ec4b6]"
-                                                : isDisabled
-                                                    ? "border-gray-200"
-                                                    : "border-gray-300 group-hover:border-[#2ec4b6]"
-                                        }`}
-                                    >
-                                        {selectedCountries.includes(country.code) && (
-                                            <Check className="h-3 w-3 text-white" />
-                                        )}
-                                    </div>
                                     <input
                                         type="checkbox"
-                                        className="hidden"
-                                        checked={selectedCountries.includes(country.code)}
-                                        onChange={() => !isDisabled && toggleCountry(country.code)}
+                                        className="peer sr-only"
+                                        checked={isChecked}
+                                        onChange={() => toggleCountry(code)}
                                         disabled={isDisabled}
                                     />
-                                    <FlagIcon code={country.code} size="sm" />
-                                    <span className="text-sm text-gray-600 flex-1">{country.name}</span>
-                                    <span className="text-xs text-gray-400">({count})</span>
+                                    <FilterCheckbox checked={isChecked} disabled={isDisabled} />
+                                    <FlagIcon code={code} size="sm" decorative />
+                                    <span className="flex-1 text-sm text-muted-foreground">{name}</span>
+                                    <span className="text-xs text-muted-foreground">({count})</span>
                                 </label>
                             )
                         })}
                     </div>
-                )}
+                </div>
             </div>
 
-            <hr className="border-gray-200" />
+            <hr className="border-border" />
 
             {/* Filtro de Setores */}
             <div>
                 <button
+                    type="button"
                     onClick={() => setIndustriesOpen(!industriesOpen)}
-                    className="flex items-center justify-between w-full text-left font-semibold text-gray-700 mb-3"
+                    aria-expanded={industriesOpen}
+                    aria-controls={`${panelId}-industries`}
+                    className="mb-3 flex w-full items-center justify-between text-left font-semibold text-foreground"
                 >
-                    <span>Setores</span>
+                    <span>{t("filterIndustries")}</span>
                     <ChevronDown
+                        aria-hidden="true"
                         className={`h-4 w-4 transition-transform ${industriesOpen ? "rotate-180" : ""}`}
                     />
                 </button>
 
-                {industriesOpen && (
+                <div id={`${panelId}-industries`} hidden={!industriesOpen}>
                     <div className="space-y-2">
-                        {INDUSTRIES.map((industry) => {
-                            const count = industryCounts[industry.id] || 0
+                        {INDUSTRY_IDS.map((industryId) => {
+                            const count = industryCounts[industryId] || 0
                             const isDisabled = count === 0
+                            const isChecked = selectedIndustries.includes(industryId)
+                            const name = t(`industries.${industryId}`)
 
                             return (
                                 <label
-                                    key={industry.id}
-                                    className={`flex items-center gap-3 cursor-pointer group ${
-                                        isDisabled ? "opacity-40 cursor-not-allowed" : ""
+                                    key={industryId}
+                                    className={`group flex items-center gap-3 ${
+                                        isDisabled ? "cursor-not-allowed opacity-40" : "cursor-pointer"
                                     }`}
                                 >
-                                    <div
-                                        className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${
-                                            selectedIndustries.includes(industry.id)
-                                                ? "border-[#2ec4b6] bg-[#2ec4b6]"
-                                                : isDisabled
-                                                    ? "border-gray-200"
-                                                    : "border-gray-300 group-hover:border-[#2ec4b6]"
-                                        }`}
-                                    >
-                                        {selectedIndustries.includes(industry.id) && (
-                                            <Check className="h-3 w-3 text-white" />
-                                        )}
-                                    </div>
                                     <input
                                         type="checkbox"
-                                        className="hidden"
-                                        checked={selectedIndustries.includes(industry.id)}
-                                        onChange={() => !isDisabled && toggleIndustry(industry.id)}
+                                        className="peer sr-only"
+                                        checked={isChecked}
+                                        onChange={() => toggleIndustry(industryId)}
                                         disabled={isDisabled}
                                     />
-                                    <span className="text-sm text-gray-600 flex-1">{industry.name}</span>
-                                    <span className="text-xs text-gray-400">({count})</span>
+                                    <FilterCheckbox checked={isChecked} disabled={isDisabled} />
+                                    <span className="flex-1 text-sm text-muted-foreground">{name}</span>
+                                    <span className="text-xs text-muted-foreground">({count})</span>
                                 </label>
                             )
                         })}
                     </div>
-                )}
+                </div>
             </div>
 
             {/* Botão de Limpar Filtros */}
             {hasActiveFilters && (
                 <button
+                    type="button"
                     onClick={clearFilters}
-                    className="w-full rounded-md border border-gray-200 bg-white py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+                    className="w-full rounded-md border border-border bg-card py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted/40"
                 >
-                    Limpar filtros
+                    {t("clearFilters")}
                 </button>
             )}
         </div>

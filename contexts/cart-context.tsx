@@ -77,6 +77,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
 
     const addItem = (item: Omit<CartItem, "quantity">) => {
+        let wasAdded = false
+
         setCartItems((current) => {
             const exists = current.find((i) => i.id === item.id)
 
@@ -88,10 +90,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
             // O drawer abre logo abaixo (setIsOpen), então o toast é só uma
             // confirmação leve — sem ação redundante "Ver carrinho".
             toast.success(`"${item.name}" adicionado ao carrinho!`)
+            wasAdded = true
 
             return [...current, { ...item, quantity: 1 }]
         })
-        setIsOpen(true)
+
+        // Abrir o drawer numa re-adição contradiz o toast "já está no carrinho":
+        // a gaveta saltando na tela lê como sucesso.
+        if (wasAdded) {
+            setIsOpen(true)
+        }
     }
 
     const removeItem = (id: string) => {

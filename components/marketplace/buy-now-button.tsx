@@ -4,6 +4,8 @@
 import { Button } from "@/components/ui/button"
 import { ShoppingCart } from "lucide-react"
 import { useCart } from "@/contexts/cart-context"
+import { useAuth } from "@/hooks/useAuth"
+import { useTranslations } from "next-intl"
 import { useRouter } from "next/navigation"
 
 interface BuyNowButtonProps {
@@ -19,6 +21,8 @@ interface BuyNowButtonProps {
 
 export function BuyNowButton({ list }: BuyNowButtonProps) {
     const { addItem } = useCart()
+    const { isAuthenticated, isLoading } = useAuth()
+    const t = useTranslations("listing")
     const router = useRouter()
 
     const handleBuyNow = () => {
@@ -31,17 +35,20 @@ export function BuyNowButton({ list }: BuyNowButtonProps) {
             totalLeads: list.totalLeads,
         })
 
-        router.push("/checkout")
+        // O carrinho vive no localStorage, então sobrevive ao login — o item
+        // continua lá quando o usuário voltar para o checkout.
+        router.push(isAuthenticated ? "/checkout" : "/sign-in?redirect=/checkout")
     }
 
     return (
         <Button
-            className="w-full bg-[#4a2c5a] hover:bg-[#3a1c4a]"
+            className="w-full bg-brand text-brand-foreground hover:bg-brand-hover"
             size="lg"
             onClick={handleBuyNow}
+            disabled={isLoading}
         >
-            <ShoppingCart className="h-5 w-5 mr-2" />
-            Comprar agora
+            <ShoppingCart className="h-5 w-5 mr-2" aria-hidden="true" />
+            {isAuthenticated ? t("buyNow") : t("signInToBuy")}
         </Button>
     )
 }

@@ -3,19 +3,22 @@ import { NextRequest, NextResponse } from "next/server"
 import { paypalOrders } from "@/lib/paypal"
 import { OrderStatus } from "@paypal/paypal-server-sdk"
 import { prisma } from "@/lib/prisma"
-import { generatePurchaseAccessToken, generateMagicLinkUrl } from "@/lib/auth/magic-link"
-import { sendPurchaseConfirmationEmail } from "@/lib/email/purchase"
+import { fulfillPurchaseByOrderId, type CapturedAmount, type PayerInfo } from "@/lib/checkout/fulfillment"
 import { z } from "zod"
 import { getAuthenticatedActiveDbUser } from "@/lib/auth"
-import { rateLimit, getClientIp } from "@/lib/rate-limit"
-
-const rateLimiter = rateLimit(500)
+import { getClientIp } from "@/lib/rate-limit"
+import { checkPersistentRateLimit } from "@/lib/rate-limit"
 
 const captureOrderSchema = z.object({
     orderId: z.string().min(1),
 })
 
 type PayPalCaptureResult = {
+    payer?: {
+        payerId?: string
+        emailAddress?: string
+        name?: { givenName?: string; surname?: string }
+    }
     purchaseUnits?: {
         payments?: {
             captures?: {
@@ -32,7 +35,7 @@ function getErrorMessage(error: unknown): string {
     return error instanceof Error ? error.message : "Failed to capture payment"
 }
 
-function getCapturedAmount(captureResult: unknown): { value: string; currency: string } | null {
+function getCapturedAmount(captureResult: unknown): CapturedAmount | null {
     const result = captureResult as PayPalCaptureResult
     const capturedAmount = result.purchaseUnits?.[0]?.payments?.captures?.[0]?.amount
 
@@ -46,19 +49,38 @@ function getCapturedAmount(captureResult: unknown): { value: string; currency: s
     }
 }
 
+function getPayerInfo(captureResult: unknown): PayerInfo {
+    const result = captureResult as PayPalCaptureResult
+    const payer = result.payer
+
+    return {
+        payerId: payer?.payerId ?? null,
+        email: payer?.emailAddress ?? null,
+        name: payer?.name?.givenName
+            ? `${payer.name.givenName} ${payer.name.surname || ""}`.trim()
+            : null,
+    }
+}
+
 export async function POST(request: NextRequest) {
-    let sessionUserId: string | null = null
-    let orderId: string | null = null
-
     try {
-        await rateLimiter.check(getClientIp(request), 10, 60_000) // 10 requests per minute
-
         const user = await getAuthenticatedActiveDbUser()
 
         if (!user) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
         }
-        sessionUserId = user.id
+
+        // Rate limit persistido (compartilhado entre instâncias serverless):
+        // no máximo 10 tentativas de captura por usuário por minuto.
+        const allowed = await checkPersistentRateLimit(
+            "checkout:capture",
+            user.id || getClientIp(request),
+            10,
+            60_000
+        )
+        if (!allowed) {
+            return NextResponse.json({ error: "Too many requests" }, { status: 429 })
+        }
 
         const parsedBody = captureOrderSchema.safeParse(await request.json())
 
@@ -66,26 +88,21 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: "No order ID" }, { status: 400 })
         }
 
-        orderId = parsedBody.data.orderId
+        const orderId = parsedBody.data.orderId
 
+        // Verifica que o pedido pertence a este usuário e ainda está pendente
+        // (autorização — impede captura de pedido de outra pessoa).
         const pendingPurchase = await prisma.purchase.findFirst({
             where: {
                 paypalOrderId: orderId,
                 userId: user.id,
                 status: "pending",
             },
-            select: {
-                id: true,
-                total: true,
-                currency: true,
-            },
+            select: { id: true },
         })
 
         if (!pendingPurchase) {
-            return NextResponse.json(
-                { error: "Purchase not found" },
-                { status: 404 }
-            )
+            return NextResponse.json({ error: "Purchase not found" }, { status: 404 })
         }
 
         const capture = await paypalOrders().captureOrder({
@@ -95,90 +112,40 @@ export async function POST(request: NextRequest) {
         })
 
         if (capture.result.status !== OrderStatus.Completed) {
-            return NextResponse.json(
-                { error: "Payment not completed" },
-                { status: 400 }
-            )
+            // Captura não completou. NÃO marcamos como failed aqui — o webhook
+            // PAYMENT.CAPTURE.DENIED é a fonte da verdade para falhas reais.
+            return NextResponse.json({ error: "Payment not completed" }, { status: 400 })
         }
 
-        const capturedAmount = getCapturedAmount(capture.result)
-        const expectedTotal = Number(pendingPurchase.total).toFixed(2)
+        // A partir daqui o dinheiro foi capturado. Toda efetivação passa pela
+        // função compartilhada, idempotente com o webhook. Importante: nunca
+        // marcamos como "failed" depois de uma captura bem-sucedida — se algo
+        // falhar aqui, a compra fica pending e o webhook reconcilia para paid.
+        const outcome = await fulfillPurchaseByOrderId({
+            paypalOrderId: orderId,
+            capturedAmount: getCapturedAmount(capture.result),
+            payer: getPayerInfo(capture.result),
+        })
 
-        if (
-            !capturedAmount ||
-            capturedAmount.value !== expectedTotal ||
-            capturedAmount.currency !== pendingPurchase.currency
-        ) {
-            return NextResponse.json(
-                { error: "Payment amount mismatch" },
-                { status: 400 }
-            )
+        switch (outcome.status) {
+            case "fulfilled":
+                return NextResponse.json({
+                    success: true,
+                    purchaseId: outcome.purchaseId,
+                    accessUrl: outcome.accessUrl,
+                })
+            case "already_fulfilled":
+                return NextResponse.json({
+                    success: true,
+                    purchaseId: outcome.purchaseId,
+                })
+            case "amount_mismatch":
+                return NextResponse.json({ error: "Payment amount mismatch" }, { status: 400 })
+            case "not_found":
+                return NextResponse.json({ error: "Purchase not found" }, { status: 404 })
         }
-
-        // Atualizar Purchase no DB
-        const purchase = await prisma.purchase.update({
-            where: { id: pendingPurchase.id },
-            data: {
-                status: "paid",
-                paidAt: new Date(),
-                paypalPayerId: capture.result.payer?.payerId,
-                buyerEmail: capture.result.payer?.emailAddress,
-                buyerName: capture.result.payer?.name?.givenName
-                    ? `${capture.result.payer.name.givenName} ${capture.result.payer.name.surname || ""}`.trim()
-                    : null,
-            },
-            include: {
-                items: {
-                    include: {
-                        list: true,
-                    },
-                },
-            },
-        })
-
-        // 🆕 Gerar token mágico para acesso às compras
-        const accessToken = await generatePurchaseAccessToken(
-            user.id,
-            purchase.id, // Token específico para esta compra
-            24 // 24 horas de validade
-        )
-
-        // 🆕 Gerar URL de acesso
-        const accessUrl = generateMagicLinkUrl(accessToken)
-
-        // 🆕 Enviar email de confirmação (assíncrono - não bloqueia a resposta)
-        sendPurchaseConfirmationEmail({
-            userId: user.id,
-            purchaseId: purchase.id,
-            accessToken,
-            accessUrl,
-        }).catch(error => {
-            console.error("Erro ao enviar email de confirmação:", error)
-        })
-
-        return NextResponse.json({
-            success: true,
-            purchaseId: purchase.id,
-            accessUrl, // Retornar URL para possível uso no frontend
-        })
     } catch (error: unknown) {
         console.error("Error capturing order:", error)
-
-        // Atualizar status para failed se houver erro
-        if (orderId && sessionUserId) {
-            await prisma.purchase.updateMany({
-                where: {
-                    paypalOrderId: orderId,
-                    userId: sessionUserId,
-                    status: "pending",
-                },
-                data: { status: "failed" },
-            })
-        }
-
-        return NextResponse.json(
-            { error: getErrorMessage(error) },
-            { status: 500 }
-        )
+        return NextResponse.json({ error: getErrorMessage(error) }, { status: 500 })
     }
 }

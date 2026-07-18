@@ -8,6 +8,7 @@ import { useLocale, useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
 import { CartBadge } from "@/components/marketplace/cart-badge"
 import { LocaleSwitcher } from "@/components/marketplace/locale-switcher"
+import { ThemeToggle } from "@/components/marketplace/theme-toggle"
 import { useAuth } from "@/hooks/useAuth"
 import { createClient } from "@/lib/supabase/client"
 import { useState } from "react"
@@ -77,6 +78,7 @@ export function MarketplaceHeader() {
                 </nav>
 
                 <div className="flex items-center gap-2">
+                    <ThemeToggle />
                     <LocaleSwitcher />
                     <CartBadge />
 

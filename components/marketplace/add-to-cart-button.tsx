@@ -4,6 +4,7 @@
 import { Button } from "@/components/ui/button"
 import { ShoppingCart } from "lucide-react"
 import { useCart } from "@/contexts/cart-context"
+import { useTranslations } from "next-intl"
 
 interface AddToCartButtonProps {
     list: {
@@ -18,6 +19,7 @@ interface AddToCartButtonProps {
 
 export function AddToCartButton({ list }: AddToCartButtonProps) {
     const { addItem } = useCart()
+    const t = useTranslations("cart")
 
     const handleAddToCart = () => {
         addItem({
@@ -38,7 +40,7 @@ export function AddToCartButton({ list }: AddToCartButtonProps) {
             onClick={handleAddToCart}
         >
             <ShoppingCart className="h-5 w-5 mr-2" />
-            Adicionar ao carrinho
+            {t("addToCart")}
         </Button>
     )
 }

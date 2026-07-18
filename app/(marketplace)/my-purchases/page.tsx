@@ -21,10 +21,16 @@ import { MyPurchasesEmptyState } from "@/components/marketplace/my-purchases-emp
 import { validatePurchaseAccessToken } from "@/lib/auth/magic-link"
 import { getAuthenticatedUserId } from "@/lib/auth"
 import { formatCurrency } from "@/lib/utils"
+import { getFormatter, getTranslations } from "next-intl/server"
+import type { Metadata } from "next"
 
-export const metadata = {
-    title: "Minhas compras | Easy Prospect",
-    description: "Acesse e baixe suas listas de leads",
+export async function generateMetadata(): Promise<Metadata> {
+    const t = await getTranslations("purchases")
+
+    return {
+        title: t("metaTitle"),
+        description: t("metaDescription"),
+    }
 }
 
 interface PageProps {
@@ -33,6 +39,7 @@ interface PageProps {
 
 async function PurchasesContent({ searchParams }: PageProps) {
     const { token } = await searchParams
+    const t = await getTranslations("purchases")
 
     if (token) {
         const validation = await validatePurchaseAccessToken(token)
@@ -40,10 +47,12 @@ async function PurchasesContent({ searchParams }: PageProps) {
         if (!validation.valid) {
             return (
                 <InvalidTokenState
+                    title={t("invalidTokenTitle")}
+                    ctaLabel={t("goToCatalog")}
                     message={
                         validation.error === "Token expirado"
-                            ? "Este link expirou. Solicite um novo acesso na sua área de compras."
-                            : "Este link não é válido ou já foi utilizado."
+                            ? t("invalidTokenExpired")
+                            : t("invalidTokenGeneric")
                     }
                 />
             )
@@ -57,7 +66,7 @@ async function PurchasesContent({ searchParams }: PageProps) {
         return (
             <PurchasesDashboard
                 purchases={filteredPurchases}
-                tokenNotice={validation.purchaseId ? "Acesso por link mágico válido por 24h." : undefined}
+                tokenNotice={validation.purchaseId ? t("magicLinkNotice") : undefined}
             />
         )
     }
@@ -73,7 +82,7 @@ async function PurchasesContent({ searchParams }: PageProps) {
     return <PurchasesDashboard purchases={purchases} />
 }
 
-function PurchasesDashboard({
+async function PurchasesDashboard({
     purchases,
     tokenNotice,
 }: {
@@ -82,41 +91,41 @@ function PurchasesDashboard({
 }) {
     const stats = getPurchaseStats(purchases)
     const currency = purchases[0]?.currency || "EUR"
+    const t = await getTranslations("purchases")
+    const format = await getFormatter()
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            <section className="border-b border-gray-200 bg-white">
+        <div className="min-h-screen bg-muted/40">
+            <section className="border-b bg-card">
                 <div className="container mx-auto px-4 py-6">
-                    <Button variant="ghost" className="mb-4 px-0 text-gray-600 hover:text-[#4a2c5a]" asChild>
+                    <Button variant="ghost" className="mb-4 px-0 text-muted-foreground hover:text-brand" asChild>
                         <Link href="/catalog">
-                            <ArrowLeft className="h-4 w-4" />
-                            Voltar ao catálogo
+                            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+                            {t("back")}
                         </Link>
                     </Button>
 
                     <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
                         <div>
-                            <div className="mb-3 inline-flex items-center gap-2 rounded-md border border-indigo-200 bg-indigo-50 px-3 py-1 text-sm font-medium text-indigo-700">
-                                <FileDown className="h-4 w-4" />
-                                Downloads e histórico de pedidos
+                            <div className="mb-3 inline-flex items-center gap-2 rounded-md border border-primary/30 bg-primary/10 px-3 py-1 text-sm font-medium text-primary">
+                                <FileDown className="h-4 w-4" aria-hidden="true" />
+                                {t("badge")}
                             </div>
-                            <h1 className="text-3xl font-bold text-gray-950">Minhas compras</h1>
-                            <p className="mt-2 max-w-2xl text-gray-500">
-                                Baixe suas listas, confira o status dos pedidos e use os arquivos para alimentar suas campanhas no CRM.
-                            </p>
+                            <h1 className="text-3xl font-bold text-foreground">{t("title")}</h1>
+                            <p className="mt-2 max-w-2xl text-muted-foreground">{t("subtitle")}</p>
                             {tokenNotice && (
-                                <p className="mt-2 inline-flex items-center gap-2 text-sm text-amber-700">
-                                    <KeyRound className="h-4 w-4" />
+                                <p className="mt-2 inline-flex items-center gap-2 text-sm text-amber-700 dark:text-amber-400">
+                                    <KeyRound className="h-4 w-4" aria-hidden="true" />
                                     {tokenNotice}
                                 </p>
                             )}
                         </div>
 
                         {purchases.length > 0 && (
-                            <Button className="bg-[#4a2c5a] hover:bg-[#5d3a70]" asChild>
+                            <Button className="bg-brand text-brand-foreground hover:bg-brand-hover" asChild>
                                 <Link href="/dashboard">
-                                    <Rocket className="h-4 w-4" />
-                                    Abrir CRM
+                                    <Rocket className="h-4 w-4" aria-hidden="true" />
+                                    {t("openCrm")}
                                 </Link>
                             </Button>
                         )}
@@ -124,25 +133,25 @@ function PurchasesDashboard({
 
                     <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                         <StatCard
-                            label="Compras"
-                            value={stats.totalPurchases.toString()}
+                            label={t("statPurchases")}
+                            value={format.number(stats.totalPurchases)}
                             icon={ShoppingBag}
                             tone="blue"
                         />
                         <StatCard
-                            label="Listas"
-                            value={stats.totalLists.toString()}
+                            label={t("statLists")}
+                            value={format.number(stats.totalLists)}
                             icon={Package}
                             tone="indigo"
                         />
                         <StatCard
-                            label="Leads"
-                            value={stats.totalLeads.toLocaleString()}
+                            label={t("statLeads")}
+                            value={format.number(stats.totalLeads)}
                             icon={Database}
                             tone="violet"
                         />
                         <StatCard
-                            label="Investido"
+                            label={t("statSpent")}
                             value={formatCurrency(stats.totalSpent, currency)}
                             icon={DollarSign}
                             tone="amber"
@@ -162,25 +171,25 @@ function PurchasesDashboard({
                             ))}
                         </div>
 
-                        <aside className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm lg:sticky lg:top-24">
-                            <h2 className="text-lg font-semibold text-gray-900">
-                                Próximos passos
+                        <aside className="rounded-lg border bg-card p-5 shadow-sm lg:sticky lg:top-24">
+                            <h2 className="text-lg font-semibold text-foreground">
+                                {t("nextStepsTitle")}
                             </h2>
                             <div className="mt-4 space-y-4">
                                 <GuidanceItem
                                     icon={FileDown}
-                                    title="Baixe em Excel"
-                                    text="Use Excel quando precisar revisar colunas antes de importar."
+                                    title={t("guidanceExcelTitle")}
+                                    text={t("guidanceExcelText")}
                                 />
                                 <GuidanceItem
                                     icon={Database}
-                                    title="Importe no CRM"
-                                    text="Crie uma lista de trabalho e acompanhe abordagens por campanha."
+                                    title={t("guidanceCrmTitle")}
+                                    text={t("guidanceCrmText")}
                                 />
                                 <GuidanceItem
                                     icon={Rocket}
-                                    title="Priorize por mercado"
-                                    text="Comece pelos países e setores mais próximos da sua oferta."
+                                    title={t("guidanceMarketTitle")}
+                                    text={t("guidanceMarketText")}
                                 />
                             </div>
                         </aside>
@@ -209,21 +218,25 @@ function getPurchaseStats(purchases: UserPurchase[]) {
     )
 }
 
-function InvalidTokenState({ message }: { message: string }) {
+function InvalidTokenState({
+    title,
+    message,
+    ctaLabel,
+}: {
+    title: string
+    message: string
+    ctaLabel: string
+}) {
     return (
-        <div className="min-h-[70vh] bg-gray-50 px-4 py-16">
-            <div className="mx-auto max-w-md rounded-lg border border-gray-200 bg-white p-8 text-center shadow-sm">
-                <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-md bg-red-100">
-                    <AlertTriangle className="h-8 w-8 text-red-600" />
+        <div className="min-h-[70vh] bg-muted/40 px-4 py-16">
+            <div className="mx-auto max-w-md rounded-lg border bg-card p-8 text-center shadow-sm">
+                <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-md bg-destructive/10">
+                    <AlertTriangle className="h-8 w-8 text-destructive" aria-hidden="true" />
                 </div>
-                <h2 className="mb-2 text-xl font-bold text-gray-900">
-                    Link inválido ou expirado
-                </h2>
-                <p className="mb-6 text-sm text-gray-500">{message}</p>
-                <Button className="bg-[#4a2c5a] hover:bg-[#5d3a70]" asChild>
-                    <Link href="/catalog">
-                        Ir para o catálogo
-                    </Link>
+                <h2 className="mb-2 text-xl font-bold text-foreground">{title}</h2>
+                <p className="mb-6 text-sm text-muted-foreground">{message}</p>
+                <Button className="bg-brand text-brand-foreground hover:bg-brand-hover" asChild>
+                    <Link href="/catalog">{ctaLabel}</Link>
                 </Button>
             </div>
         </div>
@@ -242,21 +255,21 @@ function StatCard({
     tone: "blue" | "indigo" | "violet" | "amber"
 }) {
     const tones = {
-        blue: "bg-blue-50 text-blue-600",
-        indigo: "bg-indigo-50 text-indigo-600",
-        violet: "bg-violet-50 text-violet-600",
-        amber: "bg-amber-50 text-amber-600",
+        blue: "bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-300",
+        indigo: "bg-indigo-50 text-indigo-600 dark:bg-indigo-950 dark:text-indigo-300",
+        violet: "bg-violet-50 text-violet-600 dark:bg-violet-950 dark:text-violet-300",
+        amber: "bg-amber-50 text-amber-600 dark:bg-amber-950 dark:text-amber-300",
     }
 
     return (
-        <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+        <div className="rounded-lg border bg-card p-4 shadow-sm">
             <div className="flex items-center gap-3">
                 <div className={`flex h-10 w-10 items-center justify-center rounded-md ${tones[tone]}`}>
                     <Icon className="h-5 w-5" />
                 </div>
                 <div className="min-w-0">
-                    <div className="truncate text-xl font-bold text-gray-950">{value}</div>
-                    <div className="text-sm text-gray-500">{label}</div>
+                    <div className="truncate text-xl font-bold text-foreground">{value}</div>
+                    <div className="text-sm text-muted-foreground">{label}</div>
                 </div>
             </div>
         </div>
@@ -274,27 +287,29 @@ function GuidanceItem({
 }) {
     return (
         <div className="flex gap-3">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-[#2ec4b6]/10 text-[#1ba399]">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-brand-accent/15 text-brand-accent-strong">
                 <Icon className="h-4 w-4" />
             </div>
             <div>
-                <div className="font-medium text-gray-900">{title}</div>
-                <p className="mt-1 text-sm text-gray-500">{text}</p>
+                <div className="font-medium text-foreground">{title}</div>
+                <p className="mt-1 text-sm text-muted-foreground">{text}</p>
             </div>
         </div>
     )
 }
 
-export default function MyPurchasesPage({ searchParams }: PageProps) {
+export default async function MyPurchasesPage({ searchParams }: PageProps) {
+    const t = await getTranslations("purchases")
+
     return (
         <Suspense
             fallback={
-                <div className="min-h-screen bg-gray-50 px-4 py-16">
+                <div className="min-h-screen bg-muted/40 px-4 py-16">
                     <div className="mx-auto max-w-md text-center">
-                        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-md bg-[#4a2c5a]/10">
-                            <ShoppingBag className="h-7 w-7 animate-pulse text-[#4a2c5a]" />
+                        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-md bg-brand/10">
+                            <ShoppingBag className="h-7 w-7 animate-pulse text-brand" aria-hidden="true" />
                         </div>
-                        <p className="text-gray-500">Carregando suas compras...</p>
+                        <p className="text-muted-foreground">{t("loading")}</p>
                     </div>
                 </div>
             }

@@ -1,7 +1,9 @@
 import Link from "next/link"
 import { redirect } from "next/navigation"
 import type { ComponentType } from "react"
+import type { Metadata } from "next"
 import type { Prisma } from "@prisma/client"
+import { getFormatter, getTranslations } from "next-intl/server"
 import { prisma } from "@/lib/prisma"
 import { getAuthenticatedUserId } from "@/lib/auth"
 import { Button } from "@/components/ui/button"
@@ -19,17 +21,28 @@ type PurchaseItemWithList = Prisma.PurchaseItemGetPayload<{
     }
 }>
 
-export const metadata = {
-    title: "Compra Confirmada | Easy Prospect",
-    description: "Sua compra foi confirmada com sucesso",
+export async function generateMetadata(): Promise<Metadata> {
+    const t = await getTranslations("checkout")
+
+    return {
+        title: t("successMetaTitle"),
+        description: t("successMetaDescription"),
+    }
 }
 
 export default async function SuccessPage({ searchParams }: SuccessPageProps) {
     const { purchaseId } = await searchParams
     const userId = await getAuthenticatedUserId()
+    const t = await getTranslations("checkout")
+    const format = await getFormatter()
 
     if (!userId) {
-        redirect("/sign-in")
+        // Sem o purchaseId no redirect, uma sessão expirada entre a captura e
+        // esta página perde o pedido de forma irrecuperável.
+        const target = purchaseId
+            ? `/checkout/success?purchaseId=${encodeURIComponent(purchaseId)}`
+            : "/my-purchases"
+        redirect(`/sign-in?redirect=${encodeURIComponent(target)}`)
     }
 
     if (!purchaseId) {
@@ -66,23 +79,23 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
                     </div>
 
                     <h1 className="mb-2 text-3xl font-bold text-card-foreground">
-                        Compra confirmada
+                        {t("successTitle")}
                     </h1>
                     <p className="mx-auto mb-8 max-w-xl text-muted-foreground">
-                        Seu pedido foi aprovado e as listas já estão disponíveis para download.
+                        {t("successSubtitle")}
                     </p>
 
                     <div className="mb-8 rounded-lg border bg-muted/30 p-5 text-left">
                         <div className="mb-4 flex flex-col gap-3 border-b pb-4 sm:flex-row sm:items-center sm:justify-between">
                             <div>
-                                <span className="text-sm text-muted-foreground">Pedido</span>
+                                <span className="text-sm text-muted-foreground">{t("successOrder")}</span>
                                 <div className="font-mono text-sm font-medium text-card-foreground">
                                     #{purchase.id.slice(0, 8)}
                                 </div>
                             </div>
                             <div className="text-left sm:text-right">
-                                <span className="text-sm text-muted-foreground">Leads liberados</span>
-                                <div className="font-semibold text-card-foreground">{totalLeads.toLocaleString()}</div>
+                                <span className="text-sm text-muted-foreground">{t("successLeadsReleased")}</span>
+                                <div className="font-semibold text-card-foreground">{format.number(totalLeads)}</div>
                             </div>
                         </div>
 
@@ -94,7 +107,7 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
                                             {item.list.name}
                                         </div>
                                         <div className="text-xs text-muted-foreground">
-                                            {item.list.totalLeads.toLocaleString()} leads
+                                            {format.number(item.list.totalLeads)} leads
                                         </div>
                                     </div>
                                     <span className="shrink-0 font-medium text-card-foreground">
@@ -105,7 +118,7 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
                         </div>
 
                         <div className="flex items-center justify-between border-t pt-4">
-                            <span className="font-semibold text-card-foreground">Total pago</span>
+                            <span className="font-semibold text-card-foreground">{t("successTotalPaid")}</span>
                             <span className="text-xl font-bold text-primary">
                                 {formatCurrency(Number(purchase.total), purchase.currency)}
                             </span>
@@ -113,30 +126,30 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
                     </div>
 
                     <div className="grid gap-3 sm:grid-cols-3">
-                        <NextStep icon={Download} title="Baixe" text="CSV ou Excel em Minhas Compras." />
-                        <NextStep icon={Rocket} title="Prospecção" text="Importe leads no CRM e crie campanhas." />
-                        <NextStep icon={Mail} title="Confirmação" text="O recibo foi enviado para seu email." />
+                        <NextStep icon={Download} title={t("successNextDownloadTitle")} text={t("successNextDownloadText")} />
+                        <NextStep icon={Rocket} title={t("successNextProspectTitle")} text={t("successNextProspectText")} />
+                        <NextStep icon={Mail} title={t("successNextReceiptTitle")} text={t("successNextReceiptText")} />
                     </div>
 
                     <div className="mt-8 space-y-3">
                         <Button className="h-12 w-full" asChild>
                             <Link href="/my-purchases">
-                                <ShoppingBag className="h-5 w-5" />
-                                Acessar minhas compras
+                                <ShoppingBag className="h-5 w-5" aria-hidden="true" />
+                                {t("successCtaPurchases")}
                             </Link>
                         </Button>
 
                         <div className="grid gap-3 sm:grid-cols-2">
                             <Button variant="outline" className="h-12" asChild>
                                 <Link href="/dashboard">
-                                    Usar CRM
+                                    {t("successCtaCrm")}
                                 </Link>
                             </Button>
 
                             <Button variant="outline" className="h-12" asChild>
                                 <Link href="/catalog">
-                                    Continuar comprando
-                                    <ArrowRight className="h-5 w-5" />
+                                    {t("successCtaContinue")}
+                                    <ArrowRight className="h-5 w-5" aria-hidden="true" />
                                 </Link>
                             </Button>
                         </div>

@@ -30,6 +30,30 @@ export async function GET(request: Request) {
         const now = new Date()
         console.log(`[Cron] Iniciando processamento de sequências: ${now.toISOString()}`)
 
+        // Início do dia (para o limite diário de envios por workspace).
+        const startOfToday = new Date(now)
+        startOfToday.setHours(0, 0, 0, 0)
+
+        // Contagem de envios de hoje por workspace, resolvida sob demanda e
+        // incrementada a cada envio dentro desta execução, para não consultar
+        // o banco a cada enrollment.
+        const workspaceSentToday = new Map<string, number>()
+
+        async function getWorkspaceSentToday(workspaceId: string): Promise<number> {
+            const cached = workspaceSentToday.get(workspaceId)
+            if (cached !== undefined) {
+                return cached
+            }
+            const count = await prisma.emailSend.count({
+                where: {
+                    sentAt: { gte: startOfToday },
+                    campaign: { workspaceId },
+                },
+            })
+            workspaceSentToday.set(workspaceId, count)
+            return count
+        }
+
         // Buscar enrollments que precisam de envio
         const pendingEnrollments = await prisma.campaignEnrollment.findMany({
             where: {
@@ -55,6 +79,7 @@ export async function GET(request: Request) {
         let processed = 0
         let sent = 0
         let skipped = 0
+        let throttled = 0
         let errors = 0
 
         for (const enrollment of pendingEnrollments) {
@@ -144,6 +169,22 @@ export async function GET(request: Request) {
                     }
                     skipped++
                     continue
+                }
+
+                // Respeitar o limite diário de envios do workspace.
+                // maxEmailsPerDay === 0 significa ilimitado.
+                const maxEmailsPerDay = campaign.workspace.maxEmailsPerDay
+                if (maxEmailsPerDay > 0) {
+                    const sentToday = await getWorkspaceSentToday(campaign.workspaceId)
+                    if (sentToday >= maxEmailsPerDay) {
+                        // Não avança o step: o enrollment segue ativo e será
+                        // reprocessado na próxima execução, quando a cota resetar.
+                        throttled++
+                        console.log(
+                            `[Cron] Limite diário atingido (workspace ${campaign.workspaceId}: ${sentToday}/${maxEmailsPerDay}) - adiando enrollment ${enrollment.id}`
+                        )
+                        continue
+                    }
                 }
 
                 // Preparar dados do lead
@@ -265,6 +306,11 @@ export async function GET(request: Request) {
                     }
 
                     sent++
+                    // Contabiliza no limite diário do workspace nesta execução.
+                    workspaceSentToday.set(
+                        campaign.workspaceId,
+                        (workspaceSentToday.get(campaign.workspaceId) ?? 0) + 1
+                    )
                     console.log(
                         `[Cron] Email enviado: Lead ${lead.id}, Step ${currentStep.order}`
                     )
@@ -290,11 +336,22 @@ export async function GET(request: Request) {
             }
         }
 
+        // Limpeza oportunista das janelas de rate limit já expiradas (> 1h),
+        // para o cron não deixar a tabela crescer indefinidamente.
+        try {
+            await prisma.rateLimit.deleteMany({
+                where: { windowStart: { lt: new Date(now.getTime() - 60 * 60 * 1000) } },
+            })
+        } catch (error) {
+            console.error("[Cron] Falha ao limpar rate_limits antigos:", error)
+        }
+
         const summary = {
             timestamp: now.toISOString(),
             processed,
             sent,
             skipped,
+            throttled,
             errors,
         }
 

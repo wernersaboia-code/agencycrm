@@ -1,15 +1,16 @@
 import { getRequestConfig } from "next-intl/server"
-
-const SUPPORTED_LOCALES = ["pt", "de"] as const
+import { cookies } from "next/headers"
+import { resolveSiteLocale } from "@/lib/i18n/resolve-locale"
 
 // PT é o locale default de todo o app (rotas sem prefixo).
 // As páginas em alemão (app/de/*) pedem o locale explicitamente via
 // getTranslations({ locale: "de", ... }) e NextIntlClientProvider locale="de" —
 // esse locale explícito chega aqui como parâmetro e precisa ser honrado.
+// Quando não há locale explícito, o funil (catálogo/carrinho/checkout) resolve
+// pelo cookie NEXT_LOCALE, gravado por setLocaleCookie / SyncLocaleCookie.
 export default getRequestConfig(async ({ locale }) => {
-    const resolved = SUPPORTED_LOCALES.includes(locale as "pt" | "de")
-        ? (locale as "pt" | "de")
-        : "pt"
+    const cookieLocale = (await cookies()).get("NEXT_LOCALE")?.value
+    const resolved = resolveSiteLocale(locale, cookieLocale)
 
     return {
         locale: resolved,

@@ -5,7 +5,7 @@ import { MarketplaceHeader } from "@/components/marketplace/marketplace-header"
 import { MarketplaceFooter } from "@/components/marketplace/marketplace-footer"
 import { CartProvider } from "@/contexts/cart-context"
 import { CartDrawer } from "@/components/marketplace/cart-drawer"
-import { HtmlLang } from "@/components/marketplace/html-lang"
+import { SyncLocaleCookie } from "@/components/marketplace/sync-locale-cookie"
 import deMessages from "@/messages/de.json"
 
 export const metadata: Metadata = {
@@ -27,8 +27,11 @@ export default function GermanLayout({
     children: React.ReactNode
 }) {
     return (
-        <NextIntlClientProvider locale="de" messages={{ nav: deMessages.nav }}>
-            <HtmlLang lang="de" />
+        // `lang` agora vem do root layout (server-side); repassar as mensagens
+        // inteiras evita que componentes compartilhados — carrinho, cards —
+        // quebrem por namespace ausente ao serem usados nas rotas /de.
+        <NextIntlClientProvider locale="de" messages={deMessages}>
+            <SyncLocaleCookie locale="de" />
             <CartProvider>
                 <div className="min-h-screen flex flex-col">
                     <Suspense fallback={<div className="h-16 bg-background border-b" />}>

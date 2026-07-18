@@ -3,6 +3,8 @@
 import { usePathname, useRouter } from "next/navigation"
 import { Globe2 } from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
+import { setLocaleCookie } from "@/actions/locale"
+import { localeTargetPath } from "@/lib/i18n/locale-routes"
 import { Button } from "@/components/ui/button"
 import {
     DropdownMenu,
@@ -11,31 +13,28 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-// Páginas com par direto entre locales. Rotas sem par levam à home do outro locale.
-const PT_TO_DE: Record<string, string> = {
-    "/": "/de",
-    "/faq": "/de/faq",
-}
-
-const DE_TO_PT: Record<string, string> = {
-    "/de": "/",
-    "/de/faq": "/faq",
-}
-
 export function LocaleSwitcher() {
     const locale = useLocale()
     const pathname = usePathname()
     const router = useRouter()
     const t = useTranslations("nav")
 
-    const switchTo = (target: "pt" | "de") => {
+    const switchTo = async (target: "pt" | "de") => {
         if (target === locale) return
 
-        if (target === "de") {
-            router.push(PT_TO_DE[pathname] ?? "/de")
-        } else {
-            router.push(DE_TO_PT[pathname] ?? "/")
+        await setLocaleCookie(target)
+
+        const next = localeTargetPath(pathname, target)
+
+        if (next === pathname) {
+            // Mesma rota, conteúdo novo: só o refresh re-renderiza com o
+            // cookie atualizado (um push para a rota atual seria no-op).
+            router.refresh()
+            return
         }
+
+        router.push(next)
+        router.refresh()
     }
 
     return (
