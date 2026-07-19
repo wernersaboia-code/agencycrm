@@ -2,6 +2,7 @@
 "use client"
 
 import { PublicPurchaseCard } from "@/components/marketplace/public-purchase-card"
+import { Link } from "@/lib/i18n/navigation"
 import { Package, FileSpreadsheet, Download } from "lucide-react"
 
 // Interface compatível com o que vem do banco
@@ -106,12 +107,12 @@ export function PublicPurchaseList({ purchases, userEmail }: PublicPurchaseListP
                     <p className="text-gray-500 mt-2">
                         Você ainda não realizou nenhuma compra no Easy Prospect.
                     </p>
-                    <a
+                    <Link
                         href="/catalog"
                         className="mt-6 inline-block bg-[#4a2c5a] text-white px-6 py-3 rounded-lg hover:bg-[#5d3a70] transition"
                     >
                         Explorar Catálogo →
-                    </a>
+                    </Link>
                 </div>
             )}
         </div>

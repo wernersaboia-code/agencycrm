@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useSyncExternalStore } from "react"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 
 const CONSENT_KEY = "cookie-consent"
@@ -39,9 +40,12 @@ export function CookieConsent() {
                     Usamos cookies essenciais para autenticação e preferências.
                     Cookies de analytics são carregados apenas com seu consentimento.
                     {" "}
-                    <a href="/privacy" className="underline hover:text-foreground">
+                    {/* /privacy fica fora do segmento de locale, então o Link
+                        puro é o correto — o wrapper ciente de idioma geraria
+                        um prefixo que não existe nessa rota. */}
+                    <Link href="/privacy" className="underline hover:text-foreground">
                         Saiba mais
-                    </a>
+                    </Link>
                 </p>
                 <div className="flex gap-2">
                     <Button variant="outline" size="sm" onClick={decline}>
