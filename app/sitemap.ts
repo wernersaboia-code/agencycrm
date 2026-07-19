@@ -1,41 +1,34 @@
 import type { MetadataRoute } from "next"
 import { getPathname } from "@/lib/i18n/navigation"
-import { LOCALES, type Locale } from "@/lib/i18n/locales"
+import { LOCALES, DEFAULT_LOCALE, type Locale } from "@/lib/i18n/locales"
+import { alternatesFor } from "@/lib/i18n/alternates"
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || "https://easyprospect.com"
 
+// Rotas estáticas do funil: uma entrada por idioma, com hreflang de mão
+// dupla via alternatesFor. `/blog` entra aqui (não mais no bloco dinâmico
+// abaixo) para não duplicar a URL do índice do blog.
+const ROUTES: { path: string; changeFrequency: "daily" | "weekly" | "monthly"; priority: number }[] = [
+    { path: "/", changeFrequency: "weekly", priority: 1 },
+    { path: "/catalog", changeFrequency: "daily", priority: 0.9 },
+    { path: "/faq", changeFrequency: "monthly", priority: 0.7 },
+    { path: "/blog", changeFrequency: "weekly", priority: 0.8 },
+]
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-    const staticRoutes = [
-        {
-            url: BASE_URL,
-            lastModified: new Date(),
-            changeFrequency: "weekly" as const,
-            priority: 1,
-            alternates: { languages: { "pt-BR": BASE_URL, de: `${BASE_URL}/de` } },
-        },
-        {
-            url: `${BASE_URL}/de`,
-            lastModified: new Date(),
-            changeFrequency: "weekly" as const,
-            priority: 1,
-            alternates: { languages: { "pt-BR": BASE_URL, de: `${BASE_URL}/de` } },
-        },
-        { url: `${BASE_URL}/catalog`, lastModified: new Date(), changeFrequency: "daily" as const, priority: 0.9 },
-        {
-            url: `${BASE_URL}/faq`,
-            lastModified: new Date(),
-            changeFrequency: "monthly" as const,
-            priority: 0.6,
-            alternates: { languages: { "pt-BR": `${BASE_URL}/faq`, de: `${BASE_URL}/de/faq` } },
-        },
-        {
-            url: `${BASE_URL}/de/faq`,
-            lastModified: new Date(),
-            changeFrequency: "monthly" as const,
-            priority: 0.6,
-            alternates: { languages: { "pt-BR": `${BASE_URL}/faq`, de: `${BASE_URL}/de/faq` } },
-        },
-    ]
+    const staticRoutes = ROUTES.flatMap((route) =>
+        LOCALES.map((locale) => {
+            const prefix = locale === DEFAULT_LOCALE ? "" : `/${locale}`
+            const clean = route.path === "/" ? "" : route.path
+            return {
+                url: `${BASE_URL}${prefix}${clean}` || BASE_URL,
+                lastModified: new Date(),
+                changeFrequency: route.changeFrequency,
+                priority: route.priority,
+                alternates: { languages: alternatesFor(route.path).languages },
+            }
+        })
+    )
 
     try {
         const { prisma } = await import("@/lib/prisma")
@@ -73,14 +66,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             }))
         })
 
-        const blogIndexRoutes = LOCALES.map((locale) => ({
-            url: `${BASE_URL}${getPathname({ href: "/blog", locale })}`,
-            lastModified: now,
-            changeFrequency: "weekly" as const,
-            priority: 0.5,
-        }))
-
-        return [...staticRoutes, ...listRoutes, ...blogIndexRoutes, ...blogRoutes]
+        // O índice do blog (/blog) já está em ROUTES/staticRoutes acima —
+        // aqui só entram os posts individuais, que vêm do banco.
+        return [...staticRoutes, ...listRoutes, ...blogRoutes]
     } catch {
         return staticRoutes
     }

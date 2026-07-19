@@ -2,6 +2,8 @@ import { Suspense } from "react"
 import type { ComponentType } from "react"
 import type { Metadata } from "next"
 import { getTranslations } from "next-intl/server"
+import { alternatesFor } from "@/lib/i18n/alternates"
+import type { Locale } from "@/lib/i18n/locales"
 import { Link } from "@/lib/i18n/navigation"
 import { CatalogFiltersPanel } from "@/components/marketplace/catalog-filters-panel"
 import { CatalogGrid } from "@/components/marketplace/catalog-grid"
@@ -14,12 +16,18 @@ import { AlertTriangle, CheckCircle2, Download, ShieldCheck, SlidersHorizontal }
 // renderização em cache seria servida no idioma errado para o próximo visitante.
 export const dynamic = "force-dynamic"
 
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({
+    params,
+}: {
+    params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+    const { locale } = await params
     const t = await getTranslations("catalog")
 
     return {
         title: t("metaTitle"),
         description: t("heroSubtitle"),
+        alternates: alternatesFor("/catalog", locale as Locale),
     }
 }
 
