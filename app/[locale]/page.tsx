@@ -10,7 +10,6 @@ import { HowItWorksSection } from "@/components/landing/how-it-works-section"
 import { StatsSection } from "@/components/landing/stats-section"
 import { BlogTeaserSection } from "@/components/landing/blog-teaser-section"
 import { FinalCtaSection } from "@/components/landing/final-cta-section"
-import { SyncLocaleCookie } from "@/components/marketplace/sync-locale-cookie"
 
 export async function generateMetadata(): Promise<Metadata> {
     const t = await getTranslations({ locale: "pt", namespace: "landing.meta" })
@@ -37,7 +36,6 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function EasyProspectHome() {
     return (
         <div className="min-h-screen bg-background text-foreground">
-            <SyncLocaleCookie locale="pt" />
             <HeroSection locale="pt" />
             <IntroSection locale="pt" />
             <TargetMarketsSection locale="pt" />

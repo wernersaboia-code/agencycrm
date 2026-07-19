@@ -4,7 +4,7 @@ import { notFound } from "next/navigation"
 import { hasLocale, NextIntlClientProvider } from "next-intl"
 import { getMessages, setRequestLocale } from "next-intl/server"
 import { routing } from "@/lib/i18n/routing"
-import { dirForLocale, type Locale } from "@/lib/i18n/locales"
+import type { Locale } from "@/lib/i18n/locales"
 import { MarketplaceHeader } from "@/components/marketplace/marketplace-header"
 import { MarketplaceFooter } from "@/components/marketplace/marketplace-footer"
 import { CartProvider } from "@/contexts/cart-context"
@@ -55,24 +55,22 @@ export default async function MarketplaceLayout({
         // quebrou componentes client ao serem usados em páginas novas, e o
         // ganho de payload não paga o risco.
         <NextIntlClientProvider locale={locale} messages={messages}>
-            <div dir={dirForLocale(locale as Locale)}>
-                <CartProvider>
-                    <div className="min-h-screen flex flex-col">
-                        <Suspense fallback={<div className="h-16 bg-background border-b" />}>
-                            <MarketplaceHeader />
-                        </Suspense>
+            <CartProvider>
+                <div className="min-h-screen flex flex-col">
+                    <Suspense fallback={<div className="h-16 bg-background border-b" />}>
+                        <MarketplaceHeader />
+                    </Suspense>
 
-                        <main id="main-content" className="flex-1">
-                            {children}
-                        </main>
+                    <main id="main-content" className="flex-1">
+                        {children}
+                    </main>
 
-                        <MarketplaceFooter locale={locale as Locale} />
+                    <MarketplaceFooter locale={locale as Locale} />
 
-                        {/* Cart Drawer - Global */}
-                        <CartDrawer />
-                    </div>
-                </CartProvider>
-            </div>
+                    {/* Cart Drawer - Global */}
+                    <CartDrawer />
+                </div>
+            </CartProvider>
         </NextIntlClientProvider>
     )
 }
