@@ -1,5 +1,6 @@
 import { Suspense } from "react"
 import type { ComponentType } from "react"
+// eslint-disable-next-line no-restricted-imports -- único uso restante é /sign-in, fora do segmento de locale
 import { redirect } from "next/navigation"
 import {
     AlertTriangle,
@@ -22,6 +23,7 @@ import { getAuthenticatedUserId } from "@/lib/auth"
 import { formatCurrency } from "@/lib/utils"
 import { getFormatter, getTranslations } from "next-intl/server"
 import type { Metadata } from "next"
+// eslint-disable-next-line no-restricted-imports -- único uso restante é /dashboard, fora do segmento de locale
 import Link from "next/link"
 import { Link as LocaleLink } from "@/lib/i18n/navigation"
 

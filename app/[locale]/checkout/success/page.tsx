@@ -1,4 +1,6 @@
+// eslint-disable-next-line no-restricted-imports -- único uso restante é /dashboard, fora do segmento de locale
 import Link from "next/link"
+// eslint-disable-next-line no-restricted-imports -- único uso restante é /sign-in, fora do segmento de locale
 import { redirect } from "next/navigation"
 import type { ComponentType } from "react"
 import type { Metadata } from "next"

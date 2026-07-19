@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation"
+// eslint-disable-next-line no-restricted-imports -- href sempre montado via getPathname() abaixo, prefixo de locale já correto
 import Link from "next/link"
 import { prisma } from "@/lib/prisma"
 import { isBlogLocale, dirForLocale, type BlogLocale } from "@/lib/blog/locales"

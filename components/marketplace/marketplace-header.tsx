@@ -1,5 +1,6 @@
 "use client"
 
+// eslint-disable-next-line no-restricted-imports -- usos restantes são /dashboard, /super-admin, /sign-in, fora do segmento de locale
 import Link from "next/link"
 import { toast } from "sonner"
 import { LayoutDashboard, LogOut, Menu, ShieldCheck, ShoppingBag, User } from "lucide-react"

@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-restricted-imports -- href sempre montado via getPathname() abaixo, prefixo de locale já correto
 import Link from "next/link"
 import { getBlogLabels } from "@/lib/blog/i18n"
 import type { BlogLocale } from "@/lib/blog/locales"

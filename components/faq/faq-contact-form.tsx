@@ -1,6 +1,7 @@
 "use client"
 
 import { useMemo, useState } from "react"
+// eslint-disable-next-line no-restricted-imports -- único uso é /privacy, fora do segmento de locale
 import Link from "next/link"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"

@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-restricted-imports -- usos restantes são /sign-in, /terms, /privacy, fora do segmento de locale
 import Link from "next/link"
 import { getTranslations } from "next-intl/server"
 import { Link as LocaleLink } from "@/lib/i18n/navigation"
