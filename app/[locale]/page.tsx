@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { getTranslations } from "next-intl/server"
 import { alternatesFor } from "@/lib/i18n/alternates"
 import type { Locale } from "@/lib/i18n/locales"
+import { toLandingLocale } from "@/components/landing/types"
 import { HeroSection } from "@/components/landing/hero-section"
 import { IntroSection } from "@/components/landing/intro-section"
 import { TargetMarketsSection } from "@/components/landing/target-markets-section"
@@ -19,7 +20,7 @@ export async function generateMetadata({
     params: Promise<{ locale: string }>
 }): Promise<Metadata> {
     const { locale } = await params
-    const t = await getTranslations({ locale: "pt", namespace: "landing.meta" })
+    const t = await getTranslations({ locale, namespace: "landing.meta" })
 
     return {
         title: t("title"),
@@ -33,20 +34,27 @@ export async function generateMetadata({
     }
 }
 
-export default function EasyProspectHome() {
+export default async function EasyProspectHome({
+    params,
+}: {
+    params: Promise<{ locale: string }>
+}) {
+    const { locale: routeLocale } = await params
+    const locale = toLandingLocale(routeLocale)
+
     return (
         <div className="min-h-screen bg-background text-foreground">
-            <HeroSection locale="pt" />
-            <IntroSection locale="pt" />
-            <TargetMarketsSection locale="pt" />
-            <BuyerProfilesSection locale="pt" />
-            <DeliverablesSection locale="pt" />
-            <DataQualitySection locale="pt" />
-            <AdvantageSection locale="pt" />
-            <HowItWorksSection locale="pt" />
-            <StatsSection locale="pt" />
-            <BlogTeaserSection locale="pt" />
-            <FinalCtaSection locale="pt" />
+            <HeroSection locale={locale} />
+            <IntroSection locale={locale} />
+            <TargetMarketsSection locale={locale} />
+            <BuyerProfilesSection locale={locale} />
+            <DeliverablesSection locale={locale} />
+            <DataQualitySection locale={locale} />
+            <AdvantageSection locale={locale} />
+            <HowItWorksSection locale={locale} />
+            <StatsSection locale={locale} />
+            <BlogTeaserSection locale={locale} />
+            <FinalCtaSection locale={locale} />
         </div>
     )
 }
