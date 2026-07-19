@@ -6,6 +6,17 @@ import { stripLocale } from "@/lib/i18n/strip-locale"
 
 const intlMiddleware = createIntlMiddleware(routing)
 
+// Casamento compartilhado de rota: usado por toda whitelist/blacklist deste
+// arquivo para não repetir a mesma expressão de "===" ou startsWith(`${r}/`)
+// em cada lista. "/" é tratado à parte porque startsWith("//") casaria com
+// qualquer caminho.
+function matchesRoute(pathname: string, routes: string[]): boolean {
+    return routes.some((route) => {
+        if (route === "/") return pathname === "/"
+        return pathname === route || pathname.startsWith(`${route}/`)
+    })
+}
+
 export async function proxy(request: NextRequest) {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
@@ -63,19 +74,41 @@ export async function proxy(request: NextRequest) {
         "/blog",
     ]
 
-    const isMarketplaceRoute = marketplaceRoutes.some((route) => {
-        if (route === "/") return pathForMatching === "/"
-        return pathForMatching === route || pathForMatching.startsWith(`${route}/`)
-    })
+    const isMarketplaceRoute = matchesRoute(pathForMatching, marketplaceRoutes)
 
-    // Rotas que vivem de fato dentro de app/[locale] — precisam do rewrite do
-    // next-intl para casar com o segmento dinâmico. "/opengraph-image" fica de
-    // fora por ser um arquivo especial na raiz de app/, sem versão por idioma.
-    const localeSegmentRoutes = ["/", "/faq", "/catalog", "/list", "/cart", "/blog", "/checkout", "/my-purchases"]
-    const isLocaleSegmentRoute = localeSegmentRoutes.some((route) => {
-        if (route === "/") return pathForMatching === "/"
-        return pathForMatching === route || pathForMatching.startsWith(`${route}/`)
-    })
+    // Lista de EXCLUSÃO: prefixos que estruturalmente ficam fora de
+    // app/[locale] (grupos de rota app/(crm), app/(auth), e as pastas de raiz
+    // app/crm, app/super-admin, app/privacy, app/terms, além do arquivo
+    // especial app/opengraph-image.tsx). Tudo que não estiver aqui é
+    // considerado parte do segmento de locale por padrão — assim uma rota
+    // nova do funil (ex.: app/[locale]/nova-rota) passa a funcionar sem
+    // ninguém lembrar de listá-la. Antes desta inversão, o esquecimento
+    // silencioso ia na direção oposta: "/de/nova-rota" funcionava e
+    // "/nova-rota" (locale padrão) dava 404.
+    const nonLocaleSegmentPrefixes = [
+        "/api",
+        "/crm",
+        "/super-admin",
+        "/sign-in",
+        "/sign-up",
+        "/forgot-password",
+        "/privacy",
+        "/terms",
+        "/opengraph-image",
+        // app/(crm) — grupo de rota, sem prefixo na URL, mas fora de [locale]
+        "/dashboard",
+        "/calls",
+        "/campaigns",
+        "/leads",
+        "/pricing",
+        "/purchases",
+        "/reports",
+        "/settings",
+        "/templates",
+        "/trial-expired",
+        "/workspaces",
+    ]
+    const isLocaleSegmentRoute = !matchesRoute(pathForMatching, nonLocaleSegmentPrefixes)
 
     // O middleware de locale só se aplica às rotas do segmento [locale]: ele
     // reescreve a URL (prefixo as-needed) e precisa dos cookies de sessão já
@@ -101,17 +134,13 @@ export async function proxy(request: NextRequest) {
         "/crm/sign-up",
     ]
 
-    const isCRMPublicRoute = crmPublicRoutes.some((route) =>
-        pathForMatching === route || pathForMatching.startsWith(`${route}/`)
-    )
+    const isCRMPublicRoute = matchesRoute(pathForMatching, crmPublicRoutes)
 
     // ============================================
     // ROTAS DE AUTH (públicas - legado)
     // ============================================
     const authRoutes = ["/sign-in", "/sign-up", "/forgot-password"]
-    const isAuthRoute = authRoutes.some((route) =>
-        pathForMatching === route || pathForMatching.startsWith(`${route}/`)
-    )
+    const isAuthRoute = matchesRoute(pathForMatching, authRoutes)
 
     // ============================================
     // ROTAS DE API e ASSETS - não processar
@@ -190,9 +219,7 @@ export async function proxy(request: NextRequest) {
                     "/cart",
                     "/super-admin",
                 ]
-                const isAllowedRedirect = allowedRedirects.some((path) =>
-                    redirectPathForMatching === path || redirectPathForMatching.startsWith(`${path}/`)
-                )
+                const isAllowedRedirect = matchesRoute(redirectPathForMatching, allowedRedirects)
 
                 if (isAllowedRedirect) {
                     url.pathname = redirectUrl.pathname

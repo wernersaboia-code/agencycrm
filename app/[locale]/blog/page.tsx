@@ -5,6 +5,7 @@ import { isBlogLocale, dirForLocale, type BlogLocale } from "@/lib/blog/locales"
 import { getBlogLabels } from "@/lib/blog/i18n"
 import { getPublishedPostsForLocale } from "@/lib/blog/queries"
 import { PostCard } from "@/components/blog/post-card"
+import { getPathname } from "@/lib/i18n/navigation"
 
 export default async function BlogIndexPage({
     params, searchParams,
@@ -28,12 +29,12 @@ export default async function BlogIndexPage({
                 <h1 className="text-3xl font-bold tracking-tight md:text-4xl">Blog</h1>
 
                 <div className="mt-6 flex flex-wrap gap-2">
-                    <Link href={`/blog/${locale}`}
+                    <Link href={getPathname({ href: "/blog", locale })}
                         className={`rounded-full border px-3 py-1 text-sm ${!categoria ? "bg-gray-950 text-white" : "text-gray-600"}`}>
                         {labels.allCategories}
                     </Link>
                     {categories.map((c) => (
-                        <Link key={c.id} href={`/blog/${locale}?categoria=${c.key}`}
+                        <Link key={c.id} href={getPathname({ href: { pathname: "/blog", query: { categoria: c.key } }, locale })}
                             className={`rounded-full border px-3 py-1 text-sm ${categoria === c.key ? "bg-gray-950 text-white" : "text-gray-600"}`}>
                             {c.translations[0]?.name ?? c.key}
                         </Link>

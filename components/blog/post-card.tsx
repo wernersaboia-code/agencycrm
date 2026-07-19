@@ -1,5 +1,6 @@
 import Link from "next/link"
 import type { BlogLocale } from "@/lib/blog/locales"
+import { getPathname } from "@/lib/i18n/navigation"
 
 export function PostCard({
     locale, slug, title, excerpt, coverImageUrl, categoryName, dateLabel,
@@ -8,7 +9,7 @@ export function PostCard({
     coverImageUrl: string | null; categoryName: string | null; dateLabel: string
 }) {
     return (
-        <Link href={`/blog/${locale}/${slug}`}
+        <Link href={getPathname({ href: `/blog/${slug}`, locale })}
             className="group flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
             {coverImageUrl
                 ? <img src={coverImageUrl} alt="" className="h-40 w-full object-cover" />

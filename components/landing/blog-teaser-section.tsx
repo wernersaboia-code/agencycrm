@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { getTranslations } from "next-intl/server"
 import { getLatestPostsForTeaser } from "@/lib/blog/queries"
+import { getPathname } from "@/lib/i18n/navigation"
 import type { LandingLocale } from "./types"
 
 export async function BlogTeaserSection({ locale }: { locale: LandingLocale }) {
@@ -19,7 +20,7 @@ export async function BlogTeaserSection({ locale }: { locale: LandingLocale }) {
                 {posts.length > 0 && (
                     <div className="mt-10 grid gap-4 md:grid-cols-3">
                         {posts.map((post) => (
-                            <Link key={post.postId} href={`/blog/${locale}/${post.slug}`}
+                            <Link key={post.postId} href={getPathname({ href: `/blog/${post.slug}`, locale })}
                                 className="group overflow-hidden rounded-lg border border-border bg-card shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
                                 {post.coverImageUrl
                                     ? <img src={post.coverImageUrl} alt="" className="h-28 w-full object-cover" />
@@ -35,7 +36,7 @@ export async function BlogTeaserSection({ locale }: { locale: LandingLocale }) {
                 )}
 
                 <div className="mt-8 text-center">
-                    <Link href={`/blog/${locale}`} className="text-sm font-semibold text-indigo-700 hover:underline">
+                    <Link href={getPathname({ href: "/blog", locale })} className="text-sm font-semibold text-indigo-700 hover:underline">
                         {t("title")} →
                     </Link>
                 </div>

@@ -1,4 +1,6 @@
 import type { MetadataRoute } from "next"
+import { getPathname } from "@/lib/i18n/navigation"
+import { LOCALES, type Locale } from "@/lib/i18n/locales"
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || "https://easyprospect.com"
 
@@ -60,10 +62,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
         const blogRoutes = blogPosts.flatMap((post) => {
             const languages = Object.fromEntries(
-                post.translations.map((t) => [t.locale, `${BASE_URL}/blog/${t.locale}/${t.slug}`])
+                post.translations.map((t) => [t.locale, `${BASE_URL}${getPathname({ href: `/blog/${t.slug}`, locale: t.locale as Locale })}`])
             )
             return post.translations.map((t) => ({
-                url: `${BASE_URL}/blog/${t.locale}/${t.slug}`,
+                url: `${BASE_URL}${getPathname({ href: `/blog/${t.slug}`, locale: t.locale as Locale })}`,
                 lastModified: post.updatedAt,
                 changeFrequency: "weekly" as const,
                 priority: 0.6,
@@ -71,8 +73,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             }))
         })
 
-        const blogIndexRoutes = ["pt", "de", "en", "es", "fr", "ar", "it", "nl"].map((locale) => ({
-            url: `${BASE_URL}/blog/${locale}`,
+        const blogIndexRoutes = LOCALES.map((locale) => ({
+            url: `${BASE_URL}${getPathname({ href: "/blog", locale })}`,
             lastModified: now,
             changeFrequency: "weekly" as const,
             priority: 0.5,
