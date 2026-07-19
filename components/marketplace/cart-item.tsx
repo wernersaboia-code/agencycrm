@@ -5,7 +5,7 @@ import { useCart, CartItem as CartItemType } from "@/contexts/cart-context"
 import { formatCurrency } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Trash2, Building2, Users } from "lucide-react"
-import Link from "next/link"
+import { Link } from "@/lib/i18n/navigation"
 import { useTranslations } from "next-intl"
 
 interface CartItemProps {

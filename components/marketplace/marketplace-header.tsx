@@ -1,10 +1,10 @@
 "use client"
 
 import Link from "next/link"
-import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { LayoutDashboard, LogOut, Menu, ShieldCheck, ShoppingBag, User } from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
+import { Link as LocaleLink, useRouter } from "@/lib/i18n/navigation"
 import { Button } from "@/components/ui/button"
 import { CartBadge } from "@/components/marketplace/cart-badge"
 import { LocaleSwitcher } from "@/components/marketplace/locale-switcher"
@@ -33,48 +33,49 @@ export function MarketplaceHeader() {
     const t = useTranslations("nav")
     const locale = useLocale()
 
-    const homeHref = locale === "de" ? "/de" : "/"
-    const howItWorksHref = locale === "de" ? "/de#ablauf" : "/#como-funciona"
-    const faqHref = locale === "de" ? "/de/faq" : "/faq"
+    // O id da âncora ainda não tem tradução para todos os locales; a rota em
+    // si (que carrega o prefixo de idioma) vem do wrapper de navegação.
+    const howItWorksAnchor = locale === "de" ? "ablauf" : "como-funciona"
+    const howItWorksHref = `/#${howItWorksAnchor}`
 
     const handleSignOut = async () => {
         const supabase = createClient()
 
         await supabase.auth.signOut()
         toast.success(t("signOutSuccess"))
-        router.push(homeHref)
+        router.push("/")
         router.refresh()
     }
 
     return (
         <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="container mx-auto flex h-16 items-center justify-between px-4">
-                <Link href={homeHref} className="flex items-center gap-2">
+                <LocaleLink href="/" className="flex items-center gap-2">
                     <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary">
                         <span className="text-sm font-bold text-primary-foreground">EP</span>
                     </div>
                     <span className="hidden text-xl font-bold sm:block">Easy Prospect</span>
-                </Link>
+                </LocaleLink>
 
                 <nav className="hidden items-center gap-6 md:flex">
-                    <Link
+                    <LocaleLink
                         href="/catalog"
                         className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
                     >
                         {t("catalog")}
-                    </Link>
-                    <Link
+                    </LocaleLink>
+                    <LocaleLink
                         href={howItWorksHref}
                         className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
                     >
                         {t("howItWorks")}
-                    </Link>
-                    <Link
-                        href={faqHref}
+                    </LocaleLink>
+                    <LocaleLink
+                        href="/faq"
                         className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
                     >
                         {t("faq")}
-                    </Link>
+                    </LocaleLink>
                 </nav>
 
                 <div className="flex items-center gap-2">
@@ -94,10 +95,10 @@ export function MarketplaceHeader() {
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end" className="w-56">
                                         <DropdownMenuItem asChild>
-                                            <Link href="/my-purchases" className="cursor-pointer">
+                                            <LocaleLink href="/my-purchases" className="cursor-pointer">
                                                 <ShoppingBag className="h-4 w-4 mr-2" />
                                                 {t("myPurchases")}
-                                            </Link>
+                                            </LocaleLink>
                                         </DropdownMenuItem>
                                         <DropdownMenuItem asChild>
                                             <Link href="/dashboard" className="cursor-pointer">
@@ -143,27 +144,27 @@ export function MarketplaceHeader() {
                         <SheetContent side="right">
                             <nav className="mt-8 flex flex-col gap-4">
                                 <SheetClose asChild>
-                                    <Link href="/catalog" className="text-lg font-medium">
+                                    <LocaleLink href="/catalog" className="text-lg font-medium">
                                         {t("catalog")}
-                                    </Link>
+                                    </LocaleLink>
                                 </SheetClose>
                                 <SheetClose asChild>
-                                    <Link href={howItWorksHref} className="text-lg font-medium">
+                                    <LocaleLink href={howItWorksHref} className="text-lg font-medium">
                                         {t("howItWorks")}
-                                    </Link>
+                                    </LocaleLink>
                                 </SheetClose>
                                 <SheetClose asChild>
-                                    <Link href={faqHref} className="text-lg font-medium">
+                                    <LocaleLink href="/faq" className="text-lg font-medium">
                                         {t("faq")}
-                                    </Link>
+                                    </LocaleLink>
                                 </SheetClose>
                                 {isAuthenticated && (
                                     <>
                                         <hr />
                                         <SheetClose asChild>
-                                            <Link href="/my-purchases" className="text-lg font-medium">
+                                            <LocaleLink href="/my-purchases" className="text-lg font-medium">
                                                 {t("myPurchases")}
-                                            </Link>
+                                            </LocaleLink>
                                         </SheetClose>
                                         <SheetClose asChild>
                                             <Link href="/dashboard" className="text-lg font-medium">

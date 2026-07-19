@@ -8,7 +8,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { ShoppingBag, ArrowRight, ShieldCheck } from "lucide-react"
-import Link from "next/link"
+import { Link } from "@/lib/i18n/navigation"
 import { useTranslations } from "next-intl"
 import { CartItem } from "./cart-item"
 
