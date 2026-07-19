@@ -35,7 +35,11 @@ export function LocaleSwitcher() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
                 {LOCALES.map((l) => (
-                    <DropdownMenuItem key={l} onClick={() => switchTo(l)}>
+                    <DropdownMenuItem
+                        key={l}
+                        onClick={() => switchTo(l)}
+                        className={l === locale ? "font-semibold" : undefined}
+                    >
                         {l.toUpperCase()}
                     </DropdownMenuItem>
                 ))}

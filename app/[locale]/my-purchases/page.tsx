@@ -1,4 +1,3 @@
-import Link from "next/link"
 import { Suspense } from "react"
 import type { ComponentType } from "react"
 import { redirect } from "next/navigation"
@@ -23,6 +22,8 @@ import { getAuthenticatedUserId } from "@/lib/auth"
 import { formatCurrency } from "@/lib/utils"
 import { getFormatter, getTranslations } from "next-intl/server"
 import type { Metadata } from "next"
+import Link from "next/link"
+import { Link as LocaleLink } from "@/lib/i18n/navigation"
 
 export async function generateMetadata(): Promise<Metadata> {
     const t = await getTranslations("purchases")
@@ -99,10 +100,10 @@ async function PurchasesDashboard({
             <section className="border-b bg-card">
                 <div className="container mx-auto px-4 py-6">
                     <Button variant="ghost" className="mb-4 px-0 text-muted-foreground hover:text-brand" asChild>
-                        <Link href="/catalog">
+                        <LocaleLink href="/catalog">
                             <ArrowLeft className="h-4 w-4" aria-hidden="true" />
                             {t("back")}
-                        </Link>
+                        </LocaleLink>
                     </Button>
 
                     <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
@@ -236,7 +237,7 @@ function InvalidTokenState({
                 <h2 className="mb-2 text-xl font-bold text-foreground">{title}</h2>
                 <p className="mb-6 text-sm text-muted-foreground">{message}</p>
                 <Button className="bg-brand text-brand-foreground hover:bg-brand-hover" asChild>
-                    <Link href="/catalog">{ctaLabel}</Link>
+                    <LocaleLink href="/catalog">{ctaLabel}</LocaleLink>
                 </Button>
             </div>
         </div>

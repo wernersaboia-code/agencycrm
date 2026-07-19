@@ -1,5 +1,5 @@
-import Link from "next/link"
 import type { Metadata } from "next"
+import { Link } from "@/lib/i18n/navigation"
 import { getTranslations } from "next-intl/server"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, RotateCcw, ShieldAlert, ShoppingCart } from "lucide-react"

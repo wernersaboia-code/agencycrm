@@ -1,10 +1,9 @@
 "use client"
 
-import Link from "next/link"
 import { useEffect } from "react"
 import type { ComponentType } from "react"
-import { useRouter } from "next/navigation"
 import { useFormatter, useTranslations } from "next-intl"
+import { Link, useRouter } from "@/lib/i18n/navigation"
 import { useCart } from "@/contexts/cart-context"
 import { PayPalButtonsWrapper } from "@/components/checkout/paypal-buttons"
 import { formatCurrency } from "@/lib/utils"

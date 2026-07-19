@@ -1,5 +1,5 @@
-import Link from "next/link"
 import { notFound } from "next/navigation"
+import { Link } from "@/lib/i18n/navigation"
 import { Suspense } from "react"
 import type { ComponentType } from "react"
 import { getFormatter, getTranslations } from "next-intl/server"

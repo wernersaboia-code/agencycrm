@@ -3,13 +3,14 @@ import { redirect } from "next/navigation"
 import type { ComponentType } from "react"
 import type { Metadata } from "next"
 import type { Prisma } from "@prisma/client"
-import { getFormatter, getTranslations } from "next-intl/server"
+import { getFormatter, getLocale, getTranslations } from "next-intl/server"
 import { prisma } from "@/lib/prisma"
 import { getAuthenticatedUserId } from "@/lib/auth"
 import { Button } from "@/components/ui/button"
 import { formatCurrency } from "@/lib/utils"
 import { ArrowRight, CheckCircle, Download, Mail, Rocket, ShoppingBag } from "lucide-react"
 import { Confetti } from "@/components/motion/confetti"
+import { Link as LocaleLink, getPathname } from "@/lib/i18n/navigation"
 
 interface SuccessPageProps {
     searchParams: Promise<{ purchaseId?: string }>
@@ -35,6 +36,7 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
     const userId = await getAuthenticatedUserId()
     const t = await getTranslations("checkout")
     const format = await getFormatter()
+    const locale = await getLocale()
 
     if (!userId) {
         // Sem o purchaseId no redirect, uma sessão expirada entre a captura e
@@ -46,7 +48,7 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
     }
 
     if (!purchaseId) {
-        redirect("/catalog")
+        redirect(getPathname({ href: "/catalog", locale }))
     }
 
     const purchase = await prisma.purchase.findUnique({
@@ -61,7 +63,7 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
     })
 
     if (!purchase) {
-        redirect("/catalog")
+        redirect(getPathname({ href: "/catalog", locale }))
     }
 
     const totalLeads = purchase.items.reduce(
@@ -133,10 +135,10 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
 
                     <div className="mt-8 space-y-3">
                         <Button className="h-12 w-full" asChild>
-                            <Link href="/my-purchases">
+                            <LocaleLink href="/my-purchases">
                                 <ShoppingBag className="h-5 w-5" aria-hidden="true" />
                                 {t("successCtaPurchases")}
-                            </Link>
+                            </LocaleLink>
                         </Button>
 
                         <div className="grid gap-3 sm:grid-cols-2">
@@ -147,10 +149,10 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
                             </Button>
 
                             <Button variant="outline" className="h-12" asChild>
-                                <Link href="/catalog">
+                                <LocaleLink href="/catalog">
                                     {t("successCtaContinue")}
                                     <ArrowRight className="h-5 w-5" aria-hidden="true" />
-                                </Link>
+                                </LocaleLink>
                             </Button>
                         </div>
                     </div>

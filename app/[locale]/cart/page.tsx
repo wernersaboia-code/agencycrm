@@ -1,7 +1,7 @@
 "use client"
 
-import Link from "next/link"
 import type { ComponentType } from "react"
+import { Link } from "@/lib/i18n/navigation"
 import { useFormatter, useTranslations } from "next-intl"
 import { useCart } from "@/contexts/cart-context"
 import { formatCurrency } from "@/lib/utils"
