@@ -72,6 +72,8 @@ export async function proxy(request: NextRequest) {
         "/list",
         "/cart",
         "/blog",
+        "/privacy",
+        "/terms",
     ]
 
     const isMarketplaceRoute = matchesRoute(pathForMatching, marketplaceRoutes)
@@ -85,8 +87,9 @@ export async function proxy(request: NextRequest) {
     // ninguém lembrar de listá-la. Antes desta inversão, o esquecimento
     // silencioso ia na direção oposta: "/de/nova-rota" funcionava e
     // "/nova-rota" (locale padrão) dava 404.
+    // Nota: /api já é interceptado no bloco anterior (linhas 148-154), não
+    // precisa estar listado aqui.
     const nonLocaleSegmentPrefixes = [
-        "/api",
         "/crm",
         "/super-admin",
         "/sign-in",
