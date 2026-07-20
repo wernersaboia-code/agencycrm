@@ -1,10 +1,30 @@
 import { createServerClient } from "@supabase/ssr"
 import { NextResponse, type NextRequest } from "next/server"
+import createIntlMiddleware from "next-intl/middleware"
+import { routing } from "@/lib/i18n/routing"
+import { stripLocale } from "@/lib/i18n/strip-locale"
+
+const intlMiddleware = createIntlMiddleware(routing)
+
+// Casamento compartilhado de rota: usado por toda whitelist/blacklist deste
+// arquivo para não repetir a mesma expressão de "===" ou startsWith(`${r}/`)
+// em cada lista. "/" é tratado à parte porque startsWith("//") casaria com
+// qualquer caminho.
+function matchesRoute(pathname: string, routes: string[]): boolean {
+    return routes.some((route) => {
+        if (route === "/") return pathname === "/"
+        return pathname === route || pathname.startsWith(`${route}/`)
+    })
+}
 
 export async function proxy(request: NextRequest) {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
     const pathname = request.nextUrl.pathname
+
+    // Rotas públicas e gates de auth são avaliados sobre o caminho sem o
+    // prefixo de idioma — senão "/de/catalog" cairia no gate de sessão.
+    const { pathname: pathForMatching } = stripLocale(pathname)
 
     if (!supabaseUrl || !supabaseAnonKey) {
         console.error('Missing Supabase environment variables')
@@ -46,19 +66,67 @@ export async function proxy(request: NextRequest) {
     // pagamento em vez de depois do clique no PayPal.
     const marketplaceRoutes = [
         "/",
-        "/de",
         "/faq",
         "/opengraph-image",
         "/catalog",
         "/list",
         "/cart",
         "/blog",
+        "/privacy",
+        "/terms",
     ]
 
-    const isMarketplaceRoute = marketplaceRoutes.some((route) => {
-        if (route === "/") return pathname === "/"
-        return pathname === route || pathname.startsWith(`${route}/`)
-    })
+    const isMarketplaceRoute = matchesRoute(pathForMatching, marketplaceRoutes)
+
+    // Lista de EXCLUSÃO: prefixos que estruturalmente ficam fora de
+    // app/[locale] (grupos de rota app/(crm), app/(auth), e as pastas de raiz
+    // app/crm, app/super-admin, app/privacy, app/terms, além do arquivo
+    // especial app/opengraph-image.tsx). Tudo que não estiver aqui é
+    // considerado parte do segmento de locale por padrão — assim uma rota
+    // nova do funil (ex.: app/[locale]/nova-rota) passa a funcionar sem
+    // ninguém lembrar de listá-la. Antes desta inversão, o esquecimento
+    // silencioso ia na direção oposta: "/de/nova-rota" funcionava e
+    // "/nova-rota" (locale padrão) dava 404.
+    // Nota: /api já é interceptado no bloco anterior (linhas 148-154), não
+    // precisa estar listado aqui.
+    const nonLocaleSegmentPrefixes = [
+        "/crm",
+        "/super-admin",
+        "/sign-in",
+        "/sign-up",
+        "/forgot-password",
+        "/privacy",
+        "/terms",
+        "/opengraph-image",
+        // app/(crm) — grupo de rota, sem prefixo na URL, mas fora de [locale]
+        "/dashboard",
+        "/calls",
+        "/campaigns",
+        "/leads",
+        "/pricing",
+        "/purchases",
+        "/reports",
+        "/settings",
+        "/templates",
+        "/trial-expired",
+        "/workspaces",
+    ]
+    const isLocaleSegmentRoute = !matchesRoute(pathForMatching, nonLocaleSegmentPrefixes)
+
+    // O middleware de locale só se aplica às rotas do segmento [locale]: ele
+    // reescreve a URL (prefixo as-needed) e precisa dos cookies de sessão já
+    // aplicados. Rotas fora do segmento (CRM, super-admin, auth legado) não
+    // têm página correspondente com prefixo de idioma e virariam 404 se
+    // passassem por aqui.
+    const respond = () => {
+        if (!isLocaleSegmentRoute) return supabaseResponse
+
+        const intlResponse = intlMiddleware(request)
+        for (const cookie of supabaseResponse.cookies.getAll()) {
+            intlResponse.cookies.set(cookie)
+        }
+        return intlResponse
+    }
 
     // ============================================
     // ROTAS PÚBLICAS DO CRM
@@ -69,17 +137,13 @@ export async function proxy(request: NextRequest) {
         "/crm/sign-up",
     ]
 
-    const isCRMPublicRoute = crmPublicRoutes.some((route) =>
-        pathname === route || pathname.startsWith(`${route}/`)
-    )
+    const isCRMPublicRoute = matchesRoute(pathForMatching, crmPublicRoutes)
 
     // ============================================
     // ROTAS DE AUTH (públicas - legado)
     // ============================================
     const authRoutes = ["/sign-in", "/sign-up", "/forgot-password"]
-    const isAuthRoute = authRoutes.some((route) =>
-        pathname === route || pathname.startsWith(`${route}/`)
-    )
+    const isAuthRoute = matchesRoute(pathForMatching, authRoutes)
 
     // ============================================
     // ROTAS DE API e ASSETS - não processar
@@ -96,7 +160,7 @@ export async function proxy(request: NextRequest) {
     // MARKETPLACE - sempre público, não verifica auth
     // ============================================
     if (isMarketplaceRoute) {
-        return supabaseResponse
+        return respond()
     }
 
     // ============================================
@@ -117,11 +181,11 @@ export async function proxy(request: NextRequest) {
             const url = request.nextUrl.clone()
 
             // Se está tentando acessar o CRM, redireciona para /crm/sign-in
-            if (pathname.startsWith('/crm')) {
+            if (pathForMatching.startsWith('/crm')) {
                 url.pathname = "/crm/sign-in"
             }
             // Se está tentando acessar dashboard legado, redireciona para /crm/sign-in
-            else if (pathname === '/dashboard' || pathname.startsWith('/dashboard/')) {
+            else if (pathForMatching === '/dashboard' || pathForMatching.startsWith('/dashboard/')) {
                 url.pathname = "/crm/sign-in"
             }
             // Outras rotas protegidas
@@ -145,6 +209,11 @@ export async function proxy(request: NextRequest) {
 
             if (redirectParam?.startsWith("/") && !redirectParam.startsWith("//")) {
                 const redirectUrl = new URL(redirectParam, request.url)
+                // O parâmetro redirect pode carregar prefixo de idioma (ex.:
+                // "/de/checkout") — o casamento contra a whitelist precisa
+                // ignorá-lo, mas o destino do redirect (abaixo) preserva a
+                // URL real, prefixo incluso.
+                const { pathname: redirectPathForMatching } = stripLocale(redirectUrl.pathname)
                 const allowedRedirects = [
                     "/dashboard",
                     "/crm",
@@ -153,9 +222,7 @@ export async function proxy(request: NextRequest) {
                     "/cart",
                     "/super-admin",
                 ]
-                const isAllowedRedirect = allowedRedirects.some((path) =>
-                    redirectUrl.pathname === path || redirectUrl.pathname.startsWith(`${path}/`)
-                )
+                const isAllowedRedirect = matchesRoute(redirectPathForMatching, allowedRedirects)
 
                 if (isAllowedRedirect) {
                     url.pathname = redirectUrl.pathname
@@ -180,7 +247,7 @@ export async function proxy(request: NextRequest) {
         // protegida. Rotas de auth seguem acessíveis para o usuário se logar.
         if (!isAuthRoute) {
             const url = request.nextUrl.clone()
-            url.pathname = pathname.startsWith('/crm') ? '/crm/sign-in' : '/sign-in'
+            url.pathname = pathForMatching.startsWith('/crm') ? '/crm/sign-in' : '/sign-in'
             url.searchParams.set('redirect', pathname)
             return NextResponse.redirect(url)
         }
@@ -188,7 +255,7 @@ export async function proxy(request: NextRequest) {
         return supabaseResponse
     }
 
-    return supabaseResponse
+    return respond()
 }
 
 export const config = {

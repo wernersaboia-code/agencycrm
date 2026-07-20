@@ -1,6 +1,8 @@
+// eslint-disable-next-line no-restricted-imports -- href sempre montado via getPathname() abaixo, prefixo de locale já correto
 import Link from "next/link"
 import { getBlogLabels } from "@/lib/blog/i18n"
 import type { BlogLocale } from "@/lib/blog/locales"
+import { getPathname } from "@/lib/i18n/navigation"
 
 export function LanguageSwitcher({
     locale, availableLocales, localeSlugs,
@@ -14,7 +16,7 @@ export function LanguageSwitcher({
             <p className="mb-2 text-sm font-medium text-gray-700">{labels.otherLanguages}</p>
             <div className="flex flex-wrap gap-2">
                 {availableLocales.filter((l) => l !== locale).map((l) => (
-                    <Link key={l} href={`/blog/${l}/${localeSlugs[l]}`}
+                    <Link key={l} href={getPathname({ href: `/blog/${localeSlugs[l]}`, locale: l })}
                         className="rounded-full border px-3 py-1 text-sm text-gray-600 hover:text-gray-950">
                         {labels.localeName[l]}
                     </Link>

@@ -2,7 +2,8 @@
 "use client"
 
 import { useId, useState, useTransition } from "react"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useSearchParams } from "next/navigation"
+import { useRouter } from "@/lib/i18n/navigation"
 import { useTranslations } from "next-intl"
 import { Check, ChevronDown } from "lucide-react"
 import { FlagIcon } from "@/components/ui/flag-icon"

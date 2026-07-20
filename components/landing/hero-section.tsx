@@ -1,6 +1,6 @@
-import Link from "next/link"
 import { ArrowRight, BadgeCheck, CheckCircle2, ShieldCheck } from "lucide-react"
 import { getTranslations } from "next-intl/server"
+import { Link } from "@/lib/i18n/navigation"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import type { LandingLocale } from "./types"

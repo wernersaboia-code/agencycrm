@@ -6,7 +6,9 @@ import { ShoppingCart } from "lucide-react"
 import { useCart } from "@/contexts/cart-context"
 import { useAuth } from "@/hooks/useAuth"
 import { useTranslations } from "next-intl"
-import { useRouter } from "next/navigation"
+// eslint-disable-next-line no-restricted-imports -- usado só para /sign-in, fora do segmento de locale
+import { useRouter as usePlainRouter } from "next/navigation"
+import { useRouter } from "@/lib/i18n/navigation"
 
 interface BuyNowButtonProps {
     list: {
@@ -24,6 +26,9 @@ export function BuyNowButton({ list }: BuyNowButtonProps) {
     const { isAuthenticated, isLoading } = useAuth()
     const t = useTranslations("listing")
     const router = useRouter()
+    // /sign-in fica fora do segmento de locale — usa o router puro do Next
+    // para não ganhar um prefixo de idioma que a rota não tem.
+    const plainRouter = usePlainRouter()
 
     const handleBuyNow = () => {
         addItem({
@@ -37,7 +42,11 @@ export function BuyNowButton({ list }: BuyNowButtonProps) {
 
         // O carrinho vive no localStorage, então sobrevive ao login — o item
         // continua lá quando o usuário voltar para o checkout.
-        router.push(isAuthenticated ? "/checkout" : "/sign-in?redirect=/checkout")
+        if (isAuthenticated) {
+            router.push("/checkout")
+        } else {
+            plainRouter.push("/sign-in?redirect=/checkout")
+        }
     }
 
     return (

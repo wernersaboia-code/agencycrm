@@ -1,19 +1,22 @@
 import { getRequestConfig } from "next-intl/server"
-import { cookies } from "next/headers"
-import { resolveSiteLocale } from "@/lib/i18n/resolve-locale"
+import { hasLocale } from "next-intl"
+import { routing } from "@/lib/i18n/routing"
 
-// PT é o locale default de todo o app (rotas sem prefixo).
-// As páginas em alemão (app/de/*) pedem o locale explicitamente via
-// getTranslations({ locale: "de", ... }) e NextIntlClientProvider locale="de" —
-// esse locale explícito chega aqui como parâmetro e precisa ser honrado.
-// Quando não há locale explícito, o funil (catálogo/carrinho/checkout) resolve
-// pelo cookie NEXT_LOCALE, gravado por setLocaleCookie / SyncLocaleCookie.
-export default getRequestConfig(async ({ locale }) => {
-    const cookieLocale = (await cookies()).get("NEXT_LOCALE")?.value
-    const resolved = resolveSiteLocale(locale, cookieLocale)
+// O locale agora vem do segmento de rota ([locale]), não mais de cookie.
+// Locale ausente ou desconhecido cai no padrão em vez de quebrar a página.
+export default getRequestConfig(async ({ requestLocale }) => {
+    const requested = await requestLocale
+    const locale = hasLocale(routing.locales, requested)
+        ? requested
+        : routing.defaultLocale
+
+    // Fase 1: só pt e de têm arquivo de mensagens. Os demais locales existem
+    // no roteamento (o blog já os usa) mas ainda não têm tradução do funil —
+    // até a fase 3, caem no padrão em vez de estourar no import.
+    const messagesLocale = locale === "de" ? "de" : "pt"
 
     return {
-        locale: resolved,
-        messages: (await import(`../messages/${resolved}.json`)).default,
+        locale,
+        messages: (await import(`../messages/${messagesLocale}.json`)).default,
     }
 })

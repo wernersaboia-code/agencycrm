@@ -383,19 +383,22 @@ Trocar **todos** os usos subsequentes de `pathname` no casamento de rotas por `p
 
 Manter `pathname` (com prefixo) nos lugares onde a URL real importa: a construção de `originalTarget` para o parâmetro `redirect`.
 
-- [ ] **Step 6: Delegar ao middleware de locale antes de devolver**
+- [ ] **Step 6: (movido para a Task 4)**
 
-Substituir o `return supabaseResponse` final (última linha da função `proxy`) por:
+> **Correção de ordem, 2026-07-18.** Este passo encadeava o middleware do
+> next-intl aqui. Está errado: o middleware reescreve a URL para
+> `/{locale}/<rota>`, e essas páginas só passam a existir na Task 4. Ligá-lo
+> antes disso faz toda rota que chega ao `return` final responder 404 —
+> confirmado empiricamente no dev server (200 → 404 ao ligar, 404 → 200 ao
+> reverter).
+>
+> O encadeamento foi movido para o fim da Task 4, depois de `app/[locale]/`
+> existir. Esta task entrega apenas o `stripLocale` e o casamento de rotas
+> ciente de locale, que são independentes e já corretos.
 
-```ts
-    // O middleware de locale precisa rodar por último: ele pode reescrever a
-    // URL (prefixo as-needed) e precisa dos cookies de sessão já aplicados.
-    const intlResponse = intlMiddleware(request)
-    for (const cookie of supabaseResponse.cookies.getAll()) {
-        intlResponse.cookies.set(cookie)
-    }
-    return intlResponse
-```
+Nada a fazer neste passo. Os imports de `createIntlMiddleware`/`routing` do
+Step 5 só serão necessários na Task 4 — não deixe import não utilizado em
+`proxy.ts`.
 
 - [ ] **Step 7: Ampliar o matcher para excluir o que não deve passar**
 
@@ -523,7 +526,53 @@ done
 
 Expected: `200` em todas. `/de/catalog` é nova e deve responder 200 — antes era 404.
 
-- [ ] **Step 7: Commit**
+- [ ] **Step 7: Encadear o middleware de locale (movido da Task 3)**
+
+Só agora, com `app/[locale]/` existindo, o middleware do next-intl pode
+reescrever a URL sem cair em 404.
+
+No topo de `proxy.ts`, adicionar aos imports:
+
+```ts
+import createIntlMiddleware from "next-intl/middleware"
+import { routing } from "@/lib/i18n/routing"
+
+const intlMiddleware = createIntlMiddleware(routing)
+```
+
+Substituir o `return supabaseResponse` final (última linha da função `proxy`)
+por:
+
+```ts
+    // O middleware de locale roda por último: ele reescreve a URL (prefixo
+    // as-needed) e precisa dos cookies de sessão já aplicados.
+    const intlResponse = intlMiddleware(request)
+    for (const cookie of supabaseResponse.cookies.getAll()) {
+        intlResponse.cookies.set(cookie)
+    }
+    return intlResponse
+```
+
+Remover o comentário deixado na Task 3 explicando por que o encadeamento
+estava ausente — ele deixa de valer aqui.
+
+- [ ] **Step 8: Confirmar que rotas protegidas e de auth seguem funcionando**
+
+O risco deste encadeamento é justamente quebrar rotas que não passam pelo
+segmento de locale.
+
+```bash
+npm run dev &
+sleep 8
+for p in /sign-in /catalog /de/catalog /crm /checkout; do
+  echo "$(curl -s -o /dev/null -w '%{http_code}' http://localhost:3001$p)  $p"
+done
+```
+
+Expected: `/sign-in` e `/catalog` em 200; `/de/catalog` em 200; `/crm` e
+`/checkout` em 307 (redirect para login, sem sessão). Nenhum 404.
+
+- [ ] **Step 9: Commit**
 
 ```bash
 git add -A

@@ -1,10 +1,9 @@
 "use client"
 
-import { usePathname, useRouter } from "next/navigation"
 import { Globe2 } from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
-import { setLocaleCookie } from "@/actions/locale"
-import { localeTargetPath } from "@/lib/i18n/locale-routes"
+import { usePathname, useRouter } from "@/lib/i18n/navigation"
+import { LOCALES, type Locale } from "@/lib/i18n/locales"
 import { Button } from "@/components/ui/button"
 import {
     DropdownMenu,
@@ -15,26 +14,15 @@ import {
 
 export function LocaleSwitcher() {
     const locale = useLocale()
+    // usePathname do wrapper devolve o caminho SEM o prefixo de idioma, então
+    // trocar de idioma é só re-renderizar a mesma rota no outro locale.
     const pathname = usePathname()
     const router = useRouter()
     const t = useTranslations("nav")
 
-    const switchTo = async (target: "pt" | "de") => {
+    const switchTo = (target: Locale) => {
         if (target === locale) return
-
-        await setLocaleCookie(target)
-
-        const next = localeTargetPath(pathname, target)
-
-        if (next === pathname) {
-            // Mesma rota, conteúdo novo: só o refresh re-renderiza com o
-            // cookie atualizado (um push para a rota atual seria no-op).
-            router.refresh()
-            return
-        }
-
-        router.push(next)
-        router.refresh()
+        router.replace(pathname, { locale: target })
     }
 
     return (
@@ -46,18 +34,15 @@ export function LocaleSwitcher() {
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-                <DropdownMenuItem
-                    onClick={() => switchTo("pt")}
-                    className={locale === "pt" ? "font-semibold" : ""}
-                >
-                    Português
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                    onClick={() => switchTo("de")}
-                    className={locale === "de" ? "font-semibold" : ""}
-                >
-                    Deutsch
-                </DropdownMenuItem>
+                {LOCALES.map((l) => (
+                    <DropdownMenuItem
+                        key={l}
+                        onClick={() => switchTo(l)}
+                        className={l === locale ? "font-semibold" : undefined}
+                    >
+                        {l.toUpperCase()}
+                    </DropdownMenuItem>
+                ))}
             </DropdownMenuContent>
         </DropdownMenu>
     )

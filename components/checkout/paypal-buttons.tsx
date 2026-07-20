@@ -2,7 +2,9 @@
 "use client"
 
 import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js"
-import { useRouter } from "next/navigation"
+// eslint-disable-next-line no-restricted-imports -- usado só para /sign-in, fora do segmento de locale
+import { useRouter as usePlainRouter } from "next/navigation"
+import { useRouter } from "@/lib/i18n/navigation"
 import { useTranslations } from "next-intl"
 import { toast } from "sonner"
 import { useCart } from "@/contexts/cart-context"
@@ -38,6 +40,9 @@ function isSessionExpired(error: unknown): boolean {
 
 export function PayPalButtonsWrapper({ items }: PayPalButtonsWrapperProps) {
     const router = useRouter()
+    // /sign-in fica fora do segmento de locale — usa o router puro do Next
+    // para não ganhar um prefixo de idioma que a rota não tem.
+    const plainRouter = usePlainRouter()
     const { clearCart } = useCart()
     const t = useTranslations("checkout")
     const paypalClientId = getOptionalPublicPaypalClientId()
@@ -90,7 +95,7 @@ export function PayPalButtonsWrapper({ items }: PayPalButtonsWrapperProps) {
                     } catch (error: unknown) {
                         if (isSessionExpired(error)) {
                             toast.error(t("sessionExpiredPay"))
-                            router.push("/sign-in?redirect=/checkout")
+                            plainRouter.push("/sign-in?redirect=/checkout")
                         } else {
                             toast.error(t("createFailed"))
                         }
@@ -115,14 +120,14 @@ export function PayPalButtonsWrapper({ items }: PayPalButtonsWrapperProps) {
                         // Limpar carrinho
                         clearCart()
 
-                        // Redirecionar para página de sucesso
+                        // Redirecionar para página de sucesso (dentro do segmento de locale)
                         router.push(`/checkout/success?purchaseId=${result.purchaseId}`)
 
                         toast.success(t("paymentConfirmed"))
                     } catch (error: unknown) {
                         if (isSessionExpired(error)) {
                             toast.error(t("sessionExpiredOrder"))
-                            router.push("/sign-in?redirect=/my-purchases")
+                            plainRouter.push("/sign-in?redirect=/my-purchases")
                             return
                         }
 
