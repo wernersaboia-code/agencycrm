@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next"
 import { getPathname } from "@/lib/i18n/navigation"
-import { LOCALES, DEFAULT_LOCALE, type Locale } from "@/lib/i18n/locales"
+import { LOCALES, type Locale } from "@/lib/i18n/locales"
 import { alternatesFor } from "@/lib/i18n/alternates"
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || "https://easyprospect.com"
@@ -18,10 +18,8 @@ const ROUTES: { path: string; changeFrequency: "daily" | "weekly" | "monthly"; p
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const staticRoutes = ROUTES.flatMap((route) =>
         LOCALES.map((locale) => {
-            const prefix = locale === DEFAULT_LOCALE ? "" : `/${locale}`
-            const clean = route.path === "/" ? "" : route.path
             return {
-                url: `${BASE_URL}${prefix}${clean}` || BASE_URL,
+                url: `${BASE_URL}${getPathname({ href: route.path, locale })}`,
                 lastModified: new Date(),
                 changeFrequency: route.changeFrequency,
                 priority: route.priority,

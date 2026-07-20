@@ -12,8 +12,9 @@ import { CatalogStats } from "@/components/marketplace/catalog-stats"
 import { getMarketplaceLists, getFilterCounts } from "@/actions/marketplace"
 import { AlertTriangle, CheckCircle2, Download, ShieldCheck, SlidersHorizontal } from "lucide-react"
 
-// Sem revalidate: o locale vem de cookie (i18n/request.ts), então uma
-// renderização em cache seria servida no idioma errado para o próximo visitante.
+// Renderização dinâmica: a página consulta o banco a cada request, com filtros
+// e busca vindos de searchParams — o resultado varia por requisição, então
+// não pode ser servido do cache.
 export const dynamic = "force-dynamic"
 
 export async function generateMetadata({
