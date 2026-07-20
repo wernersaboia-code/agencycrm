@@ -1,13 +1,17 @@
 import type { MetadataRoute } from "next"
 import { getPathname } from "@/lib/i18n/navigation"
-import { LOCALES, type Locale } from "@/lib/i18n/locales"
+import { PUBLISHED_LOCALES, type Locale } from "@/lib/i18n/locales"
 import { alternatesFor } from "@/lib/i18n/alternates"
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || "https://easyprospect.com"
 
-// Rotas estáticas do funil: uma entrada por idioma, com hreflang de mão
-// dupla via alternatesFor. `/blog` entra aqui (não mais no bloco dinâmico
-// abaixo) para não duplicar a URL do índice do blog.
+// Rotas estáticas do funil: uma entrada por idioma publicado, com hreflang
+// de mão dupla via alternatesFor. `/blog` entra aqui (não mais no bloco
+// dinâmico abaixo) para não duplicar a URL do índice do blog.
+//
+// Iteramos sobre PUBLISHED_LOCALES, não LOCALES: locales roteáveis sem
+// tradução própria caem no fallback para pt (ver i18n/request.ts) e não
+// devem ser submetidos ao buscador como se tivessem conteúdo próprio.
 const ROUTES: { path: string; changeFrequency: "daily" | "weekly" | "monthly"; priority: number }[] = [
     { path: "/", changeFrequency: "weekly", priority: 1 },
     { path: "/catalog", changeFrequency: "daily", priority: 0.9 },
@@ -17,7 +21,7 @@ const ROUTES: { path: string; changeFrequency: "daily" | "weekly" | "monthly"; p
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const staticRoutes = ROUTES.flatMap((route) =>
-        LOCALES.map((locale) => {
+        PUBLISHED_LOCALES.map((locale) => {
             return {
                 url: `${BASE_URL}${getPathname({ href: route.path, locale })}`,
                 lastModified: new Date(),

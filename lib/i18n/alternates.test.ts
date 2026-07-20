@@ -1,11 +1,17 @@
 import { describe, expect, it } from "vitest"
 import { alternatesFor } from "./alternates"
+import { PUBLISHED_LOCALES } from "./locales"
 
 describe("alternatesFor", () => {
-    it("gera uma entrada por idioma mais x-default", () => {
+    it("gera uma entrada por idioma publicado mais x-default", () => {
         const { languages } = alternatesFor("/catalog")
-        expect(Object.keys(languages)).toHaveLength(9) // 8 idiomas + x-default
+        expect(Object.keys(languages)).toHaveLength(PUBLISHED_LOCALES.length + 1)
         expect(languages["x-default"]).toMatch(/\/catalog$/)
+    })
+
+    it("não anuncia locale roteável mas não publicado (ex.: en)", () => {
+        const { languages } = alternatesFor("/catalog")
+        expect(languages["en-US"]).toBeUndefined()
     })
 
     it("não prefixa o idioma padrão", () => {
