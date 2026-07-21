@@ -19,10 +19,16 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { createClient } from "@/lib/supabase/client"
+import {
+    getAreaFromRedirect,
+    normalizeRedirect,
+    resolvePostLoginRedirect,
+    type AccessAreaId,
+} from "@/lib/auth/access-areas"
 import { cn } from "@/lib/utils"
 
 type AccessArea = {
-    id: "crm" | "purchases" | "admin"
+    id: AccessAreaId
     title: string
     shortTitle: string
     description: string
@@ -65,45 +71,6 @@ const accessAreas: AccessArea[] = [
     },
 ]
 
-function normalizeRedirect(path: string) {
-    if (path === "/crm" || path === "/crm/dashboard") {
-        return "/dashboard"
-    }
-
-    if (path.startsWith("/crm/")) {
-        return path.replace(/^\/crm/, "")
-    }
-
-    return path
-}
-
-function getAreaFromRedirect(redirect: string | null, from: string | null) {
-    if (from === "marketplace") {
-        return "purchases"
-    }
-
-    if (!redirect) {
-        return "admin"
-    }
-
-    const normalizedRedirect = normalizeRedirect(redirect)
-
-    if (
-        normalizedRedirect === "/my-purchases" ||
-        normalizedRedirect.startsWith("/my-purchases/") ||
-        normalizedRedirect.startsWith("/checkout") ||
-        normalizedRedirect.startsWith("/cart")
-    ) {
-        return "purchases"
-    }
-
-    if (normalizedRedirect === "/super-admin" || normalizedRedirect.startsWith("/super-admin/")) {
-        return "admin"
-    }
-
-    return "crm"
-}
-
 function SignInForm() {
     const router = useRouter()
     const searchParams = useSearchParams()
@@ -136,9 +103,25 @@ function SignInForm() {
                 return
             }
 
-            const redirectTo = explicitRedirect
+            const intended = explicitRedirect
                 ? normalizeRedirect(explicitRedirect)
                 : selectedArea.redirect
+
+            // A área é escolhida antes de sabermos quem entrou. Conferir o
+            // papel agora evita despachar a pessoa para um destino que o
+            // layout de lá devolveria — de onde ela voltaria ao login sem
+            // nenhuma mensagem, parecendo que o botão não funcionou.
+            let role: string | null = null
+            try {
+                const response = await fetch("/api/user/role")
+                if (response.ok) {
+                    role = (await response.json()).role ?? null
+                }
+            } catch {
+                // Sem o papel, resolvePostLoginRedirect escolhe o destino seguro.
+            }
+
+            const redirectTo = resolvePostLoginRedirect(intended, role)
 
             toast.success("Login realizado com sucesso!")
             router.push(redirectTo)
