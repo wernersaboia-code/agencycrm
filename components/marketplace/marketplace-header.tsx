@@ -2,6 +2,7 @@
 
 // eslint-disable-next-line no-restricted-imports -- usos restantes são /dashboard, /super-admin, /sign-in, fora do segmento de locale
 import Link from "next/link"
+import Image from "next/image"
 import { toast } from "sonner"
 import { LayoutDashboard, LogOut, Menu, ShieldCheck, ShoppingBag, User } from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
@@ -52,9 +53,7 @@ export function MarketplaceHeader() {
         <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="container mx-auto flex h-16 items-center justify-between px-4">
                 <LocaleLink href="/" className="flex items-center gap-2">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary">
-                        <span className="text-sm font-bold text-primary-foreground">EP</span>
-                    </div>
+                    <Image src="/logo-icon.png" alt="Easy Prospect" width={32} height={32} className="h-8 w-8" priority />
                     <span className="hidden text-xl font-bold sm:block">Easy Prospect</span>
                 </LocaleLink>
 
@@ -70,6 +69,12 @@ export function MarketplaceHeader() {
                         className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
                     >
                         {t("howItWorks")}
+                    </LocaleLink>
+                    <LocaleLink
+                        href="/blog"
+                        className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                    >
+                        {t("blog")}
                     </LocaleLink>
                     <LocaleLink
                         href="/faq"
@@ -152,6 +157,11 @@ export function MarketplaceHeader() {
                                 <SheetClose asChild>
                                     <LocaleLink href={howItWorksHref} className="text-lg font-medium">
                                         {t("howItWorks")}
+                                    </LocaleLink>
+                                </SheetClose>
+                                <SheetClose asChild>
+                                    <LocaleLink href="/blog" className="text-lg font-medium">
+                                        {t("blog")}
                                     </LocaleLink>
                                 </SheetClose>
                                 <SheetClose asChild>

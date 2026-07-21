@@ -1,5 +1,6 @@
 // eslint-disable-next-line no-restricted-imports -- usos restantes são /sign-in, /terms, /privacy, fora do segmento de locale
 import Link from "next/link"
+import Image from "next/image"
 import { getTranslations } from "next-intl/server"
 import { Link as LocaleLink } from "@/lib/i18n/navigation"
 import type { Locale } from "@/lib/i18n/locales"
@@ -18,9 +19,7 @@ export async function MarketplaceFooter({ locale = "pt" }: { locale?: Locale }) 
                 <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
                     <div className="col-span-2 md:col-span-1">
                         <LocaleLink href="/" className="mb-4 flex items-center gap-2">
-                            <div className="flex h-8 w-8 items-center justify-center rounded-md bg-gray-900">
-                                <span className="text-sm font-bold text-white">EP</span>
-                            </div>
+                            <Image src="/logo-icon.png" alt="Easy Prospect" width={32} height={32} className="h-8 w-8" />
                             <span className="text-xl font-bold">Easy Prospect</span>
                         </LocaleLink>
                         <p className="text-sm text-muted-foreground">
@@ -33,6 +32,7 @@ export async function MarketplaceFooter({ locale = "pt" }: { locale?: Locale }) 
                         <ul className="space-y-2 text-sm text-muted-foreground">
                             <li><LocaleLink href="/catalog" className="hover:text-foreground">{t("catalog")}</LocaleLink></li>
                             <li><LocaleLink href={howItWorksHref} className="hover:text-foreground">{t("howItWorks")}</LocaleLink></li>
+                            <li><LocaleLink href="/blog" className="hover:text-foreground">{t("blog")}</LocaleLink></li>
                             <li><LocaleLink href="/faq" className="hover:text-foreground">{t("faq")}</LocaleLink></li>
                         </ul>
                     </div>

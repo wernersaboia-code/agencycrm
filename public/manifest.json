@@ -4,9 +4,9 @@
   "description": "Listas qualificadas de importadores e distribuidores para prospecção B2B internacional",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#F5F7F8",
-  "theme_color": "#164A45",
+  "background_color": "#F8FAFE",
+  "theme_color": "#003048",
   "icons": [
-    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }
+    { "src": "/logo-icon.png", "sizes": "512x512", "type": "image/png" }
   ]
 }

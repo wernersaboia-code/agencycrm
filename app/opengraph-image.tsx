@@ -1,11 +1,15 @@
 import { ImageResponse } from "next/og"
+import { readFileSync } from "fs"
+import { join } from "path"
 
-export const runtime = "edge"
+// Sem `runtime = "edge"`: a logo é lida do disco, o que o runtime edge não permite.
 export const alt = "Easy Prospect — Listas qualificadas de importadores e distribuidores"
 export const size = { width: 1200, height: 630 }
 export const contentType = "image/png"
 
 export default function OpengraphImage() {
+    const logoBase64 = readFileSync(join(process.cwd(), "public/logo-icon.png")).toString("base64")
+
     return new ImageResponse(
         (
             <div
@@ -16,7 +20,7 @@ export default function OpengraphImage() {
                     flexDirection: "column",
                     alignItems: "center",
                     justifyContent: "center",
-                    background: "linear-gradient(135deg, #0b0b12 0%, #15151f 100%)",
+                    background: "linear-gradient(135deg, #001a28 0%, #003048 100%)",
                     color: "#fff",
                     fontFamily: "sans-serif",
                 }}
@@ -28,22 +32,14 @@ export default function OpengraphImage() {
                         gap: 24,
                     }}
                 >
-                    <div
-                        style={{
-                            width: 96,
-                            height: 96,
-                            borderRadius: 20,
-                            background: "#111827",
-                            border: "2px solid rgba(255,255,255,0.15)",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            fontSize: 44,
-                            fontWeight: 800,
-                        }}
-                    >
-                        EP
-                    </div>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                        src={`data:image/png;base64,${logoBase64}`}
+                        width={96}
+                        height={96}
+                        alt=""
+                        style={{ borderRadius: 20 }}
+                    />
                     <div style={{ fontSize: 64, fontWeight: 800, letterSpacing: -2 }}>
                         Easy Prospect
                     </div>

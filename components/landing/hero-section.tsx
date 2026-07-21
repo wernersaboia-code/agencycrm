@@ -12,12 +12,12 @@ export async function HeroSection({ locale }: { locale: LandingLocale }) {
         <section className="border-b border-border hero-gradient">
             <div className="container mx-auto px-4 py-16 md:py-20 lg:py-24">
                 <div className="mx-auto max-w-3xl text-center">
-                    <Badge className="mb-5 rounded-md border-indigo-200 bg-indigo-50 px-3 py-1 text-indigo-700 hover:bg-indigo-50">
+                    <Badge className="mb-5 rounded-md border-brand-accent/40 bg-brand-accent/15 px-3 py-1 text-brand-accent-strong hover:bg-brand-accent/15">
                         <ShieldCheck className="h-3.5 w-3.5" />
                         {t("badge")}
                     </Badge>
 
-                    <h1 className="text-4xl font-bold tracking-tight text-foreground md:text-5xl lg:text-6xl">
+                    <h1 className="text-4xl font-bold text-foreground md:text-5xl lg:text-6xl">
                         {t("title")}
                     </h1>
 
@@ -26,7 +26,7 @@ export async function HeroSection({ locale }: { locale: LandingLocale }) {
                     </p>
 
                     <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-                        <Button size="lg" className="bg-indigo-600 text-white hover:bg-indigo-700" asChild>
+                        <Button size="lg" className="bg-brand text-brand-foreground hover:bg-brand-hover" asChild>
                             <Link href="/catalog">
                                 {t("ctaPrimary")}
                                 <ArrowRight className="h-4 w-4" />
@@ -57,7 +57,7 @@ function TrustNote({
 }) {
     return (
         <span className="inline-flex items-center gap-2">
-            <Icon className="h-4 w-4 text-indigo-600" />
+            <Icon className="h-4 w-4 text-brand-accent-strong" />
             {text}
         </span>
     )

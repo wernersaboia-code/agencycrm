@@ -58,16 +58,18 @@
   --background: oklch(0.985 0.005 265);
   --foreground: oklch(0.22 0.025 265);
 
-  /* Marca do marketplace. Antes espalhados como #4a2c5a / #2ec4b6 literais nas
+  /* Marca do marketplace, ancorada na logo: navy #003048, azul #184890,
+     verde #189048, amarelo #f0c018. Antes eram #4a2c5a / #2ec4b6 literais nas
      páginas do funil, o que impedia qualquer adaptação a tema. */
-  --brand: oklch(0.36 0.08 320);
-  --brand-hover: oklch(0.30 0.08 320);
-  --brand-foreground: oklch(0.99 0.005 320);
-  /* Teal decorativo: reprova no contraste AA sobre branco, então é reservado a
-     ícones, bordas e preenchimentos. */
-  --brand-accent: oklch(0.75 0.11 185);
-  /* Variante escura, essa sim aprovada para texto. */
-  --brand-accent-strong: oklch(0.57 0.10 185);
+  --brand: oklch(0.293 0.064 237);
+  /* O navy já é escuro; escurecer mais no hover não lê como estado, então clareia. */
+  --brand-hover: oklch(0.36 0.075 240);
+  --brand-foreground: oklch(0.99 0.005 240);
+  /* Azul claro decorativo: reprova no contraste AA sobre branco, então é
+     reservado a ícones, bordas e preenchimentos. */
+  --brand-accent: oklch(0.72 0.10 250);
+  /* Azul da logo (#184890): 8.9:1 sobre branco, essa sim aprovada para texto. */
+  --brand-accent-strong: oklch(0.413 0.130 259);
 
   /* Surfaces */
   --card: oklch(1 0 0);
@@ -75,38 +77,40 @@
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.22 0.025 265);
 
-  /* Brand — Indigo */
-  --primary: oklch(0.43 0.085 265);
-  --primary-foreground: oklch(0.985 0.01 260);
-  --secondary: oklch(0.94 0.018 260);
-  --secondary-foreground: oklch(0.31 0.045 260);
-  --muted: oklch(0.94 0.018 260);
-  --muted-foreground: oklch(0.48 0.025 265);
-  --accent: oklch(0.62 0.115 265);
-  --accent-foreground: oklch(0.18 0.03 260);
+  /* Brand — navy da logo */
+  --primary: oklch(0.293 0.064 237);
+  --primary-foreground: oklch(0.99 0.005 240);
+  --secondary: oklch(0.94 0.016 245);
+  --secondary-foreground: oklch(0.31 0.045 245);
+  --muted: oklch(0.94 0.016 245);
+  --muted-foreground: oklch(0.48 0.025 245);
+  /* `accent` é fundo de hover no shadcn (16 usos de bg-accent), não cor de
+     marca: precisa ser neutro para o texto por cima continuar legível. */
+  --accent: oklch(0.94 0.014 245);
+  --accent-foreground: oklch(0.29 0.05 240);
 
   /* System */
   --destructive: oklch(0.55 0.18 29);
-  --border: oklch(0.88 0.017 260 / 0.65);
-  --input: oklch(0.88 0.017 260 / 0.60);
-  --ring: oklch(0.58 0.11 265);
+  --border: oklch(0.88 0.015 245 / 0.65);
+  --input: oklch(0.88 0.015 245 / 0.60);
+  --ring: oklch(0.413 0.130 259);
 
-  /* Charts */
-  --chart-1: oklch(0.52 0.09 265);
-  --chart-2: oklch(0.62 0.115 265);
-  --chart-3: oklch(0.58 0.12 145);
-  --chart-4: oklch(0.7 0.14 75);
+  /* Charts — navy, azul, verde e amarelo da logo, depois um laranja de apoio */
+  --chart-1: oklch(0.293 0.064 237);
+  --chart-2: oklch(0.413 0.130 259);
+  --chart-3: oklch(0.575 0.147 151);
+  --chart-4: oklch(0.827 0.165 90);
   --chart-5: oklch(0.56 0.16 32);
 
-  /* Sidebar */
-  --sidebar: oklch(0.29 0.06 265);
-  --sidebar-foreground: oklch(0.95 0.02 260);
-  --sidebar-primary: oklch(0.62 0.115 265);
-  --sidebar-primary-foreground: oklch(0.12 0.02 260);
-  --sidebar-accent: oklch(0.35 0.07 265);
-  --sidebar-accent-foreground: oklch(0.98 0.01 260);
-  --sidebar-border: oklch(0.42 0.055 265);
-  --sidebar-ring: oklch(0.62 0.115 265);
+  /* Sidebar — navegação ancorada no navy, como pede o DESIGN.md */
+  --sidebar: oklch(0.293 0.064 237);
+  --sidebar-foreground: oklch(0.95 0.015 245);
+  --sidebar-primary: oklch(0.62 0.115 250);
+  --sidebar-primary-foreground: oklch(0.12 0.02 240);
+  --sidebar-accent: oklch(0.36 0.075 240);
+  --sidebar-accent-foreground: oklch(0.98 0.008 245);
+  --sidebar-border: oklch(0.42 0.055 245);
+  --sidebar-ring: oklch(0.62 0.115 250);
 
   /* Tokens custom */
   --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.03);
@@ -115,9 +119,9 @@
   --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.04), 0 4px 6px -4px rgb(0 0 0 / 0.04);
   --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.04), 0 8px 10px -6px rgb(0 0 0 / 0.04);
   --shadow-xl: 0 25px 50px -12px rgb(0 0 0 / 0.08);
-  --shadow-glow-sm: 0 0 12px rgb(99 102 241 / 0.15);
-  --shadow-glow: 0 0 24px rgb(99 102 241 / 0.20);
-  --shadow-glow-lg: 0 0 36px rgb(99 102 241 / 0.25);
+  --shadow-glow-sm: 0 0 12px rgb(24 72 144 / 0.15);
+  --shadow-glow: 0 0 24px rgb(24 72 144 / 0.20);
+  --shadow-glow-lg: 0 0 36px rgb(24 72 144 / 0.25);
 
   --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -129,46 +133,47 @@
   --background: oklch(0.18 0.03 265);
   --foreground: oklch(0.94 0.018 260);
 
-  /* No escuro a marca precisa clarear para manter contraste com o fundo. */
-  --brand: oklch(0.62 0.11 320);
-  --brand-hover: oklch(0.68 0.11 320);
-  --brand-foreground: oklch(0.14 0.02 320);
-  --brand-accent: oklch(0.70 0.10 185);
-  --brand-accent-strong: oklch(0.78 0.10 185);
+  /* No escuro a marca precisa clarear para manter contraste com o fundo: o
+     navy da logo sumiria contra o canvas escuro. */
+  --brand: oklch(0.64 0.115 250);
+  --brand-hover: oklch(0.71 0.11 250);
+  --brand-foreground: oklch(0.14 0.02 240);
+  --brand-accent: oklch(0.70 0.09 250);
+  --brand-accent-strong: oklch(0.79 0.09 250);
 
   --card: oklch(0.23 0.035 260);
   --card-foreground: oklch(0.94 0.018 260);
   --popover: oklch(0.23 0.035 260);
   --popover-foreground: oklch(0.94 0.018 260);
 
-  --primary: oklch(0.68 0.12 265);
-  --primary-foreground: oklch(0.14 0.025 260);
-  --secondary: oklch(0.29 0.04 260);
-  --secondary-foreground: oklch(0.92 0.018 260);
-  --muted: oklch(0.29 0.04 260);
-  --muted-foreground: oklch(0.72 0.025 260);
-  --accent: oklch(0.62 0.115 265);
-  --accent-foreground: oklch(0.12 0.02 260);
+  --primary: oklch(0.68 0.12 250);
+  --primary-foreground: oklch(0.14 0.025 240);
+  --secondary: oklch(0.29 0.04 245);
+  --secondary-foreground: oklch(0.92 0.018 245);
+  --muted: oklch(0.29 0.04 245);
+  --muted-foreground: oklch(0.72 0.025 245);
+  --accent: oklch(0.29 0.035 245);
+  --accent-foreground: oklch(0.94 0.015 245);
 
   --destructive: oklch(0.67 0.17 29);
   --border: oklch(1 0 0 / 8%);
   --input: oklch(1 0 0 / 12%);
-  --ring: oklch(0.68 0.12 265);
+  --ring: oklch(0.68 0.12 250);
 
-  --chart-1: oklch(0.72 0.12 265);
-  --chart-2: oklch(0.7 0.12 145);
-  --chart-3: oklch(0.77 0.14 75);
-  --chart-4: oklch(0.68 0.15 32);
-  --chart-5: oklch(0.64 0.1 230);
+  --chart-1: oklch(0.72 0.11 250);
+  --chart-2: oklch(0.64 0.115 250);
+  --chart-3: oklch(0.72 0.13 151);
+  --chart-4: oklch(0.83 0.155 90);
+  --chart-5: oklch(0.68 0.15 32);
 
-  --sidebar: oklch(0.14 0.025 260);
-  --sidebar-foreground: oklch(0.94 0.018 260);
-  --sidebar-primary: oklch(0.72 0.12 265);
-  --sidebar-primary-foreground: oklch(0.14 0.025 260);
-  --sidebar-accent: oklch(0.24 0.04 260);
-  --sidebar-accent-foreground: oklch(0.96 0.015 260);
+  --sidebar: oklch(0.16 0.028 240);
+  --sidebar-foreground: oklch(0.94 0.018 245);
+  --sidebar-primary: oklch(0.72 0.12 250);
+  --sidebar-primary-foreground: oklch(0.14 0.025 240);
+  --sidebar-accent: oklch(0.26 0.04 245);
+  --sidebar-accent-foreground: oklch(0.96 0.015 245);
   --sidebar-border: oklch(1 0 0 / 12%);
-  --sidebar-ring: oklch(0.68 0.12 265);
+  --sidebar-ring: oklch(0.68 0.12 250);
 }
 
 @layer base {
@@ -217,7 +222,7 @@
     outline: none;
     --tw-ring-offset-width: 2px;
     --tw-ring-offset-color: var(--background);
-    --tw-ring-color: rgb(99 102 241 / 0.3);
+    --tw-ring-color: rgb(24 72 144 / 0.3);
     --tw-ring-shadow: 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
     box-shadow: 0 0 #0000, 0 0 #0000, var(--tw-ring-shadow);
     transition: box-shadow 200ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -227,7 +232,7 @@
     outline: none;
     --tw-ring-offset-width: 2px;
     --tw-ring-offset-color: var(--background);
-    --tw-ring-color: rgb(99 102 241 / 0.3);
+    --tw-ring-color: rgb(24 72 144 / 0.3);
     --tw-ring-shadow: 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
     box-shadow: 0 0 #0000, 0 0 #0000, var(--tw-ring-shadow);
   }
@@ -238,7 +243,7 @@
   }
 
   .hover-glow:hover {
-    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.04), 0 4px 6px -4px rgb(0 0 0 / 0.04), 0 0 12px rgb(99 102 241 / 0.15);
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.04), 0 4px 6px -4px rgb(0 0 0 / 0.04), 0 0 12px rgb(24 72 144 / 0.15);
     transform: translateY(-2px);
   }
 
@@ -295,17 +300,20 @@
   }
 }
 
+/* Derivado do azul da marca em vez de tons slate/indigo fixos. Como parte de
+   --background e --brand-accent, acompanha o tema sozinho — antes exigia uma
+   segunda definição `.dark .hero-gradient` com a paleta duplicada à mão. */
 .hero-gradient {
-  background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 25%, #f1f5f9 50%, #e0e7ff 75%, #f8fafc 100%);
+  background: linear-gradient(
+    135deg,
+    var(--background) 0%,
+    color-mix(in oklab, var(--brand-accent) 18%, var(--background)) 25%,
+    var(--background) 50%,
+    color-mix(in oklab, var(--brand-accent) 26%, var(--background)) 75%,
+    var(--background) 100%
+  );
   background-size: 400% 400%;
   animation: heroGradient 15s ease infinite;
-}
-
-/* Mesma progressão slate/indigo do tema claro, na faixa escura. Sem isto o
-   hero fica claro sobre a página escura. */
-.dark .hero-gradient {
-  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 25%, #131c31 50%, #312e81 75%, #0f172a 100%);
-  background-size: 400% 400%;
 }
 
 @keyframes heroGradient {

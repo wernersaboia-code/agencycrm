@@ -3,22 +3,22 @@ version: alpha
 name: AgencyCRM Operational Design System
 description: Visual system for a CRM and B2B lead marketplace used by agencies, sales operators, and administrators.
 colors:
-  background: "#F5F7F8"
+  background: "#F8FAFE"
   surface: "#FFFFFF"
-  surface-subtle: "#EEF3F2"
-  foreground: "#17201D"
-  muted-foreground: "#5F6B66"
-  border: "#D8E0DD"
-  primary: "#164A45"
-  primary-hover: "#0F3D39"
-  on-primary: "#F6FFFC"
-  accent: "#2F9E8F"
-  accent-soft: "#DDF4EF"
+  surface-subtle: "#E3EDF5"
+  foreground: "#151A26"
+  muted-foreground: "#525F6B"
+  border: "#DEE4EB"
+  primary: "#003048"
+  primary-hover: "#0C4160"
+  on-primary: "#F8FBFF"
+  accent: "#184890"
+  accent-soft: "#73A9E1"
   warning: "#B45309"
   warning-soft: "#FFF4D6"
-  success: "#17815E"
-  success-soft: "#DDF8EC"
-  danger: "#C2413A"
+  success: "#189048"
+  success-soft: "#DDF6E7"
+  danger: "#C5372C"
   admin: "#3B3F82"
   admin-soft: "#E8EAFE"
 typography:
@@ -76,11 +76,15 @@ components:
 
 AgencyCRM should feel like an operational trading desk for international B2B prospecting: calm, dense, precise, and trustworthy. The interface is used repeatedly by people managing leads, campaigns, calls, purchases, and admin work, so the visual language must privilege scanning speed over decoration.
 
-The current UI is functional but too close to a default shadcn surface: neutral gray cards, generic rounded panels, inconsistent accent colors, and marketing sections that rely on familiar SaaS composition. The stronger direction is "quiet operational": a crisp off-white workspace, dark teal navigation, compact 8px cards, tabular rhythm, and green/teal only where action or commercial signal matters.
+The current UI is functional but too close to a default shadcn surface: neutral gray cards, generic rounded panels, inconsistent accent colors, and marketing sections that rely on familiar SaaS composition. The stronger direction is "quiet operational": a crisp off-white workspace, deep navy navigation, compact 8px cards, tabular rhythm, and blue/green only where action or commercial signal matters.
+
+The palette above is derived from the brand logo (`public/logo.png`): the navy of the arrow (`#003048`) is `primary`, the EU blue of the globe (`#184890`) is `accent`, and the Brazilian green (`#189048`) carries `success`. **`app/globals.css` is the single source of truth** — these hex values document what the oklch tokens there resolve to. Change the tokens, then update this file; never hardcode either into components.
 
 ## Colors
 
-Use `primary` as the shell and primary action color. It is intentionally dark and grounded, closer to export operations and CRM control rooms than to generic startup blue. Use `accent` for active states, progress, and commercial momentum. Use `admin` only for administrative surfaces or role markers so admin affordances are recognizable without a separate purple theme taking over the product.
+Use `primary` as the shell and primary action color. It is intentionally dark and grounded, closer to export operations and CRM control rooms than to generic startup blue. Because it is already near-black, its hover state *lightens* rather than darkens. Use `accent` for active states, progress, links, and commercial momentum — it clears 8.4:1 on the light canvas, so it is safe for text; the softer `accent-soft` is not, and is limited to icons, borders, and fills. Use `admin` only for administrative surfaces or role markers so admin affordances are recognizable without a separate purple theme taking over the product.
+
+The logo's yellow (`#f0c018`) is deliberately absent from the token set: at 1.7:1 on white it cannot carry text, and as a fill it competes with `warning`. Keep it in the logo.
 
 Backgrounds should not be pure white at the page level. Use `background` for app canvases, `surface` for actual cards/panels, and `surface-subtle` for headers, sidebars inside panels, empty states, and table headers. Warning, success, and danger colors should appear as soft fills plus readable text, not bright blocks.
 
@@ -110,6 +114,8 @@ Cards should have 8px radius, a light border, compact headers, and no decorative
 
 ## Do's and Don'ts
 
-Do make the CRM feel fast, controlled, and specific to B2B prospecting. Do use dark teal navigation, restrained green accents, compact metrics, and clear data hierarchy. Do keep admin purple contained to admin identity and role signals.
+Do make the CRM feel fast, controlled, and specific to B2B prospecting. Do use deep navy navigation, restrained blue accents, compact metrics, and clear data hierarchy. Do keep admin purple contained to admin identity and role signals.
 
 Don't use generic blue/purple gradients, large marketing cards inside operational screens, random glow effects, over-rounded panels, or decorative icon circles everywhere. Don't let the marketplace, CRM, and admin areas drift into unrelated palettes.
+
+Don't reach for raw Tailwind color classes (`bg-white`, `text-gray-950`, `text-indigo-700`). They pin a surface to one theme and silently break dark mode — the landing carried 59 of them before this system was wired up. Use the semantic tokens (`bg-background`, `bg-card`, `text-foreground`, `text-muted-foreground`, `border-border`, `bg-brand`, `text-brand-accent-strong`) so every surface follows the theme.

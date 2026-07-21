@@ -10,7 +10,6 @@ import { BuyerProfilesSection } from "@/components/landing/buyer-profiles-sectio
 import { DeliverablesSection } from "@/components/landing/deliverables-section"
 import { AdvantageSection, DataQualitySection } from "@/components/landing/text-sections"
 import { HowItWorksSection } from "@/components/landing/how-it-works-section"
-import { StatsSection } from "@/components/landing/stats-section"
 import { BlogTeaserSection } from "@/components/landing/blog-teaser-section"
 import { FinalCtaSection } from "@/components/landing/final-cta-section"
 
@@ -52,7 +51,12 @@ export default async function EasyProspectHome({
             <DataQualitySection locale={locale} />
             <AdvantageSection locale={locale} />
             <HowItWorksSection locale={locale} />
-            <StatsSection locale={locale} />
+            {/* StatsSection está desmontada de propósito: os números em
+                landing.zahlen são placeholders do handoff ("6+ listas vendidas",
+                "100% qualidade verificada"). Exibir número inventado numa página
+                que vende dado verificado custa credibilidade. Remontar quando
+                houver métrica real — o componente e os textos traduzidos seguem
+                no repositório. */}
             <BlogTeaserSection locale={locale} />
             <FinalCtaSection locale={locale} />
         </div>

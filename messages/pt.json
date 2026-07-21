@@ -5,6 +5,7 @@
     "nav": {
         "catalog": "Catálogo",
         "howItWorks": "Como funciona",
+        "blog": "Blog",
         "faq": "FAQ",
         "login": "Entrar",
         "myAccount": "Minha conta",
@@ -25,6 +26,7 @@
         "productTitle": "Produto",
         "catalog": "Catálogo",
         "howItWorks": "Como funciona",
+        "blog": "Blog",
         "faq": "FAQ",
         "accountTitle": "Conta",
         "myPurchases": "Minhas compras",
