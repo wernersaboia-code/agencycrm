@@ -322,7 +322,7 @@ function SummaryPage({
 
             {/* Footer */}
             <View style={baseStyles.footer}>
-                <Text>Gerado por AgencyCRM - agencycrm-nine.vercel.app</Text>
+                <Text>Gerado por Easy Prospect — www.easyprospect.com.br</Text>
                 <Text>Pagina 1 de {totalPages}</Text>
             </View>
         </Page>
@@ -419,7 +419,7 @@ function LeadsPage({
 
             {/* Footer */}
             <View style={baseStyles.footer}>
-                <Text>Gerado por AgencyCRM - agencycrm-nine.vercel.app</Text>
+                <Text>Gerado por Easy Prospect — www.easyprospect.com.br</Text>
                 <Text>Pagina {pageNumber} de {totalPages}</Text>
             </View>
         </Page>

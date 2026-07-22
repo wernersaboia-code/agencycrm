@@ -2,6 +2,7 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { usePathname, useRouter } from "next/navigation"
 import {
     LayoutDashboard,
@@ -86,10 +87,11 @@ export function Sidebar() {
         <div className="flex h-full w-64 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground">
             <div className="flex h-16 items-center border-b border-sidebar-border px-5">
                 <Link href="/dashboard" className="flex items-center gap-2">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-md bg-sidebar-primary">
-                        <span className="text-lg font-bold text-sidebar-primary-foreground">A</span>
+                    <Image src="/logo-icon.png" alt="" width={32} height={32} className="h-8 w-8 rounded-md" />
+                    <div className="leading-tight">
+                        <span className="block text-base font-bold tracking-normal">Easy Prospect</span>
+                        <span className="block text-xs text-sidebar-foreground/60">CRM interno</span>
                     </div>
-                    <span className="text-lg font-bold tracking-normal">AgencyCRM</span>
                 </Link>
             </div>
 

@@ -2,6 +2,7 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { usePathname, useRouter } from "next/navigation"
 import {
     LayoutDashboard,
@@ -90,11 +91,9 @@ export function AdminSidebar() {
             {/* Logo */}
             <div className="flex h-16 items-center border-b border-[#5559a0] px-5">
                 <Link href="/super-admin" className="flex items-center gap-2">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-md bg-[#e8eafe]">
-                        <span className="text-lg font-bold text-[#25285f]">A</span>
-                    </div>
+                    <Image src="/logo-icon.png" alt="" width={32} height={32} className="h-8 w-8 rounded-md" />
                     <div>
-                        <span className="text-lg font-bold text-white">AgencyCRM</span>
+                        <span className="text-lg font-bold text-white">Easy Prospect</span>
                         <span className="block text-xs text-violet-400">Área Administrativa</span>
                     </div>
                 </Link>

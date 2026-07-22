@@ -327,7 +327,7 @@ function SendsPage({
 
             {/* Footer */}
             <View style={baseStyles.footer}>
-                <Text>Gerado por AgencyCRM - agencycrm-nine.vercel.app</Text>
+                <Text>Gerado por Easy Prospect — www.easyprospect.com.br</Text>
                 <Text>Pagina {currentPage} de {totalPages}</Text>
             </View>
         </Page>

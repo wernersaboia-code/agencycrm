@@ -70,9 +70,14 @@ export function generatePurchaseConfirmationEmail(
           
           <!-- Header -->
           <tr>
-            <td style="padding: 40px 40px 20px; text-align: center; background: linear-gradient(135deg, #4a2c5a 0%, #5d3a70 100%); border-radius: 16px 16px 0 0;">
-              <h1 style="color: #ffffff; font-size: 28px; margin: 0 0 8px;">🎉 Compra Confirmada!</h1>
-              <p style="color: rgba(255,255,255,0.9); font-size: 16px; margin: 0;">Easy Prospect - Marketplace de Leads B2B</p>
+            <td style="padding: 40px 40px 24px; text-align: center; background: linear-gradient(135deg, #003048 0%, #0C4160 100%); border-radius: 16px 16px 0 0;">
+              <!-- A maioria dos clientes de e-mail bloqueia imagem remota por
+                   padrão, então o nome vem em texto logo abaixo: se a logo não
+                   carregar, o cabeçalho continua identificando o remetente. -->
+              <img src="${appUrl}/logo-icon.png" width="56" height="56" alt="Easy Prospect"
+                   style="display: block; margin: 0 auto 16px; border-radius: 12px;" />
+              <h1 style="color: #ffffff; font-size: 28px; margin: 0 0 8px;">Compra confirmada</h1>
+              <p style="color: rgba(255,255,255,0.9); font-size: 16px; margin: 0;">Easy Prospect — listas qualificadas para comércio internacional</p>
             </td>
           </tr>
           
@@ -130,15 +135,15 @@ export function generatePurchaseConfirmationEmail(
                 </p>
               </div>
               
-              <!-- CTA CRM -->
-              <div style="background: linear-gradient(135deg, #2ec4b6 0%, #1ba399 100%); border-radius: 12px; padding: 24px; text-align: center; margin-top: 24px;">
-                <h3 style="color: #ffffff; font-size: 18px; margin: 0 0 8px;">🚀 Potencialize seus resultados!</h3>
+              <!-- CTA catálogo -->
+              <div style="background: linear-gradient(135deg, #003048 0%, #0C4160 100%); border-radius: 8px; padding: 24px; text-align: center; margin-top: 24px;">
+                <h3 style="color: #ffffff; font-size: 18px; margin: 0 0 8px;">Amplie o alcance da sua campanha</h3>
                 <p style="color: rgba(255,255,255,0.95); font-size: 14px; margin: 0 0 16px;">
-                  Use nosso CRM gratuito para gerenciar campanhas, enviar emails e fazer ligações
+                  Explore listas de outros mercados e setores para alcançar mais parceiros comerciais.
                 </p>
-                <a href="${appUrl}/dashboard" 
-                   style="display: inline-block; background-color: #ffffff; color: #2ec4b6; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-weight: 600; font-size: 14px;">
-                  Acessar CRM Grátis →
+                <a href="${appUrl}/catalog"
+                   style="display: inline-block; background-color: #ffffff; color: #003048; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-weight: 600; font-size: 14px;">
+                  Ver catálogo →
                 </a>
               </div>
               

@@ -214,7 +214,7 @@ function CoverPage({ data }: { data: ExecutiveReportData }) {
                     Gerado em {format(new Date(generatedAt), "dd 'de' MMMM 'de' yyyy 'as' HH:mm", { locale: ptBR })}
                 </Text>
                 <Text style={{ fontSize: 8, color: colors.secondary, textAlign: "center", marginTop: 4 }}>
-                    AgencyCRM - agencycrm-nine.vercel.app
+                    Easy Prospect — www.easyprospect.com.br
                 </Text>
             </View>
         </Page>
