@@ -1,5 +1,6 @@
 // app/(crm)/layout.tsx
 
+import { headers } from "next/headers"
 import { redirect } from "next/navigation"
 import { Sidebar } from "@/components/layout/sidebar"
 import { Header } from "@/components/layout/header"
@@ -11,6 +12,7 @@ import { CrmHotkeys } from "@/components/layout/CrmHotkeys"
 import { TrialBanner } from "@/components/crm/trial-banner"
 import { prisma } from "@/lib/prisma"
 import { getAuthenticatedActiveDbUser } from "@/lib/auth"
+import { isRotaDeEscapeDoWorkspace } from "@/lib/auth/workspace-guard"
 
 export const dynamic = "force-dynamic"
 
@@ -36,13 +38,20 @@ export default async function DashboardLayout({
         }
     })
 
+    // /workspaces e /trial-expired moram dentro deste mesmo grupo de rotas,
+    // então herdam este layout. Sem esta exceção, mandá-las para cá fazia o
+    // layout rodar de novo, não achar workspace e redirecionar outra vez —
+    // laço infinito, com a saída de emergência trancada por dentro.
+    const pathname = (await headers()).get("x-pathname")
+    const emRotaDeEscape = isRotaDeEscapeDoWorkspace(pathname)
+
     // Se não tem workspace, redireciona para criar
-    if (!workspace) {
+    if (!workspace && !emRotaDeEscape) {
         redirect("/workspaces?message=create-first")
     }
 
     // Verificar trial expirado
-    if (workspace.plan === "TRIAL" && workspace.trialEndsAt) {
+    if (workspace?.plan === "TRIAL" && workspace.trialEndsAt && !emRotaDeEscape) {
         if (new Date() > workspace.trialEndsAt) {
             redirect("/trial-expired")
         }

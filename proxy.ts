@@ -31,8 +31,16 @@ export async function proxy(request: NextRequest) {
         return new NextResponse('Authentication configuration missing', { status: 503 })
     }
 
+    // Layouts do App Router não recebem o caminho da requisição, e o layout do
+    // CRM precisa dele para não aplicar a guarda de workspace justamente nas
+    // telas que servem para sair daquele estado. Precisa ir no header do
+    // REQUEST encaminhado: header de resposta não é visível para `headers()`
+    // dentro de um Server Component.
+    const requestHeaders = new Headers(request.headers)
+    requestHeaders.set("x-pathname", pathname)
+
     let supabaseResponse = NextResponse.next({
-        request,
+        request: { headers: requestHeaders },
     })
 
     const supabase = createServerClient(
