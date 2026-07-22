@@ -1,6 +1,6 @@
 "use client"
 
-import { Suspense, useMemo, useState } from "react"
+import { Suspense, useEffect, useMemo, useState } from "react"
 import type { ComponentType, FormEvent } from "react"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
@@ -85,6 +85,23 @@ function SignInForm() {
         [selectedAreaId]
     )
     const SelectedIcon = selectedArea.icon
+
+    // Quem vem de um link de confirmação que falhou chega aqui com ?erro=.
+    // Sem exibir nada, a pessoa cairia numa tela de login idêntica à inicial,
+    // sem ideia do que houve — o mesmo "não aconteceu nada" que essa tela já
+    // produzia antes.
+    const erro = searchParams.get("erro")
+    useEffect(() => {
+        if (!erro) return
+
+        const mensagens: Record<string, string> = {
+            link_expirado: "Esse link de confirmação expirou ou já foi usado. Entre com sua senha ou peça um novo cadastro.",
+            link_invalido: "Não foi possível validar esse link de confirmação. Tente entrar com sua senha.",
+            link_incompleto: "Esse link de confirmação está incompleto. Abra-o direto do e-mail, sem copiar e colar.",
+        }
+
+        toast.error(mensagens[erro] ?? "Não foi possível concluir a confirmação.")
+    }, [erro])
 
     async function handleSubmit(e: FormEvent) {
         e.preventDefault()

@@ -95,6 +95,9 @@ export async function proxy(request: NextRequest) {
         "/sign-in",
         "/sign-up",
         "/forgot-password",
+        // Callback de confirmação de e-mail: não tem versão por idioma e o
+        // prefixo de locale quebraria o link que o Supabase já enviou.
+        "/auth",
         "/privacy",
         "/terms",
         "/opengraph-image",
@@ -167,6 +170,18 @@ export async function proxy(request: NextRequest) {
     // CRM PÚBLICO - não verifica auth
     // ============================================
     if (isCRMPublicRoute) {
+        return supabaseResponse
+    }
+
+    // ============================================
+    // CALLBACK DE CONFIRMAÇÃO DE E-MAIL
+    // ============================================
+    // Precisa passar direto, sem nenhuma das duas regras de auth:
+    // - quem chega SEM sessão não pode ser mandado ao login, porque é esta
+    //   rota que cria a sessão a partir do código do e-mail;
+    // - quem chega COM sessão não pode ser mandado para /my-purchases, senão
+    //   a troca do código nunca roda e a conta fica sem confirmar.
+    if (pathForMatching === "/auth/callback") {
         return supabaseResponse
     }
 

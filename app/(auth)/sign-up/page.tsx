@@ -49,9 +49,12 @@ function SignUpForm() {
                         name,
                         source: isMarketplace ? "marketplace" : "crm",
                     },
-                    emailRedirectTo: isMarketplace
-                        ? `${window.location.origin}/my-purchases`
-                        : `${window.location.origin}/dashboard`,
+                    // Precisa passar pelo callback: é lá que o código do
+                    // e-mail vira sessão. Apontar direto para a página final
+                    // deixa o código sem trocar e a conta sem confirmar.
+                    emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(
+                        isMarketplace ? "/my-purchases" : "/dashboard"
+                    )}`,
                 },
             })
 
@@ -94,16 +97,17 @@ function SignUpForm() {
                         </div>
                     </div>
 
-                    {isMarketplace && (
-                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                            <h3 className="font-medium text-blue-800 mb-2">📧 Próximos passos:</h3>
-                            <ol className="text-sm text-blue-700 space-y-2">
-                                <li>1. Acesse seu email e clique no link de verificação</li>
-                                <li>2. Após verificar, você receberá links mágicos para acessar suas compras</li>
-                                <li>3. Não precisa decorar senha - sempre usamos links mágicos!</li>
-                            </ol>
-                        </div>
-                    )}
+                    <div className="rounded-lg border border-brand-accent/40 bg-brand-accent/10 p-4">
+                        <h3 className="mb-2 font-medium text-foreground">Próximos passos</h3>
+                        <ol className="space-y-2 text-sm text-muted-foreground">
+                            <li>1. Abra seu e-mail e clique no link de confirmação.</li>
+                            <li>
+                                2. Você entra direto{" "}
+                                {isMarketplace ? "nas suas compras" : "no CRM"} pelo link.
+                            </li>
+                            <li>3. Nos próximos acessos, use este e-mail e a senha que acabou de criar.</li>
+                        </ol>
+                    </div>
                 </CardContent>
 
                 <CardFooter className="flex flex-col space-y-4">
