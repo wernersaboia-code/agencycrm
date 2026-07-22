@@ -42,8 +42,8 @@ describe("locales", () => {
         expect(ogLocaleFor("en")).toBe("en_US")
     })
 
-    it("publica pt, de e en — os que têm messages/ próprio", () => {
-        expect(PUBLISHED_LOCALES).toEqual(["pt", "de", "en"])
+    it("publica pt, de, en, es e fr — os que têm messages/ próprio", () => {
+        expect(PUBLISHED_LOCALES).toEqual(["pt", "de", "en", "es", "fr"])
     })
 })
 
@@ -58,8 +58,8 @@ describe("resolveMessagesLocale", () => {
     // pt. "en" ficaria preso nesse fallback para sempre, mesmo depois de
     // messages/en.json existir, até alguém lembrar de crescer a ternária.
     it("cai no padrão quando o locale não tem tradução própria", () => {
-        expect(resolveMessagesLocale("es")).toBe("pt")
-        expect(resolveMessagesLocale("fr")).toBe("pt")
+        expect(resolveMessagesLocale("it")).toBe("pt")
+        expect(resolveMessagesLocale("nl")).toBe("pt")
         expect(resolveMessagesLocale("ar")).toBe("pt")
     })
 

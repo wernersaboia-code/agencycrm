@@ -10,17 +10,19 @@ const valid = {
 }
 
 describe("faqContactSchema", () => {
-    it("aceita pt, de e en", () => {
-        expect(faqContactSchema.parse({ ...valid, locale: "pt" }).locale).toBe("pt")
-        expect(faqContactSchema.parse({ ...valid, locale: "de" }).locale).toBe("de")
-        expect(faqContactSchema.parse({ ...valid, locale: "en" }).locale).toBe("en")
+    it("aceita pt, de, en, es e fr", () => {
+        for (const locale of ["pt", "de", "en", "es", "fr"] as const) {
+            expect(faqContactSchema.parse({ ...valid, locale }).locale).toBe(locale)
+        }
     })
 
-    // O bug que este teste evita: sem "en" no enum, o formulário de contato do
-    // FAQ em inglês seria rejeitado no servidor com uma mensagem genérica de
-    // erro, sem nada no cliente indicando que o problema é o locale.
+    // O bug que este teste evita: sem o locale novo no enum, o formulário de
+    // contato do FAQ nesse idioma seria rejeitado no servidor com uma
+    // mensagem genérica de erro, sem nada no cliente indicando que o
+    // problema é o locale. "it" segue de fora de propósito — ainda não tem
+    // messages/it.json.
     it("rejeita locale fora do enum", () => {
-        expect(() => faqContactSchema.parse({ ...valid, locale: "es" })).toThrow()
+        expect(() => faqContactSchema.parse({ ...valid, locale: "it" })).toThrow()
     })
 
     it("usa de como padrão quando locale não é enviado", () => {

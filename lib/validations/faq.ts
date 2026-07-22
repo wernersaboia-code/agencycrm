@@ -16,7 +16,7 @@ export const faqContactSchema = z.object({
     // Mantém sincronizado à mão com LandingLocale (components/landing/types.ts):
     // esse tipo não pode ser importado aqui sem puxar código de componente
     // para uma validação server-side.
-    locale: z.enum(["pt", "de", "en"]).default("de"),
+    locale: z.enum(["pt", "de", "en", "es", "fr"]).default("de"),
 })
 
 export type FaqContactValues = z.infer<typeof faqContactSchema>
