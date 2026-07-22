@@ -4,7 +4,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import { toast } from "sonner"
-import { LayoutDashboard, LogOut, Menu, ShieldCheck, ShoppingBag, User } from "lucide-react"
+import { LogOut, Menu, ShieldCheck, ShoppingBag, User } from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
 import { Link as LocaleLink, useRouter } from "@/lib/i18n/navigation"
 import { Button } from "@/components/ui/button"
@@ -106,12 +106,8 @@ export function MarketplaceHeader() {
                                                 {t("myPurchases")}
                                             </LocaleLink>
                                         </DropdownMenuItem>
-                                        <DropdownMenuItem asChild>
-                                            <Link href="/dashboard" className="cursor-pointer">
-                                                <LayoutDashboard className="h-4 w-4 mr-2" />
-                                                {t("accessCrm")}
-                                            </Link>
-                                        </DropdownMenuItem>
+                                        {/* O CRM é interno: a entrada fica na Área
+                                            Administrativa, não no menu do cliente. */}
                                         {isAdmin && (
                                             <DropdownMenuItem asChild>
                                                 <Link href="/super-admin" className="cursor-pointer">
@@ -176,11 +172,6 @@ export function MarketplaceHeader() {
                                             <LocaleLink href="/my-purchases" className="text-lg font-medium">
                                                 {t("myPurchases")}
                                             </LocaleLink>
-                                        </SheetClose>
-                                        <SheetClose asChild>
-                                            <Link href="/dashboard" className="text-lg font-medium">
-                                                {t("accessCrm")}
-                                            </Link>
                                         </SheetClose>
                                         {isAdmin && (
                                             <SheetClose asChild>

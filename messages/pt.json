@@ -10,7 +10,6 @@
         "login": "Entrar",
         "myAccount": "Minha conta",
         "myPurchases": "Minhas compras",
-        "accessCrm": "Acessar CRM",
         "adminArea": "Área administrativa",
         "signOut": "Sair",
         "signOutSuccess": "Logout realizado com sucesso",
@@ -448,11 +447,10 @@
         "successNextDownloadTitle": "Baixe",
         "successNextDownloadText": "CSV ou Excel em Minhas compras.",
         "successNextProspectTitle": "Prospecção",
-        "successNextProspectText": "Importe leads no CRM e crie campanhas.",
+        "successNextProspectText": "Importe os contatos no seu CRM ou ferramenta de prospecção.",
         "successNextReceiptTitle": "Confirmação",
         "successNextReceiptText": "O recibo foi enviado para seu email.",
         "successCtaPurchases": "Acessar minhas compras",
-        "successCtaCrm": "Usar CRM",
         "successCtaContinue": "Continuar comprando",
         "cancelMetaTitle": "Compra cancelada",
         "cancelMetaDescription": "Sua compra foi cancelada",
@@ -469,7 +467,6 @@
         "badge": "Downloads e histórico de pedidos",
         "title": "Minhas compras",
         "subtitle": "Baixe suas listas, confira o status dos pedidos e use os arquivos para alimentar suas campanhas no CRM.",
-        "openCrm": "Abrir CRM",
         "magicLinkNotice": "Acesso por link mágico válido por 24h.",
         "statPurchases": "Compras",
         "statLists": "Listas",
@@ -489,6 +486,7 @@
         "goToCatalog": "Ir para o catálogo",
         "emptyTitle": "Nenhuma compra ainda",
         "emptyDescription": "Explore o catálogo, selecione uma base compatível com sua campanha e volte aqui para baixar os arquivos.",
-        "emptyCta": "Explorar catálogo"
+        "emptyCta": "Explorar catálogo",
+        "browseMoreLists": "Ver mais listas"
     }
 }

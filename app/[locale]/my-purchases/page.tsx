@@ -23,8 +23,6 @@ import { getAuthenticatedUserId } from "@/lib/auth"
 import { formatCurrency } from "@/lib/utils"
 import { getFormatter, getTranslations } from "next-intl/server"
 import type { Metadata } from "next"
-// eslint-disable-next-line no-restricted-imports -- único uso restante é /dashboard, fora do segmento de locale
-import Link from "next/link"
 import { Link as LocaleLink } from "@/lib/i18n/navigation"
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -126,10 +124,10 @@ async function PurchasesDashboard({
 
                         {purchases.length > 0 && (
                             <Button className="bg-brand text-brand-foreground hover:bg-brand-hover" asChild>
-                                <Link href="/dashboard">
+                                <LocaleLink href="/catalog">
                                     <Rocket className="h-4 w-4" aria-hidden="true" />
-                                    {t("openCrm")}
-                                </Link>
+                                    {t("browseMoreLists")}
+                                </LocaleLink>
                             </Button>
                         )}
                     </div>

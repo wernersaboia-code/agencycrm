@@ -1,5 +1,3 @@
-// eslint-disable-next-line no-restricted-imports -- único uso restante é /dashboard, fora do segmento de locale
-import Link from "next/link"
 // eslint-disable-next-line no-restricted-imports -- único uso restante é /sign-in, fora do segmento de locale
 import { redirect } from "next/navigation"
 import type { ComponentType } from "react"
@@ -143,13 +141,7 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
                             </LocaleLink>
                         </Button>
 
-                        <div className="grid gap-3 sm:grid-cols-2">
-                            <Button variant="outline" className="h-12" asChild>
-                                <Link href="/dashboard">
-                                    {t("successCtaCrm")}
-                                </Link>
-                            </Button>
-
+                        <div className="grid gap-3">
                             <Button variant="outline" className="h-12" asChild>
                                 <LocaleLink href="/catalog">
                                     {t("successCtaContinue")}

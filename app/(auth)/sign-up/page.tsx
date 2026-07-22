@@ -192,12 +192,11 @@ function SignUpForm() {
 
                     {isMarketplace && (
                         <div className="bg-gradient-to-r from-[#4a2c5a]/5 to-[#2ec4b6]/5 rounded-lg p-4 border border-[#2ec4b6]/20">
-                            <h3 className="font-medium text-gray-800 mb-2">✨ Benefícios:</h3>
-                            <ul className="text-sm text-gray-600 space-y-1">
+                            <h3 className="mb-2 font-medium text-foreground">Benefícios</h3>
+                            <ul className="space-y-1 text-sm text-muted-foreground">
                                 <li>✓ Acesso vitalício às listas compradas</li>
                                 <li>✓ Downloads ilimitados em CSV e Excel</li>
-                                <li>✓ Links mágicos no email (sem decorar senha)</li>
-                                <li>✓ CRM gratuito opcional</li>
+                                <li>✓ Arquivos prontos para importar no seu CRM</li>
                             </ul>
                         </div>
                     )}

@@ -6,6 +6,7 @@ import {
     Building2,
     LifeBuoy,
     Package,
+    Rocket,
     Settings,
     ShoppingCart,
     Store,
@@ -47,6 +48,15 @@ export default async function SuperAdminDashboardPage() {
             description: "Acompanhar workspaces, responsáveis e uso do CRM.",
             href: "/super-admin/workspaces",
             icon: Building2,
+            tone: "default",
+        },
+        {
+            // Única porta de entrada do CRM: ele saiu das telas de cliente por
+            // ser ferramenta interna da operação, não parte do que se vende.
+            title: "Abrir o CRM",
+            description: "Leads, campanhas, chamadas e relatórios da operação interna.",
+            href: "/dashboard",
+            icon: Rocket,
             tone: "default",
         },
     ] as const

@@ -27,6 +27,14 @@ export default async function DashboardLayout({
         redirect("/sign-in")
     }
 
+    // O CRM é ferramenta interna da operação, não parte do produto vendido.
+    // Antes bastava ter conta ativa: qualquer cliente que digitasse /dashboard
+    // via leads, campanhas, chamadas e relatórios. `getAuthenticatedActiveDbUser`
+    // confere `status`, nunca `role` — a checagem de papel precisa ser explícita.
+    if (user.role !== "ADMIN") {
+        redirect("/my-purchases")
+    }
+
     // Buscar workspace para verificar trial
     const workspace = await prisma.workspace.findFirst({
         where: { userId: user.id },

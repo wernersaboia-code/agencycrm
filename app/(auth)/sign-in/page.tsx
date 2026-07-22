@@ -36,9 +36,28 @@ type AccessArea = {
     signInHref: string
     buttonLabel: string
     icon: ComponentType<{ className?: string }>
+    /**
+     * Se aparece na lista de escolha da tela de login.
+     *
+     * O CRM é interno: continua resolvendo como destino para quem chega por
+     * link direto (um ADMIN clicando em /dashboard), mas não é ofertado a
+     * quem simplesmente abre a tela de login.
+     */
+    visivel: boolean
 }
 
 const accessAreas: AccessArea[] = [
+    {
+        id: "purchases",
+        title: "Minhas compras",
+        shortTitle: "Ver compras",
+        description: "Listas compradas, pedidos e downloads de arquivos.",
+        redirect: "/my-purchases",
+        signInHref: "/sign-in?redirect=/my-purchases",
+        buttonLabel: "Entrar em Minhas compras",
+        icon: ShoppingBag,
+        visivel: true,
+    },
     {
         id: "admin",
         title: "Área Administrativa",
@@ -48,6 +67,7 @@ const accessAreas: AccessArea[] = [
         signInHref: "/sign-in?redirect=/super-admin",
         buttonLabel: "Entrar na Área Administrativa",
         icon: ShieldCheck,
+        visivel: true,
     },
     {
         id: "crm",
@@ -58,18 +78,12 @@ const accessAreas: AccessArea[] = [
         signInHref: "/sign-in?redirect=/dashboard",
         buttonLabel: "Entrar no CRM",
         icon: Building2,
-    },
-    {
-        id: "purchases",
-        title: "Minhas compras",
-        shortTitle: "Ver compras",
-        description: "Listas compradas, pedidos e downloads de arquivos.",
-        redirect: "/my-purchases",
-        signInHref: "/sign-in?redirect=/my-purchases",
-        buttonLabel: "Entrar em Minhas compras",
-        icon: ShoppingBag,
+        visivel: false,
     },
 ]
+
+/** Só as áreas que o visitante pode escolher na tela. */
+const areasVisiveis = accessAreas.filter((area) => area.visivel)
 
 function SignInForm() {
     const router = useRouter()
@@ -161,13 +175,13 @@ function SignInForm() {
                         Acessos principais
                     </h1>
                     <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                        A Área Administrativa aparece primeiro para facilitar a rotina de quem trabalha no sistema.
-                        CRM e compras continuam separados logo abaixo.
+                        Suas compras ficam em primeiro, que é o acesso da maioria.
+                        A Área Administrativa é restrita a quem opera o sistema.
                     </p>
                 </div>
 
                 <div className="grid gap-3">
-                    {accessAreas.map((area) => {
+                    {areasVisiveis.map((area) => {
                         const Icon = area.icon
                         const isSelected = area.id === selectedArea.id
 

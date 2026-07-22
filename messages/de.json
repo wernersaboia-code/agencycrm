@@ -10,7 +10,6 @@
         "login": "Anmelden",
         "myAccount": "Mein Konto",
         "myPurchases": "Meine Käufe",
-        "accessCrm": "CRM öffnen",
         "adminArea": "Adminbereich",
         "signOut": "Abmelden",
         "signOutSuccess": "Erfolgreich abgemeldet",
@@ -448,11 +447,10 @@
         "successNextDownloadTitle": "Herunterladen",
         "successNextDownloadText": "CSV oder Excel unter „Meine Käufe“.",
         "successNextProspectTitle": "Akquise",
-        "successNextProspectText": "Leads ins CRM importieren und Kampagnen anlegen.",
+        "successNextProspectText": "Importieren Sie die Kontakte in Ihr CRM oder Vertriebstool.",
         "successNextReceiptTitle": "Bestätigung",
         "successNextReceiptText": "Die Rechnung wurde an Ihre E-Mail-Adresse gesendet.",
         "successCtaPurchases": "Zu meinen Käufen",
-        "successCtaCrm": "CRM öffnen",
         "successCtaContinue": "Weiter einkaufen",
         "cancelMetaTitle": "Kauf abgebrochen",
         "cancelMetaDescription": "Ihr Kauf wurde abgebrochen",
@@ -469,7 +467,6 @@
         "badge": "Downloads und Bestellhistorie",
         "title": "Meine Käufe",
         "subtitle": "Laden Sie Ihre Listen herunter, prüfen Sie den Bestellstatus und nutzen Sie die Dateien für Ihre Kampagnen im CRM.",
-        "openCrm": "CRM öffnen",
         "magicLinkNotice": "Zugang per Magic Link, 24 Stunden gültig.",
         "statPurchases": "Käufe",
         "statLists": "Listen",
@@ -489,6 +486,7 @@
         "goToCatalog": "Zum Katalog",
         "emptyTitle": "Noch keine Käufe",
         "emptyDescription": "Durchstöbern Sie den Katalog, wählen Sie eine zu Ihrer Kampagne passende Liste und kehren Sie hierher zurück, um die Dateien herunterzuladen.",
-        "emptyCta": "Katalog durchstöbern"
+        "emptyCta": "Katalog durchstöbern",
+        "browseMoreLists": "Weitere Listen ansehen"
     }
 }
