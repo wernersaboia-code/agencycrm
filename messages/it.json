@@ -1,0 +1,487 @@
+{
+    "common": {
+        "brand": "Easy Prospect"
+    },
+    "nav": {
+        "catalog": "Catalogo",
+        "howItWorks": "Come funziona",
+        "blog": "Blog",
+        "faq": "FAQ",
+        "login": "Accedi",
+        "myAccount": "Il mio account",
+        "myPurchases": "I miei acquisti",
+        "adminArea": "Area amministrazione",
+        "signOut": "Esci",
+        "signOutSuccess": "Disconnessione riuscita",
+        "openMenu": "Apri il menu",
+        "language": "Lingua",
+        "theme": "Tema",
+        "themeLight": "Chiaro",
+        "themeDark": "Scuro",
+        "themeSystem": "Sistema"
+    },
+    "footer": {
+        "about": "Partner commerciali qualificati per il commercio internazionale, per far crescere la tua attività.",
+        "productTitle": "Prodotto",
+        "catalog": "Catalogo",
+        "howItWorks": "Come funziona",
+        "blog": "Blog",
+        "faq": "FAQ",
+        "accountTitle": "Account",
+        "myPurchases": "I miei acquisti",
+        "login": "Accedi",
+        "legalTitle": "Note legali",
+        "terms": "Termini di utilizzo",
+        "privacy": "Privacy",
+        "contact": "Contatti",
+        "copyright": "© {year} Easy Prospect. Tutti i diritti riservati."
+    },
+    "landing": {
+        "hero": {
+            "badge": "Marketplace di partner commerciali B2B verificati",
+            "title": "Elenchi qualificati di importatori e distributori per il tuo commercio internazionale.",
+            "subtitle": "Trova esattamente i partner commerciali giusti per il tuo prodotto e la tua strategia di esportazione.",
+            "ctaPrimary": "Esplora il catalogo",
+            "ctaSecondary": "Come funziona",
+            "trust1": "Pronto all'uso immediato",
+            "trust2": "Aziende verificate",
+            "trust3": "Aggiornamento regolare"
+        },
+        "intro": {
+            "lede": "I nostri elenchi qualificati di importatori e distributori sono pensati per produttori, aziende manifatturiere e titolari di marchi alla ricerca di nuovi partner commerciali all'estero.",
+            "p1": "Seleziona per paese, settore, area linguistica o profilo d'acquisto e ricevi database pronti all'uso, aggiornati regolarmente.",
+            "p2": "I nostri elenchi includono solo aziende accuratamente verificate, con un interesse comprovato nell'inserire nuovi prodotti e marchi esteri nel proprio portafoglio. Risparmi così lunghe ricerche ed eviti innumerevoli contatti con aziende che non hanno alcun interesse verso nuovi fornitori."
+        },
+        "zielmaerkte": {
+            "eyebrow": "Mercati target",
+            "title": "Una selezione precisa in base ai tuoi mercati target.",
+            "intro": "Ricevi elenchi per singoli paesi o intere aree linguistiche, ad esempio:",
+            "note": "Offriamo anche elenchi specifici per settore per numerose industrie e famiglie di prodotti. Passo dopo passo, ampliamo la nostra offerta con elenchi qualificati per mercati di tutto il mondo.",
+            "regions": [
+                {
+                    "flag": "DE",
+                    "title": "Paesi di lingua tedesca",
+                    "countries": "DE · AT · CH"
+                },
+                {
+                    "flag": "FR",
+                    "title": "Paesi di lingua francese",
+                    "countries": "FR · BE · CH · LU"
+                },
+                {
+                    "flag": "ES",
+                    "title": "Paesi di lingua spagnola",
+                    "countries": "ES · MX · AR · CL …"
+                },
+                {
+                    "flag": "PT",
+                    "title": "Paesi di lingua portoghese",
+                    "countries": "PT · BR · AO …"
+                },
+                {
+                    "flag": "SE",
+                    "title": "Paesi scandinavi",
+                    "countries": "SE · NO · DK · FI · IS"
+                }
+            ]
+        },
+        "einkaufsprofile": {
+            "eyebrow": "Profili d'acquisto",
+            "title": "Non tutti gli importatori sono uguali.",
+            "intro": "I nostri database distinguono diversi profili d'acquisto:",
+            "close": "Concentri così le tue attività commerciali esattamente sui partner adatti al tuo prodotto.",
+            "cards": [
+                {
+                    "title": "Acquisto globale",
+                    "body": "Aziende alla ricerca di nuovi prodotti e fornitori in tutto il mondo."
+                },
+                {
+                    "title": "Focus UE",
+                    "body": "Importatori che acquistano esclusivamente all'interno dell'Unione Europea."
+                },
+                {
+                    "title": "Orientati al Mercosur",
+                    "body": "Aziende che importano preferibilmente dal Mercosur."
+                },
+                {
+                    "title": "Specialisti regionali",
+                    "body": "Specialisti con mercati di approvvigionamento chiaramente definiti."
+                }
+            ]
+        },
+        "lieferumfang": {
+            "eyebrow": "Cosa è incluso",
+            "title": "Più di semplici elenchi di indirizzi.",
+            "reportTitle": "Rapporto di mercato aggiornato incluso",
+            "reportBody": "Ogni elenco include un rapporto di mercato aggiornato, con informazioni preziose sul settore e sulle opportunità di vendita nel mercato target.",
+            "listIntro": "Ricevi inoltre consigli pratici sui seguenti argomenti:",
+            "close": "Aumenti così le probabilità di successo della tua campagna di esportazione fin dal primo contatto.",
+            "items": [
+                "Situazione attuale del mercato e della concorrenza",
+                "Opportunità di vendita e distribuzione",
+                "Particolarità di ciascun mercato",
+                "Requisiti dei potenziali partner commerciali",
+                "Quali informazioni e documenti si aspettano gli importatori prima di una collaborazione",
+                "Come avvicinare in modo professionale i potenziali distributori",
+                "Quali argomenti di vendita sono più promettenti al primo contatto"
+            ]
+        },
+        "daten": {
+            "eyebrow": "Qualità dei dati",
+            "title": "Dati aggiornati regolarmente.",
+            "body": "Tutti gli elenchi vengono mantenuti e aggiornati costantemente. Nuovi attori del mercato vengono aggiunti, le aziende inattive vengono rimosse e le schede esistenti vengono revisionate regolarmente. Lavori così sempre con informazioni attuali e affidabili."
+        },
+        "vorteil": {
+            "eyebrow": "Il tuo vantaggio",
+            "title": "Risparmia tempo e fai crescere il tuo successo commerciale.",
+            "body": "Invece di passare settimane o mesi a cercare importatori e distributori adatti, ricevi subito una selezione qualificata di potenziali partner commerciali in linea con il tuo prodotto e il tuo mercato target. Puoi così concentrarti sull'essenziale: costruire con successo il tuo commercio internazionale."
+        },
+        "howItWorks": {
+            "eyebrow": "Come funziona",
+            "title": "Dalla ricerca al file pronto all'uso in tre passaggi.",
+            "steps": [
+                {
+                    "title": "Filtra",
+                    "body": "Esplora per paesi, aree linguistiche, settori e profili d'acquisto per trovare gli elenchi adatti alla tua campagna."
+                },
+                {
+                    "title": "Acquista",
+                    "body": "Verifica il volume, il prezzo per lead e i dettagli dell'elenco prima di completare l'ordine tramite pagamento sicuro."
+                },
+                {
+                    "title": "Scarica",
+                    "body": "Dopo la conferma, accedi ai file in formato CSV o Excel e integrali nel tuo processo commerciale."
+                }
+            ]
+        },
+        "zahlen": {
+            "_placeholder": "PLACEHOLDER: dati fittizi provenienti dall'handoff — da sostituire con dati reali o collegare al backend prima del go-live.",
+            "eyebrow": "Numeri che contano",
+            "title": "Una fiducia costruita su risultati concreti.",
+            "stats": [
+                {
+                    "value": "6+",
+                    "label": "elenchi venduti"
+                },
+                {
+                    "value": "100%",
+                    "label": "qualità dei dati verificata"
+                },
+                {
+                    "value": "24/7",
+                    "label": "assistenza in portoghese"
+                }
+            ]
+        },
+        "blog": {
+            "eyebrow": "Scopri di più",
+            "title": "Analisi di mercato, report settoriali e opportunità di esportazione.",
+            "intro": "Sul nostro blog pubblichiamo regolarmente analisi di mercato, report settoriali e informazioni su opportunità di esportazione, tendenze commerciali e possibilità di vendita in vari paesi e regioni. Resti così sempre aggiornato sull'evoluzione del mercato internazionale."
+        },
+        "cta": {
+            "title": "Pronto a far crescere il tuo commercio internazionale?",
+            "body": "Esplora il catalogo e trova importatori e distributori qualificati in linea con il tuo prodotto e il tuo mercato target.",
+            "button": "Esplora il catalogo"
+        },
+        "meta": {
+            "title": "Elenchi qualificati di importatori e distributori per il tuo commercio internazionale",
+            "description": "Elenchi qualificati di importatori e distributori per paese, settore e profilo d'acquisto. Aziende verificate, report di mercato aggiornati e dati revisionati regolarmente per la tua esportazione."
+        }
+    },
+    "faq": {
+        "page": {
+            "title": "Domande frequenti",
+            "subtitle": "Risposte alle principali domande sui nostri elenchi di importatori e distributori.",
+            "metaTitle": "FAQ",
+            "metaDescription": "Risposte alle domande frequenti sui nostri elenchi di importatori e distributori: qualità dei dati, formati, pagamento e altro ancora."
+        },
+        "_placeholder": "PLACEHOLDER: risposte provvisorie — da rivedere/confermare prima del go-live. La risposta su GDPR/LGPD è volutamente lasciata vuota.",
+        "items": [
+            {
+                "question": "Da dove provengono i dati e come vengono verificati?",
+                "answer": "[PLACEHOLDER] I nostri dati provengono da fonti accuratamente valutate e vengono verificati manualmente prima di essere inseriti nei nostri elenchi."
+            },
+            {
+                "question": "Quanto sono aggiornati gli elenchi?",
+                "answer": "[PLACEHOLDER] Tutti gli elenchi vengono mantenuti regolarmente: nuovi attori del mercato vengono aggiunti, le aziende inattive vengono rimosse e le schede esistenti vengono revisionate."
+            },
+            {
+                "question": "In quali formati ricevo i dati?",
+                "answer": "[PLACEHOLDER] Ricevi i file in formato CSV o Excel — pronti all'uso per il tuo processo commerciale e compatibili con i principali CRM."
+            },
+            {
+                "question": "Posso vedere i dati prima di acquistare?",
+                "answer": "[PLACEHOLDER] Sì, ogni elenco include un'anteprima con esempi di schede anonimizzate."
+            },
+            {
+                "question": "Come funziona il pagamento?",
+                "answer": "[PLACEHOLDER] Il pagamento avviene tramite un processo sicuro PayPal. Dopo la conferma, i file sono disponibili per il download immediatamente."
+            },
+            {
+                "question": "Per quali paesi e settori sono disponibili gli elenchi?",
+                "answer": "[PLACEHOLDER] Offriamo elenchi per singoli paesi e intere aree linguistiche, oltre a elenchi specifici per settore per numerose industrie. L'offerta viene ampliata continuamente."
+            },
+            {
+                "question": "Cosa comprende il rapporto di mercato incluso nell'elenco?",
+                "answer": "[PLACEHOLDER] Ogni elenco include un rapporto di mercato aggiornato con informazioni sulla situazione del mercato e della concorrenza, le opportunità di vendita e consigli pratici per avvicinare potenziali partner commerciali."
+            },
+            {
+                "question": "Cosa dire della protezione dei dati (GDPR/LGPD)?",
+                "answer": ""
+            }
+        ],
+        "form": {
+            "title": "Non hai trovato la tua domanda?",
+            "subtitle": "Inviaci la tua domanda: ti risponderemo rapidamente.",
+            "name": "Nome",
+            "company": "Azienda (facoltativo)",
+            "email": "E-mail",
+            "subject": "Oggetto",
+            "message": "La tua domanda",
+            "consent": "Ho letto e accetto la <link>Informativa sulla privacy</link>.",
+            "submit": "Invia la domanda",
+            "submitting": "Invio in corso…",
+            "success": "Grazie! Abbiamo ricevuto la tua domanda.",
+            "error": "Si è verificato un errore. Riprova.",
+            "rateLimited": "Troppi tentativi. Riprova più tardi.",
+            "errors": {
+                "name": "Inserisci il tuo nome.",
+                "email": "Inserisci un indirizzo e-mail valido.",
+                "subject": "Inserisci un oggetto.",
+                "message": "La tua domanda deve contenere almeno 10 caratteri.",
+                "consent": "Devi accettare l'Informativa sulla privacy."
+            }
+        }
+    },
+    "cart": {
+        "title": "Il tuo carrello",
+        "items": "{count, plural, one {# articolo} other {# articoli}}",
+        "empty": "Il tuo carrello è vuoto",
+        "emptyHint": "Aggiungi elenchi di lead per iniziare",
+        "seeCatalog": "Vedi il catalogo",
+        "subtotal": "Subtotale",
+        "review": "Verifica il carrello",
+        "continue": "Continua lo shopping",
+        "securePayment": "Pagamento sicuro tramite PayPal",
+        "leads": "{count} lead",
+        "addToCart": "Aggiungi al carrello",
+        "openCart": "Apri il carrello",
+        "openCartWithItems": "Apri il carrello, {count, plural, one {# articolo} other {# articoli}}",
+        "removeItem": "Rimuovi \"{name}\" dal carrello",
+        "pageTitle": "Verifica il carrello",
+        "pageSubtitle": "{count, plural, one {# elenco selezionato} other {# elenchi selezionati}} con {leads} lead totali.",
+        "summaryTitle": "Riepilogo dell'ordine",
+        "summarySubtitle": "Verifica gli articoli prima di procedere al pagamento.",
+        "totalLeads": "Totale lead",
+        "total": "Totale",
+        "checkout": "Completa l'acquisto",
+        "clear": "Svuota il carrello",
+        "emptyDesc": "Scegli un elenco dal catalogo per verificare prezzo, copertura e formato prima di completare l'acquisto.",
+        "formats": "CSV ed Excel",
+        "remove": "Rimuovi",
+        "trustPaypal": "Pagamento elaborato da PayPal",
+        "trustSaved": "Ordine salvato nel tuo account",
+        "trustDownload": "Download sbloccato dopo la conferma",
+        "trustReview": "Verifichi l'ordine prima di pagare"
+    },
+    "catalog": {
+        "metaTitle": "Catalogo elenchi",
+        "badge": "Database pronti per la prospezione B2B",
+        "heroTitle": "Trova l'elenco giusto prima di perdere tempo nella prospezione manuale",
+        "heroSubtitle": "Filtra per mercato, settore e categoria per acquistare solo i dati rilevanti per la tua campagna.",
+        "quickSearch": "Ricerca rapida",
+        "searchPlaceholder": "Cerca per nome, paese, settore o descrizione",
+        "searchButton": "Cerca",
+        "trustCompareTitle": "Confronta",
+        "trustCompareDesc": "Consulta volume, paesi e settori prima di decidere.",
+        "trustBuyTitle": "Acquista in sicurezza",
+        "trustBuyDesc": "Pagamento tramite PayPal e ordine salvato nel tuo account.",
+        "trustDownloadTitle": "Scarica immediatamente",
+        "trustDownloadDesc": "Accedi al CSV o Excel non appena il pagamento è confermato.",
+        "availableLists": "Elenchi disponibili",
+        "results": "{count, plural, one {# risultato} other {# risultati}} per i criteri attuali",
+        "pageOf": "Pagina {page} di {pages}",
+        "statListsFound": "Elenchi trovati",
+        "statLeadsOnPage": "Lead in questa pagina",
+        "statActiveFilters": "Filtri attivi",
+        "statCurrentPage": "Pagina attuale",
+        "emptyTitle": "Nessun elenco corrisponde ai filtri attuali",
+        "emptyDesc": "Rimuovi alcuni filtri o cerca un mercato più ampio per trovare elenchi disponibili.",
+        "clearFilters": "Reimposta i filtri",
+        "featured": "In evidenza",
+        "companies": "{count} aziende",
+        "verifiedEmails": "E-mail verificate",
+        "updatedAt": "Aggiornato il {date}",
+        "seeDetails": "Vedi dettagli",
+        "perLead": "{price} per lead",
+        "defaultDescription": "Database pronto per la prospezione con aziende qualificate.",
+        "searchLabel": "Cerca elenchi nel catalogo",
+        "filtersTitle": "Filtri",
+        "filtersSubtitle": "Affina il catalogo in base al profilo dell'elenco.",
+        "filtersOpen": "Filtri",
+        "filtersActive": "{count, plural, one {# filtro attivo} other {# filtri attivi}}",
+        "filterCategory": "Categoria",
+        "filterCountries": "Paesi",
+        "filterIndustries": "Settori",
+        "loadErrorTitle": "Impossibile caricare il catalogo",
+        "loadErrorDesc": "Si è verificato un errore durante il recupero degli elenchi. Riprova tra un momento.",
+        "loadErrorRetry": "Riprova",
+        "previousPage": "Pagina precedente",
+        "nextPage": "Pagina successiva",
+        "goToPage": "Vai alla pagina {page}",
+        "countries": {
+            "DE": "Germania",
+            "FR": "Francia",
+            "IT": "Italia",
+            "ES": "Spagna",
+            "NL": "Paesi Bassi",
+            "BE": "Belgio",
+            "PL": "Polonia",
+            "SE": "Svezia",
+            "AT": "Austria",
+            "CH": "Svizzera",
+            "PT": "Portogallo",
+            "GB": "Regno Unito",
+            "US": "Stati Uniti",
+            "CN": "Cina",
+            "JP": "Giappone",
+            "BR": "Brasile"
+        },
+        "industries": {
+            "food": "Alimentare & bevande",
+            "tech": "Tecnologia",
+            "fashion": "Moda & tessile",
+            "automotive": "Automotive",
+            "health": "Salute & farmaceutico",
+            "construction": "Edilizia",
+            "retail": "Commercio al dettaglio",
+            "industrial": "Industriale"
+        },
+        "categories": {
+            "importers": "Importatori",
+            "exporters": "Esportatori",
+            "manufacturers": "Produttori",
+            "distributors": "Distributori",
+            "retailers": "Rivenditori",
+            "wholesalers": "Grossisti"
+        }
+    },
+    "listing": {
+        "back": "Torna al catalogo",
+        "featured": "In evidenza",
+        "readyBadge": "Dati pronti per il download",
+        "quickLeads": "Lead",
+        "quickPricePerLead": "Prezzo/lead",
+        "quickCountries": "Paesi",
+        "quickUpdated": "Aggiornato",
+        "coverageTitle": "Copertura dell'elenco",
+        "coverageSubtitle": "Usa questi indicatori per verificare se il database è adatto alla tua campagna.",
+        "fieldName": "Nome",
+        "fieldCountries": "Paesi",
+        "fieldTotalLeads": "Totale lead",
+        "fieldIndustries": "Settori",
+        "fieldPricePerLead": "Prezzo per lead",
+        "fieldUpdatedAt": "Aggiornato il",
+        "notInformed": "Non specificato",
+        "previewTitle": "Anteprima dei dati",
+        "previewSubtitle": "Campione di {count} schede per verificare struttura e qualità prima dell'acquisto.",
+        "includedTitle": "Cosa è incluso",
+        "includedCompany": "Nome dell'azienda",
+        "includedEmail": "E-mail aziendale verificata",
+        "includedPhone": "Telefono e contatto quando disponibili",
+        "includedLocation": "Paese, città e sito web",
+        "includedIndustry": "Settore di attività",
+        "includedFormats": "File CSV ed Excel",
+        "perLead": "{price} per lead",
+        "leadsIncluded": "{count} lead inclusi",
+        "oneOffNote": "Acquisto una tantum, senza abbonamento. L'accesso resta disponibile nell'area I miei acquisti.",
+        "beforeBuyNote": "Prima di acquistare, verifica la copertura, l'anteprima dei dati e il prezzo per lead. Dopo l'approvazione del pagamento, il download diventa disponibile nel tuo account.",
+        "benefitSecure": "Pagamento sicuro tramite PayPal",
+        "benefitImmediate": "Download immediato dopo la conferma",
+        "benefitFresh": "Dati aggiornati prima della pubblicazione",
+        "benefitRecorded": "Acquisto registrato nel tuo account",
+        "buyNow": "Acquista ora",
+        "signInToBuy": "Accedi e acquista",
+        "notFound": "Elenco non trovato",
+        "metaFallbackDescription": "Elenco di {count} lead qualificati."
+    },
+    "checkout": {
+        "stepCart": "Carrello",
+        "stepPayment": "Pagamento",
+        "stepDownload": "Download",
+        "backToCart": "Torna al carrello",
+        "title": "Pagamento",
+        "subtitle": "Completa il pagamento per sbloccare {count} lead in CSV ed Excel.",
+        "secureTitle": "Pagamento sicuro",
+        "secureDesc": "PayPal elabora il pagamento; il sistema sblocca l'acquisto automaticamente dopo la conferma.",
+        "redirectNote": "Sarai reindirizzato nel percorso PayPal stesso per autorizzare la transazione.",
+        "trustSecureTitle": "Sicuro",
+        "trustSecureText": "Pagamento esterno tramite PayPal.",
+        "trustRecordedTitle": "Registrato",
+        "trustRecordedText": "Ordine salvato per un accesso futuro.",
+        "trustImmediateTitle": "Immediato",
+        "trustImmediateText": "Download sbloccato dopo l'approvazione.",
+        "summaryTitle": "Riepilogo",
+        "summaryItems": "{count, plural, one {# elenco} other {# elenchi}} nell'ordine",
+        "totalLeads": "Totale lead",
+        "total": "Totale",
+        "unavailable": "Il pagamento è temporaneamente non disponibile. Riprova tra qualche minuto.",
+        "sessionExpiredPay": "La tua sessione è scaduta. Accedi di nuovo per completare l'acquisto.",
+        "sessionExpiredOrder": "La tua sessione è scaduta. Accedi di nuovo per vedere l'ordine.",
+        "createFailed": "Impossibile avviare il pagamento. Riprova.",
+        "captureFailed": "Non siamo riusciti a confermare il pagamento. Se l'importo è stato addebitato, l'ordine apparirà in I miei acquisti entro pochi minuti.",
+        "paymentConfirmed": "Pagamento confermato!",
+        "paypalError": "Errore durante l'elaborazione del pagamento",
+        "successMetaTitle": "Acquisto confermato",
+        "successMetaDescription": "Il tuo acquisto è stato confermato con successo",
+        "successTitle": "Acquisto confermato",
+        "successSubtitle": "Il tuo ordine è stato approvato e gli elenchi sono ora disponibili per il download.",
+        "successOrder": "Ordine",
+        "successLeadsReleased": "Lead sbloccati",
+        "successTotalPaid": "Totale pagato",
+        "successNextDownloadTitle": "Scarica",
+        "successNextDownloadText": "CSV o Excel in I miei acquisti.",
+        "successNextProspectTitle": "Prospezione",
+        "successNextProspectText": "Importa i contatti nel tuo CRM o strumento di prospezione.",
+        "successNextReceiptTitle": "Conferma",
+        "successNextReceiptText": "La ricevuta è stata inviata al tuo indirizzo e-mail.",
+        "successCtaPurchases": "Vai ai miei acquisti",
+        "successCtaContinue": "Continua lo shopping",
+        "cancelMetaTitle": "Acquisto annullato",
+        "cancelMetaDescription": "Il tuo acquisto è stato annullato",
+        "cancelTitle": "Pagamento non completato",
+        "cancelSubtitle": "Nessun addebito è stato effettuato. Puoi verificare il tuo carrello o riprovare il pagamento.",
+        "cancelRetry": "Riprova",
+        "cancelReviewCart": "Verifica il carrello",
+        "cancelBackToCatalog": "Torna al catalogo"
+    },
+    "purchases": {
+        "metaTitle": "I miei acquisti",
+        "metaDescription": "Accedi ai tuoi elenchi di lead e scaricali",
+        "back": "Torna al catalogo",
+        "badge": "Download e cronologia ordini",
+        "title": "I miei acquisti",
+        "subtitle": "Scarica i tuoi elenchi, controlla lo stato degli ordini e usa i file per alimentare le tue campagne nel tuo CRM.",
+        "magicLinkNotice": "Accesso tramite link magico, valido 24 ore.",
+        "statPurchases": "Acquisti",
+        "statLists": "Elenchi",
+        "statLeads": "Lead",
+        "statSpent": "Investito",
+        "nextStepsTitle": "Prossimi passi",
+        "guidanceExcelTitle": "Scarica in Excel",
+        "guidanceExcelText": "Usa Excel quando devi verificare le colonne prima dell'importazione.",
+        "guidanceCrmTitle": "Importa nel tuo CRM",
+        "guidanceCrmText": "Crea una lista di lavoro e monitora i follow-up per campagna.",
+        "guidanceMarketTitle": "Dai priorità per mercato",
+        "guidanceMarketText": "Inizia dai paesi e settori più vicini alla tua offerta.",
+        "loading": "Caricamento dei tuoi acquisti...",
+        "invalidTokenTitle": "Link non valido o scaduto",
+        "invalidTokenExpired": "Questo link è scaduto. Richiedi un nuovo accesso dalla tua area acquisti.",
+        "invalidTokenGeneric": "Questo link non è valido o è già stato utilizzato.",
+        "goToCatalog": "Vai al catalogo",
+        "emptyTitle": "Nessun acquisto al momento",
+        "emptyDescription": "Esplora il catalogo, seleziona un database adatto alla tua campagna e torna qui per scaricare i file.",
+        "emptyCta": "Esplora il catalogo",
+        "browseMoreLists": "Vedi altri elenchi"
+    }
+}

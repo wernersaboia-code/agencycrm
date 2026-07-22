@@ -42,8 +42,8 @@ describe("locales", () => {
         expect(ogLocaleFor("en")).toBe("en_US")
     })
 
-    it("publica pt, de, en, es e fr — os que têm messages/ próprio", () => {
-        expect(PUBLISHED_LOCALES).toEqual(["pt", "de", "en", "es", "fr"])
+    it("publica todos os locales roteáveis exceto o árabe", () => {
+        expect(PUBLISHED_LOCALES).toEqual(["pt", "de", "en", "es", "fr", "it", "nl"])
     })
 })
 
@@ -57,9 +57,9 @@ describe("resolveMessagesLocale", () => {
     // só conhecia "de" — todo locale não-alemão, publicado ou não, caía em
     // pt. "en" ficaria preso nesse fallback para sempre, mesmo depois de
     // messages/en.json existir, até alguém lembrar de crescer a ternária.
+    // Depois de it/nl entrarem em PUBLISHED_LOCALES, só o árabe segue sem
+    // tradução própria entre os locales roteáveis.
     it("cai no padrão quando o locale não tem tradução própria", () => {
-        expect(resolveMessagesLocale("it")).toBe("pt")
-        expect(resolveMessagesLocale("nl")).toBe("pt")
         expect(resolveMessagesLocale("ar")).toBe("pt")
     })
 

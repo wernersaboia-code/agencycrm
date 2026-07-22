@@ -13,7 +13,7 @@ export const DEFAULT_LOCALE: Locale = "pt"
 // para não submeter páginas em português como se fossem en-US, es-ES etc.
 // As fases 3 e 4 do projeto devem acrescentar locales aqui à medida que os
 // respectivos arquivos de messages/ forem criados.
-export const PUBLISHED_LOCALES: readonly Locale[] = ["pt", "de", "en", "es", "fr"]
+export const PUBLISHED_LOCALES: readonly Locale[] = ["pt", "de", "en", "es", "fr", "it", "nl"]
 
 const RTL_LOCALES = new Set<Locale>(["ar"])
 

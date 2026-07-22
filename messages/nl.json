@@ -1,0 +1,487 @@
+{
+    "common": {
+        "brand": "Easy Prospect"
+    },
+    "nav": {
+        "catalog": "Catalogus",
+        "howItWorks": "Hoe het werkt",
+        "blog": "Blog",
+        "faq": "FAQ",
+        "login": "Inloggen",
+        "myAccount": "Mijn account",
+        "myPurchases": "Mijn aankopen",
+        "adminArea": "Beheeromgeving",
+        "signOut": "Uitloggen",
+        "signOutSuccess": "Uitloggen gelukt",
+        "openMenu": "Menu openen",
+        "language": "Taal",
+        "theme": "Thema",
+        "themeLight": "Licht",
+        "themeDark": "Donker",
+        "themeSystem": "Systeem"
+    },
+    "footer": {
+        "about": "Gekwalificeerde handelspartners voor internationale handel, om uw bedrijf te laten groeien.",
+        "productTitle": "Product",
+        "catalog": "Catalogus",
+        "howItWorks": "Hoe het werkt",
+        "blog": "Blog",
+        "faq": "FAQ",
+        "accountTitle": "Account",
+        "myPurchases": "Mijn aankopen",
+        "login": "Inloggen",
+        "legalTitle": "Juridische informatie",
+        "terms": "Gebruiksvoorwaarden",
+        "privacy": "Privacy",
+        "contact": "Contact",
+        "copyright": "© {year} Easy Prospect. Alle rechten voorbehouden."
+    },
+    "landing": {
+        "hero": {
+            "badge": "Marketplace voor geverifieerde B2B-handelspartners",
+            "title": "Gekwalificeerde lijsten van importeurs en distributeurs voor uw internationale handel.",
+            "subtitle": "Vind precies de handelspartners die passen bij uw product en exportstrategie.",
+            "ctaPrimary": "Catalogus verkennen",
+            "ctaSecondary": "Hoe het werkt",
+            "trust1": "Direct klaar voor gebruik",
+            "trust2": "Geverifieerde bedrijven",
+            "trust3": "Regelmatig bijgewerkt"
+        },
+        "intro": {
+            "lede": "Onze gekwalificeerde lijsten van importeurs en distributeurs zijn ontwikkeld voor fabrikanten, producenten en merkeigenaren die op zoek zijn naar nieuwe handelspartners in het buitenland.",
+            "p1": "Selecteer op land, sector, taalgebied of inkoopprofiel en ontvang direct bruikbare databases die regelmatig worden bijgewerkt.",
+            "p2": "Onze lijsten bevatten uitsluitend zorgvuldig geverifieerde bedrijven met een aantoonbare interesse in het opnemen van nieuwe producten en buitenlandse merken in hun assortiment. Zo bespaart u lang zoekwerk en vermijdt u talloze contacten met bedrijven die geen interesse hebben in nieuwe leveranciers."
+        },
+        "zielmaerkte": {
+            "eyebrow": "Doelmarkten",
+            "title": "Een nauwkeurige selectie op basis van uw doelmarkten.",
+            "intro": "U ontvangt lijsten voor afzonderlijke landen of hele taalgebieden, bijvoorbeeld:",
+            "note": "We bieden ook sectorspecifieke lijsten aan voor tal van industrieën en productgroepen. Stap voor stap breiden we ons aanbod uit met gekwalificeerde lijsten voor markten over de hele wereld.",
+            "regions": [
+                {
+                    "flag": "DE",
+                    "title": "Duitstalige landen",
+                    "countries": "DE · AT · CH"
+                },
+                {
+                    "flag": "FR",
+                    "title": "Franstalige landen",
+                    "countries": "FR · BE · CH · LU"
+                },
+                {
+                    "flag": "ES",
+                    "title": "Spaanstalige landen",
+                    "countries": "ES · MX · AR · CL …"
+                },
+                {
+                    "flag": "PT",
+                    "title": "Portugeestalige landen",
+                    "countries": "PT · BR · AO …"
+                },
+                {
+                    "flag": "SE",
+                    "title": "Scandinavische landen",
+                    "countries": "SE · NO · DK · FI · IS"
+                }
+            ]
+        },
+        "einkaufsprofile": {
+            "eyebrow": "Inkoopprofielen",
+            "title": "Niet alle importeurs zijn gelijk.",
+            "intro": "Onze databases onderscheiden verschillende inkoopprofielen:",
+            "close": "Zo richt u uw commerciële activiteiten precies op de partners die bij uw product passen.",
+            "cards": [
+                {
+                    "title": "Wereldwijde inkoop",
+                    "body": "Bedrijven die wereldwijd op zoek zijn naar nieuwe producten en leveranciers."
+                },
+                {
+                    "title": "EU-focus",
+                    "body": "Importeurs die uitsluitend binnen de Europese Unie inkopen."
+                },
+                {
+                    "title": "Mercosur-gericht",
+                    "body": "Bedrijven die bij voorkeur uit Mercosur importeren."
+                },
+                {
+                    "title": "Regionale specialisten",
+                    "body": "Specialisten met duidelijk afgebakende inkoopmarkten."
+                }
+            ]
+        },
+        "lieferumfang": {
+            "eyebrow": "Wat is inbegrepen",
+            "title": "Meer dan alleen adreslijsten.",
+            "reportTitle": "Actueel marktrapport inbegrepen",
+            "reportBody": "Elke lijst bevat een actueel marktrapport met waardevolle informatie over de sector en verkoopkansen in de doelmarkt.",
+            "listIntro": "U ontvangt ook praktische tips over de volgende onderwerpen:",
+            "close": "Zo vergroot u vanaf het eerste contact de slagingskans van uw exportcampagne.",
+            "items": [
+                "Actuele markt- en concurrentiesituatie",
+                "Verkoop- en distributiekansen",
+                "Bijzonderheden van elke markt",
+                "Eisen van potentiële handelspartners",
+                "Welke informatie en documenten importeurs verwachten vóór een samenwerking",
+                "Hoe u potentiële distributeurs professioneel benadert",
+                "Welke verkoopargumenten het meest kansrijk zijn bij het eerste contact"
+            ]
+        },
+        "daten": {
+            "eyebrow": "Datakwaliteit",
+            "title": "Regelmatig bijgewerkte gegevens.",
+            "body": "Alle lijsten worden voortdurend onderhouden en bijgewerkt. Nieuwe marktspelers worden toegevoegd, inactieve bedrijven worden verwijderd en bestaande gegevens worden regelmatig herzien. Zo werkt u altijd met actuele en betrouwbare informatie."
+        },
+        "vorteil": {
+            "eyebrow": "Uw voordeel",
+            "title": "Bespaar tijd en laat uw commercieel succes groeien.",
+            "body": "In plaats van weken of maanden te besteden aan het zoeken naar geschikte importeurs en distributeurs, ontvangt u direct een gekwalificeerde selectie van potentiële handelspartners die aansluiten bij uw product en doelmarkt. Zo kunt u zich concentreren op wat echt telt: het succesvol opbouwen van uw internationale handel."
+        },
+        "howItWorks": {
+            "eyebrow": "Hoe het werkt",
+            "title": "Van zoekopdracht naar kant-en-klaar bestand in drie stappen.",
+            "steps": [
+                {
+                    "title": "Filter",
+                    "body": "Blader op land, taalgebied, sector en inkoopprofiel om de lijsten te vinden die passen bij uw campagne."
+                },
+                {
+                    "title": "Koop",
+                    "body": "Controleer het volume, de prijs per lead en de details van de lijst voordat u uw bestelling afrondt via een veilige betaling."
+                },
+                {
+                    "title": "Download",
+                    "body": "Na bevestiging krijgt u toegang tot de bestanden in CSV- of Excel-formaat en kunt u ze integreren in uw verkoopproces."
+                }
+            ]
+        },
+        "zahlen": {
+            "_placeholder": "PLACEHOLDER: fictieve cijfers uit de handoff — te vervangen door echte gegevens of te koppelen aan de backend vóór livegang.",
+            "eyebrow": "Cijfers die tellen",
+            "title": "Vertrouwen gebouwd op resultaten.",
+            "stats": [
+                {
+                    "value": "6+",
+                    "label": "verkochte lijsten"
+                },
+                {
+                    "value": "100%",
+                    "label": "geverifieerde datakwaliteit"
+                },
+                {
+                    "value": "24/7",
+                    "label": "ondersteuning in het Portugees"
+                }
+            ]
+        },
+        "blog": {
+            "eyebrow": "Meer weten",
+            "title": "Marktanalyses, sectorrapporten en exportkansen.",
+            "intro": "Op onze blog publiceren we regelmatig marktanalyses, sectorrapporten en informatie over exportkansen, handelstrends en verkoopmogelijkheden in verschillende landen en regio's. Zo blijft u altijd op de hoogte van de ontwikkelingen op de internationale markt."
+        },
+        "cta": {
+            "title": "Klaar om uw internationale handel te laten groeien?",
+            "body": "Verken de catalogus en vind gekwalificeerde importeurs en distributeurs die aansluiten bij uw product en doelmarkt.",
+            "button": "Catalogus verkennen"
+        },
+        "meta": {
+            "title": "Gekwalificeerde lijsten van importeurs en distributeurs voor uw internationale handel",
+            "description": "Gekwalificeerde lijsten van importeurs en distributeurs per land, sector en inkoopprofiel. Geverifieerde bedrijven, actuele marktrapporten en regelmatig herziene gegevens voor uw export."
+        }
+    },
+    "faq": {
+        "page": {
+            "title": "Veelgestelde vragen",
+            "subtitle": "Antwoorden op de belangrijkste vragen over onze lijsten van importeurs en distributeurs.",
+            "metaTitle": "FAQ",
+            "metaDescription": "Antwoorden op veelgestelde vragen over onze lijsten van importeurs en distributeurs: datakwaliteit, formaten, betaling en meer."
+        },
+        "_placeholder": "PLACEHOLDER: voorlopige antwoorden — te herzien/bevestigen vóór livegang. Het antwoord over AVG/LGPD is bewust leeg gelaten.",
+        "items": [
+            {
+                "question": "Waar komen de gegevens vandaan en hoe worden ze geverifieerd?",
+                "answer": "[PLACEHOLDER] Onze gegevens zijn afkomstig uit zorgvuldig beoordeelde bronnen en worden handmatig geverifieerd voordat ze in onze lijsten worden opgenomen."
+            },
+            {
+                "question": "Hoe actueel zijn de lijsten?",
+                "answer": "[PLACEHOLDER] Alle lijsten worden regelmatig onderhouden: nieuwe marktspelers worden toegevoegd, inactieve bedrijven worden verwijderd en bestaande gegevens worden herzien."
+            },
+            {
+                "question": "In welke formaten ontvang ik de gegevens?",
+                "answer": "[PLACEHOLDER] U ontvangt de bestanden in CSV- of Excel-formaat — direct bruikbaar voor uw verkoopproces en compatibel met de belangrijkste CRM-systemen."
+            },
+            {
+                "question": "Kan ik de gegevens bekijken voordat ik koop?",
+                "answer": "[PLACEHOLDER] Ja, elke lijst bevat een voorbeeld met geanonimiseerde voorbeeldgegevens."
+            },
+            {
+                "question": "Hoe werkt de betaling?",
+                "answer": "[PLACEHOLDER] De betaling verloopt via een beveiligd PayPal-proces. Na bevestiging zijn de bestanden direct beschikbaar om te downloaden."
+            },
+            {
+                "question": "Voor welke landen en sectoren zijn lijsten beschikbaar?",
+                "answer": "[PLACEHOLDER] We bieden lijsten aan voor afzonderlijke landen en hele taalgebieden, evenals sectorspecifieke lijsten voor tal van industrieën. Het aanbod wordt voortdurend uitgebreid."
+            },
+            {
+                "question": "Wat staat er in het marktrapport bij de lijst?",
+                "answer": "[PLACEHOLDER] Elke lijst bevat een actueel marktrapport met informatie over de markt- en concurrentiesituatie, verkoopkansen en praktische tips voor het benaderen van potentiële handelspartners."
+            },
+            {
+                "question": "Hoe zit het met gegevensbescherming (AVG/LGPD)?",
+                "answer": ""
+            }
+        ],
+        "form": {
+            "title": "Uw vraag niet gevonden?",
+            "subtitle": "Stuur ons uw vraag — we reageren snel.",
+            "name": "Naam",
+            "company": "Bedrijf (optioneel)",
+            "email": "E-mail",
+            "subject": "Onderwerp",
+            "message": "Uw vraag",
+            "consent": "Ik heb het <link>Privacybeleid</link> gelezen en ga ermee akkoord.",
+            "submit": "Vraag versturen",
+            "submitting": "Bezig met versturen…",
+            "success": "Bedankt! We hebben uw vraag ontvangen.",
+            "error": "Er is een fout opgetreden. Probeer het opnieuw.",
+            "rateLimited": "Te veel pogingen. Probeer het later opnieuw.",
+            "errors": {
+                "name": "Vul uw naam in.",
+                "email": "Vul een geldig e-mailadres in.",
+                "subject": "Vul een onderwerp in.",
+                "message": "Uw vraag moet minimaal 10 tekens bevatten.",
+                "consent": "U moet akkoord gaan met het Privacybeleid."
+            }
+        }
+    },
+    "cart": {
+        "title": "Uw winkelwagen",
+        "items": "{count, plural, one {# item} other {# items}}",
+        "empty": "Uw winkelwagen is leeg",
+        "emptyHint": "Voeg leadlijsten toe om te beginnen",
+        "seeCatalog": "Catalogus bekijken",
+        "subtotal": "Subtotaal",
+        "review": "Winkelwagen controleren",
+        "continue": "Verder winkelen",
+        "securePayment": "Veilig betalen via PayPal",
+        "leads": "{count} leads",
+        "addToCart": "Toevoegen aan winkelwagen",
+        "openCart": "Winkelwagen openen",
+        "openCartWithItems": "Winkelwagen openen, {count, plural, one {# item} other {# items}}",
+        "removeItem": "\"{name}\" uit winkelwagen verwijderen",
+        "pageTitle": "Winkelwagen controleren",
+        "pageSubtitle": "{count, plural, one {# geselecteerde lijst} other {# geselecteerde lijsten}} met in totaal {leads} leads.",
+        "summaryTitle": "Besteloverzicht",
+        "summarySubtitle": "Controleer de items voordat u verdergaat naar de betaling.",
+        "totalLeads": "Totaal aantal leads",
+        "total": "Totaal",
+        "checkout": "Aankoop afronden",
+        "clear": "Winkelwagen leegmaken",
+        "emptyDesc": "Kies een lijst uit de catalogus om prijs, dekking en formaat te controleren voordat u de aankoop afrondt.",
+        "formats": "CSV en Excel",
+        "remove": "Verwijderen",
+        "trustPaypal": "Betaling verwerkt door PayPal",
+        "trustSaved": "Bestelling opgeslagen in uw account",
+        "trustDownload": "Download beschikbaar na bevestiging",
+        "trustReview": "U controleert de bestelling voordat u betaalt"
+    },
+    "catalog": {
+        "metaTitle": "Catalogus met lijsten",
+        "badge": "Kant-en-klare databases voor B2B-prospectie",
+        "heroTitle": "Vind de juiste lijst voordat u tijd verliest aan handmatige prospectie",
+        "heroSubtitle": "Filter op markt, sector en categorie om alleen relevante gegevens voor uw campagne te kopen.",
+        "quickSearch": "Snel zoeken",
+        "searchPlaceholder": "Zoek op naam, land, sector of omschrijving",
+        "searchButton": "Zoeken",
+        "trustCompareTitle": "Vergelijk",
+        "trustCompareDesc": "Bekijk volume, landen en sectoren voordat u beslist.",
+        "trustBuyTitle": "Veilig kopen",
+        "trustBuyDesc": "Betaling via PayPal en bestelling opgeslagen in uw account.",
+        "trustDownloadTitle": "Direct downloaden",
+        "trustDownloadDesc": "Krijg toegang tot CSV of Excel zodra de betaling is bevestigd.",
+        "availableLists": "Beschikbare lijsten",
+        "results": "{count, plural, one {# resultaat} other {# resultaten}} voor de huidige criteria",
+        "pageOf": "Pagina {page} van {pages}",
+        "statListsFound": "Gevonden lijsten",
+        "statLeadsOnPage": "Leads op deze pagina",
+        "statActiveFilters": "Actieve filters",
+        "statCurrentPage": "Huidige pagina",
+        "emptyTitle": "Geen enkele lijst voldoet aan de huidige filters",
+        "emptyDesc": "Verwijder enkele filters of zoek in een bredere markt om beschikbare lijsten te vinden.",
+        "clearFilters": "Filters wissen",
+        "featured": "Uitgelicht",
+        "companies": "{count} bedrijven",
+        "verifiedEmails": "Geverifieerde e-mails",
+        "updatedAt": "Bijgewerkt op {date}",
+        "seeDetails": "Details bekijken",
+        "perLead": "{price} per lead",
+        "defaultDescription": "Kant-en-klare database voor prospectie met gekwalificeerde bedrijven.",
+        "searchLabel": "Zoek lijsten in de catalogus",
+        "filtersTitle": "Filters",
+        "filtersSubtitle": "Verfijn de catalogus op basis van het lijstprofiel.",
+        "filtersOpen": "Filters",
+        "filtersActive": "{count, plural, one {# actief filter} other {# actieve filters}}",
+        "filterCategory": "Categorie",
+        "filterCountries": "Landen",
+        "filterIndustries": "Sectoren",
+        "loadErrorTitle": "Catalogus kan niet worden geladen",
+        "loadErrorDesc": "Er is een fout opgetreden bij het ophalen van de lijsten. Probeer het over een moment opnieuw.",
+        "loadErrorRetry": "Opnieuw proberen",
+        "previousPage": "Vorige pagina",
+        "nextPage": "Volgende pagina",
+        "goToPage": "Ga naar pagina {page}",
+        "countries": {
+            "DE": "Duitsland",
+            "FR": "Frankrijk",
+            "IT": "Italië",
+            "ES": "Spanje",
+            "NL": "Nederland",
+            "BE": "België",
+            "PL": "Polen",
+            "SE": "Zweden",
+            "AT": "Oostenrijk",
+            "CH": "Zwitserland",
+            "PT": "Portugal",
+            "GB": "Verenigd Koninkrijk",
+            "US": "Verenigde Staten",
+            "CN": "China",
+            "JP": "Japan",
+            "BR": "Brazilië"
+        },
+        "industries": {
+            "food": "Voeding & dranken",
+            "tech": "Technologie",
+            "fashion": "Mode & textiel",
+            "automotive": "Automotive",
+            "health": "Gezondheid & farmacie",
+            "construction": "Bouw",
+            "retail": "Detailhandel",
+            "industrial": "Industrieel"
+        },
+        "categories": {
+            "importers": "Importeurs",
+            "exporters": "Exporteurs",
+            "manufacturers": "Fabrikanten",
+            "distributors": "Distributeurs",
+            "retailers": "Retailers",
+            "wholesalers": "Groothandelaren"
+        }
+    },
+    "listing": {
+        "back": "Terug naar catalogus",
+        "featured": "Uitgelicht",
+        "readyBadge": "Gegevens klaar om te downloaden",
+        "quickLeads": "Leads",
+        "quickPricePerLead": "Prijs/lead",
+        "quickCountries": "Landen",
+        "quickUpdated": "Bijgewerkt",
+        "coverageTitle": "Dekking van de lijst",
+        "coverageSubtitle": "Gebruik deze indicatoren om te controleren of de database past bij uw campagne.",
+        "fieldName": "Naam",
+        "fieldCountries": "Landen",
+        "fieldTotalLeads": "Totaal aantal leads",
+        "fieldIndustries": "Sectoren",
+        "fieldPricePerLead": "Prijs per lead",
+        "fieldUpdatedAt": "Bijgewerkt op",
+        "notInformed": "Niet opgegeven",
+        "previewTitle": "Voorbeeld van de gegevens",
+        "previewSubtitle": "Steekproef van {count} records om structuur en kwaliteit te controleren voor aankoop.",
+        "includedTitle": "Wat is inbegrepen",
+        "includedCompany": "Bedrijfsnaam",
+        "includedEmail": "Geverifieerd zakelijk e-mailadres",
+        "includedPhone": "Telefoon en contactpersoon indien beschikbaar",
+        "includedLocation": "Land, stad en website",
+        "includedIndustry": "Bedrijfssector",
+        "includedFormats": "CSV- en Excel-bestand",
+        "perLead": "{price} per lead",
+        "leadsIncluded": "{count} leads inbegrepen",
+        "oneOffNote": "Eenmalige aankoop, zonder abonnement. Toegang blijft beschikbaar in Mijn aankopen.",
+        "beforeBuyNote": "Controleer voor aankoop de dekking, het gegevensvoorbeeld en de prijs per lead. Zodra de betaling is goedgekeurd, wordt de download beschikbaar in uw account.",
+        "benefitSecure": "Veilig betalen via PayPal",
+        "benefitImmediate": "Direct downloaden na bevestiging",
+        "benefitFresh": "Gegevens bijgewerkt vóór publicatie",
+        "benefitRecorded": "Aankoop geregistreerd in uw account",
+        "buyNow": "Nu kopen",
+        "signInToBuy": "Inloggen en kopen",
+        "notFound": "Lijst niet gevonden",
+        "metaFallbackDescription": "Lijst met {count} gekwalificeerde leads."
+    },
+    "checkout": {
+        "stepCart": "Winkelwagen",
+        "stepPayment": "Betaling",
+        "stepDownload": "Download",
+        "backToCart": "Terug naar winkelwagen",
+        "title": "Betaling",
+        "subtitle": "Rond de betaling af om {count} leads in CSV en Excel te ontgrendelen.",
+        "secureTitle": "Veilige betaling",
+        "secureDesc": "PayPal verwerkt de betaling; het systeem ontgrendelt de aankoop automatisch na bevestiging.",
+        "redirectNote": "U wordt doorgestuurd naar het PayPal-proces zelf om de transactie te autoriseren.",
+        "trustSecureTitle": "Veilig",
+        "trustSecureText": "Externe betaling via PayPal.",
+        "trustRecordedTitle": "Geregistreerd",
+        "trustRecordedText": "Bestelling opgeslagen voor toekomstige toegang.",
+        "trustImmediateTitle": "Direct",
+        "trustImmediateText": "Download ontgrendeld na goedkeuring.",
+        "summaryTitle": "Overzicht",
+        "summaryItems": "{count, plural, one {# lijst} other {# lijsten}} in de bestelling",
+        "totalLeads": "Totaal aantal leads",
+        "total": "Totaal",
+        "unavailable": "Betalen is tijdelijk niet beschikbaar. Probeer het over enkele minuten opnieuw.",
+        "sessionExpiredPay": "Uw sessie is verlopen. Log opnieuw in om de aankoop af te ronden.",
+        "sessionExpiredOrder": "Uw sessie is verlopen. Log opnieuw in om de bestelling te bekijken.",
+        "createFailed": "Betaling kan niet worden gestart. Probeer het opnieuw.",
+        "captureFailed": "We konden de betaling niet bevestigen. Als het bedrag is afgeschreven, verschijnt de bestelling binnen enkele minuten in Mijn aankopen.",
+        "paymentConfirmed": "Betaling bevestigd!",
+        "paypalError": "Fout bij het verwerken van de betaling",
+        "successMetaTitle": "Aankoop bevestigd",
+        "successMetaDescription": "Uw aankoop is succesvol bevestigd",
+        "successTitle": "Aankoop bevestigd",
+        "successSubtitle": "Uw bestelling is goedgekeurd en de lijsten zijn nu beschikbaar om te downloaden.",
+        "successOrder": "Bestelling",
+        "successLeadsReleased": "Ontgrendelde leads",
+        "successTotalPaid": "Totaal betaald",
+        "successNextDownloadTitle": "Downloaden",
+        "successNextDownloadText": "CSV of Excel in Mijn aankopen.",
+        "successNextProspectTitle": "Prospectie",
+        "successNextProspectText": "Importeer de contacten in uw CRM of prospectietool.",
+        "successNextReceiptTitle": "Bevestiging",
+        "successNextReceiptText": "De ontvangstbevestiging is naar uw e-mailadres gestuurd.",
+        "successCtaPurchases": "Naar mijn aankopen",
+        "successCtaContinue": "Verder winkelen",
+        "cancelMetaTitle": "Aankoop geannuleerd",
+        "cancelMetaDescription": "Uw aankoop is geannuleerd",
+        "cancelTitle": "Betaling niet afgerond",
+        "cancelSubtitle": "Er is geen bedrag afgeschreven. U kunt uw winkelwagen controleren of de betaling opnieuw proberen.",
+        "cancelRetry": "Opnieuw proberen",
+        "cancelReviewCart": "Winkelwagen controleren",
+        "cancelBackToCatalog": "Terug naar catalogus"
+    },
+    "purchases": {
+        "metaTitle": "Mijn aankopen",
+        "metaDescription": "Toegang tot uw leadlijsten en deze downloaden",
+        "back": "Terug naar catalogus",
+        "badge": "Downloads en bestelgeschiedenis",
+        "title": "Mijn aankopen",
+        "subtitle": "Download uw lijsten, bekijk de status van bestellingen en gebruik de bestanden om uw campagnes in uw CRM te voeden.",
+        "magicLinkNotice": "Toegang via magische link, 24 uur geldig.",
+        "statPurchases": "Aankopen",
+        "statLists": "Lijsten",
+        "statLeads": "Leads",
+        "statSpent": "Geïnvesteerd",
+        "nextStepsTitle": "Volgende stappen",
+        "guidanceExcelTitle": "Download als Excel",
+        "guidanceExcelText": "Gebruik Excel wanneer u kolommen wilt controleren vóór het importeren.",
+        "guidanceCrmTitle": "Importeer in uw CRM",
+        "guidanceCrmText": "Maak een werklijst aan en volg opvolgacties per campagne.",
+        "guidanceMarketTitle": "Prioriteer per markt",
+        "guidanceMarketText": "Begin met de landen en sectoren die het dichtst bij uw aanbod liggen.",
+        "loading": "Uw aankopen worden geladen...",
+        "invalidTokenTitle": "Ongeldige of verlopen link",
+        "invalidTokenExpired": "Deze link is verlopen. Vraag nieuwe toegang aan vanuit uw aankopenoverzicht.",
+        "invalidTokenGeneric": "Deze link is niet geldig of is al gebruikt.",
+        "goToCatalog": "Naar de catalogus",
+        "emptyTitle": "Nog geen aankopen",
+        "emptyDescription": "Verken de catalogus, selecteer een database die past bij uw campagne en kom hier terug om de bestanden te downloaden.",
+        "emptyCta": "Catalogus verkennen",
+        "browseMoreLists": "Meer lijsten bekijken"
+    }
+}

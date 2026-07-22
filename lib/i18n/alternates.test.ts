@@ -9,9 +9,9 @@ describe("alternatesFor", () => {
         expect(languages["x-default"]).toMatch(/\/catalog$/)
     })
 
-    it("não anuncia locale roteável mas não publicado (ex.: it)", () => {
+    it("não anuncia locale roteável mas não publicado (ex.: ar)", () => {
         const { languages } = alternatesFor("/catalog")
-        expect(languages["it-IT"]).toBeUndefined()
+        expect(languages["ar"]).toBeUndefined()
     })
 
     it("não prefixa o idioma padrão", () => {
