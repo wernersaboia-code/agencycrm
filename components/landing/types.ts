@@ -1,8 +1,9 @@
-export type LandingLocale = "pt" | "de"
+export type LandingLocale = "pt" | "de" | "en"
 
 // Temporário até a fase 3 trazer traduções da landing para os demais idiomas:
-// hoje só existe conteúdo em pt e de, então qualquer outro locale de rota
-// (en, es, fr, ar, it, nl) cai no padrão pt em vez de quebrar o tipo.
+// hoje só existe conteúdo em pt, de e en, então qualquer outro locale de rota
+// (es, fr, ar, it, nl) cai no padrão pt em vez de quebrar o tipo.
 export function toLandingLocale(locale: string): LandingLocale {
-    return locale === "de" ? "de" : "pt"
+    if (locale === "de" || locale === "en") return locale
+    return "pt"
 }

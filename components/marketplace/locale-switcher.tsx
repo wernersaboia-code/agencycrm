@@ -3,7 +3,7 @@
 import { Globe2 } from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
 import { usePathname, useRouter } from "@/lib/i18n/navigation"
-import { LOCALES, type Locale } from "@/lib/i18n/locales"
+import { PUBLISHED_LOCALES, type Locale } from "@/lib/i18n/locales"
 import { Button } from "@/components/ui/button"
 import {
     DropdownMenu,
@@ -34,7 +34,11 @@ export function LocaleSwitcher() {
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-                {LOCALES.map((l) => (
+                {/* PUBLISHED_LOCALES, não LOCALES: um locale roteável sem
+                    tradução própria (ex.: es, fr, ar) cai no fallback para pt
+                    (ver i18n/request.ts) — oferecê-lo aqui pareceria trocar de
+                    idioma e devolver o mesmo texto em português. */}
+                {PUBLISHED_LOCALES.map((l) => (
                     <DropdownMenuItem
                         key={l}
                         onClick={() => switchTo(l)}

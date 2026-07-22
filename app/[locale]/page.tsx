@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { getTranslations } from "next-intl/server"
 import { alternatesFor } from "@/lib/i18n/alternates"
-import type { Locale } from "@/lib/i18n/locales"
+import { ogLocaleFor, type Locale } from "@/lib/i18n/locales"
 import { toLandingLocale } from "@/components/landing/types"
 import { HeroSection } from "@/components/landing/hero-section"
 import { IntroSection } from "@/components/landing/intro-section"
@@ -28,7 +28,7 @@ export async function generateMetadata({
         openGraph: {
             title: t("title"),
             description: t("description"),
-            locale: "pt_BR",
+            locale: ogLocaleFor(locale as Locale),
         },
     }
 }

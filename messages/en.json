@@ -1,0 +1,487 @@
+{
+    "common": {
+        "brand": "Easy Prospect"
+    },
+    "nav": {
+        "catalog": "Catalog",
+        "howItWorks": "How it works",
+        "blog": "Blog",
+        "faq": "FAQ",
+        "login": "Sign in",
+        "myAccount": "My account",
+        "myPurchases": "My purchases",
+        "adminArea": "Admin area",
+        "signOut": "Sign out",
+        "signOutSuccess": "Signed out successfully",
+        "openMenu": "Open menu",
+        "language": "Language",
+        "theme": "Theme",
+        "themeLight": "Light",
+        "themeDark": "Dark",
+        "themeSystem": "System"
+    },
+    "footer": {
+        "about": "Qualified trading partners for international commerce, to help you grow your business.",
+        "productTitle": "Product",
+        "catalog": "Catalog",
+        "howItWorks": "How it works",
+        "blog": "Blog",
+        "faq": "FAQ",
+        "accountTitle": "Account",
+        "myPurchases": "My purchases",
+        "login": "Sign in",
+        "legalTitle": "Legal",
+        "terms": "Terms of use",
+        "privacy": "Privacy",
+        "contact": "Contact",
+        "copyright": "© {year} Easy Prospect. All rights reserved."
+    },
+    "landing": {
+        "hero": {
+            "badge": "Marketplace of verified B2B trading partners",
+            "title": "Qualified importer and distributor lists for your international trade.",
+            "subtitle": "Find exactly the trading partners that fit your product and your export strategy.",
+            "ctaPrimary": "Browse catalog",
+            "ctaSecondary": "How it works",
+            "trust1": "Ready for immediate use",
+            "trust2": "Verified companies",
+            "trust3": "Regularly updated"
+        },
+        "intro": {
+            "lede": "Our qualified importer and distributor lists are built for manufacturers, producers, and brand owners looking for new trading partners abroad.",
+            "p1": "Select by country, industry, language region, or buying profile and receive ready-to-use databases, updated on a regular basis.",
+            "p2": "Our lists include exclusively carefully verified companies with a proven interest in adding new products and brands from abroad to their portfolio. This saves you lengthy research and countless contacts with companies that have no interest in new suppliers."
+        },
+        "zielmaerkte": {
+            "eyebrow": "Target markets",
+            "title": "Precise selection by your target markets.",
+            "intro": "You get lists for individual countries or entire language regions, for example:",
+            "note": "We also offer industry-specific lists for a range of sectors and product groups. Step by step, we're expanding our offering with qualified lists for markets around the world.",
+            "regions": [
+                {
+                    "flag": "DE",
+                    "title": "German-speaking countries",
+                    "countries": "DE · AT · CH"
+                },
+                {
+                    "flag": "FR",
+                    "title": "French-speaking countries",
+                    "countries": "FR · BE · CH · LU"
+                },
+                {
+                    "flag": "ES",
+                    "title": "Spanish-speaking countries",
+                    "countries": "ES · MX · AR · CL …"
+                },
+                {
+                    "flag": "PT",
+                    "title": "Portuguese-speaking countries",
+                    "countries": "PT · BR · AO …"
+                },
+                {
+                    "flag": "SE",
+                    "title": "Scandinavian countries",
+                    "countries": "SE · NO · DK · FI · IS"
+                }
+            ]
+        },
+        "einkaufsprofile": {
+            "eyebrow": "Buying profiles",
+            "title": "Not every importer is the same.",
+            "intro": "Our databases distinguish between several buying profiles:",
+            "close": "This lets you focus your sales activities exactly on the trading partners suited to your product.",
+            "cards": [
+                {
+                    "title": "Global buyers",
+                    "body": "Companies looking for new products and suppliers worldwide."
+                },
+                {
+                    "title": "EU-focused",
+                    "body": "Importers that buy exclusively within the European Union."
+                },
+                {
+                    "title": "Mercosur-oriented",
+                    "body": "Companies that preferably import from Mercosur."
+                },
+                {
+                    "title": "Regional specialists",
+                    "body": "Specialists with clearly defined sourcing markets."
+                }
+            ]
+        },
+        "lieferumfang": {
+            "eyebrow": "What's included",
+            "title": "More than address lists.",
+            "reportTitle": "Up-to-date market report included",
+            "reportBody": "Every list includes an up-to-date market report with valuable information on the industry and sales opportunities in the target market.",
+            "listIntro": "You also get practical guidance on the following topics:",
+            "close": "This increases your export campaign's chances of success right from the first contact.",
+            "items": [
+                "Current market and competitive situation",
+                "Sales and distribution opportunities",
+                "Market-specific particularities",
+                "Requirements of potential trading partners",
+                "What information and documents importers expect before a partnership",
+                "How to approach potential distributors professionally",
+                "Which sales arguments are most promising on first contact"
+            ]
+        },
+        "daten": {
+            "eyebrow": "Data quality",
+            "title": "Regularly updated data.",
+            "body": "All lists are continuously maintained and updated. New market participants are added, inactive companies are removed, and existing records are reviewed regularly. This means you always work with current and reliable information."
+        },
+        "vorteil": {
+            "eyebrow": "Your advantage",
+            "title": "Save time and increase your sales success.",
+            "body": "Instead of spending weeks or months researching suitable importers and distributors, you immediately receive a qualified selection of potential trading partners that fit your product and your target market. This lets you focus on what matters — successfully building your international trade."
+        },
+        "howItWorks": {
+            "eyebrow": "How it works",
+            "title": "From search to ready-to-use file in three steps.",
+            "steps": [
+                {
+                    "title": "Filter",
+                    "body": "Browse by countries, language regions, industries, and buying profiles to find lists that fit your campaign."
+                },
+                {
+                    "title": "Buy",
+                    "body": "Review volume, price per lead, and list details before completing your order with secure checkout."
+                },
+                {
+                    "title": "Download",
+                    "body": "After confirmation, access the files in CSV or Excel and put them to work in your sales process."
+                }
+            ]
+        },
+        "zahlen": {
+            "_placeholder": "PLACEHOLDER: fictional numbers from the handoff — replace with real data or connect to the backend before go-live.",
+            "eyebrow": "Numbers that matter",
+            "title": "Trust built on results.",
+            "stats": [
+                {
+                    "value": "6+",
+                    "label": "lists sold"
+                },
+                {
+                    "value": "100%",
+                    "label": "verified data quality"
+                },
+                {
+                    "value": "24/7",
+                    "label": "support in Portuguese"
+                }
+            ]
+        },
+        "blog": {
+            "eyebrow": "More insights",
+            "title": "Market analyses, industry reports, and export opportunities.",
+            "intro": "On our blog we regularly publish market analyses, industry reports, and information on export opportunities, trade trends, and sales possibilities across various countries and regions. This keeps you up to date on international market developments."
+        },
+        "cta": {
+            "title": "Ready to build your international trade?",
+            "body": "Browse the catalog and find qualified importers and distributors that fit your product and target market.",
+            "button": "Browse catalog"
+        },
+        "meta": {
+            "title": "Qualified importer and distributor lists for your international trade",
+            "description": "Qualified importer and distributor lists by country, industry, and buying profile. Verified companies, up-to-date market reports, and regularly reviewed data for your export business."
+        }
+    },
+    "faq": {
+        "page": {
+            "title": "Frequently asked questions",
+            "subtitle": "Answers to the most common questions about our importer and distributor lists.",
+            "metaTitle": "FAQ",
+            "metaDescription": "Answers to frequently asked questions about our importer and distributor lists: data quality, formats, payment, and more."
+        },
+        "_placeholder": "PLACEHOLDER: provisional answers — review/confirm all before go-live. The LGPD/GDPR answer is intentionally left blank.",
+        "items": [
+            {
+                "question": "Where does the data come from and how is it verified?",
+                "answer": "[PLACEHOLDER] Our data comes from carefully vetted sources and is manually verified before being added to our lists."
+            },
+            {
+                "question": "How current are the lists?",
+                "answer": "[PLACEHOLDER] All lists are maintained regularly: new market participants are added, inactive companies are removed, and existing records are reviewed."
+            },
+            {
+                "question": "What formats do I receive the data in?",
+                "answer": "[PLACEHOLDER] You receive the files in CSV or Excel — ready to use in your sales process and compatible with the leading CRMs."
+            },
+            {
+                "question": "Can I see the data before buying?",
+                "answer": "[PLACEHOLDER] Yes, every list includes a preview with anonymized sample records."
+            },
+            {
+                "question": "How does payment work?",
+                "answer": "[PLACEHOLDER] Payment is made via secure PayPal checkout. After confirmation, the files are available for download immediately."
+            },
+            {
+                "question": "Which countries and industries are lists available for?",
+                "answer": "[PLACEHOLDER] We offer lists for individual countries and entire language regions, as well as industry-specific lists for a range of sectors. The offering is continuously expanded."
+            },
+            {
+                "question": "What's included in the market report that comes with the list?",
+                "answer": "[PLACEHOLDER] Every list includes an up-to-date market report with information on the market and competitive situation, sales opportunities, and practical guidance for approaching potential trading partners."
+            },
+            {
+                "question": "What about data protection (LGPD/GDPR)?",
+                "answer": ""
+            }
+        ],
+        "form": {
+            "title": "Didn't find your question?",
+            "subtitle": "Send us your question — we'll get back to you shortly.",
+            "name": "Name",
+            "company": "Company (optional)",
+            "email": "Email",
+            "subject": "Subject",
+            "message": "Your question",
+            "consent": "I have read and agree to the <link>Privacy Policy</link>.",
+            "submit": "Send question",
+            "submitting": "Sending…",
+            "success": "Thank you! We've received your question.",
+            "error": "Something went wrong. Please try again.",
+            "rateLimited": "Too many attempts. Please try again later.",
+            "errors": {
+                "name": "Please enter your name.",
+                "email": "Please enter a valid email address.",
+                "subject": "Please enter a subject.",
+                "message": "Your question must be at least 10 characters long.",
+                "consent": "You must agree to the Privacy Policy."
+            }
+        }
+    },
+    "cart": {
+        "title": "Your cart",
+        "items": "{count, plural, one {# item} other {# items}}",
+        "empty": "Your cart is empty",
+        "emptyHint": "Add lead lists to get started",
+        "seeCatalog": "View catalog",
+        "subtotal": "Subtotal",
+        "review": "Review cart",
+        "continue": "Continue shopping",
+        "securePayment": "Secure payment via PayPal",
+        "leads": "{count} leads",
+        "addToCart": "Add to cart",
+        "openCart": "Open cart",
+        "openCartWithItems": "Open cart, {count, plural, one {# item} other {# items}}",
+        "removeItem": "Remove \"{name}\" from cart",
+        "pageTitle": "Review cart",
+        "pageSubtitle": "{count, plural, one {# selected list} other {# selected lists}} with {leads} leads in total.",
+        "summaryTitle": "Order summary",
+        "summarySubtitle": "Check the items before proceeding to payment.",
+        "totalLeads": "Total leads",
+        "total": "Total",
+        "checkout": "Checkout",
+        "clear": "Clear cart",
+        "emptyDesc": "Choose a list in the catalog to review price, coverage, and format before completing your purchase.",
+        "formats": "CSV and Excel",
+        "remove": "Remove",
+        "trustPaypal": "Payment processed by PayPal",
+        "trustSaved": "Order saved to your account",
+        "trustDownload": "Download unlocked after confirmation",
+        "trustReview": "Review your order before you pay"
+    },
+    "catalog": {
+        "metaTitle": "List Catalog",
+        "badge": "Ready-to-use B2B prospecting databases",
+        "heroTitle": "Find the right list before spending time on manual prospecting",
+        "heroSubtitle": "Filter by market, industry, and category to buy only the data that fits your campaign.",
+        "quickSearch": "Quick search",
+        "searchPlaceholder": "Search by name, country, industry, or description",
+        "searchButton": "Search",
+        "trustCompareTitle": "Compare",
+        "trustCompareDesc": "See volume, countries, and industries before deciding.",
+        "trustBuyTitle": "Buy securely",
+        "trustBuyDesc": "Checkout via PayPal, with your order recorded to your account.",
+        "trustDownloadTitle": "Download instantly",
+        "trustDownloadDesc": "Access CSV or Excel as soon as payment is confirmed.",
+        "availableLists": "Available lists",
+        "results": "{count, plural, one {# result} other {# results}} for the current filters",
+        "pageOf": "Page {page} of {pages}",
+        "statListsFound": "Lists found",
+        "statLeadsOnPage": "Leads on this page",
+        "statActiveFilters": "Active filters",
+        "statCurrentPage": "Current page",
+        "emptyTitle": "No lists match the current filters",
+        "emptyDesc": "Remove some filters or search for a broader market to find available lists.",
+        "clearFilters": "Clear filters",
+        "featured": "Featured",
+        "companies": "{count} companies",
+        "verifiedEmails": "Verified emails",
+        "updatedAt": "Updated on {date}",
+        "seeDetails": "View details",
+        "perLead": "{price} per lead",
+        "defaultDescription": "Ready-to-use database with qualified companies.",
+        "searchLabel": "Search lists in the catalog",
+        "filtersTitle": "Filters",
+        "filtersSubtitle": "Refine the catalog by list profile.",
+        "filtersOpen": "Filters",
+        "filtersActive": "{count, plural, one {# active filter} other {# active filters}}",
+        "filterCategory": "Category",
+        "filterCountries": "Countries",
+        "filterIndustries": "Industries",
+        "loadErrorTitle": "Couldn't load the catalog",
+        "loadErrorDesc": "There was a failure fetching the lists. Please try again in a moment.",
+        "loadErrorRetry": "Try again",
+        "previousPage": "Previous page",
+        "nextPage": "Next page",
+        "goToPage": "Go to page {page}",
+        "countries": {
+            "DE": "Germany",
+            "FR": "France",
+            "IT": "Italy",
+            "ES": "Spain",
+            "NL": "Netherlands",
+            "BE": "Belgium",
+            "PL": "Poland",
+            "SE": "Sweden",
+            "AT": "Austria",
+            "CH": "Switzerland",
+            "PT": "Portugal",
+            "GB": "United Kingdom",
+            "US": "United States",
+            "CN": "China",
+            "JP": "Japan",
+            "BR": "Brazil"
+        },
+        "industries": {
+            "food": "Food & Beverage",
+            "tech": "Technology",
+            "fashion": "Fashion & Textiles",
+            "automotive": "Automotive",
+            "health": "Health & Pharma",
+            "construction": "Construction",
+            "retail": "Retail",
+            "industrial": "Industrial"
+        },
+        "categories": {
+            "importers": "Importers",
+            "exporters": "Exporters",
+            "manufacturers": "Manufacturers",
+            "distributors": "Distributors",
+            "retailers": "Retailers",
+            "wholesalers": "Wholesalers"
+        }
+    },
+    "listing": {
+        "back": "Back to catalog",
+        "featured": "Featured",
+        "readyBadge": "Data ready for download",
+        "quickLeads": "Leads",
+        "quickPricePerLead": "Price/lead",
+        "quickCountries": "Countries",
+        "quickUpdated": "Updated",
+        "coverageTitle": "List coverage",
+        "coverageSubtitle": "Use these signals to check whether this database fits your campaign.",
+        "fieldName": "Name",
+        "fieldCountries": "Countries",
+        "fieldTotalLeads": "Total leads",
+        "fieldIndustries": "Industries",
+        "fieldPricePerLead": "Price per lead",
+        "fieldUpdatedAt": "Updated on",
+        "notInformed": "Not provided",
+        "previewTitle": "Data preview",
+        "previewSubtitle": "Sample of {count} records to check structure and quality before buying.",
+        "includedTitle": "What's included",
+        "includedCompany": "Company name",
+        "includedEmail": "Verified business email",
+        "includedPhone": "Phone and contact where available",
+        "includedLocation": "Country, city, and website",
+        "includedIndustry": "Industry",
+        "includedFormats": "CSV and Excel file",
+        "perLead": "{price} per lead",
+        "leadsIncluded": "{count} leads included",
+        "oneOffNote": "One-off purchase, no subscription. Access remains available in your My Purchases area.",
+        "beforeBuyNote": "Before buying, check the coverage, data preview, and price per lead. Once payment is approved, the download becomes available in your account.",
+        "benefitSecure": "Secure payment via PayPal",
+        "benefitImmediate": "Instant download after confirmation",
+        "benefitFresh": "Data refreshed before publication",
+        "benefitRecorded": "Purchase recorded to your account",
+        "buyNow": "Buy now",
+        "signInToBuy": "Sign in and buy",
+        "notFound": "List not found",
+        "metaFallbackDescription": "List with {count} qualified leads."
+    },
+    "checkout": {
+        "stepCart": "Cart",
+        "stepPayment": "Payment",
+        "stepDownload": "Download",
+        "backToCart": "Back to cart",
+        "title": "Checkout",
+        "subtitle": "Complete payment to unlock {count} leads in CSV and Excel.",
+        "secureTitle": "Secure payment",
+        "secureDesc": "PayPal processes the payment; the system releases your purchase automatically after confirmation.",
+        "redirectNote": "You'll be redirected within PayPal's own flow to authorize the transaction.",
+        "trustSecureTitle": "Secure",
+        "trustSecureText": "External payment via PayPal.",
+        "trustRecordedTitle": "Recorded",
+        "trustRecordedText": "Order saved for future access.",
+        "trustImmediateTitle": "Instant",
+        "trustImmediateText": "Download unlocked after approval.",
+        "summaryTitle": "Summary",
+        "summaryItems": "{count, plural, one {# list} other {# lists}} in the order",
+        "totalLeads": "Total leads",
+        "total": "Total",
+        "unavailable": "Payment is temporarily unavailable. Please try again in a few minutes.",
+        "sessionExpiredPay": "Your session has expired. Sign in again to complete the purchase.",
+        "sessionExpiredOrder": "Your session has expired. Sign in again to view the order.",
+        "createFailed": "We couldn't start the payment. Please try again.",
+        "captureFailed": "We couldn't confirm the payment. If the amount was charged, the order will appear in My Purchases within a few minutes.",
+        "paymentConfirmed": "Payment confirmed!",
+        "paypalError": "Error processing the payment",
+        "successMetaTitle": "Purchase confirmed",
+        "successMetaDescription": "Your purchase has been confirmed successfully",
+        "successTitle": "Purchase confirmed",
+        "successSubtitle": "Your order has been approved and the lists are now available for download.",
+        "successOrder": "Order",
+        "successLeadsReleased": "Leads released",
+        "successTotalPaid": "Total paid",
+        "successNextDownloadTitle": "Download",
+        "successNextDownloadText": "CSV or Excel in My Purchases.",
+        "successNextProspectTitle": "Prospecting",
+        "successNextProspectText": "Import the contacts into your CRM or prospecting tool.",
+        "successNextReceiptTitle": "Confirmation",
+        "successNextReceiptText": "The receipt was sent to your email.",
+        "successCtaPurchases": "Go to my purchases",
+        "successCtaContinue": "Continue shopping",
+        "cancelMetaTitle": "Purchase cancelled",
+        "cancelMetaDescription": "Your purchase was cancelled",
+        "cancelTitle": "Payment not completed",
+        "cancelSubtitle": "No charge was completed. You can review your cart or try checkout again.",
+        "cancelRetry": "Try again",
+        "cancelReviewCart": "Review cart",
+        "cancelBackToCatalog": "Back to catalog"
+    },
+    "purchases": {
+        "metaTitle": "My Purchases",
+        "metaDescription": "Access and download your lead lists",
+        "back": "Back to catalog",
+        "badge": "Downloads and order history",
+        "title": "My purchases",
+        "subtitle": "Download your lists, check order status, and use the files to power your CRM campaigns.",
+        "magicLinkNotice": "Access via magic link, valid for 24h.",
+        "statPurchases": "Purchases",
+        "statLists": "Lists",
+        "statLeads": "Leads",
+        "statSpent": "Invested",
+        "nextStepsTitle": "Next steps",
+        "guidanceExcelTitle": "Download as Excel",
+        "guidanceExcelText": "Use Excel when you need to review columns before importing.",
+        "guidanceCrmTitle": "Import into your CRM",
+        "guidanceCrmText": "Create a working list and track outreach by campaign.",
+        "guidanceMarketTitle": "Prioritize by market",
+        "guidanceMarketText": "Start with the countries and industries closest to your offering.",
+        "loading": "Loading your purchases...",
+        "invalidTokenTitle": "Invalid or expired link",
+        "invalidTokenExpired": "This link has expired. Request new access from your purchases area.",
+        "invalidTokenGeneric": "This link isn't valid or has already been used.",
+        "goToCatalog": "Go to catalog",
+        "emptyTitle": "No purchases yet",
+        "emptyDescription": "Browse the catalog, select a database that fits your campaign, and come back here to download the files.",
+        "emptyCta": "Browse catalog",
+        "browseMoreLists": "View more lists"
+    }
+}

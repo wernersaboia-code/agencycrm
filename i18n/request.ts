@@ -1,6 +1,7 @@
 import { getRequestConfig } from "next-intl/server"
 import { hasLocale } from "next-intl"
 import { routing } from "@/lib/i18n/routing"
+import { resolveMessagesLocale } from "@/lib/i18n/locales"
 
 // O locale agora vem do segmento de rota ([locale]), não mais de cookie.
 // Locale ausente ou desconhecido cai no padrão em vez de quebrar a página.
@@ -10,10 +11,10 @@ export default getRequestConfig(async ({ requestLocale }) => {
         ? requested
         : routing.defaultLocale
 
-    // Fase 1: só pt e de têm arquivo de mensagens. Os demais locales existem
-    // no roteamento (o blog já os usa) mas ainda não têm tradução do funil —
-    // até a fase 3, caem no padrão em vez de estourar no import.
-    const messagesLocale = locale === "de" ? "de" : "pt"
+    // Nem todo locale roteável tem messages/ próprio — resolveMessagesLocale
+    // devolve o próprio locale se ele estiver publicado, ou o padrão se ainda
+    // não tiver tradução (ver PUBLISHED_LOCALES em lib/i18n/locales.ts).
+    const messagesLocale = resolveMessagesLocale(locale)
 
     return {
         locale,

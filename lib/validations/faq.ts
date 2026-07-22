@@ -13,7 +13,10 @@ export const faqContactSchema = z.object({
     consent: z.literal(true),
     // Honeypot: campo invisível para humanos; bots que o preencherem são descartados.
     website: z.string().max(0).optional().or(z.literal("")),
-    locale: z.enum(["pt", "de"]).default("de"),
+    // Mantém sincronizado à mão com LandingLocale (components/landing/types.ts):
+    // esse tipo não pode ser importado aqui sem puxar código de componente
+    // para uma validação server-side.
+    locale: z.enum(["pt", "de", "en"]).default("de"),
 })
 
 export type FaqContactValues = z.infer<typeof faqContactSchema>

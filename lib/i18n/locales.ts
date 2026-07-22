@@ -13,7 +13,7 @@ export const DEFAULT_LOCALE: Locale = "pt"
 // para não submeter páginas em português como se fossem en-US, es-ES etc.
 // As fases 3 e 4 do projeto devem acrescentar locales aqui à medida que os
 // respectivos arquivos de messages/ forem criados.
-export const PUBLISHED_LOCALES: readonly Locale[] = ["pt", "de"]
+export const PUBLISHED_LOCALES: readonly Locale[] = ["pt", "de", "en"]
 
 const RTL_LOCALES = new Set<Locale>(["ar"])
 
@@ -30,6 +30,18 @@ const HTML_LANG: Record<Locale, string> = {
     nl: "nl-NL",
 }
 
+// Open Graph usa sublinhado em vez do hífen do BCP 47 (en_US, não en-US).
+const OG_LOCALE: Record<Locale, string> = {
+    pt: "pt_BR",
+    de: "de_DE",
+    en: "en_US",
+    es: "es_ES",
+    fr: "fr_FR",
+    ar: "ar_AR",
+    it: "it_IT",
+    nl: "nl_NL",
+}
+
 export function isLocale(value: string): value is Locale {
     return (LOCALES as readonly string[]).includes(value)
 }
@@ -44,4 +56,24 @@ export function dirForLocale(locale: Locale): "rtl" | "ltr" {
 
 export function htmlLangFor(locale: Locale): string {
     return HTML_LANG[locale]
+}
+
+export function ogLocaleFor(locale: Locale): string {
+    return OG_LOCALE[locale]
+}
+
+/**
+ * Qual arquivo de messages/ carregar para um locale roteável.
+ *
+ * Só os locales publicados têm tradução própria; os demais (roteáveis mas
+ * sem messages/<locale>.json ainda) caem no padrão. Extraído para ser
+ * testável isoladamente — antes vivia como ternária direto em
+ * i18n/request.ts, crescendo um `: locale === "x" ? "x"` a cada locale novo.
+ */
+export function resolveMessagesLocale(
+    locale: Locale,
+    published: readonly Locale[] = PUBLISHED_LOCALES,
+    fallback: Locale = DEFAULT_LOCALE
+): Locale {
+    return published.includes(locale) ? locale : fallback
 }

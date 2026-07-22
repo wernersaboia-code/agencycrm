@@ -1,8 +1,9 @@
 import { getTranslations } from "next-intl/server"
+import type { LandingLocale } from "@/components/landing/types"
 import { FaqAccordion, type FaqEntry } from "@/components/faq/faq-accordion"
 import { FaqContactForm, type FaqFormLabels } from "@/components/faq/faq-contact-form"
 
-export async function FaqPageContent({ locale }: { locale: "pt" | "de" }) {
+export async function FaqPageContent({ locale }: { locale: LandingLocale }) {
     const t = await getTranslations({ locale, namespace: "faq" })
     // As respostas em faq.items são PLACEHOLDERS (ver chave _placeholder nos locales).
     const items = t.raw("items") as FaqEntry[]

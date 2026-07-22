@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { CheckCircle2, Loader2, TriangleAlert } from "lucide-react"
 import { submitFaqQuestion } from "@/actions/faq"
+import type { LandingLocale } from "@/components/landing/types"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
@@ -38,7 +39,7 @@ export interface FaqFormLabels {
 }
 
 interface FaqContactFormProps {
-    locale: "pt" | "de"
+    locale: LandingLocale
     labels: FaqFormLabels
 }
 
