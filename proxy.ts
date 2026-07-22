@@ -59,6 +59,26 @@ export async function proxy(request: NextRequest) {
     )
 
     // ============================================
+    // RESGATE DO CÓDIGO DE CONFIRMAÇÃO NA RAIZ
+    // ============================================
+    // O Supabase só honra o `emailRedirectTo` se a URL estiver na lista de
+    // Redirect URLs do projeto; fora dela, ele descarta o destino e usa o
+    // Site URL — e o código de sessão cai na home, onde ninguém o troca. O
+    // resultado é a conta ficar confirmada mas a pessoa não logada.
+    //
+    // Corrigir a configuração resolve os e-mails futuros, mas não os já
+    // enviados: aqueles carregam a URL errada gravada no corpo. Este desvio
+    // recupera esses casos e cobre a mesma falha em recuperação de senha.
+    if (pathForMatching === "/" && request.nextUrl.searchParams.has("code")) {
+        const url = request.nextUrl.clone()
+        const code = request.nextUrl.searchParams.get("code") ?? ""
+        url.pathname = "/auth/callback"
+        url.search = ""
+        url.searchParams.set("code", code)
+        return NextResponse.redirect(url)
+    }
+
+    // ============================================
     // ROTAS PÚBLICAS - Easy Prospect (Marketplace)
     // ============================================
     // Vitrine: navegável sem conta. /checkout e /my-purchases exigem sessão —
