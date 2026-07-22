@@ -212,7 +212,7 @@ export async function sendEmail(
 function appendUnsubscribeFooter(html: string, emailSendId: string): string {
     // Link assinado e amarrado a este envio específico: a rota resolve o lead
     // a partir do emailSendId e só age se a assinatura conferir.
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://easyprospect.com"
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.easyprospect.com.br"
     const signature = sign(emailSendId)
     const unsubscribeUrl = `${baseUrl}/unsubscribe?sid=${emailSendId}&sig=${signature}`
     const footer = `

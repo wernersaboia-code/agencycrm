@@ -3,7 +3,7 @@ import { getPathname } from "@/lib/i18n/navigation"
 import { PUBLISHED_LOCALES, type Locale } from "@/lib/i18n/locales"
 import { alternatesFor } from "@/lib/i18n/alternates"
 
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || "https://easyprospect.com"
+const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || "https://www.easyprospect.com.br"
 
 // Rotas estáticas do funil: uma entrada por idioma publicado, com hreflang
 // de mão dupla via alternatesFor. `/blog` entra aqui (não mais no bloco

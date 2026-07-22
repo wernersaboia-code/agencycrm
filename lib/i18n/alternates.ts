@@ -1,7 +1,7 @@
 import { getPathname } from "./navigation"
 import { PUBLISHED_LOCALES, DEFAULT_LOCALE, htmlLangFor, type Locale } from "./locales"
 
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || "https://easyprospect.com"
+const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || "https://www.easyprospect.com.br"
 
 /**
  * hreflang de mão dupla: cada idioma publicado lista todos os outros, e

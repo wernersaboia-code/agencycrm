@@ -7,6 +7,6 @@ export default function robots() {
                 disallow: ["/dashboard", "/crm", "/pricing", "/super-admin", "/api/"],
             },
         ],
-        sitemap: `${process.env.NEXT_PUBLIC_APP_URL || "https://easyprospect.com"}/sitemap.xml`,
+        sitemap: `${process.env.NEXT_PUBLIC_APP_URL || "https://www.easyprospect.com.br"}/sitemap.xml`,
     }
 }

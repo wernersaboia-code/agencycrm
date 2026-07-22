@@ -27,7 +27,10 @@ function getSystemSmtpConfig(): SmtpConfig {
             pass: process.env.SMTP_PASS,
             secure: process.env.SMTP_SECURE === "true",
             senderName: process.env.SMTP_FROM_NAME || "Easy Prospect",
-            senderEmail: process.env.SMTP_FROM_EMAIL || "compras@easyprospect.com",
+            // Precisa bater com a conta autenticada no SMTP: a maioria dos
+            // provedores rejeita (ou marca como spam) um From de domínio
+            // diferente do que fez login.
+            senderEmail: process.env.SMTP_FROM_EMAIL || "contato@easyprospect.com.br",
         }
     }
 

@@ -10,7 +10,7 @@ import "./globals.css"
 import { Providers } from "./providers"
 
 export const metadata: Metadata = {
-    metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://easyprospect.com"),
+    metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://www.easyprospect.com.br"),
     title: {
         default: "Easy Prospect",
         template: "%s | Easy Prospect",
