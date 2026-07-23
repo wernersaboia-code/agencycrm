@@ -7,9 +7,10 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { formatCurrency } from "@/lib/utils"
-import { Building2, Globe, CheckCircle, ArrowRight, ShoppingCart, CalendarClock } from "lucide-react"
+import { Globe, CheckCircle, ArrowRight, ShoppingCart, CalendarClock } from "lucide-react"
 import { FlagIcon } from "@/components/ui/flag-icon"
 import { useCart } from "@/contexts/cart-context"
+import { getListLanguage } from "@/lib/constants/list-languages"
 
 export interface PreviewLead {
     companyName: string
@@ -26,6 +27,7 @@ export interface MarketplaceListCardData {
     category: string
     countries: string[]
     industries: string[]
+    language: string | null
     totalLeads: number
     price: number
     currency: string
@@ -44,7 +46,7 @@ export function ListCard({ list }: ListCardProps) {
     const t = useTranslations("catalog")
     const tCart = useTranslations("cart")
     const { addItem } = useCart()
-    const pricePerLead = list.totalLeads > 0 ? list.price / list.totalLeads : 0
+    const language = getListLanguage(list.language)
     const updatedAt = new Date(list.updatedAt).toLocaleDateString("pt-BR", {
         month: "short",
         year: "numeric",
@@ -95,15 +97,16 @@ export function ListCard({ list }: ListCardProps) {
                                     +{list.countries.length - 3}
                                 </span>
                             )}
+                            {language && (
+                                <span className="ml-1 flex items-center" title={language.label}>
+                                    <FlagIcon code={language.flagCode} size="sm" className="shadow-sm ring-1 ring-brand-accent/40" />
+                                </span>
+                            )}
                         </div>
                     </div>
 
                     {/* Info */}
                     <div className="space-y-2 mb-4">
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <Building2 className="h-4 w-4 text-muted-foreground" />
-                            <span>{t("companies", { count: list.totalLeads })}</span>
-                        </div>
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
                             <Globe className="h-4 w-4 text-muted-foreground" />
                             <span className="truncate">{list.countries.slice(0, 3).join(", ")}{list.countries.length > 3 ? ` +${list.countries.length - 3}` : ''}</span>
@@ -142,9 +145,6 @@ export function ListCard({ list }: ListCardProps) {
                             <span className="text-2xl font-bold text-brand">
                                 {formatCurrency(list.price, list.currency)}
                             </span>
-                            <div className="text-xs text-muted-foreground">
-                                {t("perLead", { price: formatCurrency(pricePerLead, list.currency) })}
-                            </div>
                         </div>
                         <Link
                             href={`/list/${list.slug}`}
