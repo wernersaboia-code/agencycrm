@@ -3,11 +3,11 @@ import { prisma } from "@/lib/prisma"
 import { buildCsv, sanitizeCsvFilenameSegment } from "@/lib/utils/csv.utils"
 
 export async function generatePurchaseCSV(purchaseItemId: string, userId: string) {
-    // Buscar item da compra
+    // Buscar item da compra (somente compras pagas)
     const purchaseItem = await prisma.purchaseItem.findFirst({
         where: {
             id: purchaseItemId,
-            purchase: { userId },
+            purchase: { userId, status: "paid" },
         },
         include: {
             list: {
@@ -96,11 +96,11 @@ export async function generatePurchaseCSV(purchaseItemId: string, userId: string
 }
 
 export async function generatePurchaseExcel(purchaseItemId: string, userId: string) {
-    // Buscar item da compra
+    // Buscar item da compra (somente compras pagas)
     const purchaseItem = await prisma.purchaseItem.findFirst({
         where: {
             id: purchaseItemId,
-            purchase: { userId },
+            purchase: { userId, status: "paid" },
         },
         include: {
             list: {

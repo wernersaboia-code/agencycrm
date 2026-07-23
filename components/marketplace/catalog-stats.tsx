@@ -1,11 +1,11 @@
 "use client"
 
 import { useTranslations } from "next-intl"
-import { Building2, Filter, FileDown, Layers3 } from "lucide-react"
+import { Building2, Filter, Globe, Layers3 } from "lucide-react"
 
 interface CatalogStatsProps {
     total: number
-    visibleLeadTotal: number
+    visibleCountryTotal: number
     activeFilterCount: number
     page: number
     pages: number
@@ -13,7 +13,7 @@ interface CatalogStatsProps {
 
 export function CatalogStats({
     total,
-    visibleLeadTotal,
+    visibleCountryTotal,
     activeFilterCount,
     page,
     pages,
@@ -28,9 +28,9 @@ export function CatalogStats({
             bg: "bg-blue-50",
         },
         {
-            icon: FileDown,
-            value: visibleLeadTotal.toLocaleString(),
-            label: t("statLeadsOnPage"),
+            icon: Globe,
+            value: visibleCountryTotal.toLocaleString(),
+            label: t("statCountriesOnPage"),
             color: "text-indigo-600",
             bg: "bg-indigo-50",
         },

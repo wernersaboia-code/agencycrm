@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation"
 import { Link } from "@/lib/i18n/navigation"
 import { Suspense } from "react"
-import type { ComponentType } from "react"
+import type { ComponentType, ReactNode } from "react"
 import { getFormatter, getTranslations } from "next-intl/server"
 import { prisma } from "@/lib/prisma"
 import { ListPreview } from "@/components/marketplace/list-preview"
@@ -9,13 +9,14 @@ import { BuyNowButton } from "@/components/marketplace/buy-now-button"
 import { AddToCartButton } from "@/components/marketplace/add-to-cart-button"
 import { formatCurrency } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
+import { getListLanguage } from "@/lib/constants/list-languages"
+import { FlagIcon } from "@/components/ui/flag-icon"
 import {
     ArrowLeft,
     BadgeCheck,
     Building2,
     Calendar,
     CheckCircle,
-    DollarSign,
     Download,
     FileSpreadsheet,
     Globe,
@@ -66,13 +67,13 @@ export default async function ListPage({ params }: ListPageProps) {
     }
 
     const price = Number(list.price)
-    const pricePerLead = list.totalLeads > 0 ? price / list.totalLeads : 0
     // Formatado no locale ativo: "fev. de 2026" para um leitor alemão é ruído.
     const updatedAt = format.dateTime(new Date(list.updatedAt), {
         day: "2-digit",
         month: "short",
         year: "numeric",
     })
+    const language = getListLanguage(list.language)
     const listForCart = {
         id: list.id,
         name: list.name,
@@ -118,13 +119,20 @@ export default async function ListPage({ params }: ListPageProps) {
                                     {list.description}
                                 </p>
                             )}
+                            {list.introduction && (
+                                <div className="mt-6">
+                                    <h2 className="text-lg font-semibold text-foreground">{t("introductionTitle")}</h2>
+                                    <p className="mt-2 max-w-2xl whitespace-pre-line text-sm text-muted-foreground">
+                                        {list.introduction}
+                                    </p>
+                                </div>
+                            )}
                         </div>
 
                         <div className="rounded-lg border bg-muted/40 p-4">
                             <div className="grid grid-cols-2 gap-3">
-                                <QuickMetric label={t("quickLeads")} value={format.number(list.totalLeads)} />
-                                <QuickMetric label={t("quickPricePerLead")} value={formatCurrency(pricePerLead, list.currency)} />
                                 <QuickMetric label={t("quickCountries")} value={format.number(list.countries.length)} />
+                                <QuickMetric label={t("quickLanguage")} value={<LanguageValue language={language} fallback={t("notInformed")} />} />
                                 <QuickMetric label={t("quickUpdated")} value={updatedAt} />
                             </div>
                         </div>
@@ -144,9 +152,13 @@ export default async function ListPage({ params }: ListPageProps) {
                         <div className="grid gap-4 sm:grid-cols-2">
                             <DataItem label={t("fieldName")} value={list.name} icon={Building2} fallback={t("notInformed")} />
                             <DataItem label={t("fieldCountries")} value={list.countries.join(", ")} icon={Globe} fallback={t("notInformed")} />
-                            <DataItem label={t("fieldTotalLeads")} value={format.number(list.totalLeads)} icon={Users} fallback={t("notInformed")} />
+                            <DataItem
+                                label={t("fieldLanguage")}
+                                value={<LanguageValue language={language} fallback={t("notInformed")} />}
+                                icon={Globe}
+                                fallback={t("notInformed")}
+                            />
                             <DataItem label={t("fieldIndustries")} value={list.industries.join(", ")} icon={Target} fallback={t("notInformed")} />
-                            <DataItem label={t("fieldPricePerLead")} value={formatCurrency(pricePerLead, list.currency)} icon={DollarSign} fallback={t("notInformed")} />
                             <DataItem label={t("fieldUpdatedAt")} value={updatedAt} icon={Calendar} fallback={t("notInformed")} />
                         </div>
                     </section>
@@ -182,16 +194,10 @@ export default async function ListPage({ params }: ListPageProps) {
                             <div className="text-4xl font-bold text-brand">
                                 {formatCurrency(price, list.currency)}
                             </div>
-                            <div className="mt-1 text-sm text-muted-foreground">
-                                {t("perLead", { price: formatCurrency(pricePerLead, list.currency) })}
-                            </div>
                         </div>
 
                         <div className="mb-6 rounded-lg border bg-muted/40 p-4 text-sm text-muted-foreground">
-                            <div className="font-semibold text-foreground">
-                                {t("leadsIncluded", { count: format.number(list.totalLeads) })}
-                            </div>
-                            <p className="mt-1">{t("oneOffNote")}</p>
+                            <p>{t("oneOffNote")}</p>
                         </div>
 
                         <div className="mb-6 rounded-lg border border-primary/30 bg-primary/10 p-4 text-sm text-foreground">
@@ -216,7 +222,7 @@ export default async function ListPage({ params }: ListPageProps) {
     )
 }
 
-function QuickMetric({ label, value }: { label: string; value: string }) {
+function QuickMetric({ label, value }: { label: string; value: ReactNode }) {
     return (
         <div className="rounded-md bg-card p-3">
             <div className="text-xs font-medium uppercase text-muted-foreground">{label}</div>
@@ -232,7 +238,7 @@ function DataItem({
     fallback,
 }: {
     label: string
-    value: string
+    value: ReactNode
     icon: ComponentType<{ className?: string }>
     fallback: string
 }) {
@@ -246,6 +252,22 @@ function DataItem({
                 <div className="mt-1 truncate font-semibold text-foreground">{value || fallback}</div>
             </div>
         </div>
+    )
+}
+
+function LanguageValue({
+    language,
+    fallback,
+}: {
+    language: ReturnType<typeof getListLanguage>
+    fallback: string
+}) {
+    if (!language) return <>{fallback}</>
+    return (
+        <span className="flex items-center gap-1.5">
+            <FlagIcon code={language.flagCode} size="sm" decorative />
+            {language.label}
+        </span>
     )
 }
 

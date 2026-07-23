@@ -12,6 +12,8 @@ interface CreateListData {
     name: string
     slug: string
     description?: string
+    introduction?: string
+    language?: string
     category: string
     countries: string[]
     industries: string[]
@@ -25,6 +27,8 @@ const listDataSchema = z.object({
     name: z.string().trim().min(3).max(160),
     slug: z.string().trim().min(3).max(180).regex(/^[a-z0-9-]+$/),
     description: z.string().trim().max(5000).optional(),
+    introduction: z.string().trim().max(10000).optional(),
+    language: z.enum(["pt", "en", "de", "fr", "es", "it", "nl"]).optional(),
     category: z.string().trim().min(1).max(80),
     countries: z.array(z.string().trim().min(2).max(3)).min(1).max(100),
     industries: z.array(z.string().trim().min(1).max(80)).max(100),
@@ -40,6 +44,10 @@ interface SerializedList {
     name: string
     slug: string
     description: string | null
+    introduction: string | null
+    language: string | null
+    studyPdfUrl: string | null
+    studyPdfName: string | null
     category: string
     countries: string[]
     industries: string[]
@@ -87,6 +95,8 @@ export async function createList(data: CreateListData): Promise<SerializedList> 
             name: validated.name,
             slug: validated.slug,
             description: validated.description || null,
+            introduction: validated.introduction || null,
+            language: validated.language || null,
             category: validated.category,
             countries: validated.countries,
             industries: validated.industries,
@@ -112,6 +122,8 @@ export async function updateList(id: string, data: CreateListData): Promise<Seri
             name: validated.name,
             slug: validated.slug,
             description: validated.description || null,
+            introduction: validated.introduction || null,
+            language: validated.language || null,
             category: validated.category,
             countries: validated.countries,
             industries: validated.industries,

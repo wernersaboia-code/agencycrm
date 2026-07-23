@@ -74,7 +74,7 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
         search,
         page,
     })
-    const visibleLeadTotal = lists.reduce((sum, list) => sum + list.totalLeads, 0)
+    const visibleCountryTotal = new Set(lists.flatMap((list) => list.countries)).size
     const activeFilterCount = countries.length + industries.length + (category ? 1 : 0) + (search ? 1 : 0)
 
     return (
@@ -166,7 +166,7 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
                             <div className="mb-6">
                                 <CatalogStats
                                     total={total}
-                                    visibleLeadTotal={visibleLeadTotal}
+                                    visibleCountryTotal={visibleCountryTotal}
                                     activeFilterCount={activeFilterCount}
                                     page={page}
                                     pages={pages}

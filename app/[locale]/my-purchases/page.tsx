@@ -180,8 +180,8 @@ async function PurchasesDashboard({
                             <div className="mt-4 space-y-4">
                                 <GuidanceItem
                                     icon={FileDown}
-                                    title={t("guidanceExcelTitle")}
-                                    text={t("guidanceExcelText")}
+                                    title={t("guidancePdfTitle")}
+                                    text={t("guidancePdfText")}
                                 />
                                 <GuidanceItem
                                     icon={Database}
