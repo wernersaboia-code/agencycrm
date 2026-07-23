@@ -83,9 +83,9 @@ Migração Prisma aplicada sem shadow DB (ambiente atual).
   (`t("companies")`) e o "valor por lead" no rodapé; remover o cálculo
   `pricePerLead`.
 - `components/marketplace/catalog-stats.tsx` + `app/[locale]/catalog/page.tsx`:
-  remover a métrica de leads visíveis (`visibleLeadTotal` / `statLeadsOnPage`).
-  Substituir por outra métrica útil (ex.: nº de países/idiomas) ou reduzir para 3
-  cards — a definir no plano.
+  remover a métrica de leads visíveis (`visibleLeadTotal` / `statLeadsOnPage`) e
+  substituí-la pela **contagem de países distintos** entre as listas visíveis
+  (nova chave i18n, ex.: `statCountriesOnPage`).
 - `app/[locale]/list/[slug]/page.tsx`: remover `quickLeads`, `quickPricePerLead`,
   `fieldTotalLeads`, `fieldPricePerLead`, a nota `leadsIncluded` e o subtítulo
   `perLead`; remover o cálculo `pricePerLead`. O preço absoluto permanece.
