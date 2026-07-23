@@ -49,35 +49,15 @@ export function PublicPurchaseCard({ purchase }: PublicPurchaseCardProps) {
         refunded: "Reembolsado",
     }
 
-    const downloadFile = async (itemId: string, format: "csv" | "excel", itemName: string) => {
-        const endpoint =
-            format === "csv"
-                ? `/api/purchases/${itemId}/download`
-                : `/api/purchases/${itemId}/download-excel`
-
-        const response = await fetch(endpoint)
-
-        if (!response.ok) {
-            throw new Error("Erro ao baixar arquivo")
-        }
-
-        const blob = await response.blob()
-        const url = window.URL.createObjectURL(blob)
-        const a = document.createElement("a")
-        a.href = url
-        a.download = `${itemName}.${format === "csv" ? "csv" : "xlsx"}`
-        document.body.appendChild(a)
-        a.click()
-        window.URL.revokeObjectURL(url)
-        document.body.removeChild(a)
+    const downloadPdf = (itemId: string) => {
+        window.open(`/api/purchases/${itemId}/download-pdf`, "_blank")
     }
 
-    const handleDownload = async (itemId: string, format: "csv" | "excel", itemName: string) => {
-        setDownloading(`${itemId}-${format}`)
-
+    const handleDownload = (itemId: string) => {
+        setDownloading(itemId)
         try {
-            await downloadFile(itemId, format, itemName)
-            toast.success(`Download de ${format.toUpperCase()} iniciado!`)
+            downloadPdf(itemId)
+            toast.success("Download do PDF iniciado!")
         } catch (error) {
             toast.error("Erro ao fazer download")
             console.error(error)
@@ -86,16 +66,13 @@ export function PublicPurchaseCard({ purchase }: PublicPurchaseCardProps) {
         }
     }
 
-    const handleDownloadAll = async (format: "csv" | "excel") => {
-        setDownloading(`all-${format}`)
-
+    const handleDownloadAll = () => {
+        setDownloading("all")
         try {
             for (const item of purchase.items) {
-                await downloadFile(item.id, format, item.list.slug)
-                await new Promise((resolve) => setTimeout(resolve, 500))
+                downloadPdf(item.id)
             }
-
-            toast.success("Todos os arquivos foram baixados!")
+            toast.success("Downloads iniciados!")
         } catch (error) {
             toast.error("Erro ao fazer downloads")
             console.error(error)
@@ -170,90 +147,32 @@ export function PublicPurchaseCard({ purchase }: PublicPurchaseCardProps) {
                                     <span className="font-medium text-foreground sm:text-right">
                                         {formatCurrency(item.price, purchase.currency)}
                                     </span>
-                                    <div className="grid grid-cols-2 gap-2">
-                                        <Button
-                                            size="sm"
-                                            variant="outline"
-                                            onClick={(e) => {
-                                                e.stopPropagation()
-                                                handleDownload(item.id, "csv", item.list.slug)
-                                            }}
-                                            disabled={downloading !== null}
-                                        >
-                                            {downloading === `${item.id}-csv` ? (
-                                                <>
-                                                    <Download className="h-4 w-4 animate-spin" />
-                                                    Baixando...
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <Download className="h-4 w-4" />
-                                                    CSV
-                                                </>
-                                            )}
-                                        </Button>
-                                        <Button
-                                            size="sm"
-                                            variant="outline"
-                                            onClick={(e) => {
-                                                e.stopPropagation()
-                                                handleDownload(item.id, "excel", item.list.slug)
-                                            }}
-                                            disabled={downloading !== null}
-                                        >
-                                            {downloading === `${item.id}-excel` ? (
-                                                <>
-                                                    <Download className="h-4 w-4 animate-spin" />
-                                                    Baixando...
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <Download className="h-4 w-4" />
-                                                    Excel
-                                                </>
-                                            )}
-                                        </Button>
-                                    </div>
+                                    <Button
+                                        size="sm"
+                                        variant="outline"
+                                        onClick={(e) => {
+                                            e.stopPropagation()
+                                            handleDownload(item.id)
+                                        }}
+                                        disabled={downloading !== null}
+                                    >
+                                        <Download className={`h-4 w-4 ${downloading === item.id ? "animate-spin" : ""}`} />
+                                        Baixar PDF
+                                    </Button>
                                 </div>
                             </div>
                         ))}
                     </div>
 
                     {purchase.items.length > 1 && (
-                        <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+                        <div className="mt-4">
                             <Button
                                 className="bg-brand hover:bg-brand-hover"
-                                onClick={() => handleDownloadAll("csv")}
+                                onClick={() => handleDownloadAll()}
                                 disabled={downloading !== null}
                             >
-                                {downloading === "all-csv" ? (
-                                    <>
-                                        <Download className="h-4 w-4 animate-spin" />
-                                        Baixando...
-                                    </>
-                                ) : (
-                                    <>
-                                        <Download className="h-4 w-4" />
-                                        Baixar tudo em CSV
-                                    </>
-                                )}
-                            </Button>
-                            <Button
-                                variant="outline"
-                                onClick={() => handleDownloadAll("excel")}
-                                disabled={downloading !== null}
-                            >
-                                {downloading === "all-excel" ? (
-                                    <>
-                                        <Download className="h-4 w-4 animate-spin" />
-                                        Baixando...
-                                    </>
-                                ) : (
-                                    <>
-                                        <Download className="h-4 w-4" />
-                                        Baixar tudo em Excel
-                                    </>
-                                )}
+                                <Download className={`h-4 w-4 ${downloading === "all" ? "animate-spin" : ""}`} />
+                                Baixar tudo (PDF)
                             </Button>
                         </div>
                     )}
