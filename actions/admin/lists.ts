@@ -7,6 +7,7 @@ import { requireAdmin } from "@/lib/auth"
 import type { MarketplaceLeadData } from "@/lib/constants/marketplace-csv.constants"
 import type { LeadList } from "@prisma/client"
 import { z } from "zod"
+import { recordAudit } from "@/lib/audit"
 
 interface CreateListData {
     name: string
@@ -140,15 +141,24 @@ export async function updateList(id: string, data: CreateListData): Promise<Seri
 }
 
 export async function deleteList(id: string) {
-    await requireAdmin()
+    const admin = await requireAdmin()
 
     const list = await prisma.leadList.findUnique({
         where: { id },
-        select: { slug: true }
+        select: { slug: true, name: true }
     })
 
     await prisma.leadList.delete({
         where: { id },
+    })
+
+    await recordAudit({
+        actorId: admin.id,
+        actorEmail: admin.email,
+        action: "list.deleted",
+        targetType: "list",
+        targetId: id,
+        metadata: { name: list?.name ?? null },
     })
 
     revalidateListPaths(list?.slug)
@@ -248,11 +258,11 @@ export async function uploadLeadsToList(listId: string, leads: MarketplaceLeadDa
 }
 
 export async function deleteMarketplaceLead(leadId: string, listId: string) {
-    await requireAdmin()
+    const admin = await requireAdmin()
 
     const lead = await prisma.marketplaceLead.findFirst({
         where: { id: leadId, listId },
-        select: { id: true },
+        select: { id: true, companyName: true },
     })
 
     if (!lead) {
@@ -261,6 +271,15 @@ export async function deleteMarketplaceLead(leadId: string, listId: string) {
 
     await prisma.marketplaceLead.delete({
         where: { id: lead.id },
+    })
+
+    await recordAudit({
+        actorId: admin.id,
+        actorEmail: admin.email,
+        action: "marketplace_lead.deleted",
+        targetType: "marketplace_lead",
+        targetId: leadId,
+        metadata: { label: lead.companyName ?? null, listId },
     })
 
     // Atualizar contador
