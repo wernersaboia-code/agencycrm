@@ -98,6 +98,27 @@ Motor funcional em `app/api/cron/process-sequences/route.ts` (cron horário):
 - **Padrões de estado inconsistentes** (loading/vazio/erro) entre listagens.
 - Páginas `support` e parte de `settings` são informativas (checklist de env).
 
+### Taxonomia do catálogo — estado atual
+Há **duas taxonomias distintas** para as listas, ambas hardcoded:
+- **Categorias** (tipo de negócio): `importers`, `exporters`, `manufacturers`,
+  `distributors`, `retailers`, `wholesalers`.
+- **Indústrias/setores**: `food`, `tech`, `fashion`, `automotive`, `health`,
+  `construction`, `retail`, `industrial`, `agriculture`, `electronics`,
+  `chemicals`, `machinery`.
+
+Os arrays estão duplicados no admin (`components/admin/list-form.tsx`) e no
+filtro do catálogo (`components/marketplace/catalog-sidebar.tsx`, que renderiza
+`INDUSTRY_IDS`/`CATEGORY_IDS` fixos mesmo com contagem zero). O catálogo **já
+calcula** `industryCounts`/`categoryCounts` a partir das listas — ou seja, o dado
+para derivar as facetas dinamicamente já flui, só não é usado como fonte.
+
+### Pagamentos — estado atual
+Checkout é **PayPal-only**: `lib/paypal.ts`, `components/checkout/paypal-buttons.tsx`,
+rotas `create-order`/`capture-order`/`webhook`, fulfillment compartilhado em
+`lib/checkout/fulfillment.ts`. Não há abstração de provedor. O model `Purchase`
+é acoplado ao PayPal (`paypalOrderId`, `paypalPayerId`), sem campo genérico de
+provedor.
+
 ## Decisões
 
 - **i18n:** super-admin e CRM passam a usar `next-intl` com as mensagens em
@@ -109,6 +130,19 @@ Motor funcional em `app/api/cron/process-sequences/route.ts` (cron horário):
 - **Cold mail:** evoluir o motor existente, não reescrever. Janelas de envio,
   supressão/bounce, detecção de resposta e `List-Unsubscribe` são as prioridades;
   A/B e warmup ficam como incrementos posteriores.
+- **Pagamentos:** o **Stripe entra como segundo provedor**, convivendo com o
+  PayPal (não o substitui). Requer abstração de provedor sobre
+  create/capture/webhook + fulfillment e campos genéricos no `Purchase`. O
+  comprador escolhe o método no checkout.
+- **Taxonomia do catálogo — facetas dinâmicas (opção escolhida):** o catálogo
+  passa a exibir **apenas as categorias/indústrias presentes nas listas
+  publicadas** (derivadas de `industryCounts`/`categoryCounts` > 0), em vez do
+  array fixo. Isso remove naturalmente `tech`, `automotive`, `construction` e
+  `industrial` enquanto não houver lista que os use, e evita manter duas listas
+  hardcoded. O admin (`list-form`) mantém um vocabulário controlado de opções
+  válidas (fonte única compartilhada), mas o **filtro público** reflete só o que
+  existe. Remoção pura dos quatro setores fica como alternativa mais simples, se
+  preferir o caminho estático.
 - **Modelos de implementação:** cada tarefa recebe um modelo sugerido — **Opus**
   para schema/segurança e mudanças com risco de vazamento de dados; **Sonnet**
   para a maior parte de features e refactors de componente; **Haiku** para
@@ -343,6 +377,43 @@ dependências**.
 - Aceite: usuário reordena/oculta widgets; persiste.
 - Dependências: nenhuma. **Fase posterior.**
 
+### WS-7 · Pagamentos (marketplace)
+
+**PAY-1 · Stripe como segundo provedor** — _Opus_
+- Problema: checkout é PayPal-only, acoplado ao PayPal no `Purchase` e sem
+  abstração de provedor.
+- Abordagem: introduzir uma abstração de provedor de pagamento por trás de
+  create/capture/webhook e do fulfillment (`lib/checkout/fulfillment.ts` já é o
+  ponto comum). Adicionar Stripe (Checkout/PaymentIntents + webhook de
+  confirmação). Generalizar o `Purchase`: campo `provider` (`paypal` | `stripe`)
+  e ids genéricos (manter os campos PayPal existentes ou migrar para
+  `providerOrderId`/`providerPayerId`). Comprador escolhe o método no checkout.
+  Verificação de assinatura do webhook Stripe obrigatória. Migração Prisma sem
+  shadow DB.
+  - **Restrição conhecida (memória do projeto):** conta BR liquida só em BRL e Pix
+    é invite-only — validar moedas/métodos suportados por provedor antes de expor
+    a opção ao comprador.
+- Aceite: comprador conclui compra por Stripe **ou** PayPal; fulfillment idêntico
+  (mesmo acesso ao download); webhooks de ambos verificados; refund (SA-F4)
+  funciona para os dois; testes de fulfillment cobrindo os dois provedores.
+- Dependências: idealmente após SA-F4/SA-S2 (refund + audit falam com pagamento),
+  mas pode andar em paralelo.
+
+**PAY-2 · Facetas dinâmicas do catálogo (categorias/indústrias)** — _Sonnet_
+- Problema: catálogo mostra indústrias/categorias de um array fixo (inclui
+  `tech`, `automotive`, `construction`, `industrial`), duplicado entre admin e
+  marketplace, mesmo sem lista que as use.
+- Abordagem: **fonte única** do vocabulário controlado (constante compartilhada,
+  substituindo os arrays duplicados de `list-form.tsx` e `catalog-sidebar.tsx`).
+  O **filtro público** passa a renderizar só as facetas com contagem > 0
+  (derivadas de `industryCounts`/`categoryCounts`, que já são calculadas). Efeito:
+  os quatro setores somem do catálogo enquanto nenhuma lista os usar, sem remoção
+  manual. i18n das labels alinhado com SA-U1/CRM-U3.
+- Aceite: catálogo exibe apenas categorias/indústrias presentes nas listas
+  publicadas; admin escolhe a partir do vocabulário único; nenhuma faceta vazia
+  aparece; sem arrays duplicados.
+- Dependências: nenhuma (mas casa com SA-U1/CRM-U3 pela i18n das labels).
+
 ## Sequenciamento sugerido (fases)
 
 **Fase 0 — Fundações de segurança (fazer primeiro):**
@@ -352,20 +423,23 @@ do isolamento verificado.
 **Fase 1 — Produção-crítico (segurança + cold mail núcleo + i18n):**
 SA-S3, SA-S4, CRM-S2, CM-1, CM-2, CM-3, CM-4, SA-U1, CRM-U3, SA-U2.
 
+**Fase 1 (pagamentos/catálogo):** PAY-2 (facetas dinâmicas — baixo risco, ajuda o
+catálogo desde já).
+
 **Fase 2 — Features de operação e suporte:**
-SA-F1, SA-F4, SA-F3, CRM-F1, CM-5, SA-U3, SA-U4, CRM-U1, CRM-U2, SA-F2.
+SA-F1, SA-F4, SA-F3, PAY-1, CRM-F1, CM-5, SA-U3, SA-U4, CRM-U1, CRM-U2, SA-F2.
 
 **Fase 3 — Incrementos:**
 CM-6, CRM-F2.
 
 ## Racional de atribuição de modelo
 
-- **Opus** — decisões de schema, segurança e qualquer coisa com risco de
-  vazamento de dados ou sessão: SA-S1, SA-S2, SA-F3, CRM-S1, CM-1, CM-2, CM-3,
-  CRM-F2.
+- **Opus** — decisões de schema, segurança, pagamento e qualquer coisa com risco
+  de vazamento de dados ou sessão: SA-S1, SA-S2, SA-F3, CRM-S1, CM-1, CM-2, CM-3,
+  CRM-F2, PAY-1.
 - **Sonnet** — features e refactors de componente de complexidade média: SA-S3,
   SA-U1, SA-U3, SA-F1, SA-F2, SA-F4, CRM-S2, CRM-U1, CRM-U3, CRM-F1, CM-4, CM-5,
-  CM-6.
+  CM-6, PAY-2.
 - **Haiku** — trabalho mecânico e repetitivo: SA-S4, SA-U2, SA-U4, CRM-U2.
 
 ## Fora de escopo (por ora)
@@ -373,7 +447,8 @@ CM-6, CRM-F2.
 - Reescrita do motor de cold mail (evoluímos o existente).
 - Migração de provedor de e-mail ou de autenticação.
 - Refatorações não relacionadas às três frentes.
-- Marketplace público (foco é super-admin e CRM).
+- Marketplace público — **exceto** os pontos explicitamente incluídos aqui:
+  pagamentos (WS-7 / PAY-1) e facetas do catálogo (PAY-2).
 
 ## Riscos e observações
 
