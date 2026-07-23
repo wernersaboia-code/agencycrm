@@ -195,8 +195,12 @@ describe("validatePdfFile", () => {
         expect(r.ok).toBe(false)
     })
 
-    it("rejeita arquivo acima de 20MB", () => {
-        const r = validatePdfFile({ type: "application/pdf", size: 21 * 1024 * 1024 })
+    it("aceita PDF grande dentro do teto do bucket (40MB)", () => {
+        expect(validatePdfFile({ type: "application/pdf", size: 40 * 1024 * 1024 })).toEqual({ ok: true })
+    })
+
+    it("rejeita arquivo acima de 50MB", () => {
+        const r = validatePdfFile({ type: "application/pdf", size: 51 * 1024 * 1024 })
         expect(r.ok).toBe(false)
     })
 })
@@ -264,7 +268,7 @@ Create `lib/supabase/list-studies.ts`:
 import { createAdminClient } from "@/lib/supabase/admin"
 
 export const LIST_STUDIES_BUCKET = "list-studies"
-const MAX_PDF_SIZE = 20 * 1024 * 1024 // 20MB
+const MAX_PDF_SIZE = 50 * 1024 * 1024 // 50MB — alinhado ao teto por arquivo do bucket
 
 export function validatePdfFile(file: { type: string; size: number }):
     | { ok: true }
@@ -273,7 +277,7 @@ export function validatePdfFile(file: { type: string; size: number }):
         return { ok: false, error: "Formato inválido. Envie um arquivo PDF." }
     }
     if (file.size > MAX_PDF_SIZE) {
-        return { ok: false, error: "Arquivo muito grande. Máximo 20MB." }
+        return { ok: false, error: "Arquivo muito grande. Máximo 50MB." }
     }
     return { ok: true }
 }
@@ -682,7 +686,7 @@ Após o card "Importar Leads" (o `</Card>` que fecha na ~linha 629), inserir um 
                             </p>
                         )}
                         <p className="text-xs text-muted-foreground">
-                            Formato: PDF. Máximo 20MB.
+                            Formato: PDF. Máximo 50MB.
                         </p>
                     </CardContent>
                 </Card>
