@@ -72,6 +72,8 @@ export function SignInForm() {
         return `/sign-in?${params.toString()}`
     }
 
+    const signUpHref = locale !== DEFAULT_LOCALE ? `/sign-up?lang=${locale}` : "/sign-up"
+
     const erro = searchParams.get("erro")
     useEffect(() => {
         if (!erro) return
@@ -224,7 +226,7 @@ export function SignInForm() {
 
                         <p className="text-center text-sm text-muted-foreground">
                             {t("signIn.noAccount")}{" "}
-                            <Link href="/sign-up" className="text-primary hover:underline">
+                            <Link href={signUpHref} className="text-primary hover:underline">
                                 {t("signIn.createAccount")}
                             </Link>
                         </p>
