@@ -204,12 +204,17 @@ export function ListForm({ list }: ListFormProps) {
         setIsLoading(true)
         setUploadProgress(0)
 
-        const uploadPdf = async (listId: string) => {
-            if (!pdfFile) return
-            const body = new FormData()
-            body.append("file", pdfFile)
-            const res = await fetch(`/api/admin/lists/${listId}/pdf`, { method: "POST", body })
-            if (!res.ok) throw new Error("Falha no upload do PDF")
+        const uploadPdf = async (listId: string): Promise<boolean> => {
+            if (!pdfFile) return true
+            try {
+                const body = new FormData()
+                body.append("file", pdfFile)
+                const res = await fetch(`/api/admin/lists/${listId}/pdf`, { method: "POST", body })
+                return res.ok
+            } catch (error) {
+                console.error("Erro ao enviar PDF:", error)
+                return false
+            }
         }
 
         try {
@@ -225,8 +230,12 @@ export function ListForm({ list }: ListFormProps) {
             if (list) {
                 // EDITANDO lista existente
                 await updateList(list.id, payload)
-                await uploadPdf(list.id)
-                toast.success("Lista atualizada com sucesso!")
+                const pdfOk = await uploadPdf(list.id)
+                if (pdfOk) {
+                    toast.success("Lista atualizada com sucesso!")
+                } else {
+                    toast.warning("Lista salva, mas o envio do PDF falhou. Edite a lista para reenviar.")
+                }
                 router.push("/super-admin/marketplace/lists")
                 router.refresh()
             } else {
@@ -235,7 +244,7 @@ export function ListForm({ list }: ListFormProps) {
 
                 // 1. Criar a lista
                 const newList = await createList(payload)
-                await uploadPdf(newList.id)
+                const pdfOk = await uploadPdf(newList.id)
                 setUploadProgress(30)
 
                 // 2. Se tem leads preparados, importar
@@ -248,6 +257,11 @@ export function ListForm({ list }: ListFormProps) {
                     toast.success(`Lista criada com ${result.count} leads!`)
                 } else {
                     toast.success("Lista criada com sucesso!")
+                }
+
+                // 3. Avisar se PDF falhou
+                if (!pdfOk) {
+                    toast.warning("Lista criada, mas o envio do PDF falhou. Edite a lista para reenviar.")
                 }
 
                 router.push("/super-admin/marketplace/lists")
