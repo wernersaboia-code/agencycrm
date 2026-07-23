@@ -14,6 +14,7 @@ import {
     CheckCircle2,
     Trash2,
     X,
+    FileText,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -42,6 +43,8 @@ import {
 import { createList, updateList, uploadLeadsToList } from "@/actions/admin/lists"
 import { MarketplaceImportWizard } from "@/components/admin/marketplace-import-wizard"
 import type { MarketplaceLeadData } from "@/lib/constants/marketplace-csv.constants"
+import { LIST_LANGUAGES } from "@/lib/constants/list-languages"
+import { FlagIcon } from "@/components/ui/flag-icon"
 
 // ============================================
 // SCHEMA
@@ -52,6 +55,8 @@ const listSchema = z.object({
     slug: z.string().min(3, "Slug deve ter pelo menos 3 caracteres")
         .regex(/^[a-z0-9-]+$/, "Slug deve conter apenas letras minúsculas, números e hífens"),
     description: z.string().optional(),
+    introduction: z.string().optional(),
+    language: z.string().optional(),
     category: z.string().min(1, "Selecione uma categoria"),
     countries: z.string().min(1, "Informe pelo menos um país"),
     industries: z.string().optional(),
@@ -72,6 +77,10 @@ interface SerializedLeadList {
     name: string
     slug: string
     description: string | null
+    introduction: string | null
+    language: string | null
+    studyPdfUrl: string | null
+    studyPdfName: string | null
     category: string
     countries: string[]
     industries: string[]
@@ -140,6 +149,9 @@ export function ListForm({ list }: ListFormProps) {
     // Estado dos leads preparados (para criação de nova lista)
     const [preparedLeads, setPreparedLeads] = useState<MarketplaceLeadData[]>([])
 
+    const [pdfFile, setPdfFile] = useState<File | null>(null)
+    const [pdfName, setPdfName] = useState<string | null>(list?.studyPdfName ?? null)
+
     // Estado das indústrias selecionadas
     const [selectedIndustries, setSelectedIndustries] = useState<string[]>(
         list?.industries || []
@@ -152,6 +164,8 @@ export function ListForm({ list }: ListFormProps) {
             name: list?.name || "",
             slug: list?.slug || "",
             description: list?.description || "",
+            introduction: list?.introduction || "",
+            language: list?.language || "",
             category: list?.category || "",
             countries: list?.countries.join(", ") || "",
             industries: list?.industries.join(", ") || "",
@@ -190,17 +204,28 @@ export function ListForm({ list }: ListFormProps) {
         setIsLoading(true)
         setUploadProgress(0)
 
+        const uploadPdf = async (listId: string) => {
+            if (!pdfFile) return
+            const body = new FormData()
+            body.append("file", pdfFile)
+            const res = await fetch(`/api/admin/lists/${listId}/pdf`, { method: "POST", body })
+            if (!res.ok) throw new Error("Falha no upload do PDF")
+        }
+
         try {
             const payload = {
                 ...data,
                 price: parseFloat(data.price),
                 countries: data.countries.split(",").map((c) => c.trim().toUpperCase()),
                 industries: selectedIndustries, // Usar array direto
+                introduction: data.introduction || undefined,
+                language: data.language || undefined,
             }
 
             if (list) {
                 // EDITANDO lista existente
                 await updateList(list.id, payload)
+                await uploadPdf(list.id)
                 toast.success("Lista atualizada com sucesso!")
                 router.push("/super-admin/marketplace/lists")
                 router.refresh()
@@ -210,6 +235,7 @@ export function ListForm({ list }: ListFormProps) {
 
                 // 1. Criar a lista
                 const newList = await createList(payload)
+                await uploadPdf(newList.id)
                 setUploadProgress(30)
 
                 // 2. Se tem leads preparados, importar
@@ -381,6 +407,40 @@ export function ListForm({ list }: ListFormProps) {
                                 placeholder="Descrição detalhada da lista..."
                                 rows={4}
                                 {...form.register("description")}
+                            />
+                        </div>
+
+                        <div className="grid gap-4 md:grid-cols-2">
+                            <div className="space-y-2">
+                                <Label htmlFor="language">Idioma da lista</Label>
+                                <Select
+                                    value={form.watch("language")}
+                                    onValueChange={(value) => form.setValue("language", value)}
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Selecione o idioma" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {LIST_LANGUAGES.map((lang) => (
+                                            <SelectItem key={lang.code} value={lang.code}>
+                                                <span className="flex items-center gap-2">
+                                                    <FlagIcon code={lang.flagCode} size="sm" />
+                                                    {lang.label}
+                                                </span>
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="introduction">Introdução</Label>
+                            <Textarea
+                                id="introduction"
+                                placeholder="Texto de introdução ao estudo de mercado..."
+                                rows={6}
+                                {...form.register("introduction")}
                             />
                         </div>
 
@@ -625,6 +685,39 @@ export function ListForm({ list }: ListFormProps) {
                                 </div>
                             </Button>
                         )}
+                    </CardContent>
+                </Card>
+
+                {/* Card: Estudo de mercado (PDF) */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                            <FileText className="h-5 w-5" />
+                            Estudo de mercado (PDF)
+                        </CardTitle>
+                        <CardDescription>
+                            Este é o arquivo que o comprador vai baixar.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                        <Input
+                            id="studyPdf"
+                            type="file"
+                            accept="application/pdf"
+                            onChange={(e) => {
+                                const file = e.target.files?.[0] ?? null
+                                setPdfFile(file)
+                                if (file) setPdfName(file.name)
+                            }}
+                        />
+                        {pdfName && (
+                            <p className="text-sm text-muted-foreground">
+                                Arquivo atual: <span className="font-medium">{pdfName}</span>
+                            </p>
+                        )}
+                        <p className="text-xs text-muted-foreground">
+                            Formato: PDF. Máximo 50MB.
+                        </p>
                     </CardContent>
                 </Card>
 
