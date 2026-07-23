@@ -16,7 +16,7 @@ export async function GET(
         }
 
         const item = await prisma.purchaseItem.findFirst({
-            where: { id, purchase: { userId } },
+            where: { id, purchase: { userId, status: "paid" } },
             include: { list: { select: { studyPdfUrl: true } } },
         })
 

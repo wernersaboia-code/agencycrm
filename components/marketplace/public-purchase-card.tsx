@@ -66,11 +66,12 @@ export function PublicPurchaseCard({ purchase }: PublicPurchaseCardProps) {
         }
     }
 
-    const handleDownloadAll = () => {
+    const handleDownloadAll = async () => {
         setDownloading("all")
         try {
             for (const item of purchase.items) {
                 downloadPdf(item.id)
+                await new Promise((resolve) => setTimeout(resolve, 500))
             }
             toast.success("Downloads iniciados!")
         } catch (error) {
