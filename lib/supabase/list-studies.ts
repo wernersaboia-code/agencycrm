@@ -32,19 +32,22 @@ export async function uploadListPdf(
     const supabase = createAdminClient()
     const path = `${listId}/study-${Date.now()}.pdf`
 
-    // Remove PDFs anteriores da lista.
-    const { data: existing } = await supabase.storage.from(LIST_STUDIES_BUCKET).list(listId)
-    if (existing && existing.length > 0) {
-        await supabase.storage
-            .from(LIST_STUDIES_BUCKET)
-            .remove(existing.map((f) => `${listId}/${f.name}`))
-    }
-
     const { error } = await supabase.storage
         .from(LIST_STUDIES_BUCKET)
         .upload(path, file, { cacheControl: "3600", upsert: true, contentType: "application/pdf" })
 
     if (error) throw new Error(`Falha no upload do PDF: ${error.message}`)
+
+    // Remove PDFs antigos da lista somente depois do novo upload ter sucesso.
+    const { data: existing } = await supabase.storage.from(LIST_STUDIES_BUCKET).list(listId)
+    if (existing && existing.length > 0) {
+        const stale = existing
+            .map((f) => `${listId}/${f.name}`)
+            .filter((p) => p !== path)
+        if (stale.length > 0) {
+            await supabase.storage.from(LIST_STUDIES_BUCKET).remove(stale)
+        }
+    }
 
     return { url: path, path }
 }

@@ -19,6 +19,10 @@ describe("validatePdfFile", () => {
         const r = validatePdfFile({ type: "application/pdf", size: 51 * 1024 * 1024 })
         expect(r.ok).toBe(false)
     })
+
+    it("aceita PDF exatamente no limite de 50MB", () => {
+        expect(validatePdfFile({ type: "application/pdf", size: 50 * 1024 * 1024 })).toEqual({ ok: true })
+    })
 })
 
 describe("extractStudyPathFromUrl", () => {
