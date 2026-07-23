@@ -44,7 +44,7 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
         const target = purchaseId
             ? `/checkout/success?purchaseId=${encodeURIComponent(purchaseId)}`
             : "/my-purchases"
-        redirect(`/sign-in?redirect=${encodeURIComponent(target)}`)
+        redirect(`/sign-in?redirect=${encodeURIComponent(target)}&lang=${locale}`)
     }
 
     if (!purchaseId) {

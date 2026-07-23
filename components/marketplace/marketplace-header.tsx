@@ -128,7 +128,7 @@ export function MarketplaceHeader() {
                                 </DropdownMenu>
                             ) : (
                                 <Button variant="outline" size="sm" asChild>
-                                    <Link href="/sign-in">
+                                    <Link href={`/sign-in?lang=${locale}`}>
                                         <User className="h-4 w-4" />
                                         {t("login")}
                                     </Link>

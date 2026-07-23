@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { ShoppingCart } from "lucide-react"
 import { useCart } from "@/contexts/cart-context"
 import { useAuth } from "@/hooks/useAuth"
-import { useTranslations } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 // eslint-disable-next-line no-restricted-imports -- usado só para /sign-in, fora do segmento de locale
 import { useRouter as usePlainRouter } from "next/navigation"
 import { useRouter } from "@/lib/i18n/navigation"
@@ -25,6 +25,7 @@ export function BuyNowButton({ list }: BuyNowButtonProps) {
     const { addItem } = useCart()
     const { isAuthenticated, isLoading } = useAuth()
     const t = useTranslations("listing")
+    const locale = useLocale()
     const router = useRouter()
     // /sign-in fica fora do segmento de locale — usa o router puro do Next
     // para não ganhar um prefixo de idioma que a rota não tem.
@@ -45,7 +46,7 @@ export function BuyNowButton({ list }: BuyNowButtonProps) {
         if (isAuthenticated) {
             router.push("/checkout")
         } else {
-            plainRouter.push("/sign-in?redirect=/checkout")
+            plainRouter.push(`/sign-in?redirect=/checkout&lang=${locale}`)
         }
     }
 

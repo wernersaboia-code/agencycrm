@@ -5,7 +5,7 @@ import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js"
 // eslint-disable-next-line no-restricted-imports -- usado só para /sign-in, fora do segmento de locale
 import { useRouter as usePlainRouter } from "next/navigation"
 import { useRouter } from "@/lib/i18n/navigation"
-import { useTranslations } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 import { toast } from "sonner"
 import { useCart } from "@/contexts/cart-context"
 import { getOptionalPublicPaypalClientId } from "@/lib/env"
@@ -45,6 +45,7 @@ export function PayPalButtonsWrapper({ items }: PayPalButtonsWrapperProps) {
     const plainRouter = usePlainRouter()
     const { clearCart } = useCart()
     const t = useTranslations("checkout")
+    const locale = useLocale()
     const paypalClientId = getOptionalPublicPaypalClientId()
 
     if (!paypalClientId) {
@@ -95,7 +96,7 @@ export function PayPalButtonsWrapper({ items }: PayPalButtonsWrapperProps) {
                     } catch (error: unknown) {
                         if (isSessionExpired(error)) {
                             toast.error(t("sessionExpiredPay"))
-                            plainRouter.push("/sign-in?redirect=/checkout")
+                            plainRouter.push(`/sign-in?redirect=/checkout&lang=${locale}`)
                         } else {
                             toast.error(t("createFailed"))
                         }
@@ -127,7 +128,7 @@ export function PayPalButtonsWrapper({ items }: PayPalButtonsWrapperProps) {
                     } catch (error: unknown) {
                         if (isSessionExpired(error)) {
                             toast.error(t("sessionExpiredOrder"))
-                            plainRouter.push("/sign-in?redirect=/my-purchases")
+                            plainRouter.push(`/sign-in?redirect=/my-purchases&lang=${locale}`)
                             return
                         }
 

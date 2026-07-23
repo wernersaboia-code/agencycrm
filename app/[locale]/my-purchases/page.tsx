@@ -21,7 +21,7 @@ import { MyPurchasesEmptyState } from "@/components/marketplace/my-purchases-emp
 import { validatePurchaseAccessToken } from "@/lib/auth/magic-link"
 import { getAuthenticatedUserId } from "@/lib/auth"
 import { formatCurrency } from "@/lib/utils"
-import { getFormatter, getTranslations } from "next-intl/server"
+import { getFormatter, getLocale, getTranslations } from "next-intl/server"
 import type { Metadata } from "next"
 import { Link as LocaleLink } from "@/lib/i18n/navigation"
 
@@ -75,7 +75,8 @@ async function PurchasesContent({ searchParams }: PageProps) {
     const userId = await getAuthenticatedUserId()
 
     if (!userId) {
-        redirect("/sign-in?redirect=/my-purchases")
+        const locale = await getLocale()
+        redirect(`/sign-in?redirect=/my-purchases&lang=${locale}`)
     }
 
     const purchases = await getUserPurchases()

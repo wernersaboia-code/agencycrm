@@ -41,7 +41,7 @@ export async function MarketplaceFooter({ locale = "pt" }: { locale?: Locale }) 
                         <h4 className="mb-4 font-semibold">{t("accountTitle")}</h4>
                         <ul className="space-y-2 text-sm text-muted-foreground">
                             <li><LocaleLink href="/my-purchases" className="hover:text-foreground">{t("myPurchases")}</LocaleLink></li>
-                            <li><Link href="/sign-in" className="hover:text-foreground">{t("login")}</Link></li>
+                            <li><Link href={`/sign-in?lang=${locale}`} className="hover:text-foreground">{t("login")}</Link></li>
                         </ul>
                     </div>
 
