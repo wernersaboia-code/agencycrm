@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma"
 import type { Prisma } from "@prisma/client"
+import { headers } from "next/headers"
 
 export type AuditAction =
     | "user.role_changed"
@@ -9,6 +10,7 @@ export type AuditAction =
     | "workspace.deleted"
     | "list.deleted"
     | "marketplace_lead.deleted"
+    | "workspace.exported"
 
 export interface AuditInput {
     actorId: string
@@ -41,7 +43,23 @@ export function buildAuditData(input: AuditInput): Prisma.AuditLogUncheckedCreat
  */
 export async function recordAudit(input: AuditInput): Promise<void> {
     try {
-        await prisma.auditLog.create({ data: buildAuditData(input) })
+        let resolvedIp: string | null = null
+
+        if (input.ip === undefined || input.ip === null) {
+            try {
+                const headerList = await headers()
+                const forwardedFor = headerList.get("x-forwarded-for")
+                if (forwardedFor) {
+                    resolvedIp = forwardedFor.split(",")[0]?.trim() || null
+                } else {
+                    resolvedIp = headerList.get("x-real-ip")
+                }
+            } catch {
+                resolvedIp = null
+            }
+        }
+
+        await prisma.auditLog.create({ data: buildAuditData({ ...input, ip: input.ip ?? resolvedIp }) })
     } catch (error) {
         console.error("[Audit] Falha ao gravar registro de auditoria:", error)
     }

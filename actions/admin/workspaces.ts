@@ -363,7 +363,7 @@ export async function deleteWorkspace(workspaceId: string) {
 // ==================== EXPORTAR DADOS DO WORKSPACE ====================
 
 export async function exportWorkspaceData(workspaceId: string) {
-    await requireAdmin()
+    const admin = await requireAdmin()
 
     const [workspace, leads, campaigns, calls, templates] = await Promise.all([
         prisma.workspace.findUnique({
@@ -463,6 +463,15 @@ export async function exportWorkspaceData(workspaceId: string) {
             totalTemplates: templates.length,
         },
     }
+
+    await recordAudit({
+        actorId: admin.id,
+        actorEmail: admin.email,
+        action: "workspace.exported",
+        targetType: "workspace",
+        targetId: workspaceId,
+        metadata: { name: workspace.name },
+    })
 
     return exportData
 }

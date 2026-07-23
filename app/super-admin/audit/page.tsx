@@ -12,7 +12,7 @@ export default async function AuditPage({
     searchParams: Promise<{ page?: string }>
 }) {
     const { page } = await searchParams
-    const currentPage = Number(page) || 1
+    const currentPage = Math.max(1, Number(page) || 1)
     const { items, total } = await getAuditLogs({ page: currentPage })
 
     const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE))
