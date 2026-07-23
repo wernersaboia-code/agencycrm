@@ -15,6 +15,7 @@ import {
     LifeBuoy,
     BarChart3,
     FileText,
+    ScrollText,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -49,6 +50,7 @@ const menuSections: MenuSection[] = [
         items: [
             { title: "Usuários", href: "/super-admin/users", icon: Users },
             { title: "Empresas/Contas", href: "/super-admin/workspaces", icon: Building2 },
+            { title: "Auditoria", href: "/super-admin/audit", icon: ScrollText },
         ],
     },
     {
