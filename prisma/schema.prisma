@@ -534,6 +534,12 @@ model LeadList {
   // Preview (dados parciais para mostrar antes da compra)
   previewData Json?
 
+  // Estudo de mercado (PDF)
+  introduction String? @db.Text
+  language     String? // 'pt' | 'en' | 'de' | 'fr' | 'es' | 'it' | 'nl'
+  studyPdfUrl  String?
+  studyPdfName String?
+
   // Relacionamentos
   leads         MarketplaceLead[]
   purchaseItems PurchaseItem[]
