@@ -1,302 +1,34 @@
-"use client"
+import { Suspense } from "react"
+import { Loader2 } from "lucide-react"
 
-import { Suspense, useEffect, useMemo, useState } from "react"
-import type { ComponentType, FormEvent } from "react"
-import Link from "next/link"
-import { useRouter, useSearchParams } from "next/navigation"
-import { Building2, CheckCircle2, Loader2, ShieldCheck, ShoppingBag } from "lucide-react"
-import { toast } from "sonner"
+import { AuthShell } from "@/components/auth/auth-shell"
+import { SignInForm } from "@/components/auth/sign-in-form"
+import { resolveAuthLocale } from "@/lib/i18n/auth-locale"
+import { loadMessages } from "@/lib/i18n/load-messages"
 
-import { Button } from "@/components/ui/button"
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { createClient } from "@/lib/supabase/client"
-import {
-    getAreaFromRedirect,
-    normalizeRedirect,
-    resolvePostLoginRedirect,
-    type AccessAreaId,
-} from "@/lib/auth/access-areas"
-import { cn } from "@/lib/utils"
-
-type AccessArea = {
-    id: AccessAreaId
-    title: string
-    shortTitle: string
-    description: string
-    redirect: string
-    signInHref: string
-    buttonLabel: string
-    icon: ComponentType<{ className?: string }>
-    /**
-     * Se aparece na lista de escolha da tela de login.
-     *
-     * O CRM é interno: continua resolvendo como destino para quem chega por
-     * link direto (um ADMIN clicando em /dashboard), mas não é ofertado a
-     * quem simplesmente abre a tela de login.
-     */
-    visivel: boolean
-}
-
-const accessAreas: AccessArea[] = [
-    {
-        id: "purchases",
-        title: "Minhas compras",
-        shortTitle: "Ver compras",
-        description: "Listas compradas, pedidos e downloads de arquivos.",
-        redirect: "/my-purchases",
-        signInHref: "/sign-in?redirect=/my-purchases",
-        buttonLabel: "Entrar em Minhas compras",
-        icon: ShoppingBag,
-        visivel: true,
-    },
-    {
-        id: "admin",
-        title: "Área Administrativa",
-        shortTitle: "Área Administrativa",
-        description: "Gerenciar listas, usuários, vendas e configurações.",
-        redirect: "/super-admin",
-        signInHref: "/sign-in?redirect=/super-admin",
-        buttonLabel: "Entrar na Área Administrativa",
-        icon: ShieldCheck,
-        visivel: true,
-    },
-    {
-        id: "crm",
-        title: "CRM",
-        shortTitle: "Entrar no CRM",
-        description: "Leads, campanhas, chamadas, relatórios e rotina comercial.",
-        redirect: "/dashboard",
-        signInHref: "/sign-in?redirect=/dashboard",
-        buttonLabel: "Entrar no CRM",
-        icon: Building2,
-        visivel: false,
-    },
-]
-
-/** Só as áreas que o visitante pode escolher na tela. */
-const areasVisiveis = accessAreas.filter((area) => area.visivel)
-
-function SignInForm() {
-    const router = useRouter()
-    const searchParams = useSearchParams()
-    const [isLoading, setIsLoading] = useState(false)
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
-
-    const explicitRedirect = searchParams.get("redirect")
-    const selectedAreaId = getAreaFromRedirect(explicitRedirect, searchParams.get("from"))
-    const selectedArea = useMemo(
-        () => accessAreas.find((area) => area.id === selectedAreaId) ?? accessAreas[0],
-        [selectedAreaId]
-    )
-    const SelectedIcon = selectedArea.icon
-
-    // Quem vem de um link de confirmação que falhou chega aqui com ?erro=.
-    // Sem exibir nada, a pessoa cairia numa tela de login idêntica à inicial,
-    // sem ideia do que houve — o mesmo "não aconteceu nada" que essa tela já
-    // produzia antes.
-    const erro = searchParams.get("erro")
-    useEffect(() => {
-        if (!erro) return
-
-        const mensagens: Record<string, string> = {
-            link_expirado: "Esse link de confirmação expirou ou já foi usado. Entre com sua senha ou peça um novo cadastro.",
-            link_invalido: "Não foi possível validar esse link de confirmação. Tente entrar com sua senha.",
-            link_incompleto: "Esse link de confirmação está incompleto. Abra-o direto do e-mail, sem copiar e colar.",
-        }
-
-        toast.error(mensagens[erro] ?? "Não foi possível concluir a confirmação.")
-    }, [erro])
-
-    async function handleSubmit(e: FormEvent) {
-        e.preventDefault()
-        setIsLoading(true)
-
-        try {
-            const supabase = createClient()
-
-            const { error } = await supabase.auth.signInWithPassword({
-                email,
-                password,
-            })
-
-            if (error) {
-                toast.error(error.message)
-                return
-            }
-
-            const intended = explicitRedirect
-                ? normalizeRedirect(explicitRedirect)
-                : selectedArea.redirect
-
-            // A área é escolhida antes de sabermos quem entrou. Conferir o
-            // papel agora evita despachar a pessoa para um destino que o
-            // layout de lá devolveria — de onde ela voltaria ao login sem
-            // nenhuma mensagem, parecendo que o botão não funcionou.
-            let role: string | null = null
-            try {
-                const response = await fetch("/api/user/role")
-                if (response.ok) {
-                    role = (await response.json()).role ?? null
-                }
-            } catch {
-                // Sem o papel, resolvePostLoginRedirect escolhe o destino seguro.
-            }
-
-            const redirectTo = resolvePostLoginRedirect(intended, role)
-
-            toast.success("Login realizado com sucesso!")
-            router.push(redirectTo)
-            router.refresh()
-        } catch {
-            toast.error("Erro ao fazer login")
-        } finally {
-            setIsLoading(false)
-        }
-    }
+// Server component: layouts não recebem searchParams, então o idioma (?lang) é
+// resolvido aqui. O AuthShell abre o provider; SignInForm (client) consome as
+// traduções e lê os demais params (redirect/from/erro) via useSearchParams.
+export default async function SignInPage({
+    searchParams,
+}: {
+    searchParams: Promise<{ lang?: string }>
+}) {
+    const { lang } = await searchParams
+    const locale = resolveAuthLocale(lang)
+    const messages = await loadMessages(locale)
 
     return (
-        <div className="mx-auto grid w-full max-w-4xl gap-6 lg:grid-cols-[1fr_420px] lg:items-start">
-            <section className="rounded-lg border border-border bg-card p-5 shadow-[0_1px_2px_rgba(20,40,36,0.04)]">
-                <div className="mb-5">
-                    <p className="text-sm font-bold uppercase text-primary">
-                        Escolha para onde entrar
-                    </p>
-                    <h1 className="mt-2 text-2xl font-bold tracking-normal text-foreground">
-                        Acessos principais
-                    </h1>
-                    <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                        Suas compras ficam em primeiro, que é o acesso da maioria.
-                        A Área Administrativa é restrita a quem opera o sistema.
-                    </p>
-                </div>
-
-                <div className="grid gap-3">
-                    {areasVisiveis.map((area) => {
-                        const Icon = area.icon
-                        const isSelected = area.id === selectedArea.id
-
-                        return (
-                            <Link
-                                key={area.id}
-                                href={area.signInHref}
-                                className={cn(
-                                    "flex gap-4 rounded-lg border p-4 transition hover:border-primary/30 hover:bg-secondary/60",
-                                    isSelected
-                                        ? "border-primary bg-secondary"
-                                        : "border-border bg-card"
-                                )}
-                            >
-                                <div
-                                    className={cn(
-                                        "flex h-11 w-11 shrink-0 items-center justify-center rounded-md",
-                                        isSelected
-                                            ? "bg-primary text-primary-foreground"
-                                            : "bg-secondary text-muted-foreground"
-                                    )}
-                                >
-                                    <Icon className="h-5 w-5" />
-                                </div>
-                                <div className="min-w-0 flex-1">
-                                    <div className="flex items-center gap-2">
-                                        <h2 className="font-semibold text-foreground">{area.title}</h2>
-                                        {isSelected && (
-                                            <CheckCircle2 className="h-4 w-4 text-primary" />
-                                        )}
-                                    </div>
-                                    <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                                        {area.description}
-                                    </p>
-                                </div>
-                            </Link>
-                        )
-                    })}
-                </div>
-            </section>
-
-            <Card className="w-full rounded-lg">
-                <CardHeader className="space-y-1 text-center">
-                    <div className="mb-4 flex justify-center">
-                        <div className="flex h-16 w-16 items-center justify-center rounded-md bg-primary">
-                            <SelectedIcon className="h-8 w-8 text-primary-foreground" />
-                        </div>
+        <AuthShell locale={locale} messages={messages}>
+            <Suspense
+                fallback={
+                    <div className="flex min-h-[50vh] items-center justify-center">
+                        <Loader2 className="h-8 w-8 animate-spin text-primary" />
                     </div>
-                    <CardTitle className="text-2xl font-bold">
-                        {selectedArea.shortTitle}
-                    </CardTitle>
-                    <CardDescription>
-                        Digite seu email e senha para acessar esta área.
-                    </CardDescription>
-                </CardHeader>
-                <form onSubmit={handleSubmit}>
-                    <CardContent className="space-y-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="email">Email</Label>
-                            <Input
-                                id="email"
-                                type="email"
-                                placeholder="seu@email.com"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                required
-                                disabled={isLoading}
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="password">Senha</Label>
-                            <Input
-                                id="password"
-                                type="password"
-                                placeholder="********"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                                disabled={isLoading}
-                            />
-                        </div>
-                    </CardContent>
-                    <CardFooter className="flex flex-col space-y-4">
-                        <Button
-                            type="submit"
-                            className="w-full"
-                            disabled={isLoading}
-                        >
-                            {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
-                            {selectedArea.buttonLabel}
-                        </Button>
-
-                        <p className="text-center text-sm text-muted-foreground">
-                            Não tem uma conta?{" "}
-                            <Link href="/sign-up" className="text-primary hover:underline">
-                                Criar conta
-                            </Link>
-                        </p>
-                    </CardFooter>
-                </form>
-            </Card>
-        </div>
-    )
-}
-
-export default function SignInPage() {
-    return (
-        <Suspense
-            fallback={
-                <div className="flex min-h-screen items-center justify-center">
-                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                </div>
-            }
-        >
-            <SignInForm />
-        </Suspense>
+                }
+            >
+                <SignInForm />
+            </Suspense>
+        </AuthShell>
     )
 }
