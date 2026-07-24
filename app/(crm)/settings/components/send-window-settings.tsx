@@ -64,6 +64,14 @@ export function SendWindowSettings({ workspaceId, initial }: SendWindowSettingsP
     )
     const [isPending, startTransition] = useTransition()
 
+    // Um input numérico esvaziado (backspace até o fim) chega aqui como
+    // event.target.value === "" — Number("") é 0, o que empurraria o campo
+    // para um valor fora da faixa (ex.: sendEndHour: 0) sem o usuário ter
+    // digitado isso. Mantém o valor anterior em vez de zerar.
+    function parseNumberInput(value: string, previous: number): number {
+        return value === "" ? previous : Number(value)
+    }
+
     function toggleDay(day: number) {
         setForm((current) => ({
             ...current,
@@ -177,7 +185,10 @@ export function SendWindowSettings({ workspaceId, initial }: SendWindowSettingsP
                             onChange={(event) =>
                                 setForm((current) => ({
                                     ...current,
-                                    sendStartHour: Number(event.target.value),
+                                    sendStartHour: parseNumberInput(
+                                        event.target.value,
+                                        current.sendStartHour
+                                    ),
                                 }))
                             }
                         />
@@ -193,7 +204,10 @@ export function SendWindowSettings({ workspaceId, initial }: SendWindowSettingsP
                             onChange={(event) =>
                                 setForm((current) => ({
                                     ...current,
-                                    sendEndHour: Number(event.target.value),
+                                    sendEndHour: parseNumberInput(
+                                        event.target.value,
+                                        current.sendEndHour
+                                    ),
                                 }))
                             }
                         />
@@ -209,7 +223,10 @@ export function SendWindowSettings({ workspaceId, initial }: SendWindowSettingsP
                             onChange={(event) =>
                                 setForm((current) => ({
                                     ...current,
-                                    sendJitterMinutes: Number(event.target.value),
+                                    sendJitterMinutes: parseNumberInput(
+                                        event.target.value,
+                                        current.sendJitterMinutes
+                                    ),
                                 }))
                             }
                         />

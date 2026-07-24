@@ -55,9 +55,21 @@ const sendWindowSchema = z
         sendDays: z
             .array(z.number().int().min(1).max(7))
             .min(1, "Selecione ao menos um dia"),
-        sendStartHour: z.number().int().min(0).max(23),
-        sendEndHour: z.number().int().min(1).max(24),
-        sendJitterMinutes: z.number().int().min(0).max(120),
+        sendStartHour: z
+            .number()
+            .int()
+            .min(0, "A hora inicial deve estar entre 0 e 23")
+            .max(23, "A hora inicial deve estar entre 0 e 23"),
+        sendEndHour: z
+            .number()
+            .int()
+            .min(1, "A hora final deve estar entre 1 e 24")
+            .max(24, "A hora final deve estar entre 1 e 24"),
+        sendJitterMinutes: z
+            .number()
+            .int()
+            .min(0, "A variação deve estar entre 0 e 120 minutos")
+            .max(120, "A variação deve estar entre 0 e 120 minutos"),
     })
     .refine((data) => data.sendEndHour > data.sendStartHour, {
         message: "O fim da janela precisa ser depois do início",
