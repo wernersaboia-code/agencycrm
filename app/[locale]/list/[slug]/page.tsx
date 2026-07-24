@@ -4,13 +4,17 @@ import { Suspense } from "react"
 import type { ComponentType, ReactNode } from "react"
 import { getFormatter, getTranslations } from "next-intl/server"
 import { prisma } from "@/lib/prisma"
-import { ListPreview } from "@/components/marketplace/list-preview"
+import { ListPreview, toRows } from "@/components/marketplace/list-preview"
 import { BuyNowButton } from "@/components/marketplace/buy-now-button"
 import { AddToCartButton } from "@/components/marketplace/add-to-cart-button"
 import { formatCurrency } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { getListLanguage } from "@/lib/constants/list-languages"
 import { FlagIcon } from "@/components/ui/flag-icon"
+import { JsonLd } from "@/components/seo/json-ld"
+import { buildProductSchema, buildBreadcrumbSchema, buildListBreadcrumbTrail } from "@/lib/seo/schema"
+import { alternatesFor } from "@/lib/i18n/alternates"
+import type { Locale } from "@/lib/i18n/locales"
 import {
     ArrowLeft,
     BadgeCheck,
@@ -18,17 +22,16 @@ import {
     Calendar,
     CheckCircle,
     Download,
-    FileSpreadsheet,
+    FileText,
     Globe,
     MailCheck,
-    RefreshCw,
     Shield,
     Target,
     Users,
 } from "lucide-react"
 
 interface ListPageProps {
-    params: Promise<{ slug: string }>
+    params: Promise<{ locale: string; slug: string }>
 }
 
 async function getList(slug: string) {
@@ -41,7 +44,7 @@ async function getList(slug: string) {
 }
 
 export async function generateMetadata({ params }: ListPageProps) {
-    const { slug } = await params
+    const { locale, slug } = await params
     const [list, t] = await Promise.all([getList(slug), getTranslations("listing")])
 
     if (!list) {
@@ -50,12 +53,13 @@ export async function generateMetadata({ params }: ListPageProps) {
 
     return {
         title: list.name,
-        description: list.description || t("metaFallbackDescription", { count: list.totalLeads }),
+        description: list.description || t("metaFallbackDescription"),
+        alternates: alternatesFor(`/list/${slug}`, locale as Locale),
     }
 }
 
 export default async function ListPage({ params }: ListPageProps) {
-    const { slug } = await params
+    const { locale, slug } = await params
     const [list, t, format] = await Promise.all([
         getList(slug),
         getTranslations("listing"),
@@ -68,11 +72,17 @@ export default async function ListPage({ params }: ListPageProps) {
 
     const price = Number(list.price)
     // Formatado no locale ativo: "fev. de 2026" para um leitor alemão é ruído.
-    const updatedAt = format.dateTime(new Date(list.updatedAt), {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-    })
+    const dateFormat = { day: "2-digit", month: "short", year: "numeric" } as const
+    const updatedAt = format.dateTime(new Date(list.updatedAt), dateFormat)
+    // Sinal de frescor real. Quando nunca houve revisão registrada o campo
+    // simplesmente não aparece — cair de volta em updatedAt (que muda a
+    // qualquer edição) seria exibir um frescor que não existe.
+    const dataReviewedAt = list.dataReviewedAt
+        ? format.dateTime(new Date(list.dataReviewedAt), dateFormat)
+        : null
+    // Mesmo filtro de toRows() (list-preview.tsx): entradas sem companyName não
+    // viram linha na tabela, então não podem contar para o "amostra de N".
+    const previewCount = toRows(list.previewData).length
     const language = getListLanguage(list.language)
     const listForCart = {
         id: list.id,
@@ -85,6 +95,27 @@ export default async function ListPage({ params }: ListPageProps) {
 
     return (
         <div className="min-h-screen bg-muted/40">
+            <JsonLd
+                data={buildProductSchema({
+                    name: list.name,
+                    slug: list.slug,
+                    description: list.description,
+                    price,
+                    currency: list.currency,
+                    isActive: list.isActive,
+                    locale,
+                })}
+            />
+            <JsonLd
+                data={buildBreadcrumbSchema(
+                    buildListBreadcrumbTrail({
+                        catalogLabel: t("breadcrumbCatalog"),
+                        listName: list.name,
+                        slug: list.slug,
+                        locale,
+                    })
+                )}
+            />
             <div className="border-b bg-card">
                 <div className="container mx-auto px-4 py-6">
                     <Link
@@ -133,7 +164,9 @@ export default async function ListPage({ params }: ListPageProps) {
                             <div className="grid grid-cols-2 gap-3">
                                 <QuickMetric label={t("quickCountries")} value={format.number(list.countries.length)} />
                                 <QuickMetric label={t("quickLanguage")} value={<LanguageValue language={language} fallback={t("notInformed")} />} />
-                                <QuickMetric label={t("quickUpdated")} value={updatedAt} />
+                                {dataReviewedAt && (
+                                    <QuickMetric label={t("quickReviewed")} value={dataReviewedAt} />
+                                )}
                             </div>
                         </div>
                     </div>
@@ -159,6 +192,9 @@ export default async function ListPage({ params }: ListPageProps) {
                                 fallback={t("notInformed")}
                             />
                             <DataItem label={t("fieldIndustries")} value={list.industries.join(", ")} icon={Target} fallback={t("notInformed")} />
+                            {dataReviewedAt && (
+                                <DataItem label={t("fieldReviewedAt")} value={dataReviewedAt} icon={BadgeCheck} fallback={t("notInformed")} />
+                            )}
                             <DataItem label={t("fieldUpdatedAt")} value={updatedAt} icon={Calendar} fallback={t("notInformed")} />
                         </div>
                     </section>
@@ -166,12 +202,16 @@ export default async function ListPage({ params }: ListPageProps) {
                     <section className="rounded-lg border bg-card p-6">
                         <div className="mb-4 flex flex-col gap-1">
                             <h2 className="text-lg font-semibold text-foreground">{t("previewTitle")}</h2>
-                            <p className="text-sm text-muted-foreground">
-                                {t("previewSubtitle", { count: Math.min(5, list.totalLeads) })}
-                            </p>
+                            {/* O subtítulo anuncia uma amostra de N registros: só
+                                aparece quando a amostra existe de verdade. */}
+                            {previewCount > 0 && (
+                                <p className="text-sm text-muted-foreground">
+                                    {t("previewSubtitle", { count: previewCount })}
+                                </p>
+                            )}
                         </div>
                         <Suspense fallback={<div className="h-48 animate-pulse rounded-lg bg-muted" />}>
-                            <ListPreview previewData={list.previewData} />
+                            <ListPreview previewData={list.previewData} locale={locale} />
                         </Suspense>
                     </section>
 
@@ -183,7 +223,7 @@ export default async function ListPage({ params }: ListPageProps) {
                             <IncludedItem icon={Users} text={t("includedPhone")} />
                             <IncludedItem icon={Globe} text={t("includedLocation")} />
                             <IncludedItem icon={Target} text={t("includedIndustry")} />
-                            <IncludedItem icon={FileSpreadsheet} text={t("includedFormats")} />
+                            <IncludedItem icon={FileText} text={t("includedFormats")} />
                         </div>
                     </section>
                 </div>
@@ -212,7 +252,6 @@ export default async function ListPage({ params }: ListPageProps) {
                         <div className="mt-6 space-y-3 border-t pt-5">
                             <BenefitItem icon={Shield} text={t("benefitSecure")} />
                             <BenefitItem icon={Download} text={t("benefitImmediate")} />
-                            <BenefitItem icon={RefreshCw} text={t("benefitFresh")} />
                             <BenefitItem icon={CheckCircle} text={t("benefitRecorded")} />
                         </div>
                     </div>

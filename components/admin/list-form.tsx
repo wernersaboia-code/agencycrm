@@ -15,6 +15,7 @@ import {
     Trash2,
     X,
     FileText,
+    BadgeCheck,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -40,11 +41,12 @@ import {
     CardTitle,
 } from "@/components/ui/card"
 
-import { createList, updateList, uploadLeadsToList } from "@/actions/admin/lists"
+import { createList, updateList, uploadLeadsToList, markListReviewed } from "@/actions/admin/lists"
 import { MarketplaceImportWizard } from "@/components/admin/marketplace-import-wizard"
 import type { MarketplaceLeadData } from "@/lib/constants/marketplace-csv.constants"
 import { LIST_LANGUAGES } from "@/lib/constants/list-languages"
 import { FlagIcon } from "@/components/ui/flag-icon"
+import { canPublishList } from "@/lib/marketplace/list-publishing"
 
 // ============================================
 // SCHEMA
@@ -92,6 +94,7 @@ interface SerializedLeadList {
     previewData: unknown
     createdAt: string
     updatedAt: string
+    dataReviewedAt: string | null
 }
 
 interface ListFormProps {
@@ -149,6 +152,10 @@ export function ListForm({ list }: ListFormProps) {
     // Estado dos leads preparados (para criação de nova lista)
     const [preparedLeads, setPreparedLeads] = useState<MarketplaceLeadData[]>([])
 
+    // Data de revisão dos DADOS — só muda por ação explícita do admin.
+    const [dataReviewedAt, setDataReviewedAt] = useState<string | null>(list?.dataReviewedAt ?? null)
+    const [isMarkingReviewed, setIsMarkingReviewed] = useState(false)
+
     const [pdfFile, setPdfFile] = useState<File | null>(null)
     const [pdfName, setPdfName] = useState<string | null>(list?.studyPdfName ?? null)
 
@@ -201,6 +208,21 @@ export function ListForm({ list }: ListFormProps) {
     }
 
     const onSubmit = async (data: ListFormData) => {
+        // Gate client-side: reusa a mesma mensagem do gate do servidor
+        // (canPublishList) para não deixar o admin tentar ativar sem PDF e só
+        // descobrir o motivo depois de uma chamada ao servidor.
+        if (list && data.isActive) {
+            const effectivePdfUrl = pdfFile ? "pending-upload" : list.studyPdfUrl
+            const check = canPublishList({
+                studyPdfUrl: effectivePdfUrl,
+                dataReviewedAt: dataReviewedAt ? new Date(dataReviewedAt) : null,
+            })
+            if (!check.ok) {
+                toast.error(check.reason)
+                return
+            }
+        }
+
         setIsLoading(true)
         setUploadProgress(0)
 
@@ -228,9 +250,12 @@ export function ListForm({ list }: ListFormProps) {
             }
 
             if (list) {
-                // EDITANDO lista existente
-                await updateList(list.id, payload)
+                // EDITANDO lista existente: envia o PDF ANTES de salvar os
+                // dados, para que — se isActive=true nesta mesma submissão —
+                // o gate do servidor (canPublishList) já veja o PDF recém
+                // anexado em vez do studyPdfUrl antigo.
                 const pdfOk = await uploadPdf(list.id)
+                await updateList(list.id, payload)
                 if (pdfOk) {
                     toast.success("Lista atualizada com sucesso!")
                 } else {
@@ -242,7 +267,9 @@ export function ListForm({ list }: ListFormProps) {
                 // CRIANDO lista nova
                 setUploadProgress(10)
 
-                // 1. Criar a lista
+                // 1. Criar a lista (sempre inativa: o PDF só existe depois
+                // que a lista tem id, então uma lista nova nunca pode nascer
+                // publicada — ative-a depois de anexar o PDF)
                 const newList = await createList(payload)
                 const pdfOk = await uploadPdf(newList.id)
                 setUploadProgress(30)
@@ -264,11 +291,20 @@ export function ListForm({ list }: ListFormProps) {
                     toast.warning("Lista criada, mas o envio do PDF falhou. Edite a lista para reenviar.")
                 }
 
+                if (data.isActive) {
+                    toast.info(
+                        pdfOk
+                            ? "A lista foi criada inativa. Acesse-a para ativá-la agora que o PDF foi anexado."
+                            : "A lista foi criada inativa. Anexe o PDF e ative-a na edição."
+                    )
+                }
+
                 router.push("/super-admin/marketplace/lists")
                 router.refresh()
             }
         } catch (error) {
-            toast.error("Erro ao salvar lista")
+            const message = error instanceof Error && error.message ? error.message : "Erro ao salvar lista"
+            toast.error(message)
             console.error(error)
         } finally {
             setIsLoading(false)
@@ -359,6 +395,24 @@ export function ListForm({ list }: ListFormProps) {
     const handleImportSuccess = (count: number) => {
         toast.success(`${count} leads importados!`)
         router.refresh()
+    }
+
+    // Marcar que os dados desta lista foram revisados agora
+    const handleMarkReviewed = async () => {
+        if (!list) return
+        setIsMarkingReviewed(true)
+        try {
+            const reviewedAt = await markListReviewed(list.id)
+            setDataReviewedAt(reviewedAt)
+            toast.success("Revisão registrada. A data aparece agora na página da lista.")
+            router.refresh()
+        } catch (error) {
+            const message = error instanceof Error && error.message ? error.message : "Erro ao registrar revisão"
+            toast.error(message)
+            console.error(error)
+        } finally {
+            setIsMarkingReviewed(false)
+        }
     }
 
     // Limpar leads preparados
@@ -741,18 +795,33 @@ export function ListForm({ list }: ListFormProps) {
                         <CardTitle>Configurações</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <Label htmlFor="isActive">Lista Ativa</Label>
-                                <p className="text-sm text-muted-foreground">
-                                    Listas inativas não aparecem no catálogo
-                                </p>
+                        <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <Label htmlFor="isActive">Lista Ativa</Label>
+                                    <p className="text-sm text-muted-foreground">
+                                        {isEditing
+                                            ? "Listas inativas não aparecem no catálogo"
+                                            : "Novas listas são criadas inativas — anexe o PDF e ative na edição"}
+                                    </p>
+                                </div>
+                                <Switch
+                                    id="isActive"
+                                    checked={form.watch("isActive")}
+                                    onCheckedChange={(checked) => form.setValue("isActive", checked)}
+                                />
                             </div>
-                            <Switch
-                                id="isActive"
-                                checked={form.watch("isActive")}
-                                onCheckedChange={(checked) => form.setValue("isActive", checked)}
-                            />
+                            {isEditing && form.watch("isActive") && (() => {
+                                const effectivePdfUrl = pdfFile ? "pending-upload" : list!.studyPdfUrl
+                                const check = canPublishList({
+                                    studyPdfUrl: effectivePdfUrl,
+                                    dataReviewedAt: dataReviewedAt ? new Date(dataReviewedAt) : null,
+                                })
+                                if (check.ok) return null
+                                return (
+                                    <p className="text-sm text-destructive">{check.reason}</p>
+                                )
+                            })()}
                         </div>
 
                         <div className="flex items-center justify-between">
@@ -770,6 +839,44 @@ export function ListForm({ list }: ListFormProps) {
                         </div>
                     </CardContent>
                 </Card>
+
+                {/* Card: Revisão dos dados (só na edição — precisa de id) */}
+                {isEditing && (
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <BadgeCheck className="h-5 w-5" />
+                                Revisão dos dados
+                            </CardTitle>
+                            <CardDescription>
+                                Esta é a data de frescor exibida ao comprador. Registre-a só depois de
+                                conferir de fato os dados — salvar o formulário não a altera.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-3">
+                            <p className="text-sm text-muted-foreground">
+                                {dataReviewedAt
+                                    ? `Última revisão registrada: ${new Date(dataReviewedAt).toLocaleDateString("pt-BR")}`
+                                    : "Nenhuma revisão registrada. A página da lista não exibe data de revisão."}
+                            </p>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={handleMarkReviewed}
+                                disabled={isMarkingReviewed}
+                            >
+                                {isMarkingReviewed ? (
+                                    <>
+                                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                        Registrando...
+                                    </>
+                                ) : (
+                                    "Marcar dados como revisados hoje"
+                                )}
+                            </Button>
+                        </CardContent>
+                    </Card>
+                )}
 
                 {/* Progress durante criação */}
                 {isLoading && uploadProgress > 0 && (

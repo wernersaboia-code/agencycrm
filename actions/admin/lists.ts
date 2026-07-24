@@ -8,6 +8,7 @@ import type { MarketplaceLeadData } from "@/lib/constants/marketplace-csv.consta
 import type { LeadList } from "@prisma/client"
 import { z } from "zod"
 import { recordAudit } from "@/lib/audit"
+import { canPublishList } from "@/lib/marketplace/list-publishing"
 
 interface CreateListData {
     name: string
@@ -60,6 +61,7 @@ interface SerializedList {
     previewData: unknown
     createdAt: string
     updatedAt: string
+    dataReviewedAt: string | null
 }
 
 // Função auxiliar para serializar lista
@@ -69,6 +71,7 @@ function serializeList(list: LeadList): SerializedList {
         price: Number(list.price),
         createdAt: list.createdAt.toISOString(),
         updatedAt: list.updatedAt.toISOString(),
+        dataReviewedAt: list.dataReviewedAt?.toISOString() ?? null,
     }
 }
 
@@ -91,6 +94,11 @@ export async function createList(data: CreateListData): Promise<SerializedList> 
     await requireAdmin()
     const validated = listDataSchema.parse(data)
 
+    // O estudo em PDF só é enviado depois que a lista existe (rota de upload
+    // precisa do id). Uma lista recém-criada nunca tem studyPdfUrl ainda, então
+    // não há como nascer ativa: força inativa e exige ativação explícita depois
+    // (via updateList), quando o gate de canPublishList corre contra o
+    // studyPdfUrl já anexado.
     const list = await prisma.leadList.create({
         data: {
             name: validated.name,
@@ -103,7 +111,7 @@ export async function createList(data: CreateListData): Promise<SerializedList> 
             industries: validated.industries,
             price: validated.price,
             currency: validated.currency,
-            isActive: validated.isActive,
+            isActive: false,
             isFeatured: validated.isFeatured,
         },
     })
@@ -116,6 +124,20 @@ export async function createList(data: CreateListData): Promise<SerializedList> 
 export async function updateList(id: string, data: CreateListData): Promise<SerializedList> {
     await requireAdmin()
     const validated = listDataSchema.parse(data)
+
+    if (validated.isActive) {
+        const current = await prisma.leadList.findUnique({
+            where: { id },
+            select: { studyPdfUrl: true, dataReviewedAt: true },
+        })
+        const check = canPublishList({
+            studyPdfUrl: current?.studyPdfUrl ?? null,
+            dataReviewedAt: current?.dataReviewedAt ?? null,
+        })
+        if (!check.ok) {
+            throw new Error(check.reason)
+        }
+    }
 
     const list = await prisma.leadList.update({
         where: { id },
@@ -164,15 +186,36 @@ export async function deleteList(id: string) {
     revalidateListPaths(list?.slug)
 }
 
-export async function toggleListActive(id: string, isActive: boolean) {
-    await requireAdmin()
+/**
+ * Registra que os DADOS da lista foram efetivamente revisados agora.
+ *
+ * Deliberadamente separado de updateList: `updatedAt` muda a qualquer edição
+ * (preço, typo na descrição) e por isso não serve como sinal de frescor. Só
+ * esta ação, chamada explicitamente pelo admin, move `dataReviewedAt`.
+ */
+export async function markListReviewed(listId: string): Promise<string> {
+    const admin = await requireAdmin()
+
+    const reviewedAt = new Date()
 
     const list = await prisma.leadList.update({
-        where: { id },
-        data: { isActive },
+        where: { id: listId },
+        data: { dataReviewedAt: reviewedAt },
+        select: { slug: true, name: true, dataReviewedAt: true },
+    })
+
+    await recordAudit({
+        actorId: admin.id,
+        actorEmail: admin.email,
+        action: "list.reviewed",
+        targetType: "list",
+        targetId: listId,
+        metadata: { name: list.name, dataReviewedAt: reviewedAt.toISOString() },
     })
 
     revalidateListPaths(list.slug)
+
+    return reviewedAt.toISOString()
 }
 
 export async function uploadLeadsToList(listId: string, leads: MarketplaceLeadData[]) {

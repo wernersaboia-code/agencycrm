@@ -34,6 +34,7 @@ export async function MarketplaceFooter({ locale = "pt" }: { locale?: Locale }) 
                             <li><LocaleLink href={howItWorksHref} className="hover:text-foreground">{t("howItWorks")}</LocaleLink></li>
                             <li><LocaleLink href="/blog" className="hover:text-foreground">{t("blog")}</LocaleLink></li>
                             <li><LocaleLink href="/faq" className="hover:text-foreground">{t("faq")}</LocaleLink></li>
+                            <li><LocaleLink href="/about" className="hover:text-foreground">{t("aboutUs")}</LocaleLink></li>
                         </ul>
                     </div>
 

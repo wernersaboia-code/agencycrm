@@ -547,6 +547,11 @@ model LeadList {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  // Data em que os dados da lista foram efetivamente revisados.
+  // Nullable de propósito: listas sem revisão registrada não exibem a data —
+  // preencher com updatedAt/createdAt seria inventar um sinal de frescor.
+  dataReviewedAt DateTime?
+
   @@index([category])
   @@index([isActive, isFeatured])
   @@map("lead_lists")

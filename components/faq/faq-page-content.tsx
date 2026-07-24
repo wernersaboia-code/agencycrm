@@ -5,7 +5,8 @@ import { FaqContactForm, type FaqFormLabels } from "@/components/faq/faq-contact
 
 export async function FaqPageContent({ locale }: { locale: LandingLocale }) {
     const t = await getTranslations({ locale, namespace: "faq" })
-    // As respostas em faq.items são PLACEHOLDERS (ver chave _placeholder nos locales).
+    // As respostas em faq.items são definitivas, incluindo a de LGPD/GDPR
+    // (lib/seo/schema.test.ts guarda a integridade desse conteúdo).
     const items = t.raw("items") as FaqEntry[]
 
     const labels: FaqFormLabels = {

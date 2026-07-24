@@ -48,8 +48,8 @@
             "error": "Erro ao criar conta",
             "benefitsTitle": "Benefícios",
             "benefit1": "Acesso vitalício às listas compradas",
-            "benefit2": "Downloads ilimitados em CSV e Excel",
-            "benefit3": "Arquivos prontos para importar no seu CRM",
+            "benefit2": "Downloads ilimitados do estudo em PDF que você comprou",
+            "benefit3": "Histórico de pedidos e recibos na sua conta",
             "successTitle": "Conta criada com sucesso! 🎉",
             "verifySent": "Enviamos um email de verificação para:",
             "nextStepsTitle": "Próximos passos",
@@ -87,6 +87,7 @@
         "howItWorks": "Como funciona",
         "blog": "Blog",
         "faq": "FAQ",
+        "aboutUs": "Sobre nós",
         "accountTitle": "Conta",
         "myPurchases": "Minhas compras",
         "login": "Entrar",
@@ -104,13 +105,13 @@
             "ctaPrimary": "Explorar catálogo",
             "ctaSecondary": "Como funciona",
             "trust1": "Pronto para uso imediato",
-            "trust2": "Empresas verificadas",
+            "trust2": "Empresas conferidas",
             "trust3": "Atualização periódica"
         },
         "intro": {
             "lede": "Nossas listas qualificadas de importadores e distribuidores são feitas para fabricantes, produtores e detentores de marca que buscam novos parceiros comerciais no exterior.",
             "p1": "Selecione por país, setor, região linguística ou perfil de compra e receba bancos de dados prontos para uso e atualizados periodicamente.",
-            "p2": "Nossas listas incluem exclusivamente empresas cuidadosamente verificadas, com interesse comprovado em incluir novos produtos e marcas do exterior em seu portfólio. Assim você economiza pesquisas demoradas e evita inúmeros contatos com empresas que não têm interesse em novos fornecedores."
+            "p2": "Nossas listas reúnem empresas conferidas em fontes públicas — site institucional, presença digital e registros disponíveis — dentro do setor e do mercado que cada lista se propõe a cobrir. Cada lista vem acompanhada de um estudo de mercado em PDF, para você avaliar o perfil das empresas antes de iniciar o contato."
         },
         "zielmaerkte": {
             "eyebrow": "Mercados-alvo",
@@ -188,8 +189,8 @@
         },
         "daten": {
             "eyebrow": "Qualidade dos dados",
-            "title": "Dados atualizados periodicamente.",
-            "body": "Todas as listas são mantidas e atualizadas continuamente. Novos participantes do mercado são incluídos, empresas inativas são removidas e os registros existentes são revisados regularmente. Assim você trabalha sempre com informações atuais e confiáveis."
+            "title": "Dados revisados periodicamente.",
+            "body": "As listas são compiladas pela nossa operação, e cada empresa é conferida em fontes públicas — site institucional, presença digital e registros disponíveis — antes de entrar no catálogo. O catálogo é revisado periodicamente: quando uma lista deixa de refletir o mercado que descreve, ela sai de venda."
         },
         "vorteil": {
             "eyebrow": "Sua vantagem",
@@ -210,26 +211,7 @@
                 },
                 {
                     "title": "Baixe",
-                    "body": "Depois da confirmação, acesse os arquivos em CSV ou Excel e incorpore-os ao seu processo comercial."
-                }
-            ]
-        },
-        "zahlen": {
-            "_placeholder": "PLACEHOLDER: números fictícios do handoff — substituir por dados reais ou conectar ao backend antes do go-live.",
-            "eyebrow": "Números que importam",
-            "title": "Confiança construída com resultados.",
-            "stats": [
-                {
-                    "value": "6+",
-                    "label": "listas vendidas"
-                },
-                {
-                    "value": "100%",
-                    "label": "qualidade de dados verificada"
-                },
-                {
-                    "value": "24/7",
-                    "label": "suporte em português"
+                    "body": "Depois da confirmação do pagamento, baixe o estudo de mercado em PDF na área Minhas compras."
                 }
             ]
         },
@@ -244,8 +226,8 @@
             "button": "Explorar catálogo"
         },
         "meta": {
-            "title": "Listas qualificadas de importadores e distribuidores para o seu comércio internacional",
-            "description": "Listas qualificadas de importadores e distribuidores por país, setor e perfil de compra. Empresas verificadas, relatórios de mercado atualizados e dados revisados periodicamente para a sua exportação."
+            "title": "Listas de importadores e distribuidores",
+            "description": "Listas de importadores e distribuidores por país, setor e perfil de compra, com empresas conferidas em fontes públicas. Para quem exporta."
         }
     },
     "faq": {
@@ -255,39 +237,38 @@
             "metaTitle": "FAQ",
             "metaDescription": "Respostas para perguntas frequentes sobre nossas listas de importadores e distribuidores: qualidade dos dados, formatos, pagamento e mais."
         },
-        "_placeholder": "PLACEHOLDER: respostas provisórias — revisar/confirmar todas antes do go-live. A resposta de LGPD/GDPR está em branco de propósito.",
         "items": [
             {
                 "question": "De onde vêm os dados e como são verificados?",
-                "answer": "[PLACEHOLDER] Nossos dados vêm de fontes cuidadosamente avaliadas e são verificados manualmente antes de entrar em nossas listas."
+                "answer": "As listas nascem de pesquisa própria e são compiladas pela nossa operação. Antes de entrar numa lista, cada empresa é conferida em fontes públicas — site institucional, presença digital e registros disponíveis — para confirmar que existe, que atua no setor indicado e que os canais de contato estão ativos."
             },
             {
                 "question": "Qual a atualidade das listas?",
-                "answer": "[PLACEHOLDER] Todas as listas são mantidas regularmente: novos participantes do mercado são incluídos, empresas inativas são removidas e os registros existentes são revisados."
+                "answer": "A página de cada lista mostra quando os dados foram revisados pela última vez. O catálogo é revisado periodicamente e, quando uma lista deixa de refletir o mercado, ela sai do catálogo em vez de continuar à venda."
             },
             {
                 "question": "Em quais formatos recebo os dados?",
-                "answer": "[PLACEHOLDER] Você recebe os arquivos em CSV ou Excel — prontos para uso no seu processo comercial e compatíveis com os principais CRMs."
+                "answer": "A entrega é um estudo de mercado em PDF. Assim que o pagamento é confirmado, o arquivo fica disponível para download na área Minhas compras e continua acessível na sua conta."
             },
             {
                 "question": "Posso ver os dados antes de comprar?",
-                "answer": "[PLACEHOLDER] Sim, cada lista tem uma prévia com registros de exemplo anonimizados."
+                "answer": "Sim. Na página de cada lista você vê a cobertura (países, setores e idioma), a data em que os dados foram revisados, o preço e uma amostra de registros com o e-mail parcialmente oculto. Os dados completos são liberados após a compra."
             },
             {
                 "question": "Como funciona o pagamento?",
-                "answer": "[PLACEHOLDER] O pagamento é feito por checkout seguro via PayPal. Após a confirmação, os arquivos ficam disponíveis para download imediatamente."
+                "answer": "O pagamento é feito pelo PayPal, no checkout do site. Assim que o pagamento é confirmado, a compra aparece em Minhas compras e o download é liberado."
             },
             {
                 "question": "Para quais países e setores há listas disponíveis?",
-                "answer": "[PLACEHOLDER] Oferecemos listas para países individuais e regiões linguísticas completas, além de listas específicas por setor para diversas indústrias. A oferta é ampliada continuamente."
+                "answer": "A cobertura é a que estiver publicada no catálogo em cada momento: lá você filtra por país, setor e categoria para ver o que está disponível hoje. Novas listas entram no catálogo à medida que ficam prontas."
             },
             {
                 "question": "O que está incluído no relatório de mercado que acompanha a lista?",
-                "answer": "[PLACEHOLDER] Cada lista inclui um relatório de mercado atualizado com informações sobre a situação do mercado e da concorrência, oportunidades de venda e orientações práticas para abordar potenciais parceiros comerciais."
+                "answer": "Cada lista vem acompanhada de um estudo de mercado em PDF, preparado para o mercado daquela lista. Como o conteúdo é feito sob medida para o país e o setor, ele varia de lista para lista — a introdução exibida na página de cada lista resume o que aquele estudo cobre."
             },
             {
                 "question": "Como fica a proteção de dados (LGPD/GDPR)?",
-                "answer": ""
+                "answer": "As listas reúnem dados de contato profissional coletados em fontes públicas: nome da empresa, país, setor, site, e-mails e telefones institucionais — e, em algumas listas, também o nome e o cargo de uma pessoa de contato. Na compra, pedimos o seu nome, e-mail e documento fiscal (CPF/CNPJ), usados para processar o pagamento e liberar o download. Qualquer pessoa ou empresa pode pedir a correção ou a remoção dos seus dados das nossas listas: use o formulário de contato logo abaixo, nesta mesma página. A política completa está na nossa Política de Privacidade, em /privacy."
             }
         ],
         "form": {
@@ -371,7 +352,7 @@
         "clearFilters": "Limpar filtros",
         "featured": "Destaque",
         "companies": "{count} empresas",
-        "verifiedEmails": "Emails verificados",
+        "verifiedEmails": "Contatos conferidos em fontes públicas",
         "updatedAt": "Atualizada em {date}",
         "seeDetails": "Ver detalhes",
         "perLead": "{price} por lead",
@@ -429,13 +410,14 @@
     },
     "listing": {
         "back": "Voltar ao catálogo",
+        "breadcrumbCatalog": "Catálogo",
         "featured": "Destaque",
         "readyBadge": "Dados prontos para download",
         "quickLeads": "Leads",
         "quickPricePerLead": "Preço/lead",
         "quickCountries": "Países",
         "quickLanguage": "Idioma",
-        "quickUpdated": "Atualizada",
+        "quickReviewed": "Dados revisados",
         "introductionTitle": "Introdução",
         "coverageTitle": "Cobertura da lista",
         "coverageSubtitle": "Use estes sinais para validar se a base combina com sua campanha.",
@@ -445,13 +427,19 @@
         "fieldTotalLeads": "Total de leads",
         "fieldIndustries": "Setores",
         "fieldPricePerLead": "Preço por lead",
-        "fieldUpdatedAt": "Atualizado em",
+        "fieldReviewedAt": "Dados revisados em",
+        "fieldUpdatedAt": "Registro atualizado em",
         "notInformed": "Não informado",
         "previewTitle": "Preview dos dados",
         "previewSubtitle": "Amostra de {count} registros para checar estrutura e qualidade antes da compra.",
+        "previewColCompany": "Empresa",
+        "previewColCountry": "País",
+        "previewColSector": "Setor",
+        "previewColEmail": "Email",
+        "previewUnavailable": "Amostra indisponível para esta lista.",
         "includedTitle": "O que está incluído",
         "includedCompany": "Nome da empresa",
-        "includedEmail": "Email comercial verificado",
+        "includedEmail": "Email comercial conferido em fontes públicas",
         "includedPhone": "Telefone e contato quando disponível",
         "includedLocation": "País, cidade e website",
         "includedIndustry": "Setor de atuação",
@@ -462,12 +450,11 @@
         "beforeBuyNote": "Antes de comprar, confira a cobertura, a prévia dos dados e o preço por lead. Depois da aprovação do pagamento, o download fica disponível na sua conta.",
         "benefitSecure": "Pagamento seguro via PayPal",
         "benefitImmediate": "Download imediato após confirmação",
-        "benefitFresh": "Dados atualizados antes da publicação",
         "benefitRecorded": "Registro da compra na sua conta",
         "buyNow": "Comprar agora",
         "signInToBuy": "Entrar e comprar",
         "notFound": "Lista não encontrada",
-        "metaFallbackDescription": "Lista com {count} leads qualificados."
+        "metaFallbackDescription": "Estudo de mercado com importadores e distribuidores qualificados."
     },
     "checkout": {
         "stepCart": "Carrinho",
@@ -475,7 +462,7 @@
         "stepDownload": "Download",
         "backToCart": "Voltar ao carrinho",
         "title": "Checkout",
-        "subtitle": "Finalize o pagamento para liberar {count} leads em CSV e Excel.",
+        "subtitle": "Finalize o pagamento para liberar o estudo em PDF com {count} leads.",
         "secureTitle": "Pagamento seguro",
         "secureDesc": "O PayPal processa o pagamento; o sistema libera a compra automaticamente após a confirmação.",
         "redirectNote": "Você será redirecionado no próprio fluxo do PayPal para autorizar a transação.",
@@ -504,9 +491,9 @@
         "successLeadsReleased": "Leads liberados",
         "successTotalPaid": "Total pago",
         "successNextDownloadTitle": "Baixe",
-        "successNextDownloadText": "CSV ou Excel em Minhas compras.",
+        "successNextDownloadText": "Estudo em PDF em Minhas compras.",
         "successNextProspectTitle": "Prospecção",
-        "successNextProspectText": "Importe os contatos no seu CRM ou ferramenta de prospecção.",
+        "successNextProspectText": "Use o estudo para priorizar contatos e planejar sua abordagem.",
         "successNextReceiptTitle": "Confirmação",
         "successNextReceiptText": "O recibo foi enviado para seu email.",
         "successCtaPurchases": "Acessar minhas compras",
@@ -547,5 +534,53 @@
         "emptyDescription": "Explore o catálogo, selecione uma base compatível com sua campanha e volte aqui para baixar os arquivos.",
         "emptyCta": "Explorar catálogo",
         "browseMoreLists": "Ver mais listas"
+    },
+    "about": {
+        "meta": {
+            "title": "Quem somos e como os dados são feitos",
+            "description": "Como as listas de importadores e distribuidores são produzidas: pesquisa própria, conferência em fontes públicas e revisão periódica do catálogo."
+        },
+        "hero": {
+            "eyebrow": "Sobre",
+            "title": "Quem está por trás das listas",
+            "subtitle": "O Easy Prospect reúne importadores e distribuidores em estudos de mercado em PDF, para quem exporta saber com quem falar. Esta página explica como esses dados são produzidos."
+        },
+        "methodology": {
+            "eyebrow": "Metodologia",
+            "title": "Como os dados são produzidos",
+            "intro": "Quem paga por dados B2B tem o direito de saber de onde eles vêm. O processo está descrito abaixo, sem promessas que não possamos sustentar.",
+            "blocks": [
+                {
+                    "title": "Origem dos dados",
+                    "body": "As listas nascem de pesquisa própria e são compiladas pela nossa operação. Cada uma é montada a partir do setor e do mercado que ela se propõe a cobrir."
+                },
+                {
+                    "title": "Conferência em fontes públicas",
+                    "body": "Antes de entrar numa lista, cada empresa é conferida em fontes públicas — site institucional, presença digital e registros disponíveis — para confirmar que existe, que atua no setor indicado e que os canais de contato estão ativos."
+                },
+                {
+                    "title": "Manutenção do catálogo",
+                    "body": "O catálogo é revisado periodicamente. Quando uma lista deixa de refletir o mercado que descreve, ela sai de venda em vez de continuar disponível."
+                }
+            ]
+        },
+        "delivery": {
+            "title": "O que você recebe",
+            "body": "Cada compra dá acesso a um estudo de mercado em PDF com as empresas da lista escolhida."
+        },
+        "limits": {
+            "title": "O que não prometemos",
+            "body": "Não prometemos que toda empresa vai responder ao seu contato, nem que uma lista substitui a sua própria avaliação antes de negociar. O que garantimos é o critério: nenhuma empresa entra numa lista sem ter sido conferida em fontes públicas."
+        },
+        "cta": {
+            "title": "Ainda com dúvidas?",
+            "body": "As perguntas mais comuns sobre as listas, a entrega e o pagamento estão respondidas no FAQ.",
+            "faq": "Ver perguntas frequentes",
+            "catalog": "Ver catálogo"
+        },
+        "breadcrumb": {
+            "home": "Início",
+            "current": "Sobre"
+        }
     }
 }

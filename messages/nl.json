@@ -48,8 +48,8 @@
             "error": "Fout bij het aanmaken van het account",
             "benefitsTitle": "Voordelen",
             "benefit1": "Levenslange toegang tot gekochte lijsten",
-            "benefit2": "Onbeperkt downloaden in CSV en Excel",
-            "benefit3": "Bestanden klaar om te importeren in uw CRM",
+            "benefit2": "Onbeperkt downloaden van de gekochte pdf-studie",
+            "benefit3": "Bestelgeschiedenis en bonnen in uw account",
             "successTitle": "Account succesvol aangemaakt! 🎉",
             "verifySent": "We hebben een verificatie-e-mail gestuurd naar:",
             "nextStepsTitle": "Volgende stappen",
@@ -87,6 +87,7 @@
         "howItWorks": "Hoe het werkt",
         "blog": "Blog",
         "faq": "FAQ",
+        "aboutUs": "Over ons",
         "accountTitle": "Account",
         "myPurchases": "Mijn aankopen",
         "login": "Inloggen",
@@ -104,13 +105,13 @@
             "ctaPrimary": "Catalogus verkennen",
             "ctaSecondary": "Hoe het werkt",
             "trust1": "Direct klaar voor gebruik",
-            "trust2": "Geverifieerde bedrijven",
+            "trust2": "Gecontroleerde bedrijven",
             "trust3": "Regelmatig bijgewerkt"
         },
         "intro": {
             "lede": "Onze gekwalificeerde lijsten van importeurs en distributeurs zijn ontwikkeld voor fabrikanten, producenten en merkeigenaren die op zoek zijn naar nieuwe handelspartners in het buitenland.",
-            "p1": "Selecteer op land, sector, taalgebied of inkoopprofiel en ontvang direct bruikbare databases die regelmatig worden bijgewerkt.",
-            "p2": "Onze lijsten bevatten uitsluitend zorgvuldig geverifieerde bedrijven met een aantoonbare interesse in het opnemen van nieuwe producten en buitenlandse merken in hun assortiment. Zo bespaart u lang zoekwerk en vermijdt u talloze contacten met bedrijven die geen interesse hebben in nieuwe leveranciers."
+            "p1": "Selecteer op land, sector, taalgebied of inkoopprofiel en ontvang direct bruikbare databases die periodiek worden bijgewerkt.",
+            "p2": "Onze lijsten bevatten bedrijven die zijn getoetst aan openbare bronnen — bedrijfswebsite, digitale aanwezigheid en beschikbare registraties — binnen de sector en markt die elke lijst wil bestrijken. Bij elke lijst hoort een marktstudie in pdf, zodat u het profiel van de bedrijven kunt beoordelen voordat u contact opneemt."
         },
         "zielmaerkte": {
             "eyebrow": "Doelmarkten",
@@ -188,8 +189,8 @@
         },
         "daten": {
             "eyebrow": "Datakwaliteit",
-            "title": "Regelmatig bijgewerkte gegevens.",
-            "body": "Alle lijsten worden voortdurend onderhouden en bijgewerkt. Nieuwe marktspelers worden toegevoegd, inactieve bedrijven worden verwijderd en bestaande gegevens worden regelmatig herzien. Zo werkt u altijd met actuele en betrouwbare informatie."
+            "title": "Periodiek herziene gegevens.",
+            "body": "De lijsten worden samengesteld door onze organisatie, en elk bedrijf wordt getoetst aan openbare bronnen — bedrijfswebsite, digitale aanwezigheid en beschikbare registraties — voordat het in de catalogus wordt opgenomen. De catalogus wordt periodiek herzien: zodra een lijst de markt die ze beschrijft niet meer weerspiegelt, halen we ze uit de verkoop."
         },
         "vorteil": {
             "eyebrow": "Uw voordeel",
@@ -210,26 +211,7 @@
                 },
                 {
                     "title": "Download",
-                    "body": "Na bevestiging krijgt u toegang tot de bestanden in CSV- of Excel-formaat en kunt u ze integreren in uw verkoopproces."
-                }
-            ]
-        },
-        "zahlen": {
-            "_placeholder": "PLACEHOLDER: fictieve cijfers uit de handoff — te vervangen door echte gegevens of te koppelen aan de backend vóór livegang.",
-            "eyebrow": "Cijfers die tellen",
-            "title": "Vertrouwen gebouwd op resultaten.",
-            "stats": [
-                {
-                    "value": "6+",
-                    "label": "verkochte lijsten"
-                },
-                {
-                    "value": "100%",
-                    "label": "geverifieerde datakwaliteit"
-                },
-                {
-                    "value": "24/7",
-                    "label": "ondersteuning in het Portugees"
+                    "body": "Na bevestiging van de betaling downloadt u het marktonderzoek als pdf in Mijn aankopen."
                 }
             ]
         },
@@ -244,8 +226,8 @@
             "button": "Catalogus verkennen"
         },
         "meta": {
-            "title": "Gekwalificeerde lijsten van importeurs en distributeurs voor uw internationale handel",
-            "description": "Gekwalificeerde lijsten van importeurs en distributeurs per land, sector en inkoopprofiel. Geverifieerde bedrijven, actuele marktrapporten en regelmatig herziene gegevens voor uw export."
+            "title": "Lijsten van importeurs en distributeurs",
+            "description": "Lijsten van importeurs en distributeurs per land, sector en inkoopprofiel, met bedrijven gecontroleerd via openbare bronnen. Voor exporteurs."
         }
     },
     "faq": {
@@ -255,39 +237,38 @@
             "metaTitle": "FAQ",
             "metaDescription": "Antwoorden op veelgestelde vragen over onze lijsten van importeurs en distributeurs: datakwaliteit, formaten, betaling en meer."
         },
-        "_placeholder": "PLACEHOLDER: voorlopige antwoorden — te herzien/bevestigen vóór livegang. Het antwoord over AVG/LGPD is bewust leeg gelaten.",
         "items": [
             {
                 "question": "Waar komen de gegevens vandaan en hoe worden ze geverifieerd?",
-                "answer": "[PLACEHOLDER] Onze gegevens zijn afkomstig uit zorgvuldig beoordeelde bronnen en worden handmatig geverifieerd voordat ze in onze lijsten worden opgenomen."
+                "answer": "De lijsten komen voort uit eigen onderzoek en worden door onze organisatie samengesteld. Voordat een bedrijf in een lijst wordt opgenomen, toetsen we het aan openbare bronnen — bedrijfswebsite, digitale aanwezigheid en beschikbare registraties — om te bevestigen dat het bestaat, dat het in de vermelde sector actief is en dat de contactkanalen actief zijn."
             },
             {
                 "question": "Hoe actueel zijn de lijsten?",
-                "answer": "[PLACEHOLDER] Alle lijsten worden regelmatig onderhouden: nieuwe marktspelers worden toegevoegd, inactieve bedrijven worden verwijderd en bestaande gegevens worden herzien."
+                "answer": "De pagina van elke lijst toont wanneer de gegevens voor het laatst zijn gecontroleerd. De catalogus wordt periodiek herzien en wanneer een lijst de markt niet meer weerspiegelt, halen we hem uit de catalogus in plaats van hem te blijven verkopen."
             },
             {
                 "question": "In welke formaten ontvang ik de gegevens?",
-                "answer": "[PLACEHOLDER] U ontvangt de bestanden in CSV- of Excel-formaat — direct bruikbaar voor uw verkoopproces en compatibel met de belangrijkste CRM-systemen."
+                "answer": "U ontvangt een marktstudie als PDF. Zodra de betaling is bevestigd, staat het bestand klaar om te downloaden onder Mijn aankopen en blijft het beschikbaar in uw account."
             },
             {
                 "question": "Kan ik de gegevens bekijken voordat ik koop?",
-                "answer": "[PLACEHOLDER] Ja, elke lijst bevat een voorbeeld met geanonimiseerde voorbeeldgegevens."
+                "answer": "Ja. Op de pagina van elke lijst ziet u de dekking (landen, sectoren en taal), de datum waarop de gegevens zijn gecontroleerd, de prijs en een steekproef van records waarvan het e-mailadres deels is afgeschermd. De volledige gegevens komen na aankoop vrij."
             },
             {
                 "question": "Hoe werkt de betaling?",
-                "answer": "[PLACEHOLDER] De betaling verloopt via een beveiligd PayPal-proces. Na bevestiging zijn de bestanden direct beschikbaar om te downloaden."
+                "answer": "Betalen gaat via PayPal, in de checkout van de site. Zodra de betaling is bevestigd, verschijnt de aankoop onder Mijn aankopen en wordt de download vrijgegeven."
             },
             {
                 "question": "Voor welke landen en sectoren zijn lijsten beschikbaar?",
-                "answer": "[PLACEHOLDER] We bieden lijsten aan voor afzonderlijke landen en hele taalgebieden, evenals sectorspecifieke lijsten voor tal van industrieën. Het aanbod wordt voortdurend uitgebreid."
+                "answer": "De dekking is wat er op dat moment in de catalogus staat: daar filtert u op land, sector en categorie om te zien wat er vandaag beschikbaar is. Nieuwe lijsten komen in de catalogus zodra ze klaar zijn."
             },
             {
                 "question": "Wat staat er in het marktrapport bij de lijst?",
-                "answer": "[PLACEHOLDER] Elke lijst bevat een actueel marktrapport met informatie over de markt- en concurrentiesituatie, verkoopkansen en praktische tips voor het benaderen van potentiële handelspartners."
+                "answer": "Bij elke lijst hoort een marktstudie als PDF, opgesteld voor de markt van die lijst. Omdat de inhoud is toegesneden op het land en de sector, verschilt die per lijst — de inleiding op de pagina van elke lijst vat samen wat die studie behandelt."
             },
             {
                 "question": "Hoe zit het met gegevensbescherming (AVG/LGPD)?",
-                "answer": ""
+                "answer": "De lijsten bevatten zakelijke contactgegevens uit openbare bronnen: bedrijfsnaam, land, sector, website, algemene e-mailadressen en telefoonnummers — en in sommige lijsten ook de naam en functie van een contactpersoon. Bij een aankoop vragen we uw naam, e-mailadres en fiscaal nummer, die we gebruiken om de betaling te verwerken en de download vrij te geven. Iedere persoon of onderneming kan vragen om correctie of verwijdering van de eigen gegevens uit onze lijsten: gebruik daarvoor het contactformulier verderop op deze pagina. Het volledige beleid staat in ons Privacybeleid, op /privacy."
             }
         ],
         "form": {
@@ -371,7 +352,7 @@
         "clearFilters": "Filters wissen",
         "featured": "Uitgelicht",
         "companies": "{count} bedrijven",
-        "verifiedEmails": "Geverifieerde e-mails",
+        "verifiedEmails": "Contacten gecontroleerd in openbare bronnen",
         "updatedAt": "Bijgewerkt op {date}",
         "seeDetails": "Details bekijken",
         "perLead": "{price} per lead",
@@ -429,13 +410,14 @@
     },
     "listing": {
         "back": "Terug naar catalogus",
+        "breadcrumbCatalog": "Catalogus",
         "featured": "Uitgelicht",
         "readyBadge": "Gegevens klaar om te downloaden",
         "quickLeads": "Leads",
         "quickPricePerLead": "Prijs/lead",
         "quickCountries": "Landen",
         "quickLanguage": "Taal",
-        "quickUpdated": "Bijgewerkt",
+        "quickReviewed": "Gegevens gecontroleerd",
         "introductionTitle": "Inleiding",
         "coverageTitle": "Dekking van de lijst",
         "coverageSubtitle": "Gebruik deze indicatoren om te controleren of de database past bij uw campagne.",
@@ -445,13 +427,19 @@
         "fieldTotalLeads": "Totaal aantal leads",
         "fieldIndustries": "Sectoren",
         "fieldPricePerLead": "Prijs per lead",
-        "fieldUpdatedAt": "Bijgewerkt op",
+        "fieldReviewedAt": "Gegevens gecontroleerd op",
+        "fieldUpdatedAt": "Record bijgewerkt op",
         "notInformed": "Niet opgegeven",
         "previewTitle": "Voorbeeld van de gegevens",
         "previewSubtitle": "Steekproef van {count} records om structuur en kwaliteit te controleren voor aankoop.",
+        "previewColCompany": "Bedrijf",
+        "previewColCountry": "Land",
+        "previewColSector": "Sector",
+        "previewColEmail": "E-mail",
+        "previewUnavailable": "Geen steekproef beschikbaar voor deze lijst.",
         "includedTitle": "Wat is inbegrepen",
         "includedCompany": "Bedrijfsnaam",
-        "includedEmail": "Geverifieerd zakelijk e-mailadres",
+        "includedEmail": "Zakelijk e-mailadres gecontroleerd in openbare bronnen",
         "includedPhone": "Telefoon en contactpersoon indien beschikbaar",
         "includedLocation": "Land, stad en website",
         "includedIndustry": "Bedrijfssector",
@@ -462,12 +450,11 @@
         "beforeBuyNote": "Controleer voor aankoop de dekking, het gegevensvoorbeeld en de prijs per lead. Zodra de betaling is goedgekeurd, wordt de download beschikbaar in uw account.",
         "benefitSecure": "Veilig betalen via PayPal",
         "benefitImmediate": "Direct downloaden na bevestiging",
-        "benefitFresh": "Gegevens bijgewerkt vóór publicatie",
         "benefitRecorded": "Aankoop geregistreerd in uw account",
         "buyNow": "Nu kopen",
         "signInToBuy": "Inloggen en kopen",
         "notFound": "Lijst niet gevonden",
-        "metaFallbackDescription": "Lijst met {count} gekwalificeerde leads."
+        "metaFallbackDescription": "Marktstudie met gekwalificeerde importeurs en distributeurs."
     },
     "checkout": {
         "stepCart": "Winkelwagen",
@@ -475,7 +462,7 @@
         "stepDownload": "Download",
         "backToCart": "Terug naar winkelwagen",
         "title": "Betaling",
-        "subtitle": "Rond de betaling af om {count} leads in CSV en Excel te ontgrendelen.",
+        "subtitle": "Rond de betaling af om de pdf-studie met {count} leads te ontgrendelen.",
         "secureTitle": "Veilige betaling",
         "secureDesc": "PayPal verwerkt de betaling; het systeem ontgrendelt de aankoop automatisch na bevestiging.",
         "redirectNote": "U wordt doorgestuurd naar het PayPal-proces zelf om de transactie te autoriseren.",
@@ -504,9 +491,9 @@
         "successLeadsReleased": "Ontgrendelde leads",
         "successTotalPaid": "Totaal betaald",
         "successNextDownloadTitle": "Downloaden",
-        "successNextDownloadText": "CSV of Excel in Mijn aankopen.",
+        "successNextDownloadText": "Pdf-studie in Mijn aankopen.",
         "successNextProspectTitle": "Prospectie",
-        "successNextProspectText": "Importeer de contacten in uw CRM of prospectietool.",
+        "successNextProspectText": "Gebruik de studie om contacten te prioriteren en uw benadering te plannen.",
         "successNextReceiptTitle": "Bevestiging",
         "successNextReceiptText": "De ontvangstbevestiging is naar uw e-mailadres gestuurd.",
         "successCtaPurchases": "Naar mijn aankopen",
@@ -547,5 +534,53 @@
         "emptyDescription": "Verken de catalogus, selecteer een database die past bij uw campagne en kom hier terug om de bestanden te downloaden.",
         "emptyCta": "Catalogus verkennen",
         "browseMoreLists": "Meer lijsten bekijken"
+    },
+    "about": {
+        "meta": {
+            "title": "Wie we zijn en hoe de data ontstaat",
+            "description": "Hoe de lijsten met importeurs en distributeurs tot stand komen: eigen onderzoek, controle in openbare bronnen en periodieke herziening van de catalogus."
+        },
+        "hero": {
+            "eyebrow": "Over ons",
+            "title": "Wie er achter de lijsten zit",
+            "subtitle": "Easy Prospect brengt importeurs en distributeurs samen in marktstudies als pdf, zodat exporteurs weten met wie ze moeten praten. Deze pagina legt uit hoe die data ontstaat."
+        },
+        "methodology": {
+            "eyebrow": "Methodiek",
+            "title": "Hoe de data tot stand komt",
+            "intro": "Wie voor B2B-data betaalt, heeft het recht te weten waar die vandaan komt. Hieronder staat het proces, zonder beloftes die we niet kunnen waarmaken.",
+            "blocks": [
+                {
+                    "title": "Herkomst van de data",
+                    "body": "De lijsten komen voort uit eigen onderzoek en worden door Easy Prospect zelf samengesteld. Elke lijst wordt opgebouwd rond de sector en de markt die ze wil dekken."
+                },
+                {
+                    "title": "Controle in openbare bronnen",
+                    "body": "Voordat een bedrijf in een lijst komt, wordt het gecontroleerd in openbare bronnen — de bedrijfswebsite, de digitale aanwezigheid en beschikbare openbare registers — om te bevestigen dat het bestaat, dat het in de aangegeven sector actief is en dat de contactkanalen werken."
+                },
+                {
+                    "title": "Onderhoud van de catalogus",
+                    "body": "De catalogus wordt periodiek herzien. Zodra een lijst de markt die ze beschrijft niet meer weerspiegelt, halen we ze uit de verkoop in plaats van ze te laten staan."
+                }
+            ]
+        },
+        "delivery": {
+            "title": "Wat je ontvangt",
+            "body": "Elke aankoop geeft toegang tot een marktstudie in pdf met de bedrijven uit de gekozen lijst."
+        },
+        "limits": {
+            "title": "Wat we niet beloven",
+            "body": "We beloven niet dat elk bedrijf op je bericht antwoordt, en een lijst vervangt niet je eigen beoordeling voordat je zakendoet. Waar we wel voor instaan is het criterium: geen enkel bedrijf komt in een lijst zonder controle in openbare bronnen."
+        },
+        "cta": {
+            "title": "Nog vragen?",
+            "body": "De meest gestelde vragen over lijsten, levering en betaling worden beantwoord in de FAQ.",
+            "faq": "Bekijk de FAQ",
+            "catalog": "Bekijk de catalogus"
+        },
+        "breadcrumb": {
+            "home": "Home",
+            "current": "Over ons"
+        }
     }
 }
