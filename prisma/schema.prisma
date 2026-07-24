@@ -203,6 +203,16 @@ model Workspace {
   maxUsers        Int @default(1)
   maxEmailsPerDay Int @default(0) // 0 = ilimitado
 
+  // 🆕 Janela de envio de cold mail (defaults do workspace)
+  // sendDays usa numeração ISO: 1 = segunda ... 7 = domingo.
+  // sendStartHour é inclusivo, sendEndHour exclusivo.
+  sendWindowEnabled Boolean @default(true)
+  sendTimezone      String  @default("UTC")
+  sendDays          Int[]   @default([1, 2, 3, 4, 5])
+  sendStartHour     Int     @default(9)
+  sendEndHour       Int     @default(17)
+  sendJitterMinutes Int     @default(20)
+
   @@index([userId])
   @@map("workspaces")
 }
@@ -357,6 +367,14 @@ model Campaign {
   // Datas
   scheduledAt DateTime?
   sentAt      DateTime?
+
+  // 🆕 Override da janela de envio. null (ou array vazio) = herda do workspace.
+  sendWindowEnabled Boolean?
+  sendTimezone      String?
+  sendDays          Int[]    @default([])
+  sendStartHour     Int?
+  sendEndHour       Int?
+  sendJitterMinutes Int?
 
   workspaceId String
   workspace   Workspace   @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
