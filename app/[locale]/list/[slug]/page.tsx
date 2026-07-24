@@ -50,7 +50,7 @@ export async function generateMetadata({ params }: ListPageProps) {
 
     return {
         title: list.name,
-        description: list.description || t("metaFallbackDescription", { count: list.totalLeads }),
+        description: list.description || t("metaFallbackDescription"),
     }
 }
 

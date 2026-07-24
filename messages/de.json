@@ -258,7 +258,7 @@
         "items": [
             {
                 "question": "Woher stammen die Daten und wie werden sie verifiziert?",
-                "answer": "Die Listen entstehen aus eigener Recherche und werden von unserem Team zusammengestellt. Bevor ein Unternehmen in eine Liste aufgenommen wird, prüfen wir es anhand öffentlich zugänglicher Quellen — Unternehmenswebsite, digitale Präsenz und verfügbare Einträge —, um zu bestätigen, dass es existiert, in der angegebenen Branche tätig ist und die Kontaktwege aktiv sind."
+                "answer": "Die Listen entstehen aus eigener Recherche und werden von unserem Betrieb zusammengestellt. Bevor ein Unternehmen in eine Liste aufgenommen wird, prüfen wir es anhand öffentlich zugänglicher Quellen — Unternehmenswebsite, digitale Präsenz und verfügbare Einträge —, um zu bestätigen, dass es existiert, in der angegebenen Branche tätig ist und die Kontaktwege aktiv sind."
             },
             {
                 "question": "Wie aktuell sind die Listen?",
@@ -286,7 +286,7 @@
             },
             {
                 "question": "Wie steht es um Datenschutz und DSGVO?",
-                "answer": "Die Listen enthalten geschäftliche Kontaktdaten aus öffentlich zugänglichen Quellen: Firmenname, Land, Branche, Website, allgemeine E-Mail-Adressen und Telefonnummern — in manchen Listen zusätzlich Name und Funktion einer Ansprechperson. Beim Kauf erheben wir Ihren Namen, Ihre E-Mail-Adresse und Ihre Steuernummer, um die Zahlung abzuwickeln und den Download freizugeben. Jede Person und jedes Unternehmen kann die Berichtigung oder Löschung der eigenen Daten aus unseren Listen verlangen. Die vollständige Regelung und den Kontaktweg für solche Anfragen finden Sie in unserer Datenschutzerklärung unter /privacy."
+                "answer": "Die Listen enthalten geschäftliche Kontaktdaten aus öffentlich zugänglichen Quellen: Firmenname, Land, Branche, Website, allgemeine E-Mail-Adressen und Telefonnummern — in manchen Listen zusätzlich Name und Funktion einer Ansprechperson. Beim Kauf erheben wir Ihren Namen, Ihre E-Mail-Adresse und Ihre Steuernummer, um die Zahlung abzuwickeln und den Download freizugeben. Jede Person und jedes Unternehmen kann die Berichtigung oder Löschung der eigenen Daten aus unseren Listen verlangen: Nutzen Sie dafür das Kontaktformular weiter unten auf dieser Seite. Die vollständige Regelung finden Sie in unserer Datenschutzerklärung unter /privacy."
             }
         ],
         "form": {
@@ -466,7 +466,7 @@
         "buyNow": "Jetzt kaufen",
         "signInToBuy": "Anmelden und kaufen",
         "notFound": "Liste nicht gefunden",
-        "metaFallbackDescription": "Liste mit {count} qualifizierten Leads."
+        "metaFallbackDescription": "Marktstudie mit qualifizierten Importeuren und Distributoren."
     },
     "checkout": {
         "stepCart": "Warenkorb",

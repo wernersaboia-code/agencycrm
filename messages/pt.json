@@ -286,7 +286,7 @@
             },
             {
                 "question": "Como fica a proteção de dados (LGPD/GDPR)?",
-                "answer": "As listas reúnem dados de contato profissional coletados em fontes públicas: nome da empresa, país, setor, site, e-mails e telefones institucionais — e, em algumas listas, também o nome e o cargo de uma pessoa de contato. Na compra, pedimos o seu nome, e-mail e documento fiscal (CPF/CNPJ), usados para processar o pagamento e liberar o download. Qualquer pessoa ou empresa pode pedir a correção ou a remoção dos seus dados das nossas listas. A política completa e o canal para esses pedidos estão na nossa Política de Privacidade, em /privacy."
+                "answer": "As listas reúnem dados de contato profissional coletados em fontes públicas: nome da empresa, país, setor, site, e-mails e telefones institucionais — e, em algumas listas, também o nome e o cargo de uma pessoa de contato. Na compra, pedimos o seu nome, e-mail e documento fiscal (CPF/CNPJ), usados para processar o pagamento e liberar o download. Qualquer pessoa ou empresa pode pedir a correção ou a remoção dos seus dados das nossas listas: use o formulário de contato logo abaixo, nesta mesma página. A política completa está na nossa Política de Privacidade, em /privacy."
             }
         ],
         "form": {
@@ -466,7 +466,7 @@
         "buyNow": "Comprar agora",
         "signInToBuy": "Entrar e comprar",
         "notFound": "Lista não encontrada",
-        "metaFallbackDescription": "Lista com {count} leads qualificados."
+        "metaFallbackDescription": "Estudo de mercado com importadores e distribuidores qualificados."
     },
     "checkout": {
         "stepCart": "Carrinho",

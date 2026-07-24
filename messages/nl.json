@@ -258,7 +258,7 @@
         "items": [
             {
                 "question": "Waar komen de gegevens vandaan en hoe worden ze geverifieerd?",
-                "answer": "De lijsten komen voort uit eigen onderzoek en worden door ons team samengesteld. Voordat een bedrijf in een lijst wordt opgenomen, toetsen we het aan openbare bronnen — bedrijfswebsite, digitale aanwezigheid en beschikbare registraties — om te bevestigen dat het bestaat, dat het in de vermelde sector actief is en dat de contactkanalen actief zijn."
+                "answer": "De lijsten komen voort uit eigen onderzoek en worden door onze organisatie samengesteld. Voordat een bedrijf in een lijst wordt opgenomen, toetsen we het aan openbare bronnen — bedrijfswebsite, digitale aanwezigheid en beschikbare registraties — om te bevestigen dat het bestaat, dat het in de vermelde sector actief is en dat de contactkanalen actief zijn."
             },
             {
                 "question": "Hoe actueel zijn de lijsten?",
@@ -286,7 +286,7 @@
             },
             {
                 "question": "Hoe zit het met gegevensbescherming (AVG/LGPD)?",
-                "answer": "De lijsten bevatten zakelijke contactgegevens uit openbare bronnen: bedrijfsnaam, land, sector, website, algemene e-mailadressen en telefoonnummers — en in sommige lijsten ook de naam en functie van een contactpersoon. Bij een aankoop vragen we uw naam, e-mailadres en fiscaal nummer, die we gebruiken om de betaling te verwerken en de download vrij te geven. Iedere persoon of onderneming kan vragen om correctie of verwijdering van de eigen gegevens uit onze lijsten. Het volledige beleid en het kanaal voor zulke verzoeken staan in ons Privacybeleid, op /privacy."
+                "answer": "De lijsten bevatten zakelijke contactgegevens uit openbare bronnen: bedrijfsnaam, land, sector, website, algemene e-mailadressen en telefoonnummers — en in sommige lijsten ook de naam en functie van een contactpersoon. Bij een aankoop vragen we uw naam, e-mailadres en fiscaal nummer, die we gebruiken om de betaling te verwerken en de download vrij te geven. Iedere persoon of onderneming kan vragen om correctie of verwijdering van de eigen gegevens uit onze lijsten: gebruik daarvoor het contactformulier verderop op deze pagina. Het volledige beleid staat in ons Privacybeleid, op /privacy."
             }
         ],
         "form": {
@@ -466,7 +466,7 @@
         "buyNow": "Nu kopen",
         "signInToBuy": "Inloggen en kopen",
         "notFound": "Lijst niet gevonden",
-        "metaFallbackDescription": "Lijst met {count} gekwalificeerde leads."
+        "metaFallbackDescription": "Marktstudie met gekwalificeerde importeurs en distributeurs."
     },
     "checkout": {
         "stepCart": "Winkelwagen",

@@ -67,8 +67,11 @@ describe("integridade do conteúdo do FAQ", () => {
             for (const item of items) {
                 expect(item.question.trim()).not.toBe("")
                 expect(item.answer.trim()).not.toBe("")
+                expect(item.question).not.toContain("PLACEHOLDER")
                 expect(item.answer).not.toContain("PLACEHOLDER")
             }
+
+            expect(messages.faq._placeholder).toBeUndefined()
         })
 
         it(`${locale}: buildFaqSchema emite uma Question por item do FAQ`, async () => {

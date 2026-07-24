@@ -258,7 +258,7 @@
         "items": [
             {
                 "question": "D'où viennent les données et comment sont-elles vérifiées ?",
-                "answer": "Les listes sont issues de nos propres recherches et compilées par notre équipe. Avant qu'une entreprise n'entre dans une liste, nous la vérifions à partir de sources publiques — site institutionnel, présence en ligne et registres disponibles — afin de confirmer qu'elle existe, qu'elle opère bien dans le secteur indiqué et que ses canaux de contact sont actifs."
+                "answer": "Les listes sont issues de nos propres recherches et compilées par notre opération. Avant qu'une entreprise n'entre dans une liste, nous la vérifions à partir de sources publiques — site institutionnel, présence en ligne et registres disponibles — afin de confirmer qu'elle existe, qu'elle opère bien dans le secteur indiqué et que ses canaux de contact sont actifs."
             },
             {
                 "question": "Quelle est l'actualité des listes ?",
@@ -286,7 +286,7 @@
             },
             {
                 "question": "Qu'en est-il de la protection des données (RGPD/LGPD) ?",
-                "answer": "Les listes rassemblent des données de contact professionnel collectées à partir de sources publiques : nom de l'entreprise, pays, secteur, site web, e-mails et téléphones institutionnels — et, dans certaines listes, le nom et la fonction d'une personne de contact. Lors de l'achat, nous demandons votre nom, votre e-mail et votre numéro d'identification fiscale, utilisés pour traiter le paiement et débloquer le téléchargement. Toute personne ou entreprise peut demander la rectification ou la suppression de ses données de nos listes. La politique complète et le canal pour ces demandes figurent dans notre Politique de confidentialité, sur /privacy."
+                "answer": "Les listes rassemblent des données de contact professionnel collectées à partir de sources publiques : nom de l'entreprise, pays, secteur, site web, e-mails et téléphones institutionnels — et, dans certaines listes, le nom et la fonction d'une personne de contact. Lors de l'achat, nous demandons votre nom, votre e-mail et votre numéro d'identification fiscale, utilisés pour traiter le paiement et débloquer le téléchargement. Toute personne ou entreprise peut demander la rectification ou la suppression de ses données de nos listes : utilisez pour cela le formulaire de contact plus bas sur cette même page. La politique complète figure dans notre Politique de confidentialité, sur /privacy."
             }
         ],
         "form": {
@@ -466,7 +466,7 @@
         "buyNow": "Acheter maintenant",
         "signInToBuy": "Se connecter et acheter",
         "notFound": "Liste introuvable",
-        "metaFallbackDescription": "Liste de {count} leads qualifiés."
+        "metaFallbackDescription": "Étude de marché portant sur des importateurs et distributeurs qualifiés."
     },
     "checkout": {
         "stepCart": "Panier",

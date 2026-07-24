@@ -258,7 +258,7 @@
         "items": [
             {
                 "question": "¿De dónde vienen los datos y cómo se verifican?",
-                "answer": "Las listas nacen de investigación propia y las compila nuestro equipo. Antes de que una empresa entre en una lista, la contrastamos con fuentes públicas — su sitio web, su presencia digital y los registros disponibles — para confirmar que existe, que opera en el sector indicado y que sus canales de contacto están activos."
+                "answer": "Las listas nacen de investigación propia y las compila nuestra operación. Antes de que una empresa entre en una lista, la contrastamos con fuentes públicas — su sitio web, su presencia digital y los registros disponibles — para confirmar que existe, que opera en el sector indicado y que sus canales de contacto están activos."
             },
             {
                 "question": "¿Qué tan actualizadas están las listas?",
@@ -286,7 +286,7 @@
             },
             {
                 "question": "¿Cómo se gestiona la protección de datos (LGPD/GDPR)?",
-                "answer": "Las listas reúnen datos de contacto profesional recogidos de fuentes públicas: nombre de la empresa, país, sector, sitio web, correos y teléfonos institucionales — y, en algunas listas, también el nombre y el cargo de una persona de contacto. En la compra te pedimos tu nombre, correo e identificación fiscal, que usamos para procesar el pago y habilitar la descarga. Cualquier persona o empresa puede pedir la corrección o la eliminación de sus datos de nuestras listas. La política completa y el canal para esas solicitudes están en nuestra Política de Privacidad, en /privacy."
+                "answer": "Las listas reúnen datos de contacto profesional recogidos de fuentes públicas: nombre de la empresa, país, sector, sitio web, correos y teléfonos institucionales — y, en algunas listas, también el nombre y el cargo de una persona de contacto. En la compra te pedimos tu nombre, correo e identificación fiscal, que usamos para procesar el pago y habilitar la descarga. Cualquier persona o empresa puede pedir la corrección o la eliminación de sus datos de nuestras listas: usa el formulario de contacto más abajo, en esta misma página. La política completa está en nuestra Política de Privacidad, en /privacy."
             }
         ],
         "form": {
@@ -466,7 +466,7 @@
         "buyNow": "Comprar ahora",
         "signInToBuy": "Iniciar sesión y comprar",
         "notFound": "Lista no encontrada",
-        "metaFallbackDescription": "Lista con {count} leads calificados."
+        "metaFallbackDescription": "Estudio de mercado con importadores y distribuidores calificados."
     },
     "checkout": {
         "stepCart": "Carrito",

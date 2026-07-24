@@ -258,7 +258,7 @@
         "items": [
             {
                 "question": "Da dove provengono i dati e come vengono verificati?",
-                "answer": "Gli elenchi nascono da ricerca propria e vengono compilati dal nostro team. Prima che un'azienda entri in un elenco, la verifichiamo su fonti pubbliche — sito istituzionale, presenza digitale e registri disponibili — per confermare che esista, che operi nel settore indicato e che i canali di contatto siano attivi."
+                "answer": "Gli elenchi nascono da ricerca propria e vengono compilati dalla nostra operazione. Prima che un'azienda entri in un elenco, la verifichiamo su fonti pubbliche — sito istituzionale, presenza digitale e registri disponibili — per confermare che esista, che operi nel settore indicato e che i canali di contatto siano attivi."
             },
             {
                 "question": "Quanto sono aggiornati gli elenchi?",
@@ -286,7 +286,7 @@
             },
             {
                 "question": "Cosa dire della protezione dei dati (GDPR/LGPD)?",
-                "answer": "Gli elenchi raccolgono dati di contatto professionale reperiti da fonti pubbliche: nome dell'azienda, paese, settore, sito web, e-mail e telefoni istituzionali — e, in alcuni elenchi, anche il nome e il ruolo di una persona di contatto. All'acquisto chiediamo il tuo nome, la tua e-mail e il tuo codice fiscale o partita IVA, usati per elaborare il pagamento e sbloccare il download. Qualsiasi persona o azienda può chiedere la correzione o la rimozione dei propri dati dai nostri elenchi. La policy completa e il canale per queste richieste sono nella nostra Informativa sulla privacy, su /privacy."
+                "answer": "Gli elenchi raccolgono dati di contatto professionale reperiti da fonti pubbliche: nome dell'azienda, paese, settore, sito web, e-mail e telefoni istituzionali — e, in alcuni elenchi, anche il nome e il ruolo di una persona di contatto. All'acquisto chiediamo il tuo nome, la tua e-mail e il tuo codice fiscale o partita IVA, usati per elaborare il pagamento e sbloccare il download. Qualsiasi persona o azienda può chiedere la correzione o la rimozione dei propri dati dai nostri elenchi: usa il modulo di contatto più in basso, in questa stessa pagina. La policy completa è nella nostra Informativa sulla privacy, su /privacy."
             }
         ],
         "form": {
@@ -466,7 +466,7 @@
         "buyNow": "Acquista ora",
         "signInToBuy": "Accedi e acquista",
         "notFound": "Elenco non trovato",
-        "metaFallbackDescription": "Elenco di {count} lead qualificati."
+        "metaFallbackDescription": "Studio di mercato su importatori e distributori qualificati."
     },
     "checkout": {
         "stepCart": "Carrello",

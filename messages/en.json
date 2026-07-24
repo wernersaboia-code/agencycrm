@@ -286,7 +286,7 @@
             },
             {
                 "question": "What about data protection (LGPD/GDPR)?",
-                "answer": "The lists hold business contact data collected from publicly available sources: company name, country, industry, website, general e-mail addresses and phone numbers — and, in some lists, the name and role of a contact person as well. When you buy, we ask for your name, e-mail and tax id, used to process the payment and release the download. Any person or company can ask us to correct or remove their data from our lists. The full policy and the channel for such requests are in our Privacy Policy, at /privacy."
+                "answer": "The lists hold business contact data collected from publicly available sources: company name, country, industry, website, general e-mail addresses and phone numbers — and, in some lists, the name and role of a contact person as well. When you buy, we ask for your name, e-mail and tax id, used to process the payment and release the download. Any person or company can ask us to correct or remove their data from our lists: use the contact form further down this same page. The full policy is in our Privacy Policy, at /privacy."
             }
         ],
         "form": {
@@ -466,7 +466,7 @@
         "buyNow": "Buy now",
         "signInToBuy": "Sign in and buy",
         "notFound": "List not found",
-        "metaFallbackDescription": "List with {count} qualified leads."
+        "metaFallbackDescription": "Market study covering qualified importers and distributors."
     },
     "checkout": {
         "stepCart": "Cart",

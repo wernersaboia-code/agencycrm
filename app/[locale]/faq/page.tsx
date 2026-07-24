@@ -29,8 +29,8 @@ export default async function FaqPage({
 }) {
     const { locale } = await params
     const t = await getTranslations({ locale, namespace: "faq" })
-    // buildFaqSchema descarta itens sem resposta — hoje o de LGPD/GDPR, que
-    // segue em branco de propósito e não deve virar rich result vazio.
+    // buildFaqSchema descarta itens sem pergunta ou sem resposta, evitando
+    // que um FAQ incompleto vire rich result vazio.
     const items = t.raw("items") as FaqItem[]
 
     return (
