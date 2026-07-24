@@ -1537,18 +1537,128 @@ Em `actions/campaigns.ts`, nas funções de criar e atualizar campanha, incluir 
             sendJitterMinutes: data.sendJitterMinutes ?? null,
 ```
 
-Acrescentar os mesmos campos ao schema Zod da campanha, todos opcionais/nuláveis:
+Acrescentar os mesmos campos ao schema Zod da campanha, todos opcionais/nuláveis, com mensagens em português em toda restrição numérica (zod 4 emite texto padrão em inglês quando falta mensagem, e ele vaza para a tela):
 
 ```ts
     sendWindowEnabled: z.boolean().nullable().optional(),
     sendTimezone: z.string().nullable().optional(),
     sendDays: z.array(z.number().int().min(1).max(7)).optional(),
-    sendStartHour: z.number().int().min(0).max(23).nullable().optional(),
-    sendEndHour: z.number().int().min(1).max(24).nullable().optional(),
-    sendJitterMinutes: z.number().int().min(0).max(120).nullable().optional(),
+    sendStartHour: z
+        .number()
+        .int()
+        .min(0, "A hora inicial deve estar entre 0 e 23")
+        .max(23, "A hora inicial deve estar entre 0 e 23")
+        .nullable()
+        .optional(),
+    sendEndHour: z
+        .number()
+        .int()
+        .min(1, "A hora final deve estar entre 1 e 24")
+        .max(24, "A hora final deve estar entre 1 e 24")
+        .nullable()
+        .optional(),
+    sendJitterMinutes: z
+        .number()
+        .int()
+        .min(0, "A variação deve estar entre 0 e 120 minutos")
+        .max(120, "A variação deve estar entre 0 e 120 minutos")
+        .nullable()
+        .optional(),
 ```
 
-- [ ] **Step 4: Verificar tipos e testes**
+E — **obrigatório, não opcional** — a ordenação das horas nos dois schemas (create e update). Sem ela existe um bug espelho do que esta fase inteira combate: `resolveSendWindow` calcula `enabled` como `... && endHour > startHour`, então um par invertido (17→9) produz janela **desligada**, e `windowCoversCronRun` libera janela desligada. Resultado: a campanha salva sem erro e no cron `isWithinSendWindow` devolve `true` sempre — a janela que o usuário configurou não restringe nada. Em vez de "nunca envia em silêncio", vira "envia a qualquer hora em silêncio".
+
+Como os campos são `.nullable().optional()`, o predicado só compara quando os **dois** são números de verdade — e o teste precisa ser `typeof`, não veracidade: `sendStartHour: 0` é meia-noite legítima e é falsy.
+
+```ts
+// Fora dos schemas, no mesmo arquivo:
+function hasValidSendWindowOrder(data: {
+    sendStartHour?: number | null
+    sendEndHour?: number | null
+}): boolean {
+    if (typeof data.sendStartHour !== "number" || typeof data.sendEndHour !== "number") {
+        return true
+    }
+    return data.sendEndHour > data.sendStartHour
+}
+```
+
+Encadear em **ambos** os schemas (no `createCampaignSchema`, depois do refine de tipo/template/steps que já existe — sem mesclar os dois):
+
+```ts
+.refine(hasValidSendWindowOrder, {
+    message: "O fim da janela precisa ser depois do início",
+    path: ["sendEndHour"],
+})
+```
+
+Cobrir com testes em `lib/validations/campaign.validations.test.ts` (arquivo novo), nos dois schemas: par invertido recusado, par igual recusado (a janela seria vazia e `resolveSendWindow` exige `>` estrito), par válido aceito, **ambos ausentes aceito** (é o caso "herda do workspace" — um refine que recusasse isso quebraria toda campanha sem override) e apenas um dos dois presente aceito.
+
+- [ ] **Step 4: Validar que o override da campanha também é alcançável pelo cron**
+
+O override por campanha recria exatamente a armadilha que a Task 4 fechou no workspace: uma campanha com janela que não contenha a execução diária das 09:00 UTC nunca envia, em silêncio. A diferença é que aqui a janela **efetiva** só existe depois de combinar o override com os defaults do workspace — o formulário nem oferece fuso, então a campanha herda o do workspace, e é a combinação que precisa ser validada.
+
+Nas funções de criar e atualizar campanha, **depois** de validar o schema e **antes** de escrever no banco, resolver a janela efetiva e recusar se ela for inalcançável:
+
+```ts
+        // Só faz sentido checar quando a campanha define override próprio;
+        // sem override ela herda o workspace, que a Task 4 já validou na escrita.
+        const hasWindowOverride =
+            data.sendWindowEnabled !== null && data.sendWindowEnabled !== undefined
+
+        if (hasWindowOverride) {
+            const workspace = await prisma.workspace.findUnique({
+                where: { id: workspaceId },
+                select: {
+                    sendWindowEnabled: true,
+                    sendTimezone: true,
+                    sendDays: true,
+                    sendStartHour: true,
+                    sendEndHour: true,
+                    sendJitterMinutes: true,
+                },
+            })
+
+            if (!workspace) {
+                return { success: false, error: "Workspace não encontrado" }
+            }
+
+            const effectiveWindow = resolveSendWindow(workspace, {
+                sendWindowEnabled: data.sendWindowEnabled ?? null,
+                sendTimezone: data.sendTimezone ?? null,
+                sendDays: data.sendDays ?? [],
+                sendStartHour: data.sendStartHour ?? null,
+                sendEndHour: data.sendEndHour ?? null,
+                sendJitterMinutes: data.sendJitterMinutes ?? null,
+            })
+
+            if (!windowCoversCronRun(effectiveWindow)) {
+                return {
+                    success: false,
+                    error: `Os envios saem uma vez por dia, às ${CRON_SEND_HOUR_UTC}h UTC (${describeCronHourIn(
+                        effectiveWindow.timezone
+                    )} no fuso do workspace). A janela desta campanha precisa incluir esse horário, senão nenhum e-mail é enviado.`,
+                }
+            }
+        }
+```
+
+Acrescentar ao topo de `actions/campaigns.ts`:
+
+```ts
+import {
+    resolveSendWindow,
+    windowCoversCronRun,
+    describeCronHourIn,
+    CRON_SEND_HOUR_UTC,
+} from "@/lib/campaigns/send-window"
+```
+
+Se as funções de criar e atualizar campanha já compartilham um helper de validação, colocar o bloco lá em vez de duplicá-lo nas duas. Se não compartilham, extrair uma função local — não copiar o bloco duas vezes.
+
+Adaptar o formato do retorno de erro ao que as actions de campanha já usam neste arquivo (leia-as antes: o tipo de retorno pode não ser `ActionResult`).
+
+- [ ] **Step 5: Verificar tipos e testes**
 
 ```bash
 export PATH="/c/Program Files/nodejs:$PATH" && npx tsc --noEmit && npm test
@@ -1556,11 +1666,11 @@ export PATH="/c/Program Files/nodejs:$PATH" && npx tsc --noEmit && npm test
 
 Esperado: sem erros; testes PASS.
 
-- [ ] **Step 5: Verificar visualmente**
+- [ ] **Step 6: Verificar visualmente**
 
-No dev server, criar uma campanha com "Janela de envio própria" ligada em 10→12 e conferir no banco que `campaigns.sendStartHour = 10`; criar outra sem ligar e conferir que os campos ficam `NULL` e `sendDays = {}`.
+No dev server, criar uma campanha com "Janela de envio própria" ligada em 10→12 e conferir no banco que `campaigns.sendStartHour = 10`; criar outra sem ligar e conferir que os campos ficam `NULL` e `sendDays = {}`. Com o workspace em `UTC`, criar uma terceira com override 14→18 e conferir que **é recusada** com a mensagem do cron (14h UTC não contém as 9h UTC).
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 7: Commit**
 
 ```bash
 git add components/campaigns/campaign-wizard.tsx actions/campaigns.ts
