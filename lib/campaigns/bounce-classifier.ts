@@ -69,7 +69,7 @@ function hasBasicCode(normalized: string, code: string): boolean {
 // regex que resolva essa ambiguidade sem contexto semântico.
 function hasEnhancedCode(normalized: string, code: string): boolean {
     const escaped = code.replace(/\./g, "\\.")
-    const pattern = new RegExp(`(?<![\\d.])${escaped}(?![\\d.])`)
+    const pattern = new RegExp(`(?<![\\w.])${escaped}(?![\\w.])`)
     return pattern.test(normalized)
 }
 

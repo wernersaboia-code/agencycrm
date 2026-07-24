@@ -69,4 +69,10 @@ describe("classifyBounce - falsos positivos de código numérico como substring"
         ].join("\n")
         expect(classifyBounce(message)).toBe("hard")
     })
+
+    it("não confunde código estendido colado a letra (versão de software)", () => {
+        expect(classifyBounce("v5.1.1 rejected")).toBe("unknown")
+        expect(classifyBounce("5.1.1a build failed")).toBe("unknown")
+        expect(classifyBounce("openssh_5.1.1p1 protocol error")).toBe("unknown")
+    })
 })
