@@ -270,7 +270,7 @@
             },
             {
                 "question": "Can I see the data before buying?",
-                "answer": "Yes. On each list's page you can see the coverage (countries, industries, language and number of records), the date it was last updated, the price and a sample of records with the email partially masked. The full data is released after purchase."
+                "answer": "Yes. On each list's page you can see the coverage (countries, industries and language), the date it was last updated, the price and a sample of records with the email partially masked. The full data is released after purchase."
             },
             {
                 "question": "How does payment work?",
@@ -286,7 +286,7 @@
             },
             {
                 "question": "What about data protection (LGPD/GDPR)?",
-                "answer": ""
+                "answer": "The lists hold business contact data collected from publicly available sources: company name, country, industry, website, general e-mail addresses and phone numbers — and, in some lists, the name and role of a contact person as well. When you buy, we ask for your name, e-mail and tax id, used to process the payment and release the download. Any person or company can ask us to correct or remove their data from our lists. The full policy and the channel for such requests are in our Privacy Policy, at /privacy."
             }
         ],
         "form": {

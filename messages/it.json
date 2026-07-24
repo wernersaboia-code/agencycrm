@@ -270,7 +270,7 @@
             },
             {
                 "question": "Posso vedere i dati prima di acquistare?",
-                "answer": "Sì. Nella pagina di ogni elenco vedi la copertura (paesi, settori, lingua e numero di record), la data dell'ultimo aggiornamento, il prezzo e un campione di record con l'e-mail parzialmente oscurata. I dati completi vengono rilasciati dopo l'acquisto."
+                "answer": "Sì. Nella pagina di ogni elenco vedi la copertura (paesi, settori e lingua), la data dell'ultimo aggiornamento, il prezzo e un campione di record con l'e-mail parzialmente oscurata. I dati completi vengono rilasciati dopo l'acquisto."
             },
             {
                 "question": "Come funziona il pagamento?",
@@ -286,7 +286,7 @@
             },
             {
                 "question": "Cosa dire della protezione dei dati (GDPR/LGPD)?",
-                "answer": ""
+                "answer": "Gli elenchi raccolgono dati di contatto professionale reperiti da fonti pubbliche: nome dell'azienda, paese, settore, sito web, e-mail e telefoni istituzionali — e, in alcuni elenchi, anche il nome e il ruolo di una persona di contatto. All'acquisto chiediamo il tuo nome, la tua e-mail e il tuo codice fiscale o partita IVA, usati per elaborare il pagamento e sbloccare il download. Qualsiasi persona o azienda può chiedere la correzione o la rimozione dei propri dati dai nostri elenchi. La policy completa e il canale per queste richieste sono nella nostra Informativa sulla privacy, su /privacy."
             }
         ],
         "form": {

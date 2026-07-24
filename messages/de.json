@@ -270,7 +270,7 @@
             },
             {
                 "question": "Kann ich die Daten vor dem Kauf ansehen?",
-                "answer": "Ja. Auf der Seite jeder Liste sehen Sie die Abdeckung (Länder, Branchen, Sprache und Anzahl der Einträge), das Datum der letzten Aktualisierung, den Preis und eine Stichprobe von Einträgen mit teilweise verdeckter E-Mail-Adresse. Die vollständigen Daten werden nach dem Kauf freigegeben."
+                "answer": "Ja. Auf der Seite jeder Liste sehen Sie die Abdeckung (Länder, Branchen und Sprache), das Datum der letzten Aktualisierung, den Preis und eine Stichprobe von Einträgen mit teilweise verdeckter E-Mail-Adresse. Die vollständigen Daten werden nach dem Kauf freigegeben."
             },
             {
                 "question": "Wie funktioniert die Bezahlung?",
@@ -286,7 +286,7 @@
             },
             {
                 "question": "Wie steht es um Datenschutz und DSGVO?",
-                "answer": ""
+                "answer": "Die Listen enthalten geschäftliche Kontaktdaten aus öffentlich zugänglichen Quellen: Firmenname, Land, Branche, Website, allgemeine E-Mail-Adressen und Telefonnummern — in manchen Listen zusätzlich Name und Funktion einer Ansprechperson. Beim Kauf erheben wir Ihren Namen, Ihre E-Mail-Adresse und Ihre Steuernummer, um die Zahlung abzuwickeln und den Download freizugeben. Jede Person und jedes Unternehmen kann die Berichtigung oder Löschung der eigenen Daten aus unseren Listen verlangen. Die vollständige Regelung und den Kontaktweg für solche Anfragen finden Sie in unserer Datenschutzerklärung unter /privacy."
             }
         ],
         "form": {

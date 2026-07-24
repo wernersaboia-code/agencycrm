@@ -270,7 +270,7 @@
             },
             {
                 "question": "Kan ik de gegevens bekijken voordat ik koop?",
-                "answer": "Ja. Op de pagina van elke lijst ziet u de dekking (landen, sectoren, taal en aantal records), de datum van de laatste actualisering, de prijs en een steekproef van records waarvan het e-mailadres deels is afgeschermd. De volledige gegevens komen na aankoop vrij."
+                "answer": "Ja. Op de pagina van elke lijst ziet u de dekking (landen, sectoren en taal), de datum van de laatste actualisering, de prijs en een steekproef van records waarvan het e-mailadres deels is afgeschermd. De volledige gegevens komen na aankoop vrij."
             },
             {
                 "question": "Hoe werkt de betaling?",
@@ -286,7 +286,7 @@
             },
             {
                 "question": "Hoe zit het met gegevensbescherming (AVG/LGPD)?",
-                "answer": ""
+                "answer": "De lijsten bevatten zakelijke contactgegevens uit openbare bronnen: bedrijfsnaam, land, sector, website, algemene e-mailadressen en telefoonnummers — en in sommige lijsten ook de naam en functie van een contactpersoon. Bij een aankoop vragen we uw naam, e-mailadres en fiscaal nummer, die we gebruiken om de betaling te verwerken en de download vrij te geven. Iedere persoon of onderneming kan vragen om correctie of verwijdering van de eigen gegevens uit onze lijsten. Het volledige beleid en het kanaal voor zulke verzoeken staan in ons Privacybeleid, op /privacy."
             }
         ],
         "form": {

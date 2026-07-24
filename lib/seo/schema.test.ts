@@ -58,19 +58,25 @@ describe("buildFaqSchema", () => {
 
 describe("integridade do conteúdo do FAQ", () => {
     for (const locale of PUBLISHED_LOCALES) {
-        it(`${locale}: nenhuma resposta do FAQ é placeholder`, async () => {
+        it(`${locale}: toda resposta do FAQ está preenchida e sem placeholder`, async () => {
             const messages = (await import(`../../messages/${locale}.json`)).default
             const items = messages.faq.items as { question: string; answer: string }[]
 
+            expect(items.length).toBeGreaterThan(0)
+
             for (const item of items) {
+                expect(item.question.trim()).not.toBe("")
+                expect(item.answer.trim()).not.toBe("")
                 expect(item.answer).not.toContain("PLACEHOLDER")
             }
+        })
 
-            // A resposta sobre LGPD/GDPR continua deliberadamente em branco (o texto
-            // jurídico ainda não foi redigido) e buildFaqSchema a descarta do markup.
-            // Todas as outras precisam existir de fato.
-            const preenchidas = items.filter((item) => item.answer.trim().length > 0)
-            expect(preenchidas.length).toBeGreaterThanOrEqual(items.length - 1)
+        it(`${locale}: buildFaqSchema emite uma Question por item do FAQ`, async () => {
+            const messages = (await import(`../../messages/${locale}.json`)).default
+            const items = messages.faq.items as { question: string; answer: string }[]
+
+            const schema = buildFaqSchema(items)
+            expect((schema.mainEntity as unknown[]).length).toBe(items.length)
         })
     }
 })

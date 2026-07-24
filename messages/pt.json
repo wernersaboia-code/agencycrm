@@ -270,7 +270,7 @@
             },
             {
                 "question": "Posso ver os dados antes de comprar?",
-                "answer": "Sim. Na página de cada lista você vê a cobertura (países, setores, idioma e quantidade de registros), a data da última atualização, o preço e uma amostra de registros com o e-mail parcialmente oculto. Os dados completos são liberados após a compra."
+                "answer": "Sim. Na página de cada lista você vê a cobertura (países, setores e idioma), a data da última atualização, o preço e uma amostra de registros com o e-mail parcialmente oculto. Os dados completos são liberados após a compra."
             },
             {
                 "question": "Como funciona o pagamento?",
@@ -286,7 +286,7 @@
             },
             {
                 "question": "Como fica a proteção de dados (LGPD/GDPR)?",
-                "answer": ""
+                "answer": "As listas reúnem dados de contato profissional coletados em fontes públicas: nome da empresa, país, setor, site, e-mails e telefones institucionais — e, em algumas listas, também o nome e o cargo de uma pessoa de contato. Na compra, pedimos o seu nome, e-mail e documento fiscal (CPF/CNPJ), usados para processar o pagamento e liberar o download. Qualquer pessoa ou empresa pode pedir a correção ou a remoção dos seus dados das nossas listas. A política completa e o canal para esses pedidos estão na nossa Política de Privacidade, em /privacy."
             }
         ],
         "form": {

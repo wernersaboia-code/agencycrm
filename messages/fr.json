@@ -270,7 +270,7 @@
             },
             {
                 "question": "Puis-je voir les données avant d'acheter ?",
-                "answer": "Oui. Sur la page de chaque liste, vous voyez la couverture (pays, secteurs, langue et nombre d'enregistrements), la date de dernière mise à jour, le prix et un échantillon d'enregistrements dont l'e-mail est partiellement masqué. Les données complètes sont débloquées après l'achat."
+                "answer": "Oui. Sur la page de chaque liste, vous voyez la couverture (pays, secteurs et langue), la date de dernière mise à jour, le prix et un échantillon d'enregistrements dont l'e-mail est partiellement masqué. Les données complètes sont débloquées après l'achat."
             },
             {
                 "question": "Comment fonctionne le paiement ?",
@@ -286,7 +286,7 @@
             },
             {
                 "question": "Qu'en est-il de la protection des données (RGPD/LGPD) ?",
-                "answer": ""
+                "answer": "Les listes rassemblent des données de contact professionnel collectées à partir de sources publiques : nom de l'entreprise, pays, secteur, site web, e-mails et téléphones institutionnels — et, dans certaines listes, le nom et la fonction d'une personne de contact. Lors de l'achat, nous demandons votre nom, votre e-mail et votre numéro d'identification fiscale, utilisés pour traiter le paiement et débloquer le téléchargement. Toute personne ou entreprise peut demander la rectification ou la suppression de ses données de nos listes. La politique complète et le canal pour ces demandes figurent dans notre Politique de confidentialité, sur /privacy."
             }
         ],
         "form": {
