@@ -151,12 +151,13 @@ export function calculateTrackingMetrics(
     emailSends: EmailSendForMetrics[]
 ): EmailTrackingMetrics {
     const sent = emailSends.filter(
-        (send: EmailSendForMetrics): boolean => send.status !== 'PENDING'
+        (send: EmailSendForMetrics): boolean =>
+            !['PENDING', 'SUPPRESSED'].includes(send.status)
     ).length
 
     const delivered = emailSends.filter(
         (send: EmailSendForMetrics): boolean =>
-            !['PENDING', 'BOUNCED', 'COMPLAINED'].includes(send.status)
+            !['PENDING', 'SUPPRESSED', 'BOUNCED', 'COMPLAINED'].includes(send.status)
     ).length
 
     const opened = emailSends.filter(

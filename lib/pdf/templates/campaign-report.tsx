@@ -124,6 +124,7 @@ function StatusBadge({ status }: { status: string }) {
                 return baseStyles.badgeClicked
             case "BOUNCED":
             case "COMPLAINED":
+            case "SUPPRESSED":
                 return baseStyles.badgeBounced
             default:
                 return baseStyles.badgeSent
@@ -140,6 +141,7 @@ function StatusBadge({ status }: { status: string }) {
             case "REPLIED": return "Respondido"
             case "BOUNCED": return "Bounced"
             case "COMPLAINED": return "Spam"
+            case "SUPPRESSED": return "Suprimido"
             default: return status
         }
     }

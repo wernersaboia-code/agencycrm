@@ -689,6 +689,7 @@ export async function sendCampaign(id: string): Promise<ActionResult> {
 
             const sendResult = await sendSequenceFirstStep(prisma, {
                 id: campaign.id,
+                workspaceId: campaign.workspaceId,
                 workspace: campaign.workspace,
                 steps: campaign.steps,
                 enrollments: campaign.enrollments,

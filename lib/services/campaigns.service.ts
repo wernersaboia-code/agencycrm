@@ -60,6 +60,22 @@ function buildLeadData(lead: {
     }
 }
 
+/**
+ * Marca em lote os EmailSends suprimidos: nunca foram enviados, então o
+ * status precisa refletir isso (não é bounce nem envio real).
+ */
+async function markSuppressedEmailSends(
+    prisma: PrismaClient,
+    emailSendIds: string[]
+): Promise<void> {
+    if (emailSendIds.length === 0) return
+
+    await prisma.emailSend.updateMany({
+        where: { id: { in: emailSendIds } },
+        data: { status: "SUPPRESSED", bounceReason: "Endereço na lista de supressão" },
+    })
+}
+
 interface SendCampaignResult {
     totalSent: number
     totalBounced: number
@@ -224,12 +240,7 @@ export async function sendSingleCampaign(
     }
 
     // Batch update all suppressed records - nunca foram enviados
-    if (result.suppressedIds.length > 0) {
-        await prisma.emailSend.updateMany({
-            where: { id: { in: result.suppressedIds } },
-            data: { status: "BOUNCED", bounceReason: "Endereço na lista de supressão" },
-        })
-    }
+    await markSuppressedEmailSends(prisma, result.suppressedIds)
 
     return result
 }
@@ -246,6 +257,7 @@ export async function sendSequenceFirstStep(
     prisma: PrismaClient,
     campaign: {
         id: string
+        workspaceId: string
         workspace: {
             smtpProvider: string | null
             smtpHost: string | null
@@ -291,6 +303,15 @@ export async function sendSequenceFirstStep(
     }
 
     const nextStep = campaign.steps.find((s) => s.order === 2)
+
+    // Consulta antes de qualquer envio: se o banco falhar, a exceção sobe e o
+    // disparo inteiro é abortado sem mandar e-mail nenhum e sem gravar bounce
+    // falso. É o fail-closed correto para este caminho.
+    const suppressed = await filterSuppressed(
+        prisma,
+        campaign.enrollments.map((enrollment) => enrollment.lead.email),
+        campaign.workspaceId
+    )
 
     const smtpPass = campaign.workspace.smtpPass
         ? decryptSecret(campaign.workspace.smtpPass)
@@ -368,13 +389,19 @@ export async function sendSequenceFirstStep(
 
     for (const enrollment of campaign.enrollments) {
         const lead = enrollment.lead
+
+        const emailSendId = emailSendIdByLeadId.get(lead.id)
+        if (!emailSendId) continue
+
+        if (suppressed.has(normalizeEmail(lead.email))) {
+            result.suppressedIds.push(emailSendId)
+            continue
+        }
+
         const leadData = buildLeadData(lead, campaign.workspace)
 
         const personalizedSubject = replaceEmailVariables(firstStep.subject, leadData)
         const personalizedBody = replaceEmailVariables(firstStep.content, leadData)
-
-        const emailSendId = emailSendIdByLeadId.get(lead.id)
-        if (!emailSendId) continue
 
         const sendResult = await sendEmail(
             {
@@ -447,6 +474,9 @@ export async function sendSequenceFirstStep(
             data: { status: "completed", completedAt: now },
         })
     }
+
+    // Batch update all suppressed records - nunca foram enviados
+    await markSuppressedEmailSends(prisma, result.suppressedIds)
 
     return result
 }

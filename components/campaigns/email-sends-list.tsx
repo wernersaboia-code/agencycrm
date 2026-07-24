@@ -83,6 +83,11 @@ const STATUS_CONFIG: Record<string, {
         icon: <AlertTriangle className="h-3.5 w-3.5" />,
         className: "bg-red-100 text-red-700",
     },
+    SUPPRESSED: {
+        label: "Suprimido",
+        icon: <AlertTriangle className="h-3.5 w-3.5" />,
+        className: "bg-slate-200 text-slate-700",
+    },
 }
 
 // ============================================
