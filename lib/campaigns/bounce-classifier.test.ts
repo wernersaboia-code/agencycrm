@@ -32,3 +32,30 @@ describe("classifyBounce", () => {
         expect(classifyBounce("550 user unknown; connection closed")).toBe("hard")
     })
 })
+
+describe("classifyBounce - falsos positivos de código numérico como substring", () => {
+    it("não confunde '550' dentro de '45500ms' com o código de status 550", () => {
+        expect(classifyBounce("Delivery failed: connection timed out after 45500ms")).toBe("soft")
+    })
+
+    it("não confunde '551' dentro de uma contagem de bytes com o código de status 551", () => {
+        expect(classifyBounce("Message size 5510000 bytes exceeds limit, mailbox full")).toBe("soft")
+    })
+
+    it("não confunde '553' dentro de um número de referência arbitrário", () => {
+        expect(classifyBounce("Anti-spam block Ref 5530293, please contact administrator")).toBe("unknown")
+    })
+
+    it("não confunde '550' dentro de um queue id estilo Postfix", () => {
+        expect(classifyBounce("Queue id 20260724165503 rejected, please retry")).toBe("soft")
+    })
+
+    it("reconhece código de status no início de uma linha de continuação em bounce multi-linha", () => {
+        const message = [
+            "The following message to <user@example.com> was undeliverable.",
+            "The reason for the problem:",
+            "550 5.1.1 The email account that you tried to reach does not exist",
+        ].join("\n")
+        expect(classifyBounce(message)).toBe("hard")
+    })
+})
