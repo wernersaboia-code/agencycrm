@@ -87,6 +87,7 @@
         "howItWorks": "Comment ça marche",
         "blog": "Blog",
         "faq": "FAQ",
+        "aboutUs": "À propos",
         "accountTitle": "Compte",
         "myPurchases": "Mes achats",
         "login": "Se connecter",
@@ -546,5 +547,53 @@
         "emptyDescription": "Explorez le catalogue, sélectionnez une base adaptée à votre campagne et revenez ici pour télécharger les fichiers.",
         "emptyCta": "Explorer le catalogue",
         "browseMoreLists": "Voir plus de listes"
+    },
+    "about": {
+        "meta": {
+            "title": "Qui nous sommes et d'où viennent les données",
+            "description": "Comment les listes d'importateurs et de distributeurs sont constituées : recherche propre, vérification dans des sources publiques, revue du catalogue."
+        },
+        "hero": {
+            "eyebrow": "À propos",
+            "title": "Qui se trouve derrière les listes",
+            "subtitle": "Easy Prospect rassemble importateurs et distributeurs dans des études de marché en PDF, pour que les exportateurs sachent à qui parler. Cette page explique comment ces données sont produites."
+        },
+        "methodology": {
+            "eyebrow": "Méthodologie",
+            "title": "Comment les données sont produites",
+            "intro": "Qui paie pour des données B2B a le droit de savoir d'où elles viennent. Le processus est décrit ci-dessous, sans promesses que nous ne pourrions pas tenir.",
+            "blocks": [
+                {
+                    "title": "Origine des données",
+                    "body": "Les listes naissent de nos propres recherches et sont constituées par Easy Prospect. Chacune est bâtie à partir du secteur et du marché qu'elle entend couvrir."
+                },
+                {
+                    "title": "Vérification dans des sources publiques",
+                    "body": "Avant d'entrer dans une liste, chaque entreprise est vérifiée dans des sources publiques — site institutionnel, présence numérique et registres disponibles — afin de confirmer qu'elle existe, qu'elle opère dans le secteur indiqué et que ses canaux de contact sont actifs."
+                },
+                {
+                    "title": "Entretien du catalogue",
+                    "body": "Le catalogue est revu périodiquement. Lorsqu'une liste ne reflète plus le marché qu'elle décrit, elle est retirée de la vente plutôt que laissée en ligne."
+                }
+            ]
+        },
+        "delivery": {
+            "title": "Ce que vous recevez",
+            "body": "Chaque achat donne accès à une étude de marché en PDF réunissant les entreprises de la liste choisie."
+        },
+        "limits": {
+            "title": "Ce que nous ne promettons pas",
+            "body": "Nous ne promettons pas que toutes les entreprises répondront à votre prise de contact, ni qu'une liste remplace votre propre évaluation avant de négocier. Ce que nous garantissons, c'est le critère : aucune entreprise n'entre dans une liste sans avoir été vérifiée dans des sources publiques."
+        },
+        "cta": {
+            "title": "Encore des questions ?",
+            "body": "Les questions les plus fréquentes sur les listes, la livraison et le paiement trouvent leur réponse dans la FAQ.",
+            "faq": "Voir la FAQ",
+            "catalog": "Voir le catalogue"
+        },
+        "breadcrumb": {
+            "home": "Accueil",
+            "current": "À propos"
+        }
     }
 }

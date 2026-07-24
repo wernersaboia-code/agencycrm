@@ -87,6 +87,7 @@
         "howItWorks": "Come funziona",
         "blog": "Blog",
         "faq": "FAQ",
+        "aboutUs": "Chi siamo",
         "accountTitle": "Account",
         "myPurchases": "I miei acquisti",
         "login": "Accedi",
@@ -546,5 +547,53 @@
         "emptyDescription": "Esplora il catalogo, seleziona un database adatto alla tua campagna e torna qui per scaricare i file.",
         "emptyCta": "Esplora il catalogo",
         "browseMoreLists": "Vedi altri elenchi"
+    },
+    "about": {
+        "meta": {
+            "title": "Chi siamo e come nascono i dati",
+            "description": "Come nascono le liste di importatori e distributori: ricerca propria, verifica su fonti pubbliche e revisione periodica del catalogo."
+        },
+        "hero": {
+            "eyebrow": "Chi siamo",
+            "title": "Chi c'è dietro le liste",
+            "subtitle": "Easy Prospect raccoglie importatori e distributori in studi di mercato in PDF, perché chi esporta sappia con chi parlare. Questa pagina spiega come nascono questi dati."
+        },
+        "methodology": {
+            "eyebrow": "Metodologia",
+            "title": "Come nascono i dati",
+            "intro": "Chi paga per dati B2B ha il diritto di sapere da dove arrivano. Il processo è descritto qui sotto, senza promesse che non possiamo mantenere.",
+            "blocks": [
+                {
+                    "title": "Origine dei dati",
+                    "body": "Le liste nascono da ricerca propria e sono compilate da Easy Prospect. Ognuna è costruita a partire dal settore e dal mercato che intende coprire."
+                },
+                {
+                    "title": "Verifica su fonti pubbliche",
+                    "body": "Prima di entrare in una lista, ogni azienda viene verificata su fonti pubbliche — sito istituzionale, presenza digitale e registri disponibili — per confermare che esiste, che opera nel settore indicato e che i suoi canali di contatto sono attivi."
+                },
+                {
+                    "title": "Manutenzione del catalogo",
+                    "body": "Il catalogo viene rivisto periodicamente. Quando una lista non rispecchia più il mercato che descrive, viene tolta dalla vendita invece di restare online."
+                }
+            ]
+        },
+        "delivery": {
+            "title": "Che cosa ricevi",
+            "body": "Ogni acquisto dà accesso a uno studio di mercato in PDF con le aziende della lista scelta."
+        },
+        "limits": {
+            "title": "Che cosa non promettiamo",
+            "body": "Non promettiamo che ogni azienda risponderà al tuo contatto, né che una lista sostituisca la tua valutazione prima di trattare. Quello di cui rispondiamo è il criterio: nessuna azienda entra in una lista senza essere stata verificata su fonti pubbliche."
+        },
+        "cta": {
+            "title": "Hai ancora dubbi?",
+            "body": "Le domande più frequenti su liste, consegna e pagamento trovano risposta nelle FAQ.",
+            "faq": "Vedi le FAQ",
+            "catalog": "Vedi il catalogo"
+        },
+        "breadcrumb": {
+            "home": "Home",
+            "current": "Chi siamo"
+        }
     }
 }

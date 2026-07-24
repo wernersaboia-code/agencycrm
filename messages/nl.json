@@ -87,6 +87,7 @@
         "howItWorks": "Hoe het werkt",
         "blog": "Blog",
         "faq": "FAQ",
+        "aboutUs": "Over ons",
         "accountTitle": "Account",
         "myPurchases": "Mijn aankopen",
         "login": "Inloggen",
@@ -546,5 +547,53 @@
         "emptyDescription": "Verken de catalogus, selecteer een database die past bij uw campagne en kom hier terug om de bestanden te downloaden.",
         "emptyCta": "Catalogus verkennen",
         "browseMoreLists": "Meer lijsten bekijken"
+    },
+    "about": {
+        "meta": {
+            "title": "Wie we zijn en hoe de data ontstaat",
+            "description": "Hoe de lijsten met importeurs en distributeurs tot stand komen: eigen onderzoek, controle in openbare bronnen en periodieke herziening van de catalogus."
+        },
+        "hero": {
+            "eyebrow": "Over ons",
+            "title": "Wie er achter de lijsten zit",
+            "subtitle": "Easy Prospect brengt importeurs en distributeurs samen in marktstudies als pdf, zodat exporteurs weten met wie ze moeten praten. Deze pagina legt uit hoe die data ontstaat."
+        },
+        "methodology": {
+            "eyebrow": "Methodiek",
+            "title": "Hoe de data tot stand komt",
+            "intro": "Wie voor B2B-data betaalt, heeft het recht te weten waar die vandaan komt. Hieronder staat het proces, zonder beloftes die we niet kunnen waarmaken.",
+            "blocks": [
+                {
+                    "title": "Herkomst van de data",
+                    "body": "De lijsten komen voort uit eigen onderzoek en worden door Easy Prospect zelf samengesteld. Elke lijst wordt opgebouwd rond de sector en de markt die ze wil dekken."
+                },
+                {
+                    "title": "Controle in openbare bronnen",
+                    "body": "Voordat een bedrijf in een lijst komt, wordt het gecontroleerd in openbare bronnen — de bedrijfswebsite, de digitale aanwezigheid en beschikbare openbare registers — om te bevestigen dat het bestaat, dat het in de aangegeven sector actief is en dat de contactkanalen werken."
+                },
+                {
+                    "title": "Onderhoud van de catalogus",
+                    "body": "De catalogus wordt periodiek herzien. Zodra een lijst de markt die ze beschrijft niet meer weerspiegelt, halen we ze uit de verkoop in plaats van ze te laten staan."
+                }
+            ]
+        },
+        "delivery": {
+            "title": "Wat je ontvangt",
+            "body": "Elke aankoop geeft toegang tot een marktstudie in pdf met de bedrijven uit de gekozen lijst."
+        },
+        "limits": {
+            "title": "Wat we niet beloven",
+            "body": "We beloven niet dat elk bedrijf op je bericht antwoordt, en een lijst vervangt niet je eigen beoordeling voordat je zakendoet. Waar we wel voor instaan is het criterium: geen enkel bedrijf komt in een lijst zonder controle in openbare bronnen."
+        },
+        "cta": {
+            "title": "Nog vragen?",
+            "body": "De meest gestelde vragen over lijsten, levering en betaling worden beantwoord in de FAQ.",
+            "faq": "Bekijk de FAQ",
+            "catalog": "Bekijk de catalogus"
+        },
+        "breadcrumb": {
+            "home": "Home",
+            "current": "Over ons"
+        }
     }
 }

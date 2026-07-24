@@ -87,6 +87,7 @@
         "howItWorks": "So funktioniert's",
         "blog": "Blog",
         "faq": "FAQ",
+        "aboutUs": "Über uns",
         "accountTitle": "Konto",
         "myPurchases": "Meine Käufe",
         "login": "Anmelden",
@@ -546,5 +547,53 @@
         "emptyDescription": "Durchstöbern Sie den Katalog, wählen Sie eine zu Ihrer Kampagne passende Liste und kehren Sie hierher zurück, um die Dateien herunterzuladen.",
         "emptyCta": "Katalog durchstöbern",
         "browseMoreLists": "Weitere Listen ansehen"
+    },
+    "about": {
+        "meta": {
+            "title": "Wer wir sind und wie die Daten entstehen",
+            "description": "Wie die Listen von Importeuren und Distributoren entstehen: eigene Recherche, Prüfung in öffentlichen Quellen und regelmäßige Pflege des Katalogs."
+        },
+        "hero": {
+            "eyebrow": "Über uns",
+            "title": "Wer hinter den Listen steht",
+            "subtitle": "Easy Prospect bündelt Importeure und Distributoren in Marktstudien als PDF, damit Exporteure wissen, mit wem sie sprechen. Diese Seite erklärt, wie diese Daten entstehen."
+        },
+        "methodology": {
+            "eyebrow": "Methodik",
+            "title": "Wie die Daten entstehen",
+            "intro": "Wer für B2B-Daten bezahlt, hat ein Recht darauf zu erfahren, woher sie stammen. Der Ablauf steht unten – ohne Versprechen, die wir nicht halten können.",
+            "blocks": [
+                {
+                    "title": "Herkunft der Daten",
+                    "body": "Die Listen entstehen aus eigener Recherche und werden von Easy Prospect selbst zusammengestellt. Jede Liste wird nach der Branche und dem Markt aufgebaut, den sie abdecken soll."
+                },
+                {
+                    "title": "Prüfung in öffentlichen Quellen",
+                    "body": "Bevor ein Unternehmen in eine Liste aufgenommen wird, wird es in öffentlichen Quellen geprüft – Unternehmenswebsite, digitale Präsenz und verfügbare Register –, um zu bestätigen, dass es existiert, dass es in der angegebenen Branche tätig ist und dass seine Kontaktwege aktiv sind."
+                },
+                {
+                    "title": "Pflege des Katalogs",
+                    "body": "Der Katalog wird regelmäßig überprüft. Wenn eine Liste den Markt, den sie beschreibt, nicht mehr abbildet, nehmen wir sie aus dem Verkauf, statt sie stehen zu lassen."
+                }
+            ]
+        },
+        "delivery": {
+            "title": "Was Sie erhalten",
+            "body": "Mit jedem Kauf erhalten Sie eine Marktstudie als PDF mit den Unternehmen der gewählten Liste."
+        },
+        "limits": {
+            "title": "Was wir nicht versprechen",
+            "body": "Wir versprechen nicht, dass jedes Unternehmen auf Ihre Kontaktaufnahme antwortet, und eine Liste ersetzt nicht Ihre eigene Prüfung vor einem Geschäft. Wofür wir einstehen, ist das Kriterium: Kein Unternehmen kommt in eine Liste, ohne in öffentlichen Quellen geprüft worden zu sein."
+        },
+        "cta": {
+            "title": "Noch Fragen?",
+            "body": "Die häufigsten Fragen zu Listen, Lieferung und Bezahlung beantworten wir in den FAQ.",
+            "faq": "Häufige Fragen ansehen",
+            "catalog": "Katalog ansehen"
+        },
+        "breadcrumb": {
+            "home": "Start",
+            "current": "Über uns"
+        }
     }
 }

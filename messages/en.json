@@ -87,6 +87,7 @@
         "howItWorks": "How it works",
         "blog": "Blog",
         "faq": "FAQ",
+        "aboutUs": "About us",
         "accountTitle": "Account",
         "myPurchases": "My purchases",
         "login": "Sign in",
@@ -546,5 +547,53 @@
         "emptyDescription": "Browse the catalog, select a database that fits your campaign, and come back here to download the files.",
         "emptyCta": "Browse catalog",
         "browseMoreLists": "View more lists"
+    },
+    "about": {
+        "meta": {
+            "title": "Who we are and how the data is built",
+            "description": "How our lists of importers and distributors are built: our own research, checks against public sources and periodic review of the catalogue."
+        },
+        "hero": {
+            "eyebrow": "About",
+            "title": "Who is behind the lists",
+            "subtitle": "Easy Prospect gathers importers and distributors into market-study PDFs, so exporters know who to talk to. This page explains how that data is produced."
+        },
+        "methodology": {
+            "eyebrow": "Methodology",
+            "title": "How the data is produced",
+            "intro": "Anyone paying for B2B data deserves to know where it comes from. The process is described below, with no promises we cannot keep.",
+            "blocks": [
+                {
+                    "title": "Where the data comes from",
+                    "body": "The lists began as our own research and are compiled by the Easy Prospect operation. Each one is built around the sector and the market it sets out to cover."
+                },
+                {
+                    "title": "Checked against public sources",
+                    "body": "Before a company enters a list, it is checked against public sources — its institutional website, its digital presence and available public records — to confirm that it exists, that it operates in the stated sector and that its contact channels are active."
+                },
+                {
+                    "title": "Keeping the catalogue current",
+                    "body": "The catalogue is reviewed periodically. When a list no longer reflects the market it describes, we take it off sale rather than leave it up."
+                }
+            ]
+        },
+        "delivery": {
+            "title": "What you receive",
+            "body": "Each purchase gives you a market-study PDF with the companies in the list you chose."
+        },
+        "limits": {
+            "title": "What we do not promise",
+            "body": "We do not promise that every company will reply to you, or that a list replaces your own assessment before doing business. What we stand behind is the criterion: no company enters a list without being checked against public sources."
+        },
+        "cta": {
+            "title": "Still have questions?",
+            "body": "The most common questions about the lists, delivery and payment are answered in the FAQ.",
+            "faq": "Read the FAQ",
+            "catalog": "Browse the catalogue"
+        },
+        "breadcrumb": {
+            "home": "Home",
+            "current": "About"
+        }
     }
 }
