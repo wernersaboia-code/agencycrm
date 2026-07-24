@@ -183,6 +183,14 @@ describe("nextWindowStart", () => {
             nextWindowStart(date, { ...berlinWindow, enabled: false }).toISOString()
         ).toBe(date.toISOString())
     })
+
+    it("recalcula o offset por dia de calendário na virada do horário de verão", () => {
+        // sexta 2026-10-23 20:00 em Berlim (CEST, UTC+2) -> segunda 2026-10-26 09:00 em Berlim
+        // Berlim já está em CET (UTC+1) nessa data, então o resultado é 08:00Z, não 07:00Z.
+        expect(
+            nextWindowStart(new Date("2026-10-23T18:00:00Z"), berlinWindow).toISOString()
+        ).toBe("2026-10-26T08:00:00.000Z")
+    })
 })
 
 describe("applyJitter", () => {

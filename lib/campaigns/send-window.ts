@@ -158,20 +158,25 @@ export function nextWindowStart(date: Date, window: SendWindow): Date {
         return date
     }
 
+    const anchor = getZonedParts(date, window.timezone)
+
     // 14 dias cobrem qualquer configuração de dias da semana com folga.
     for (let offset = 0; offset <= 14; offset++) {
-        const probe = new Date(date.getTime() + offset * 24 * 60 * 60 * 1000)
-        const parts = getZonedParts(probe, window.timezone)
+        // Avança dias de calendário no fuso alvo — somar 24h em ms não é um dia
+        // em fuso com horário de verão, e pode repetir a mesma data local.
+        const wall = new Date(Date.UTC(anchor.year, anchor.month - 1, anchor.day))
+        wall.setUTCDate(wall.getUTCDate() + offset)
 
-        if (!window.days.includes(parts.isoWeekday)) {
+        const isoWeekday = ((wall.getUTCDay() + 6) % 7) + 1
+        if (!window.days.includes(isoWeekday)) {
             continue
         }
 
         const candidate = zonedWallTimeToUtc(
             {
-                year: parts.year,
-                month: parts.month,
-                day: parts.day,
+                year: wall.getUTCFullYear(),
+                month: wall.getUTCMonth() + 1,
+                day: wall.getUTCDate(),
                 hour: window.startHour,
                 minute: 0,
             },
