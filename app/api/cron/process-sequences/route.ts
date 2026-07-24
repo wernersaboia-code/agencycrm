@@ -91,42 +91,15 @@ export async function GET(request: Request) {
         let deferred = 0
         let errors = 0
 
+        // Workspaces já alertados sobre janela inalcançável nesta execução.
+        const unreachableWindowWarned = new Set<string>()
+
         for (const enrollment of pendingEnrollments) {
             try {
                 processed++
                 const { campaign, lead } = enrollment
 
                 const sendWindow = resolveSendWindow(campaign.workspace, campaign)
-
-                // Fora da janela: não envia e não avança o step — apenas reagenda
-                // para o próximo horário válido. O enrollment segue ativo.
-                if (!isWithinSendWindow(now, sendWindow)) {
-                    const deferredTo = nextWindowStart(now, sendWindow)
-                    await prisma.campaignEnrollment.update({
-                        where: { id: enrollment.id },
-                        data: { nextSendAt: deferredTo },
-                    })
-                    deferred++
-
-                    // Este cron roda uma vez por dia, sempre no mesmo horário.
-                    // Se a janela não cobre esse instante, o adiamento acima vai
-                    // se repetir todo dia e o enrollment NUNCA envia. A UI
-                    // valida isso na hora de salvar (Task 4); aqui é a rede de
-                    // segurança para configuração que escapou por outro caminho.
-                    if (!windowCoversCronRun(sendWindow)) {
-                        console.error(
-                            `[Cron] JANELA INALCANÇÁVEL: o workspace ${campaign.workspaceId} tem janela ` +
-                            `${sendWindow.startHour}h-${sendWindow.endHour}h em ${sendWindow.timezone}, que nunca ` +
-                            `contém a execução diária das ${CRON_SEND_HOUR_UTC}h UTC. O enrollment ${enrollment.id} ` +
-                            `não será enviado enquanto a janela não for corrigida.`
-                        )
-                    } else {
-                        console.log(
-                            `[Cron] Fora da janela de envio - enrollment ${enrollment.id} adiado para ${deferredTo.toISOString()}`
-                        )
-                    }
-                    continue
-                }
 
                 // Verificar se deve parar a sequência
                 if (campaign.stopOnConverted && lead.status === "CONVERTED") {
@@ -209,6 +182,49 @@ export async function GET(request: Request) {
                         })
                     }
                     skipped++
+                    continue
+                }
+
+                // A janela só restringe o envio em si, não a limpeza de estado do
+                // enrollment: os ramos acima (convertido, descadastrado, sem step,
+                // condição não atendida) encerram ou avançam o enrollment sem
+                // enviar e-mail. Se a checagem de janela viesse antes deles, um
+                // lead convertido/descadastrado cujo workspace tenha janela que
+                // não cobre o instante do cron ficaria "active" para sempre, sendo
+                // reselecionado a cada execução. Por isso ela só entra aqui,
+                // imediatamente antes do envio de fato.
+                //
+                // Fora da janela: não envia e não avança o step — apenas reagenda
+                // para o próximo horário válido. O enrollment segue ativo.
+                if (!isWithinSendWindow(now, sendWindow)) {
+                    const deferredTo = nextWindowStart(now, sendWindow)
+                    await prisma.campaignEnrollment.update({
+                        where: { id: enrollment.id },
+                        data: { nextSendAt: deferredTo },
+                    })
+                    deferred++
+
+                    // Este cron roda uma vez por dia, sempre no mesmo horário.
+                    // Se a janela não cobre esse instante, o adiamento acima vai
+                    // se repetir todo dia e o enrollment NUNCA envia. A UI
+                    // valida isso na hora de salvar (Task 4); aqui é a rede de
+                    // segurança para configuração que escapou por outro caminho.
+                    if (
+                        !windowCoversCronRun(sendWindow) &&
+                        !unreachableWindowWarned.has(campaign.workspaceId)
+                    ) {
+                        unreachableWindowWarned.add(campaign.workspaceId)
+                        console.error(
+                            `[Cron] JANELA INALCANÇÁVEL: o workspace ${campaign.workspaceId} tem janela ` +
+                            `${sendWindow.startHour}h-${sendWindow.endHour}h em ${sendWindow.timezone}, que nunca ` +
+                            `contém a execução diária das ${CRON_SEND_HOUR_UTC}h UTC. O enrollment ${enrollment.id} ` +
+                            `não será enviado enquanto a janela não for corrigida.`
+                        )
+                    } else {
+                        console.log(
+                            `[Cron] Fora da janela de envio - enrollment ${enrollment.id} adiado para ${deferredTo.toISOString()}`
+                        )
+                    }
                     continue
                 }
 
