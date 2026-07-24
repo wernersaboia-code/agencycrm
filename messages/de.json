@@ -263,7 +263,7 @@
             },
             {
                 "question": "Wie aktuell sind die Listen?",
-                "answer": "Die Seite jeder Liste zeigt das Datum der letzten Aktualisierung. Der Katalog wird regelmäßig überprüft; wenn eine Liste den Markt nicht mehr abbildet, nehmen wir sie aus dem Katalog, statt sie weiter zu verkaufen."
+                "answer": "Die Seite jeder Liste zeigt, wann die Daten zuletzt überprüft wurden. Der Katalog wird regelmäßig überprüft; wenn eine Liste den Markt nicht mehr abbildet, nehmen wir sie aus dem Katalog, statt sie weiter zu verkaufen."
             },
             {
                 "question": "In welchen Formaten erhalte ich die Daten?",
@@ -435,7 +435,7 @@
         "quickPricePerLead": "Preis/Lead",
         "quickCountries": "Länder",
         "quickLanguage": "Sprache",
-        "quickUpdated": "Aktualisiert",
+        "quickReviewed": "Daten überprüft",
         "introductionTitle": "Einführung",
         "coverageTitle": "Abdeckung der Liste",
         "coverageSubtitle": "Anhand dieser Angaben prüfen Sie, ob die Datenbank zu Ihrer Kampagne passt.",
@@ -445,7 +445,8 @@
         "fieldTotalLeads": "Leads gesamt",
         "fieldIndustries": "Branchen",
         "fieldPricePerLead": "Preis pro Lead",
-        "fieldUpdatedAt": "Aktualisiert am",
+        "fieldReviewedAt": "Daten überprüft am",
+        "fieldUpdatedAt": "Eintrag aktualisiert am",
         "notInformed": "Keine Angabe",
         "previewTitle": "Datenvorschau",
         "previewSubtitle": "Stichprobe von {count} Datensätzen, um Struktur und Qualität vor dem Kauf zu prüfen.",

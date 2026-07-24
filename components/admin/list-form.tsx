@@ -15,6 +15,7 @@ import {
     Trash2,
     X,
     FileText,
+    BadgeCheck,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -40,7 +41,7 @@ import {
     CardTitle,
 } from "@/components/ui/card"
 
-import { createList, updateList, uploadLeadsToList } from "@/actions/admin/lists"
+import { createList, updateList, uploadLeadsToList, markListReviewed } from "@/actions/admin/lists"
 import { MarketplaceImportWizard } from "@/components/admin/marketplace-import-wizard"
 import type { MarketplaceLeadData } from "@/lib/constants/marketplace-csv.constants"
 import { LIST_LANGUAGES } from "@/lib/constants/list-languages"
@@ -93,6 +94,7 @@ interface SerializedLeadList {
     previewData: unknown
     createdAt: string
     updatedAt: string
+    dataReviewedAt: string | null
 }
 
 interface ListFormProps {
@@ -149,6 +151,10 @@ export function ListForm({ list }: ListFormProps) {
 
     // Estado dos leads preparados (para criação de nova lista)
     const [preparedLeads, setPreparedLeads] = useState<MarketplaceLeadData[]>([])
+
+    // Data de revisão dos DADOS — só muda por ação explícita do admin.
+    const [dataReviewedAt, setDataReviewedAt] = useState<string | null>(list?.dataReviewedAt ?? null)
+    const [isMarkingReviewed, setIsMarkingReviewed] = useState(false)
 
     const [pdfFile, setPdfFile] = useState<File | null>(null)
     const [pdfName, setPdfName] = useState<string | null>(list?.studyPdfName ?? null)
@@ -386,6 +392,24 @@ export function ListForm({ list }: ListFormProps) {
     const handleImportSuccess = (count: number) => {
         toast.success(`${count} leads importados!`)
         router.refresh()
+    }
+
+    // Marcar que os dados desta lista foram revisados agora
+    const handleMarkReviewed = async () => {
+        if (!list) return
+        setIsMarkingReviewed(true)
+        try {
+            const reviewedAt = await markListReviewed(list.id)
+            setDataReviewedAt(reviewedAt)
+            toast.success("Revisão registrada. A data aparece agora na página da lista.")
+            router.refresh()
+        } catch (error) {
+            const message = error instanceof Error && error.message ? error.message : "Erro ao registrar revisão"
+            toast.error(message)
+            console.error(error)
+        } finally {
+            setIsMarkingReviewed(false)
+        }
     }
 
     // Limpar leads preparados
@@ -809,6 +833,44 @@ export function ListForm({ list }: ListFormProps) {
                         </div>
                     </CardContent>
                 </Card>
+
+                {/* Card: Revisão dos dados (só na edição — precisa de id) */}
+                {isEditing && (
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <BadgeCheck className="h-5 w-5" />
+                                Revisão dos dados
+                            </CardTitle>
+                            <CardDescription>
+                                Esta é a data de frescor exibida ao comprador. Registre-a só depois de
+                                conferir de fato os dados — salvar o formulário não a altera.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-3">
+                            <p className="text-sm text-muted-foreground">
+                                {dataReviewedAt
+                                    ? `Última revisão registrada: ${new Date(dataReviewedAt).toLocaleDateString("pt-BR")}`
+                                    : "Nenhuma revisão registrada. A página da lista não exibe data de revisão."}
+                            </p>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={handleMarkReviewed}
+                                disabled={isMarkingReviewed}
+                            >
+                                {isMarkingReviewed ? (
+                                    <>
+                                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                        Registrando...
+                                    </>
+                                ) : (
+                                    "Marcar dados como revisados hoje"
+                                )}
+                            </Button>
+                        </CardContent>
+                    </Card>
+                )}
 
                 {/* Progress durante criação */}
                 {isLoading && uploadProgress > 0 && (

@@ -61,6 +61,7 @@ interface SerializedList {
     previewData: unknown
     createdAt: string
     updatedAt: string
+    dataReviewedAt: string | null
 }
 
 // Função auxiliar para serializar lista
@@ -70,6 +71,7 @@ function serializeList(list: LeadList): SerializedList {
         price: Number(list.price),
         createdAt: list.createdAt.toISOString(),
         updatedAt: list.updatedAt.toISOString(),
+        dataReviewedAt: list.dataReviewedAt?.toISOString() ?? null,
     }
 }
 
@@ -201,6 +203,38 @@ export async function toggleListActive(id: string, isActive: boolean) {
     })
 
     revalidateListPaths(list.slug)
+}
+
+/**
+ * Registra que os DADOS da lista foram efetivamente revisados agora.
+ *
+ * Deliberadamente separado de updateList: `updatedAt` muda a qualquer edição
+ * (preço, typo na descrição) e por isso não serve como sinal de frescor. Só
+ * esta ação, chamada explicitamente pelo admin, move `dataReviewedAt`.
+ */
+export async function markListReviewed(listId: string): Promise<string> {
+    const admin = await requireAdmin()
+
+    const reviewedAt = new Date()
+
+    const list = await prisma.leadList.update({
+        where: { id: listId },
+        data: { dataReviewedAt: reviewedAt },
+        select: { slug: true, name: true, dataReviewedAt: true },
+    })
+
+    await recordAudit({
+        actorId: admin.id,
+        actorEmail: admin.email,
+        action: "list.reviewed",
+        targetType: "list",
+        targetId: listId,
+        metadata: { name: list.name, dataReviewedAt: reviewedAt.toISOString() },
+    })
+
+    revalidateListPaths(list.slug)
+
+    return reviewedAt.toISOString()
 }
 
 export async function uploadLeadsToList(listId: string, leads: MarketplaceLeadData[]) {

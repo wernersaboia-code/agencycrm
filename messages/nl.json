@@ -263,7 +263,7 @@
             },
             {
                 "question": "Hoe actueel zijn de lijsten?",
-                "answer": "De pagina van elke lijst toont de datum van de laatste actualisering. De catalogus wordt periodiek herzien en wanneer een lijst de markt niet meer weerspiegelt, halen we hem uit de catalogus in plaats van hem te blijven verkopen."
+                "answer": "De pagina van elke lijst toont wanneer de gegevens voor het laatst zijn gecontroleerd. De catalogus wordt periodiek herzien en wanneer een lijst de markt niet meer weerspiegelt, halen we hem uit de catalogus in plaats van hem te blijven verkopen."
             },
             {
                 "question": "In welke formaten ontvang ik de gegevens?",
@@ -435,7 +435,7 @@
         "quickPricePerLead": "Prijs/lead",
         "quickCountries": "Landen",
         "quickLanguage": "Taal",
-        "quickUpdated": "Bijgewerkt",
+        "quickReviewed": "Gegevens gecontroleerd",
         "introductionTitle": "Inleiding",
         "coverageTitle": "Dekking van de lijst",
         "coverageSubtitle": "Gebruik deze indicatoren om te controleren of de database past bij uw campagne.",
@@ -445,7 +445,8 @@
         "fieldTotalLeads": "Totaal aantal leads",
         "fieldIndustries": "Sectoren",
         "fieldPricePerLead": "Prijs per lead",
-        "fieldUpdatedAt": "Bijgewerkt op",
+        "fieldReviewedAt": "Gegevens gecontroleerd op",
+        "fieldUpdatedAt": "Record bijgewerkt op",
         "notInformed": "Niet opgegeven",
         "previewTitle": "Voorbeeld van de gegevens",
         "previewSubtitle": "Steekproef van {count} records om structuur en kwaliteit te controleren voor aankoop.",

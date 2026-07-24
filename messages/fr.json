@@ -263,7 +263,7 @@
             },
             {
                 "question": "Quelle est l'actualité des listes ?",
-                "answer": "La page de chaque liste indique la date de sa dernière mise à jour. Le catalogue est revu périodiquement et, lorsqu'une liste ne reflète plus le marché, elle est retirée du catalogue plutôt que de rester en vente."
+                "answer": "La page de chaque liste indique quand ses données ont été revues pour la dernière fois. Le catalogue est revu périodiquement et, lorsqu'une liste ne reflète plus le marché, elle est retirée du catalogue plutôt que de rester en vente."
             },
             {
                 "question": "Dans quels formats est-ce que je reçois les données ?",
@@ -435,7 +435,7 @@
         "quickPricePerLead": "Prix/lead",
         "quickCountries": "Pays",
         "quickLanguage": "Langue",
-        "quickUpdated": "Mise à jour",
+        "quickReviewed": "Données revues",
         "introductionTitle": "Introduction",
         "coverageTitle": "Couverture de la liste",
         "coverageSubtitle": "Utilisez ces indicateurs pour vérifier si la base correspond à votre campagne.",
@@ -445,7 +445,8 @@
         "fieldTotalLeads": "Total des leads",
         "fieldIndustries": "Secteurs",
         "fieldPricePerLead": "Prix par lead",
-        "fieldUpdatedAt": "Mis à jour le",
+        "fieldReviewedAt": "Données revues le",
+        "fieldUpdatedAt": "Fiche mise à jour le",
         "notInformed": "Non renseigné",
         "previewTitle": "Aperçu des données",
         "previewSubtitle": "Échantillon de {count} fiches pour vérifier la structure et la qualité avant l'achat.",

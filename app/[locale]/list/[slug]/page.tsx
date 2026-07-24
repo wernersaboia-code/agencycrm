@@ -70,11 +70,14 @@ export default async function ListPage({ params }: ListPageProps) {
 
     const price = Number(list.price)
     // Formatado no locale ativo: "fev. de 2026" para um leitor alemão é ruído.
-    const updatedAt = format.dateTime(new Date(list.updatedAt), {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-    })
+    const dateFormat = { day: "2-digit", month: "short", year: "numeric" } as const
+    const updatedAt = format.dateTime(new Date(list.updatedAt), dateFormat)
+    // Sinal de frescor real. Quando nunca houve revisão registrada o campo
+    // simplesmente não aparece — cair de volta em updatedAt (que muda a
+    // qualquer edição) seria exibir um frescor que não existe.
+    const dataReviewedAt = list.dataReviewedAt
+        ? format.dateTime(new Date(list.dataReviewedAt), dateFormat)
+        : null
     const language = getListLanguage(list.language)
     const listForCart = {
         id: list.id,
@@ -152,7 +155,9 @@ export default async function ListPage({ params }: ListPageProps) {
                             <div className="grid grid-cols-2 gap-3">
                                 <QuickMetric label={t("quickCountries")} value={format.number(list.countries.length)} />
                                 <QuickMetric label={t("quickLanguage")} value={<LanguageValue language={language} fallback={t("notInformed")} />} />
-                                <QuickMetric label={t("quickUpdated")} value={updatedAt} />
+                                {dataReviewedAt && (
+                                    <QuickMetric label={t("quickReviewed")} value={dataReviewedAt} />
+                                )}
                             </div>
                         </div>
                     </div>
@@ -178,6 +183,9 @@ export default async function ListPage({ params }: ListPageProps) {
                                 fallback={t("notInformed")}
                             />
                             <DataItem label={t("fieldIndustries")} value={list.industries.join(", ")} icon={Target} fallback={t("notInformed")} />
+                            {dataReviewedAt && (
+                                <DataItem label={t("fieldReviewedAt")} value={dataReviewedAt} icon={BadgeCheck} fallback={t("notInformed")} />
+                            )}
                             <DataItem label={t("fieldUpdatedAt")} value={updatedAt} icon={Calendar} fallback={t("notInformed")} />
                         </div>
                     </section>

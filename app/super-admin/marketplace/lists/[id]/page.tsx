@@ -24,6 +24,7 @@ export default async function EditListPage({ params }: EditListPageProps) {
         price: Number(list.price),
         createdAt: list.createdAt.toISOString(),
         updatedAt: list.updatedAt.toISOString(),
+        dataReviewedAt: list.dataReviewedAt?.toISOString() ?? null,
     }
 
     return (

@@ -263,7 +263,7 @@
             },
             {
                 "question": "How current are the lists?",
-                "answer": "Each list's page shows the date it was last updated. The catalogue is reviewed periodically, and when a list no longer reflects the market it is taken out of the catalogue instead of staying on sale."
+                "answer": "Each list's page shows when its data was last reviewed. The catalogue is reviewed periodically, and when a list no longer reflects the market it is taken out of the catalogue instead of staying on sale."
             },
             {
                 "question": "What formats do I receive the data in?",
@@ -435,7 +435,7 @@
         "quickPricePerLead": "Price/lead",
         "quickCountries": "Countries",
         "quickLanguage": "Language",
-        "quickUpdated": "Updated",
+        "quickReviewed": "Data reviewed",
         "introductionTitle": "Introduction",
         "coverageTitle": "List coverage",
         "coverageSubtitle": "Use these signals to check whether this database fits your campaign.",
@@ -445,7 +445,8 @@
         "fieldTotalLeads": "Total leads",
         "fieldIndustries": "Industries",
         "fieldPricePerLead": "Price per lead",
-        "fieldUpdatedAt": "Updated on",
+        "fieldReviewedAt": "Data reviewed on",
+        "fieldUpdatedAt": "Record updated on",
         "notInformed": "Not provided",
         "previewTitle": "Data preview",
         "previewSubtitle": "Sample of {count} records to check structure and quality before buying.",

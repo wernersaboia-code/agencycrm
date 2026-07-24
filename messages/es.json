@@ -263,7 +263,7 @@
             },
             {
                 "question": "¿Qué tan actualizadas están las listas?",
-                "answer": "La página de cada lista muestra la fecha de su última actualización. El catálogo se revisa periódicamente y, cuando una lista deja de reflejar el mercado, se retira del catálogo en lugar de seguir a la venta."
+                "answer": "La página de cada lista muestra cuándo se revisaron sus datos por última vez. El catálogo se revisa periódicamente y, cuando una lista deja de reflejar el mercado, se retira del catálogo en lugar de seguir a la venta."
             },
             {
                 "question": "¿En qué formatos recibo los datos?",
@@ -435,7 +435,7 @@
         "quickPricePerLead": "Precio/lead",
         "quickCountries": "Países",
         "quickLanguage": "Idioma",
-        "quickUpdated": "Actualizada",
+        "quickReviewed": "Datos revisados",
         "introductionTitle": "Introducción",
         "coverageTitle": "Cobertura de la lista",
         "coverageSubtitle": "Use estas señales para validar si la base se ajusta a su campaña.",
@@ -445,7 +445,8 @@
         "fieldTotalLeads": "Total de leads",
         "fieldIndustries": "Sectores",
         "fieldPricePerLead": "Precio por lead",
-        "fieldUpdatedAt": "Actualizado el",
+        "fieldReviewedAt": "Datos revisados el",
+        "fieldUpdatedAt": "Registro actualizado el",
         "notInformed": "No informado",
         "previewTitle": "Vista previa de los datos",
         "previewSubtitle": "Muestra de {count} registros para verificar estructura y calidad antes de comprar.",

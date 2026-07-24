@@ -263,7 +263,7 @@
             },
             {
                 "question": "Quanto sono aggiornati gli elenchi?",
-                "answer": "La pagina di ogni elenco mostra la data dell'ultimo aggiornamento. Il catalogo viene rivisto periodicamente e, quando un elenco non rispecchia più il mercato, viene tolto dal catalogo invece di restare in vendita."
+                "answer": "La pagina di ogni elenco mostra quando i dati sono stati revisionati l'ultima volta. Il catalogo viene rivisto periodicamente e, quando un elenco non rispecchia più il mercato, viene tolto dal catalogo invece di restare in vendita."
             },
             {
                 "question": "In quali formati ricevo i dati?",
@@ -435,7 +435,7 @@
         "quickPricePerLead": "Prezzo/lead",
         "quickCountries": "Paesi",
         "quickLanguage": "Lingua",
-        "quickUpdated": "Aggiornato",
+        "quickReviewed": "Dati revisionati",
         "introductionTitle": "Introduzione",
         "coverageTitle": "Copertura dell'elenco",
         "coverageSubtitle": "Usa questi indicatori per verificare se il database è adatto alla tua campagna.",
@@ -445,7 +445,8 @@
         "fieldTotalLeads": "Totale lead",
         "fieldIndustries": "Settori",
         "fieldPricePerLead": "Prezzo per lead",
-        "fieldUpdatedAt": "Aggiornato il",
+        "fieldReviewedAt": "Dati revisionati il",
+        "fieldUpdatedAt": "Scheda aggiornata il",
         "notInformed": "Non specificato",
         "previewTitle": "Anteprima dei dati",
         "previewSubtitle": "Campione di {count} schede per verificare struttura e qualità prima dell'acquisto.",
