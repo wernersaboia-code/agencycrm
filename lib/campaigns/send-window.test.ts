@@ -7,6 +7,8 @@ import {
     nextWindowStart,
     applyJitter,
     calculateNextSendAt,
+    windowCoversCronRun,
+    describeCronHourIn,
     type SendWindow,
 } from "./send-window"
 
@@ -269,5 +271,60 @@ describe("calculateNextSendAt", () => {
             berlinWindow
         )
         expect(next.toISOString()).toBe(from.toISOString())
+    })
+})
+
+describe("windowCoversCronRun", () => {
+    it("aceita janela em UTC que contém o horário do cron", () => {
+        expect(windowCoversCronRun({ ...berlinWindow, timezone: "UTC" })).toBe(true)
+    })
+
+    it("aceita Berlim 9h-17h — 09:00 UTC vira 10h no inverno e 11h no verão", () => {
+        expect(windowCoversCronRun(berlinWindow)).toBe(true)
+    })
+
+    it("recusa Brasília 9h-17h — 09:00 UTC é 06:00 lá, sempre fora", () => {
+        expect(
+            windowCoversCronRun({ ...berlinWindow, timezone: "America/Sao_Paulo" })
+        ).toBe(false)
+    })
+
+    it("recusa janela que só vale em parte do ano por causa do horário de verão", () => {
+        // Berlim 10h-11h: no inverno 09:00 UTC = 10h (dentro), no verão = 11h (fora).
+        // Valer só metade do ano é armadilha — tem que ser recusada.
+        expect(
+            windowCoversCronRun({ ...berlinWindow, startHour: 10, endHour: 11 })
+        ).toBe(false)
+    })
+
+    it("não restringe nada quando a janela está desligada", () => {
+        expect(
+            windowCoversCronRun({
+                ...berlinWindow,
+                enabled: false,
+                timezone: "America/Sao_Paulo",
+            })
+        ).toBe(true)
+    })
+
+    it("aceita um horário de cron diferente do padrão", () => {
+        // 12:00 UTC = 09:00 em Brasília, dentro da janela 9h-17h.
+        expect(
+            windowCoversCronRun({ ...berlinWindow, timezone: "America/Sao_Paulo" }, 12)
+        ).toBe(true)
+    })
+})
+
+describe("describeCronHourIn", () => {
+    it("descreve uma hora só quando o fuso não tem horário de verão", () => {
+        expect(describeCronHourIn("America/Sao_Paulo")).toBe("6h")
+    })
+
+    it("descreve as duas horas quando o fuso tem horário de verão", () => {
+        expect(describeCronHourIn("Europe/Berlin")).toBe("10h no inverno e 11h no verão")
+    })
+
+    it("aceita um horário de cron diferente do padrão", () => {
+        expect(describeCronHourIn("UTC", 15)).toBe("15h")
     })
 })

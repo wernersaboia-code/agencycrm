@@ -4,7 +4,15 @@ import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { sendEmail, replaceEmailVariables } from "@/lib/email"
 import { decryptSecret } from "@/lib/secrets"
-import type { CampaignEnrollment, CampaignStep, StepCondition } from "@prisma/client"
+import {
+    resolveSendWindow,
+    isWithinSendWindow,
+    nextWindowStart,
+    calculateNextSendAt,
+    windowCoversCronRun,
+    CRON_SEND_HOUR_UTC,
+} from "@/lib/campaigns/send-window"
+import type { CampaignEnrollment, StepCondition } from "@prisma/client"
 
 // Vercel Cron - roda a cada hora
 // Configurar em vercel.json
@@ -80,12 +88,45 @@ export async function GET(request: Request) {
         let sent = 0
         let skipped = 0
         let throttled = 0
+        let deferred = 0
         let errors = 0
 
         for (const enrollment of pendingEnrollments) {
             try {
                 processed++
                 const { campaign, lead } = enrollment
+
+                const sendWindow = resolveSendWindow(campaign.workspace, campaign)
+
+                // Fora da janela: não envia e não avança o step — apenas reagenda
+                // para o próximo horário válido. O enrollment segue ativo.
+                if (!isWithinSendWindow(now, sendWindow)) {
+                    const deferredTo = nextWindowStart(now, sendWindow)
+                    await prisma.campaignEnrollment.update({
+                        where: { id: enrollment.id },
+                        data: { nextSendAt: deferredTo },
+                    })
+                    deferred++
+
+                    // Este cron roda uma vez por dia, sempre no mesmo horário.
+                    // Se a janela não cobre esse instante, o adiamento acima vai
+                    // se repetir todo dia e o enrollment NUNCA envia. A UI
+                    // valida isso na hora de salvar (Task 4); aqui é a rede de
+                    // segurança para configuração que escapou por outro caminho.
+                    if (!windowCoversCronRun(sendWindow)) {
+                        console.error(
+                            `[Cron] JANELA INALCANÇÁVEL: o workspace ${campaign.workspaceId} tem janela ` +
+                            `${sendWindow.startHour}h-${sendWindow.endHour}h em ${sendWindow.timezone}, que nunca ` +
+                            `contém a execução diária das ${CRON_SEND_HOUR_UTC}h UTC. O enrollment ${enrollment.id} ` +
+                            `não será enviado enquanto a janela não for corrigida.`
+                        )
+                    } else {
+                        console.log(
+                            `[Cron] Fora da janela de envio - enrollment ${enrollment.id} adiado para ${deferredTo.toISOString()}`
+                        )
+                    }
+                    continue
+                }
 
                 // Verificar se deve parar a sequência
                 if (campaign.stopOnConverted && lead.status === "CONVERTED") {
@@ -148,7 +189,7 @@ export async function GET(request: Request) {
                     )
 
                     if (nextStep) {
-                        const nextSendAt = calculateNextSendAt(now, nextStep)
+                        const nextSendAt = calculateNextSendAt(now, nextStep, sendWindow)
                         await prisma.campaignEnrollment.update({
                             where: { id: enrollment.id },
                             data: {
@@ -285,7 +326,7 @@ export async function GET(request: Request) {
                     )
 
                     if (nextStep) {
-                        const nextSendAt = calculateNextSendAt(now, nextStep)
+                        const nextSendAt = calculateNextSendAt(now, nextStep, sendWindow)
                         await prisma.campaignEnrollment.update({
                             where: { id: enrollment.id },
                             data: {
@@ -352,6 +393,7 @@ export async function GET(request: Request) {
             sent,
             skipped,
             throttled,
+            deferred,
             errors,
         }
 
@@ -414,14 +456,4 @@ async function checkStepCondition(
         default:
             return true
     }
-}
-
-function calculateNextSendAt(
-    fromDate: Date,
-    step: Pick<CampaignStep, "delayDays" | "delayHours">
-): Date {
-    const nextDate = new Date(fromDate)
-    nextDate.setDate(nextDate.getDate() + (step.delayDays || 0))
-    nextDate.setHours(nextDate.getHours() + (step.delayHours || 0))
-    return nextDate
 }

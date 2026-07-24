@@ -221,3 +221,64 @@ export function calculateNextSendAt(
 
     return applyJitter(nextWindowStart(base, window), window, random)
 }
+
+/**
+ * Hora UTC em que o cron de envio roda (ver `crons` em vercel.json). Uma
+ * execução por dia — mudar aqui e no vercel.json juntos.
+ */
+export const CRON_SEND_HOUR_UTC = 9
+
+/**
+ * Responde se uma janela é alcançável pelo cron diário.
+ *
+ * Com uma única execução por dia, sempre no mesmo horário UTC, uma janela que
+ * não contenha esse instante nunca envia nada: o motor adia, o cron volta no
+ * mesmo horário, adia de novo, indefinidamente.
+ *
+ * Testa dois instantes — um no inverno e um no verão do hemisfério norte —
+ * porque o horário local do cron muda com o horário de verão do fuso escolhido.
+ * Exigimos que os DOIS estejam dentro da janela: valer só metade do ano é a
+ * mesma armadilha, com um atraso de seis meses.
+ */
+export function windowCoversCronRun(
+    window: SendWindow,
+    cronHourUtc: number = CRON_SEND_HOUR_UTC
+): boolean {
+    if (!window.enabled) {
+        return true
+    }
+
+    const probes = [
+        new Date(Date.UTC(2026, 0, 15, cronHourUtc, 0)),
+        new Date(Date.UTC(2026, 6, 15, cronHourUtc, 0)),
+    ]
+
+    return probes.every((probe) => {
+        const { hour } = getZonedParts(probe, window.timezone)
+        return hour >= window.startHour && hour < window.endHour
+    })
+}
+
+/**
+ * Texto curto dizendo que horas é a execução do cron no fuso informado, para a
+ * mensagem de erro da validação. Fusos com horário de verão têm duas respostas.
+ */
+export function describeCronHourIn(
+    timezone: string,
+    cronHourUtc: number = CRON_SEND_HOUR_UTC
+): string {
+    const winter = getZonedParts(
+        new Date(Date.UTC(2026, 0, 15, cronHourUtc, 0)),
+        timezone
+    ).hour
+    const summer = getZonedParts(
+        new Date(Date.UTC(2026, 6, 15, cronHourUtc, 0)),
+        timezone
+    ).hour
+
+    if (winter === summer) {
+        return `${winter}h`
+    }
+
+    return `${winter}h no inverno e ${summer}h no verão`
+}
