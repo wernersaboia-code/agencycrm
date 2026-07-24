@@ -117,6 +117,41 @@ export function buildBreadcrumbSchema(
     }
 }
 
+export interface BlogPostingSchemaInput {
+    title: string
+    description: string | null
+    slug: string
+    locale: string
+    publishedAt: Date | string
+    updatedAt: Date | string
+    imageUrl?: string | null
+}
+
+/**
+ * Sem `author` de pessoa física: o projeto não tem entidade de autor
+ * publicada. O publisher (a organização) é o sinal honesto disponível.
+ * Quando existir página de autor, acrescentar `author` apontando para ela.
+ */
+export function buildBlogPostingSchema(
+    input: BlogPostingSchemaInput
+): Record<string, unknown> {
+    const toIso = (value: Date | string) =>
+        value instanceof Date ? value.toISOString() : new Date(value).toISOString()
+
+    return {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        headline: input.title,
+        ...(input.description ? { description: input.description } : {}),
+        ...(input.imageUrl ? { image: input.imageUrl } : {}),
+        datePublished: toIso(input.publishedAt),
+        dateModified: toIso(input.updatedAt),
+        inLanguage: input.locale,
+        publisher: { "@id": ORGANIZATION_ID },
+        mainEntityOfPage: `${BASE_URL}/blog/${input.slug}`,
+    }
+}
+
 /**
  * JSON.stringify não escapa `<`: um valor com "</script>" (nome/descrição
  * vindos do banco) fecharia a tag <script> e quebraria para fora do JSON-LD.

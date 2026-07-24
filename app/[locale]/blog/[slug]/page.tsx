@@ -4,6 +4,8 @@ import { isBlogLocale, dirForLocale, type BlogLocale } from "@/lib/blog/locales"
 import { getBlogLabels } from "@/lib/blog/i18n"
 import { getPostBySlug } from "@/lib/blog/queries"
 import { LanguageSwitcher } from "@/components/blog/language-switcher"
+import { JsonLd } from "@/components/seo/json-ld"
+import { buildBlogPostingSchema } from "@/lib/seo/schema"
 
 export async function generateMetadata({
     params,
@@ -45,6 +47,19 @@ export default async function BlogPostPage({
 
     return (
         <article className="min-h-screen bg-white text-gray-950" dir={dirForLocale(locale)}>
+            {post.publishedAt && (
+                <JsonLd
+                    data={buildBlogPostingSchema({
+                        title: translation.title,
+                        description: translation.metaDescription ?? translation.excerpt,
+                        slug: localeSlugs[locale] ?? slug,
+                        locale,
+                        publishedAt: post.publishedAt,
+                        updatedAt: post.updatedAt,
+                        imageUrl: translation.ogImageUrl ?? post.coverImageUrl,
+                    })}
+                />
+            )}
             <div className="mx-auto max-w-3xl px-4 py-14">
                 {categoryName && <p className="text-xs font-semibold uppercase tracking-wider text-indigo-700">{categoryName}</p>}
                 <h1 className="mt-2 text-3xl font-bold tracking-tight md:text-4xl">{translation.title}</h1>

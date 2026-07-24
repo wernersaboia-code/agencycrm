@@ -5,8 +5,10 @@ import {
     buildFaqSchema,
     buildProductSchema,
     buildBreadcrumbSchema,
+    buildBlogPostingSchema,
     serializeJsonLd,
     BASE_URL,
+    ORGANIZATION_ID,
 } from "./schema"
 import { PUBLISHED_LOCALES } from "@/lib/i18n/locales"
 
@@ -147,6 +149,33 @@ describe("buildBreadcrumbSchema", () => {
             { "@type": "ListItem", position: 1, name: "Catálogo", item: `${BASE_URL}/catalog` },
             { "@type": "ListItem", position: 2, name: "Lista X", item: `${BASE_URL}/list/x` },
         ])
+    })
+})
+
+describe("buildBlogPostingSchema", () => {
+    const base = {
+        title: "Como escolher um importador",
+        description: "Guia prático.",
+        slug: "como-escolher-importador",
+        locale: "pt",
+        publishedAt: new Date("2026-07-01T10:00:00Z"),
+        updatedAt: new Date("2026-07-10T10:00:00Z"),
+    }
+
+    it("emite datas em ISO e publisher pela organização", () => {
+        const schema = buildBlogPostingSchema(base)
+
+        expect(schema["@type"]).toBe("BlogPosting")
+        expect(schema.headline).toBe(base.title)
+        expect(schema.datePublished).toBe("2026-07-01T10:00:00.000Z")
+        expect(schema.dateModified).toBe("2026-07-10T10:00:00.000Z")
+        expect(schema.publisher).toEqual({ "@id": ORGANIZATION_ID })
+    })
+
+    it("omite image quando não há capa", () => {
+        expect(buildBlogPostingSchema(base).image).toBeUndefined()
+        expect(buildBlogPostingSchema({ ...base, imageUrl: "https://x/i.png" }).image)
+            .toBe("https://x/i.png")
     })
 })
 
