@@ -5,30 +5,40 @@ import { hasLocale, NextIntlClientProvider } from "next-intl"
 import { getMessages, setRequestLocale } from "next-intl/server"
 import { routing } from "@/lib/i18n/routing"
 import type { Locale } from "@/lib/i18n/locales"
+import { robotsForLocale } from "@/lib/seo/indexability"
 import { MarketplaceHeader } from "@/components/marketplace/marketplace-header"
 import { MarketplaceFooter } from "@/components/marketplace/marketplace-footer"
 import { CartProvider } from "@/contexts/cart-context"
 import { CartDrawer } from "@/components/marketplace/cart-drawer"
 
-export const metadata: Metadata = {
-    title: {
-        absolute: "Easy Prospect - Leads Qualificados de Comércio Exterior",
-        template: "%s | Easy Prospect",
-    },
-    description: "Encontre compradores e fornecedores internacionais com dados verificados e prontos para prospecção.",
-    openGraph: {
-        type: "website",
-        siteName: "Easy Prospect",
-        title: "Easy Prospect - Leads Qualificados de Comércio Exterior",
+export async function generateMetadata({
+    params,
+}: {
+    params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+    const { locale } = await params
+
+    return {
+        title: {
+            absolute: "Easy Prospect - Leads Qualificados de Comércio Exterior",
+            template: "%s | Easy Prospect",
+        },
         description: "Encontre compradores e fornecedores internacionais com dados verificados e prontos para prospecção.",
-        images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
-    },
-    twitter: {
-        card: "summary_large_image",
-        title: "Easy Prospect - Leads Qualificados de Comércio Exterior",
-        description: "Encontre compradores e fornecedores internacionais com dados verificados.",
-        images: ["/opengraph-image"],
-    },
+        openGraph: {
+            type: "website",
+            siteName: "Easy Prospect",
+            title: "Easy Prospect - Leads Qualificados de Comércio Exterior",
+            description: "Encontre compradores e fornecedores internacionais com dados verificados e prontos para prospecção.",
+            images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
+        },
+        twitter: {
+            card: "summary_large_image",
+            title: "Easy Prospect - Leads Qualificados de Comércio Exterior",
+            description: "Encontre compradores e fornecedores internacionais com dados verificados.",
+            images: ["/opengraph-image"],
+        },
+        robots: robotsForLocale(locale),
+    }
 }
 
 export function generateStaticParams() {
