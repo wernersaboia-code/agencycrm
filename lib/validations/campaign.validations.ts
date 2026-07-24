@@ -68,6 +68,23 @@ export const campaignStep3Schema = z.object({
 })
 
 // ============================================================
+// GUARD COMPARTILHADO: ORDEM DA JANELA DE ENVIO (OVERRIDE)
+// ============================================================
+
+// Os campos são nullable/optional (null = herda do workspace), então só faz
+// sentido comparar quando o usuário definiu os DOIS números — daí o
+// `typeof === "number"` em vez de checagem de truthiness (0 é hora válida).
+function hasValidSendWindowOrder(data: {
+    sendStartHour?: number | null
+    sendEndHour?: number | null
+}): boolean {
+    if (typeof data.sendStartHour !== "number" || typeof data.sendEndHour !== "number") {
+        return true
+    }
+    return data.sendEndHour > data.sendStartHour
+}
+
+// ============================================================
 // CREATE CAMPAIGN SCHEMA (Atualizado para suportar sequências)
 // ============================================================
 
@@ -131,7 +148,10 @@ export const createCampaignSchema = z.object({
         message: "Campanha single precisa de template. Sequência precisa de pelo menos 1 step.",
         path: ["type"],
     }
-)
+).refine(hasValidSendWindowOrder, {
+    message: "O fim da janela precisa ser depois do início",
+    path: ["sendEndHour"],
+})
 
 // Schema para atualização
 export const updateCampaignSchema = z.object({
@@ -163,6 +183,9 @@ export const updateCampaignSchema = z.object({
         .max(120, "A variação deve estar entre 0 e 120 minutos")
         .nullable()
         .optional(),
+}).refine(hasValidSendWindowOrder, {
+    message: "O fim da janela precisa ser depois do início",
+    path: ["sendEndHour"],
 })
 
 // ============================================================
