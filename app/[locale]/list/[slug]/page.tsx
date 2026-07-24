@@ -11,6 +11,8 @@ import { formatCurrency } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { getListLanguage } from "@/lib/constants/list-languages"
 import { FlagIcon } from "@/components/ui/flag-icon"
+import { JsonLd } from "@/components/seo/json-ld"
+import { BASE_URL, buildProductSchema, buildBreadcrumbSchema } from "@/lib/seo/schema"
 import {
     ArrowLeft,
     BadgeCheck,
@@ -28,7 +30,7 @@ import {
 } from "lucide-react"
 
 interface ListPageProps {
-    params: Promise<{ slug: string }>
+    params: Promise<{ locale: string; slug: string }>
 }
 
 async function getList(slug: string) {
@@ -55,7 +57,7 @@ export async function generateMetadata({ params }: ListPageProps) {
 }
 
 export default async function ListPage({ params }: ListPageProps) {
-    const { slug } = await params
+    const { locale, slug } = await params
     const [list, t, format] = await Promise.all([
         getList(slug),
         getTranslations("listing"),
@@ -85,6 +87,23 @@ export default async function ListPage({ params }: ListPageProps) {
 
     return (
         <div className="min-h-screen bg-muted/40">
+            <JsonLd
+                data={buildProductSchema({
+                    name: list.name,
+                    slug: list.slug,
+                    description: list.description,
+                    price,
+                    currency: list.currency,
+                    isActive: list.isActive,
+                    locale,
+                })}
+            />
+            <JsonLd
+                data={buildBreadcrumbSchema([
+                    { name: "Catálogo", url: `${BASE_URL}/catalog` },
+                    { name: list.name, url: `${BASE_URL}/list/${list.slug}` },
+                ])}
+            />
             <div className="border-b bg-card">
                 <div className="container mx-auto px-4 py-6">
                     <Link

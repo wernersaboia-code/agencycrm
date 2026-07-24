@@ -60,3 +60,71 @@ export function buildFaqSchema(items: FaqItem[]): Record<string, unknown> {
             })),
     }
 }
+
+export interface ProductSchemaInput {
+    name: string
+    slug: string
+    description: string | null
+    price: number
+    currency: string
+    isActive: boolean
+    locale: string
+}
+
+/**
+ * `price` sai como string com 2 casas: o schema.org espera o valor em texto,
+ * e Number.toFixed evita "149.9" (que alguns validadores rejeitam).
+ *
+ * Sem aggregateRating/review de propósito — não há avaliação real no banco,
+ * e rich result inventado é penalizável além de desonesto.
+ */
+export function buildProductSchema(input: ProductSchemaInput): Record<string, unknown> {
+    const url = `${BASE_URL}/list/${input.slug}`
+
+    return {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        name: input.name,
+        ...(input.description ? { description: input.description } : {}),
+        url,
+        inLanguage: input.locale,
+        brand: { "@id": ORGANIZATION_ID },
+        offers: {
+            "@type": "Offer",
+            price: Number(input.price).toFixed(2),
+            priceCurrency: input.currency,
+            availability: input.isActive
+                ? "https://schema.org/InStock"
+                : "https://schema.org/OutOfStock",
+            url,
+            seller: { "@id": ORGANIZATION_ID },
+        },
+    }
+}
+
+export function buildBreadcrumbSchema(
+    trail: { name: string; url: string }[]
+): Record<string, unknown> {
+    return {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        itemListElement: trail.map((entry, index) => ({
+            "@type": "ListItem",
+            position: index + 1,
+            name: entry.name,
+            item: entry.url,
+        })),
+    }
+}
+
+/**
+ * JSON.stringify não escapa `<`: um valor com "</script>" (nome/descrição
+ * vindos do banco) fecharia a tag <script> e quebraria para fora do JSON-LD.
+ * Os três escapes abaixo continuam válidos dentro de uma string JSON.
+ */
+export function serializeJsonLd(data: Record<string, unknown>): string {
+    return JSON.stringify(data)
+        .replace(/</g, "\\u003c")
+        .replace(/>/g, "\\u003e")
+        .replace(/&/g, "\\u0026")
+}

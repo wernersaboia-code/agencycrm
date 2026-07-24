@@ -1,5 +1,13 @@
 import { describe, it, expect } from "vitest"
-import { buildOrganizationSchema, buildWebSiteSchema, buildFaqSchema, BASE_URL } from "./schema"
+import {
+    buildOrganizationSchema,
+    buildWebSiteSchema,
+    buildFaqSchema,
+    buildProductSchema,
+    buildBreadcrumbSchema,
+    serializeJsonLd,
+    BASE_URL,
+} from "./schema"
 import { PUBLISHED_LOCALES } from "@/lib/i18n/locales"
 
 describe("buildOrganizationSchema", () => {
@@ -82,4 +90,80 @@ describe("integridade do conteúdo do FAQ", () => {
             expect((schema.mainEntity as unknown[]).length).toBe(items.length)
         })
     }
+})
+
+describe("buildProductSchema", () => {
+    const base = {
+        name: "Importadores de Café — Alemanha",
+        slug: "importadores-cafe-alemanha",
+        description: "Lista de importadores alemães.",
+        price: 149.9,
+        currency: "EUR",
+        isActive: true,
+        locale: "pt",
+    }
+
+    it("declara a oferta com preço, moeda e url canônica", () => {
+        const schema = buildProductSchema(base)
+
+        expect(schema["@type"]).toBe("Product")
+        expect(schema.name).toBe(base.name)
+        const offer = schema.offers as Record<string, unknown>
+        expect(offer["@type"]).toBe("Offer")
+        expect(offer.price).toBe("149.90")
+        expect(offer.priceCurrency).toBe("EUR")
+        expect(offer.url).toBe(`${BASE_URL}/list/${base.slug}`)
+    })
+
+    it("declara o idioma da página", () => {
+        expect(buildProductSchema(base).inLanguage).toBe("pt")
+    })
+
+    it("marca disponibilidade a partir de isActive", () => {
+        const ativo = buildProductSchema(base).offers as Record<string, unknown>
+        const inativo = buildProductSchema({ ...base, isActive: false }).offers as Record<string, unknown>
+
+        expect(ativo.availability).toBe("https://schema.org/InStock")
+        expect(inativo.availability).toBe("https://schema.org/OutOfStock")
+    })
+
+    it("não inventa avaliação nem estoque numérico", () => {
+        const schema = buildProductSchema(base)
+
+        expect(schema.aggregateRating).toBeUndefined()
+        expect(schema.review).toBeUndefined()
+    })
+})
+
+describe("buildBreadcrumbSchema", () => {
+    it("numera as posições a partir de 1", () => {
+        const schema = buildBreadcrumbSchema([
+            { name: "Catálogo", url: `${BASE_URL}/catalog` },
+            { name: "Lista X", url: `${BASE_URL}/list/x` },
+        ])
+
+        expect(schema["@type"]).toBe("BreadcrumbList")
+        expect(schema.itemListElement).toEqual([
+            { "@type": "ListItem", position: 1, name: "Catálogo", item: `${BASE_URL}/catalog` },
+            { "@type": "ListItem", position: 2, name: "Lista X", item: `${BASE_URL}/list/x` },
+        ])
+    })
+})
+
+describe("serializeJsonLd", () => {
+    it("escapa </script> para não quebrar a tag script", () => {
+        const malicious = { "@context": "https://schema.org", name: "</script><script>alert(1)</script>" }
+
+        const serialized = serializeJsonLd(malicious)
+
+        expect(serialized).not.toContain("</script>")
+        expect(JSON.parse(serialized)).toEqual(malicious)
+    })
+
+    it("mantém a serialização válida para dados normais", () => {
+        const data = { "@type": "Organization", name: "Easy Prospect" }
+        const serialized = serializeJsonLd(data)
+
+        expect(JSON.parse(serialized)).toEqual(data)
+    })
 })
