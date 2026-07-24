@@ -855,11 +855,21 @@ import type { CampaignEnrollment, StepCondition } from "@prisma/client"
 
 - [ ] **Step 3: Resolver a janela e adiar o que está fora dela**
 
-Dentro do `for (const enrollment of pendingEnrollments)`, **logo depois** de `const { campaign, lead } = enrollment` (linha 88), inserir:
+São dois pontos diferentes no loop, e a distância entre eles é intencional.
+
+**3a.** Dentro do `for (const enrollment of pendingEnrollments)`, **logo depois** de `const { campaign, lead } = enrollment` (linha 88), apenas resolver a janela:
 
 ```ts
                 const sendWindow = resolveSendWindow(campaign.workspace, campaign)
+```
 
+Ela precisa estar em escopo desde cedo porque o branch de "condição do step não atendida" chama `calculateNextSendAt` antes de qualquer envio.
+
+**3b.** O **teste** da janela vai bem mais abaixo: imediatamente **antes** do bloco que respeita o limite diário do workspace (`const maxEmailsPerDay = campaign.workspace.maxEmailsPerDay`, linha ~176), ou seja, depois de todos os branches que encerram ou avançam o enrollment sem enviar e-mail.
+
+Essa ordem é obrigatória. Os branches anteriores — lead `CONVERTED`, lead `UNSUBSCRIBED`, sequência sem próximo step, condição do step não atendida — **encerram ou avançam o enrollment sem mandar e-mail nenhum**. Se o teste da janela viesse antes deles, um lead que converteu ou se descadastrou seria adiado em vez de parado, ficaria `active` para sempre e ocuparia uma vaga do lote de 100 em toda execução. A janela restringe **envio**, não faxina de estado.
+
+```ts
                 // Fora da janela: não envia e não avança o step — apenas reagenda
                 // para o próximo horário válido. O enrollment segue ativo.
                 if (!isWithinSendWindow(now, sendWindow)) {
@@ -875,7 +885,13 @@ Dentro do `for (const enrollment of pendingEnrollments)`, **logo depois** de `co
                     // se repetir todo dia e o enrollment NUNCA envia. A UI
                     // valida isso na hora de salvar (Task 4); aqui é a rede de
                     // segurança para configuração que escapou por outro caminho.
-                    if (!windowCoversCronRun(sendWindow)) {
+                    // Um alerta por workspace por execução: a causa é uma
+                    // configuração só, não um problema de cada enrollment.
+                    if (
+                        !windowCoversCronRun(sendWindow) &&
+                        !unreachableWindowWarned.has(campaign.workspaceId)
+                    ) {
+                        unreachableWindowWarned.add(campaign.workspaceId)
                         console.error(
                             `[Cron] JANELA INALCANÇÁVEL: o workspace ${campaign.workspaceId} tem janela ` +
                             `${sendWindow.startHour}h-${sendWindow.endHour}h em ${sendWindow.timezone}, que nunca ` +
@@ -902,6 +918,9 @@ Junto dos outros contadores (linha ~79):
         let throttled = 0
         let deferred = 0
         let errors = 0
+
+        // Workspaces já alertados sobre janela inalcançável nesta execução.
+        const unreachableWindowWarned = new Set<string>()
 ```
 
 E no objeto `summary` (linha ~349):
