@@ -10,7 +10,11 @@
 
 ## Global Constraints
 
-- **Migrações:** este plano **não** altera o schema Prisma. Se alguma tarefa parecer exigir migração, pare e reporte — não é esperado.
+- **Migrações:** as Tasks 1–8 **não** alteram o schema Prisma. A **Task 10 altera** (decisão do dono do produto em 2026-07-23, sobrepondo a restrição original). Migração pelo workflow do projeto: `prisma migrate diff` → salvar SQL em `prisma/migrations/<timestamp>_<nome>/migration.sql` → `prisma db execute` → `prisma migrate resolve --applied` → `prisma generate`. `prisma migrate dev` **falha** neste projeto (shadow DB indisponível no pooler do Supabase).
+- **🚨 GATE DE MERGE — dependência entre copy e produto.** As respostas 2, 3 e 7 do FAQ (escritas na Task 3) fazem promessas que o sistema **ainda não garante**:
+  - Respostas 3 e 7 prometem estudo em PDF em toda lista → só vira verdade com a **Task 9**.
+  - Resposta 2 promete data de atualização como sinal de frescor → só vira verdade com a **Task 10**.
+  **Esta branch não pode ser mesclada com o copy da Task 3 sem as Tasks 9 e 10 concluídas.** Se as Tasks 9/10 forem abandonadas, o copy dessas três respostas precisa ser suavizado antes do merge.
 - **Testes:** Vitest, arquivos `*.test.ts` colocados ao lado do código, `import { describe, it, expect } from "vitest"`, alias `@` → raiz do repo. Rodar com `npm test`.
 - **Node não está no PATH:** nos shells bash, `export PATH="/c/Program Files/nodejs:$PATH"` antes de npm/npx (não persiste entre chamadas).
 - **`PUBLISHED_LOCALES`** (`lib/i18n/locales.ts`) = `["pt","de","en","es","fr","it","nl"]` são os locales COM tradução real. `LOCALES` inclui também `"ar"`, que é roteável mas **não** publicado. Toda regra de indexação/anúncio usa `PUBLISHED_LOCALES`.
@@ -1031,6 +1035,141 @@ Expected: página responde nos dois idiomas com títulos traduzidos; sitemap lis
 ```bash
 git add "app/[locale]/about" messages/ app/sitemap.ts
 git commit -m "feat(seo): página Sobre com metodologia verificável dos dados"
+```
+
+---
+
+### Task 9: Impedir publicar/vender lista sem estudo em PDF
+
+Nasceu do review da Task 3: as respostas 3 e 7 do FAQ prometem estudo em PDF em toda lista, mas `LeadList.studyPdfUrl` é `String?`, o admin pode removê-lo (`app/api/admin/lists/[id]/pdf/route.ts` seta `null`), e nada no catálogo ou no checkout filtra por isso. Um comprador de lista sem PDF recebe **nada** — `app/api/purchases/[id]/download-pdf/route.ts` tem um caminho explícito "Esta lista ainda não tem PDF disponível", e a UI pública não oferece CSV/Excel.
+
+**Files:**
+- Create: `lib/marketplace/list-publishing.ts`
+- Create (test): `lib/marketplace/list-publishing.test.ts`
+- Modify: `actions/admin/lists.ts` (`toggleListActive`, e `updateList`/`createList` quando marcam `isActive`)
+- Modify: `components/admin/list-form.tsx` (feedback na UI)
+
+**Interfaces:**
+- Produces: `canPublishList(list: { studyPdfUrl: string | null }): { ok: true } | { ok: false; reason: string }` — pura e testável.
+
+- [ ] **Step 1: Escrever o teste que falha**
+
+```typescript
+import { describe, it, expect } from "vitest"
+import { canPublishList } from "./list-publishing"
+
+describe("canPublishList", () => {
+    it("recusa publicar lista sem PDF de estudo", () => {
+        const result = canPublishList({ studyPdfUrl: null })
+        expect(result.ok).toBe(false)
+        if (!result.ok) expect(result.reason).toMatch(/PDF/i)
+    })
+
+    it("recusa string vazia como PDF válido", () => {
+        expect(canPublishList({ studyPdfUrl: "   " }).ok).toBe(false)
+    })
+
+    it("aceita lista com PDF", () => {
+        expect(canPublishList({ studyPdfUrl: "https://x/study.pdf" }).ok).toBe(true)
+    })
+})
+```
+
+- [ ] **Step 2: Rodar e confirmar RED** — `npm test -- list-publishing`.
+
+- [ ] **Step 3: Implementar**
+
+```typescript
+/**
+ * Uma lista só pode ir ao ar com o estudo em PDF anexado: a entrega ao
+ * comprador É o PDF, e o FAQ promete isso. Sem o arquivo, a compra entrega
+ * nada — a rota de download responde "lista ainda não tem PDF".
+ */
+export function canPublishList(
+    list: { studyPdfUrl: string | null }
+): { ok: true } | { ok: false; reason: string } {
+    if (!list.studyPdfUrl || !list.studyPdfUrl.trim()) {
+        return { ok: false, reason: "Anexe o estudo de mercado em PDF antes de publicar a lista." }
+    }
+    return { ok: true }
+}
+```
+
+- [ ] **Step 4: Rodar e confirmar GREEN.**
+
+- [ ] **Step 5: Aplicar o gate nas actions admin**
+
+Em `actions/admin/lists.ts`, em `toggleListActive` (quando `isActive === true`) e em `createList`/`updateList` (quando os dados marcam `isActive: true`), carregar o `studyPdfUrl` atual e lançar erro com `reason` se `canPublishList` recusar. Manter `requireAdmin()` como primeira instrução e o `recordAudit` existente onde houver.
+
+- [ ] **Step 6: Feedback na UI** — em `components/admin/list-form.tsx`, impedir/avisar ao marcar como ativa sem PDF, reusando a mesma mensagem.
+
+- [ ] **Step 7: Verificar e commitar**
+
+```bash
+npx tsc --noEmit && npm run lint && npm test
+git add lib/marketplace/list-publishing.ts lib/marketplace/list-publishing.test.ts actions/admin/lists.ts components/admin/list-form.tsx
+git commit -m "feat(marketplace): exigir estudo em PDF para publicar lista"
+```
+
+---
+
+### Task 10: Campo de data de revisão real dos dados
+
+Nasceu do review da Task 3: a resposta 2 do FAQ usa a data exibida na lista como sinal de frescor, mas hoje ela é `LeadList.updatedAt` (`@updatedAt`), que muda a **qualquer** edição — corrigir um typo ou mudar o preço rejuvenesce a data sem ninguém ter revisado dado nenhum.
+
+**⚠️ Esta task altera o schema.** Seguir o workflow de migração das Global Constraints.
+
+**Files:**
+- Modify: `prisma/schema.prisma` (`LeadList`)
+- Create: `prisma/migrations/<timestamp>_add_data_reviewed_at/migration.sql`
+- Modify: `actions/admin/lists.ts` (marcar revisão)
+- Modify: `app/[locale]/list/[slug]/page.tsx` (exibir a data de revisão)
+- Modify: `messages/*.json` (rótulo novo + ajuste da resposta 2 do FAQ)
+- Modify: `components/admin/list-form.tsx` (ação de "marcar como revisada")
+
+- [ ] **Step 1: Campo no schema**
+
+Em `LeadList`, acrescentar:
+```prisma
+  dataReviewedAt DateTime?
+```
+Nullable de propósito: listas existentes não têm revisão registrada, e inventar uma data seria o mesmo erro que este plano combate.
+
+- [ ] **Step 2: Migração pelo workflow do projeto**
+
+```bash
+export PATH="/c/Program Files/nodejs:$PATH"
+mkdir -p prisma/migrations/20260723140000_add_data_reviewed_at
+npx prisma migrate diff --from-schema-datasource prisma/schema.prisma --to-schema-datamodel prisma/schema.prisma --script > prisma/migrations/20260723140000_add_data_reviewed_at/migration.sql
+# Revisar: o SQL deve conter APENAS o ALTER TABLE de lead_lists. Remover drift.
+npx prisma db execute --file prisma/migrations/20260723140000_add_data_reviewed_at/migration.sql --schema prisma/schema.prisma
+npx prisma migrate resolve --applied 20260723140000_add_data_reviewed_at
+npx prisma generate
+```
+
+- [ ] **Step 3: Ação admin de marcar revisão**
+
+Em `actions/admin/lists.ts`, criar `markListReviewed(listId: string)` com `requireAdmin()`, que seta `dataReviewedAt: new Date()`. Auditar com `recordAudit` (helper já existe em `@/lib/audit`; acrescentar `"list.reviewed"` ao union `AuditAction`). Botão correspondente em `components/admin/list-form.tsx`.
+
+- [ ] **Step 4: Exibir na página da lista**
+
+Em `app/[locale]/list/[slug]/page.tsx`, exibir `dataReviewedAt` com rótulo próprio (chave nova em `messages/*.json`, ex.: `listing.fieldReviewedAt` = "Dados revisados em"). Quando `dataReviewedAt` for `null`, **não exibir o campo** — não cair de volta em `updatedAt`, que é justamente a confusão que esta task resolve.
+
+- [ ] **Step 5: Ajustar a resposta 2 do FAQ nos 7 idiomas**
+
+Reescrever para referir a revisão dos dados, não a alteração do registro. Sugestão pt:
+> "A página de cada lista mostra quando os dados foram revisados pela última vez. O catálogo é revisado periodicamente e, quando uma lista deixa de refletir o mercado, ela sai do catálogo em vez de continuar à venda."
+
+(A segunda frase é compromisso de política aprovado pelo dono do produto — manter.)
+
+Se uma lista ainda não tiver `dataReviewedAt`, a página simplesmente não mostra a data — a frase segue verdadeira para as que têm.
+
+- [ ] **Step 6: Verificar e commitar**
+
+```bash
+npx tsc --noEmit && npm run lint && npm test
+git add prisma/schema.prisma prisma/migrations actions/admin/lists.ts "app/[locale]/list/[slug]/page.tsx" messages/ components/admin/list-form.tsx lib/audit.ts
+git commit -m "feat(marketplace): data de revisão real dos dados da lista"
 ```
 
 ---
