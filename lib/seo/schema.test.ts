@@ -117,6 +117,22 @@ describe("buildProductSchema", () => {
         expect(offer.url).toBe(`${BASE_URL}/list/${base.slug}`)
     })
 
+    it("pt (default locale): url e offer.url não têm prefixo de idioma", () => {
+        const schema = buildProductSchema(base)
+        const offer = schema.offers as Record<string, unknown>
+
+        expect(schema.url).toBe(`${BASE_URL}/list/${base.slug}`)
+        expect(offer.url).toBe(`${BASE_URL}/list/${base.slug}`)
+    })
+
+    it("de: url e offer.url levam o prefixo /de", () => {
+        const schema = buildProductSchema({ ...base, locale: "de" })
+        const offer = schema.offers as Record<string, unknown>
+
+        expect(schema.url).toBe(`${BASE_URL}/de/list/${base.slug}`)
+        expect(offer.url).toBe(`${BASE_URL}/de/list/${base.slug}`)
+    })
+
     it("declara o idioma da página", () => {
         expect(buildProductSchema(base).inLanguage).toBe("pt")
     })
@@ -176,6 +192,16 @@ describe("buildBlogPostingSchema", () => {
         expect(buildBlogPostingSchema(base).image).toBeUndefined()
         expect(buildBlogPostingSchema({ ...base, imageUrl: "https://x/i.png" }).image)
             .toBe("https://x/i.png")
+    })
+
+    it("pt (default locale): mainEntityOfPage não tem prefixo de idioma", () => {
+        const schema = buildBlogPostingSchema(base)
+        expect(schema.mainEntityOfPage).toBe(`${BASE_URL}/blog/${base.slug}`)
+    })
+
+    it("de: mainEntityOfPage leva o prefixo /de", () => {
+        const schema = buildBlogPostingSchema({ ...base, locale: "de" })
+        expect(schema.mainEntityOfPage).toBe(`${BASE_URL}/de/blog/${base.slug}`)
     })
 })
 

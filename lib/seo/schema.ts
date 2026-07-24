@@ -9,6 +9,9 @@
  * dado real no banco.
  */
 
+import { getPathname } from "@/lib/i18n/navigation"
+import type { Locale } from "@/lib/i18n/locales"
+
 export const BASE_URL =
     process.env.NEXT_PUBLIC_APP_URL || "https://www.easyprospect.com.br"
 
@@ -79,7 +82,7 @@ export interface ProductSchemaInput {
  * e rich result inventado é penalizável além de desonesto.
  */
 export function buildProductSchema(input: ProductSchemaInput): Record<string, unknown> {
-    const url = `${BASE_URL}/list/${input.slug}`
+    const url = `${BASE_URL}${getPathname({ href: `/list/${input.slug}`, locale: input.locale as Locale })}`
 
     return {
         "@context": "https://schema.org",
@@ -148,7 +151,7 @@ export function buildBlogPostingSchema(
         dateModified: toIso(input.updatedAt),
         inLanguage: input.locale,
         publisher: { "@id": ORGANIZATION_ID },
-        mainEntityOfPage: `${BASE_URL}/blog/${input.slug}`,
+        mainEntityOfPage: `${BASE_URL}${getPathname({ href: `/blog/${input.slug}`, locale: input.locale as Locale })}`,
     }
 }
 
