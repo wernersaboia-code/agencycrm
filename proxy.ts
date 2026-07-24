@@ -3,6 +3,8 @@ import { NextResponse, type NextRequest } from "next/server"
 import createIntlMiddleware from "next-intl/middleware"
 import { routing } from "@/lib/i18n/routing"
 import { stripLocale } from "@/lib/i18n/strip-locale"
+import { prisma } from "@/lib/prisma"
+import { isSuperAdminPath, canAccessSuperAdmin } from "@/lib/auth/super-admin-gate"
 
 const intlMiddleware = createIntlMiddleware(routing)
 
@@ -243,6 +245,23 @@ export async function proxy(request: NextRequest) {
             url.search = ""
             url.searchParams.set("redirect", originalTarget)
             return NextResponse.redirect(url)
+        }
+
+        // Defense-in-depth: o layout do super-admin já barra não-ADMIN, mas o
+        // gate no proxy impede que a requisição chegue a renderizar a área.
+        // proxy.ts roda em Node runtime no Next 16, então Prisma é permitido.
+        if (user && isSuperAdminPath(pathForMatching)) {
+            const dbUser = await prisma.user.findUnique({
+                where: { id: user.id },
+                select: { role: true },
+            })
+
+            if (!canAccessSuperAdmin(dbUser?.role)) {
+                const url = request.nextUrl.clone()
+                url.pathname = "/my-purchases"
+                url.search = ""
+                return NextResponse.redirect(url)
+            }
         }
 
         // Se está logado e tenta acessar página de auth

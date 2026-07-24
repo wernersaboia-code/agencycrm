@@ -786,3 +786,26 @@ model RateLimit {
   @@index([windowStart])
   @@map("rate_limits")
 }
+
+// ==================== AUDIT LOG ====================
+//
+// Registro de ações administrativas sensíveis (SA-S2a). Escrito via
+// helper recordAudit() em lib/audit.ts — nunca lança em caso de falha.
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String
+  actorEmail String
+  action     String
+  targetType String
+  targetId   String
+  metadata   Json?
+  ip         String?
+  createdAt  DateTime @default(now())
+
+  @@index([actorId])
+  @@index([targetType, targetId])
+  @@index([action])
+  @@index([createdAt])
+  @@map("audit_logs")
+}

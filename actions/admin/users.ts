@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/server"
 import { requireAdmin } from "@/lib/auth"
 import { UserRole, UserStatus, type Prisma } from "@prisma/client"
 import { getPublicAppUrl } from "@/lib/env"
+import { recordAudit } from "@/lib/audit"
 
 // ==================== TIPOS ====================
 
@@ -236,9 +237,23 @@ export async function updateUserRole(userId: string, role: UserRole) {
 
     await assertAdminCanChangeUserAccess(admin.id, userId, { role })
 
+    const previous = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { role: true },
+    })
+
     await prisma.user.update({
         where: { id: userId },
         data: { role },
+    })
+
+    await recordAudit({
+        actorId: admin.id,
+        actorEmail: admin.email,
+        action: "user.role_changed",
+        targetType: "user",
+        targetId: userId,
+        metadata: { from: previous?.role ?? null, to: role },
     })
 
     revalidatePath("/super-admin/users")
@@ -258,9 +273,23 @@ export async function updateUserStatus(userId: string, status: UserStatus) {
 
     await assertAdminCanChangeUserAccess(admin.id, userId, { status })
 
+    const previous = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { status: true },
+    })
+
     await prisma.user.update({
         where: { id: userId },
         data: { status },
+    })
+
+    await recordAudit({
+        actorId: admin.id,
+        actorEmail: admin.email,
+        action: "user.status_changed",
+        targetType: "user",
+        targetId: userId,
+        metadata: { from: previous?.status ?? null, to: status },
     })
 
     revalidatePath("/super-admin/users")
@@ -272,7 +301,7 @@ export async function updateUserStatus(userId: string, status: UserStatus) {
 // ==================== RESET DE SENHA ====================
 
 export async function sendPasswordReset(email: string) {
-    await requireAdmin()
+    const admin = await requireAdmin()
 
     const supabase = await createClient()
 
@@ -284,6 +313,14 @@ export async function sendPasswordReset(email: string) {
         console.error("Password reset error:", error)
         throw new Error("Erro ao enviar email de reset")
     }
+
+    await recordAudit({
+        actorId: admin.id,
+        actorEmail: admin.email,
+        action: "user.password_reset_sent",
+        targetType: "user_email",
+        targetId: email,
+    })
 
     return { success: true }
 }

@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache"
 import { prisma } from "@/lib/prisma"
 import { requireAdmin } from "@/lib/auth"
 import type { Prisma } from "@prisma/client"
+import { recordAudit } from "@/lib/audit"
 
 // ==================== TIPOS ====================
 
@@ -293,7 +294,7 @@ export async function getWorkspaceStats(workspaceId: string): Promise<WorkspaceS
 // ==================== TRANSFERIR WORKSPACE ====================
 
 export async function transferWorkspace(workspaceId: string, newUserId: string) {
-    await requireAdmin()
+    const admin = await requireAdmin()
 
     // Verificar se o novo usuário existe
     const newUser = await prisma.user.findUnique({
@@ -315,6 +316,15 @@ export async function transferWorkspace(workspaceId: string, newUserId: string) 
         data: { userId: newUserId },
     })
 
+    await recordAudit({
+        actorId: admin.id,
+        actorEmail: admin.email,
+        action: "workspace.transferred",
+        targetType: "workspace",
+        targetId: workspaceId,
+        metadata: { newUserId },
+    })
+
     revalidatePath("/super-admin/workspaces")
     revalidatePath(`/super-admin/workspaces/${workspaceId}`)
 
@@ -324,11 +334,25 @@ export async function transferWorkspace(workspaceId: string, newUserId: string) 
 // ==================== DELETAR WORKSPACE ====================
 
 export async function deleteWorkspace(workspaceId: string) {
-    await requireAdmin()
+    const admin = await requireAdmin()
+
+    const ws = await prisma.workspace.findUnique({
+        where: { id: workspaceId },
+        select: { name: true, userId: true },
+    })
 
     // O Prisma vai deletar em cascata (leads, campaigns, etc.)
     await prisma.workspace.delete({
         where: { id: workspaceId },
+    })
+
+    await recordAudit({
+        actorId: admin.id,
+        actorEmail: admin.email,
+        action: "workspace.deleted",
+        targetType: "workspace",
+        targetId: workspaceId,
+        metadata: { name: ws?.name ?? null, ownerId: ws?.userId ?? null },
     })
 
     revalidatePath("/super-admin/workspaces")
@@ -339,7 +363,7 @@ export async function deleteWorkspace(workspaceId: string) {
 // ==================== EXPORTAR DADOS DO WORKSPACE ====================
 
 export async function exportWorkspaceData(workspaceId: string) {
-    await requireAdmin()
+    const admin = await requireAdmin()
 
     const [workspace, leads, campaigns, calls, templates] = await Promise.all([
         prisma.workspace.findUnique({
@@ -439,6 +463,15 @@ export async function exportWorkspaceData(workspaceId: string) {
             totalTemplates: templates.length,
         },
     }
+
+    await recordAudit({
+        actorId: admin.id,
+        actorEmail: admin.email,
+        action: "workspace.exported",
+        targetType: "workspace",
+        targetId: workspaceId,
+        metadata: { name: workspace.name },
+    })
 
     return exportData
 }
