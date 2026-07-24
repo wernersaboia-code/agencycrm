@@ -255,35 +255,34 @@
             "metaTitle": "FAQ",
             "metaDescription": "Answers to frequently asked questions about our importer and distributor lists: data quality, formats, payment, and more."
         },
-        "_placeholder": "PLACEHOLDER: provisional answers — review/confirm all before go-live. The LGPD/GDPR answer is intentionally left blank.",
         "items": [
             {
                 "question": "Where does the data come from and how is it verified?",
-                "answer": "[PLACEHOLDER] Our data comes from carefully vetted sources and is manually verified before being added to our lists."
+                "answer": "The lists come out of our own research and are compiled by our operation. Before a company enters a list, we check it against publicly available sources — its website, its digital presence and available public records — to confirm that it exists, that it works in the stated industry and that its contact channels are active."
             },
             {
                 "question": "How current are the lists?",
-                "answer": "[PLACEHOLDER] All lists are maintained regularly: new market participants are added, inactive companies are removed, and existing records are reviewed."
+                "answer": "Each list's page shows the date it was last updated. The catalogue is reviewed periodically, and when a list no longer reflects the market it is taken out of the catalogue instead of staying on sale."
             },
             {
                 "question": "What formats do I receive the data in?",
-                "answer": "[PLACEHOLDER] You receive the files in CSV or Excel — ready to use in your sales process and compatible with the leading CRMs."
+                "answer": "What you receive is a market study as a PDF. Once payment is confirmed, the file is available for download under My purchases and stays accessible in your account."
             },
             {
                 "question": "Can I see the data before buying?",
-                "answer": "[PLACEHOLDER] Yes, every list includes a preview with anonymized sample records."
+                "answer": "Yes. On each list's page you can see the coverage (countries, industries, language and number of records), the date it was last updated, the price and a sample of records with the email partially masked. The full data is released after purchase."
             },
             {
                 "question": "How does payment work?",
-                "answer": "[PLACEHOLDER] Payment is made via secure PayPal checkout. After confirmation, the files are available for download immediately."
+                "answer": "Payment is handled by PayPal in the site checkout. As soon as the payment is confirmed, the purchase appears under My purchases and the download is unlocked."
             },
             {
                 "question": "Which countries and industries are lists available for?",
-                "answer": "[PLACEHOLDER] We offer lists for individual countries and entire language regions, as well as industry-specific lists for a range of sectors. The offering is continuously expanded."
+                "answer": "Coverage is whatever is published in the catalogue at any given moment: there you can filter by country, industry and category to see what is available today. New lists are added to the catalogue as they are finished."
             },
             {
                 "question": "What's included in the market report that comes with the list?",
-                "answer": "[PLACEHOLDER] Every list includes an up-to-date market report with information on the market and competitive situation, sales opportunities, and practical guidance for approaching potential trading partners."
+                "answer": "Every list comes with a market study as a PDF, prepared for that list's market. Because the content is tailored to the country and the industry, it differs from list to list — the introduction shown on each list's page summarises what that study covers."
             },
             {
                 "question": "What about data protection (LGPD/GDPR)?",

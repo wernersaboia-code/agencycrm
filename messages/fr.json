@@ -255,35 +255,34 @@
             "metaTitle": "FAQ",
             "metaDescription": "Réponses aux questions fréquentes sur nos listes d'importateurs et de distributeurs : qualité des données, formats, paiement et plus encore."
         },
-        "_placeholder": "PLACEHOLDER : réponses provisoires — à revoir/confirmer avant le go-live. La réponse RGPD/LGPD est volontairement laissée vide.",
         "items": [
             {
                 "question": "D'où viennent les données et comment sont-elles vérifiées ?",
-                "answer": "[PLACEHOLDER] Nos données proviennent de sources soigneusement évaluées et sont vérifiées manuellement avant d'être intégrées à nos listes."
+                "answer": "Les listes sont issues de nos propres recherches et compilées par notre équipe. Avant qu'une entreprise n'entre dans une liste, nous la vérifions à partir de sources publiques — site institutionnel, présence en ligne et registres disponibles — afin de confirmer qu'elle existe, qu'elle opère bien dans le secteur indiqué et que ses canaux de contact sont actifs."
             },
             {
                 "question": "Quelle est l'actualité des listes ?",
-                "answer": "[PLACEHOLDER] Toutes les listes sont maintenues régulièrement : de nouveaux acteurs du marché sont ajoutés, les entreprises inactives sont supprimées et les fiches existantes sont révisées."
+                "answer": "La page de chaque liste indique la date de sa dernière mise à jour. Le catalogue est revu périodiquement et, lorsqu'une liste ne reflète plus le marché, elle est retirée du catalogue plutôt que de rester en vente."
             },
             {
                 "question": "Dans quels formats est-ce que je reçois les données ?",
-                "answer": "[PLACEHOLDER] Vous recevez les fichiers au format CSV ou Excel — prêts à l'emploi pour votre processus commercial et compatibles avec les principaux CRM."
+                "answer": "La livraison prend la forme d'une étude de marché en PDF. Dès que le paiement est confirmé, le fichier est disponible au téléchargement dans Mes achats et reste accessible dans votre compte."
             },
             {
                 "question": "Puis-je voir les données avant d'acheter ?",
-                "answer": "[PLACEHOLDER] Oui, chaque liste comporte un aperçu avec des exemples de fiches anonymisées."
+                "answer": "Oui. Sur la page de chaque liste, vous voyez la couverture (pays, secteurs, langue et nombre d'enregistrements), la date de dernière mise à jour, le prix et un échantillon d'enregistrements dont l'e-mail est partiellement masqué. Les données complètes sont débloquées après l'achat."
             },
             {
                 "question": "Comment fonctionne le paiement ?",
-                "answer": "[PLACEHOLDER] Le paiement s'effectue via un processus sécurisé PayPal. Après confirmation, les fichiers sont disponibles au téléchargement immédiatement."
+                "answer": "Le paiement se fait par PayPal, dans le checkout du site. Dès que le paiement est confirmé, l'achat apparaît dans Mes achats et le téléchargement est débloqué."
             },
             {
                 "question": "Pour quels pays et secteurs des listes sont-elles disponibles ?",
-                "answer": "[PLACEHOLDER] Nous proposons des listes pour des pays individuels et des zones linguistiques entières, ainsi que des listes spécifiques par secteur pour de nombreuses industries. L'offre est élargie en continu."
+                "answer": "La couverture correspond à ce qui est publié dans le catalogue à un moment donné : vous y filtrez par pays, secteur et catégorie pour voir ce qui est disponible aujourd'hui. De nouvelles listes s'ajoutent au catalogue au fur et à mesure qu'elles sont prêtes."
             },
             {
                 "question": "Que comprend le rapport de marché fourni avec la liste ?",
-                "answer": "[PLACEHOLDER] Chaque liste inclut un rapport de marché actualisé avec des informations sur la situation du marché et de la concurrence, les opportunités de vente et des conseils pratiques pour approcher des partenaires commerciaux potentiels."
+                "answer": "Chaque liste est accompagnée d'une étude de marché en PDF, préparée pour le marché de cette liste. Le contenu étant adapté au pays et au secteur, il varie d'une liste à l'autre : l'introduction affichée sur la page de chaque liste résume ce que cette étude couvre."
             },
             {
                 "question": "Qu'en est-il de la protection des données (RGPD/LGPD) ?",

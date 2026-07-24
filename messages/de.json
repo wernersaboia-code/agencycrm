@@ -255,35 +255,34 @@
             "metaTitle": "FAQ",
             "metaDescription": "Antworten auf häufige Fragen zu unseren Importeur- und Distributorenlisten: Datenqualität, Formate, Bezahlung und mehr."
         },
-        "_placeholder": "PLACEHOLDER: respostas provisórias — revisar/confirmar todas antes do go-live. A resposta de DSGVO está em branco de propósito.",
         "items": [
             {
                 "question": "Woher stammen die Daten und wie werden sie verifiziert?",
-                "answer": "[PLACEHOLDER] Unsere Daten stammen aus sorgfältig geprüften Quellen und werden vor der Aufnahme in unsere Listen manuell verifiziert."
+                "answer": "Die Listen entstehen aus eigener Recherche und werden von unserem Team zusammengestellt. Bevor ein Unternehmen in eine Liste aufgenommen wird, prüfen wir es anhand öffentlich zugänglicher Quellen — Unternehmenswebsite, digitale Präsenz und verfügbare Einträge —, um zu bestätigen, dass es existiert, in der angegebenen Branche tätig ist und die Kontaktwege aktiv sind."
             },
             {
                 "question": "Wie aktuell sind die Listen?",
-                "answer": "[PLACEHOLDER] Alle Listen werden regelmäßig gepflegt: Neue Marktteilnehmer werden aufgenommen, inaktive Unternehmen entfernt und bestehende Datensätze überprüft."
+                "answer": "Die Seite jeder Liste zeigt das Datum der letzten Aktualisierung. Der Katalog wird regelmäßig überprüft; wenn eine Liste den Markt nicht mehr abbildet, nehmen wir sie aus dem Katalog, statt sie weiter zu verkaufen."
             },
             {
                 "question": "In welchen Formaten erhalte ich die Daten?",
-                "answer": "[PLACEHOLDER] Sie erhalten die Dateien als CSV oder Excel — sofort einsatzbereit für Ihren Vertriebsprozess und kompatibel mit gängigen CRM-Systemen."
+                "answer": "Geliefert wird eine Marktstudie als PDF. Sobald die Zahlung bestätigt ist, steht die Datei unter Meine Käufe zum Download bereit und bleibt in Ihrem Konto verfügbar."
             },
             {
                 "question": "Kann ich die Daten vor dem Kauf ansehen?",
-                "answer": "[PLACEHOLDER] Ja, für jede Liste steht eine Datenvorschau mit anonymisierten Beispieldatensätzen zur Verfügung."
+                "answer": "Ja. Auf der Seite jeder Liste sehen Sie die Abdeckung (Länder, Branchen, Sprache und Anzahl der Einträge), das Datum der letzten Aktualisierung, den Preis und eine Stichprobe von Einträgen mit teilweise verdeckter E-Mail-Adresse. Die vollständigen Daten werden nach dem Kauf freigegeben."
             },
             {
                 "question": "Wie funktioniert die Bezahlung?",
-                "answer": "[PLACEHOLDER] Die Bezahlung erfolgt über einen sicheren Checkout via PayPal. Nach der Bestätigung stehen die Dateien sofort zum Download bereit."
+                "answer": "Die Zahlung läuft über PayPal im Checkout der Website. Sobald die Zahlung bestätigt ist, erscheint der Kauf unter Meine Käufe und der Download wird freigeschaltet."
             },
             {
                 "question": "Für welche Länder und Branchen sind Listen verfügbar?",
-                "answer": "[PLACEHOLDER] Wir bieten Listen für einzelne Länder und komplette Sprachräume sowie branchenspezifische Listen für zahlreiche Industrien. Das Angebot wird laufend erweitert."
+                "answer": "Verfügbar ist immer das, was gerade im Katalog veröffentlicht ist: Dort filtern Sie nach Land, Branche und Kategorie und sehen den aktuellen Stand. Neue Listen kommen hinzu, sobald sie fertig sind."
             },
             {
                 "question": "Was ist im beiliegenden Marktbericht enthalten?",
-                "answer": "[PLACEHOLDER] Jede Liste enthält einen aktuellen Marktbericht mit Informationen zur Markt- und Wettbewerbssituation, Absatzchancen und praxisorientierten Hinweisen zur Ansprache potenzieller Vertriebspartner."
+                "answer": "Zu jeder Liste gehört eine Marktstudie als PDF, die für den Markt dieser Liste erstellt wurde. Da der Inhalt auf Land und Branche zugeschnitten ist, unterscheidet er sich von Liste zu Liste — die Einleitung auf der Seite der jeweiligen Liste fasst zusammen, was die Studie abdeckt."
             },
             {
                 "question": "Wie steht es um Datenschutz und DSGVO?",

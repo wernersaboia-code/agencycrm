@@ -37,3 +37,26 @@ export function buildWebSiteSchema(): Record<string, unknown> {
         publisher: { "@id": ORGANIZATION_ID },
     }
 }
+
+export interface FaqItem {
+    question: string
+    answer: string
+}
+
+/**
+ * Só entram itens com pergunta E resposta preenchidas: FAQPage com Question
+ * vazia é erro de rich result no Search Console.
+ */
+export function buildFaqSchema(items: FaqItem[]): Record<string, unknown> {
+    return {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: items
+            .filter((item) => item.question.trim() && item.answer.trim())
+            .map((item) => ({
+                "@type": "Question",
+                name: item.question,
+                acceptedAnswer: { "@type": "Answer", text: item.answer },
+            })),
+    }
+}

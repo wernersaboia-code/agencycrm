@@ -255,35 +255,34 @@
             "metaTitle": "FAQ",
             "metaDescription": "Risposte alle domande frequenti sui nostri elenchi di importatori e distributori: qualità dei dati, formati, pagamento e altro ancora."
         },
-        "_placeholder": "PLACEHOLDER: risposte provvisorie — da rivedere/confermare prima del go-live. La risposta su GDPR/LGPD è volutamente lasciata vuota.",
         "items": [
             {
                 "question": "Da dove provengono i dati e come vengono verificati?",
-                "answer": "[PLACEHOLDER] I nostri dati provengono da fonti accuratamente valutate e vengono verificati manualmente prima di essere inseriti nei nostri elenchi."
+                "answer": "Gli elenchi nascono da ricerca propria e vengono compilati dal nostro team. Prima che un'azienda entri in un elenco, la verifichiamo su fonti pubbliche — sito istituzionale, presenza digitale e registri disponibili — per confermare che esista, che operi nel settore indicato e che i canali di contatto siano attivi."
             },
             {
                 "question": "Quanto sono aggiornati gli elenchi?",
-                "answer": "[PLACEHOLDER] Tutti gli elenchi vengono mantenuti regolarmente: nuovi attori del mercato vengono aggiunti, le aziende inattive vengono rimosse e le schede esistenti vengono revisionate."
+                "answer": "La pagina di ogni elenco mostra la data dell'ultimo aggiornamento. Il catalogo viene rivisto periodicamente e, quando un elenco non rispecchia più il mercato, viene tolto dal catalogo invece di restare in vendita."
             },
             {
                 "question": "In quali formati ricevo i dati?",
-                "answer": "[PLACEHOLDER] Ricevi i file in formato CSV o Excel — pronti all'uso per il tuo processo commerciale e compatibili con i principali CRM."
+                "answer": "La consegna è uno studio di mercato in PDF. Appena il pagamento è confermato, il file è disponibile per il download in I miei acquisti e resta accessibile nel tuo account."
             },
             {
                 "question": "Posso vedere i dati prima di acquistare?",
-                "answer": "[PLACEHOLDER] Sì, ogni elenco include un'anteprima con esempi di schede anonimizzate."
+                "answer": "Sì. Nella pagina di ogni elenco vedi la copertura (paesi, settori, lingua e numero di record), la data dell'ultimo aggiornamento, il prezzo e un campione di record con l'e-mail parzialmente oscurata. I dati completi vengono rilasciati dopo l'acquisto."
             },
             {
                 "question": "Come funziona il pagamento?",
-                "answer": "[PLACEHOLDER] Il pagamento avviene tramite un processo sicuro PayPal. Dopo la conferma, i file sono disponibili per il download immediatamente."
+                "answer": "Il pagamento avviene tramite PayPal, nel checkout del sito. Appena il pagamento è confermato, l'acquisto compare in I miei acquisti e il download viene sbloccato."
             },
             {
                 "question": "Per quali paesi e settori sono disponibili gli elenchi?",
-                "answer": "[PLACEHOLDER] Offriamo elenchi per singoli paesi e intere aree linguistiche, oltre a elenchi specifici per settore per numerose industrie. L'offerta viene ampliata continuamente."
+                "answer": "La copertura è quella pubblicata nel catalogo in un dato momento: lì puoi filtrare per paese, settore e categoria e vedere ciò che è disponibile oggi. Nuovi elenchi entrano nel catalogo man mano che sono pronti."
             },
             {
                 "question": "Cosa comprende il rapporto di mercato incluso nell'elenco?",
-                "answer": "[PLACEHOLDER] Ogni elenco include un rapporto di mercato aggiornato con informazioni sulla situazione del mercato e della concorrenza, le opportunità di vendita e consigli pratici per avvicinare potenziali partner commerciali."
+                "answer": "Ogni elenco è accompagnato da uno studio di mercato in PDF, preparato per il mercato di quell'elenco. Poiché il contenuto è costruito su misura per il paese e il settore, varia da elenco a elenco: l'introduzione mostrata nella pagina di ogni elenco riassume ciò che quello studio copre."
             },
             {
                 "question": "Cosa dire della protezione dei dati (GDPR/LGPD)?",

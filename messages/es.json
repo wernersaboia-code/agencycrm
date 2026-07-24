@@ -255,35 +255,34 @@
             "metaTitle": "Preguntas frecuentes",
             "metaDescription": "Respuestas a preguntas frecuentes sobre nuestras listas de importadores y distribuidores: calidad de los datos, formatos, pago y más."
         },
-        "_placeholder": "PLACEHOLDER: respuestas provisionales — revisar/confirmar todas antes del go-live. La respuesta sobre LGPD/GDPR está en blanco a propósito.",
         "items": [
             {
                 "question": "¿De dónde vienen los datos y cómo se verifican?",
-                "answer": "[PLACEHOLDER] Nuestros datos provienen de fuentes cuidadosamente evaluadas y se verifican manualmente antes de incorporarse a nuestras listas."
+                "answer": "Las listas nacen de investigación propia y las compila nuestro equipo. Antes de que una empresa entre en una lista, la contrastamos con fuentes públicas — su sitio web, su presencia digital y los registros disponibles — para confirmar que existe, que opera en el sector indicado y que sus canales de contacto están activos."
             },
             {
                 "question": "¿Qué tan actualizadas están las listas?",
-                "answer": "[PLACEHOLDER] Todas las listas se mantienen regularmente: se incorporan nuevos participantes del mercado, se eliminan empresas inactivas y se revisan los registros existentes."
+                "answer": "La página de cada lista muestra la fecha de su última actualización. El catálogo se revisa periódicamente y, cuando una lista deja de reflejar el mercado, se retira del catálogo en lugar de seguir a la venta."
             },
             {
                 "question": "¿En qué formatos recibo los datos?",
-                "answer": "[PLACEHOLDER] Recibe los archivos en CSV o Excel, listos para usar en su proceso comercial y compatibles con los principales CRM."
+                "answer": "La entrega es un estudio de mercado en PDF. En cuanto se confirma el pago, el archivo queda disponible para descarga en Mis compras y sigue accesible en tu cuenta."
             },
             {
                 "question": "¿Puedo ver los datos antes de comprar?",
-                "answer": "[PLACEHOLDER] Sí, cada lista tiene una vista previa con registros de ejemplo anonimizados."
+                "answer": "Sí. En la página de cada lista ves la cobertura (países, sectores, idioma y cantidad de registros), la fecha de la última actualización, el precio y una muestra de registros con el correo parcialmente oculto. Los datos completos se liberan tras la compra."
             },
             {
                 "question": "¿Cómo funciona el pago?",
-                "answer": "[PLACEHOLDER] El pago se realiza mediante un proceso seguro con PayPal. Tras la confirmación, los archivos quedan disponibles para descargar de inmediato."
+                "answer": "El pago se realiza con PayPal, en el checkout del sitio. En cuanto se confirma el pago, la compra aparece en Mis compras y se habilita la descarga."
             },
             {
                 "question": "¿Para qué países y sectores hay listas disponibles?",
-                "answer": "[PLACEHOLDER] Ofrecemos listas para países individuales y regiones lingüísticas completas, además de listas específicas por sector para diversas industrias. La oferta se amplía continuamente."
+                "answer": "La cobertura es la que esté publicada en el catálogo en cada momento: allí puedes filtrar por país, sector y categoría para ver lo que hay disponible hoy. Las listas nuevas se incorporan al catálogo a medida que están listas."
             },
             {
                 "question": "¿Qué incluye el informe de mercado que acompaña a la lista?",
-                "answer": "[PLACEHOLDER] Cada lista incluye un informe de mercado actualizado con información sobre la situación del mercado y de la competencia, oportunidades de venta y orientación práctica para abordar a potenciales socios comerciales."
+                "answer": "Cada lista viene acompañada de un estudio de mercado en PDF, preparado para el mercado de esa lista. Como el contenido se adapta al país y al sector, varía de una lista a otra: la introducción que se muestra en la página de cada lista resume lo que cubre ese estudio."
             },
             {
                 "question": "¿Cómo se gestiona la protección de datos (LGPD/GDPR)?",
