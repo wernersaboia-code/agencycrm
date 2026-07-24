@@ -8,6 +8,7 @@ import type { MarketplaceLeadData } from "@/lib/constants/marketplace-csv.consta
 import type { LeadList } from "@prisma/client"
 import { z } from "zod"
 import { recordAudit } from "@/lib/audit"
+import { canPublishList } from "@/lib/marketplace/list-publishing"
 
 interface CreateListData {
     name: string
@@ -91,6 +92,11 @@ export async function createList(data: CreateListData): Promise<SerializedList> 
     await requireAdmin()
     const validated = listDataSchema.parse(data)
 
+    // O estudo em PDF só é enviado depois que a lista existe (rota de upload
+    // precisa do id). Uma lista recém-criada nunca tem studyPdfUrl ainda, então
+    // não há como nascer ativa: força inativa e exige ativação explícita depois
+    // (via updateList/toggleListActive), quando o gate de canPublishList corre
+    // contra o studyPdfUrl já anexado.
     const list = await prisma.leadList.create({
         data: {
             name: validated.name,
@@ -103,7 +109,7 @@ export async function createList(data: CreateListData): Promise<SerializedList> 
             industries: validated.industries,
             price: validated.price,
             currency: validated.currency,
-            isActive: validated.isActive,
+            isActive: false,
             isFeatured: validated.isFeatured,
         },
     })
@@ -116,6 +122,17 @@ export async function createList(data: CreateListData): Promise<SerializedList> 
 export async function updateList(id: string, data: CreateListData): Promise<SerializedList> {
     await requireAdmin()
     const validated = listDataSchema.parse(data)
+
+    if (validated.isActive) {
+        const current = await prisma.leadList.findUnique({
+            where: { id },
+            select: { studyPdfUrl: true },
+        })
+        const check = canPublishList({ studyPdfUrl: current?.studyPdfUrl ?? null })
+        if (!check.ok) {
+            throw new Error(check.reason)
+        }
+    }
 
     const list = await prisma.leadList.update({
         where: { id },
@@ -166,6 +183,17 @@ export async function deleteList(id: string) {
 
 export async function toggleListActive(id: string, isActive: boolean) {
     await requireAdmin()
+
+    if (isActive) {
+        const current = await prisma.leadList.findUnique({
+            where: { id },
+            select: { studyPdfUrl: true },
+        })
+        const check = canPublishList({ studyPdfUrl: current?.studyPdfUrl ?? null })
+        if (!check.ok) {
+            throw new Error(check.reason)
+        }
+    }
 
     const list = await prisma.leadList.update({
         where: { id },
