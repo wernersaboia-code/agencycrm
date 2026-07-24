@@ -38,6 +38,8 @@ export interface SendEmailParams {
 export interface SendEmailResult {
     success: boolean
     id?: string
+    /** Message-ID do cabeçalho, quando o transporte fornece (SMTP). */
+    messageId?: string
     error?: string
 }
 
@@ -128,7 +130,7 @@ export async function sendEmailSmtp(
         })
 
         console.log(`✅ Email enviado com sucesso! ID: ${info.messageId}`)
-        return { success: true, id: info.messageId }
+        return { success: true, id: info.messageId, messageId: info.messageId }
     } catch (error) {
         console.error("❌ Erro ao enviar email via SMTP:", error)
         return {

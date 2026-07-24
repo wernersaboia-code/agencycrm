@@ -2,6 +2,7 @@ import type { PrismaClient } from "@prisma/client"
 
 import { sendEmail, replaceEmailVariables, type SmtpConfig } from "@/lib/email"
 import { decryptSecret } from "@/lib/secrets"
+import { filterSuppressed, normalizeEmail } from "@/lib/campaigns/suppression"
 
 interface LeadData {
     firstName: string
@@ -66,6 +67,7 @@ interface SendCampaignResult {
     bouncedIds: string[]
     bouncedReasons: Record<string, string>
     newLeadIds: string[]
+    suppressedIds: string[]
 }
 
 /**
@@ -76,6 +78,7 @@ export async function sendSingleCampaign(
     prisma: PrismaClient,
     campaign: {
         id: string
+        workspaceId: string
         subject: string | null
         body: string | null
         template: { subject: string | null; body: string | null } | null
@@ -130,6 +133,15 @@ export async function sendSingleCampaign(
             }
             : null
 
+    // Consulta antes de qualquer envio: se o banco falhar, a exceção sobe e o
+    // disparo inteiro é abortado sem mandar e-mail nenhum e sem gravar bounce
+    // falso. É o fail-closed correto para este caminho.
+    const suppressed = await filterSuppressed(
+        prisma,
+        campaign.emailSends.map((emailSend) => emailSend.lead.email),
+        campaign.workspaceId
+    )
+
     const result: SendCampaignResult = {
         totalSent: 0,
         totalBounced: 0,
@@ -137,10 +149,17 @@ export async function sendSingleCampaign(
         bouncedIds: [],
         bouncedReasons: {},
         newLeadIds: [],
+        suppressedIds: [],
     }
 
     for (const emailSend of campaign.emailSends) {
         const lead = emailSend.lead
+
+        if (suppressed.has(normalizeEmail(lead.email))) {
+            result.suppressedIds.push(emailSend.id)
+            continue
+        }
+
         const leadData = buildLeadData(lead, campaign.workspace)
 
         const personalizedSubject = replaceEmailVariables(subject, leadData)
@@ -201,6 +220,14 @@ export async function sendSingleCampaign(
         await prisma.lead.updateMany({
             where: { id: { in: result.newLeadIds }, status: "NEW" },
             data: { status: "CONTACTED" },
+        })
+    }
+
+    // Batch update all suppressed records - nunca foram enviados
+    if (result.suppressedIds.length > 0) {
+        await prisma.emailSend.updateMany({
+            where: { id: { in: result.suppressedIds } },
+            data: { status: "BOUNCED", bounceReason: "Endereço na lista de supressão" },
         })
     }
 
@@ -289,6 +316,7 @@ export async function sendSequenceFirstStep(
         bouncedIds: [],
         bouncedReasons: {},
         newLeadIds: [],
+        suppressedIds: [],
         enrollmentNextSendIds: [],
         enrollmentCompletedIds: [],
     }

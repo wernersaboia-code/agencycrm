@@ -4,6 +4,8 @@ import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { sendEmail, replaceEmailVariables } from "@/lib/email"
 import { decryptSecret } from "@/lib/secrets"
+import { isSuppressed, addSuppression } from "@/lib/campaigns/suppression"
+import { classifyBounce } from "@/lib/campaigns/bounce-classifier"
 import {
     resolveSendWindow,
     isWithinSendWindow,
@@ -244,6 +246,23 @@ export async function GET(request: Request) {
                     }
                 }
 
+                // Supressão vence qualquer configuração de campanha.
+                if (await isSuppressed(prisma, lead.email, campaign.workspaceId)) {
+                    await prisma.campaignEnrollment.update({
+                        where: { id: enrollment.id },
+                        data: {
+                            status: "stopped",
+                            stoppedAt: now,
+                            stopReason: "suppressed",
+                        },
+                    })
+                    skipped++
+                    console.log(
+                        `[Cron] Lead ${lead.id} está na lista de supressão - parando sequência`
+                    )
+                    continue
+                }
+
                 // Preparar dados do lead
                 const leadData = {
                     // Dados do Lead
@@ -325,6 +344,7 @@ export async function GET(request: Request) {
                             status: "SENT",
                             sentAt: now,
                             resendId: result.id,
+                            messageId: result.messageId ?? null,
                         },
                     })
 
@@ -373,14 +393,43 @@ export async function GET(request: Request) {
                     )
                 } else {
                     // Erro no envio
+                    const bounceType = classifyBounce(result.error)
+
                     await prisma.emailSend.update({
                         where: { id: emailSend.id },
                         data: {
                             status: "BOUNCED",
                             bouncedAt: now,
                             bounceReason: result.error,
+                            bounceType,
                         },
                     })
+
+                    if (bounceType === "hard") {
+                        // Supressão primeiro: ela nunca lança. Se as atualizações
+                        // de lead/enrollment abaixo falharem, a supressão já
+                        // ficou gravada e a checagem de isSuppressed no topo do
+                        // loop encerra o enrollment na próxima execução do cron.
+                        await addSuppression(prisma, {
+                            email: lead.email,
+                            workspaceId: campaign.workspaceId,
+                            reason: "hard_bounce",
+                            detail: result.error ?? null,
+                        })
+                        await prisma.lead.update({
+                            where: { id: lead.id },
+                            data: { status: "BOUNCED" },
+                        })
+                        await prisma.campaignEnrollment.update({
+                            where: { id: enrollment.id },
+                            data: {
+                                status: "stopped",
+                                stoppedAt: now,
+                                stopReason: "hard_bounce",
+                            },
+                        })
+                    }
+
                     errors++
                     console.error(`[Cron] Erro ao enviar para ${lead.email}: ${result.error}`)
                 }

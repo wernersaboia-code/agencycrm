@@ -649,6 +649,7 @@ export async function sendCampaign(id: string): Promise<ActionResult> {
 
             const sendResult = await sendSingleCampaign(prisma, {
                 id: campaign.id,
+                workspaceId: campaign.workspaceId,
                 subject,
                 body,
                 template: campaign.template,
