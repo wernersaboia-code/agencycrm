@@ -84,6 +84,32 @@ describe("integridade do conteúdo do FAQ", () => {
             expect(messages.faq._placeholder).toBeUndefined()
         })
 
+        it(`${locale}: nenhuma chave _placeholder sobrevive em qualquer lugar das mensagens`, async () => {
+            const messages = (await import(`../../messages/${locale}.json`)).default
+
+            // Um `_placeholder` marca texto de handoff que não pode ir ao ar
+            // (números inventados, cópia provisória). Verificar só dentro de
+            // `faq` deixava passar blocos como o antigo `landing.zahlen`, que
+            // ficou meses no repositório a um remonte de distância de publicar
+            // "6+ listas vendidas". A varredura é recursiva de propósito.
+            const found: string[] = []
+            const walk = (node: unknown, path: string) => {
+                if (Array.isArray(node)) {
+                    node.forEach((child, i) => walk(child, `${path}[${i}]`))
+                    return
+                }
+                if (!node || typeof node !== "object") return
+                for (const [key, value] of Object.entries(node as Record<string, unknown>)) {
+                    const childPath = path ? `${path}.${key}` : key
+                    if (key === "_placeholder") found.push(childPath)
+                    walk(value, childPath)
+                }
+            }
+            walk(messages, "")
+
+            expect(found).toEqual([])
+        })
+
         it(`${locale}: buildFaqSchema emite uma Question por item do FAQ`, async () => {
             const messages = (await import(`../../messages/${locale}.json`)).default
             const items = messages.faq.items as { question: string; answer: string }[]

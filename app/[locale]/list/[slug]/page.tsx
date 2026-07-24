@@ -20,10 +20,9 @@ import {
     Calendar,
     CheckCircle,
     Download,
-    FileSpreadsheet,
+    FileText,
     Globe,
     MailCheck,
-    RefreshCw,
     Shield,
     Target,
     Users,
@@ -78,6 +77,7 @@ export default async function ListPage({ params }: ListPageProps) {
     const dataReviewedAt = list.dataReviewedAt
         ? format.dateTime(new Date(list.dataReviewedAt), dateFormat)
         : null
+    const previewCount = Array.isArray(list.previewData) ? list.previewData.length : 0
     const language = getListLanguage(list.language)
     const listForCart = {
         id: list.id,
@@ -193,12 +193,16 @@ export default async function ListPage({ params }: ListPageProps) {
                     <section className="rounded-lg border bg-card p-6">
                         <div className="mb-4 flex flex-col gap-1">
                             <h2 className="text-lg font-semibold text-foreground">{t("previewTitle")}</h2>
-                            <p className="text-sm text-muted-foreground">
-                                {t("previewSubtitle", { count: Math.min(5, list.totalLeads) })}
-                            </p>
+                            {/* O subtítulo anuncia uma amostra de N registros: só
+                                aparece quando a amostra existe de verdade. */}
+                            {previewCount > 0 && (
+                                <p className="text-sm text-muted-foreground">
+                                    {t("previewSubtitle", { count: previewCount })}
+                                </p>
+                            )}
                         </div>
                         <Suspense fallback={<div className="h-48 animate-pulse rounded-lg bg-muted" />}>
-                            <ListPreview previewData={list.previewData} />
+                            <ListPreview previewData={list.previewData} locale={locale} />
                         </Suspense>
                     </section>
 
@@ -210,7 +214,7 @@ export default async function ListPage({ params }: ListPageProps) {
                             <IncludedItem icon={Users} text={t("includedPhone")} />
                             <IncludedItem icon={Globe} text={t("includedLocation")} />
                             <IncludedItem icon={Target} text={t("includedIndustry")} />
-                            <IncludedItem icon={FileSpreadsheet} text={t("includedFormats")} />
+                            <IncludedItem icon={FileText} text={t("includedFormats")} />
                         </div>
                     </section>
                 </div>
@@ -239,7 +243,6 @@ export default async function ListPage({ params }: ListPageProps) {
                         <div className="mt-6 space-y-3 border-t pt-5">
                             <BenefitItem icon={Shield} text={t("benefitSecure")} />
                             <BenefitItem icon={Download} text={t("benefitImmediate")} />
-                            <BenefitItem icon={RefreshCw} text={t("benefitFresh")} />
                             <BenefitItem icon={CheckCircle} text={t("benefitRecorded")} />
                         </div>
                     </div>

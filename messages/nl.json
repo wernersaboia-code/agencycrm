@@ -48,8 +48,8 @@
             "error": "Fout bij het aanmaken van het account",
             "benefitsTitle": "Voordelen",
             "benefit1": "Levenslange toegang tot gekochte lijsten",
-            "benefit2": "Onbeperkt downloaden in CSV en Excel",
-            "benefit3": "Bestanden klaar om te importeren in uw CRM",
+            "benefit2": "Onbeperkt downloaden van de gekochte pdf-studie",
+            "benefit3": "Bestelgeschiedenis en bonnen in uw account",
             "successTitle": "Account succesvol aangemaakt! 🎉",
             "verifySent": "We hebben een verificatie-e-mail gestuurd naar:",
             "nextStepsTitle": "Volgende stappen",
@@ -211,26 +211,7 @@
                 },
                 {
                     "title": "Download",
-                    "body": "Na bevestiging krijgt u toegang tot de bestanden in CSV- of Excel-formaat en kunt u ze integreren in uw verkoopproces."
-                }
-            ]
-        },
-        "zahlen": {
-            "_placeholder": "PLACEHOLDER: fictieve cijfers uit de handoff — te vervangen door echte gegevens of te koppelen aan de backend vóór livegang.",
-            "eyebrow": "Cijfers die tellen",
-            "title": "Vertrouwen gebouwd op resultaten.",
-            "stats": [
-                {
-                    "value": "6+",
-                    "label": "verkochte lijsten"
-                },
-                {
-                    "value": "100%",
-                    "label": "geverifieerde datakwaliteit"
-                },
-                {
-                    "value": "24/7",
-                    "label": "ondersteuning in het Portugees"
+                    "body": "Na bevestiging van de betaling downloadt u het marktonderzoek als pdf in Mijn aankopen."
                 }
             ]
         },
@@ -271,7 +252,7 @@
             },
             {
                 "question": "Kan ik de gegevens bekijken voordat ik koop?",
-                "answer": "Ja. Op de pagina van elke lijst ziet u de dekking (landen, sectoren en taal), de datum van de laatste actualisering, de prijs en een steekproef van records waarvan het e-mailadres deels is afgeschermd. De volledige gegevens komen na aankoop vrij."
+                "answer": "Ja. Op de pagina van elke lijst ziet u de dekking (landen, sectoren en taal), de datum waarop de gegevens zijn gecontroleerd, de prijs en een steekproef van records waarvan het e-mailadres deels is afgeschermd. De volledige gegevens komen na aankoop vrij."
             },
             {
                 "question": "Hoe werkt de betaling?",
@@ -371,7 +352,7 @@
         "clearFilters": "Filters wissen",
         "featured": "Uitgelicht",
         "companies": "{count} bedrijven",
-        "verifiedEmails": "Geverifieerde e-mails",
+        "verifiedEmails": "Contacten gecontroleerd in openbare bronnen",
         "updatedAt": "Bijgewerkt op {date}",
         "seeDetails": "Details bekijken",
         "perLead": "{price} per lead",
@@ -450,9 +431,14 @@
         "notInformed": "Niet opgegeven",
         "previewTitle": "Voorbeeld van de gegevens",
         "previewSubtitle": "Steekproef van {count} records om structuur en kwaliteit te controleren voor aankoop.",
+        "previewColCompany": "Bedrijf",
+        "previewColCountry": "Land",
+        "previewColSector": "Sector",
+        "previewColEmail": "E-mail",
+        "previewUnavailable": "Geen steekproef beschikbaar voor deze lijst.",
         "includedTitle": "Wat is inbegrepen",
         "includedCompany": "Bedrijfsnaam",
-        "includedEmail": "Geverifieerd zakelijk e-mailadres",
+        "includedEmail": "Zakelijk e-mailadres gecontroleerd in openbare bronnen",
         "includedPhone": "Telefoon en contactpersoon indien beschikbaar",
         "includedLocation": "Land, stad en website",
         "includedIndustry": "Bedrijfssector",
@@ -463,7 +449,6 @@
         "beforeBuyNote": "Controleer voor aankoop de dekking, het gegevensvoorbeeld en de prijs per lead. Zodra de betaling is goedgekeurd, wordt de download beschikbaar in uw account.",
         "benefitSecure": "Veilig betalen via PayPal",
         "benefitImmediate": "Direct downloaden na bevestiging",
-        "benefitFresh": "Gegevens bijgewerkt vóór publicatie",
         "benefitRecorded": "Aankoop geregistreerd in uw account",
         "buyNow": "Nu kopen",
         "signInToBuy": "Inloggen en kopen",
@@ -476,7 +461,7 @@
         "stepDownload": "Download",
         "backToCart": "Terug naar winkelwagen",
         "title": "Betaling",
-        "subtitle": "Rond de betaling af om {count} leads in CSV en Excel te ontgrendelen.",
+        "subtitle": "Rond de betaling af om de pdf-studie met {count} leads te ontgrendelen.",
         "secureTitle": "Veilige betaling",
         "secureDesc": "PayPal verwerkt de betaling; het systeem ontgrendelt de aankoop automatisch na bevestiging.",
         "redirectNote": "U wordt doorgestuurd naar het PayPal-proces zelf om de transactie te autoriseren.",
@@ -505,9 +490,9 @@
         "successLeadsReleased": "Ontgrendelde leads",
         "successTotalPaid": "Totaal betaald",
         "successNextDownloadTitle": "Downloaden",
-        "successNextDownloadText": "CSV of Excel in Mijn aankopen.",
+        "successNextDownloadText": "Pdf-studie in Mijn aankopen.",
         "successNextProspectTitle": "Prospectie",
-        "successNextProspectText": "Importeer de contacten in uw CRM of prospectietool.",
+        "successNextProspectText": "Gebruik de studie om contacten te prioriteren en uw benadering te plannen.",
         "successNextReceiptTitle": "Bevestiging",
         "successNextReceiptText": "De ontvangstbevestiging is naar uw e-mailadres gestuurd.",
         "successCtaPurchases": "Naar mijn aankopen",

@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { requireAdmin } from "@/lib/auth"
+import { recordAudit } from "@/lib/audit"
 import {
     uploadListPdf,
     removeListPdfByPath,
@@ -51,20 +52,40 @@ export async function DELETE(
     { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        await requireAdmin()
+        const admin = await requireAdmin()
         const { id } = await params
 
-        const list = await prisma.leadList.findUnique({ where: { id }, select: { studyPdfUrl: true } })
+        const list = await prisma.leadList.findUnique({
+            where: { id },
+            select: { studyPdfUrl: true, isActive: true, name: true },
+        })
         if (list?.studyPdfUrl) {
             await removeListPdfByPath(list.studyPdfUrl)
         }
 
+        // Sem o PDF a lista não entrega nada: catálogo, página e checkout só
+        // filtram por isActive, então mantê-la ativa deixa o comprador pagar e
+        // esbarrar em "esta lista ainda não tem PDF disponível" no download.
+        // Despublicar junto é a única forma de a remoção não virar venda vazia.
         await prisma.leadList.update({
             where: { id },
-            data: { studyPdfUrl: null, studyPdfName: null },
+            data: { studyPdfUrl: null, studyPdfName: null, isActive: false },
         })
 
-        return NextResponse.json({ ok: true })
+        const unpublished = list?.isActive === true
+
+        if (unpublished) {
+            await recordAudit({
+                actorId: admin.id,
+                actorEmail: admin.email,
+                action: "list.unpublished",
+                targetType: "list",
+                targetId: id,
+                metadata: { name: list?.name ?? null, reason: "study_pdf_removed" },
+            })
+        }
+
+        return NextResponse.json({ ok: true, unpublished })
     } catch (error) {
         console.error("Error removing study PDF:", error)
         return NextResponse.json({ error: "Falha ao remover" }, { status: 500 })

@@ -48,8 +48,8 @@
             "error": "Error al crear la cuenta",
             "benefitsTitle": "Beneficios",
             "benefit1": "Acceso de por vida a las listas compradas",
-            "benefit2": "Descargas ilimitadas en CSV y Excel",
-            "benefit3": "Archivos listos para importar en tu CRM",
+            "benefit2": "Descargas ilimitadas del estudio en PDF que compraste",
+            "benefit3": "Historial de pedidos y recibos en tu cuenta",
             "successTitle": "¡Cuenta creada correctamente! 🎉",
             "verifySent": "Hemos enviado un correo de verificación a:",
             "nextStepsTitle": "Próximos pasos",
@@ -211,26 +211,7 @@
                 },
                 {
                     "title": "Descargue",
-                    "body": "Tras la confirmación, acceda a los archivos en CSV o Excel e incorpórelos a su proceso comercial."
-                }
-            ]
-        },
-        "zahlen": {
-            "_placeholder": "PLACEHOLDER: números ficticios del handoff — sustituir por datos reales o conectar al backend antes del go-live.",
-            "eyebrow": "Números que importan",
-            "title": "Confianza construida con resultados.",
-            "stats": [
-                {
-                    "value": "6+",
-                    "label": "listas vendidas"
-                },
-                {
-                    "value": "100%",
-                    "label": "calidad de datos verificada"
-                },
-                {
-                    "value": "24/7",
-                    "label": "soporte en portugués"
+                    "body": "Tras confirmarse el pago, descargue el estudio de mercado en PDF en el área Mis compras."
                 }
             ]
         },
@@ -271,7 +252,7 @@
             },
             {
                 "question": "¿Puedo ver los datos antes de comprar?",
-                "answer": "Sí. En la página de cada lista ves la cobertura (países, sectores e idioma), la fecha de la última actualización, el precio y una muestra de registros con el correo parcialmente oculto. Los datos completos se liberan tras la compra."
+                "answer": "Sí. En la página de cada lista ves la cobertura (países, sectores e idioma), la fecha en que se revisaron los datos, el precio y una muestra de registros con el correo parcialmente oculto. Los datos completos se liberan tras la compra."
             },
             {
                 "question": "¿Cómo funciona el pago?",
@@ -371,7 +352,7 @@
         "clearFilters": "Limpiar filtros",
         "featured": "Destacado",
         "companies": "{count} empresas",
-        "verifiedEmails": "Correos verificados",
+        "verifiedEmails": "Contactos comprobados en fuentes públicas",
         "updatedAt": "Actualizada el {date}",
         "seeDetails": "Ver detalles",
         "perLead": "{price} por lead",
@@ -450,9 +431,14 @@
         "notInformed": "No informado",
         "previewTitle": "Vista previa de los datos",
         "previewSubtitle": "Muestra de {count} registros para verificar estructura y calidad antes de comprar.",
+        "previewColCompany": "Empresa",
+        "previewColCountry": "País",
+        "previewColSector": "Sector",
+        "previewColEmail": "Correo",
+        "previewUnavailable": "Muestra no disponible para esta lista.",
         "includedTitle": "Qué incluye",
         "includedCompany": "Nombre de la empresa",
-        "includedEmail": "Correo comercial verificado",
+        "includedEmail": "Correo comercial comprobado en fuentes públicas",
         "includedPhone": "Teléfono y contacto cuando esté disponible",
         "includedLocation": "País, ciudad y sitio web",
         "includedIndustry": "Sector de actividad",
@@ -463,7 +449,6 @@
         "beforeBuyNote": "Antes de comprar, revise la cobertura, la vista previa de los datos y el precio por lead. Tras la aprobación del pago, la descarga queda disponible en su cuenta.",
         "benefitSecure": "Pago seguro con PayPal",
         "benefitImmediate": "Descarga inmediata tras la confirmación",
-        "benefitFresh": "Datos actualizados antes de la publicación",
         "benefitRecorded": "Registro de la compra en su cuenta",
         "buyNow": "Comprar ahora",
         "signInToBuy": "Iniciar sesión y comprar",
@@ -476,7 +461,7 @@
         "stepDownload": "Descarga",
         "backToCart": "Volver al carrito",
         "title": "Pago",
-        "subtitle": "Complete el pago para desbloquear {count} leads en CSV y Excel.",
+        "subtitle": "Complete el pago para desbloquear el estudio en PDF con {count} leads.",
         "secureTitle": "Pago seguro",
         "secureDesc": "PayPal procesa el pago; el sistema habilita la compra automáticamente tras la confirmación.",
         "redirectNote": "Será redirigido dentro del propio flujo de PayPal para autorizar la transacción.",
@@ -505,9 +490,9 @@
         "successLeadsReleased": "Leads liberados",
         "successTotalPaid": "Total pagado",
         "successNextDownloadTitle": "Descargue",
-        "successNextDownloadText": "CSV o Excel en Mis compras.",
+        "successNextDownloadText": "Estudio en PDF en Mis compras.",
         "successNextProspectTitle": "Prospección",
-        "successNextProspectText": "Importe los contactos a su CRM o herramienta de prospección.",
+        "successNextProspectText": "Use el estudio para priorizar contactos y planificar su abordaje.",
         "successNextReceiptTitle": "Confirmación",
         "successNextReceiptText": "El recibo se envió a su correo electrónico.",
         "successCtaPurchases": "Ir a mis compras",

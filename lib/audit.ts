@@ -10,6 +10,7 @@ export type AuditAction =
     | "workspace.deleted"
     | "list.deleted"
     | "list.reviewed"
+    | "list.unpublished"
     | "marketplace_lead.deleted"
     | "workspace.exported"
 

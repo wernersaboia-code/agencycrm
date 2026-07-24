@@ -128,9 +128,12 @@ export async function updateList(id: string, data: CreateListData): Promise<Seri
     if (validated.isActive) {
         const current = await prisma.leadList.findUnique({
             where: { id },
-            select: { studyPdfUrl: true },
+            select: { studyPdfUrl: true, dataReviewedAt: true },
         })
-        const check = canPublishList({ studyPdfUrl: current?.studyPdfUrl ?? null })
+        const check = canPublishList({
+            studyPdfUrl: current?.studyPdfUrl ?? null,
+            dataReviewedAt: current?.dataReviewedAt ?? null,
+        })
         if (!check.ok) {
             throw new Error(check.reason)
         }
@@ -189,9 +192,12 @@ export async function toggleListActive(id: string, isActive: boolean) {
     if (isActive) {
         const current = await prisma.leadList.findUnique({
             where: { id },
-            select: { studyPdfUrl: true },
+            select: { studyPdfUrl: true, dataReviewedAt: true },
         })
-        const check = canPublishList({ studyPdfUrl: current?.studyPdfUrl ?? null })
+        const check = canPublishList({
+            studyPdfUrl: current?.studyPdfUrl ?? null,
+            dataReviewedAt: current?.dataReviewedAt ?? null,
+        })
         if (!check.ok) {
             throw new Error(check.reason)
         }

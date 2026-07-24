@@ -48,8 +48,8 @@
             "error": "Error creating account",
             "benefitsTitle": "Benefits",
             "benefit1": "Lifetime access to purchased lists",
-            "benefit2": "Unlimited downloads in CSV and Excel",
-            "benefit3": "Files ready to import into your CRM",
+            "benefit2": "Unlimited downloads of the PDF study you bought",
+            "benefit3": "Order history and receipts in your account",
             "successTitle": "Account created successfully! 🎉",
             "verifySent": "We've sent a verification email to:",
             "nextStepsTitle": "Next steps",
@@ -211,26 +211,7 @@
                 },
                 {
                     "title": "Download",
-                    "body": "After confirmation, access the files in CSV or Excel and put them to work in your sales process."
-                }
-            ]
-        },
-        "zahlen": {
-            "_placeholder": "PLACEHOLDER: fictional numbers from the handoff — replace with real data or connect to the backend before go-live.",
-            "eyebrow": "Numbers that matter",
-            "title": "Trust built on results.",
-            "stats": [
-                {
-                    "value": "6+",
-                    "label": "lists sold"
-                },
-                {
-                    "value": "100%",
-                    "label": "verified data quality"
-                },
-                {
-                    "value": "24/7",
-                    "label": "support in Portuguese"
+                    "body": "Once payment is confirmed, download the market study PDF in the My Purchases area."
                 }
             ]
         },
@@ -271,7 +252,7 @@
             },
             {
                 "question": "Can I see the data before buying?",
-                "answer": "Yes. On each list's page you can see the coverage (countries, industries and language), the date it was last updated, the price and a sample of records with the email partially masked. The full data is released after purchase."
+                "answer": "Yes. On each list's page you can see the coverage (countries, industries and language), the date the data was reviewed, the price and a sample of records with the email partially masked. The full data is released after purchase."
             },
             {
                 "question": "How does payment work?",
@@ -371,7 +352,7 @@
         "clearFilters": "Clear filters",
         "featured": "Featured",
         "companies": "{count} companies",
-        "verifiedEmails": "Verified emails",
+        "verifiedEmails": "Contacts checked against public sources",
         "updatedAt": "Updated on {date}",
         "seeDetails": "View details",
         "perLead": "{price} per lead",
@@ -450,9 +431,14 @@
         "notInformed": "Not provided",
         "previewTitle": "Data preview",
         "previewSubtitle": "Sample of {count} records to check structure and quality before buying.",
+        "previewColCompany": "Company",
+        "previewColCountry": "Country",
+        "previewColSector": "Sector",
+        "previewColEmail": "Email",
+        "previewUnavailable": "No sample available for this list.",
         "includedTitle": "What's included",
         "includedCompany": "Company name",
-        "includedEmail": "Verified business email",
+        "includedEmail": "Business email checked against public sources",
         "includedPhone": "Phone and contact where available",
         "includedLocation": "Country, city, and website",
         "includedIndustry": "Industry",
@@ -463,7 +449,6 @@
         "beforeBuyNote": "Before buying, check the coverage, data preview, and price per lead. Once payment is approved, the download becomes available in your account.",
         "benefitSecure": "Secure payment via PayPal",
         "benefitImmediate": "Instant download after confirmation",
-        "benefitFresh": "Data refreshed before publication",
         "benefitRecorded": "Purchase recorded to your account",
         "buyNow": "Buy now",
         "signInToBuy": "Sign in and buy",
@@ -476,7 +461,7 @@
         "stepDownload": "Download",
         "backToCart": "Back to cart",
         "title": "Checkout",
-        "subtitle": "Complete payment to unlock {count} leads in CSV and Excel.",
+        "subtitle": "Complete payment to unlock the PDF study covering {count} leads.",
         "secureTitle": "Secure payment",
         "secureDesc": "PayPal processes the payment; the system releases your purchase automatically after confirmation.",
         "redirectNote": "You'll be redirected within PayPal's own flow to authorize the transaction.",
@@ -505,9 +490,9 @@
         "successLeadsReleased": "Leads released",
         "successTotalPaid": "Total paid",
         "successNextDownloadTitle": "Download",
-        "successNextDownloadText": "CSV or Excel in My Purchases.",
+        "successNextDownloadText": "PDF study in My Purchases.",
         "successNextProspectTitle": "Prospecting",
-        "successNextProspectText": "Import the contacts into your CRM or prospecting tool.",
+        "successNextProspectText": "Use the study to prioritise contacts and plan your outreach.",
         "successNextReceiptTitle": "Confirmation",
         "successNextReceiptText": "The receipt was sent to your email.",
         "successCtaPurchases": "Go to my purchases",

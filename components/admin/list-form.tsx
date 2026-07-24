@@ -213,7 +213,10 @@ export function ListForm({ list }: ListFormProps) {
         // descobrir o motivo depois de uma chamada ao servidor.
         if (list && data.isActive) {
             const effectivePdfUrl = pdfFile ? "pending-upload" : list.studyPdfUrl
-            const check = canPublishList({ studyPdfUrl: effectivePdfUrl })
+            const check = canPublishList({
+                studyPdfUrl: effectivePdfUrl,
+                dataReviewedAt: dataReviewedAt ? new Date(dataReviewedAt) : null,
+            })
             if (!check.ok) {
                 toast.error(check.reason)
                 return
@@ -810,7 +813,10 @@ export function ListForm({ list }: ListFormProps) {
                             </div>
                             {isEditing && form.watch("isActive") && (() => {
                                 const effectivePdfUrl = pdfFile ? "pending-upload" : list!.studyPdfUrl
-                                const check = canPublishList({ studyPdfUrl: effectivePdfUrl })
+                                const check = canPublishList({
+                                    studyPdfUrl: effectivePdfUrl,
+                                    dataReviewedAt: dataReviewedAt ? new Date(dataReviewedAt) : null,
+                                })
                                 if (check.ok) return null
                                 return (
                                     <p className="text-sm text-destructive">{check.reason}</p>

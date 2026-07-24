@@ -57,12 +57,12 @@ export default async function EasyProspectHome({
             <DataQualitySection locale={locale} />
             <AdvantageSection locale={locale} />
             <HowItWorksSection locale={locale} />
-            {/* StatsSection está desmontada de propósito: os números em
-                landing.zahlen são placeholders do handoff ("6+ listas vendidas",
-                "100% qualidade verificada"). Exibir número inventado numa página
-                que vende dado verificado custa credibilidade. Remontar quando
-                houver métrica real — o componente e os textos traduzidos seguem
-                no repositório. */}
+            {/* Aqui existia uma StatsSection com números do handoff ("6+ listas
+                vendidas", "100% qualidade verificada", "24/7 suporte"). Nenhum
+                era real, então o componente e as mensagens (landing.zahlen)
+                foram removidos: enquanto ficassem no repositório, bastava
+                remontar a seção para publicar três afirmações falsas. Uma
+                seção de números só volta com métrica medida. */}
             <BlogTeaserSection locale={locale} />
             <FinalCtaSection locale={locale} />
         </div>
