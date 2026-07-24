@@ -529,8 +529,10 @@ model Suppression {
   detail      String?
   createdAt   DateTime          @default(now())
 
-  @@index([email])
-  @@index([workspaceId, email])
+  // `email` lidera porque toda consulta o restringe (unitária ou `in`), e o
+  // workspace entra sempre em OR com o global (`workspaceId IS NULL`) — que
+  // não guia seek em B-tree. Índice só de `email` seria prefixo deste.
+  @@index([email, workspaceId])
   @@map("suppressions")
 }
 

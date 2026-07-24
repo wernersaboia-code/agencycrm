@@ -1949,8 +1949,10 @@ model Suppression {
   detail      String?
   createdAt   DateTime          @default(now())
 
-  @@index([email])
-  @@index([workspaceId, email])
+  // `email` lidera porque toda consulta o restringe (unitária ou `in`), e o
+  // workspace entra sempre em OR com o global (`workspaceId IS NULL`) — que
+  // não guia seek em B-tree. Índice só de `email` seria prefixo deste.
+  @@index([email, workspaceId])
   @@map("suppressions")
 }
 ```
@@ -1988,7 +1990,7 @@ export PATH="/c/Program Files/nodejs:$PATH" && mkdir -p prisma/migrations/202607
 
 - [ ] **Step 4: Limpar o SQL gerado**
 
-Abrir o arquivo e manter **somente**: os dois `CREATE TYPE`, o `CREATE TABLE "suppressions"`, os `CREATE INDEX` de `suppressions` e de `email_sends("messageId")`, e os `ALTER TABLE` de `email_sends` e `workspaces` com as colunas acima. Apagar os `CREATE INDEX` de `calls`/`leads`/`purchases` e quaisquer índices de `email_sends` que não sejam o de `messageId` — são o drift pré-existente.
+Abrir o arquivo e manter **somente**: os dois `CREATE TYPE`, o `CREATE TABLE "suppressions"`, o `CREATE INDEX` de `suppressions("email", "workspaceId")` e o de `email_sends("messageId")`, e os `ALTER TABLE` de `email_sends` e `workspaces` com as colunas acima. Apagar os `CREATE INDEX` de `calls`/`leads`/`purchases` e quaisquer índices de `email_sends` que não sejam o de `messageId` — são o drift pré-existente.
 
 - [ ] **Step 5: Aplicar e registrar**
 
