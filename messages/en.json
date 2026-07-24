@@ -111,7 +111,7 @@
         "intro": {
             "lede": "Our qualified importer and distributor lists are built for manufacturers, producers, and brand owners looking for new trading partners abroad.",
             "p1": "Select by country, industry, language region, or buying profile and receive ready-to-use databases, updated on a regular basis.",
-            "p2": "Our lists include exclusively carefully verified companies with a proven interest in adding new products and brands from abroad to their portfolio. This saves you lengthy research and countless contacts with companies that have no interest in new suppliers."
+            "p2": "Our lists bring together companies checked against public sources — their website, digital presence and available public records — within the industry and market each list sets out to cover. Every list comes with a PDF market study, so you can assess the companies' profile before reaching out."
         },
         "zielmaerkte": {
             "eyebrow": "Target markets",
@@ -189,8 +189,8 @@
         },
         "daten": {
             "eyebrow": "Data quality",
-            "title": "Regularly updated data.",
-            "body": "All lists are continuously maintained and updated. New market participants are added, inactive companies are removed, and existing records are reviewed regularly. This means you always work with current and reliable information."
+            "title": "Data reviewed periodically.",
+            "body": "Lists are compiled by our operation, and each company is checked against public sources — its website, its digital presence and available public records — before it enters the catalogue. The catalogue is reviewed periodically: when a list no longer reflects the market it describes, we take it off sale."
         },
         "vorteil": {
             "eyebrow": "Your advantage",
@@ -410,6 +410,7 @@
     },
     "listing": {
         "back": "Back to catalog",
+        "breadcrumbCatalog": "Catalog",
         "featured": "Featured",
         "readyBadge": "Data ready for download",
         "quickLeads": "Leads",

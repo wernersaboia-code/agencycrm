@@ -111,7 +111,7 @@
         "intro": {
             "lede": "Nos listes qualifiées d'importateurs et de distributeurs sont conçues pour les fabricants, producteurs et propriétaires de marque à la recherche de nouveaux partenaires commerciaux à l'étranger.",
             "p1": "Sélectionnez par pays, secteur, zone linguistique ou profil d'achat et recevez des bases de données prêtes à l'emploi, mises à jour régulièrement.",
-            "p2": "Nos listes n'incluent que des entreprises soigneusement vérifiées, avec un intérêt avéré pour l'intégration de nouveaux produits et marques étrangers dans leur portefeuille. Vous économisez ainsi des recherches longues et évitez d'innombrables contacts avec des entreprises qui n'ont aucun intérêt pour de nouveaux fournisseurs."
+            "p2": "Nos listes réunissent des entreprises vérifiées à partir de sources publiques — site institutionnel, présence en ligne et registres disponibles — dans le secteur et le marché que chaque liste se propose de couvrir. Chaque liste est accompagnée d'une étude de marché en PDF, pour évaluer le profil des entreprises avant de les contacter."
         },
         "zielmaerkte": {
             "eyebrow": "Marchés cibles",
@@ -189,8 +189,8 @@
         },
         "daten": {
             "eyebrow": "Qualité des données",
-            "title": "Données mises à jour régulièrement.",
-            "body": "Toutes les listes sont maintenues et mises à jour en continu. De nouveaux acteurs du marché sont ajoutés, les entreprises inactives sont supprimées et les fiches existantes sont révisées régulièrement. Vous travaillez ainsi toujours avec des informations actuelles et fiables."
+            "title": "Données revues périodiquement.",
+            "body": "Les listes sont compilées par notre opération, et chaque entreprise est vérifiée à partir de sources publiques — site institutionnel, présence en ligne et registres disponibles — avant d'entrer dans le catalogue. Le catalogue est revu périodiquement : lorsqu'une liste ne reflète plus le marché qu'elle décrit, elle est retirée de la vente."
         },
         "vorteil": {
             "eyebrow": "Votre avantage",
@@ -410,6 +410,7 @@
     },
     "listing": {
         "back": "Retour au catalogue",
+        "breadcrumbCatalog": "Catalogue",
         "featured": "En vedette",
         "readyBadge": "Données prêtes à télécharger",
         "quickLeads": "Leads",

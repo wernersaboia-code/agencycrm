@@ -5,6 +5,7 @@ import {
     buildFaqSchema,
     buildProductSchema,
     buildBreadcrumbSchema,
+    buildListBreadcrumbTrail,
     buildBlogPostingSchema,
     serializeJsonLd,
     BASE_URL,
@@ -191,6 +192,40 @@ describe("buildBreadcrumbSchema", () => {
             { "@type": "ListItem", position: 1, name: "Catálogo", item: `${BASE_URL}/catalog` },
             { "@type": "ListItem", position: 2, name: "Lista X", item: `${BASE_URL}/list/x` },
         ])
+    })
+})
+
+describe("buildListBreadcrumbTrail", () => {
+    const base = {
+        catalogLabel: "Catálogo",
+        listName: "Importadores de Café — Alemanha",
+        slug: "importadores-cafe-alemanha",
+        locale: "pt",
+    }
+
+    it("pt (default locale): urls do catálogo e da lista não têm prefixo de idioma", () => {
+        const trail = buildListBreadcrumbTrail(base)
+
+        expect(trail).toEqual([
+            { name: "Catálogo", url: `${BASE_URL}/catalog` },
+            { name: base.listName, url: `${BASE_URL}/list/${base.slug}` },
+        ])
+    })
+
+    it("de: urls do catálogo e da lista levam o prefixo /de", () => {
+        const trail = buildListBreadcrumbTrail({ ...base, locale: "de" })
+
+        expect(trail).toEqual([
+            { name: "Catálogo", url: `${BASE_URL}/de/catalog` },
+            { name: base.listName, url: `${BASE_URL}/de/list/${base.slug}` },
+        ])
+    })
+
+    it("o último item da trilha bate com a própria url da página (regra do rich result)", () => {
+        const trail = buildListBreadcrumbTrail({ ...base, locale: "de" })
+        const lastItem = trail[trail.length - 1]
+
+        expect(lastItem.url).toBe(`${BASE_URL}/de/list/${base.slug}`)
     })
 })
 

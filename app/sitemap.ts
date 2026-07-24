@@ -42,12 +42,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             take: 1000,
         })
 
-        const listRoutes = lists.map((list) => ({
-            url: `${BASE_URL}/list/${list.slug}`,
-            lastModified: list.updatedAt,
-            changeFrequency: "weekly" as const,
-            priority: 0.7,
-        }))
+        // Uma entrada por idioma publicado, com hreflang de mão dupla — mesmo
+        // padrão das rotas estáticas acima. A lista em si não tem tradução
+        // própria no banco (o conteúdo vem em um único idioma), mas a URL
+        // precisa do prefixo de locale para bater com o canonical/hreflang
+        // que a página gera via alternatesFor.
+        const listRoutes = lists.flatMap((list) => {
+            const languages = alternatesFor(`/list/${list.slug}`).languages
+            return PUBLISHED_LOCALES.map((locale) => ({
+                url: `${BASE_URL}${getPathname({ href: `/list/${list.slug}`, locale })}`,
+                lastModified: list.updatedAt,
+                changeFrequency: "weekly" as const,
+                priority: 0.7,
+                alternates: { languages },
+            }))
+        })
 
         const now = new Date()
         const blogPosts = await prisma.blogPost.findMany({

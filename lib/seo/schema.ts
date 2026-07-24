@@ -105,6 +105,36 @@ export function buildProductSchema(input: ProductSchemaInput): Record<string, un
     }
 }
 
+export interface ListBreadcrumbInput {
+    catalogLabel: string
+    listName: string
+    slug: string
+    locale: string
+}
+
+/**
+ * Trilha de breadcrumb da página de lista. Extraída como função pura (em vez
+ * de montada inline na página) pelo mesmo motivo de buildProductSchema: as
+ * URLs precisam do prefixo de locale via getPathname, e isso só é seguro de
+ * verificar com um teste direto — a bug anterior (URLs sem prefixo /de)
+ * passou batido justamente por não ter teste algum.
+ */
+export function buildListBreadcrumbTrail(
+    input: ListBreadcrumbInput
+): { name: string; url: string }[] {
+    const locale = input.locale as Locale
+    return [
+        {
+            name: input.catalogLabel,
+            url: `${BASE_URL}${getPathname({ href: "/catalog", locale })}`,
+        },
+        {
+            name: input.listName,
+            url: `${BASE_URL}${getPathname({ href: `/list/${input.slug}`, locale })}`,
+        },
+    ]
+}
+
 export function buildBreadcrumbSchema(
     trail: { name: string; url: string }[]
 ): Record<string, unknown> {

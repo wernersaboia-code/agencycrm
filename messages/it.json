@@ -111,7 +111,7 @@
         "intro": {
             "lede": "I nostri elenchi qualificati di importatori e distributori sono pensati per produttori, aziende manifatturiere e titolari di marchi alla ricerca di nuovi partner commerciali all'estero.",
             "p1": "Seleziona per paese, settore, area linguistica o profilo d'acquisto e ricevi database pronti all'uso, aggiornati regolarmente.",
-            "p2": "I nostri elenchi includono solo aziende accuratamente verificate, con un interesse comprovato nell'inserire nuovi prodotti e marchi esteri nel proprio portafoglio. Risparmi così lunghe ricerche ed eviti innumerevoli contatti con aziende che non hanno alcun interesse verso nuovi fornitori."
+            "p2": "I nostri elenchi riuniscono aziende verificate su fonti pubbliche — sito istituzionale, presenza digitale e registri disponibili — nel settore e nel mercato che ogni elenco si propone di coprire. Ogni elenco è accompagnato da uno studio di mercato in PDF, per valutare il profilo delle aziende prima di avviare il contatto."
         },
         "zielmaerkte": {
             "eyebrow": "Mercati target",
@@ -189,8 +189,8 @@
         },
         "daten": {
             "eyebrow": "Qualità dei dati",
-            "title": "Dati aggiornati regolarmente.",
-            "body": "Tutti gli elenchi vengono mantenuti e aggiornati costantemente. Nuovi attori del mercato vengono aggiunti, le aziende inattive vengono rimosse e le schede esistenti vengono revisionate regolarmente. Lavori così sempre con informazioni attuali e affidabili."
+            "title": "Dati rivisti periodicamente.",
+            "body": "Gli elenchi vengono compilati dalla nostra operazione, e ogni azienda viene verificata su fonti pubbliche — sito istituzionale, presenza digitale e registri disponibili — prima di entrare nel catalogo. Il catalogo viene rivisto periodicamente: quando una lista non rispecchia più il mercato che descrive, viene tolta dalla vendita."
         },
         "vorteil": {
             "eyebrow": "Il tuo vantaggio",
@@ -410,6 +410,7 @@
     },
     "listing": {
         "back": "Torna al catalogo",
+        "breadcrumbCatalog": "Catalogo",
         "featured": "In evidenza",
         "readyBadge": "Dati pronti per il download",
         "quickLeads": "Lead",

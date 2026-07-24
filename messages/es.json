@@ -111,7 +111,7 @@
         "intro": {
             "lede": "Nuestras listas calificadas de importadores y distribuidores están hechas para fabricantes, productores y titulares de marca que buscan nuevos socios comerciales en el extranjero.",
             "p1": "Seleccione por país, sector, región lingüística o perfil de compra y reciba bases de datos listas para usar, actualizadas periódicamente.",
-            "p2": "Nuestras listas incluyen exclusivamente empresas cuidadosamente verificadas, con interés comprobado en incorporar nuevos productos y marcas del extranjero a su portafolio. Así ahorra búsquedas prolongadas y evita innumerables contactos con empresas que no tienen interés en nuevos proveedores."
+            "p2": "Nuestras listas reúnen empresas contrastadas con fuentes públicas — su sitio web, su presencia digital y los registros disponibles — dentro del sector y el mercado que cada lista se propone cubrir. Cada lista incluye un estudio de mercado en PDF, para que evalúe el perfil de las empresas antes de iniciar el contacto."
         },
         "zielmaerkte": {
             "eyebrow": "Mercados objetivo",
@@ -189,8 +189,8 @@
         },
         "daten": {
             "eyebrow": "Calidad de los datos",
-            "title": "Datos actualizados periódicamente.",
-            "body": "Todas las listas se mantienen y actualizan continuamente. Se incorporan nuevos participantes del mercado, se eliminan empresas inactivas y los registros existentes se revisan regularmente. Así trabaja siempre con información actual y confiable."
+            "title": "Datos revisados periódicamente.",
+            "body": "Las listas las compila nuestra operación, y cada empresa se contrasta con fuentes públicas — su sitio web, su presencia digital y los registros disponibles — antes de entrar en el catálogo. El catálogo se revisa periódicamente: cuando una lista deja de reflejar el mercado que describe, la retiramos de la venta."
         },
         "vorteil": {
             "eyebrow": "Su ventaja",
@@ -410,6 +410,7 @@
     },
     "listing": {
         "back": "Volver al catálogo",
+        "breadcrumbCatalog": "Catálogo",
         "featured": "Destacado",
         "readyBadge": "Datos listos para descargar",
         "quickLeads": "Leads",

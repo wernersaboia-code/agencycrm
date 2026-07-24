@@ -111,7 +111,7 @@
         "intro": {
             "lede": "Unsere qualifizierten Importeur- und Distributorenlisten richten sich an Hersteller, Produzenten und Markeninhaber, die neue Vertriebspartner im Ausland suchen.",
             "p1": "Wählen Sie gezielt nach Land, Branche, Sprachraum oder Einkaufsprofil und erhalten Sie sofort einsatzbereite, regelmäßig aktualisierte Datenbanken.",
-            "p2": "Unsere Listen umfassen ausschließlich sorgfältig verifizierte Unternehmen, die nachweislich Interesse daran haben, neue Produkte und Marken aus dem Ausland in ihr Sortiment aufzunehmen. Dadurch sparen Sie sich zeitaufwendige Recherchen und vermeiden unzählige Kontakte zu Unternehmen, die grundsätzlich kein Interesse an neuen Lieferanten haben."
+            "p2": "Unsere Listen umfassen Unternehmen, die anhand öffentlich zugänglicher Quellen geprüft wurden — Unternehmenswebsite, digitale Präsenz und verfügbare Register — innerhalb der Branche und des Marktes, den die jeweilige Liste abdecken soll. Jede Liste wird von einer Marktstudie als PDF begleitet, mit der Sie das Profil der Unternehmen vor der Kontaktaufnahme einschätzen können."
         },
         "zielmaerkte": {
             "eyebrow": "Zielmärkte",
@@ -189,8 +189,8 @@
         },
         "daten": {
             "eyebrow": "Datenqualität",
-            "title": "Regelmäßig aktualisierte Daten.",
-            "body": "Alle Listen werden kontinuierlich gepflegt und aktualisiert. Neue Marktteilnehmer werden aufgenommen, nicht mehr aktive Unternehmen entfernt und vorhandene Datensätze regelmäßig überprüft. So arbeiten Sie stets mit aktuellen und zuverlässigen Informationen."
+            "title": "Regelmäßig überprüfte Daten.",
+            "body": "Die Listen werden von unserem Betrieb zusammengestellt, und jedes Unternehmen wird anhand öffentlich zugänglicher Quellen geprüft — Unternehmenswebsite, digitale Präsenz und verfügbare Register — bevor es in den Katalog aufgenommen wird. Der Katalog wird regelmäßig überprüft: Wenn eine Liste den Markt, den sie beschreibt, nicht mehr abbildet, nehmen wir sie aus dem Verkauf."
         },
         "vorteil": {
             "eyebrow": "Ihr Vorteil",
@@ -410,6 +410,7 @@
     },
     "listing": {
         "back": "Zurück zum Katalog",
+        "breadcrumbCatalog": "Katalog",
         "featured": "Empfohlen",
         "readyBadge": "Daten sofort zum Download bereit",
         "quickLeads": "Leads",

@@ -111,7 +111,7 @@
         "intro": {
             "lede": "Nossas listas qualificadas de importadores e distribuidores são feitas para fabricantes, produtores e detentores de marca que buscam novos parceiros comerciais no exterior.",
             "p1": "Selecione por país, setor, região linguística ou perfil de compra e receba bancos de dados prontos para uso e atualizados periodicamente.",
-            "p2": "Nossas listas incluem exclusivamente empresas cuidadosamente verificadas, com interesse comprovado em incluir novos produtos e marcas do exterior em seu portfólio. Assim você economiza pesquisas demoradas e evita inúmeros contatos com empresas que não têm interesse em novos fornecedores."
+            "p2": "Nossas listas reúnem empresas conferidas em fontes públicas — site institucional, presença digital e registros disponíveis — dentro do setor e do mercado que cada lista se propõe a cobrir. Cada lista vem acompanhada de um estudo de mercado em PDF, para você avaliar o perfil das empresas antes de iniciar o contato."
         },
         "zielmaerkte": {
             "eyebrow": "Mercados-alvo",
@@ -189,8 +189,8 @@
         },
         "daten": {
             "eyebrow": "Qualidade dos dados",
-            "title": "Dados atualizados periodicamente.",
-            "body": "Todas as listas são mantidas e atualizadas continuamente. Novos participantes do mercado são incluídos, empresas inativas são removidas e os registros existentes são revisados regularmente. Assim você trabalha sempre com informações atuais e confiáveis."
+            "title": "Dados revisados periodicamente.",
+            "body": "As listas são compiladas pela nossa operação, e cada empresa é conferida em fontes públicas — site institucional, presença digital e registros disponíveis — antes de entrar no catálogo. O catálogo é revisado periodicamente: quando uma lista deixa de refletir o mercado que descreve, ela sai de venda."
         },
         "vorteil": {
             "eyebrow": "Sua vantagem",
@@ -410,6 +410,7 @@
     },
     "listing": {
         "back": "Voltar ao catálogo",
+        "breadcrumbCatalog": "Catálogo",
         "featured": "Destaque",
         "readyBadge": "Dados prontos para download",
         "quickLeads": "Leads",

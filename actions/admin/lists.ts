@@ -97,8 +97,8 @@ export async function createList(data: CreateListData): Promise<SerializedList> 
     // O estudo em PDF só é enviado depois que a lista existe (rota de upload
     // precisa do id). Uma lista recém-criada nunca tem studyPdfUrl ainda, então
     // não há como nascer ativa: força inativa e exige ativação explícita depois
-    // (via updateList/toggleListActive), quando o gate de canPublishList corre
-    // contra o studyPdfUrl já anexado.
+    // (via updateList), quando o gate de canPublishList corre contra o
+    // studyPdfUrl já anexado.
     const list = await prisma.leadList.create({
         data: {
             name: validated.name,
@@ -184,31 +184,6 @@ export async function deleteList(id: string) {
     })
 
     revalidateListPaths(list?.slug)
-}
-
-export async function toggleListActive(id: string, isActive: boolean) {
-    await requireAdmin()
-
-    if (isActive) {
-        const current = await prisma.leadList.findUnique({
-            where: { id },
-            select: { studyPdfUrl: true, dataReviewedAt: true },
-        })
-        const check = canPublishList({
-            studyPdfUrl: current?.studyPdfUrl ?? null,
-            dataReviewedAt: current?.dataReviewedAt ?? null,
-        })
-        if (!check.ok) {
-            throw new Error(check.reason)
-        }
-    }
-
-    const list = await prisma.leadList.update({
-        where: { id },
-        data: { isActive },
-    })
-
-    revalidateListPaths(list.slug)
 }
 
 /**

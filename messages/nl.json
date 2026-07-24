@@ -111,7 +111,7 @@
         "intro": {
             "lede": "Onze gekwalificeerde lijsten van importeurs en distributeurs zijn ontwikkeld voor fabrikanten, producenten en merkeigenaren die op zoek zijn naar nieuwe handelspartners in het buitenland.",
             "p1": "Selecteer op land, sector, taalgebied of inkoopprofiel en ontvang direct bruikbare databases die regelmatig worden bijgewerkt.",
-            "p2": "Onze lijsten bevatten uitsluitend zorgvuldig geverifieerde bedrijven met een aantoonbare interesse in het opnemen van nieuwe producten en buitenlandse merken in hun assortiment. Zo bespaart u lang zoekwerk en vermijdt u talloze contacten met bedrijven die geen interesse hebben in nieuwe leveranciers."
+            "p2": "Onze lijsten bevatten bedrijven die zijn getoetst aan openbare bronnen — bedrijfswebsite, digitale aanwezigheid en beschikbare registraties — binnen de sector en markt die elke lijst wil bestrijken. Bij elke lijst hoort een marktstudie in pdf, zodat u het profiel van de bedrijven kunt beoordelen voordat u contact opneemt."
         },
         "zielmaerkte": {
             "eyebrow": "Doelmarkten",
@@ -189,8 +189,8 @@
         },
         "daten": {
             "eyebrow": "Datakwaliteit",
-            "title": "Regelmatig bijgewerkte gegevens.",
-            "body": "Alle lijsten worden voortdurend onderhouden en bijgewerkt. Nieuwe marktspelers worden toegevoegd, inactieve bedrijven worden verwijderd en bestaande gegevens worden regelmatig herzien. Zo werkt u altijd met actuele en betrouwbare informatie."
+            "title": "Periodiek herziene gegevens.",
+            "body": "De lijsten worden samengesteld door onze organisatie, en elk bedrijf wordt getoetst aan openbare bronnen — bedrijfswebsite, digitale aanwezigheid en beschikbare registraties — voordat het in de catalogus wordt opgenomen. De catalogus wordt periodiek herzien: zodra een lijst de markt die ze beschrijft niet meer weerspiegelt, halen we ze uit de verkoop."
         },
         "vorteil": {
             "eyebrow": "Uw voordeel",
@@ -410,6 +410,7 @@
     },
     "listing": {
         "back": "Terug naar catalogus",
+        "breadcrumbCatalog": "Catalogus",
         "featured": "Uitgelicht",
         "readyBadge": "Gegevens klaar om te downloaden",
         "quickLeads": "Leads",

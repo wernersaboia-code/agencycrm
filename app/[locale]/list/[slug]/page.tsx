@@ -12,7 +12,9 @@ import { Badge } from "@/components/ui/badge"
 import { getListLanguage } from "@/lib/constants/list-languages"
 import { FlagIcon } from "@/components/ui/flag-icon"
 import { JsonLd } from "@/components/seo/json-ld"
-import { BASE_URL, buildProductSchema, buildBreadcrumbSchema } from "@/lib/seo/schema"
+import { buildProductSchema, buildBreadcrumbSchema, buildListBreadcrumbTrail } from "@/lib/seo/schema"
+import { alternatesFor } from "@/lib/i18n/alternates"
+import type { Locale } from "@/lib/i18n/locales"
 import {
     ArrowLeft,
     BadgeCheck,
@@ -42,7 +44,7 @@ async function getList(slug: string) {
 }
 
 export async function generateMetadata({ params }: ListPageProps) {
-    const { slug } = await params
+    const { locale, slug } = await params
     const [list, t] = await Promise.all([getList(slug), getTranslations("listing")])
 
     if (!list) {
@@ -52,6 +54,7 @@ export async function generateMetadata({ params }: ListPageProps) {
     return {
         title: list.name,
         description: list.description || t("metaFallbackDescription"),
+        alternates: alternatesFor(`/list/${slug}`, locale as Locale),
     }
 }
 
@@ -102,10 +105,14 @@ export default async function ListPage({ params }: ListPageProps) {
                 })}
             />
             <JsonLd
-                data={buildBreadcrumbSchema([
-                    { name: "Catálogo", url: `${BASE_URL}/catalog` },
-                    { name: list.name, url: `${BASE_URL}/list/${list.slug}` },
-                ])}
+                data={buildBreadcrumbSchema(
+                    buildListBreadcrumbTrail({
+                        catalogLabel: t("breadcrumbCatalog"),
+                        listName: list.name,
+                        slug: list.slug,
+                        locale,
+                    })
+                )}
             />
             <div className="border-b bg-card">
                 <div className="container mx-auto px-4 py-6">
