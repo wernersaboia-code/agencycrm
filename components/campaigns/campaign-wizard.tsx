@@ -32,6 +32,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
+import { Switch } from "@/components/ui/switch"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import {
@@ -99,6 +100,13 @@ interface WizardData {
     steps: SequenceStep[]
     stopOnUnsubscribe: boolean
     stopOnConverted: boolean
+    // Override de janela de envio (sequências). null/vazio = herda o workspace.
+    sendWindowEnabled: boolean | null
+    sendTimezone: string | null
+    sendDays: number[]
+    sendStartHour: number | null
+    sendEndHour: number | null
+    sendJitterMinutes: number | null
     // Passo 2
     selectedLeadIds: string[]
     // Passo 3
@@ -125,6 +133,12 @@ const INITIAL_DATA: WizardData = {
     steps: [createInitialStep()],
     stopOnUnsubscribe: true,
     stopOnConverted: true,
+    sendWindowEnabled: null,
+    sendTimezone: null,
+    sendDays: [],
+    sendStartHour: null,
+    sendEndHour: null,
+    sendJitterMinutes: null,
     selectedLeadIds: [],
     sendNow: true,
     scheduledAt: "",
@@ -277,6 +291,15 @@ export function CampaignWizard({
         return true
     }
 
+    // Um input numérico esvaziado (backspace até o fim) chega aqui como
+    // event.target.value === "" — Number("") é 0, o que empurraria o campo
+    // para um valor fora da faixa sem o usuário ter digitado isso. Mantém o
+    // valor anterior em vez de zerar (mesma correção de
+    // send-window-settings.tsx).
+    const parseNumberInput = (value: string, previous: number): number => {
+        return value === "" ? previous : Number(value)
+    }
+
     // ============================================================
     // NAVEGAÇÃO
     // ============================================================
@@ -309,6 +332,13 @@ export function CampaignWizard({
                 steps: data.type === "sequence" ? data.steps : [],
                 stopOnUnsubscribe: data.stopOnUnsubscribe,
                 stopOnConverted: data.stopOnConverted,
+                // Override de janela de envio (sequências)
+                sendWindowEnabled: data.sendWindowEnabled,
+                sendTimezone: data.sendTimezone,
+                sendDays: data.sendDays,
+                sendStartHour: data.sendStartHour,
+                sendEndHour: data.sendEndHour,
+                sendJitterMinutes: data.sendJitterMinutes,
                 // Common
                 selectedLeadIds: data.selectedLeadIds,
                 scheduledAt: data.sendNow ? null : data.scheduledAt || null,
@@ -342,6 +372,16 @@ export function CampaignWizard({
             templateId: type === "single" ? prev.templateId : "",
             // Reset steps quando muda para single
             steps: type === "sequence" ? prev.steps : [createInitialStep()],
+            // Override de janela só existe em sequências — some quando muda
+            // para single, senão um valor deixado ligado sobreviveria escondido
+            // e poderia recusar a campanha na validação da action sem UI para
+            // o usuário perceber por quê.
+            sendWindowEnabled: type === "sequence" ? prev.sendWindowEnabled : null,
+            sendTimezone: type === "sequence" ? prev.sendTimezone : null,
+            sendDays: type === "sequence" ? prev.sendDays : [],
+            sendStartHour: type === "sequence" ? prev.sendStartHour : null,
+            sendEndHour: type === "sequence" ? prev.sendEndHour : null,
+            sendJitterMinutes: type === "sequence" ? prev.sendJitterMinutes : null,
         }))
     }
 
@@ -628,6 +668,76 @@ export function CampaignWizard({
                                                     </label>
                                                 </div>
                                             </div>
+                                        </div>
+
+                                        <Separator />
+
+                                        {/* Override de janela de envio própria da campanha */}
+                                        <div className="space-y-3 rounded-lg border p-4">
+                                            <div className="flex items-center justify-between">
+                                                <div>
+                                                    <Label htmlFor="overrideWindow">Janela de envio própria</Label>
+                                                    <p className="text-sm text-muted-foreground">
+                                                        Desligado, esta campanha usa a janela do workspace.
+                                                    </p>
+                                                </div>
+                                                <Switch
+                                                    id="overrideWindow"
+                                                    checked={data.sendWindowEnabled !== null}
+                                                    onCheckedChange={(checked) =>
+                                                        setData((prev) => ({
+                                                            ...prev,
+                                                            sendWindowEnabled: checked ? true : null,
+                                                            sendDays: checked ? [1, 2, 3, 4, 5] : [],
+                                                            sendStartHour: checked ? 9 : null,
+                                                            sendEndHour: checked ? 17 : null,
+                                                        }))
+                                                    }
+                                                />
+                                            </div>
+
+                                            {data.sendWindowEnabled !== null && (
+                                                <div className="grid gap-3 sm:grid-cols-2">
+                                                    <div className="space-y-2">
+                                                        <Label htmlFor="campaignStartHour">Hora inicial</Label>
+                                                        <Input
+                                                            id="campaignStartHour"
+                                                            type="number"
+                                                            min={0}
+                                                            max={23}
+                                                            value={data.sendStartHour ?? 9}
+                                                            onChange={(event) =>
+                                                                setData((prev) => ({
+                                                                    ...prev,
+                                                                    sendStartHour: parseNumberInput(
+                                                                        event.target.value,
+                                                                        prev.sendStartHour ?? 9
+                                                                    ),
+                                                                }))
+                                                            }
+                                                        />
+                                                    </div>
+                                                    <div className="space-y-2">
+                                                        <Label htmlFor="campaignEndHour">Hora final</Label>
+                                                        <Input
+                                                            id="campaignEndHour"
+                                                            type="number"
+                                                            min={1}
+                                                            max={24}
+                                                            value={data.sendEndHour ?? 17}
+                                                            onChange={(event) =>
+                                                                setData((prev) => ({
+                                                                    ...prev,
+                                                                    sendEndHour: parseNumberInput(
+                                                                        event.target.value,
+                                                                        prev.sendEndHour ?? 17
+                                                                    ),
+                                                                }))
+                                                            }
+                                                        />
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
                                     </>
                                 )}
