@@ -127,6 +127,21 @@ enum WorkspacePlan {
   ENTERPRISE // €99/mês
 }
 
+// 🆕 Motivo de supressão de e-mail
+enum SuppressionReason {
+  hard_bounce
+  complaint
+  unsubscribe
+  manual
+}
+
+// 🆕 Tipo de bounce classificado no motor de cold mail
+enum BounceType {
+  hard
+  soft
+  unknown
+}
+
 // ==================== USUÁRIO ====================
 
 model User {
@@ -212,6 +227,12 @@ model Workspace {
   sendStartHour     Int     @default(9)
   sendEndHour       Int     @default(17)
   sendJitterMinutes Int     @default(20)
+
+  // 🆕 Detecção de resposta via IMAP
+  imapHost              String?
+  imapPort              Int?
+  replyDetectionEnabled Boolean   @default(false)
+  replyCheckedAt        DateTime?
 
   @@index([userId])
   @@map("workspaces")
@@ -479,6 +500,8 @@ model EmailSend {
   repliedAt    DateTime?
   bouncedAt    DateTime?
   bounceReason String?
+  bounceType   BounceType?
+  messageId    String? // Message-ID gerado no envio, usado para casar respostas
 
   sentAt    DateTime?
   createdAt DateTime  @default(now())
@@ -489,7 +512,26 @@ model EmailSend {
   @@index([leadId])
   @@index([stepId])
   @@index([status])
+  @@index([messageId])
   @@map("email_sends")
+}
+
+// ==================== SUPRESSÃO ====================
+
+/// Lista de supressão de cold mail. `workspaceId` nulo = supressão global
+/// (vale para todos os workspaces). O e-mail é sempre gravado normalizado
+/// (trim + lowercase) por `normalizeEmail`.
+model Suppression {
+  id          String            @id @default(cuid())
+  email       String
+  workspaceId String?
+  reason      SuppressionReason
+  detail      String?
+  createdAt   DateTime          @default(now())
+
+  @@index([email])
+  @@index([workspaceId, email])
+  @@map("suppressions")
 }
 
 // ==================== CALL ====================
