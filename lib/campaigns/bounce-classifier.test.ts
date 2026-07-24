@@ -47,7 +47,18 @@ describe("classifyBounce - falsos positivos de código numérico como substring"
     })
 
     it("não confunde '550' dentro de um queue id estilo Postfix", () => {
-        expect(classifyBounce("Queue id 20260724165503 rejected, please retry")).toBe("soft")
+        // unknown é o veredito correto aqui: sem "retry" na lista de padrões
+        // de texto, a string não bate em nenhum padrão soft. O ponto do teste
+        // continua provado — o '550' dentro do queue id não vira hard.
+        expect(classifyBounce("Queue id 20260724165503 rejected, please retry")).toBe("unknown")
+    })
+
+    it("não confunde código estendido embutido num número pontuado maior (IP)", () => {
+        expect(classifyBounce("route via 192.168.5.1.1 failed")).toBe("unknown")
+    })
+
+    it("não confunde código estendido embutido num número pontuado maior (log)", () => {
+        expect(classifyBounce("log 10.5.1.1.9")).toBe("unknown")
     })
 
     it("reconhece código de status no início de uma linha de continuação em bounce multi-linha", () => {

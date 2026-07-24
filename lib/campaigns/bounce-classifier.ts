@@ -32,7 +32,6 @@ const SOFT_TEXT_PATTERNS = [
     "quota exceeded",
     "insufficient storage",
     "try again",
-    "retry",
     "temporarily",
     "temporary failure",
     "greylist",
@@ -61,10 +60,16 @@ function hasBasicCode(normalized: string, code: string): boolean {
 }
 
 // Código estendido de status SMTP (RFC 3463): formato pontuado (ex: 5.1.1).
-// Usa fronteira de palavra para que "15.1.1" não case como "5.1.1".
+// \b não basta: um "." é caractere não-de-palavra, então "5.1.1" embutido
+// num número pontuado maior (ex: "192.168.5.1.1") ainda satisfaria \b nas
+// duas pontas. Por isso exigimos, via lookaround, que não haja dígito nem
+// ponto colado de nenhum dos lados do código.
+// Limitação aceita: um código isolado em prosa livre (ex: "version 5.1.1
+// of the mail server") é indistinguível de um número de versão — não há
+// regex que resolva essa ambiguidade sem contexto semântico.
 function hasEnhancedCode(normalized: string, code: string): boolean {
     const escaped = code.replace(/\./g, "\\.")
-    const pattern = new RegExp(`\\b${escaped}\\b`)
+    const pattern = new RegExp(`(?<![\\d.])${escaped}(?![\\d.])`)
     return pattern.test(normalized)
 }
 
