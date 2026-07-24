@@ -191,6 +191,24 @@ describe("nextWindowStart", () => {
             nextWindowStart(new Date("2026-10-23T18:00:00Z"), berlinWindow).toISOString()
         ).toBe("2026-10-26T08:00:00.000Z")
     })
+
+    it("não pula nenhum dia válido ao atravessar a virada de horário de verão", () => {
+        // Este caso distingue iteração por dia de calendário de avanço fixo de 24h em
+        // milissegundos: as transições de DST na UE sempre caem num domingo, então uma
+        // janela sem fins de semana nunca observa o artefato de dia pulado. Com todos os
+        // dias liberados, o anchor é sábado 2026-03-28 23:00 em Berlim (ainda CET, UTC+1),
+        // pouco antes da virada de 2026-03-29T01:00:00Z. A implementação antiga (passos
+        // fixos de 24h) somava 24h em milissegundos ao anchor, cruzava a virada e o relógio
+        // local pulava de sábado 23:00 direto para segunda 00:00, sem nunca passar por
+        // domingo. Não "simplifique" este teste para um caso de dia útil — ele deixaria de
+        // provar o comportamento que importa.
+        expect(
+            nextWindowStart(
+                new Date("2026-03-28T22:00:00Z"),
+                { ...berlinWindow, days: [1, 2, 3, 4, 5, 6, 7] }
+            ).toISOString()
+        ).toBe("2026-03-29T07:00:00.000Z")
+    })
 })
 
 describe("applyJitter", () => {
