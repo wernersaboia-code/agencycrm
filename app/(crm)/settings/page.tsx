@@ -3,6 +3,7 @@ import { redirect } from "next/navigation"
 import { cookies } from "next/headers"
 import { getAuthenticatedUser, requireWorkspaceAccess } from "@/lib/auth"
 import { getUserProfile, getAccountStats } from "@/actions/settings"
+import { getSendWindowSettings } from "@/actions/workspace-settings"
 import { prisma } from "@/lib/prisma"
 import { SettingsClient } from "./settings-client"
 
@@ -75,11 +76,16 @@ export default async function SettingsPage() {
             totalCalls: 0,
         }
 
+    // Buscar janela de envio de cold mail
+    const sendWindowResult = await getSendWindowSettings(activeWorkspaceId)
+    const sendWindow = sendWindowResult.success ? sendWindowResult.data ?? null : null
+
     return (
         <SettingsClient
             profile={profile ?? null}
             workspace={workspaceForClient}
             stats={stats}
+            sendWindow={sendWindow}
         />
     )
 }
