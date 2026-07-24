@@ -4,7 +4,7 @@ import { Suspense } from "react"
 import type { ComponentType, ReactNode } from "react"
 import { getFormatter, getTranslations } from "next-intl/server"
 import { prisma } from "@/lib/prisma"
-import { ListPreview } from "@/components/marketplace/list-preview"
+import { ListPreview, toRows } from "@/components/marketplace/list-preview"
 import { BuyNowButton } from "@/components/marketplace/buy-now-button"
 import { AddToCartButton } from "@/components/marketplace/add-to-cart-button"
 import { formatCurrency } from "@/lib/utils"
@@ -80,7 +80,9 @@ export default async function ListPage({ params }: ListPageProps) {
     const dataReviewedAt = list.dataReviewedAt
         ? format.dateTime(new Date(list.dataReviewedAt), dateFormat)
         : null
-    const previewCount = Array.isArray(list.previewData) ? list.previewData.length : 0
+    // Mesmo filtro de toRows() (list-preview.tsx): entradas sem companyName não
+    // viram linha na tabela, então não podem contar para o "amostra de N".
+    const previewCount = toRows(list.previewData).length
     const language = getListLanguage(list.language)
     const listForCart = {
         id: list.id,

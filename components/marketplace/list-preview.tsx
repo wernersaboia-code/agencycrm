@@ -26,7 +26,7 @@ interface PreviewRow {
     email: string
 }
 
-function toRows(previewData: unknown): PreviewRow[] {
+export function toRows(previewData: unknown): PreviewRow[] {
     if (!Array.isArray(previewData)) return []
 
     return previewData
