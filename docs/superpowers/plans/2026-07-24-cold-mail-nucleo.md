@@ -996,6 +996,8 @@ import {
 
 Depois de `smtpSettingsSchema` (linha 41), acrescentar:
 
+Atenção: este projeto usa **zod 4.4.3**, cuja API difere da 3.x em dois pontos que aparecem aqui. Primeiro, `.refine()` não aceita função como segundo argumento inteiro — só o campo `error` pode ser função, e ela recebe o *issue* (com `issue.input` cru). Segundo, toda restrição numérica precisa de mensagem própria em português: sem ela o zod emite o texto padrão em inglês, e como a action devolve `issues[0].message`, esse inglês vaza direto para a tela.
+
 ```ts
 const sendWindowSchema = z
     .object({
@@ -1004,9 +1006,21 @@ const sendWindowSchema = z
         sendDays: z
             .array(z.number().int().min(1).max(7))
             .min(1, "Selecione ao menos um dia"),
-        sendStartHour: z.number().int().min(0).max(23),
-        sendEndHour: z.number().int().min(1).max(24),
-        sendJitterMinutes: z.number().int().min(0).max(120),
+        sendStartHour: z
+            .number()
+            .int()
+            .min(0, "A hora inicial deve estar entre 0 e 23")
+            .max(23, "A hora inicial deve estar entre 0 e 23"),
+        sendEndHour: z
+            .number()
+            .int()
+            .min(1, "A hora final deve estar entre 1 e 24")
+            .max(24, "A hora final deve estar entre 1 e 24"),
+        sendJitterMinutes: z
+            .number()
+            .int()
+            .min(0, "A variação deve estar entre 0 e 120 minutos")
+            .max(120, "A variação deve estar entre 0 e 120 minutos"),
     })
     .refine((data) => data.sendEndHour > data.sendStartHour, {
         message: "O fim da janela precisa ser depois do início",
@@ -1017,15 +1031,17 @@ const sendWindowSchema = z
     // motor adia, o cron volta no mesmo horário e adia de novo, para sempre.
     // Recusar na escrita é a única forma de o usuário descobrir isso na hora
     // de salvar, e não semanas depois com a campanha parada em silêncio.
-    .refine(
-        (data) => windowCoversCronRun(resolveSendWindow(data, null)),
-        (data) => ({
-            message: `Os envios saem uma vez por dia, às ${CRON_SEND_HOUR_UTC}h UTC (${describeCronHourIn(
+    .refine((data) => windowCoversCronRun(resolveSendWindow(data, null)), {
+        path: ["sendStartHour"],
+        // zod v4 não aceita mais uma função para o params inteiro do refine —
+        // só `error` pode ser função, recebendo o issue (com `.input` cru).
+        error: (issue) => {
+            const data = issue.input as { sendTimezone: string }
+            return `Os envios saem uma vez por dia, às ${CRON_SEND_HOUR_UTC}h UTC (${describeCronHourIn(
                 data.sendTimezone
-            )} no fuso escolhido). A janela precisa incluir esse horário, senão nenhum e-mail é enviado.`,
-            path: ["sendStartHour"],
-        })
-    )
+            )} no fuso escolhido). A janela precisa incluir esse horário, senão nenhum e-mail é enviado.`
+        },
+    })
 
 export type SendWindowSettingsData = z.infer<typeof sendWindowSchema>
 ```
