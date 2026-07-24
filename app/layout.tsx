@@ -8,6 +8,8 @@ import { getLocale } from "next-intl/server"
 import { htmlLangFor, dirForLocale, type Locale } from "@/lib/i18n/locales"
 import "./globals.css"
 import { Providers } from "./providers"
+import { JsonLd } from "@/components/seo/json-ld"
+import { buildOrganizationSchema, buildWebSiteSchema } from "@/lib/seo/schema"
 
 export const metadata: Metadata = {
     metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://www.easyprospect.com.br"),
@@ -51,6 +53,8 @@ export default async function RootLayout({
             <link rel="preconnect" href="https://api.paypal.com" />
         </head>
         <body className={`${GeistSans.variable} ${GeistMono.variable} font-sans antialiased`}>
+        <JsonLd data={buildOrganizationSchema()} />
+        <JsonLd data={buildWebSiteSchema()} />
         <a
             href="#main-content"
             className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground"
