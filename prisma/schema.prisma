@@ -75,6 +75,7 @@ enum EmailSendStatus {
   REPLIED // Respondeu
   BOUNCED // Falhou
   COMPLAINED // Marcou como spam
+  SUPPRESSED // 🆕 Bloqueado pela lista de supressão — nunca foi para a rede
 }
 
 enum CallResult {
