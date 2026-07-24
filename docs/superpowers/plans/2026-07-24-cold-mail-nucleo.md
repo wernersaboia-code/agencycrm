@@ -678,11 +678,160 @@ git commit -m "feat(cold-mail): campos de janela de envio em workspace e campaig
 
 **Interfaces:**
 - Consumes: `resolveSendWindow`, `isWithinSendWindow`, `nextWindowStart`, `calculateNextSendAt` de `@/lib/campaigns/send-window` (Task 1); campos do schema (Task 2).
-- Produces: nada consumido por tarefas seguintes (é o ponto de integração).
+- Produces, acrescentados a `lib/campaigns/send-window.ts` e consumidos pela validação da Task 4:
+  - `CRON_SEND_HOUR_UTC: number`
+  - `windowCoversCronRun(window: SendWindow, cronHourUtc?: number): boolean`
+  - `describeCronHourIn(timezone: string, cronHourUtc?: number): string`
 
-- [ ] **Step 1: Trocar o import e remover a função local `calculateNextSendAt`**
+### Contexto obrigatório: por que a Task 3 ganhou um guard
 
-No topo do arquivo, adicionar após o import de `decryptSecret`:
+O cron `process-sequences` roda **uma vez por dia, às 09:00 UTC** (`vercel.json`), e o dono do produto decidiu manter essa frequência. Isso cria uma armadilha: o motor adia para a próxima janela tudo que estiver fora dela, mas o cron só volta 24h depois, **no mesmo horário**. Se a janela do workspace não contiver as 09:00 UTC, o enrollment é adiado, redescoberto e adiado de novo — **para sempre, sem nunca enviar e sem erro visível**.
+
+Não é hipótese: janela das 9h às 17h no fuso `America/Sao_Paulo` equivale a 12:00–20:00 UTC, e a execução das 09:00 UTC cai fora. É a configuração mais natural que existe e ela travaria tudo.
+
+A decisão tomada: **validar na escrita** (Task 4 recusa salvar janela inalcançável) e **logar alto no motor** (esta task), como rede de segurança.
+
+- [ ] **Step 1: Acrescentar o guard puro a `lib/campaigns/send-window.ts`**
+
+Primeiro o teste. Em `lib/campaigns/send-window.test.ts`, acrescentar ao import a nova função e a constante, e adicionar este bloco:
+
+```ts
+describe("windowCoversCronRun", () => {
+    it("aceita janela em UTC que contém o horário do cron", () => {
+        expect(windowCoversCronRun({ ...berlinWindow, timezone: "UTC" })).toBe(true)
+    })
+
+    it("aceita Berlim 9h-17h — 09:00 UTC vira 10h no inverno e 11h no verão", () => {
+        expect(windowCoversCronRun(berlinWindow)).toBe(true)
+    })
+
+    it("recusa Brasília 9h-17h — 09:00 UTC é 06:00 lá, sempre fora", () => {
+        expect(
+            windowCoversCronRun({ ...berlinWindow, timezone: "America/Sao_Paulo" })
+        ).toBe(false)
+    })
+
+    it("recusa janela que só vale em parte do ano por causa do horário de verão", () => {
+        // Berlim 10h-11h: no inverno 09:00 UTC = 10h (dentro), no verão = 11h (fora).
+        // Valer só metade do ano é armadilha — tem que ser recusada.
+        expect(
+            windowCoversCronRun({ ...berlinWindow, startHour: 10, endHour: 11 })
+        ).toBe(false)
+    })
+
+    it("não restringe nada quando a janela está desligada", () => {
+        expect(
+            windowCoversCronRun({
+                ...berlinWindow,
+                enabled: false,
+                timezone: "America/Sao_Paulo",
+            })
+        ).toBe(true)
+    })
+
+    it("aceita um horário de cron diferente do padrão", () => {
+        // 12:00 UTC = 09:00 em Brasília, dentro da janela 9h-17h.
+        expect(
+            windowCoversCronRun({ ...berlinWindow, timezone: "America/Sao_Paulo" }, 12)
+        ).toBe(true)
+    })
+})
+
+describe("describeCronHourIn", () => {
+    it("descreve uma hora só quando o fuso não tem horário de verão", () => {
+        expect(describeCronHourIn("America/Sao_Paulo")).toBe("6h")
+    })
+
+    it("descreve as duas horas quando o fuso tem horário de verão", () => {
+        expect(describeCronHourIn("Europe/Berlin")).toBe("10h no inverno e 11h no verão")
+    })
+
+    it("aceita um horário de cron diferente do padrão", () => {
+        expect(describeCronHourIn("UTC", 15)).toBe("15h")
+    })
+})
+```
+
+Rodar e confirmar que falha:
+
+```bash
+export PATH="/c/Program Files/nodejs:$PATH" && npm test -- lib/campaigns/send-window.test.ts
+```
+
+Esperado: FAIL — `windowCoversCronRun is not a function` (ou erro de import).
+
+Depois implementar, no fim de `lib/campaigns/send-window.ts`:
+
+```ts
+/**
+ * Hora UTC em que o cron de envio roda (ver `crons` em vercel.json). Uma
+ * execução por dia — mudar aqui e no vercel.json juntos.
+ */
+export const CRON_SEND_HOUR_UTC = 9
+
+/**
+ * Responde se uma janela é alcançável pelo cron diário.
+ *
+ * Com uma única execução por dia, sempre no mesmo horário UTC, uma janela que
+ * não contenha esse instante nunca envia nada: o motor adia, o cron volta no
+ * mesmo horário, adia de novo, indefinidamente.
+ *
+ * Testa dois instantes — um no inverno e um no verão do hemisfério norte —
+ * porque o horário local do cron muda com o horário de verão do fuso escolhido.
+ * Exigimos que os DOIS estejam dentro da janela: valer só metade do ano é a
+ * mesma armadilha, com um atraso de seis meses.
+ */
+export function windowCoversCronRun(
+    window: SendWindow,
+    cronHourUtc: number = CRON_SEND_HOUR_UTC
+): boolean {
+    if (!window.enabled) {
+        return true
+    }
+
+    const probes = [
+        new Date(Date.UTC(2026, 0, 15, cronHourUtc, 0)),
+        new Date(Date.UTC(2026, 6, 15, cronHourUtc, 0)),
+    ]
+
+    return probes.every((probe) => {
+        const { hour } = getZonedParts(probe, window.timezone)
+        return hour >= window.startHour && hour < window.endHour
+    })
+}
+
+/**
+ * Texto curto dizendo que horas é a execução do cron no fuso informado, para a
+ * mensagem de erro da validação. Fusos com horário de verão têm duas respostas.
+ */
+export function describeCronHourIn(
+    timezone: string,
+    cronHourUtc: number = CRON_SEND_HOUR_UTC
+): string {
+    const winter = getZonedParts(
+        new Date(Date.UTC(2026, 0, 15, cronHourUtc, 0)),
+        timezone
+    ).hour
+    const summer = getZonedParts(
+        new Date(Date.UTC(2026, 6, 15, cronHourUtc, 0)),
+        timezone
+    ).hour
+
+    if (winter === summer) {
+        return `${winter}h`
+    }
+
+    return `${winter}h no inverno e ${summer}h no verão`
+}
+```
+
+Note que `windowCoversCronRun` olha só a **hora**: o cron roda todo dia, então os dias da semana permitidos não afetam se a janela é alcançável — apenas em quais dias ela dispara.
+
+Rodar de novo e confirmar PASS (34 testes no arquivo).
+
+- [ ] **Step 2: Trocar o import e remover a função local `calculateNextSendAt`**
+
+No topo de `app/api/cron/process-sequences/route.ts`, adicionar após o import de `decryptSecret`:
 
 ```ts
 import {
@@ -690,6 +839,8 @@ import {
     isWithinSendWindow,
     nextWindowStart,
     calculateNextSendAt,
+    windowCoversCronRun,
+    CRON_SEND_HOUR_UTC,
 } from "@/lib/campaigns/send-window"
 ```
 
@@ -702,7 +853,7 @@ import type { CampaignEnrollment, CampaignStep, StepCondition } from "@prisma/cl
 import type { CampaignEnrollment, StepCondition } from "@prisma/client"
 ```
 
-- [ ] **Step 2: Resolver a janela e adiar o que está fora dela**
+- [ ] **Step 3: Resolver a janela e adiar o que está fora dela**
 
 Dentro do `for (const enrollment of pendingEnrollments)`, **logo depois** de `const { campaign, lead } = enrollment` (linha 88), inserir:
 
@@ -718,14 +869,29 @@ Dentro do `for (const enrollment of pendingEnrollments)`, **logo depois** de `co
                         data: { nextSendAt: deferredTo },
                     })
                     deferred++
-                    console.log(
-                        `[Cron] Fora da janela de envio - enrollment ${enrollment.id} adiado para ${deferredTo.toISOString()}`
-                    )
+
+                    // Este cron roda uma vez por dia, sempre no mesmo horário.
+                    // Se a janela não cobre esse instante, o adiamento acima vai
+                    // se repetir todo dia e o enrollment NUNCA envia. A UI
+                    // valida isso na hora de salvar (Task 4); aqui é a rede de
+                    // segurança para configuração que escapou por outro caminho.
+                    if (!windowCoversCronRun(sendWindow)) {
+                        console.error(
+                            `[Cron] JANELA INALCANÇÁVEL: o workspace ${campaign.workspaceId} tem janela ` +
+                            `${sendWindow.startHour}h-${sendWindow.endHour}h em ${sendWindow.timezone}, que nunca ` +
+                            `contém a execução diária das ${CRON_SEND_HOUR_UTC}h UTC. O enrollment ${enrollment.id} ` +
+                            `não será enviado enquanto a janela não for corrigida.`
+                        )
+                    } else {
+                        console.log(
+                            `[Cron] Fora da janela de envio - enrollment ${enrollment.id} adiado para ${deferredTo.toISOString()}`
+                        )
+                    }
                     continue
                 }
 ```
 
-- [ ] **Step 3: Declarar o contador `deferred` e incluí-lo no resumo**
+- [ ] **Step 4: Declarar o contador `deferred` e incluí-lo no resumo**
 
 Junto dos outros contadores (linha ~79):
 
@@ -752,7 +918,7 @@ E no objeto `summary` (linha ~349):
         }
 ```
 
-- [ ] **Step 4: Passar a janela para as duas chamadas de `calculateNextSendAt`**
+- [ ] **Step 5: Passar a janela para as duas chamadas de `calculateNextSendAt`**
 
 Há duas ocorrências (condição de step não atendida, linha ~151; e após envio bem-sucedido, linha ~288). Em ambas, trocar:
 
@@ -766,7 +932,7 @@ por:
                         const nextSendAt = calculateNextSendAt(now, nextStep, sendWindow)
 ```
 
-- [ ] **Step 5: Verificar tipos e rodar a suíte**
+- [ ] **Step 6: Verificar tipos e rodar a suíte**
 
 ```bash
 export PATH="/c/Program Files/nodejs:$PATH" && npx tsc --noEmit && npm test
@@ -774,7 +940,7 @@ export PATH="/c/Program Files/nodejs:$PATH" && npx tsc --noEmit && npm test
 
 Esperado: `tsc` sem erros; testes PASS.
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 7: Commit**
 
 ```bash
 git add app/api/cron/process-sequences/route.ts
@@ -792,7 +958,16 @@ git commit -m "feat(cold-mail): motor de sequencias respeita janela de envio e j
 - Modify: `app/(crm)/settings/page.tsx`
 
 **Interfaces:**
-- Consumes: campos do `Workspace` (Task 2); `DEFAULT_SEND_DAYS` de `@/lib/campaigns/send-window`.
+- Consumes: campos do `Workspace` (Task 2); de `@/lib/campaigns/send-window`: `DEFAULT_SEND_DAYS`, `resolveSendWindow`, `windowCoversCronRun`, `describeCronHourIn`, `CRON_SEND_HOUR_UTC` (as três últimas criadas na Task 3). Acrescentar ao topo de `actions/workspace-settings.ts`:
+
+```ts
+import {
+    resolveSendWindow,
+    windowCoversCronRun,
+    describeCronHourIn,
+    CRON_SEND_HOUR_UTC,
+} from "@/lib/campaigns/send-window"
+```
 - Produces:
   - `getSendWindowSettings(workspaceId: string): Promise<ActionResult<SendWindowSettingsData>>`
   - `updateSendWindowSettings(workspaceId: string, data: SendWindowSettingsData): Promise<ActionResult>`
@@ -818,6 +993,20 @@ const sendWindowSchema = z
         message: "O fim da janela precisa ser depois do início",
         path: ["sendEndHour"],
     })
+    // Guard crítico: o cron de envio roda uma vez por dia, sempre no mesmo
+    // horário UTC. Janela que não contenha esse instante nunca envia nada — o
+    // motor adia, o cron volta no mesmo horário e adia de novo, para sempre.
+    // Recusar na escrita é a única forma de o usuário descobrir isso na hora
+    // de salvar, e não semanas depois com a campanha parada em silêncio.
+    .refine(
+        (data) => windowCoversCronRun(resolveSendWindow(data, null)),
+        (data) => ({
+            message: `Os envios saem uma vez por dia, às ${CRON_SEND_HOUR_UTC}h UTC (${describeCronHourIn(
+                data.sendTimezone
+            )} no fuso escolhido). A janela precisa incluir esse horário, senão nenhum e-mail é enviado.`,
+            path: ["sendStartHour"],
+        })
+    )
 
 export type SendWindowSettingsData = z.infer<typeof sendWindowSchema>
 ```
@@ -933,6 +1122,10 @@ import {
     updateSendWindowSettings,
     type SendWindowSettingsData,
 } from "@/actions/workspace-settings"
+import {
+    CRON_SEND_HOUR_UTC,
+    describeCronHourIn,
+} from "@/lib/campaigns/send-window"
 
 // Fusos oferecidos na UI. Lista curta e explícita — cobre operação BR e público
 // europeu, que é o caso real do produto.
@@ -1002,6 +1195,12 @@ export function SendWindowSettings({ workspaceId, initial }: SendWindowSettingsP
                 </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
+                <p className="rounded-md border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900 dark:border-amber-900/40 dark:bg-amber-950/30 dark:text-amber-200">
+                    Os envios são processados <strong>uma vez por dia</strong>, às{" "}
+                    {CRON_SEND_HOUR_UTC}h UTC ({describeCronHourIn(form.sendTimezone)} no
+                    fuso selecionado). A janela precisa incluir esse horário — se não
+                    incluir, nenhum e-mail é enviado.
+                </p>
                 <div className="flex items-center justify-between">
                     <div>
                         <Label htmlFor="sendWindowEnabled">Respeitar a janela</Label>
@@ -1177,7 +1376,13 @@ Esperado: sem erros de tipo; testes PASS.
 
 - [ ] **Step 5: Verificar visualmente**
 
-Subir o dev server pelo `.claude/launch.json` (porta 3001), abrir `/settings?tab=email` e conferir que o cartão "Janela de envio" aparece, que desmarcar todos os dias e salvar devolve o erro "Selecione ao menos um dia", e que salvar 9→17 seg-sex persiste após recarregar.
+Subir o dev server pelo `.claude/launch.json` (porta 3001), abrir `/settings?tab=email` e conferir:
+
+1. O cartão "Janela de envio" aparece, com o aviso de que os envios saem uma vez por dia.
+2. Desmarcar todos os dias e salvar devolve "Selecione ao menos um dia".
+3. Salvar com fuso `UTC` e 9→17 persiste após recarregar.
+4. **O guard do cron funciona:** trocar o fuso para `America/Sao_Paulo` mantendo 9→17 e salvar **deve ser recusado**, com a mensagem explicando que os envios saem às 9h UTC (6h em Brasília) e que a janela precisa incluir esse horário. Ajustar para 6→17 no mesmo fuso deve passar.
+5. O texto de aviso acompanha o fuso selecionado (trocar o select muda a hora citada entre parênteses).
 
 - [ ] **Step 6: Commit**
 
