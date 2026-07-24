@@ -29,6 +29,12 @@ export async function generateMetadata({
             title: t("title"),
             description: t("description"),
             locale: ogLocaleFor(locale as Locale),
+            // O merge de metadata do Next é raso: declarar `openGraph` aqui
+            // substitui o do layout raiz inteiro, levando junto o `images`.
+            // Sem esta linha a home é compartilhada sem imagem no LinkedIn,
+            // WhatsApp e Slack — o `twitter:image` só sobrevive porque esta
+            // página não declara um bloco `twitter`.
+            images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
         },
     }
 }
