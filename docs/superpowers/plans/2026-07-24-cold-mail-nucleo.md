@@ -1742,24 +1742,33 @@ Esperado: FAIL com `Failed to resolve import "./bounce-classifier"`.
 
 - [ ] **Step 3: Implementar `lib/campaigns/bounce-classifier.ts`**
 
+> **Correção aplicada durante a execução (2026-07-24).** A primeira versão deste passo
+> guardava tudo numa lista plana de strings e casava com `includes()`. Três rodadas de
+> review derrubaram essa abordagem: os códigos SMTP de três dígitos casavam **dentro de
+> qualquer número** — `550` aparece em `45500ms`, em `5510000 bytes` e num queue id do
+> Postfix como `20260724165503`; e o código estendido `5.1.1` casava dentro de
+> `192.168.5.1.1` e de `openssh_5.1.1p1`. Todos esses viravam `hard`, que alimenta
+> supressão **permanente**. O texto abaixo já é a versão corrigida — não voltar para
+> `includes()` nos códigos.
+
+A regra que separa as duas famílias: **frase de texto** casa por substring (é linguagem
+natural, e `"mailbox full"` não aparece por acidente); **código numérico** casa por
+estrutura, porque três dígitos aparecem em qualquer lugar.
+
 ```ts
 // lib/campaigns/bounce-classifier.ts
 
 /**
  * Classificação de bounce a partir da mensagem de erro do servidor SMTP.
  * Puro e conservador: só marca `hard` diante de sinal explícito de destinatário
- * inexistente/recusado, porque um `hard` alimenta a supressão permanente.
+ * inexistente/recusado, porque um `hard` alimenta a supressão permanente — um
+ * `hard` falso destrói um prospect real e é praticamente irreversível, enquanto
+ * um `soft` falso custa apenas uma tentativa desperdiçada.
  */
 
 export type BounceType = "hard" | "soft" | "unknown"
 
-const HARD_PATTERNS = [
-    "5.1.1",
-    "5.1.10",
-    "5.4.1",
-    "550",
-    "551",
-    "553",
+const HARD_TEXT_PATTERNS = [
     "user unknown",
     "unknown user",
     "no such user",
@@ -1776,12 +1785,7 @@ const HARD_PATTERNS = [
     "user not found",
 ]
 
-const SOFT_PATTERNS = [
-    "4.2.2",
-    "421",
-    "450",
-    "451",
-    "452",
+const SOFT_TEXT_PATTERNS = [
     "mailbox full",
     "over quota",
     "quota exceeded",
@@ -1797,6 +1801,43 @@ const SOFT_PATTERNS = [
     "too many",
 ]
 
+const HARD_BASIC_CODES = ["550", "551", "553"]
+const HARD_ENHANCED_CODES = ["5.1.1", "5.1.10", "5.4.1"]
+
+const SOFT_BASIC_CODES = ["421", "450", "451", "452"]
+const SOFT_ENHANCED_CODES = ["4.2.2"]
+
+// Código básico de status SMTP (RFC 5321): três dígitos no início da mensagem
+// OU no início de uma linha, seguidos de espaço, hífen ou fim de string.
+// Espaços/tabs iniciais são tolerados antes do código.
+function hasBasicCode(normalized: string, code: string): boolean {
+    const pattern = new RegExp(`(^|\\n)[ \\t]*${code}(?:[ \\t\\-]|$)`, "m")
+    return pattern.test(normalized)
+}
+
+// Código estendido (RFC 3463). O lookaround exclui letra, dígito, underscore e
+// ponto dos dois lados; sem isso o código casa dentro de outro número pontuado
+// (`192.168.5.1.1`) ou colado a texto (`v5.1.1`, `openssh_5.1.1p1`).
+// LIMITAÇÃO ACEITA: código isolado entre espaços é indistinguível de número de
+// versão — `"version 5.1.1 of the mail server"` classifica como `hard`. Não se
+// resolve com regex; exigiria interpretar o contexto da frase.
+function hasEnhancedCode(normalized: string, code: string): boolean {
+    const escaped = code.replace(/\./g, "\\.")
+    const pattern = new RegExp(`(?<![\\w.])${escaped}(?![\\w.])`)
+    return pattern.test(normalized)
+}
+
+function matchesAnyCode(
+    normalized: string,
+    basicCodes: string[],
+    enhancedCodes: string[]
+): boolean {
+    return (
+        basicCodes.some((code) => hasBasicCode(normalized, code)) ||
+        enhancedCodes.some((code) => hasEnhancedCode(normalized, code))
+    )
+}
+
 export function classifyBounce(reason: string | null | undefined): BounceType {
     if (!reason) {
         return "unknown"
@@ -1809,17 +1850,37 @@ export function classifyBounce(reason: string | null | undefined): BounceType {
     }
 
     // Hard vence: na dúvida entre os dois, o sinal mais grave manda.
-    if (HARD_PATTERNS.some((pattern) => normalized.includes(pattern))) {
+    if (
+        HARD_TEXT_PATTERNS.some((pattern) => normalized.includes(pattern)) ||
+        matchesAnyCode(normalized, HARD_BASIC_CODES, HARD_ENHANCED_CODES)
+    ) {
         return "hard"
     }
 
-    if (SOFT_PATTERNS.some((pattern) => normalized.includes(pattern))) {
+    if (
+        SOFT_TEXT_PATTERNS.some((pattern) => normalized.includes(pattern)) ||
+        matchesAnyCode(normalized, SOFT_BASIC_CODES, SOFT_ENHANCED_CODES)
+    ) {
         return "soft"
     }
 
     return "unknown"
 }
 ```
+
+Além dos casos do Step 1, cobrir com testes os falsos positivos que motivaram a
+correção — nenhum deles pode dar `hard`:
+`"Delivery failed: connection timed out after 45500ms"`,
+`"Message size 5510000 bytes exceeds limit, mailbox full"`,
+`"Anti-spam block Ref 5530293, please contact administrator"`,
+`"Queue id 20260724165503 rejected, please retry"`,
+`"route via 192.168.5.1.1 failed"`, `"log 10.5.1.1.9"`,
+`"v5.1.1 rejected"`, `"5.1.1a build failed"` e `"openssh_5.1.1p1 protocol error"`.
+
+E provar que o casamento legítimo continua valendo: `"550 5.1.1 User unknown"`,
+`"  550 USER UNKNOWN  "`, `"5.1.1, aborting"`, `"(5.1.1)"`, código no começo e no
+fim da string, e `5.1.10` casando o próprio padrão sem casar o de `5.1.1`.
+
 
 - [ ] **Step 4: Rodar o teste e confirmar que passa**
 
