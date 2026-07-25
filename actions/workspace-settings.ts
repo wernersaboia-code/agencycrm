@@ -13,6 +13,7 @@ import {
     describeCronHourIn,
     CRON_SEND_HOUR_UTC,
 } from "@/lib/campaigns/send-window"
+import { addSuppression, removeSuppression } from "@/lib/campaigns/suppression"
 
 // ============================================================
 // TIPOS
@@ -453,5 +454,103 @@ export async function updateSendWindowSettings(
     } catch (error) {
         console.error("Erro ao atualizar janela de envio:", error)
         return { success: false, error: "Erro ao atualizar janela de envio." }
+    }
+}
+
+// ============================================================
+// MUTATIONS - LISTA DE SUPRESSÃO
+// ============================================================
+
+export interface SuppressionRow {
+    id: string
+    email: string
+    reason: string
+    detail: string | null
+    createdAt: string
+    isGlobal: boolean
+}
+
+/**
+ * Lista as supressões que afetam este workspace (as próprias e as globais).
+ */
+export async function listWorkspaceSuppressions(
+    workspaceId: string
+): Promise<ActionResult<SuppressionRow[]>> {
+    try {
+        const canAccessWorkspace = await hasWorkspaceAccess(workspaceId)
+        if (!canAccessWorkspace) {
+            return { success: false, error: "Workspace não encontrado" }
+        }
+
+        const rows = await prisma.suppression.findMany({
+            where: { OR: [{ workspaceId: null }, { workspaceId }] },
+            orderBy: { createdAt: "desc" },
+            take: 200,
+        })
+
+        return {
+            success: true,
+            data: rows.map((row) => ({
+                id: row.id,
+                email: row.email,
+                reason: row.reason,
+                detail: row.detail,
+                createdAt: row.createdAt.toISOString(),
+                isGlobal: row.workspaceId === null,
+            })),
+        }
+    } catch (error) {
+        console.error("Erro ao listar supressões:", error)
+        return { success: false, error: "Erro ao listar supressões" }
+    }
+}
+
+export async function addWorkspaceSuppression(
+    workspaceId: string,
+    email: string
+): Promise<ActionResult> {
+    try {
+        const canAccessWorkspace = await hasWorkspaceAccess(workspaceId)
+        if (!canAccessWorkspace) {
+            return { success: false, error: "Workspace não encontrado" }
+        }
+
+        const parsed = z.string().email("E-mail inválido").safeParse(email.trim())
+        if (!parsed.success) {
+            return { success: false, error: parsed.error.issues[0].message }
+        }
+
+        await addSuppression(prisma, {
+            email: parsed.data,
+            workspaceId,
+            reason: "manual",
+        })
+
+        revalidatePath("/settings")
+        return { success: true }
+    } catch (error) {
+        console.error("Erro ao adicionar supressão:", error)
+        return { success: false, error: "Erro ao adicionar supressão" }
+    }
+}
+
+export async function deleteWorkspaceSuppression(
+    workspaceId: string,
+    id: string
+): Promise<ActionResult> {
+    try {
+        const canAccessWorkspace = await hasWorkspaceAccess(workspaceId)
+        if (!canAccessWorkspace) {
+            return { success: false, error: "Workspace não encontrado" }
+        }
+
+        // removeSuppression filtra por workspaceId — supressão global não sai daqui.
+        await removeSuppression(prisma, id, workspaceId)
+
+        revalidatePath("/settings")
+        return { success: true }
+    } catch (error) {
+        console.error("Erro ao remover supressão:", error)
+        return { success: false, error: "Erro ao remover supressão" }
     }
 }
