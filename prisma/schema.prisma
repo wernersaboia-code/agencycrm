@@ -474,6 +474,11 @@ enum PurchaseStatus {
   refunded
 }
 
+enum PaymentProvider {
+  paypal
+  stripe
+}
+
 // ==================== EMAIL SEND ====================
 
 model EmailSend {
@@ -685,10 +690,13 @@ model Purchase {
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
-  // Pagamento PayPal
-  paypalOrderId String?        @unique
-  paypalPayerId String?
-  status        PurchaseStatus @default(pending)
+  // Pagamento (PayPal ou Stripe — provider define quais campos valem)
+  provider              PaymentProvider @default(paypal)
+  paypalOrderId         String?         @unique
+  paypalPayerId         String?
+  stripeSessionId       String?         @unique
+  stripePaymentIntentId String?
+  status                PurchaseStatus  @default(pending)
 
   // Valores
   subtotal Decimal @db.Decimal(10, 2)

@@ -1,15 +1,19 @@
 // lib/checkout/fulfillment.ts
 //
-// Lógica compartilhada de "fulfillment" de uma compra do PayPal.
-// É chamada por dois caminhos que podem correr em paralelo:
-//   1. /api/checkout/capture-order  (frontend, logo após o pagamento)
-//   2. /api/checkout/webhook        (PayPal, evento PAYMENT.CAPTURE.COMPLETED)
+// Lógica compartilhada de "fulfillment" de uma compra do marketplace, válida
+// para os dois provedores de pagamento (PayPal e Stripe).
+// É chamada por caminhos que podem correr em paralelo:
+//   1. /api/checkout/capture-order            (PayPal, frontend após o pagamento)
+//   2. /api/checkout/webhook                  (PayPal, PAYMENT.CAPTURE.COMPLETED)
+//   3. /api/checkout/stripe/confirm-session   (Stripe, frontend ao voltar)
+//   4. /api/checkout/stripe/webhook           (Stripe, checkout.session.completed)
 //
 // A transição pending -> paid é feita com um updateMany condicional, de modo
 // que apenas UM dos caminhos efetive a compra e dispare o e-mail de
 // confirmação, mesmo que ambos cheguem ao mesmo tempo (idempotência).
 
 import { prisma } from "@/lib/prisma"
+import type { PrismaClient } from "@prisma/client"
 import { generatePurchaseAccessToken, generateMagicLinkUrl } from "@/lib/auth/magic-link"
 import { sendPurchaseConfirmationEmail } from "@/lib/email/purchase"
 
@@ -20,6 +24,8 @@ export type PayerInfo = {
     email?: string | null
     name?: string | null
 }
+
+export type PaymentProviderInput = "paypal" | "stripe"
 
 export type FulfillOutcome =
     | { status: "fulfilled"; purchaseId: string; accessUrl: string }
@@ -43,7 +49,8 @@ export function amountMatches(
 }
 
 /**
- * Efetiva uma compra a partir do orderId do PayPal, de forma idempotente.
+ * Efetiva uma compra de forma idempotente, a partir do identificador do
+ * provedor de pagamento (order do PayPal ou session do Stripe).
  *
  * - Se a compra não existe: `not_found`.
  * - Se já está paga (ou em estado terminal): `already_fulfilled` (no-op).
@@ -51,16 +58,29 @@ export function amountMatches(
  * - Se efetivou agora: `fulfilled` e dispara o e-mail de confirmação.
  * - Se outro processo efetivou no meio da corrida: `already_fulfilled` sem
  *   reenviar e-mail.
+ *
+ * O `db` vem por parâmetro (padrão dos helpers de domínio) para a função ser
+ * testável sem banco real.
  */
-export async function fulfillPurchaseByOrderId(params: {
-    paypalOrderId: string
-    capturedAmount: CapturedAmount | null
-    payer?: PayerInfo
-}): Promise<FulfillOutcome> {
-    const { paypalOrderId, capturedAmount, payer } = params
+export async function fulfillPurchase(
+    db: PrismaClient,
+    params: {
+        provider: PaymentProviderInput
+        /** paypalOrderId (PayPal) ou stripeSessionId (Stripe). */
+        providerOrderId: string
+        capturedAmount: CapturedAmount | null
+        payer?: PayerInfo
+        /** paymentIntentId (Stripe) — gravado na efetivação. */
+        providerPaymentId?: string | null
+    }
+): Promise<FulfillOutcome> {
+    const { provider, providerOrderId, capturedAmount, payer, providerPaymentId } = params
 
-    const purchase = await prisma.purchase.findUnique({
-        where: { paypalOrderId },
+    const purchase = await db.purchase.findUnique({
+        where:
+            provider === "paypal"
+                ? { paypalOrderId: providerOrderId }
+                : { stripeSessionId: providerOrderId },
         select: {
             id: true,
             userId: true,
@@ -84,12 +104,17 @@ export async function fulfillPurchaseByOrderId(params: {
     }
 
     // Transição condicional: só efetiva quem encontrar o registro ainda pending.
-    const updated = await prisma.purchase.updateMany({
+    const updated = await db.purchase.updateMany({
         where: { id: purchase.id, status: "pending" },
         data: {
             status: "paid",
             paidAt: new Date(),
-            ...(payer?.payerId ? { paypalPayerId: payer.payerId } : {}),
+            ...(provider === "paypal" && payer?.payerId
+                ? { paypalPayerId: payer.payerId }
+                : {}),
+            ...(provider === "stripe" && providerPaymentId
+                ? { stripePaymentIntentId: providerPaymentId }
+                : {}),
             ...(payer?.email ? { buyerEmail: payer.email } : {}),
             ...(payer?.name ? { buyerName: payer.name } : {}),
         },
@@ -103,7 +128,7 @@ export async function fulfillPurchaseByOrderId(params: {
     const accessToken = await generatePurchaseAccessToken(purchase.userId, purchase.id, 24)
     const accessUrl = generateMagicLinkUrl(accessToken)
 
-    // Assíncrono — não bloqueia a resposta ao PayPal/cliente.
+    // Assíncrono — não bloqueia a resposta ao provedor/cliente.
     sendPurchaseConfirmationEmail({
         userId: purchase.userId,
         purchaseId: purchase.id,
@@ -114,4 +139,22 @@ export async function fulfillPurchaseByOrderId(params: {
     })
 
     return { status: "fulfilled", purchaseId: purchase.id, accessUrl }
+}
+
+/**
+ * Atalho para o caminho PayPal, mantido para os callers existentes
+ * (capture-order e webhook do PayPal). Código novo deve chamar
+ * `fulfillPurchase` diretamente com o provider explícito.
+ */
+export async function fulfillPurchaseByOrderId(params: {
+    paypalOrderId: string
+    capturedAmount: CapturedAmount | null
+    payer?: PayerInfo
+}): Promise<FulfillOutcome> {
+    return fulfillPurchase(prisma, {
+        provider: "paypal",
+        providerOrderId: params.paypalOrderId,
+        capturedAmount: params.capturedAmount,
+        payer: params.payer,
+    })
 }
