@@ -3,6 +3,7 @@ const publicEnv = {
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
     NEXT_PUBLIC_PAYPAL_CLIENT_ID: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID,
+    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
 } as const
 
 type PublicEnvName = keyof typeof publicEnv
@@ -44,6 +45,15 @@ export function getPublicPaypalClientId() {
 
 export function getOptionalPublicPaypalClientId() {
     return publicEnv.NEXT_PUBLIC_PAYPAL_CLIENT_ID || ""
+}
+
+/**
+ * Presença da publishable key é o sinal público de "Stripe habilitado" para a
+ * UI (o checkout hospedado não usa a pk no client, mas manter o par de chaves
+ * documentado evita configuração pela metade).
+ */
+export function getOptionalPublicStripePublishableKey() {
+    return publicEnv.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || ""
 }
 
 export function getServiceSupabaseConfig() {
