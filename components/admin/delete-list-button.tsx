@@ -5,6 +5,7 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Trash2, Loader2 } from "lucide-react"
 import { toast } from "sonner"
+import { useTranslations } from "next-intl"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -28,6 +29,7 @@ interface DeleteListButtonProps {
 
 export function DeleteListButton({ listId, listName }: DeleteListButtonProps) {
     const router = useRouter()
+    const t = useTranslations("admin.components.deleteList")
     const [isDeleting, setIsDeleting] = useState(false)
     const [open, setOpen] = useState(false)
 
@@ -36,12 +38,12 @@ export function DeleteListButton({ listId, listName }: DeleteListButtonProps) {
 
         try {
             await deleteList(listId)
-            toast.success("Lista excluída com sucesso!")
+            toast.success(t("toastSuccess"))
             setOpen(false)
             router.refresh()
         } catch (error) {
             console.error("Erro ao excluir lista:", error)
-            toast.error("Erro ao excluir lista")
+            toast.error(t("toastError"))
         } finally {
             setIsDeleting(false)
         }
@@ -53,7 +55,7 @@ export function DeleteListButton({ listId, listName }: DeleteListButtonProps) {
                 <Button
                     variant="ghost"
                     size="icon"
-                    title="Excluir"
+                    title={t("button")}
                     className="text-muted-foreground hover:text-destructive"
                 >
                     <Trash2 className="h-4 w-4" />
@@ -61,16 +63,16 @@ export function DeleteListButton({ listId, listName }: DeleteListButtonProps) {
             </AlertDialogTrigger>
             <AlertDialogContent>
                 <AlertDialogHeader>
-                    <AlertDialogTitle>Excluir lista?</AlertDialogTitle>
+                    <AlertDialogTitle>{t("title")}</AlertDialogTitle>
                     <AlertDialogDescription>
-                        Tem certeza que deseja excluir a lista <strong>&quot;{listName}&quot;</strong>?
+                        {t.rich("description", { name: () => <strong>{listName}</strong>, strong: (chunks) => <strong>{chunks}</strong> })}
                         <br />
                         <br />
-                        Esta ação não pode ser desfeita. Todos os leads desta lista serão excluídos permanentemente.
+                        {t("warning")}
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel disabled={isDeleting}>Cancelar</AlertDialogCancel>
+                    <AlertDialogCancel disabled={isDeleting}>{t("cancel")}</AlertDialogCancel>
                     <AlertDialogAction
                         onClick={handleDelete}
                         disabled={isDeleting}
@@ -79,12 +81,12 @@ export function DeleteListButton({ listId, listName }: DeleteListButtonProps) {
                         {isDeleting ? (
                             <>
                                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                                Excluindo...
+                                {t("deleting")}
                             </>
                         ) : (
                             <>
                                 <Trash2 className="h-4 w-4 mr-2" />
-                                Excluir Lista
+                                {t("confirm")}
                             </>
                         )}
                     </AlertDialogAction>

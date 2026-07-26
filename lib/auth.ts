@@ -17,6 +17,7 @@ export interface AuthenticatedUser {
 export interface AuthenticatedDbUser extends AuthenticatedUser {
     role: UserRole
     status: UserStatus
+    language: string | null
     activeWorkspaceId: string | null
 }
 
@@ -98,6 +99,7 @@ export async function getAuthenticatedDbUser(): Promise<AuthenticatedDbUser | nu
             name: true,
             role: true,
             status: true,
+            language: true,
             activeWorkspaceId: true,
         }
     })
@@ -117,6 +119,7 @@ export async function getAuthenticatedDbUser(): Promise<AuthenticatedDbUser | nu
                 name: true,
                 role: true,
                 status: true,
+                language: true,
                 activeWorkspaceId: true,
             }
         })

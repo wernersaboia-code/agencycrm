@@ -21,6 +21,7 @@
             "errLinkExpired": "Dieser Bestätigungslink ist abgelaufen oder wurde bereits verwendet. Melden Sie sich mit Ihrem Passwort an oder registrieren Sie sich erneut.",
             "errLinkInvalid": "Dieser Bestätigungslink konnte nicht validiert werden. Versuchen Sie, sich mit Ihrem Passwort anzumelden.",
             "errLinkIncomplete": "Dieser Bestätigungslink ist unvollständig. Öffnen Sie ihn direkt aus der E-Mail, ohne ihn zu kopieren.",
+            "errRateLimit": "Zu viele Anmeldeversuche. Bitte warten Sie eine Minute und versuchen Sie es erneut.",
             "errGeneric": "Die Bestätigung konnte nicht abgeschlossen werden.",
             "areas": {
                 "purchases": { "title": "Meine Einkäufe", "shortTitle": "Einkäufe ansehen", "description": "Gekaufte Listen, Bestellungen und Datei-Downloads.", "button": "Zu Meine Einkäufe" },

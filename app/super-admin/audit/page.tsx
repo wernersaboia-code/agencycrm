@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { getTranslations } from "next-intl/server"
 import { getAuditLogs } from "@/actions/admin/audit"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
@@ -11,6 +12,9 @@ export default async function AuditPage({
 }: {
     searchParams: Promise<{ page?: string }>
 }) {
+    const t = await getTranslations("admin.audit")
+    const tc = await getTranslations("admin.common")
+
     const { page } = await searchParams
     const currentPage = Math.max(1, Number(page) || 1)
     const { items, total } = await getAuditLogs({ page: currentPage })
@@ -20,25 +24,25 @@ export default async function AuditPage({
     return (
         <div className="space-y-6">
             <div>
-                <h1 className="text-3xl font-bold tracking-tight">Auditoria</h1>
+                <h1 className="text-3xl font-bold tracking-tight">{t("title")}</h1>
                 <p className="text-muted-foreground">
-                    Registro das ações administrativas sensíveis ({total} eventos).
+                    {t("subtitle", { total })}
                 </p>
             </div>
             <Card>
                 <CardHeader>
-                    <CardTitle>Eventos recentes</CardTitle>
+                    <CardTitle>{t("recentEvents")}</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <div className="overflow-x-auto">
                         <table className="w-full text-sm">
                             <thead>
                                 <tr className="text-left text-muted-foreground">
-                                    <th className="py-2">Data</th>
-                                    <th>Ator</th>
-                                    <th>Ação</th>
-                                    <th>Alvo</th>
-                                    <th>IP</th>
+                                    <th className="py-2">{t("colDate")}</th>
+                                    <th>{t("colActor")}</th>
+                                    <th>{t("colAction")}</th>
+                                    <th>{t("colTarget")}</th>
+                                    <th>{t("colIp")}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -60,7 +64,7 @@ export default async function AuditPage({
                     </div>
                     {items.length === 0 && (
                         <p className="py-6 text-center text-muted-foreground">
-                            Nenhum evento registrado ainda.
+                            {t("empty")}
                         </p>
                     )}
                     {totalPages > 1 && (
@@ -73,10 +77,10 @@ export default async function AuditPage({
                                         : "text-foreground hover:underline"
                                 }
                             >
-                                ← Anterior
+                                {t("previous")}
                             </Link>
                             <span className="text-muted-foreground">
-                                Página {currentPage} de {totalPages}
+                                {tc("pageXofY", { current: currentPage, total: totalPages })}
                             </span>
                             <Link
                                 href={`/super-admin/audit?page=${Math.min(totalPages, currentPage + 1)}`}
@@ -86,7 +90,7 @@ export default async function AuditPage({
                                         : "text-foreground hover:underline"
                                 }
                             >
-                                Próxima →
+                                {t("next")}
                             </Link>
                         </div>
                     )}

@@ -1,41 +1,50 @@
 import Link from "next/link"
 import { LifeBuoy, Mail, Settings, Users } from "lucide-react"
+import { getTranslations } from "next-intl/server"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 
-export const metadata = {
-    title: "Suporte | Área Administrativa",
-    description: "Central operacional de suporte da área administrativa.",
+export async function generateMetadata() {
+    const t = await getTranslations("admin.support")
+    return {
+        title: t("metaTitle"),
+        description: t("metaDesc"),
+    }
 }
 
-export default function SuperAdminSupportPage() {
+export default async function SuperAdminSupportPage() {
+    const t = await getTranslations("admin.support")
+
     return (
         <div className="space-y-6">
             <div>
-                <h1 className="text-3xl font-bold tracking-tight">Suporte</h1>
+                <h1 className="text-3xl font-bold tracking-tight">{t("title")}</h1>
                 <p className="text-muted-foreground">
-                    Atalhos para investigar problemas de usuários, empresas/contas e configuração.
+                    {t("subtitle")}
                 </p>
             </div>
 
             <div className="grid gap-4 md:grid-cols-3">
                 <SupportCard
-                    title="Usuários"
-                    description="Consulte status, dados de conta e acesso."
+                    title={t("usersCard")}
+                    description={t("usersCardDesc")}
                     href="/super-admin/users"
                     icon={Users}
+                    t={t}
                 />
                 <SupportCard
-                    title="Empresas/Contas"
-                    description="Revise dados, limites, campanhas e leads."
+                    title={t("workspacesCard")}
+                    description={t("workspacesCardDesc")}
                     href="/super-admin/workspaces"
                     icon={LifeBuoy}
+                    t={t}
                 />
                 <SupportCard
-                    title="Configuração"
-                    description="Cheque integrações e variáveis de ambiente."
+                    title={t("configCard")}
+                    description={t("configCardDesc")}
                     href="/super-admin/settings"
                     icon={Settings}
+                    t={t}
                 />
             </div>
 
@@ -43,13 +52,13 @@ export default function SuperAdminSupportPage() {
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                         <Mail className="h-5 w-5" />
-                        Fluxo recomendado
+                        {t("recommendedFlow")}
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2 text-sm text-muted-foreground">
-                    <p>1. Confirme se o usuário está ativo em Usuários.</p>
-                    <p>2. Confira empresa/conta, plano, limites e dados de envio.</p>
-                    <p>3. Use Configurações para validar ambiente, PayPal, Supabase e chaves críticas.</p>
+                    <p>{t("step1")}</p>
+                    <p>{t("step2")}</p>
+                    <p>{t("step3")}</p>
                 </CardContent>
             </Card>
         </div>
@@ -61,11 +70,13 @@ function SupportCard({
     description,
     href,
     icon: Icon,
+    t,
 }: {
     title: string
     description: string
     href: string
     icon: React.ComponentType<{ className?: string }>
+    t: Awaited<ReturnType<typeof getTranslations>>
 }) {
     return (
         <Card>
@@ -79,7 +90,7 @@ function SupportCard({
                 <p className="text-sm text-muted-foreground">{description}</p>
                 <Button asChild className="w-full">
                     <Link href={href}>
-                        Abrir
+                        {t("open")}
                     </Link>
                 </Button>
             </CardContent>

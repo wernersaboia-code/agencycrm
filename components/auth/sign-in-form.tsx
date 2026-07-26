@@ -82,6 +82,7 @@ export function SignInForm() {
             link_expirado: t("signIn.errLinkExpired"),
             link_invalido: t("signIn.errLinkInvalid"),
             link_incompleto: t("signIn.errLinkIncomplete"),
+            rate_limit: t("signIn.errRateLimit"),
         }
 
         toast.error(mensagens[erro] ?? t("signIn.errGeneric"))

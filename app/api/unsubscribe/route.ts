@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { LeadStatus } from "@prisma/client"
 import { verifySignature } from "@/lib/signing"
+import { addSuppression } from "@/lib/campaigns/suppression"
 
 // Escapa valores antes de interpolar no HTML desta rota. sid/sig já são
 // validados por HMAC antes de chegar aqui, mas escapamos como defesa em
@@ -17,17 +18,31 @@ function escapeHtml(value: string): string {
 
 // Resolve o lead a partir do envio assinado. Retorna null se a assinatura
 // nao conferir ou o envio nao existir.
-async function resolveLeadId(sid: string | null, sig: string | null): Promise<string | null> {
+async function resolveLead(
+    sid: string | null,
+    sig: string | null
+): Promise<{ leadId: string; email: string; workspaceId: string } | null> {
     if (!sid || !verifySignature(sid, sig)) {
         return null
     }
 
     const emailSend = await prisma.emailSend.findUnique({
         where: { id: sid },
-        select: { leadId: true },
+        select: {
+            leadId: true,
+            lead: { select: { email: true, workspaceId: true } },
+        },
     })
 
-    return emailSend?.leadId ?? null
+    if (!emailSend?.lead) {
+        return null
+    }
+
+    return {
+        leadId: emailSend.leadId,
+        email: emailSend.lead.email,
+        workspaceId: emailSend.lead.workspaceId,
+    }
 }
 
 function confirmationPage(sid: string, sig: string, message?: string): NextResponse {
@@ -81,8 +96,8 @@ export async function GET(request: Request) {
     const sid = searchParams.get("sid")
     const sig = searchParams.get("sig")
 
-    const leadId = await resolveLeadId(sid, sig)
-    if (!leadId || !sid || !sig) {
+    const resolved = await resolveLead(sid, sig)
+    if (!resolved || !sid || !sig) {
         return confirmationPage("", "", "Link inválido ou expirado.")
     }
 
@@ -91,33 +106,62 @@ export async function GET(request: Request) {
 
 // POST executa o cancelamento de fato.
 export async function POST(request: Request) {
+    const url = new URL(request.url)
     const contentType = request.headers.get("content-type") || ""
-    let sid: string | null = null
-    let sig: string | null = null
+
+    // One-click (RFC 8058) faz POST com corpo "List-Unsubscribe=One-Click" e
+    // mantém sid/sig na query string — por isso a query é a primeira fonte.
+    let sid: string | null = url.searchParams.get("sid")
+    let sig: string | null = url.searchParams.get("sig")
+    let isOneClick = false
 
     if (contentType.includes("application/json")) {
         const body = await request.json().catch(() => ({}))
-        sid = typeof body.sid === "string" ? body.sid : null
-        sig = typeof body.sig === "string" ? body.sig : null
-    } else {
-        const form = await request.formData()
-        sid = form.get("sid")?.toString() ?? null
-        sig = form.get("sig")?.toString() ?? null
+        sid = sid ?? (typeof body.sid === "string" ? body.sid : null)
+        sig = sig ?? (typeof body.sig === "string" ? body.sig : null)
+    } else if (contentType) {
+        const form = await request.formData().catch(() => null)
+        if (form) {
+            sid = sid ?? (form.get("sid")?.toString() ?? null)
+            sig = sig ?? (form.get("sig")?.toString() ?? null)
+            isOneClick = form.get("List-Unsubscribe")?.toString() === "One-Click"
+        }
     }
 
-    const leadId = await resolveLeadId(sid, sig)
-    if (!leadId) {
+    const resolved = await resolveLead(sid, sig)
+    if (!resolved) {
+        if (isOneClick) {
+            return new NextResponse("Invalid link", { status: 400 })
+        }
         return confirmationPage("", "", "Link inválido ou expirado.")
     }
 
     try {
         await prisma.lead.update({
-            where: { id: leadId },
+            where: { id: resolved.leadId },
             data: { status: LeadStatus.UNSUBSCRIBED },
+        })
+
+        // Descadastro também entra na supressão: o lead pode existir em outra
+        // campanha do mesmo workspace, e ali o status do lead não seria checado.
+        await addSuppression(prisma, {
+            email: resolved.email,
+            workspaceId: resolved.workspaceId,
+            reason: "unsubscribe",
         })
     } catch (error) {
         console.error("[Unsubscribe] Error:", error)
+        if (isOneClick) {
+            return new NextResponse("Error", { status: 500 })
+        }
         return confirmationPage("", "", "Não foi possível processar o cancelamento. Tente novamente.")
+    }
+
+    if (isOneClick) {
+        return new NextResponse("Unsubscribed", {
+            status: 200,
+            headers: { "Content-Type": "text/plain; charset=utf-8" },
+        })
     }
 
     return confirmationPage("", "", "Inscrição cancelada. Você não receberá mais e-mails.")

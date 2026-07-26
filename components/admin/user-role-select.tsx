@@ -4,6 +4,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 import { toast } from "sonner"
 import { Loader2 } from "lucide-react"
 import {
@@ -21,12 +22,6 @@ interface UserRoleSelectProps {
     currentRole: UserRole
 }
 
-const roleLabels: Record<UserRole, string> = {
-    USER: "Usuário",
-    MANAGER: "Gerente",
-    ADMIN: "Administrador",
-}
-
 const roleColors: Record<UserRole, string> = {
     USER: "bg-gray-100 text-gray-700",
     MANAGER: "bg-blue-100 text-blue-700",
@@ -34,6 +29,7 @@ const roleColors: Record<UserRole, string> = {
 }
 
 export function UserRoleSelect({ userId, currentRole }: UserRoleSelectProps) {
+    const t = useTranslations("admin.components.userRoleSelect")
     const router = useRouter()
     const [isLoading, setIsLoading] = useState(false)
     const [role, setRole] = useState<UserRole>(currentRole)
@@ -45,10 +41,10 @@ export function UserRoleSelect({ userId, currentRole }: UserRoleSelectProps) {
         try {
             await updateUserRole(userId, newRole)
             setRole(newRole)
-            toast.success(`Permissão alterada para ${roleLabels[newRole]}`)
+            toast.success(t("toastSuccess", { role: t(newRole.toLowerCase()) }))
             router.refresh()
         } catch {
-            toast.error("Erro ao alterar permissão")
+            toast.error(t("toastError"))
         } finally {
             setIsLoading(false)
         }
@@ -68,9 +64,9 @@ export function UserRoleSelect({ userId, currentRole }: UserRoleSelectProps) {
                 )}
             </SelectTrigger>
             <SelectContent>
-                <SelectItem value="USER">Usuário</SelectItem>
-                <SelectItem value="MANAGER">Gerente</SelectItem>
-                <SelectItem value="ADMIN">Administrador</SelectItem>
+                <SelectItem value="USER">{t("user")}</SelectItem>
+                <SelectItem value="MANAGER">{t("manager")}</SelectItem>
+                <SelectItem value="ADMIN">{t("admin")}</SelectItem>
             </SelectContent>
         </Select>
     )

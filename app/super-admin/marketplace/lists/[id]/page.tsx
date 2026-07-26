@@ -1,5 +1,6 @@
 // app/super-admin/marketplace/lists/[id]/page.tsx.bak
 import { notFound } from "next/navigation"
+import { getTranslations } from "next-intl/server"
 import { prisma } from "@/lib/prisma"
 import { ListForm } from "@/components/admin/list-form"
 
@@ -18,6 +19,8 @@ export default async function EditListPage({ params }: EditListPageProps) {
         notFound()
     }
 
+    const t = await getTranslations("admin.listDetails")
+
     // Serializar para passar ao Client Component
     const serializedList = {
         ...list,
@@ -30,7 +33,7 @@ export default async function EditListPage({ params }: EditListPageProps) {
     return (
         <div className="space-y-6">
             <div>
-                <h1 className="text-3xl font-bold">Editar Lista</h1>
+                <h1 className="text-3xl font-bold">{t("editTitle")}</h1>
                 <p className="text-muted-foreground">
                     {list.name}
                 </p>

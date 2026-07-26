@@ -56,7 +56,7 @@ export default async function SettingsPage() {
         smtpPass: null,
     }
 
-    // Buscar perfil completo do usuário
+    // Buscar perfil completo do usu├írio
     const profileResult = await getUserProfile()
     const profile = profileResult.success ? profileResult.data : null
 
@@ -77,10 +77,10 @@ export default async function SettingsPage() {
         }
 
     // Buscar janela de envio de cold mail
-    const sendWindowResult = await getSendWindowSettings(activeWorkspaceId)
-    const sendWindow = sendWindowResult.success ? sendWindowResult.data ?? null : null
+    const sendSettingsResult = await getSendWindowSettings(activeWorkspaceId)
+    const sendSettings = sendSettingsResult.success ? sendSettingsResult.data ?? null : null
 
-    // Buscar lista de supressão do workspace (falha não derruba a página)
+    // Buscar lista de supress├úo do workspace (falha n├úo derruba a p├ígina)
     const suppressionsResult = await listWorkspaceSuppressions(activeWorkspaceId)
     const suppressions = suppressionsResult.success ? suppressionsResult.data ?? [] : []
 
@@ -89,7 +89,8 @@ export default async function SettingsPage() {
             profile={profile ?? null}
             workspace={workspaceForClient}
             stats={stats}
-            sendWindow={sendWindow}
+            sendWindow={sendSettings?.window ?? null}
+            replyDetection={sendSettings?.replyDetection ?? null}
             suppressions={suppressions}
         />
     )

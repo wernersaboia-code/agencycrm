@@ -5,6 +5,7 @@
 import { revalidatePath } from "next/cache"
 import { prisma } from "@/lib/prisma"
 import { getAuthenticatedUser, requireWorkspaceAccess } from "@/lib/auth"
+import { checkCrmRateLimit } from "@/lib/rate-limit"
 import {
     createCampaignSchema,
     updateCampaignSchema,
@@ -592,6 +593,11 @@ export async function sendCampaign(id: string): Promise<ActionResult> {
         const user = await getAuthenticatedUser()
         if (!user) {
             return { success: false, error: "Não autorizado" }
+        }
+
+        const rateLimited = await checkCrmRateLimit("campaign.send", user.id, 5, 60_000)
+        if (!rateLimited) {
+            return { success: false, error: "Limite de envios excedido. Aguarde um minuto e tente novamente." }
         }
 
         // Buscar campanha com template, workspace, steps e leads

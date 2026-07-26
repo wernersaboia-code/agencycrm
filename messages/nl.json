@@ -21,6 +21,7 @@
             "errLinkExpired": "Deze bevestigingslink is verlopen of al gebruikt. Log in met uw wachtwoord of vraag een nieuwe registratie aan.",
             "errLinkInvalid": "We konden deze bevestigingslink niet valideren. Probeer in te loggen met uw wachtwoord.",
             "errLinkIncomplete": "Deze bevestigingslink is onvolledig. Open hem rechtstreeks vanuit de e-mail, zonder kopiëren en plakken.",
+            "errRateLimit": "Te veel inlogpogingen. Wacht een minuut en probeer het opnieuw.",
             "errGeneric": "We konden de bevestiging niet voltooien.",
             "areas": {
                 "purchases": { "title": "Mijn aankopen", "shortTitle": "Aankopen bekijken", "description": "Gekochte lijsten, bestellingen en bestand-downloads.", "button": "Naar Mijn aankopen" },

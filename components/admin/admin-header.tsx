@@ -2,6 +2,7 @@
 
 import { Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
+import { useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
 import {
     DropdownMenu,
@@ -17,14 +18,12 @@ import { cn } from "@/lib/utils"
 
 const headerConfigs = {
     leadstore: {
-        badge: "Área Administrativa",
-        title: "Gerenciamento do Marketplace",
-        badgeColors: "bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-950 dark:text-indigo-300 dark:border-indigo-800",
-        avatarColors: "bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-300",
+        titleKey: "titleMarketplace",
+        badgeColors: "bg-admin-soft text-admin border-admin-soft dark:bg-indigo-950 dark:text-admin dark:border-admin-soft",
+        avatarColors: "bg-admin-soft text-admin dark:bg-indigo-900 dark:text-admin",
     },
     "super-admin": {
-        badge: "Área Administrativa",
-        title: "Painel de administração",
+        titleKey: "title",
         badgeColors: "bg-[#e8eafe] text-[#3b3f82] border-[#cfd3fa] dark:bg-[#3b3f82]/30 dark:text-[#dfe2ff] dark:border-[#3b3f82]",
         avatarColors: "bg-[#e8eafe] text-[#3b3f82] dark:bg-[#3b3f82]/35 dark:text-[#dfe2ff]",
     },
@@ -45,6 +44,7 @@ interface AdminHeaderProps {
 // ==================== COMPONENTE ====================
 
 export function AdminHeader({ user, variant = "leadstore" }: AdminHeaderProps) {
+    const t = useTranslations("admin.header")
     const { setTheme } = useTheme()
     const config = headerConfigs[variant]
 
@@ -59,11 +59,11 @@ export function AdminHeader({ user, variant = "leadstore" }: AdminHeaderProps) {
         <header className="flex h-16 items-center justify-between border-b border-border/80 bg-card/95 px-5 backdrop-blur md:px-6">
             <div className="flex items-center gap-4">
                 <Badge variant="outline" className={cn(config.badgeColors)}>
-                    {config.badge}
+                    {t("badge")}
                 </Badge>
                 <div className="hidden md:block">
                     <h1 className="text-base font-semibold">
-                        {config.title}
+                        {t(config.titleKey)}
                     </h1>
                 </div>
             </div>
@@ -74,18 +74,18 @@ export function AdminHeader({ user, variant = "leadstore" }: AdminHeaderProps) {
                         <Button variant="outline" size="icon">
                             <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
                             <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                            <span className="sr-only">Alternar tema</span>
+                            <span className="sr-only">{t("toggleTheme")}</span>
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         <DropdownMenuItem onClick={() => setTheme("light")}>
-                            Claro
+                            {t("light")}
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => setTheme("dark")}>
-                            Escuro
+                            {t("dark")}
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => setTheme("system")}>
-                            Sistema
+                            {t("system")}
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>

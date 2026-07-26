@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma"
 import { requireAdmin } from "@/lib/auth"
 import type { Prisma } from "@prisma/client"
 import { recordAudit } from "@/lib/audit"
+import { checkAdminRateLimit } from "@/lib/rate-limit"
 
 // ==================== TIPOS ====================
 
@@ -295,6 +296,7 @@ export async function getWorkspaceStats(workspaceId: string): Promise<WorkspaceS
 
 export async function transferWorkspace(workspaceId: string, newUserId: string) {
     const admin = await requireAdmin()
+    await checkAdminRateLimit("workspace.transfer", admin.id, 5, 60_000)
 
     // Verificar se o novo usuário existe
     const newUser = await prisma.user.findUnique({
@@ -335,6 +337,7 @@ export async function transferWorkspace(workspaceId: string, newUserId: string) 
 
 export async function deleteWorkspace(workspaceId: string) {
     const admin = await requireAdmin()
+    await checkAdminRateLimit("workspace.delete", admin.id, 3, 60_000)
 
     const ws = await prisma.workspace.findUnique({
         where: { id: workspaceId },

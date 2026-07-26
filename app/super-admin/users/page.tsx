@@ -2,6 +2,7 @@
 
 import { Suspense } from "react"
 import Link from "next/link"
+import { getTranslations } from "next-intl/server"
 import {
     AlertCircle,
     ArrowLeft,
@@ -63,28 +64,30 @@ function parseUserStatus(status?: string): UserStatus | "ALL" | undefined {
 
 export default async function UsersPage({ searchParams }: UsersPageProps) {
     const params = await searchParams
+    const t = await getTranslations("admin.users")
+    const common = await getTranslations("admin.common")
 
     return (
         <div className="space-y-6">
             {/* Header */}
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold">Usuários</h1>
+                    <h1 className="text-3xl font-bold">{t("title")}</h1>
                     <p className="text-muted-foreground">
-                        Gerencie pessoas, permissões e status de acesso.
+                        {t("subtitle")}
                     </p>
                 </div>
                 <Button variant="outline" asChild>
                     <Link href="/super-admin">
                         <ArrowLeft className="h-4 w-4" />
-                        Voltar ao painel
+                        {common("backToDashboard")}
                     </Link>
                 </Button>
             </div>
 
-            <Card className="border-indigo-200 bg-indigo-50">
-                <CardContent className="p-4 text-sm text-indigo-900">
-                    Use esta tela para liberar acessos, revisar usuários pendentes e ajustar permissões administrativas.
+            <Card className="border-admin-soft bg-admin-soft">
+                <CardContent className="p-4 text-sm text-admin">
+                    {t("infoCard")}
                 </CardContent>
             </Card>
 
@@ -98,7 +101,7 @@ export default async function UsersPage({ searchParams }: UsersPageProps) {
                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                                 <Input
                                     name="search"
-                                    placeholder="Buscar por nome ou email..."
+                                    placeholder={t("searchPlaceholder")}
                                     defaultValue={params.search}
                                     className="pl-10"
                                 />
@@ -108,32 +111,32 @@ export default async function UsersPage({ searchParams }: UsersPageProps) {
                         {/* Filtro de permissão */}
                         <Select name="role" defaultValue={params.role || "ALL"}>
                             <SelectTrigger className="w-[150px]">
-                                <SelectValue placeholder="Permissão" />
+                                <SelectValue placeholder={t("roleLabel")} />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="ALL">Todas</SelectItem>
-                                <SelectItem value="USER">Usuário</SelectItem>
-                                <SelectItem value="MANAGER">Gerente</SelectItem>
-                                <SelectItem value="ADMIN">Administrador</SelectItem>
+                                <SelectItem value="ALL">{t("roleAll")}</SelectItem>
+                                <SelectItem value="USER">{t("roleUser")}</SelectItem>
+                                <SelectItem value="MANAGER">{t("roleManager")}</SelectItem>
+                                <SelectItem value="ADMIN">{t("roleAdmin")}</SelectItem>
                             </SelectContent>
                         </Select>
 
                         {/* Filtro Status */}
                         <Select name="status" defaultValue={params.status || "ALL"}>
                             <SelectTrigger className="w-[150px]">
-                                <SelectValue placeholder="Status" />
+                                <SelectValue placeholder={t("statusLabel")} />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="ALL">Todos Status</SelectItem>
-                                <SelectItem value="ACTIVE">Ativo</SelectItem>
-                                <SelectItem value="INACTIVE">Inativo</SelectItem>
-                                <SelectItem value="PENDING">Pendente</SelectItem>
+                                <SelectItem value="ALL">{t("statusAll")}</SelectItem>
+                                <SelectItem value="ACTIVE">{t("statusActive")}</SelectItem>
+                                <SelectItem value="INACTIVE">{t("statusInactive")}</SelectItem>
+                                <SelectItem value="PENDING">{t("statusPending")}</SelectItem>
                             </SelectContent>
                         </Select>
 
                         <Button type="submit">
                             <Filter className="h-4 w-4 mr-2" />
-                            Filtrar
+                            {common("filter")}
                         </Button>
                     </form>
                 </CardContent>
@@ -172,19 +175,22 @@ async function UsersTable({
     })
 
     if (users.length === 0) {
+        const t = await getTranslations("admin.users")
         return (
             <Card>
                 <CardContent className="py-12 text-center">
                     <Users className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                    <h3 className="text-lg font-medium mb-2">Nenhum usuário encontrado</h3>
+                    <h3 className="text-lg font-medium mb-2">{t("emptyTitle")}</h3>
                     <p className="text-muted-foreground">
-                        {search ? "Tente ajustar os filtros de busca" : "Ainda não há usuários cadastrados"}
+                        {search ? t("emptyDesc") : t("emptyDescNoSearch")}
                     </p>
                 </CardContent>
             </Card>
         )
     }
 
+    const t = await getTranslations("admin.users")
+    const common = await getTranslations("admin.common")
     const admins = users.filter((user) => user.role === "ADMIN").length
     const pendingUsers = users.filter((user) => user.status === "PENDING").length
     const inactiveUsers = users.filter((user) => user.status === "INACTIVE").length
@@ -198,33 +204,33 @@ async function UsersTable({
     }).length
     const userSignals = [
         {
-            label: "Pendentes",
+            label: t("pending"),
             value: pendingUsers,
-            description: "Contas aguardando conclusão ou liberação.",
+            description: t("pendingDesc"),
             icon: Clock,
             tone: pendingUsers > 0 ? "warning" : "success",
             href: "/super-admin/users?status=PENDING",
         },
         {
-            label: "Inativos",
+            label: t("inactiveUsers"),
             value: inactiveUsers,
-            description: "Usuários sem acesso ativo à plataforma.",
+            description: t("inactiveDesc"),
             icon: AlertCircle,
             tone: inactiveUsers > 0 ? "warning" : "success",
             href: "/super-admin/users?status=INACTIVE",
         },
         {
-            label: "Sem workspace",
+            label: t("noWorkspace"),
             value: usersWithoutWorkspace,
-            description: "Usuários que ainda não operam nenhuma empresa/conta.",
+            description: t("noWorkspaceDesc"),
             icon: Building2,
             tone: usersWithoutWorkspace > 0 ? "warning" : "success",
             href: "/super-admin/users",
         },
         {
-            label: "Admins",
+            label: t("admins"),
             value: admins,
-            description: "Contas com permissão administrativa.",
+            description: t("adminsDesc"),
             icon: ShieldCheck,
             tone: admins > 0 ? "default" : "warning",
             href: "/super-admin/users?role=ADMIN",
@@ -233,16 +239,16 @@ async function UsersTable({
 
     return (
         <div className="space-y-4">
-        <Card className={pendingUsers + inactiveUsers + usersWithoutWorkspace > 0 ? "border-amber-300 dark:border-amber-900" : "border-indigo-300 dark:border-indigo-900"}>
+        <Card className={pendingUsers + inactiveUsers + usersWithoutWorkspace > 0 ? "border-amber-300 dark:border-amber-900" : "border-admin dark:border-admin-soft"}>
             <CardHeader className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                 <div>
-                    <CardTitle>Visão de usuários</CardTitle>
+                    <CardTitle>{t("userOverview")}</CardTitle>
                     <p className="text-sm text-muted-foreground">
-                        {users.length} nesta página, {total} no total. {staleUsers} sem login recente ou nunca acessaram.
+                        {t("overviewDesc", { count: users.length, total, stale: staleUsers })}
                     </p>
                 </div>
                 <Badge variant={pendingUsers + inactiveUsers + usersWithoutWorkspace > 0 ? "outline" : "default"}>
-                    {pendingUsers + inactiveUsers + usersWithoutWorkspace > 0 ? "Revisar acessos" : "Acessos em dia"}
+                    {pendingUsers + inactiveUsers + usersWithoutWorkspace > 0 ? common("reviewAccess") : common("accessInOrder")}
                 </Badge>
             </CardHeader>
             <CardContent className="grid gap-3 md:grid-cols-4">
@@ -254,7 +260,7 @@ async function UsersTable({
                     >
                         <span className="flex min-w-0 gap-3">
                             {signal.tone === "success" ? (
-                                <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-indigo-600" />
+                                <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-admin" />
                             ) : (
                                 <signal.icon className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
                             )}
@@ -271,19 +277,19 @@ async function UsersTable({
 
         <Card>
             <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>Usuários ({total})</CardTitle>
+                <CardTitle>{t("usersCount", { count: total })}</CardTitle>
             </CardHeader>
             <CardContent>
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead>Usuário</TableHead>
-                            <TableHead>Permissão</TableHead>
-                            <TableHead>Status</TableHead>
-                            <TableHead className="text-center">Empresas/Contas</TableHead>
-                            <TableHead>Cadastro</TableHead>
-                            <TableHead>Último Acesso</TableHead>
-                            <TableHead className="text-right">Ações</TableHead>
+                            <TableHead>{t("colUser")}</TableHead>
+                            <TableHead>{t("colRole")}</TableHead>
+                            <TableHead>{t("colStatus")}</TableHead>
+                            <TableHead className="text-center">{t("colWorkspaces")}</TableHead>
+                            <TableHead>{t("colCreated")}</TableHead>
+                            <TableHead>{t("colLastAccess")}</TableHead>
+                            <TableHead className="text-right">{t("colActions")}</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -306,7 +312,7 @@ async function UsersTable({
                                             </Avatar>
                                             <div>
                                                 <p className="font-medium">
-                                                    {user.name || "Sem nome"}
+                                                    {user.name || t("noName")}
                                                 </p>
                                                 <p className="text-sm text-muted-foreground">
                                                     {user.email}
@@ -346,13 +352,13 @@ async function UsersTable({
                                                     addSuffix: true,
                                                     locale: ptBR,
                                                 })
-                                                : "Nunca"}
+                                                : t("never")}
                                         </span>
                                     </TableCell>
                                     <TableCell className="text-right">
                                         <Button variant="ghost" size="sm" asChild>
                                             <Link href={`/super-admin/users/${user.id}`}>
-                                                Ver detalhes
+                                                {t("viewDetails")}
                                                 <ArrowRight className="ml-2 h-4 w-4" />
                                             </Link>
                                         </Button>
@@ -367,7 +373,7 @@ async function UsersTable({
                 {pages > 1 && (
                     <div className="flex items-center justify-between mt-4 pt-4 border-t">
                         <p className="text-sm text-muted-foreground">
-                            Página {currentPage} de {pages}
+                            {common("pageXofY", { current: currentPage, total: pages })}
                         </p>
                         <div className="flex gap-2">
                             {currentPage > 1 && (
@@ -375,7 +381,7 @@ async function UsersTable({
                                     <Link
                                         href={`/super-admin/users?page=${currentPage - 1}${search ? `&search=${search}` : ""}${role ? `&role=${role}` : ""}${status ? `&status=${status}` : ""}`}
                                     >
-                                        Anterior
+                                        {common("previous")}
                                     </Link>
                                 </Button>
                             )}
@@ -384,7 +390,7 @@ async function UsersTable({
                                     <Link
                                         href={`/super-admin/users?page=${currentPage + 1}${search ? `&search=${search}` : ""}${role ? `&role=${role}` : ""}${status ? `&status=${status}` : ""}`}
                                     >
-                                        Próxima
+                                        {common("next")}
                                     </Link>
                                 </Button>
                             )}

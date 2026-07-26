@@ -5,6 +5,7 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
+import { useTranslations } from "next-intl"
 import { Trash2, Loader2, AlertTriangle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -28,6 +29,7 @@ interface DeleteWorkspaceButtonProps {
 
 export function DeleteWorkspaceButton({ workspaceId, workspaceName }: DeleteWorkspaceButtonProps) {
     const router = useRouter()
+    const t = useTranslations("admin.components.deleteWorkspace")
     const [open, setOpen] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [confirmation, setConfirmation] = useState("")
@@ -40,11 +42,11 @@ export function DeleteWorkspaceButton({ workspaceId, workspaceName }: DeleteWork
         setIsLoading(true)
         try {
             await deleteWorkspace(workspaceId)
-            toast.success("Empresa/conta excluída com sucesso")
+            toast.success(t("toastSuccess"))
             router.push("/super-admin/workspaces")
             router.refresh()
         } catch {
-            toast.error("Erro ao excluir empresa/conta")
+            toast.error(t("toastError"))
         } finally {
             setIsLoading(false)
         }
@@ -55,26 +57,26 @@ export function DeleteWorkspaceButton({ workspaceId, workspaceName }: DeleteWork
             <AlertDialogTrigger asChild>
                 <Button variant="destructive">
                     <Trash2 className="h-4 w-4 mr-2" />
-                    Excluir
+                    {t("button")}
                 </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
                 <AlertDialogHeader>
                     <AlertDialogTitle className="flex items-center gap-2 text-destructive">
                         <AlertTriangle className="h-5 w-5" />
-                        Excluir empresa/conta
+                        {t("title")}
                     </AlertDialogTitle>
                     <AlertDialogDescription asChild>
                         <div className="space-y-3">
                             <span>
-                                Esta ação é <strong>irreversível</strong>. Todos os dados serão excluídos permanentemente:
+                                {t.rich("description", { strong: (chunks) => <strong>{chunks}</strong> })}
                             </span>
                             <ul className="list-disc list-inside text-sm space-y-1">
-                                <li>Todos os leads</li>
-                                <li>Todas as campanhas e emails enviados</li>
-                                <li>Todas as ligações registradas</li>
-                                <li>Todos os templates</li>
-                                <li>Todas as tags</li>
+                                <li>{t("allLeads")}</li>
+                                <li>{t("allCampaigns")}</li>
+                                <li>{t("allCalls")}</li>
+                                <li>{t("allTemplates")}</li>
+                                <li>{t("allTags")}</li>
                             </ul>
                         </div>
                     </AlertDialogDescription>
@@ -82,7 +84,7 @@ export function DeleteWorkspaceButton({ workspaceId, workspaceName }: DeleteWork
 
                 <div className="py-4 space-y-3">
                     <Label>
-                        Digite <strong>{workspaceName}</strong> para confirmar:
+                        {t.rich("confirmLabel", { name: () => <strong>{workspaceName}</strong> })}
                     </Label>
                     <Input
                         value={confirmation}
@@ -94,7 +96,7 @@ export function DeleteWorkspaceButton({ workspaceId, workspaceName }: DeleteWork
 
                 <AlertDialogFooter>
                     <AlertDialogCancel disabled={isLoading} onClick={() => setConfirmation("")}>
-                        Cancelar
+                        {t("cancel")}
                     </AlertDialogCancel>
                     <Button
                         variant="destructive"
@@ -104,12 +106,12 @@ export function DeleteWorkspaceButton({ workspaceId, workspaceName }: DeleteWork
                         {isLoading ? (
                             <>
                                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                                Excluindo...
+                                {t("deleting")}
                             </>
                         ) : (
                             <>
                                 <Trash2 className="h-4 w-4 mr-2" />
-                                Excluir Permanentemente
+                                {t("confirm")}
                             </>
                         )}
                     </Button>

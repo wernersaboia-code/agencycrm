@@ -2,6 +2,7 @@
 
 import { notFound } from "next/navigation"
 import Link from "next/link"
+import { getTranslations } from "next-intl/server"
 import {
     AlertCircle,
     ArrowLeft,
@@ -33,6 +34,7 @@ interface UserDetailsPageProps {
 
 export default async function UserDetailsPage({ params }: UserDetailsPageProps) {
     const { id } = await params
+    const t = await getTranslations("admin.userDetails")
 
     const [user, stats] = await Promise.all([
         getUserDetails(id),
@@ -51,25 +53,25 @@ export default async function UserDetailsPage({ params }: UserDetailsPageProps) 
         .slice(0, 2) || user.email[0].toUpperCase()
     const readinessChecks = [
         {
-            label: "Acesso ativo",
-            description: user.status === "ACTIVE" ? "Usuário pode acessar a plataforma." : "Revise o status antes de cobrar uso.",
+            label: t("activeAccess"),
+            description: user.status === "ACTIVE" ? t("activeAccessOk") : t("activeAccessFail"),
             done: user.status === "ACTIVE",
         },
         {
-            label: "Empresa/conta criada",
-            description: user._count.workspaces > 0 ? `${user._count.workspaces} empresa/conta${user._count.workspaces !== 1 ? "s" : ""}.` : "Usuário ainda não opera nenhum cliente.",
+            label: t("workspaceCreated"),
+            description: user._count.workspaces > 0 ? t("workspaceCreatedOk", { count: user._count.workspaces }) : t("workspaceCreatedFail"),
             done: user._count.workspaces > 0,
         },
         {
-            label: "Uso registrado",
+            label: t("usageRecorded"),
             description: stats.totalLeads + stats.totalCampaigns + stats.totalCalls > 0
-                ? "Há atividade operacional vinculada."
-                : "Ainda não há leads, campanhas ou ligações.",
+                ? t("usageRecordedOk")
+                : t("usageRecordedFail"),
             done: stats.totalLeads + stats.totalCampaigns + stats.totalCalls > 0,
         },
         {
-            label: "Login conhecido",
-            description: user.lastLoginAt ? "Último acesso registrado." : "Usuário nunca acessou.",
+            label: t("loginKnown"),
+            description: user.lastLoginAt ? t("loginKnownOk") : t("loginKnownFail"),
             done: Boolean(user.lastLoginAt),
         },
     ]
@@ -85,7 +87,7 @@ export default async function UserDetailsPage({ params }: UserDetailsPageProps) 
                     className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4"
                 >
                     <ArrowLeft className="h-4 w-4 mr-1" />
-                    Voltar para usuários
+                    {t("backToUsers")}
                 </Link>
 
                 <div className="flex items-start justify-between">
@@ -97,7 +99,7 @@ export default async function UserDetailsPage({ params }: UserDetailsPageProps) 
                         </Avatar>
                         <div>
                             <h1 className="text-3xl font-bold">
-                                {user.name || "Sem nome"}
+                                {user.name || t("noName")}
                             </h1>
                             <p className="text-muted-foreground">{user.email}</p>
                         </div>
@@ -110,14 +112,14 @@ export default async function UserDetailsPage({ params }: UserDetailsPageProps) 
             <Card className={readiness >= 75 ? "border-indigo-300 dark:border-indigo-900" : "border-amber-300 dark:border-amber-900"}>
                 <CardHeader className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                     <div>
-                        <CardTitle>Prontidão do usuário</CardTitle>
+                        <CardTitle>{t("readiness")}</CardTitle>
                         <p className="mt-1 text-sm text-muted-foreground">
-                            Sinais para suporte, cobrança de adoção e revisão de acesso.
+                            {t("readinessDesc")}
                         </p>
                     </div>
                     <div className="w-full space-y-2 lg:w-64">
                         <div className="flex items-center justify-between text-sm">
-                            <span className="text-muted-foreground">Cobertura</span>
+                            <span className="text-muted-foreground">{t("coverage")}</span>
                             <span className="font-medium">{readiness}%</span>
                         </div>
                         <Progress value={readiness} />
@@ -145,12 +147,12 @@ export default async function UserDetailsPage({ params }: UserDetailsPageProps) 
                 {/* Info do Usuário */}
                 <Card className="md:col-span-1">
                     <CardHeader>
-                        <CardTitle>Informações</CardTitle>
+                        <CardTitle>{t("infoTitle")}</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div className="space-y-2">
                             <label className="text-sm font-medium text-muted-foreground">
-                                Permissão
+                                {t("roleLabel")}
                             </label>
                             <UserRoleSelect
                                 userId={user.id}
@@ -160,7 +162,7 @@ export default async function UserDetailsPage({ params }: UserDetailsPageProps) 
 
                         <div className="space-y-2">
                             <label className="text-sm font-medium text-muted-foreground">
-                                Status
+                                {t("statusLabel")}
                             </label>
                             <UserStatusToggle
                                 userId={user.id}
@@ -173,7 +175,7 @@ export default async function UserDetailsPage({ params }: UserDetailsPageProps) 
                         <div className="space-y-3">
                             <div className="flex items-center gap-2 text-sm">
                                 <Calendar className="h-4 w-4 text-muted-foreground" />
-                                <span className="text-muted-foreground">Cadastro:</span>
+                                <span className="text-muted-foreground">{t("createdLabel")}</span>
                                 <span>
                                     {format(new Date(user.createdAt), "dd/MM/yyyy", { locale: ptBR })}
                                 </span>
@@ -181,17 +183,17 @@ export default async function UserDetailsPage({ params }: UserDetailsPageProps) 
 
                             <div className="flex items-center gap-2 text-sm">
                                 <Clock className="h-4 w-4 text-muted-foreground" />
-                                <span className="text-muted-foreground">Último acesso:</span>
+                                <span className="text-muted-foreground">{t("lastAccessLabel")}</span>
                                 <span>
                                     {user.lastLoginAt
                                         ? format(new Date(user.lastLoginAt), "dd/MM/yyyy HH:mm", { locale: ptBR })
-                                        : "Nunca"}
+                                        : t("never")}
                                 </span>
                             </div>
 
                             <div className="flex items-center gap-2 text-sm">
                                 <Mail className="h-4 w-4 text-muted-foreground" />
-                                <span className="text-muted-foreground">Idioma:</span>
+                                <span className="text-muted-foreground">{t("languageLabel")}</span>
                                 <span>{user.language}</span>
                             </div>
                         </div>
@@ -201,38 +203,38 @@ export default async function UserDetailsPage({ params }: UserDetailsPageProps) 
                 {/* Stats */}
                 <Card className="md:col-span-2">
                     <CardHeader>
-                        <CardTitle>Estatísticas de Uso</CardTitle>
+                        <CardTitle>{t("statsTitle")}</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                             <div className="p-4 bg-blue-50 dark:bg-blue-950/30 rounded-lg text-center">
                                 <Users className="h-6 w-6 mx-auto text-blue-600 mb-2" />
                                 <p className="text-2xl font-bold">{stats.totalLeads.toLocaleString()}</p>
-                                <p className="text-sm text-muted-foreground">Leads</p>
+                                <p className="text-sm text-muted-foreground">{t("leads")}</p>
                             </div>
 
                             <div className="p-4 bg-purple-50 dark:bg-purple-950/30 rounded-lg text-center">
                                 <Send className="h-6 w-6 mx-auto text-purple-600 mb-2" />
                                 <p className="text-2xl font-bold">{stats.totalCampaigns}</p>
-                                <p className="text-sm text-muted-foreground">Campanhas</p>
+                                <p className="text-sm text-muted-foreground">{t("campaigns")}</p>
                             </div>
 
                             <div className="p-4 bg-indigo-50 dark:bg-indigo-950/30 rounded-lg text-center">
                                 <Mail className="h-6 w-6 mx-auto text-indigo-600 mb-2" />
                                 <p className="text-2xl font-bold">{stats.totalEmails.toLocaleString()}</p>
-                                <p className="text-sm text-muted-foreground">Emails Enviados</p>
+                                <p className="text-sm text-muted-foreground">{t("emailsSent")}</p>
                             </div>
 
                             <div className="p-4 bg-amber-50 dark:bg-amber-950/30 rounded-lg text-center">
                                 <Phone className="h-6 w-6 mx-auto text-amber-600 mb-2" />
                                 <p className="text-2xl font-bold">{stats.totalCalls}</p>
-                                <p className="text-sm text-muted-foreground">Ligações</p>
+                                <p className="text-sm text-muted-foreground">{t("calls")}</p>
                             </div>
                         </div>
 
                         {stats.lastActivity && (
                             <p className="text-sm text-muted-foreground mt-4 text-center">
-                                Última atividade: {format(new Date(stats.lastActivity), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}
+                                {t("lastActivity", { date: format(new Date(stats.lastActivity), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR }) })}
                             </p>
                         )}
                     </CardContent>
@@ -244,13 +246,13 @@ export default async function UserDetailsPage({ params }: UserDetailsPageProps) 
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                         <Building2 className="h-5 w-5" />
-                        Empresas/Contas ({user._count.workspaces})
+                        {t("workspacesTitle", { count: user._count.workspaces })}
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
                     {user.workspaces.length === 0 ? (
                         <p className="text-center text-muted-foreground py-8">
-                            Este usuário não possui empresas/contas.
+                            {t("noWorkspaces")}
                         </p>
                     ) : (
                         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -270,19 +272,19 @@ export default async function UserDetailsPage({ params }: UserDetailsPageProps) 
                                     <div className="grid grid-cols-3 gap-2 text-center text-sm">
                                         <div>
                                             <p className="font-semibold">{workspace._count.leads}</p>
-                                            <p className="text-xs text-muted-foreground">Leads</p>
+                                            <p className="text-xs text-muted-foreground">{t("leads")}</p>
                                         </div>
                                         <div>
                                             <p className="font-semibold">{workspace._count.campaigns}</p>
-                                            <p className="text-xs text-muted-foreground">Campanhas</p>
+                                            <p className="text-xs text-muted-foreground">{t("campaigns")}</p>
                                         </div>
                                         <div>
                                             <p className="font-semibold">{workspace._count.calls}</p>
-                                            <p className="text-xs text-muted-foreground">Ligações</p>
+                                            <p className="text-xs text-muted-foreground">{t("calls")}</p>
                                         </div>
                                     </div>
                                     <div className="mt-3 flex items-center justify-between text-sm font-medium text-primary">
-                                        Ver empresa/conta
+                                        {t("viewWorkspace")}
                                         <ArrowRight className="h-4 w-4" />
                                     </div>
                                 </Link>
@@ -298,12 +300,12 @@ export default async function UserDetailsPage({ params }: UserDetailsPageProps) 
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                             <BarChart3 className="h-5 w-5" />
-                            Compras no Marketplace ({user._count.purchases})
+                            {t("purchasesTitle", { count: user._count.purchases })}
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
                         <p className="text-muted-foreground">
-                            Este usuário realizou {user._count.purchases} compra(s) no marketplace.
+                            {t("purchasesDesc", { count: user._count.purchases })}
                         </p>
                     </CardContent>
                 </Card>
