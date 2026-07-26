@@ -53,7 +53,7 @@ export default function TermsPage() {
                 <section>
                     <h2 className="text-lg font-semibold text-foreground">5. Pagamentos e reembolsos</h2>
                     <p className="mt-2">
-                        Compras no marketplace são processadas via PayPal. Reembolsos são avaliados caso a caso
+                        Compras no marketplace são processadas via PayPal ou Stripe. Reembolsos são avaliados caso a caso
                         e podem ser solicitados em até 7 dias após a compra, desde que os arquivos não tenham
                         sido baixados.
                     </p>

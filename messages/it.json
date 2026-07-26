@@ -1,4 +1,4 @@
-{
+﻿{
     "common": {
         "brand": "Easy Prospect"
     },
@@ -257,7 +257,7 @@
             },
             {
                 "question": "Come funziona il pagamento?",
-                "answer": "Il pagamento avviene tramite PayPal, nel checkout del sito. Appena il pagamento è confermato, l'acquisto compare in I miei acquisti e il download viene sbloccato."
+                "answer": "Il pagamento avviene tramite carta (Stripe) o PayPal, nel checkout del sito. Appena il pagamento è confermato, l'acquisto compare in I miei acquisti e il download viene sbloccato."
             },
             {
                 "question": "Per quali paesi e settori sono disponibili gli elenchi?",

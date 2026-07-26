@@ -199,21 +199,19 @@ export default async function ListPage({ params }: ListPageProps) {
                         </div>
                     </section>
 
-                    <section className="rounded-lg border bg-card p-6">
-                        <div className="mb-4 flex flex-col gap-1">
-                            <h2 className="text-lg font-semibold text-foreground">{t("previewTitle")}</h2>
-                            {/* O subtítulo anuncia uma amostra de N registros: só
-                                aparece quando a amostra existe de verdade. */}
-                            {previewCount > 0 && (
+                    {previewCount > 0 && (
+                        <section className="rounded-lg border bg-card p-6">
+                            <div className="mb-4 flex flex-col gap-1">
+                                <h2 className="text-lg font-semibold text-foreground">{t("previewTitle")}</h2>
                                 <p className="text-sm text-muted-foreground">
                                     {t("previewSubtitle", { count: previewCount })}
                                 </p>
-                            )}
-                        </div>
-                        <Suspense fallback={<div className="h-48 animate-pulse rounded-lg bg-muted" />}>
-                            <ListPreview previewData={list.previewData} locale={locale} />
-                        </Suspense>
-                    </section>
+                            </div>
+                            <Suspense fallback={<div className="h-48 animate-pulse rounded-lg bg-muted" />}>
+                                <ListPreview previewData={list.previewData} locale={locale} />
+                            </Suspense>
+                        </section>
+                    )}
 
                     <section className="rounded-lg border bg-card p-6">
                         <h2 className="mb-4 text-lg font-semibold text-foreground">{t("includedTitle")}</h2>

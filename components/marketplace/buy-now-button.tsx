@@ -58,7 +58,7 @@ export function BuyNowButton({ list }: BuyNowButtonProps) {
             disabled={isLoading}
         >
             <ShoppingCart className="h-5 w-5 mr-2" aria-hidden="true" />
-            {isAuthenticated ? t("buyNow") : t("signInToBuy")}
+            {t("buyNow")}
         </Button>
     )
 }

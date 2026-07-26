@@ -49,11 +49,7 @@ export async function ListPreview({ previewData, locale }: ListPreviewProps) {
     const rows = toRows(previewData)
 
     if (rows.length === 0) {
-        return (
-            <p className="rounded-lg border border-dashed p-6 text-sm text-muted-foreground">
-                {t("previewUnavailable")}
-            </p>
-        )
+        return null
     }
 
     return (
