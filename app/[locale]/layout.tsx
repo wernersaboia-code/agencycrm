@@ -8,6 +8,7 @@ import type { Locale } from "@/lib/i18n/locales"
 import { robotsForLocale } from "@/lib/seo/indexability"
 import { MarketplaceHeader } from "@/components/marketplace/marketplace-header"
 import { MarketplaceFooter } from "@/components/marketplace/marketplace-footer"
+import { SyncLocaleCookie } from "@/components/marketplace/sync-locale-cookie"
 import { CartProvider } from "@/contexts/cart-context"
 import { CartDrawer } from "@/components/marketplace/cart-drawer"
 
@@ -70,6 +71,8 @@ export default async function MarketplaceLayout({
                     <Suspense fallback={<div className="h-16 bg-background border-b" />}>
                         <MarketplaceHeader />
                     </Suspense>
+
+                    <SyncLocaleCookie locale={locale as "pt" | "de"} />
 
                     <main id="main-content" className="flex-1">
                         {children}

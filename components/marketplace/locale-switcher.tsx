@@ -3,6 +3,7 @@
 import { Globe2 } from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
 import { usePathname, useRouter } from "@/lib/i18n/navigation"
+import { setLocaleCookie } from "@/actions/locale"
 import { PUBLISHED_LOCALES, type Locale } from "@/lib/i18n/locales"
 import { Button } from "@/components/ui/button"
 import {
@@ -20,8 +21,9 @@ export function LocaleSwitcher() {
     const router = useRouter()
     const t = useTranslations("nav")
 
-    const switchTo = (target: Locale) => {
+    const switchTo = async (target: Locale) => {
         if (target === locale) return
+        await setLocaleCookie(target)
         router.replace(pathname, { locale: target })
     }
 
