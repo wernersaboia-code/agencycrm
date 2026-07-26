@@ -36,17 +36,16 @@ export function DeleteListButton({ listId, listName }: DeleteListButtonProps) {
     const handleDelete = async () => {
         setIsDeleting(true)
 
-        try {
-            await deleteList(listId)
+        const result = await deleteList(listId)
+        if (result.success) {
             toast.success(t("toastSuccess"))
             setOpen(false)
             router.refresh()
-        } catch (error) {
-            const message = error instanceof Error ? error.message : t("toastError")
-            toast.error(message)
-        } finally {
-            setIsDeleting(false)
+        } else {
+            toast.error(result.error)
         }
+
+        setIsDeleting(false)
     }
 
     return (

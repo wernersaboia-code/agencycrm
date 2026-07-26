@@ -175,49 +175,51 @@ export async function updateList(id: string, data: CreateListData): Promise<Seri
     return serializeList(list)
 }
 
-export async function deleteList(id: string) {
-    const admin = await requireAdmin()
-    await checkAdminRateLimit("list.delete", admin.id, 5, 60_000)
-
-    const list = await prisma.leadList.findUnique({
-        where: { id },
-        select: { slug: true, name: true }
-    })
-
-    if (!list) {
-        throw new Error("Lista não encontrada")
-    }
-
-    // Verificar se a lista tem compras associadas antes de excluir
-    const purchaseCount = await prisma.purchaseItem.count({
-        where: { listId: id },
-    })
-
-    if (purchaseCount > 0) {
-        throw new Error(
-            `Esta lista não pode ser excluída porque já foi comprada por ${purchaseCount} cliente(s).`
-        )
-    }
-
+export async function deleteList(id: string): Promise<{ success: true } | { success: false; error: string }> {
     try {
+        const admin = await requireAdmin()
+        await checkAdminRateLimit("list.delete", admin.id, 5, 60_000)
+
+        const list = await prisma.leadList.findUnique({
+            where: { id },
+            select: { slug: true, name: true }
+        })
+
+        if (!list) {
+            return { success: false, error: "Lista não encontrada" }
+        }
+
+        const purchaseCount = await prisma.purchaseItem.count({
+            where: { listId: id },
+        })
+
+        if (purchaseCount > 0) {
+            return {
+                success: false,
+                error: `Esta lista não pode ser excluída porque já foi comprada por ${purchaseCount} cliente(s).`
+            }
+        }
+
         await prisma.leadList.delete({
             where: { id },
         })
+
+        await recordAudit({
+            actorId: admin.id,
+            actorEmail: admin.email,
+            action: "list.deleted",
+            targetType: "list",
+            targetId: id,
+            metadata: { name: list.name },
+        })
+
+        revalidateListPaths(list.slug)
+
+        return { success: true }
     } catch (error) {
         console.error("Erro ao excluir lista:", error)
-        throw new Error("Erro ao excluir lista. Tente novamente mais tarde.")
+        return { success: false, error: "Erro ao excluir lista. Tente novamente mais tarde." }
     }
-
-    await recordAudit({
-        actorId: admin.id,
-        actorEmail: admin.email,
-        action: "list.deleted",
-        targetType: "list",
-        targetId: id,
-        metadata: { name: list.name },
-    })
-
-    revalidateListPaths(list.slug)
 }
 
 /**
