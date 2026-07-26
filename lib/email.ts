@@ -2,6 +2,10 @@
 
 import { injectTrackingIntoEmail } from '@/lib/utils/tracking.utils'
 import { sign } from '@/lib/signing'
+import {
+    buildUnsubscribeUrl,
+    buildListUnsubscribeHeaders,
+} from "@/lib/email/list-unsubscribe"
 import { Resend } from "resend"
 import nodemailer from "nodemailer"
 import type SMTPTransport from "nodemailer/lib/smtp-transport"
@@ -33,6 +37,7 @@ export interface SendEmailParams {
     replyTo?: string
     tags?: { name: string; value: string }[]
     emailSendId?: string
+    headers?: Record<string, string>
 }
 
 export interface SendEmailResult {
@@ -127,6 +132,7 @@ export async function sendEmailSmtp(
             subject: params.subject,
             html: params.html,
             replyTo: params.replyTo || fromEmail,
+            headers: params.headers,
         })
 
         console.log(`✅ Email enviado com sucesso! ID: ${info.messageId}`)
@@ -165,6 +171,7 @@ export async function sendEmailResend(
             html: params.html,
             replyTo: params.replyTo,
             tags: params.tags,
+            headers: params.headers,
         })
 
         if (error) {
@@ -195,12 +202,31 @@ export async function sendEmail(
         ? injectTrackingIntoEmail(params.html, params.emailSendId)
         : params.html
 
-    // Append unsubscribe footer if emailSendId is present (campaign emails)
-    const htmlWithUnsubscribe = params.emailSendId
-        ? appendUnsubscribeFooter(htmlWithTracking, params.emailSendId)
-        : htmlWithTracking
+    // E-mails de campanha (com emailSendId) levam footer + headers de descadastro.
+    // A mesma URL assinada serve aos dois — assinar uma vez evita divergência.
+    const unsubscribeUrl = params.emailSendId
+        ? buildUnsubscribeUrl(
+            process.env.NEXT_PUBLIC_APP_URL || "https://www.easyprospect.com.br",
+            params.emailSendId,
+            sign(params.emailSendId)
+        )
+        : null
 
-    const paramsFinal = { ...params, html: htmlWithUnsubscribe }
+    const paramsFinal: SendEmailParams = {
+        ...params,
+        html: unsubscribeUrl
+            ? appendUnsubscribeFooter(htmlWithTracking, unsubscribeUrl)
+            : htmlWithTracking,
+        headers: unsubscribeUrl
+            ? {
+                ...params.headers,
+                ...buildListUnsubscribeHeaders(
+                    unsubscribeUrl,
+                    smtpConfig?.senderEmail || smtpConfig?.user || null
+                ),
+            }
+            : params.headers,
+    }
 
     // Se tem configuração SMTP válida, usa SMTP
     if (smtpConfig?.user && smtpConfig?.pass) {
@@ -211,12 +237,7 @@ export async function sendEmail(
     return sendEmailResend(paramsFinal)
 }
 
-function appendUnsubscribeFooter(html: string, emailSendId: string): string {
-    // Link assinado e amarrado a este envio específico: a rota resolve o lead
-    // a partir do emailSendId e só age se a assinatura conferir.
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.easyprospect.com.br"
-    const signature = sign(emailSendId)
-    const unsubscribeUrl = `${baseUrl}/unsubscribe?sid=${emailSendId}&sig=${signature}`
+function appendUnsubscribeFooter(html: string, unsubscribeUrl: string): string {
     const footer = `
         <div style="margin-top:32px;padding-top:16px;border-top:1px solid #e5e7eb;color:#9ca3af;font-size:12px;line-height:1.5;">
             <p>Se não deseja mais receber e-mails, <a href="${unsubscribeUrl}" style="color:#6b7280;text-decoration:underline;">clique aqui para cancelar sua inscrição</a>.</p>
