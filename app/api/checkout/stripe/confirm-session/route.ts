@@ -66,19 +66,27 @@ export async function POST(request: NextRequest) {
 
         const sessionId = parsedBody.data.sessionId
 
-        // Verifica que a compra pertence a este usuário e ainda está pendente
-        // (autorização — impede confirmar sessão de outra pessoa).
-        const pendingPurchase = await prisma.purchase.findFirst({
+        // Verifica que a compra pertence a este usuário (autorização — impede
+        // confirmar sessão de outra pessoa). Sem filtro de status: o webhook
+        // checkout.session.completed costuma chegar ANTES de o comprador ser
+        // redirecionado de volta, e exigir "pending" aqui transformava essa
+        // vitória do webhook num 404 falso na tela de retorno.
+        const purchase = await prisma.purchase.findFirst({
             where: {
                 stripeSessionId: sessionId,
                 userId: user.id,
-                status: "pending",
             },
-            select: { id: true },
+            select: { id: true, status: true },
         })
 
-        if (!pendingPurchase) {
+        if (!purchase) {
             return NextResponse.json({ error: "Purchase not found" }, { status: 404 })
+        }
+
+        // Já paga (webhook venceu a corrida): o resultado para o comprador é
+        // o mesmo sucesso, sem consultar o Stripe de novo.
+        if (purchase.status === "paid") {
+            return NextResponse.json({ success: true, purchaseId: purchase.id })
         }
 
         const session = await getStripe().checkout.sessions.retrieve(sessionId)
