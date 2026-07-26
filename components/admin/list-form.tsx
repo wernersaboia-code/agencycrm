@@ -64,6 +64,7 @@ const listSchema = z.object({
     industries: z.string().optional(),
     price: z.string().min(1, "Informe o preço"),
     currency: z.string().default("EUR"),
+    totalLeads: z.string().regex(/^\d*$/, "Apenas números inteiros").optional(),
     isActive: z.boolean().default(true),
     isFeatured: z.boolean().default(false),
 })
@@ -178,6 +179,7 @@ export function ListForm({ list }: ListFormProps) {
             industries: list?.industries.join(", ") || "",
             price: list ? String(list.price) : "",
             currency: list?.currency || "EUR",
+            totalLeads: list ? String(list.totalLeads) : "",
             isActive: list?.isActive ?? true,
             isFeatured: list?.isFeatured ?? false,
         },
@@ -247,6 +249,11 @@ export function ListForm({ list }: ListFormProps) {
                 industries: selectedIndustries, // Usar array direto
                 introduction: data.introduction || undefined,
                 language: data.language || undefined,
+                // Campo vazio = não informado: a action preserva o valor
+                // atual na edição (e grava 0 na criação).
+                totalLeads: data.totalLeads?.trim()
+                    ? parseInt(data.totalLeads, 10)
+                    : undefined,
             }
 
             if (list) {
@@ -426,6 +433,30 @@ export function ListForm({ list }: ListFormProps) {
 
     const isEditing = !!list
     const hasPreparedLeads = preparedLeads.length > 0
+
+    // Campo de número de leads, compartilhado pelos três estados do card de
+    // importação (criação vazia, criação com leads preparados, edição).
+    const totalLeadsField = (
+        <div className="space-y-2">
+            <Label htmlFor="totalLeads">Número de leads</Label>
+            <Input
+                id="totalLeads"
+                type="text"
+                inputMode="numeric"
+                placeholder="0"
+                {...form.register("totalLeads")}
+            />
+            <p className="text-xs text-muted-foreground">
+                Preenchido automaticamente pela importação. Para listas entregues
+                em PDF, informe o número manualmente.
+            </p>
+            {form.formState.errors.totalLeads && (
+                <p className="text-sm text-destructive">
+                    {form.formState.errors.totalLeads.message}
+                </p>
+            )}
+        </div>
+    )
 
     return (
         <>
@@ -685,10 +716,7 @@ export function ListForm({ list }: ListFormProps) {
                         {isEditing ? (
                             // MODO EDIÇÃO: Lista já existe
                             <div className="space-y-4">
-                                <div className="p-4 bg-muted rounded-lg text-center">
-                                    <p className="text-2xl font-bold">{list.totalLeads}</p>
-                                    <p className="text-sm text-muted-foreground">leads nesta lista</p>
-                                </div>
+                                {totalLeadsField}
                                 <Button
                                     type="button"
                                     variant="outline"
@@ -701,7 +729,9 @@ export function ListForm({ list }: ListFormProps) {
                             </div>
                         ) : hasPreparedLeads ? (
                             // MODO CRIAÇÃO: Já tem leads preparados
-                            <div className="p-6 bg-indigo-50 dark:bg-indigo-950/30 rounded-lg">
+                            <div className="space-y-4">
+                                {totalLeadsField}
+                                <div className="p-6 bg-indigo-50 dark:bg-indigo-950/30 rounded-lg">
                                 <div className="flex items-start justify-between">
                                     <div className="flex items-center gap-4">
                                         <CheckCircle2 className="h-10 w-10 text-indigo-600" />
@@ -735,23 +765,27 @@ export function ListForm({ list }: ListFormProps) {
                                         Importar mais leads
                                     </Button>
                                 </div>
+                                </div>
                             </div>
                         ) : (
                             // MODO CRIAÇÃO: Nenhum lead ainda
-                            <Button
-                                type="button"
-                                variant="outline"
-                                className="w-full h-32 border-dashed border-2 hover:border-primary/50 hover:bg-muted/50 transition-colors"
-                                onClick={() => setShowImportWizard(true)}
-                            >
-                                <div className="text-center">
-                                    <FileSpreadsheet className="h-10 w-10 mx-auto mb-3 text-muted-foreground" />
-                                    <p className="font-medium">Clique para importar CSV ou Excel</p>
-                                    <p className="text-sm text-muted-foreground">
-                                        Formatos: .csv, .xlsx, .xls
-                                    </p>
-                                </div>
-                            </Button>
+                            <div className="space-y-4">
+                                {totalLeadsField}
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    className="w-full h-32 border-dashed border-2 hover:border-primary/50 hover:bg-muted/50 transition-colors"
+                                    onClick={() => setShowImportWizard(true)}
+                                >
+                                    <div className="text-center">
+                                        <FileSpreadsheet className="h-10 w-10 mx-auto mb-3 text-muted-foreground" />
+                                        <p className="font-medium">Clique para importar CSV ou Excel</p>
+                                        <p className="text-sm text-muted-foreground">
+                                            Formatos: .csv, .xlsx, .xls
+                                        </p>
+                                    </div>
+                                </Button>
+                            </div>
                         )}
                     </CardContent>
                 </Card>

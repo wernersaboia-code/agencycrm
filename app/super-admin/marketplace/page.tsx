@@ -66,8 +66,8 @@ export default async function MarketplacePage() {
             color: "text-amber-600"
         },
     ]
-    const publishedLists = recentLists.filter((list) => list.isActive && list._count.leads > 0).length
-    const emptyRecentLists = recentLists.filter((list) => list._count.leads === 0).length
+    const publishedLists = recentLists.filter((list) => list.isActive).length
+    const recentWithoutPdf = recentLists.filter((list) => !list.studyPdfUrl).length
     const marketplaceChecks = [
         {
             title: "Listas publicadas",
@@ -80,11 +80,10 @@ export default async function MarketplacePage() {
         },
         {
             title: "Estoque de leads",
-            description: leadsCount > 0
-                ? `${leadsCount.toLocaleString()} lead${leadsCount !== 1 ? "s" : ""} disponíveis`
-                : "Adicione leads às listas antes de vender.",
+            description: `${leadsCount.toLocaleString()} lead${leadsCount !== 1 ? "s" : ""} importados para uso interno — a entrega ao comprador é o PDF.`,
             href: "/super-admin/marketplace/lists",
-            done: leadsCount > 0,
+            // Informativo: no modelo PDF, vender não exige leads importados.
+            done: true,
             value: leadsCount.toLocaleString(),
         },
         {
@@ -150,8 +149,8 @@ export default async function MarketplacePage() {
                             </Badge>
                         </div>
                         <p className="text-sm text-muted-foreground">
-                            {publishedLists} lista{publishedLists !== 1 ? "s" : ""} recente{publishedLists !== 1 ? "s" : ""} com leads.
-                            {emptyRecentLists > 0 ? ` ${emptyRecentLists} recente${emptyRecentLists !== 1 ? "s" : ""} ainda sem leads.` : " Nenhuma lista recente vazia."}
+                            {publishedLists} lista{publishedLists !== 1 ? "s" : ""} recente{publishedLists !== 1 ? "s" : ""} publicada{publishedLists !== 1 ? "s" : ""}.
+                            {recentWithoutPdf > 0 ? ` ${recentWithoutPdf} recente${recentWithoutPdf !== 1 ? "s" : ""} ainda sem PDF.` : " Todas as listas recentes têm PDF."}
                         </p>
                     </div>
                     <div className="w-full space-y-2 lg:w-64">

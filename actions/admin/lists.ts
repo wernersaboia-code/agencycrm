@@ -21,6 +21,7 @@ interface CreateListData {
     industries: string[]
     price: number
     currency: string
+    totalLeads?: number
     isActive: boolean
     isFeatured: boolean
 }
@@ -36,6 +37,9 @@ const listDataSchema = z.object({
     industries: z.array(z.string().trim().min(1).max(80)).max(100),
     price: z.number().finite().positive().max(999999),
     currency: z.enum(["EUR", "USD", "BRL"]),
+    // Número declarado manualmente pelo admin. A importação de leads
+    // sobrescreve com a contagem real (fonte mais confiável quando existe).
+    totalLeads: z.number().int().min(0).max(999999999).optional(),
     isActive: z.boolean(),
     isFeatured: z.boolean(),
 })
@@ -111,6 +115,7 @@ export async function createList(data: CreateListData): Promise<SerializedList> 
             industries: validated.industries,
             price: validated.price,
             currency: validated.currency,
+            totalLeads: validated.totalLeads ?? 0,
             isActive: false,
             isFeatured: validated.isFeatured,
         },
@@ -152,6 +157,11 @@ export async function updateList(id: string, data: CreateListData): Promise<Seri
             industries: validated.industries,
             price: validated.price,
             currency: validated.currency,
+            // undefined = form não enviou o campo: preserva o valor atual
+            // em vez de zerar uma contagem já existente.
+            ...(validated.totalLeads !== undefined
+                ? { totalLeads: validated.totalLeads }
+                : {}),
             isActive: validated.isActive,
             isFeatured: validated.isFeatured,
         },
