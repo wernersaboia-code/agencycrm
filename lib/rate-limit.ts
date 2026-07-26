@@ -51,6 +51,35 @@ export function rateLimit(tokenCount: number) {
  * usuários legítimos por um problema de infraestrutura. As verificações de
  * segurança de verdade (auth, valor do pagamento) são independentes disto.
  */
+/**
+ * Wrapper para rate limiting de ações administrativas sensíveis. Reusa o
+ * limiter persistente compartilhado entre instâncias. Ações que exigem
+ * rate limiting: envio de convite/reset de senha, role/status change,
+ * transferência/deleção de workspace, criação/edição/deleção de listas.
+ *
+ * @param action Nome curto da ação (ex.: "user.password_reset")
+ * @param adminId ID do admin que executa a ação
+ * @param limit Máximo de requisições na janela (default: 10)
+ * @param windowMs Janela em ms (default: 60000 = 1 minuto)
+ * @throws Error se o limite foi excedido
+ */
+export async function checkAdminRateLimit(
+    action: string,
+    adminId: string,
+    limit = 10,
+    windowMs = 60_000
+): Promise<void> {
+    const allowed = await checkPersistentRateLimit(
+        `admin:${action}`,
+        adminId,
+        limit,
+        windowMs
+    )
+    if (!allowed) {
+        throw new Error("Limite de requisições excedido. Tente novamente mais tarde.")
+    }
+}
+
 export async function checkPersistentRateLimit(
     bucket: string,
     identifier: string,

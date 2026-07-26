@@ -21,6 +21,7 @@
             "errLinkExpired": "Esse link de confirmação expirou ou já foi usado. Entre com sua senha ou peça um novo cadastro.",
             "errLinkInvalid": "Não foi possível validar esse link de confirmação. Tente entrar com sua senha.",
             "errLinkIncomplete": "Esse link de confirmação está incompleto. Abra-o direto do e-mail, sem copiar e colar.",
+            "errRateLimit": "Muitas tentativas de login. Aguarde um minuto e tente novamente.",
             "errGeneric": "Não foi possível concluir a confirmação.",
             "areas": {
                 "purchases": { "title": "Minhas compras", "shortTitle": "Ver compras", "description": "Listas compradas, pedidos e downloads de arquivos.", "button": "Entrar em Minhas compras" },

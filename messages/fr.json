@@ -21,6 +21,7 @@
             "errLinkExpired": "Ce lien de confirmation a expiré ou a déjà été utilisé. Connectez-vous avec votre mot de passe ou demandez une nouvelle inscription.",
             "errLinkInvalid": "Impossible de valider ce lien de confirmation. Essayez de vous connecter avec votre mot de passe.",
             "errLinkIncomplete": "Ce lien de confirmation est incomplet. Ouvrez-le directement depuis l'e-mail, sans copier-coller.",
+            "errRateLimit": "Trop de tentatives de connexion. Veuillez attendre une minute et réessayer.",
             "errGeneric": "Impossible de finaliser la confirmation.",
             "areas": {
                 "purchases": { "title": "Mes achats", "shortTitle": "Voir les achats", "description": "Listes achetées, commandes et téléchargements de fichiers.", "button": "Accéder à Mes achats" },

@@ -21,6 +21,7 @@
             "errLinkExpired": "This confirmation link has expired or has already been used. Sign in with your password or request a new registration.",
             "errLinkInvalid": "We couldn't validate this confirmation link. Try signing in with your password.",
             "errLinkIncomplete": "This confirmation link is incomplete. Open it directly from the email, without copying and pasting.",
+            "errRateLimit": "Too many login attempts. Please wait a minute and try again.",
             "errGeneric": "We couldn't complete the confirmation.",
             "areas": {
                 "purchases": { "title": "My purchases", "shortTitle": "View purchases", "description": "Purchased lists, orders and file downloads.", "button": "Go to My purchases" },

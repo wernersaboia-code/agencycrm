@@ -9,6 +9,7 @@ import type { LeadList } from "@prisma/client"
 import { z } from "zod"
 import { recordAudit } from "@/lib/audit"
 import { canPublishList } from "@/lib/marketplace/list-publishing"
+import { checkAdminRateLimit } from "@/lib/rate-limit"
 
 interface CreateListData {
     name: string
@@ -95,7 +96,8 @@ function revalidateListPaths(listSlug?: string) {
 }
 
 export async function createList(data: CreateListData): Promise<SerializedList> {
-    await requireAdmin()
+    const admin = await requireAdmin()
+    await checkAdminRateLimit("list.create", admin.id, 10, 60_000)
     const validated = listDataSchema.parse(data)
 
     // O estudo em PDF só é enviado depois que a lista existe (rota de upload
@@ -127,7 +129,8 @@ export async function createList(data: CreateListData): Promise<SerializedList> 
 }
 
 export async function updateList(id: string, data: CreateListData): Promise<SerializedList> {
-    await requireAdmin()
+    const admin = await requireAdmin()
+    await checkAdminRateLimit("list.update", admin.id, 20, 60_000)
     const validated = listDataSchema.parse(data)
 
     if (validated.isActive) {
@@ -174,6 +177,7 @@ export async function updateList(id: string, data: CreateListData): Promise<Seri
 
 export async function deleteList(id: string) {
     const admin = await requireAdmin()
+    await checkAdminRateLimit("list.delete", admin.id, 5, 60_000)
 
     const list = await prisma.leadList.findUnique({
         where: { id },
@@ -229,7 +233,8 @@ export async function markListReviewed(listId: string): Promise<string> {
 }
 
 export async function uploadLeadsToList(listId: string, leads: MarketplaceLeadData[]) {
-    await requireAdmin()
+    const admin = await requireAdmin()
+    await checkAdminRateLimit("list.upload_leads", admin.id, 5, 60_000)
 
     const listExists = await prisma.leadList.findUnique({
         where: { id: listId },

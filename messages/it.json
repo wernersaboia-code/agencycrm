@@ -21,6 +21,7 @@
             "errLinkExpired": "Questo link di conferma è scaduto o è già stato usato. Accedi con la tua password o richiedi una nuova registrazione.",
             "errLinkInvalid": "Non è stato possibile validare questo link di conferma. Prova ad accedere con la password.",
             "errLinkIncomplete": "Questo link di conferma è incompleto. Aprilo direttamente dall'email, senza copiarlo e incollarlo.",
+            "errRateLimit": "Troppi tentativi di accesso. Attendi un minuto e riprova.",
             "errGeneric": "Non è stato possibile completare la conferma.",
             "areas": {
                 "purchases": { "title": "I miei acquisti", "shortTitle": "Vedi acquisti", "description": "Liste acquistate, ordini e download dei file.", "button": "Entra in I miei acquisti" },

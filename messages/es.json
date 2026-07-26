@@ -21,6 +21,7 @@
             "errLinkExpired": "Este enlace de confirmación ha caducado o ya se ha usado. Inicia sesión con tu contraseña o solicita un nuevo registro.",
             "errLinkInvalid": "No se pudo validar este enlace de confirmación. Intenta iniciar sesión con tu contraseña.",
             "errLinkIncomplete": "Este enlace de confirmación está incompleto. Ábrelo directamente desde el correo, sin copiar y pegar.",
+            "errRateLimit": "Demasiados intentos de inicio de sesión. Espere un minuto y vuelva a intentarlo.",
             "errGeneric": "No se pudo completar la confirmación.",
             "areas": {
                 "purchases": { "title": "Mis compras", "shortTitle": "Ver compras", "description": "Listas compradas, pedidos y descargas de archivos.", "button": "Entrar en Mis compras" },

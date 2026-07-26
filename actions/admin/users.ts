@@ -7,6 +7,7 @@ import { requireAdmin } from "@/lib/auth"
 import { UserRole, UserStatus, type Prisma } from "@prisma/client"
 import { getPublicAppUrl } from "@/lib/env"
 import { recordAudit } from "@/lib/audit"
+import { checkAdminRateLimit } from "@/lib/rate-limit"
 
 // ==================== TIPOS ====================
 
@@ -230,6 +231,7 @@ export async function getUserDetails(userId: string): Promise<UserDetails | null
 
 export async function updateUserRole(userId: string, role: UserRole) {
     const admin = await requireAdmin()
+    await checkAdminRateLimit("user.role_change", admin.id, 10, 60_000)
 
     if (!Object.values(UserRole).includes(role)) {
         throw new Error("Role invalida")
@@ -266,6 +268,7 @@ export async function updateUserRole(userId: string, role: UserRole) {
 
 export async function updateUserStatus(userId: string, status: UserStatus) {
     const admin = await requireAdmin()
+    await checkAdminRateLimit("user.status_change", admin.id, 10, 60_000)
 
     if (!Object.values(UserStatus).includes(status)) {
         throw new Error("Status invalido")
@@ -302,6 +305,7 @@ export async function updateUserStatus(userId: string, status: UserStatus) {
 
 export async function sendPasswordReset(email: string) {
     const admin = await requireAdmin()
+    await checkAdminRateLimit("user.password_reset", admin.id, 5, 60_000)
 
     const supabase = await createClient()
 

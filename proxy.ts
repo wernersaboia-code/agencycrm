@@ -5,6 +5,7 @@ import { routing } from "@/lib/i18n/routing"
 import { stripLocale } from "@/lib/i18n/strip-locale"
 import { prisma } from "@/lib/prisma"
 import { isSuperAdminPath, canAccessSuperAdmin } from "@/lib/auth/super-admin-gate"
+import { checkPersistentRateLimit } from "@/lib/rate-limit"
 
 const intlMiddleware = createIntlMiddleware(routing)
 
@@ -177,6 +178,23 @@ export async function proxy(request: NextRequest) {
     // ============================================
     const authRoutes = ["/sign-in", "/sign-up", "/forgot-password"]
     const isAuthRoute = matchesRoute(pathForMatching, authRoutes)
+
+    // ============================================
+    // RATE LIMITING DE AUTH - proteção contra brute-force
+    // ============================================
+    if (isAuthRoute) {
+        const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
+            || request.headers.get("x-real-ip")
+            || "anonymous"
+        const allowed = await checkPersistentRateLimit("auth:page", ip, 20, 60_000)
+        if (!allowed) {
+            const url = request.nextUrl.clone()
+            url.pathname = "/sign-in"
+            url.search = ""
+            url.searchParams.set("erro", "rate_limit")
+            return NextResponse.redirect(url)
+        }
+    }
 
     // ============================================
     // ROTAS DE API e ASSETS - não processar
