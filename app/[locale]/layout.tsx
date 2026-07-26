@@ -72,7 +72,7 @@ export default async function MarketplaceLayout({
                         <MarketplaceHeader />
                     </Suspense>
 
-                    <SyncLocaleCookie locale={locale as "pt" | "de"} />
+                    <SyncLocaleCookie locale={locale as Locale} />
 
                     <main id="main-content" className="flex-1">
                         {children}

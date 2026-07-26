@@ -2,7 +2,9 @@
 
 import { useEffect } from "react"
 
-export function SyncLocaleCookie({ locale }: { locale: "pt" | "de" }) {
+import type { Locale } from "@/lib/i18n/locales"
+
+export function SyncLocaleCookie({ locale }: { locale: Locale }) {
     useEffect(() => {
         const current = document.cookie
             .split("; ")
