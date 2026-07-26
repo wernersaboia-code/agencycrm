@@ -3,6 +3,7 @@ import { redirect } from "next/navigation"
 import { cookies } from "next/headers"
 import { getAuthenticatedUser, requireWorkspaceAccess } from "@/lib/auth"
 import { getUserProfile, getAccountStats } from "@/actions/settings"
+import { getSendWindowSettings, listWorkspaceSuppressions } from "@/actions/workspace-settings"
 import { prisma } from "@/lib/prisma"
 import { SettingsClient } from "./settings-client"
 
@@ -75,11 +76,21 @@ export default async function SettingsPage() {
             totalCalls: 0,
         }
 
+    // Buscar janela de envio de cold mail
+    const sendWindowResult = await getSendWindowSettings(activeWorkspaceId)
+    const sendWindow = sendWindowResult.success ? sendWindowResult.data ?? null : null
+
+    // Buscar lista de supressão do workspace (falha não derruba a página)
+    const suppressionsResult = await listWorkspaceSuppressions(activeWorkspaceId)
+    const suppressions = suppressionsResult.success ? suppressionsResult.data ?? [] : []
+
     return (
         <SettingsClient
             profile={profile ?? null}
             workspace={workspaceForClient}
             stats={stats}
+            sendWindow={sendWindow}
+            suppressions={suppressions}
         />
     )
 }

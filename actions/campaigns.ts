@@ -17,6 +17,12 @@ import {
     sendSingleCampaign,
     sendSequenceFirstStep,
 } from "@/lib/services/campaigns.service"
+import {
+    resolveSendWindow,
+    windowCoversCronRun,
+    describeCronHourIn,
+    CRON_SEND_HOUR_UTC,
+} from "@/lib/campaigns/send-window"
 
 // ============================================================
 // TIPOS
@@ -190,6 +196,69 @@ export async function getCampaignById(
 // MUTATIONS
 // ============================================================
 
+interface CampaignSendWindowOverrideInput {
+    sendWindowEnabled?: boolean | null
+    sendTimezone?: string | null
+    sendDays?: number[]
+    sendStartHour?: number | null
+    sendEndHour?: number | null
+    sendJitterMinutes?: number | null
+}
+
+/**
+ * Recusa um override de janela por campanha que, combinado com os defaults do
+ * workspace, seja inalcançável pelo cron diário — a mesma armadilha que a
+ * Task 4 fechou na escrita do workspace (ver lib/campaigns/send-window.ts).
+ * Sem override (sendWindowEnabled null/undefined) a campanha herda a janela
+ * do workspace, já validada naquela escrita, então não há o que checar aqui.
+ * Compartilhada entre createCampaign e updateCampaign para não duplicar a
+ * checagem.
+ */
+async function validateCampaignSendWindow(
+    workspaceId: string,
+    override: CampaignSendWindowOverrideInput
+): Promise<string | null> {
+    const hasWindowOverride =
+        override.sendWindowEnabled !== null && override.sendWindowEnabled !== undefined
+
+    if (!hasWindowOverride) {
+        return null
+    }
+
+    const workspace = await prisma.workspace.findUnique({
+        where: { id: workspaceId },
+        select: {
+            sendWindowEnabled: true,
+            sendTimezone: true,
+            sendDays: true,
+            sendStartHour: true,
+            sendEndHour: true,
+            sendJitterMinutes: true,
+        },
+    })
+
+    if (!workspace) {
+        return "Workspace não encontrado"
+    }
+
+    const effectiveWindow = resolveSendWindow(workspace, {
+        sendWindowEnabled: override.sendWindowEnabled ?? null,
+        sendTimezone: override.sendTimezone ?? null,
+        sendDays: override.sendDays ?? [],
+        sendStartHour: override.sendStartHour ?? null,
+        sendEndHour: override.sendEndHour ?? null,
+        sendJitterMinutes: override.sendJitterMinutes ?? null,
+    })
+
+    if (!windowCoversCronRun(effectiveWindow)) {
+        return `Os envios saem uma vez por dia, às ${CRON_SEND_HOUR_UTC}h UTC (${describeCronHourIn(
+            effectiveWindow.timezone
+        )} no fuso do workspace). A janela desta campanha precisa incluir esse horário, senão nenhum e-mail é enviado.`
+    }
+
+    return null
+}
+
 export async function createCampaign(
     data: CreateCampaignData
 ): Promise<ActionResult<{ id: string }>> {
@@ -268,6 +337,13 @@ export async function createCampaign(
             return { success: false, error: "Sequência precisa de pelo menos 1 step" }
         }
 
+        // Só sequências usam janela de envio (ver cron de process-sequences) —
+        // por isso a checagem entra aqui, e não antes de saber o tipo.
+        const sendWindowError = await validateCampaignSendWindow(validated.data.workspaceId, validated.data)
+        if (sendWindowError) {
+            return { success: false, error: sendWindowError }
+        }
+
         const campaign = await prisma.campaign.create({
             data: {
                 name: validated.data.name,
@@ -276,6 +352,12 @@ export async function createCampaign(
                 status: "DRAFT",
                 stopOnUnsubscribe: validated.data.stopOnUnsubscribe,
                 stopOnConverted: validated.data.stopOnConverted,
+                sendWindowEnabled: validated.data.sendWindowEnabled ?? null,
+                sendTimezone: validated.data.sendTimezone ?? null,
+                sendDays: validated.data.sendDays ?? [],
+                sendStartHour: validated.data.sendStartHour ?? null,
+                sendEndHour: validated.data.sendEndHour ?? null,
+                sendJitterMinutes: validated.data.sendJitterMinutes ?? null,
                 totalRecipients: leads.length,
                 workspaceId: validated.data.workspaceId,
                 // Criar steps
@@ -340,11 +422,30 @@ export async function updateCampaign(
             return { success: false, error: validated.error.issues[0].message }
         }
 
+        // Só sequências usam janela de envio (ver cron de process-sequences) —
+        // campanhas single não têm o que checar aqui.
+        if (campaign.type === "sequence") {
+            const sendWindowError = await validateCampaignSendWindow(campaign.workspaceId, validated.data)
+            if (sendWindowError) {
+                return { success: false, error: sendWindowError }
+            }
+        }
+
         await prisma.campaign.update({
             where: { id },
             data: {
                 name: validated.data.name,
                 description: validated.data.description,
+                ...(campaign.type === "sequence"
+                    ? {
+                        sendWindowEnabled: validated.data.sendWindowEnabled ?? null,
+                        sendTimezone: validated.data.sendTimezone ?? null,
+                        sendDays: validated.data.sendDays ?? [],
+                        sendStartHour: validated.data.sendStartHour ?? null,
+                        sendEndHour: validated.data.sendEndHour ?? null,
+                        sendJitterMinutes: validated.data.sendJitterMinutes ?? null,
+                    }
+                    : {}),
             },
         })
 
@@ -548,6 +649,7 @@ export async function sendCampaign(id: string): Promise<ActionResult> {
 
             const sendResult = await sendSingleCampaign(prisma, {
                 id: campaign.id,
+                workspaceId: campaign.workspaceId,
                 subject,
                 body,
                 template: campaign.template,
@@ -587,6 +689,7 @@ export async function sendCampaign(id: string): Promise<ActionResult> {
 
             const sendResult = await sendSequenceFirstStep(prisma, {
                 id: campaign.id,
+                workspaceId: campaign.workspaceId,
                 workspace: campaign.workspace,
                 steps: campaign.steps,
                 enrollments: campaign.enrollments,

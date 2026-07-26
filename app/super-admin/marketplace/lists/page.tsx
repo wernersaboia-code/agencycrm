@@ -30,7 +30,7 @@ export default async function MarketplaceListsPage() {
         },
     })
     const activeLists = lists.filter((list) => list.isActive).length
-    const emptyLists = lists.filter((list) => list._count.leads === 0).length
+    const listsWithoutPdf = lists.filter((list) => !list.studyPdfUrl).length
     const featuredLists = lists.filter((list) => list.isFeatured).length
     const listsWithSales = lists.filter((list) => list._count.purchaseItems > 0).length
     const totalLeads = lists.reduce((acc, list) => acc + list._count.leads, 0)
@@ -44,10 +44,10 @@ export default async function MarketplaceListsPage() {
             icon: CheckCircle2,
         },
         {
-            label: "Vazias",
-            value: emptyLists,
-            description: "Listas sem leads publicados.",
-            done: emptyLists === 0 && lists.length > 0,
+            label: "Sem PDF",
+            value: listsWithoutPdf,
+            description: "Listas sem o estudo em PDF anexado.",
+            done: listsWithoutPdf === 0 && lists.length > 0,
             icon: AlertCircle,
         },
         {
@@ -97,7 +97,7 @@ export default async function MarketplaceListsPage() {
 
             <Card className="border-indigo-200 bg-indigo-50">
                 <CardContent className="p-4 text-sm text-indigo-900">
-                    Para publicar uma nova base, clique em <strong>Criar nova lista</strong>. Depois, confira se a lista tem leads e está marcada como ativa.
+                    Para publicar uma nova base, clique em <strong>Criar nova lista</strong>. Depois, confira se a lista tem o PDF anexado, os dados marcados como revisados e está marcada como ativa.
                 </CardContent>
             </Card>
 

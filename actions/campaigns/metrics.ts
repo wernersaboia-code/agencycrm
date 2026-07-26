@@ -68,11 +68,11 @@ export async function recalculateCampaignMetrics(
 
         // Count metrics from EmailSends
         const [totalSent, totalOpened, totalClicked, totalBounced] = await Promise.all([
-            // Sent = not PENDING
+            // Sent = not PENDING e não suprimido (supressão nunca foi enviada)
             prisma.emailSend.count({
                 where: {
                     campaignId,
-                    status: { not: 'PENDING' },
+                    status: { notIn: ['PENDING', 'SUPPRESSED'] },
                 },
             }),
             // Opened = has openedAt

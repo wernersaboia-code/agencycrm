@@ -69,6 +69,7 @@ export async function GET(
             REPLIED: "Respondido",
             BOUNCED: "Bounced",
             COMPLAINED: "Spam",
+            SUPPRESSED: "Suprimido",
         }
 
         const rows = campaign.emailSends.map((send) => [

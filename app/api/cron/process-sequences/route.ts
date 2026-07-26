@@ -4,7 +4,17 @@ import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { sendEmail, replaceEmailVariables } from "@/lib/email"
 import { decryptSecret } from "@/lib/secrets"
-import type { CampaignEnrollment, CampaignStep, StepCondition } from "@prisma/client"
+import { isSuppressed, addSuppression } from "@/lib/campaigns/suppression"
+import { classifyBounce } from "@/lib/campaigns/bounce-classifier"
+import {
+    resolveSendWindow,
+    isWithinSendWindow,
+    nextWindowStart,
+    calculateNextSendAt,
+    windowCoversCronRun,
+    CRON_SEND_HOUR_UTC,
+} from "@/lib/campaigns/send-window"
+import type { CampaignEnrollment, StepCondition } from "@prisma/client"
 
 // Vercel Cron - roda a cada hora
 // Configurar em vercel.json
@@ -80,12 +90,18 @@ export async function GET(request: Request) {
         let sent = 0
         let skipped = 0
         let throttled = 0
+        let deferred = 0
         let errors = 0
+
+        // Workspaces já alertados sobre janela inalcançável nesta execução.
+        const unreachableWindowWarned = new Set<string>()
 
         for (const enrollment of pendingEnrollments) {
             try {
                 processed++
                 const { campaign, lead } = enrollment
+
+                const sendWindow = resolveSendWindow(campaign.workspace, campaign)
 
                 // Verificar se deve parar a sequência
                 if (campaign.stopOnConverted && lead.status === "CONVERTED") {
@@ -148,7 +164,7 @@ export async function GET(request: Request) {
                     )
 
                     if (nextStep) {
-                        const nextSendAt = calculateNextSendAt(now, nextStep)
+                        const nextSendAt = calculateNextSendAt(now, nextStep, sendWindow)
                         await prisma.campaignEnrollment.update({
                             where: { id: enrollment.id },
                             data: {
@@ -171,6 +187,49 @@ export async function GET(request: Request) {
                     continue
                 }
 
+                // A janela só restringe o envio em si, não a limpeza de estado do
+                // enrollment: os ramos acima (convertido, descadastrado, sem step,
+                // condição não atendida) encerram ou avançam o enrollment sem
+                // enviar e-mail. Se a checagem de janela viesse antes deles, um
+                // lead convertido/descadastrado cujo workspace tenha janela que
+                // não cobre o instante do cron ficaria "active" para sempre, sendo
+                // reselecionado a cada execução. Por isso ela só entra aqui,
+                // imediatamente antes do envio de fato.
+                //
+                // Fora da janela: não envia e não avança o step — apenas reagenda
+                // para o próximo horário válido. O enrollment segue ativo.
+                if (!isWithinSendWindow(now, sendWindow)) {
+                    const deferredTo = nextWindowStart(now, sendWindow)
+                    await prisma.campaignEnrollment.update({
+                        where: { id: enrollment.id },
+                        data: { nextSendAt: deferredTo },
+                    })
+                    deferred++
+
+                    // Este cron roda uma vez por dia, sempre no mesmo horário.
+                    // Se a janela não cobre esse instante, o adiamento acima vai
+                    // se repetir todo dia e o enrollment NUNCA envia. A UI
+                    // valida isso na hora de salvar (Task 4); aqui é a rede de
+                    // segurança para configuração que escapou por outro caminho.
+                    if (
+                        !windowCoversCronRun(sendWindow) &&
+                        !unreachableWindowWarned.has(campaign.workspaceId)
+                    ) {
+                        unreachableWindowWarned.add(campaign.workspaceId)
+                        console.error(
+                            `[Cron] JANELA INALCANÇÁVEL: o workspace ${campaign.workspaceId} tem janela ` +
+                            `${sendWindow.startHour}h-${sendWindow.endHour}h em ${sendWindow.timezone}, que nunca ` +
+                            `contém a execução diária das ${CRON_SEND_HOUR_UTC}h UTC. O enrollment ${enrollment.id} ` +
+                            `não será enviado enquanto a janela não for corrigida.`
+                        )
+                    } else {
+                        console.log(
+                            `[Cron] Fora da janela de envio - enrollment ${enrollment.id} adiado para ${deferredTo.toISOString()}`
+                        )
+                    }
+                    continue
+                }
+
                 // Respeitar o limite diário de envios do workspace.
                 // maxEmailsPerDay === 0 significa ilimitado.
                 const maxEmailsPerDay = campaign.workspace.maxEmailsPerDay
@@ -185,6 +244,23 @@ export async function GET(request: Request) {
                         )
                         continue
                     }
+                }
+
+                // Supressão vence qualquer configuração de campanha.
+                if (await isSuppressed(prisma, lead.email, campaign.workspaceId)) {
+                    await prisma.campaignEnrollment.update({
+                        where: { id: enrollment.id },
+                        data: {
+                            status: "stopped",
+                            stoppedAt: now,
+                            stopReason: "suppressed",
+                        },
+                    })
+                    skipped++
+                    console.log(
+                        `[Cron] Lead ${lead.id} está na lista de supressão - parando sequência`
+                    )
+                    continue
                 }
 
                 // Preparar dados do lead
@@ -268,6 +344,7 @@ export async function GET(request: Request) {
                             status: "SENT",
                             sentAt: now,
                             resendId: result.id,
+                            messageId: result.messageId ?? null,
                         },
                     })
 
@@ -285,7 +362,7 @@ export async function GET(request: Request) {
                     )
 
                     if (nextStep) {
-                        const nextSendAt = calculateNextSendAt(now, nextStep)
+                        const nextSendAt = calculateNextSendAt(now, nextStep, sendWindow)
                         await prisma.campaignEnrollment.update({
                             where: { id: enrollment.id },
                             data: {
@@ -316,14 +393,43 @@ export async function GET(request: Request) {
                     )
                 } else {
                     // Erro no envio
+                    const bounceType = classifyBounce(result.error)
+
                     await prisma.emailSend.update({
                         where: { id: emailSend.id },
                         data: {
                             status: "BOUNCED",
                             bouncedAt: now,
                             bounceReason: result.error,
+                            bounceType,
                         },
                     })
+
+                    if (bounceType === "hard") {
+                        // Supressão primeiro: ela nunca lança. Se as atualizações
+                        // de lead/enrollment abaixo falharem, a supressão já
+                        // ficou gravada e a checagem de isSuppressed no topo do
+                        // loop encerra o enrollment na próxima execução do cron.
+                        await addSuppression(prisma, {
+                            email: lead.email,
+                            workspaceId: campaign.workspaceId,
+                            reason: "hard_bounce",
+                            detail: result.error ?? null,
+                        })
+                        await prisma.lead.update({
+                            where: { id: lead.id },
+                            data: { status: "BOUNCED" },
+                        })
+                        await prisma.campaignEnrollment.update({
+                            where: { id: enrollment.id },
+                            data: {
+                                status: "stopped",
+                                stoppedAt: now,
+                                stopReason: "hard_bounce",
+                            },
+                        })
+                    }
+
                     errors++
                     console.error(`[Cron] Erro ao enviar para ${lead.email}: ${result.error}`)
                 }
@@ -352,6 +458,7 @@ export async function GET(request: Request) {
             sent,
             skipped,
             throttled,
+            deferred,
             errors,
         }
 
@@ -414,14 +521,4 @@ async function checkStepCondition(
         default:
             return true
     }
-}
-
-function calculateNextSendAt(
-    fromDate: Date,
-    step: Pick<CampaignStep, "delayDays" | "delayHours">
-): Date {
-    const nextDate = new Date(fromDate)
-    nextDate.setDate(nextDate.getDate() + (step.delayDays || 0))
-    nextDate.setHours(nextDate.getHours() + (step.delayHours || 0))
-    return nextDate
 }

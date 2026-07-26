@@ -75,6 +75,7 @@ enum EmailSendStatus {
   REPLIED // Respondeu
   BOUNCED // Falhou
   COMPLAINED // Marcou como spam
+  SUPPRESSED // 🆕 Bloqueado pela lista de supressão — nunca foi para a rede
 }
 
 enum CallResult {
@@ -125,6 +126,21 @@ enum WorkspacePlan {
   STARTER // €29/mês
   PRO // €49/mês
   ENTERPRISE // €99/mês
+}
+
+// 🆕 Motivo de supressão de e-mail
+enum SuppressionReason {
+  hard_bounce
+  complaint
+  unsubscribe
+  manual
+}
+
+// 🆕 Tipo de bounce classificado no motor de cold mail
+enum BounceType {
+  hard
+  soft
+  unknown
 }
 
 // ==================== USUÁRIO ====================
@@ -202,6 +218,22 @@ model Workspace {
   maxLeads        Int @default(0) // 0 = ilimitado (para FREE e ENTERPRISE)
   maxUsers        Int @default(1)
   maxEmailsPerDay Int @default(0) // 0 = ilimitado
+
+  // 🆕 Janela de envio de cold mail (defaults do workspace)
+  // sendDays usa numeração ISO: 1 = segunda ... 7 = domingo.
+  // sendStartHour é inclusivo, sendEndHour exclusivo.
+  sendWindowEnabled Boolean @default(true)
+  sendTimezone      String  @default("UTC")
+  sendDays          Int[]   @default([1, 2, 3, 4, 5])
+  sendStartHour     Int     @default(9)
+  sendEndHour       Int     @default(17)
+  sendJitterMinutes Int     @default(20)
+
+  // 🆕 Detecção de resposta via IMAP
+  imapHost              String?
+  imapPort              Int?
+  replyDetectionEnabled Boolean   @default(false)
+  replyCheckedAt        DateTime?
 
   @@index([userId])
   @@map("workspaces")
@@ -358,6 +390,14 @@ model Campaign {
   scheduledAt DateTime?
   sentAt      DateTime?
 
+  // 🆕 Override da janela de envio. null (ou array vazio) = herda do workspace.
+  sendWindowEnabled Boolean?
+  sendTimezone      String?
+  sendDays          Int[]    @default([])
+  sendStartHour     Int?
+  sendEndHour       Int?
+  sendJitterMinutes Int?
+
   workspaceId String
   workspace   Workspace   @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   emailSends  EmailSend[]
@@ -434,6 +474,11 @@ enum PurchaseStatus {
   refunded
 }
 
+enum PaymentProvider {
+  paypal
+  stripe
+}
+
 // ==================== EMAIL SEND ====================
 
 model EmailSend {
@@ -461,6 +506,8 @@ model EmailSend {
   repliedAt    DateTime?
   bouncedAt    DateTime?
   bounceReason String?
+  bounceType   BounceType?
+  messageId    String? // Message-ID gerado no envio, usado para casar respostas
 
   sentAt    DateTime?
   createdAt DateTime  @default(now())
@@ -471,7 +518,28 @@ model EmailSend {
   @@index([leadId])
   @@index([stepId])
   @@index([status])
+  @@index([messageId])
   @@map("email_sends")
+}
+
+// ==================== SUPRESSÃO ====================
+
+/// Lista de supressão de cold mail. `workspaceId` nulo = supressão global
+/// (vale para todos os workspaces). O e-mail é sempre gravado normalizado
+/// (trim + lowercase) por `normalizeEmail`.
+model Suppression {
+  id          String            @id @default(cuid())
+  email       String
+  workspaceId String?
+  reason      SuppressionReason
+  detail      String?
+  createdAt   DateTime          @default(now())
+
+  // `email` lidera porque toda consulta o restringe (unitária ou `in`), e o
+  // workspace entra sempre em OR com o global (`workspaceId IS NULL`) — que
+  // não guia seek em B-tree. Índice só de `email` seria prefixo deste.
+  @@index([email, workspaceId])
+  @@map("suppressions")
 }
 
 // ==================== CALL ====================
@@ -622,10 +690,13 @@ model Purchase {
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
-  // Pagamento PayPal
-  paypalOrderId String?        @unique
-  paypalPayerId String?
-  status        PurchaseStatus @default(pending)
+  // Pagamento (PayPal ou Stripe — provider define quais campos valem)
+  provider              PaymentProvider @default(paypal)
+  paypalOrderId         String?         @unique
+  paypalPayerId         String?
+  stripeSessionId       String?         @unique
+  stripePaymentIntentId String?
+  status                PurchaseStatus  @default(pending)
 
   // Valores
   subtotal Decimal @db.Decimal(10, 2)

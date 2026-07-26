@@ -6,6 +6,7 @@ import { useFormatter, useTranslations } from "next-intl"
 import { Link, useRouter } from "@/lib/i18n/navigation"
 import { useCart } from "@/contexts/cart-context"
 import { PayPalButtonsWrapper } from "@/components/checkout/paypal-buttons"
+import { StripeCheckoutButton } from "@/components/checkout/stripe-checkout-button"
 import { formatCurrency } from "@/lib/utils"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
@@ -91,6 +92,10 @@ export default function CheckoutPage() {
                             </div>
 
                             <PayPalButtonsWrapper items={paypalItems} />
+
+                            <div className="mt-3">
+                                <StripeCheckoutButton items={paypalItems} />
+                            </div>
                         </CardContent>
                     </Card>
 

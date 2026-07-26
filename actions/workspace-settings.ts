@@ -7,6 +7,13 @@ import { getAuthenticatedUser, requireWorkspaceAccess } from "@/lib/auth"
 import { testSmtpConnection, type SmtpConfig } from "@/lib/email"
 import { encryptSecret } from "@/lib/secrets"
 import { z } from "zod"
+import {
+    resolveSendWindow,
+    windowCoversCronRun,
+    describeCronHourIn,
+    CRON_SEND_HOUR_UTC,
+} from "@/lib/campaigns/send-window"
+import { addSuppression, removeSuppression } from "@/lib/campaigns/suppression"
 
 // ============================================================
 // TIPOS
@@ -41,6 +48,52 @@ const smtpSettingsSchema = z.object({
 })
 
 export type SmtpSettingsData = z.infer<typeof smtpSettingsSchema>
+
+const sendWindowSchema = z
+    .object({
+        sendWindowEnabled: z.boolean(),
+        sendTimezone: z.string().min(1, "Selecione um fuso horário"),
+        sendDays: z
+            .array(z.number().int().min(1).max(7))
+            .min(1, "Selecione ao menos um dia"),
+        sendStartHour: z
+            .number()
+            .int()
+            .min(0, "A hora inicial deve estar entre 0 e 23")
+            .max(23, "A hora inicial deve estar entre 0 e 23"),
+        sendEndHour: z
+            .number()
+            .int()
+            .min(1, "A hora final deve estar entre 1 e 24")
+            .max(24, "A hora final deve estar entre 1 e 24"),
+        sendJitterMinutes: z
+            .number()
+            .int()
+            .min(0, "A variação deve estar entre 0 e 120 minutos")
+            .max(120, "A variação deve estar entre 0 e 120 minutos"),
+    })
+    .refine((data) => data.sendEndHour > data.sendStartHour, {
+        message: "O fim da janela precisa ser depois do início",
+        path: ["sendEndHour"],
+    })
+    // Guard crítico: o cron de envio roda uma vez por dia, sempre no mesmo
+    // horário UTC. Janela que não contenha esse instante nunca envia nada — o
+    // motor adia, o cron volta no mesmo horário e adia de novo, para sempre.
+    // Recusar na escrita é a única forma de o usuário descobrir isso na hora
+    // de salvar, e não semanas depois com a campanha parada em silêncio.
+    .refine((data) => windowCoversCronRun(resolveSendWindow(data, null)), {
+        path: ["sendStartHour"],
+        // zod v4 não aceita mais uma função para o params inteiro do refine —
+        // só `error` pode ser função, recebendo o issue (com `.input` cru).
+        error: (issue) => {
+            const data = issue.input as { sendTimezone: string }
+            return `Os envios saem uma vez por dia, às ${CRON_SEND_HOUR_UTC}h UTC (${describeCronHourIn(
+                data.sendTimezone
+            )} no fuso escolhido). A janela precisa incluir esse horário, senão nenhum e-mail é enviado.`
+        },
+    })
+
+export type SendWindowSettingsData = z.infer<typeof sendWindowSchema>
 
 async function hasWorkspaceAccess(workspaceId: string): Promise<boolean> {
     try {
@@ -320,5 +373,184 @@ export async function clearSmtpSettings(workspaceId: string): Promise<ActionResu
     } catch (error) {
         console.error("Erro ao limpar configurações:", error)
         return { success: false, error: "Erro ao limpar configurações" }
+    }
+}
+
+// ============================================================
+// MUTATIONS - JANELA DE ENVIO
+// ============================================================
+
+/**
+ * Busca a janela de envio de cold mail do workspace.
+ */
+export async function getSendWindowSettings(
+    workspaceId: string
+): Promise<ActionResult<SendWindowSettingsData>> {
+    try {
+        const canAccessWorkspace = await hasWorkspaceAccess(workspaceId)
+        if (!canAccessWorkspace) {
+            return { success: false, error: "Workspace não encontrado" }
+        }
+
+        const workspace = await prisma.workspace.findUnique({
+            where: { id: workspaceId },
+            select: {
+                sendWindowEnabled: true,
+                sendTimezone: true,
+                sendDays: true,
+                sendStartHour: true,
+                sendEndHour: true,
+                sendJitterMinutes: true,
+            },
+        })
+
+        if (!workspace) {
+            return { success: false, error: "Workspace não encontrado" }
+        }
+
+        return { success: true, data: workspace }
+    } catch (error) {
+        console.error("Erro ao buscar janela de envio:", error)
+        return { success: false, error: "Erro ao buscar janela de envio" }
+    }
+}
+
+/**
+ * Atualiza a janela de envio de cold mail do workspace.
+ */
+export async function updateSendWindowSettings(
+    workspaceId: string,
+    data: SendWindowSettingsData
+): Promise<ActionResult> {
+    try {
+        const canAccessWorkspace = await hasWorkspaceAccess(workspaceId)
+        if (!canAccessWorkspace) {
+            return { success: false, error: "Workspace não encontrado" }
+        }
+
+        const parsed = sendWindowSchema.safeParse(data)
+        if (!parsed.success) {
+            return {
+                success: false,
+                error: parsed.error.issues[0]?.message || "Dados inválidos",
+            }
+        }
+
+        await prisma.workspace.update({
+            where: { id: workspaceId },
+            data: {
+                sendWindowEnabled: parsed.data.sendWindowEnabled,
+                sendTimezone: parsed.data.sendTimezone,
+                sendDays: parsed.data.sendDays,
+                sendStartHour: parsed.data.sendStartHour,
+                sendEndHour: parsed.data.sendEndHour,
+                sendJitterMinutes: parsed.data.sendJitterMinutes,
+            },
+        })
+
+        revalidatePath("/settings")
+
+        return { success: true }
+    } catch (error) {
+        console.error("Erro ao atualizar janela de envio:", error)
+        return { success: false, error: "Erro ao atualizar janela de envio." }
+    }
+}
+
+// ============================================================
+// MUTATIONS - LISTA DE SUPRESSÃO
+// ============================================================
+
+export interface SuppressionRow {
+    id: string
+    email: string
+    reason: string
+    detail: string | null
+    createdAt: string
+    isGlobal: boolean
+}
+
+/**
+ * Lista as supressões que afetam este workspace (as próprias e as globais).
+ */
+export async function listWorkspaceSuppressions(
+    workspaceId: string
+): Promise<ActionResult<SuppressionRow[]>> {
+    try {
+        const canAccessWorkspace = await hasWorkspaceAccess(workspaceId)
+        if (!canAccessWorkspace) {
+            return { success: false, error: "Workspace não encontrado" }
+        }
+
+        const rows = await prisma.suppression.findMany({
+            where: { OR: [{ workspaceId: null }, { workspaceId }] },
+            orderBy: { createdAt: "desc" },
+            take: 200,
+        })
+
+        return {
+            success: true,
+            data: rows.map((row) => ({
+                id: row.id,
+                email: row.email,
+                reason: row.reason,
+                detail: row.detail,
+                createdAt: row.createdAt.toISOString(),
+                isGlobal: row.workspaceId === null,
+            })),
+        }
+    } catch (error) {
+        console.error("Erro ao listar supressões:", error)
+        return { success: false, error: "Erro ao listar supressões" }
+    }
+}
+
+export async function addWorkspaceSuppression(
+    workspaceId: string,
+    email: string
+): Promise<ActionResult> {
+    try {
+        const canAccessWorkspace = await hasWorkspaceAccess(workspaceId)
+        if (!canAccessWorkspace) {
+            return { success: false, error: "Workspace não encontrado" }
+        }
+
+        const parsed = z.string().email("E-mail inválido").safeParse(email.trim())
+        if (!parsed.success) {
+            return { success: false, error: parsed.error.issues[0].message }
+        }
+
+        await addSuppression(prisma, {
+            email: parsed.data,
+            workspaceId,
+            reason: "manual",
+        })
+
+        revalidatePath("/settings")
+        return { success: true }
+    } catch (error) {
+        console.error("Erro ao adicionar supressão:", error)
+        return { success: false, error: "Erro ao adicionar supressão" }
+    }
+}
+
+export async function deleteWorkspaceSuppression(
+    workspaceId: string,
+    id: string
+): Promise<ActionResult> {
+    try {
+        const canAccessWorkspace = await hasWorkspaceAccess(workspaceId)
+        if (!canAccessWorkspace) {
+            return { success: false, error: "Workspace não encontrado" }
+        }
+
+        // removeSuppression filtra por workspaceId — supressão global não sai daqui.
+        await removeSuppression(prisma, id, workspaceId)
+
+        revalidatePath("/settings")
+        return { success: true }
+    } catch (error) {
+        console.error("Erro ao remover supressão:", error)
+        return { success: false, error: "Erro ao remover supressão" }
     }
 }
