@@ -1,6 +1,7 @@
 import Link from "next/link"
 import {
     CheckCircle2,
+    CreditCard,
     Database,
     ExternalLink,
     KeyRound,
@@ -72,7 +73,7 @@ function getConfigStatuses(): ConfigStatus[] {
             description: "Chave usada para criptografar segredos como SMTP.",
             configured: Boolean(process.env.SECRETS_ENCRYPTION_KEY),
             critical: true,
-            value: process.env.SECRETS_ENCRYPTION_KEY ? "Configurada" : undefined,
+            value: maskSecret(process.env.SECRETS_ENCRYPTION_KEY),
         },
         {
             key: "NEXT_PUBLIC_PAYPAL_CLIENT_ID",
@@ -96,7 +97,7 @@ function getConfigStatuses(): ConfigStatus[] {
             description: "Protege a rota de processamento automático de sequências.",
             configured: Boolean(process.env.CRON_SECRET),
             critical: false,
-            value: process.env.CRON_SECRET ? "Configurado" : undefined,
+            value: maskSecret(process.env.CRON_SECRET),
         },
         {
             key: "NEXT_PUBLIC_APP_URL",
@@ -105,6 +106,30 @@ function getConfigStatuses(): ConfigStatus[] {
             configured: Boolean(process.env.NEXT_PUBLIC_APP_URL),
             critical: false,
             value: maskUrl(process.env.NEXT_PUBLIC_APP_URL),
+        },
+        {
+            key: "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY",
+            label: "Stripe publishable key",
+            description: "Chave pública do Stripe usada no frontend do checkout.",
+            configured: Boolean(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY),
+            critical: false,
+            value: maskSecret(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY),
+        },
+        {
+            key: "STRIPE_SECRET_KEY",
+            label: "Stripe secret key",
+            description: "Chave secreta do Stripe usada no servidor para criar sessões de checkout.",
+            configured: Boolean(process.env.STRIPE_SECRET_KEY),
+            critical: false,
+            value: maskSecret(process.env.STRIPE_SECRET_KEY),
+        },
+        {
+            key: "STRIPE_WEBHOOK_SECRET",
+            label: "Stripe webhook secret",
+            description: "Segredo usado para verificar a assinatura dos webhooks do Stripe.",
+            configured: Boolean(process.env.STRIPE_WEBHOOK_SECRET),
+            critical: false,
+            value: maskSecret(process.env.STRIPE_WEBHOOK_SECRET),
         },
     ]
 }
@@ -115,6 +140,7 @@ export default async function SuperAdminSettingsPage() {
     const missingCritical = configs.filter((item) => item.critical && !item.configured)
     const configuredCount = configs.filter((item) => item.configured).length
     const paypalMode = process.env.PAYPAL_MODE === "live" ? "live" : "sandbox"
+    const stripeMode = process.env.STRIPE_SECRET_KEY?.startsWith("sk_live") ? "live" : "sandbox"
 
     return (
         <div className="space-y-6">
@@ -133,7 +159,7 @@ export default async function SuperAdminSettingsPage() {
                 </Button>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-3">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <StatusSummary
                     title="Ambiente"
                     value={`${configuredCount}/${configs.length}`}
@@ -147,6 +173,13 @@ export default async function SuperAdminSettingsPage() {
                     description={isPaypalReady(configs) ? "checkout configurado" : "checkout incompleto"}
                     healthy={isPaypalReady(configs)}
                     icon={ShoppingCart}
+                />
+                <StatusSummary
+                    title="Stripe"
+                    value={stripeMode}
+                    description={isStripeReady(configs) ? "checkout configurado" : "checkout incompleto"}
+                    healthy={isStripeReady(configs)}
+                    icon={CreditCard}
                 />
                 <StatusSummary
                     title="Admin atual"
@@ -206,6 +239,7 @@ export default async function SuperAdminSettingsPage() {
                             <ChecklistItem checked={Boolean(process.env.SECRETS_ENCRYPTION_KEY)} text="Chave de criptografia configurada" />
                             <ChecklistItem checked={Boolean(process.env.CRON_SECRET)} text="Cron protegido por segredo" />
                             <ChecklistItem checked={isPaypalReady(configs)} text="PayPal pronto para checkout" />
+                            <ChecklistItem checked={isStripeReady(configs)} text="Stripe pronto para checkout" />
                         </CardContent>
                     </Card>
 
@@ -241,6 +275,12 @@ export default async function SuperAdminSettingsPage() {
 function isPaypalReady(configs: ConfigStatus[]) {
     return configs.some((item) => item.key === "NEXT_PUBLIC_PAYPAL_CLIENT_ID" && item.configured)
         && configs.some((item) => item.key === "PAYPAL_CLIENT_SECRET" && item.configured)
+}
+
+function isStripeReady(configs: ConfigStatus[]) {
+    return configs.some((item) => item.key === "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY" && item.configured)
+        && configs.some((item) => item.key === "STRIPE_SECRET_KEY" && item.configured)
+        && configs.some((item) => item.key === "STRIPE_WEBHOOK_SECRET" && item.configured)
 }
 
 function maskSecret(value?: string) {

@@ -19,7 +19,7 @@ describe("checkAdminRateLimit", () => {
 
     it("não lança quando dentro do limite", async () => {
         const { prisma } = await import("@/lib/prisma")
-        vi.mocked(prisma.rateLimit.upsert).mockResolvedValue({ count: 5 })
+        vi.mocked(prisma.rateLimit.upsert).mockResolvedValue({ count: 5 } as never)
 
         await expect(
             checkAdminRateLimit("test.action", "admin-1", 10, 60_000)
@@ -30,7 +30,7 @@ describe("checkAdminRateLimit", () => {
 
     it("lança erro quando excede o limite", async () => {
         const { prisma } = await import("@/lib/prisma")
-        vi.mocked(prisma.rateLimit.upsert).mockResolvedValue({ count: 15 })
+        vi.mocked(prisma.rateLimit.upsert).mockResolvedValue({ count: 15 } as never)
 
         await expect(
             checkAdminRateLimit("test.action", "admin-1", 10, 60_000)
@@ -39,7 +39,7 @@ describe("checkAdminRateLimit", () => {
 
     it("usa valores padrão de limit e windowMs", async () => {
         const { prisma } = await import("@/lib/prisma")
-        vi.mocked(prisma.rateLimit.upsert).mockResolvedValue({ count: 3 })
+        vi.mocked(prisma.rateLimit.upsert).mockResolvedValue({ count: 3 } as never)
 
         await checkAdminRateLimit("test.action", "admin-1")
 
