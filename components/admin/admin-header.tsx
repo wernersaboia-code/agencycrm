@@ -19,8 +19,8 @@ const headerConfigs = {
     leadstore: {
         badge: "Área Administrativa",
         title: "Gerenciamento do Marketplace",
-        badgeColors: "bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-950 dark:text-indigo-300 dark:border-indigo-800",
-        avatarColors: "bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-300",
+        badgeColors: "bg-admin-soft text-admin border-admin-soft dark:bg-indigo-950 dark:text-admin dark:border-admin-soft",
+        avatarColors: "bg-admin-soft text-admin dark:bg-indigo-900 dark:text-admin",
     },
     "super-admin": {
         badge: "Área Administrativa",

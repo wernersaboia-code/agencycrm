@@ -56,7 +56,7 @@ export default async function MarketplacePage() {
             value: purchasesCount,
             icon: ShoppingCart,
             href: "/super-admin/marketplace/purchases",
-            color: "text-indigo-600"
+            color: "text-admin"
         },
         {
             title: "Receita Total",
@@ -136,7 +136,7 @@ export default async function MarketplacePage() {
                 ))}
             </div>
 
-            <Card className={readiness >= 67 ? "border-indigo-300 dark:border-indigo-900" : "border-amber-300 dark:border-amber-900"}>
+            <Card className={readiness >= 67 ? "border-admin dark:border-admin-soft" : "border-amber-300 dark:border-amber-900"}>
                 <CardHeader className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                     <div className="space-y-2">
                         <div className="flex flex-wrap items-center gap-2">
@@ -170,7 +170,7 @@ export default async function MarketplacePage() {
                         >
                             <span className="flex min-w-0 gap-3">
                                 {check.done ? (
-                                    <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-indigo-600" />
+                                    <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-admin" />
                                 ) : (
                                     <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
                                 )}
@@ -185,8 +185,8 @@ export default async function MarketplacePage() {
                 </CardContent>
             </Card>
 
-            <Card className="border-indigo-200 bg-indigo-50">
-                <CardContent className="p-4 text-sm text-indigo-900">
+            <Card className="border-admin-soft bg-admin-soft">
+                <CardContent className="p-4 text-sm text-admin">
                     Para vender uma base, crie uma lista, adicione leads e deixe a lista ativa no catálogo.
                 </CardContent>
             </Card>
@@ -240,8 +240,8 @@ export default async function MarketplacePage() {
                             className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
                         >
                             <div className="flex items-center gap-3">
-                                <div className="p-2 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg">
-                                    <ShoppingCart className="h-5 w-5 text-indigo-600" />
+                                <div className="p-2 bg-admin-soft dark:bg-admin-soft/30 rounded-lg">
+                                    <ShoppingCart className="h-5 w-5 text-admin" />
                                 </div>
                                 <div>
                                     <p className="font-medium">Ver vendas</p>

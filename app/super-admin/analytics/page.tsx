@@ -353,7 +353,7 @@ function MetricCard({
 }) {
     const tones = {
         blue: "bg-blue-50 text-blue-600",
-        indigo: "bg-indigo-50 text-indigo-600",
+        indigo: "bg-admin-soft text-admin",
         violet: "bg-violet-50 text-violet-600",
         amber: "bg-amber-50 text-amber-600",
     }
@@ -417,7 +417,7 @@ function Signal({
         >
             <div className="flex min-w-0 items-start gap-3">
                 {healthy ? (
-                    <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-indigo-600" />
+                    <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-admin" />
                 ) : (
                     <Activity className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
                 )}

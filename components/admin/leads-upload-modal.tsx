@@ -308,8 +308,8 @@ export function LeadsUploadModal({ listId, listName, trigger }: LeadsUploadModal
                                 <p className="text-2xl font-bold">{parsedRows.length}</p>
                                 <p className="text-xs text-muted-foreground">Total</p>
                             </div>
-                            <div className="p-3 bg-indigo-50 dark:bg-indigo-950/30 rounded-lg text-center">
-                                <p className="text-2xl font-bold text-indigo-600">{validCount}</p>
+                            <div className="p-3 bg-admin-soft dark:bg-admin-soft/30 rounded-lg text-center">
+                                <p className="text-2xl font-bold text-admin">{validCount}</p>
                                 <p className="text-xs text-muted-foreground">Válidos</p>
                             </div>
                             <div className="p-3 bg-red-50 dark:bg-red-950/30 rounded-lg text-center">
@@ -361,7 +361,7 @@ export function LeadsUploadModal({ listId, listName, trigger }: LeadsUploadModal
                                         >
                                             <TableCell>
                                                 {row.valid ? (
-                                                    <CheckCircle2 className="h-4 w-4 text-indigo-600" />
+                                                    <CheckCircle2 className="h-4 w-4 text-admin" />
                                                 ) : (
                                                     <X className="h-4 w-4 text-red-600" />
                                                 )}
@@ -432,9 +432,9 @@ export function LeadsUploadModal({ listId, listName, trigger }: LeadsUploadModal
                 {/* Step: Complete */}
                 {step === "complete" && result && (
                     <div className="py-12 text-center space-y-6">
-                        <CheckCircle2 className="mx-auto h-16 w-16 text-indigo-600" />
+                        <CheckCircle2 className="mx-auto h-16 w-16 text-admin" />
                         <div>
-                            <p className="text-2xl font-bold text-indigo-600">
+                            <p className="text-2xl font-bold text-admin">
                                 {result.success} leads importados!
                             </p>
                             {result.duplicates > 0 && (

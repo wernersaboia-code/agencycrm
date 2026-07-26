@@ -93,7 +93,7 @@ export default async function SuperAdminDashboardPage() {
             <section className="rounded-lg border bg-white p-6 shadow-sm">
                 <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
                     <div>
-                        <Badge variant="outline" className="mb-3 border-indigo-200 bg-indigo-50 text-indigo-700">
+                        <Badge variant="outline" className="mb-3 border-admin-soft bg-admin-soft text-admin">
                             Área Administrativa
                         </Badge>
                         <h1 className="text-3xl font-bold tracking-tight">
@@ -161,7 +161,7 @@ export default async function SuperAdminDashboardPage() {
                         <CardTitle>Atalhos importantes</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-3">
-                        <Button className="w-full justify-between bg-indigo-600 hover:bg-indigo-700" asChild>
+                        <Button className="w-full justify-between bg-admin hover:bg-admin" asChild>
                             <Link href="/super-admin/marketplace/lists/new">
                                 Criar nova lista
                                 <ArrowRight className="h-4 w-4" />
@@ -206,14 +206,14 @@ function AdminActionCard({
             href={href}
             className={`group flex min-h-52 flex-col justify-between rounded-lg border p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ${
                 isPrimary
-                    ? "border-indigo-600 bg-indigo-600 text-white"
-                    : "border-gray-200 bg-white text-gray-950 hover:border-indigo-300"
+                    ? "border-admin bg-admin text-white"
+                    : "border-gray-200 bg-white text-gray-950 hover:border-admin"
             }`}
         >
             <div>
                 <div
                     className={`mb-5 flex h-12 w-12 items-center justify-center rounded-md ${
-                        isPrimary ? "bg-white/15 text-white" : "bg-indigo-50 text-indigo-700"
+                        isPrimary ? "bg-white/15 text-white" : "bg-admin-soft text-admin"
                     }`}
                 >
                     <Icon className="h-6 w-6" />
@@ -245,7 +245,7 @@ function MetricCard({
     return (
         <Card>
             <CardContent className="flex items-center gap-4 p-5">
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-indigo-50 text-indigo-700">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-admin-soft text-admin">
                     <Icon className="h-5 w-5" />
                 </div>
                 <div className="min-w-0">

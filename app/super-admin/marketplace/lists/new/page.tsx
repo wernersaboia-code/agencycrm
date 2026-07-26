@@ -23,8 +23,8 @@ export default function NewListPage() {
                 </Button>
             </div>
 
-            <Card className="border-indigo-200 bg-indigo-50">
-                <CardContent className="p-4 text-sm text-indigo-900">
+            <Card className="border-admin-soft bg-admin-soft">
+                <CardContent className="p-4 text-sm text-admin">
                     Primeiro preencha os dados da lista. Depois importe os leads e publique a lista quando ela estiver pronta para venda.
                 </CardContent>
             </Card>

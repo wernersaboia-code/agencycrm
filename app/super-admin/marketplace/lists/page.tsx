@@ -86,7 +86,7 @@ export default async function MarketplaceListsPage() {
                             Voltar ao painel
                         </Link>
                     </Button>
-                    <Button className="bg-indigo-600 hover:bg-indigo-700" asChild>
+                    <Button className="bg-admin hover:bg-admin" asChild>
                         <Link href="/super-admin/marketplace/lists/new">
                             <Plus className="h-4 w-4" />
                             Criar nova lista
@@ -95,13 +95,13 @@ export default async function MarketplaceListsPage() {
                 </div>
             </div>
 
-            <Card className="border-indigo-200 bg-indigo-50">
-                <CardContent className="p-4 text-sm text-indigo-900">
+            <Card className="border-admin-soft bg-admin-soft">
+                <CardContent className="p-4 text-sm text-admin">
                     Para publicar uma nova base, clique em <strong>Criar nova lista</strong>. Depois, confira se a lista tem o PDF anexado, os dados marcados como revisados e está marcada como ativa.
                 </CardContent>
             </Card>
 
-            <Card className={readiness >= 75 ? "border-indigo-300 dark:border-indigo-900" : "border-amber-300 dark:border-amber-900"}>
+            <Card className={readiness >= 75 ? "border-admin dark:border-admin-soft" : "border-amber-300 dark:border-amber-900"}>
                 <CardHeader className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                     <div>
                         <CardTitle>Saúde do catálogo</CardTitle>
@@ -122,7 +122,7 @@ export default async function MarketplaceListsPage() {
                         <div key={check.label} className="flex min-h-[96px] items-start justify-between gap-3 rounded-lg border bg-background p-4">
                             <span className="flex min-w-0 gap-3">
                                 {check.done ? (
-                                    <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-indigo-600" />
+                                    <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-admin" />
                                 ) : (
                                     <check.icon className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
                                 )}

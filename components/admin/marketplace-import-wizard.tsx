@@ -571,7 +571,7 @@ export function MarketplaceImportWizard({
                         <div className="space-y-6">
                             <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
                                 <div className="flex items-center gap-3">
-                                    <FileSpreadsheet className="h-10 w-10 text-indigo-600" />
+                                    <FileSpreadsheet className="h-10 w-10 text-admin" />
                                     <div>
                                         <p className="font-medium">{parsedFile.fileName}</p>
                                         <p className="text-sm text-muted-foreground">
@@ -596,8 +596,8 @@ export function MarketplaceImportWizard({
                                     <p className="text-2xl font-bold">{parsedFile.headers.length}</p>
                                     <p className="text-sm text-muted-foreground">Colunas</p>
                                 </div>
-                                <div className="p-4 bg-indigo-50 dark:bg-indigo-950/30 rounded-lg text-center">
-                                    <p className="text-2xl font-bold text-indigo-600">{mappingStats.mapped}</p>
+                                <div className="p-4 bg-admin-soft dark:bg-admin-soft/30 rounded-lg text-center">
+                                    <p className="text-2xl font-bold text-admin">{mappingStats.mapped}</p>
                                     <p className="text-sm text-muted-foreground">Mapeadas</p>
                                 </div>
                                 <div className="p-4 bg-muted rounded-lg text-center">
@@ -707,8 +707,8 @@ export function MarketplaceImportWizard({
                                     <p className="text-3xl font-bold">{previewStats.total}</p>
                                     <p className="text-sm text-muted-foreground">Total</p>
                                 </div>
-                                <div className="p-4 bg-indigo-50 dark:bg-indigo-950/30 rounded-lg text-center">
-                                    <p className="text-3xl font-bold text-indigo-600">{previewStats.complete}</p>
+                                <div className="p-4 bg-admin-soft dark:bg-admin-soft/30 rounded-lg text-center">
+                                    <p className="text-3xl font-bold text-admin">{previewStats.complete}</p>
                                     <p className="text-sm text-muted-foreground">Completos</p>
                                 </div>
                                 <div className="p-4 bg-amber-50 dark:bg-amber-950/30 rounded-lg text-center">
@@ -725,7 +725,7 @@ export function MarketplaceImportWizard({
                             <Tabs defaultValue="complete" className="w-full">
                                 <TabsList className="grid w-full grid-cols-3">
                                     <TabsTrigger value="complete" className="gap-2">
-                                        <CheckCircle2 className="h-4 w-4 text-indigo-600" />
+                                        <CheckCircle2 className="h-4 w-4 text-admin" />
                                         Completos ({previewStats.complete})
                                     </TabsTrigger>
                                     <TabsTrigger value="incomplete" className="gap-2">
@@ -786,7 +786,7 @@ export function MarketplaceImportWizard({
                                 <TabsContent value="incomplete" className="mt-4">
                                     {previewStats.incomplete === 0 ? (
                                         <div className="text-center py-12 text-muted-foreground">
-                                            <CheckCircle2 className="h-12 w-12 mx-auto mb-4 text-indigo-600" />
+                                            <CheckCircle2 className="h-12 w-12 mx-auto mb-4 text-admin" />
                                             <p>Todos os leads têm email! 🎉</p>
                                         </div>
                                     ) : (
@@ -830,7 +830,7 @@ export function MarketplaceImportWizard({
                                 <TabsContent value="invalid" className="mt-4">
                                     {previewStats.invalid === 0 ? (
                                         <div className="text-center py-12 text-muted-foreground">
-                                            <CheckCircle2 className="h-12 w-12 mx-auto mb-4 text-indigo-600" />
+                                            <CheckCircle2 className="h-12 w-12 mx-auto mb-4 text-admin" />
                                             <p>Nenhum erro encontrado! 🎉</p>
                                         </div>
                                     ) : (
@@ -911,7 +911,7 @@ export function MarketplaceImportWizard({
                         <div className="py-12 space-y-8">
                             {importResult === null ? (
                                 <div className="text-center space-y-6">
-                                    <Loader2 className="mx-auto h-16 w-16 animate-spin text-indigo-600" />
+                                    <Loader2 className="mx-auto h-16 w-16 animate-spin text-admin" />
                                     <div>
                                         <h3 className="text-xl font-semibold mb-2">Importando leads...</h3>
                                         <p className="text-muted-foreground">
@@ -923,9 +923,9 @@ export function MarketplaceImportWizard({
                                 </div>
                             ) : (
                                 <div className="text-center space-y-6">
-                                    <CheckCircle2 className="mx-auto h-20 w-20 text-indigo-600" />
+                                    <CheckCircle2 className="mx-auto h-20 w-20 text-admin" />
                                     <div>
-                                        <h3 className="text-2xl font-bold text-indigo-600 mb-2">
+                                        <h3 className="text-2xl font-bold text-admin mb-2">
                                             {importResult.imported} leads importados!
                                         </h3>
                                         {importResult.duplicates > 0 && (
@@ -1023,8 +1023,8 @@ function StepIndicator({
             <div
                 className={`
           flex items-center justify-center w-6 h-6 rounded-full text-xs font-medium
-          ${active ? "bg-indigo-600 text-white" : ""}
-          ${completed && !active ? "bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-300" : ""}
+          ${active ? "bg-admin text-white" : ""}
+          ${completed && !active ? "bg-admin-soft text-admin dark:bg-indigo-900 dark:text-admin" : ""}
           ${!active && !completed ? "bg-muted text-muted-foreground" : ""}
         `}
             >

@@ -316,7 +316,7 @@ function StatusSummary({
         <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
-                <Icon className={healthy ? "h-4 w-4 text-indigo-600" : "h-4 w-4 text-amber-600"} />
+                <Icon className={healthy ? "h-4 w-4 text-admin" : "h-4 w-4 text-amber-600"} />
             </CardHeader>
             <CardContent>
                 <div className="truncate text-2xl font-bold">{value}</div>
@@ -330,7 +330,7 @@ function ConfigRow({ config }: { config: ConfigStatus }) {
     return (
         <div className="flex flex-col gap-3 rounded-lg border p-4 md:flex-row md:items-center md:justify-between">
             <div className="flex min-w-0 gap-3">
-                <div className={config.configured ? "text-indigo-600" : config.critical ? "text-red-600" : "text-amber-600"}>
+                <div className={config.configured ? "text-admin" : config.critical ? "text-red-600" : "text-amber-600"}>
                     {config.configured ? <CheckCircle2 className="h-5 w-5" /> : <XCircle className="h-5 w-5" />}
                 </div>
                 <div className="min-w-0">
@@ -360,7 +360,7 @@ function ChecklistItem({ checked, text }: { checked: boolean; text: string }) {
     return (
         <div className="flex items-center gap-2">
             {checked ? (
-                <CheckCircle2 className="h-4 w-4 text-indigo-600" />
+                <CheckCircle2 className="h-4 w-4 text-admin" />
             ) : (
                 <XCircle className="h-4 w-4 text-amber-600" />
             )}
