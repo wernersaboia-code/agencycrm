@@ -3,6 +3,10 @@
   "framework": "nextjs",
   "crons": [
     {
+      "path": "/api/cron/detect-replies",
+      "schedule": "30 8 * * *"
+    },
+    {
       "path": "/api/cron/process-sequences",
       "schedule": "0 9 * * *"
     }

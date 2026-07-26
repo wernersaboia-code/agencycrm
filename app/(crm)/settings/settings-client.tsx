@@ -10,7 +10,7 @@ import { AppearanceSettings } from "./components/appearance-settings"
 import { EmailSettings } from "./components/email-settings"
 import { SendWindowSettings } from "./components/send-window-settings"
 import { SuppressionList } from "./components/suppression-list"
-import type { SendWindowSettingsData, SuppressionRow } from "@/actions/workspace-settings"
+import type { SendWindowSettingsData, SuppressionRow, ReplyDetectionSettingsData } from "@/actions/workspace-settings"
 import { WorkspaceSettings } from "@/components/settings/workspace-settings"
 import {
     Card,
@@ -61,6 +61,7 @@ interface SettingsClientProps {
         totalCalls: number
     }
     sendWindow: SendWindowSettingsData | null
+    replyDetection: ReplyDetectionSettingsData | null
     suppressions: SuppressionRow[]
 }
 
@@ -75,7 +76,7 @@ function getInitialTab(tab: string | null): SettingsTab {
     return SETTINGS_TABS.includes(tab as SettingsTab) ? (tab as SettingsTab) : "workspace"
 }
 
-export function SettingsClient({ profile, workspace, stats, sendWindow, suppressions }: SettingsClientProps) {
+export function SettingsClient({ profile, workspace, stats, sendWindow, replyDetection, suppressions }: SettingsClientProps) {
     const searchParams = useSearchParams()
     const [activeTab, setActiveTab] = useState<SettingsTab>(() => getInitialTab(searchParams.get("tab")))
     const hasSenderConfigured = Boolean(workspace.senderName && workspace.senderEmail)
@@ -230,6 +231,7 @@ export function SettingsClient({ profile, workspace, stats, sendWindow, suppress
                                 <SendWindowSettings
                                     workspaceId={workspace.id}
                                     initial={sendWindow}
+                                    replyDetection={replyDetection}
                                 />
                             </div>
                         )}

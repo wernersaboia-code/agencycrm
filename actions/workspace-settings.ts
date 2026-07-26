@@ -95,6 +95,14 @@ const sendWindowSchema = z
 
 export type SendWindowSettingsData = z.infer<typeof sendWindowSchema>
 
+const replyDetectionSchema = z.object({
+    replyDetectionEnabled: z.boolean(),
+    imapHost: z.string().optional().nullable(),
+    imapPort: z.number().int().min(1).max(65535).optional().nullable(),
+})
+
+export type ReplyDetectionSettingsData = z.infer<typeof replyDetectionSchema>
+
 async function hasWorkspaceAccess(workspaceId: string): Promise<boolean> {
     try {
         await requireWorkspaceAccess(workspaceId)
@@ -380,12 +388,17 @@ export async function clearSmtpSettings(workspaceId: string): Promise<ActionResu
 // MUTATIONS - JANELA DE ENVIO
 // ============================================================
 
+export interface SendSettingsData {
+    window: SendWindowSettingsData
+    replyDetection: ReplyDetectionSettingsData
+}
+
 /**
- * Busca a janela de envio de cold mail do workspace.
+ * Busca a janela de envio e a configuração de detecção de resposta do workspace.
  */
 export async function getSendWindowSettings(
     workspaceId: string
-): Promise<ActionResult<SendWindowSettingsData>> {
+): Promise<ActionResult<SendSettingsData>> {
     try {
         const canAccessWorkspace = await hasWorkspaceAccess(workspaceId)
         if (!canAccessWorkspace) {
@@ -401,6 +414,9 @@ export async function getSendWindowSettings(
                 sendStartHour: true,
                 sendEndHour: true,
                 sendJitterMinutes: true,
+                replyDetectionEnabled: true,
+                imapHost: true,
+                imapPort: true,
             },
         })
 
@@ -408,10 +424,57 @@ export async function getSendWindowSettings(
             return { success: false, error: "Workspace não encontrado" }
         }
 
-        return { success: true, data: workspace }
+        const { replyDetectionEnabled, imapHost, imapPort, ...window } = workspace
+
+        return {
+            success: true,
+            data: {
+                window,
+                replyDetection: { replyDetectionEnabled, imapHost, imapPort },
+            },
+        }
     } catch (error) {
-        console.error("Erro ao buscar janela de envio:", error)
-        return { success: false, error: "Erro ao buscar janela de envio" }
+        console.error("Erro ao buscar configurações de envio:", error)
+        return { success: false, error: "Erro ao buscar configurações de envio" }
+    }
+}
+
+/**
+ * Atualiza a configuração de detecção de resposta (IMAP) do workspace.
+ * A senha usada é a mesma do SMTP — não há credencial separada.
+ */
+export async function updateReplyDetectionSettings(
+    workspaceId: string,
+    data: ReplyDetectionSettingsData
+): Promise<ActionResult> {
+    try {
+        const canAccessWorkspace = await hasWorkspaceAccess(workspaceId)
+        if (!canAccessWorkspace) {
+            return { success: false, error: "Workspace não encontrado" }
+        }
+
+        const parsed = replyDetectionSchema.safeParse(data)
+        if (!parsed.success) {
+            return {
+                success: false,
+                error: parsed.error.issues[0]?.message || "Dados inválidos",
+            }
+        }
+
+        await prisma.workspace.update({
+            where: { id: workspaceId },
+            data: {
+                replyDetectionEnabled: parsed.data.replyDetectionEnabled,
+                imapHost: parsed.data.imapHost || null,
+                imapPort: parsed.data.imapPort || null,
+            },
+        })
+
+        revalidatePath("/settings")
+        return { success: true }
+    } catch (error) {
+        console.error("Erro ao atualizar detecção de resposta:", error)
+        return { success: false, error: "Erro ao atualizar detecção de resposta." }
     }
 }
 

@@ -23,7 +23,9 @@ import {
 } from "@/components/ui/select"
 import {
     updateSendWindowSettings,
+    updateReplyDetectionSettings,
     type SendWindowSettingsData,
+    type ReplyDetectionSettingsData,
 } from "@/actions/workspace-settings"
 import {
     CRON_SEND_HOUR_UTC,
@@ -55,10 +57,14 @@ const WEEKDAYS = [
 interface SendWindowSettingsProps {
     workspaceId: string
     initial: SendWindowSettingsData
+    replyDetection: ReplyDetectionSettingsData | null
 }
 
-export function SendWindowSettings({ workspaceId, initial }: SendWindowSettingsProps) {
+export function SendWindowSettings({ workspaceId, initial, replyDetection }: SendWindowSettingsProps) {
     const [form, setForm] = useState<SendWindowSettingsData>(initial)
+    const [reply, setReply] = useState<ReplyDetectionSettingsData>(
+        replyDetection ?? { replyDetectionEnabled: false, imapHost: null, imapPort: null }
+    )
     const [message, setMessage] = useState<{ type: "ok" | "error"; text: string } | null>(
         null
     )
@@ -84,11 +90,16 @@ export function SendWindowSettings({ workspaceId, initial }: SendWindowSettingsP
     function handleSave() {
         setMessage(null)
         startTransition(async () => {
-            const result = await updateSendWindowSettings(workspaceId, form)
+            const windowResult = await updateSendWindowSettings(workspaceId, form)
+            if (!windowResult.success) {
+                setMessage({ type: "error", text: windowResult.error || "Erro ao salvar." })
+                return
+            }
+            const replyResult = await updateReplyDetectionSettings(workspaceId, reply)
             setMessage(
-                result.success
+                replyResult.success
                     ? { type: "ok", text: "Janela de envio salva." }
-                    : { type: "error", text: result.error || "Erro ao salvar." }
+                    : { type: "error", text: replyResult.error || "Erro ao salvar." }
             )
         })
     }
@@ -248,6 +259,68 @@ export function SendWindowSettings({ workspaceId, initial }: SendWindowSettingsP
                 <Button onClick={handleSave} disabled={isPending}>
                     {isPending ? "Salvando..." : "Salvar janela de envio"}
                 </Button>
+
+                <div className="space-y-4 border-t pt-6">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <Label htmlFor="replyDetectionEnabled">
+                                Detectar respostas
+                            </Label>
+                            <p className="text-sm text-muted-foreground">
+                                Lê a caixa de entrada por IMAP (mesma senha do SMTP) e
+                                para a sequência de quem respondeu.
+                            </p>
+                        </div>
+                        <Switch
+                            id="replyDetectionEnabled"
+                            checked={reply.replyDetectionEnabled}
+                            onCheckedChange={(checked) =>
+                                setReply((current) => ({
+                                    ...current,
+                                    replyDetectionEnabled: checked,
+                                }))
+                            }
+                        />
+                    </div>
+
+                    {reply.replyDetectionEnabled && (
+                        <div className="grid gap-4 sm:grid-cols-2">
+                            <div className="space-y-2">
+                                <Label htmlFor="imapHost">
+                                    Servidor IMAP (opcional)
+                                </Label>
+                                <Input
+                                    id="imapHost"
+                                    placeholder="imap.gmail.com"
+                                    value={reply.imapHost ?? ""}
+                                    onChange={(event) =>
+                                        setReply((current) => ({
+                                            ...current,
+                                            imapHost: event.target.value,
+                                        }))
+                                    }
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="imapPort">Porta (opcional)</Label>
+                                <Input
+                                    id="imapPort"
+                                    type="number"
+                                    placeholder="993"
+                                    value={reply.imapPort ?? ""}
+                                    onChange={(event) =>
+                                        setReply((current) => ({
+                                            ...current,
+                                            imapPort: event.target.value
+                                                ? Number(event.target.value)
+                                                : null,
+                                        }))
+                                    }
+                                />
+                            </div>
+                        </div>
+                    )}
+                </div>
             </CardContent>
         </Card>
     )

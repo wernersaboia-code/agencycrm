@@ -6,6 +6,7 @@ import { sendEmail, replaceEmailVariables } from "@/lib/email"
 import { decryptSecret } from "@/lib/secrets"
 import { isSuppressed, addSuppression } from "@/lib/campaigns/suppression"
 import { classifyBounce } from "@/lib/campaigns/bounce-classifier"
+import { normalizeMessageId } from "@/lib/campaigns/reply-detection"
 import {
     resolveSendWindow,
     isWithinSendWindow,
@@ -129,6 +130,20 @@ export async function GET(request: Request) {
                     })
                     skipped++
                     console.log(`[Cron] Lead ${lead.id} descadastrado - parando sequência`)
+                    continue
+                }
+
+                if (lead.status === "REPLIED") {
+                    await prisma.campaignEnrollment.update({
+                        where: { id: enrollment.id },
+                        data: {
+                            status: "stopped",
+                            stoppedAt: now,
+                            stopReason: "replied",
+                        },
+                    })
+                    skipped++
+                    console.log(`[Cron] Lead ${lead.id} respondeu - parando sequência`)
                     continue
                 }
 
@@ -344,7 +359,9 @@ export async function GET(request: Request) {
                             status: "SENT",
                             sentAt: now,
                             resendId: result.id,
-                            messageId: result.messageId ?? null,
+                            messageId: result.messageId
+                                ? normalizeMessageId(result.messageId)
+                                : null,
                         },
                     })
 
