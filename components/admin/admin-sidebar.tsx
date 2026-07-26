@@ -4,6 +4,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import { usePathname, useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 import {
     LayoutDashboard,
     Package,
@@ -27,58 +28,60 @@ import { toast } from "sonner"
 // ==================== CONFIGURAÇÃO DO MENU ====================
 
 interface MenuItem {
-    title: string
+    titleKey: string
     href: string
     icon: React.ComponentType<{ className?: string }>
     exact?: boolean
 }
 
 interface MenuSection {
-    label: string
+    labelKey: string
     items: MenuItem[]
 }
-
-const menuSections: MenuSection[] = [
-    {
-        label: "Início",
-        items: [
-            { title: "Painel inicial", href: "/super-admin", icon: LayoutDashboard, exact: true },
-        ],
-    },
-    {
-        label: "Administração",
-        items: [
-            { title: "Usuários", href: "/super-admin/users", icon: Users },
-            { title: "Empresas/Contas", href: "/super-admin/workspaces", icon: Building2 },
-            { title: "Auditoria", href: "/super-admin/audit", icon: ScrollText },
-        ],
-    },
-    {
-        label: "Leads e vendas",
-        items: [
-            { title: "Listas de leads", href: "/super-admin/marketplace/lists", icon: Package },
-            { title: "Vendas", href: "/super-admin/marketplace/purchases", icon: ShoppingCart },
-            { title: "Blog", href: "/super-admin/blog", icon: FileText },
-        ],
-    },
-]
-
-const secondaryItems: MenuItem[] = [
-    { title: "Suporte", href: "/super-admin/support", icon: LifeBuoy },
-    { title: "Relatórios", href: "/super-admin/analytics", icon: BarChart3 },
-    { title: "Configurações", href: "/super-admin/settings", icon: Settings },
-]
 
 // ==================== COMPONENTE ====================
 
 export function AdminSidebar() {
+    const t = useTranslations("admin.sidebar")
+    const tc = useTranslations("admin.common")
     const pathname = usePathname()
     const router = useRouter()
+
+    const menuSections: MenuSection[] = [
+        {
+            labelKey: "sectionHome",
+            items: [
+                { titleKey: "dashboard", href: "/super-admin", icon: LayoutDashboard, exact: true },
+            ],
+        },
+        {
+            labelKey: "sectionAdmin",
+            items: [
+                { titleKey: "users", href: "/super-admin/users", icon: Users },
+                { titleKey: "workspaces", href: "/super-admin/workspaces", icon: Building2 },
+                { titleKey: "audit", href: "/super-admin/audit", icon: ScrollText },
+            ],
+        },
+        {
+            labelKey: "sectionLeadsSales",
+            items: [
+                { titleKey: "leadLists", href: "/super-admin/marketplace/lists", icon: Package },
+                { titleKey: "sales", href: "/super-admin/marketplace/purchases", icon: ShoppingCart },
+                { titleKey: "blog", href: "/super-admin/blog", icon: FileText },
+            ],
+        },
+    ]
+
+    const secondaryItems: MenuItem[] = [
+        { titleKey: "support", href: "/super-admin/support", icon: LifeBuoy },
+        { titleKey: "analytics", href: "/super-admin/analytics", icon: BarChart3 },
+        { titleKey: "settings", href: "/super-admin/settings", icon: Settings },
+    ]
 
     const handleLogout = async (): Promise<void> => {
         const supabase = createClient()
         await supabase.auth.signOut()
-        toast.success("Logout realizado com sucesso!")
+        toast.success(t("logoutSuccess"))
         router.push("/sign-in")
         router.refresh()
     }
@@ -96,7 +99,7 @@ export function AdminSidebar() {
                     <Image src="/logo-icon.png" alt="" width={32} height={32} className="h-8 w-8 rounded-md" />
                     <div>
                         <span className="text-lg font-bold text-white">Easy Prospect</span>
-                        <span className="block text-xs text-violet-400">Área Administrativa</span>
+                        <span className="block text-xs text-violet-400">{tc("area")}</span>
                     </div>
                 </Link>
             </div>
@@ -105,9 +108,9 @@ export function AdminSidebar() {
             <ScrollArea className="flex-1 px-3 py-4">
                 <nav className="flex flex-col gap-1">
                     {menuSections.map((section, sectionIndex) => (
-                        <div key={section.label} className="mb-2">
+                        <div key={section.labelKey} className="mb-2">
                             <p className="mb-2 px-3 text-xs font-bold uppercase text-[#cfd3fa]/75">
-                                {section.label}
+                                {t(section.labelKey)}
                             </p>
 
                             {section.items.map((item) => {
@@ -124,7 +127,7 @@ export function AdminSidebar() {
                                         )}
                                     >
                                         <item.icon className="h-4 w-4" />
-                                        {item.title}
+                                        {t(item.titleKey)}
                                     </Link>
                                 )
                             })}
@@ -154,7 +157,7 @@ export function AdminSidebar() {
                                 )}
                             >
                                 <item.icon className="h-3.5 w-3.5" />
-                                {item.title}
+                                {t(item.titleKey)}
                             </Link>
                         )
                     })}
@@ -165,7 +168,7 @@ export function AdminSidebar() {
                     onClick={handleLogout}
                 >
                     <LogOut className="h-4 w-4" />
-                    Sair
+                    {t("logout")}
                 </Button>
             </div>
         </div>

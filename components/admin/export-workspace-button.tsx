@@ -4,6 +4,7 @@
 
 import { useState } from "react"
 import { toast } from "sonner"
+import { useTranslations } from "next-intl"
 import { Download, Loader2, FileJson, FileSpreadsheet } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -20,6 +21,7 @@ interface ExportWorkspaceButtonProps {
 }
 
 export function ExportWorkspaceButton({ workspaceId, workspaceName }: ExportWorkspaceButtonProps) {
+    const t = useTranslations("admin.components.exportWorkspace")
     const [isLoading, setIsLoading] = useState(false)
 
     const handleExport = async (format: "json" | "csv") => {
@@ -41,17 +43,17 @@ export function ExportWorkspaceButton({ workspaceId, workspaceName }: ExportWork
             } else {
                 // Exportar leads como CSV
                 const headers = [
-                    "Nome",
-                    "Sobrenome",
-                    "Email",
-                    "Telefone",
-                    "Empresa",
-                    "Cargo",
-                    "Status",
-                    "Fonte",
-                    "País",
-                    "Cidade",
-                    "Criado em",
+                    t("csvFirstName"),
+                    t("csvLastName"),
+                    t("csvEmail"),
+                    t("csvPhone"),
+                    t("csvCompany"),
+                    t("csvTitle"),
+                    t("csvStatus"),
+                    t("csvSource"),
+                    t("csvCountry"),
+                    t("csvCity"),
+                    t("csvCreated"),
                 ]
                 const rows = data.leads.map((lead) => [
                     lead.firstName,
@@ -83,9 +85,9 @@ export function ExportWorkspaceButton({ workspaceId, workspaceName }: ExportWork
                 URL.revokeObjectURL(url)
             }
 
-            toast.success(`Exportação ${format.toUpperCase()} concluída!`)
+            toast.success(t("toastSuccess", { format: format.toUpperCase() }))
         } catch {
-            toast.error("Erro ao exportar dados")
+            toast.error(t("toastError"))
         } finally {
             setIsLoading(false)
         }
@@ -100,17 +102,17 @@ export function ExportWorkspaceButton({ workspaceId, workspaceName }: ExportWork
                     ) : (
                         <Download className="h-4 w-4 mr-2" />
                     )}
-                    Exportar
+                    {t("button")}
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
                 <DropdownMenuItem onClick={() => handleExport("json")}>
                     <FileJson className="h-4 w-4 mr-2" />
-                    Exportar JSON completo
+                    {t("jsonExport")}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => handleExport("csv")}>
                     <FileSpreadsheet className="h-4 w-4 mr-2" />
-                    Exportar CSV de leads
+                    {t("csvExport")}
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>

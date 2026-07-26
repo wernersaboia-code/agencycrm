@@ -13,6 +13,7 @@ import {
     TrendingUp,
     Users,
 } from "lucide-react"
+import { getTranslations } from "next-intl/server"
 import { prisma } from "@/lib/prisma"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -20,9 +21,12 @@ import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { formatCurrency } from "@/lib/utils"
 
-export const metadata = {
-    title: "Relatórios | Área Administrativa",
-    description: "Indicadores globais de adoção, catálogo e engajamento.",
+export async function generateMetadata() {
+    const t = await getTranslations("admin.analytics")
+    return {
+        title: t("metaTitle"),
+        description: t("metaDesc"),
+    }
 }
 
 type AnalyticsData = Awaited<ReturnType<typeof getAnalyticsData>>
@@ -187,6 +191,7 @@ async function getAnalyticsData() {
 }
 
 export default async function SuperAdminAnalyticsPage() {
+    const t = await getTranslations("admin.analytics")
     const data = await getAnalyticsData()
     const activationRate = percentage(data.activeUsers, data.usersTotal)
     const crmMomentum = data.leadsLast30 + data.campaignsLast30 + data.callsTotal
@@ -196,20 +201,20 @@ export default async function SuperAdminAnalyticsPage() {
         <div className="space-y-6">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Relatórios</h1>
+                    <h1 className="text-3xl font-bold tracking-tight">{t("title")}</h1>
                     <p className="text-muted-foreground">
-                        Indicadores globais de adoção, CRM, catálogo e receita dos últimos 30 dias.
+                        {t("subtitle")}
                     </p>
                 </div>
                 <div className="flex gap-2">
                     <Button variant="outline" asChild>
                         <Link href="/super-admin/users">
-                            Usuários
+                            {t("usersLink")}
                         </Link>
                     </Button>
                     <Button asChild>
                         <Link href="/super-admin/marketplace/purchases">
-                            Vendas
+                            {t("salesLink")}
                             <ArrowRight className="h-4 w-4" />
                         </Link>
                     </Button>
@@ -218,33 +223,33 @@ export default async function SuperAdminAnalyticsPage() {
 
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
                 <MetricCard
-                    title="Usuários ativos"
+                    title={t("activeUsers")}
                     value={`${data.activeUsers}/${data.usersTotal}`}
-                    description={`${activationRate}% da base ativa`}
+                    description={t("activeUsersDesc", {rate: activationRate})}
                     icon={Users}
                     tone="blue"
                     trend={compare(data.usersLast30, data.usersPrevious30)}
                 />
                 <MetricCard
-                    title="Receita 30d"
+                    title={t("revenue30d")}
                     value={formatCurrency(data.revenueLast30, "EUR")}
-                    description={`${data.purchasesLast30} compras pagas`}
+                    description={t("revenue30dDesc", {count: data.purchasesLast30})}
                     icon={ShoppingCart}
                     tone="indigo"
                     trend={compare(data.revenueLast30, data.revenuePrevious30)}
                 />
                 <MetricCard
-                    title="Emails enviados"
+                    title={t("emailsSent")}
                     value={data.emailsSent.toLocaleString()}
-                    description={`${data.openRate}% abertura, ${data.clickRate}% clique`}
+                    description={t("emailsSentDesc", {openRate: data.openRate, clickRate: data.clickRate})}
                     icon={Mail}
                     tone="violet"
                     trend={compare(data.emailsSent, data.previousEmailsSent)}
                 />
                 <MetricCard
-                    title="Leads no sistema"
+                    title={t("leadsInSystem")}
                     value={(data.leadsTotal + data.marketplaceLeadsTotal).toLocaleString()}
-                    description={`${data.leadsLast30.toLocaleString()} novos no CRM`}
+                    description={t("leadsInSystemDesc", {count: data.leadsLast30})}
                     icon={Package}
                     tone="amber"
                 />
@@ -255,29 +260,29 @@ export default async function SuperAdminAnalyticsPage() {
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                             <BarChart3 className="h-5 w-5" />
-                            Funil operacional
+                            {t("operationalFunnel")}
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-5">
                         <ProgressRow
-                            label="Ativação de usuários"
+                            label={t("userActivation")}
                             value={activationRate}
-                            detail={`${data.activeUsers} ativos de ${data.usersTotal} usuários`}
+                            detail={t("userActivationDetail", {active: data.activeUsers, total: data.usersTotal})}
                         />
                         <ProgressRow
-                            label="Abertura de emails"
+                            label={t("emailOpenRate")}
                             value={data.openRate}
-                            detail={`${data.emailsOpened.toLocaleString()} aberturas em ${data.emailsSent.toLocaleString()} envios`}
+                            detail={t("emailOpenRateDetail", {opened: data.emailsOpened, sent: data.emailsSent})}
                         />
                         <ProgressRow
-                            label="Cliques em campanhas"
+                            label={t("campaignClicks")}
                             value={data.clickRate}
-                            detail={`${data.emailsClicked.toLocaleString()} cliques registrados`}
+                            detail={t("campaignClicksDetail", {clicks: data.emailsClicked})}
                         />
                         <ProgressRow
-                            label="Ligações atendidas"
+                            label={t("callsAnswered")}
                             value={data.callAnswerRate}
-                            detail={`${data.callsAnswered.toLocaleString()} atendidas em ${data.callsTotal.toLocaleString()} ligações`}
+                            detail={t("callsAnsweredDetail", {answered: data.callsAnswered, total: data.callsTotal})}
                         />
                     </CardContent>
                 </Card>
@@ -286,28 +291,28 @@ export default async function SuperAdminAnalyticsPage() {
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                             <Activity className="h-5 w-5" />
-                            Sinais rápidos
+                            {t("quickSignals")}
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-3">
                         <Signal
                             title="CRM"
                             value={crmMomentum}
-                            description={`${data.leadsLast30} leads, ${data.campaignsLast30} campanhas, ${data.callsTotal} ligações`}
+                            description={t("crmSignal", {leads: data.leadsLast30, campaigns: data.campaignsLast30, calls: data.callsTotal})}
                             healthy={crmMomentum > 0}
                             href="/super-admin/workspaces"
                         />
                         <Signal
                             title="Catálogo"
                             value={marketplaceMomentum}
-                            description={`${data.marketplaceLists} listas ativas, ${data.purchasesLast30} vendas em 30d`}
+                            description={t("marketplaceSignal", {lists: data.marketplaceLists, sales: data.purchasesLast30})}
                             healthy={marketplaceMomentum > 0}
                             href="/super-admin/marketplace"
                         />
                         <Signal
                             title="Empresas/Contas"
                             value={data.workspacesTotal}
-                            description={`${data.workspacesLast30} criados nos últimos 30 dias`}
+                            description={t("workspacesSignal", {count: data.workspacesLast30})}
                             healthy={data.workspacesTotal > 0}
                             href="/super-admin/workspaces"
                         />
@@ -316,8 +321,8 @@ export default async function SuperAdminAnalyticsPage() {
             </div>
 
             <div className="grid gap-6 lg:grid-cols-2">
-                <TopWorkspaces data={data} />
-                <TopLists data={data} />
+                <TopWorkspaces data={data} t={t} />
+                <TopLists data={data} t={t} />
             </div>
         </div>
     )
@@ -431,23 +436,23 @@ function Signal({
     )
 }
 
-function TopWorkspaces({ data }: { data: AnalyticsData }) {
+function TopWorkspaces({ data, t }: { data: AnalyticsData; t: Awaited<ReturnType<typeof getTranslations>> }) {
     return (
         <Card>
             <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="flex items-center gap-2">
                     <Building2 className="h-5 w-5" />
-                    Empresas/Contas por volume
+                    {t("workspacesByVolume")}
                 </CardTitle>
                 <Button variant="ghost" size="sm" asChild>
                     <Link href="/super-admin/workspaces">
-                        Ver todos
+                        {t("viewAll")}
                     </Link>
                 </Button>
             </CardHeader>
             <CardContent className="space-y-3">
                 {data.topWorkspaces.length === 0 ? (
-                    <EmptyText text="Nenhuma empresa/conta encontrada." />
+                    <EmptyText text={t("noWorkspaces")} />
                 ) : (
                     data.topWorkspaces.map((workspace) => (
                         <Link
@@ -475,23 +480,23 @@ function TopWorkspaces({ data }: { data: AnalyticsData }) {
     )
 }
 
-function TopLists({ data }: { data: AnalyticsData }) {
+function TopLists({ data, t }: { data: AnalyticsData; t: Awaited<ReturnType<typeof getTranslations>> }) {
     return (
         <Card>
             <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="flex items-center gap-2">
                     <MousePointerClick className="h-5 w-5" />
-                    Listas mais compradas
+                    {t("topLists")}
                 </CardTitle>
                 <Button variant="ghost" size="sm" asChild>
                     <Link href="/super-admin/marketplace/lists">
-                        Ver listas
+                        {t("viewLists")}
                     </Link>
                 </Button>
             </CardHeader>
             <CardContent className="space-y-3">
                 {data.topLists.length === 0 ? (
-                    <EmptyText text="Nenhuma lista ativa encontrada." />
+                    <EmptyText text={t("noLists")} />
                 ) : (
                     data.topLists.map((list) => (
                         <Link
@@ -507,7 +512,7 @@ function TopLists({ data }: { data: AnalyticsData }) {
                             </div>
                             <div className="text-right">
                                 <p className="text-lg font-semibold">{list._count.purchaseItems}</p>
-                                <p className="text-xs text-muted-foreground">compras</p>
+                                <p className="text-xs text-muted-foreground">{t("purchases")}</p>
                             </div>
                         </Link>
                     ))

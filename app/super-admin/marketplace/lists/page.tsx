@@ -1,5 +1,6 @@
 // app/super-admin/marketplace/lists/page.tsx.bak
 import Link from "next/link"
+import { getTranslations } from "next-intl/server"
 import { prisma } from "@/lib/prisma"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -35,32 +36,34 @@ export default async function MarketplaceListsPage() {
     const listsWithSales = lists.filter((list) => list._count.purchaseItems > 0).length
     const totalLeads = lists.reduce((acc, list) => acc + list._count.leads, 0)
     const totalSales = lists.reduce((acc, list) => acc + list._count.purchaseItems, 0)
+    const t = await getTranslations("admin.lists")
+    const tc = await getTranslations("admin.common")
     const readinessChecks = [
         {
-            label: "Ativas",
+            label: t("active"),
             value: activeLists,
-            description: "Listas disponíveis no catálogo.",
+            description: t("activeDesc"),
             done: activeLists > 0,
             icon: CheckCircle2,
         },
         {
-            label: "Sem PDF",
+            label: t("noPdf"),
             value: listsWithoutPdf,
-            description: "Listas sem o estudo em PDF anexado.",
+            description: t("noPdfDesc"),
             done: listsWithoutPdf === 0 && lists.length > 0,
             icon: AlertCircle,
         },
         {
-            label: "Destaques",
+            label: t("featured"),
             value: featuredLists,
-            description: "Listas promovidas no catálogo.",
+            description: t("featuredDesc"),
             done: featuredLists > 0,
             icon: Star,
         },
         {
-            label: "Com vendas",
+            label: t("withSales"),
             value: listsWithSales,
-            description: `${totalSales} venda${totalSales !== 1 ? "s" : ""} no total.`,
+            description: t("withSalesDesc", { count: totalSales }),
             done: listsWithSales > 0,
             icon: Users,
         },
@@ -74,22 +77,22 @@ export default async function MarketplaceListsPage() {
         <div className="space-y-6">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold">Listas de Leads</h1>
+                    <h1 className="text-3xl font-bold">{t("title")}</h1>
                     <p className="text-muted-foreground">
-                        Gerencie as listas disponíveis no catálogo público.
+                        {t("subtitle")}
                     </p>
                 </div>
                 <div className="flex flex-col gap-2 sm:flex-row">
                     <Button variant="outline" asChild>
                         <Link href="/super-admin">
                             <ArrowLeft className="h-4 w-4" />
-                            Voltar ao painel
+                            {tc("backToDashboard")}
                         </Link>
                     </Button>
                     <Button className="bg-admin hover:bg-admin" asChild>
                         <Link href="/super-admin/marketplace/lists/new">
                             <Plus className="h-4 w-4" />
-                            Criar nova lista
+                            {t("createNewList")}
                         </Link>
                     </Button>
                 </div>
@@ -97,21 +100,21 @@ export default async function MarketplaceListsPage() {
 
             <Card className="border-admin-soft bg-admin-soft">
                 <CardContent className="p-4 text-sm text-admin">
-                    Para publicar uma nova base, clique em <strong>Criar nova lista</strong>. Depois, confira se a lista tem o PDF anexado, os dados marcados como revisados e está marcada como ativa.
+                    {t("infoCard")}
                 </CardContent>
             </Card>
 
             <Card className={readiness >= 75 ? "border-admin dark:border-admin-soft" : "border-amber-300 dark:border-amber-900"}>
                 <CardHeader className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                     <div>
-                        <CardTitle>Saúde do catálogo</CardTitle>
+                        <CardTitle>{t("catalogHealth")}</CardTitle>
                         <p className="mt-1 text-sm text-muted-foreground">
-                            {lists.length} lista{lists.length !== 1 ? "s" : ""}, {totalLeads.toLocaleString()} lead{totalLeads !== 1 ? "s" : ""} publicados.
+                            {t("healthDesc", { count: lists.length, leads: totalLeads.toLocaleString() })}
                         </p>
                     </div>
                     <div className="w-full space-y-2 lg:w-64">
                         <div className="flex items-center justify-between text-sm">
-                            <span className="text-muted-foreground">Prontidão</span>
+                            <span className="text-muted-foreground">{t("readiness")}</span>
                             <span className="font-medium">{readiness}%</span>
                         </div>
                         <Progress value={readiness} />
@@ -141,14 +144,14 @@ export default async function MarketplaceListsPage() {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead>Nome</TableHead>
-                            <TableHead>Categoria</TableHead>
-                            <TableHead>Países</TableHead>
-                            <TableHead className="text-center">Leads</TableHead>
-                            <TableHead className="text-center">Vendas</TableHead>
-                            <TableHead className="text-right">Preço</TableHead>
-                            <TableHead className="text-center">Status</TableHead>
-                            <TableHead className="text-right">Ações</TableHead>
+                            <TableHead>{t("colName")}</TableHead>
+                            <TableHead>{t("colCategory")}</TableHead>
+                            <TableHead>{t("colCountries")}</TableHead>
+                            <TableHead className="text-center">{t("colLeads")}</TableHead>
+                            <TableHead className="text-center">{t("colSales")}</TableHead>
+                            <TableHead className="text-right">{t("colPrice")}</TableHead>
+                            <TableHead className="text-center">{t("colStatus")}</TableHead>
+                            <TableHead className="text-right">{t("colActions")}</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -156,12 +159,12 @@ export default async function MarketplaceListsPage() {
                             <TableRow>
                                 <TableCell colSpan={8} className="text-center py-12">
                                     <p className="text-muted-foreground mb-4">
-                                        Nenhuma lista criada ainda.
+                                        {t("emptyTitle")}
                                     </p>
                                     <Link href="/super-admin/marketplace/lists/new">
                                         <Button>
                                             <Plus className="h-4 w-4 mr-2" />
-                                            Criar primeira lista
+                                            {t("createFirst")}
                                         </Button>
                                     </Link>
                                 </TableCell>
@@ -195,23 +198,23 @@ export default async function MarketplaceListsPage() {
                                     </TableCell>
                                     <TableCell className="text-center">
                                         <Badge variant={list.isActive ? "default" : "secondary"}>
-                                            {list.isActive ? "Ativa" : "Inativa"}
+                                            {list.isActive ? t("badgeActive") : t("badgeInactive")}
                                         </Badge>
                                         {list.isFeatured && (
                                             <Badge variant="outline" className="ml-1">
-                                                Destaque
+                                                {t("badgeFeatured")}
                                             </Badge>
                                         )}
                                     </TableCell>
                                     <TableCell className="text-right">
                                         <div className="flex justify-end gap-1">
                                             <Link href={`/super-admin/marketplace/lists/${list.id}/leads`}>
-                                                <Button variant="ghost" size="icon" title="Ver leads">
+                                                <Button variant="ghost" size="icon" title={t("viewLeads")}>
                                                     <Users className="h-4 w-4" />
                                                 </Button>
                                             </Link>
                                             <Link href={`/super-admin/marketplace/lists/${list.id}`}>
-                                                <Button variant="ghost" size="icon" title="Editar">
+                                                <Button variant="ghost" size="icon" title={t("edit")}>
                                                     <Edit className="h-4 w-4" />
                                                 </Button>
                                             </Link>

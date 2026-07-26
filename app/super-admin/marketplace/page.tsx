@@ -1,5 +1,6 @@
 // app/super-admin/marketplace/page.tsx.bak
 import Link from "next/link"
+import { getTranslations } from "next-intl/server"
 import { prisma } from "@/lib/prisma"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -36,30 +37,32 @@ export default async function MarketplacePage() {
         })
     ])
 
+    const t = await getTranslations("admin.marketplace")
+
     const stats = [
         {
-            title: "Listas Ativas",
+            title: t("activeLists"),
             value: listsCount,
             icon: Package,
             href: "/super-admin/marketplace/lists",
             color: "text-violet-600"
         },
         {
-            title: "Leads no Marketplace",
+            title: t("leadsInMarketplace"),
             value: leadsCount.toLocaleString(),
             icon: Users,
             href: "/super-admin/marketplace/lists",
             color: "text-blue-600"
         },
         {
-            title: "Vendas Realizadas",
+            title: t("salesMade"),
             value: purchasesCount,
             icon: ShoppingCart,
             href: "/super-admin/marketplace/purchases",
             color: "text-admin"
         },
         {
-            title: "Receita Total",
+            title: t("totalRevenue"),
             value: formatCurrency(Number(revenue._sum.total || 0), "EUR"),
             icon: TrendingUp,
             href: "/super-admin/marketplace/purchases",
@@ -70,27 +73,27 @@ export default async function MarketplacePage() {
     const recentWithoutPdf = recentLists.filter((list) => !list.studyPdfUrl).length
     const marketplaceChecks = [
         {
-            title: "Listas publicadas",
+            title: t("listsPublished"),
             description: listsCount > 0
-                ? `${listsCount} lista${listsCount !== 1 ? "s" : ""} no catálogo`
-                : "Crie a primeira lista para iniciar o catálogo.",
+                ? t("listsPublishedOk", { count: listsCount })
+                : t("listsPublishedFail"),
             href: "/super-admin/marketplace/lists",
             done: listsCount > 0,
             value: listsCount,
         },
         {
-            title: "Estoque de leads",
-            description: `${leadsCount.toLocaleString()} lead${leadsCount !== 1 ? "s" : ""} importados para uso interno — a entrega ao comprador é o PDF.`,
+            title: t("leadStock"),
+            description: t("leadStockOk", { count: leadsCount.toLocaleString() }),
             href: "/super-admin/marketplace/lists",
             // Informativo: no modelo PDF, vender não exige leads importados.
             done: true,
             value: leadsCount.toLocaleString(),
         },
         {
-            title: "Vendas pagas",
+            title: t("paidSales"),
             description: purchasesCount > 0
-                ? `${purchasesCount} compra${purchasesCount !== 1 ? "s" : ""} concluída${purchasesCount !== 1 ? "s" : ""}`
-                : "Nenhuma compra paga registrada ainda.",
+                ? t("paidSalesOk", { count: purchasesCount })
+                : t("paidSalesFail"),
             href: "/super-admin/marketplace/purchases",
             done: purchasesCount > 0,
             value: purchasesCount,
@@ -104,15 +107,15 @@ export default async function MarketplacePage() {
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold">Catálogo e vendas</h1>
+                    <h1 className="text-3xl font-bold">{t("title")}</h1>
                     <p className="text-muted-foreground">
-                        Gerencie listas de leads e acompanhe vendas do catálogo público.
+                        {t("subtitle")}
                     </p>
                 </div>
                 <Button asChild>
                     <Link href="/super-admin/marketplace/lists/new">
                         <Plus className="h-4 w-4 mr-2" />
-                        Criar nova lista
+                        {t("createNewList")}
                     </Link>
                 </Button>
             </div>
@@ -142,10 +145,10 @@ export default async function MarketplacePage() {
                         <div className="flex flex-wrap items-center gap-2">
                             <CardTitle className="flex items-center gap-2">
                                 <Store className="h-5 w-5" />
-                                Prontidão do marketplace
+                                {t("marketplaceReadiness")}
                             </CardTitle>
                             <Badge variant={readiness >= 67 ? "default" : "outline"}>
-                                {completedChecks}/{marketplaceChecks.length} completo
+                                {t("checklistComplete", { completed: completedChecks, total: marketplaceChecks.length })}
                             </Badge>
                         </div>
                         <p className="text-sm text-muted-foreground">
@@ -155,7 +158,7 @@ export default async function MarketplacePage() {
                     </div>
                     <div className="w-full space-y-2 lg:w-64">
                         <div className="flex items-center justify-between text-sm">
-                            <span className="text-muted-foreground">Cobertura</span>
+                            <span className="text-muted-foreground">{t("coverage")}</span>
                             <span className="font-medium">{readiness}%</span>
                         </div>
                         <Progress value={readiness} />
@@ -187,7 +190,7 @@ export default async function MarketplacePage() {
 
             <Card className="border-admin-soft bg-admin-soft">
                 <CardContent className="p-4 text-sm text-admin">
-                    Para vender uma base, crie uma lista, adicione leads e deixe a lista ativa no catálogo.
+                    {t("infoText")}
                 </CardContent>
             </Card>
 
@@ -196,7 +199,7 @@ export default async function MarketplacePage() {
                 {/* Quick Actions */}
                 <Card>
                     <CardHeader>
-                        <CardTitle>Ações rápidas</CardTitle>
+                        <CardTitle>{t("quickActions")}</CardTitle>
                     </CardHeader>
                     <CardContent className="grid gap-3">
                         <Link
@@ -208,9 +211,9 @@ export default async function MarketplacePage() {
                                     <Package className="h-5 w-5 text-violet-600" />
                                 </div>
                                 <div>
-                                    <p className="font-medium">Criar nova lista</p>
+                                    <p className="font-medium">{t("createList")}</p>
                                     <p className="text-sm text-muted-foreground">
-                                        Adicione uma nova lista ao catálogo
+                                        {t("createListDesc")}
                                     </p>
                                 </div>
                             </div>
@@ -226,9 +229,9 @@ export default async function MarketplacePage() {
                                     <Users className="h-5 w-5 text-blue-600" />
                                 </div>
                                 <div>
-                                    <p className="font-medium">Gerenciar listas de leads</p>
+                                    <p className="font-medium">{t("manageLists")}</p>
                                     <p className="text-sm text-muted-foreground">
-                                        Edite listas e adicione leads
+                                        {t("manageListsDesc")}
                                     </p>
                                 </div>
                             </div>
@@ -244,9 +247,9 @@ export default async function MarketplacePage() {
                                     <ShoppingCart className="h-5 w-5 text-admin" />
                                 </div>
                                 <div>
-                                    <p className="font-medium">Ver vendas</p>
+                                    <p className="font-medium">{t("viewSales")}</p>
                                     <p className="text-sm text-muted-foreground">
-                                        Acompanhe todas as compras realizadas
+                                        {t("viewSalesDesc")}
                                     </p>
                                 </div>
                             </div>
@@ -258,10 +261,10 @@ export default async function MarketplacePage() {
                 {/* Recent Lists */}
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between">
-                        <CardTitle>Listas recentes</CardTitle>
+                        <CardTitle>{t("recentLists")}</CardTitle>
                         <Button variant="ghost" size="sm" asChild>
                             <Link href="/super-admin/marketplace/lists">
-                                Ver todas
+                                {t("viewAll")}
                                 <ArrowRight className="h-4 w-4 ml-1" />
                             </Link>
                         </Button>
@@ -269,7 +272,7 @@ export default async function MarketplacePage() {
                     <CardContent>
                         {recentLists.length === 0 ? (
                             <p className="text-sm text-muted-foreground text-center py-8">
-                                Nenhuma lista criada ainda
+                                {t("noLists")}
                             </p>
                         ) : (
                             <div className="space-y-3">

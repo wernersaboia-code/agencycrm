@@ -1,6 +1,7 @@
 // app/super-admin/marketplace/lists/[id]/leads/page.tsx.bak
 import { notFound } from "next/navigation"
 import Link from "next/link"
+import { getTranslations } from "next-intl/server"
 import { prisma } from "@/lib/prisma"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -51,6 +52,8 @@ export default async function ListLeadsPage({ params }: ListLeadsPageProps) {
         notFound()
     }
 
+    const t = await getTranslations("admin.listLeads")
+
     // Calcular estatísticas a partir dos leads
     const countries = [...new Set(list.leads.map(l => l.country))]
     const sectors = [...new Set(list.leads.map(l => l.sector).filter(Boolean))]
@@ -69,18 +72,18 @@ export default async function ListLeadsPage({ params }: ListLeadsPageProps) {
                         className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-2"
                     >
                         <ArrowLeft className="h-4 w-4 mr-1" />
-                        Voltar para listas
+                        {t("backToLists")}
                     </Link>
                     <h1 className="text-3xl font-bold">{list.name}</h1>
                     <p className="text-muted-foreground">
-                        {list._count.leads.toLocaleString()} leads nesta lista
+                        {t("leadsCount", { count: list._count.leads })}
                     </p>
                 </div>
                 <div className="flex gap-2">
                     <LeadsUploadModal listId={list.id} listName={list.name} />
                     <Button variant="outline" disabled>
                         <Download className="h-4 w-4 mr-2" />
-                        Exportar
+                        {t("export")}
                     </Button>
                 </div>
             </div>
@@ -89,7 +92,7 @@ export default async function ListLeadsPage({ params }: ListLeadsPageProps) {
             <div className="grid gap-4 md:grid-cols-4">
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium">Total de Leads</CardTitle>
+                        <CardTitle className="text-sm font-medium">{t("totalLeads")}</CardTitle>
                         <Users className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
@@ -99,7 +102,7 @@ export default async function ListLeadsPage({ params }: ListLeadsPageProps) {
 
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium">Países</CardTitle>
+                        <CardTitle className="text-sm font-medium">{t("countries")}</CardTitle>
                         <Globe className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
@@ -113,7 +116,7 @@ export default async function ListLeadsPage({ params }: ListLeadsPageProps) {
 
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium">Setores</CardTitle>
+                        <CardTitle className="text-sm font-medium">{t("sectors")}</CardTitle>
                         <Briefcase className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
@@ -127,7 +130,7 @@ export default async function ListLeadsPage({ params }: ListLeadsPageProps) {
 
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium">Emails Verificados</CardTitle>
+                        <CardTitle className="text-sm font-medium">{t("verifiedEmails")}</CardTitle>
                         <Mail className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
@@ -142,15 +145,15 @@ export default async function ListLeadsPage({ params }: ListLeadsPageProps) {
             {/* Tabela de Leads */}
             <Card>
                 <CardHeader>
-                    <CardTitle>Leads</CardTitle>
+                    <CardTitle>{t("leadsTitle")}</CardTitle>
                 </CardHeader>
                 <CardContent>
                     {list.leads.length === 0 ? (
                         <div className="text-center py-12">
                             <Building2 className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                            <h3 className="text-lg font-medium mb-2">Nenhum lead nesta lista</h3>
+                            <h3 className="text-lg font-medium mb-2">{t("emptyTitle")}</h3>
                             <p className="text-muted-foreground mb-4">
-                                Comece importando leads de um arquivo CSV
+                                {t("emptyDesc")}
                             </p>
                             <LeadsUploadModal listId={list.id} listName={list.name} />
                         </div>
@@ -159,13 +162,13 @@ export default async function ListLeadsPage({ params }: ListLeadsPageProps) {
                             <Table>
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead>Empresa</TableHead>
-                                        <TableHead>País</TableHead>
-                                        <TableHead>Setor</TableHead>
-                                        <TableHead>Email</TableHead>
-                                        <TableHead>Contato</TableHead>
-                                        <TableHead className="text-center w-[80px]">Verificado</TableHead>
-                                        <TableHead className="text-right w-[80px]">Ações</TableHead>
+                                        <TableHead>{t("colCompany")}</TableHead>
+                                        <TableHead>{t("colCountry")}</TableHead>
+                                        <TableHead>{t("colSector")}</TableHead>
+                                        <TableHead>{t("colEmail")}</TableHead>
+                                        <TableHead>{t("colContact")}</TableHead>
+                                        <TableHead className="text-center w-[80px]">{t("colVerified")}</TableHead>
+                                        <TableHead className="text-right w-[80px]">{t("colActions")}</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -234,7 +237,7 @@ export default async function ListLeadsPage({ params }: ListLeadsPageProps) {
 
                             {list._count.leads > 100 && (
                                 <p className="text-sm text-muted-foreground text-center mt-4">
-                                    Mostrando 100 de {list._count.leads.toLocaleString()} leads
+                                    {t("showing", { count: list._count.leads })}
                                 </p>
                             )}
                         </>

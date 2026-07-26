@@ -1,5 +1,6 @@
 import Link from "next/link"
 import type { ComponentType } from "react"
+import { getTranslations } from "next-intl/server"
 import {
     ArrowRight,
     BarChart3,
@@ -20,41 +21,41 @@ import { formatCurrency } from "@/lib/utils"
 
 export default async function SuperAdminDashboardPage() {
     const stats = await getGlobalStats()
+    const t = await getTranslations("admin.dashboard")
+    const common = await getTranslations("admin.common")
 
     const mainActions = [
         {
-            title: "Gerenciar listas de leads",
-            description: "Criar, editar e publicar listas que aparecem no catálogo.",
+            title: t("manageLists"),
+            description: t("manageListsDesc"),
             href: "/super-admin/marketplace/lists",
             icon: Package,
             tone: "primary",
         },
         {
-            title: "Ver vendas",
-            description: "Consultar compras realizadas, valores e pedidos dos clientes.",
+            title: t("viewSales"),
+            description: t("viewSalesDesc"),
             href: "/super-admin/marketplace/purchases",
             icon: ShoppingCart,
             tone: "default",
         },
         {
-            title: "Gerenciar usuários",
-            description: "Ver contas, status, permissões e acessos ao sistema.",
+            title: t("manageUsers"),
+            description: t("manageUsersDesc"),
             href: "/super-admin/users",
             icon: Users,
             tone: "default",
         },
         {
-            title: "Empresas e contas",
-            description: "Acompanhar workspaces, responsáveis e uso do CRM.",
+            title: t("companies"),
+            description: t("companiesDesc"),
             href: "/super-admin/workspaces",
             icon: Building2,
             tone: "default",
         },
         {
-            // Única porta de entrada do CRM: ele saiu das telas de cliente por
-            // ser ferramenta interna da operação, não parte do que se vende.
-            title: "Abrir o CRM",
-            description: "Leads, campanhas, chamadas e relatórios da operação interna.",
+            title: t("openCrm"),
+            description: t("openCrmDesc"),
             href: "/dashboard",
             icon: Rocket,
             tone: "default",
@@ -63,27 +64,27 @@ export default async function SuperAdminDashboardPage() {
 
     const metrics = [
         {
-            label: "Listas ativas",
+            label: t("activeLists"),
             value: stats.totalLists.toLocaleString("pt-BR"),
-            detail: `${stats.totalLeadsMarketplace.toLocaleString("pt-BR")} leads publicados`,
+            detail: t("listsWithLeads", { count: stats.totalLeadsMarketplace }),
             icon: Store,
         },
         {
-            label: "Vendas pagas",
+            label: t("paidSales"),
             value: stats.totalPurchases.toLocaleString("pt-BR"),
-            detail: `${stats.purchasesThisMonth.toLocaleString("pt-BR")} este mês`,
+            detail: t("thisMonth", { count: stats.purchasesThisMonth }),
             icon: ShoppingCart,
         },
         {
-            label: "Receita total",
+            label: t("totalRevenue"),
             value: formatCurrency(stats.totalRevenue, "EUR"),
-            detail: `${formatCurrency(stats.revenueThisMonth, "EUR")} este mês`,
+            detail: t("revenueThisMonth", { value: formatCurrency(stats.revenueThisMonth, "EUR") }),
             icon: BarChart3,
         },
         {
-            label: "Usuários ativos",
+            label: t("activeUsers"),
             value: `${stats.activeUsers}/${stats.totalUsers}`,
-            detail: `${stats.usersThisMonth.toLocaleString("pt-BR")} novos este mês`,
+            detail: t("usersThisMonth", { count: stats.usersThisMonth }),
             icon: Users,
         },
     ]
@@ -94,18 +95,18 @@ export default async function SuperAdminDashboardPage() {
                 <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
                     <div>
                         <Badge variant="outline" className="mb-3 border-admin-soft bg-admin-soft text-admin">
-                            Área Administrativa
+                            {t("badge")}
                         </Badge>
                         <h1 className="text-3xl font-bold tracking-tight">
-                            O que você quer fazer agora?
+                            {t("title")}
                         </h1>
                         <p className="mt-2 max-w-2xl text-muted-foreground">
-                            Comece pelas tarefas principais do dia: listas, vendas, usuários e contas.
+                            {t("subtitle")}
                         </p>
                     </div>
                     <Button variant="outline" asChild>
                         <Link href="/">
-                            Voltar para a página inicial
+                            {common("backToHome")}
                         </Link>
                     </Button>
                 </div>
@@ -126,30 +127,30 @@ export default async function SuperAdminDashboardPage() {
             <section className="grid gap-6 lg:grid-cols-[1fr_360px]">
                 <Card>
                     <CardHeader>
-                        <CardTitle>Resumo rápido</CardTitle>
+                        <CardTitle>{t("quickSummary")}</CardTitle>
                     </CardHeader>
                     <CardContent className="grid gap-3 md:grid-cols-2">
                         <SummaryLink
-                            title="Catálogo do marketplace"
-                            description={`${stats.totalLists} listas ativas para venda`}
+                            title={t("marketplaceCatalog")}
+                            description={t("catalogDesc", { count: stats.totalLists })}
                             href="/super-admin/marketplace"
                             icon={Store}
                         />
                         <SummaryLink
-                            title="Relatórios"
-                            description="Acompanhar receita, uso e desempenho"
+                            title={t("reports")}
+                            description={t("reportsDesc")}
                             href="/super-admin/analytics"
                             icon={BarChart3}
                         />
                         <SummaryLink
-                            title="Suporte"
-                            description="Acessar rotinas de apoio e atendimento"
+                            title={t("supportShort")}
+                            description={t("supportDesc")}
                             href="/super-admin/support"
                             icon={LifeBuoy}
                         />
                         <SummaryLink
-                            title="Configurações"
-                            description="Ajustar preferências da administração"
+                            title={t("settingsShort")}
+                            description={t("settingsDesc")}
                             href="/super-admin/settings"
                             icon={Settings}
                         />
@@ -158,24 +159,24 @@ export default async function SuperAdminDashboardPage() {
 
                 <Card>
                     <CardHeader>
-                        <CardTitle>Atalhos importantes</CardTitle>
+                        <CardTitle>{t("shortcuts")}</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-3">
                         <Button className="w-full justify-between bg-admin hover:bg-admin" asChild>
                             <Link href="/super-admin/marketplace/lists/new">
-                                Criar nova lista
+                                {t("createNewList")}
                                 <ArrowRight className="h-4 w-4" />
                             </Link>
                         </Button>
                         <Button variant="outline" className="w-full justify-between" asChild>
                             <Link href="/super-admin/marketplace/purchases">
-                                Consultar vendas
+                                {t("checkSales")}
                                 <ArrowRight className="h-4 w-4" />
                             </Link>
                         </Button>
                         <Button variant="outline" className="w-full justify-between" asChild>
                             <Link href="/super-admin/users">
-                                Ver usuários
+                                {t("viewUsers")}
                                 <ArrowRight className="h-4 w-4" />
                             </Link>
                         </Button>
@@ -186,7 +187,7 @@ export default async function SuperAdminDashboardPage() {
     )
 }
 
-function AdminActionCard({
+async function AdminActionCard({
     title,
     description,
     href,
@@ -199,6 +200,7 @@ function AdminActionCard({
     icon: ComponentType<{ className?: string }>
     tone: "primary" | "default"
 }) {
+    const t = await getTranslations("admin.dashboard")
     const isPrimary = tone === "primary"
 
     return (
@@ -224,7 +226,7 @@ function AdminActionCard({
                 </p>
             </div>
             <div className="mt-5 flex items-center justify-between text-sm font-semibold">
-                Abrir
+                {t("open")}
                 <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
             </div>
         </Link>

@@ -4,6 +4,7 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 import { toast } from "sonner"
 import { UserPlus, Loader2, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -42,6 +43,7 @@ export function TransferWorkspaceModal({
                                            workspaceName,
                                            currentOwner,
                                        }: TransferWorkspaceModalProps) {
+    const t = useTranslations("admin.components.transferWorkspace")
     const router = useRouter()
     const [open, setOpen] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
@@ -80,11 +82,11 @@ export function TransferWorkspaceModal({
         setIsLoading(true)
         try {
             await transferWorkspace(workspaceId, selectedUser.id)
-            toast.success(`Empresa/conta transferida para ${selectedUser.name || selectedUser.email}`)
+            toast.success(t("toastSuccess", { name: selectedUser.name || selectedUser.email }))
             setOpen(false)
             router.refresh()
         } catch {
-            toast.error("Erro ao transferir empresa/conta")
+            toast.error(t("toastError"))
         } finally {
             setIsLoading(false)
         }
@@ -102,21 +104,21 @@ export function TransferWorkspaceModal({
             <DialogTrigger asChild>
                 <Button variant="outline">
                     <UserPlus className="h-4 w-4 mr-2" />
-                    Transferir
+                    {t("button")}
                 </Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Transferir empresa/conta</DialogTitle>
+                    <DialogTitle>{t("title")}</DialogTitle>
                     <DialogDescription>
-                        Transfira &quot;{workspaceName}&quot; para outro usuário. O novo responsável terá acesso completo.
+                        {t("description", { name: workspaceName })}
                     </DialogDescription>
                 </DialogHeader>
 
                 <div className="space-y-4 py-4">
                     {/* Responsável atual */}
                     <div className="p-3 bg-muted rounded-lg">
-                        <Label className="text-xs text-muted-foreground">Responsável atual</Label>
+                        <Label className="text-xs text-muted-foreground">{t("currentOwner")}</Label>
                         <div className="flex items-center gap-2 mt-1">
                             <Avatar className="h-6 w-6">
                                 <AvatarFallback className="text-xs">
@@ -131,11 +133,11 @@ export function TransferWorkspaceModal({
 
                     {/* Busca */}
                     <div className="space-y-2">
-                        <Label>Novo responsável</Label>
+                        <Label>{t("newOwner")}</Label>
                         <div className="relative">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                             <Input
-                                placeholder="Buscar por nome ou email..."
+                                placeholder={t("searchPlaceholder")}
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
                                 className="pl-10"
@@ -170,7 +172,7 @@ export function TransferWorkspaceModal({
                                         </Avatar>
                                         <div className="text-left">
                                             <p className="text-sm font-medium">
-                                                {user.name || "Sem nome"}
+                                                {user.name || t("noName")}
                                             </p>
                                             <p className="text-xs text-muted-foreground">
                                                 {user.email}
@@ -182,7 +184,7 @@ export function TransferWorkspaceModal({
                         </div>
                     ) : search.length >= 2 ? (
                         <p className="text-sm text-muted-foreground text-center py-4">
-                            Nenhum usuário encontrado
+                            {t("noUsers")}
                         </p>
                     ) : null}
 
@@ -190,7 +192,7 @@ export function TransferWorkspaceModal({
                     {selectedUser && (
                         <div className="p-3 bg-violet-50 dark:bg-violet-950/30 border border-violet-200 dark:border-violet-800 rounded-lg">
                             <Label className="text-xs text-violet-600 dark:text-violet-400">
-                                Transferir para
+                                {t("transferTo")}
                             </Label>
                             <p className="font-medium">
                                 {selectedUser.name || selectedUser.email}
@@ -201,7 +203,7 @@ export function TransferWorkspaceModal({
 
                 <DialogFooter>
                     <Button variant="outline" onClick={handleClose} disabled={isLoading}>
-                        Cancelar
+                        {t("cancel")}
                     </Button>
                     <Button
                         onClick={handleTransfer}
@@ -210,10 +212,10 @@ export function TransferWorkspaceModal({
                         {isLoading ? (
                             <>
                                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                                Transferindo...
+                                {t("transferring")}
                             </>
                         ) : (
-                            "Confirmar transferência"
+                            t("confirm")
                         )}
                     </Button>
                 </DialogFooter>

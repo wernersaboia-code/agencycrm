@@ -1,12 +1,13 @@
 // components/admin/list-form.tsx
 "use client"
 
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { useRouter } from "next/navigation"
 import { useForm, type Resolver } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { toast } from "sonner"
+import { useTranslations } from "next-intl"
 import {
     Upload,
     FileSpreadsheet,
@@ -47,29 +48,6 @@ import type { MarketplaceLeadData } from "@/lib/constants/marketplace-csv.consta
 import { LIST_LANGUAGES } from "@/lib/constants/list-languages"
 import { FlagIcon } from "@/components/ui/flag-icon"
 import { canPublishList } from "@/lib/marketplace/list-publishing"
-
-// ============================================
-// SCHEMA
-// ============================================
-
-const listSchema = z.object({
-    name: z.string().min(3, "Nome deve ter pelo menos 3 caracteres"),
-    slug: z.string().min(3, "Slug deve ter pelo menos 3 caracteres")
-        .regex(/^[a-z0-9-]+$/, "Slug deve conter apenas letras minúsculas, números e hífens"),
-    description: z.string().optional(),
-    introduction: z.string().optional(),
-    language: z.string().optional(),
-    category: z.string().min(1, "Selecione uma categoria"),
-    countries: z.string().min(1, "Informe pelo menos um país"),
-    industries: z.string().optional(),
-    price: z.string().min(1, "Informe o preço"),
-    currency: z.string().default("EUR"),
-    totalLeads: z.string().regex(/^\d*$/, "Apenas números inteiros").optional(),
-    isActive: z.boolean().default(true),
-    isFeatured: z.boolean().default(false),
-})
-
-type ListFormData = z.infer<typeof listSchema>
 
 // ============================================
 // TIPOS
@@ -142,6 +120,27 @@ const INDUSTRIES = [
 
 export function ListForm({ list }: ListFormProps) {
     const router = useRouter()
+    const t = useTranslations("admin.components.listForm")
+    const tc = useTranslations("admin.common")
+
+    const listSchema = useMemo(() => z.object({
+        name: z.string().min(3, t("validationName")),
+        slug: z.string().min(3, t("validationSlug"))
+            .regex(/^[a-z0-9-]+$/, t("validationSlugFormat")),
+        description: z.string().optional(),
+        introduction: z.string().optional(),
+        language: z.string().optional(),
+        category: z.string().min(1, t("validationCategory")),
+        countries: z.string().min(1, t("validationCountry")),
+        industries: z.string().optional(),
+        price: z.string().min(1, t("validationPrice")),
+        currency: z.string().default("EUR"),
+        totalLeads: z.string().regex(/^\d*$/, t("validationInteger")).optional(),
+        isActive: z.boolean().default(true),
+        isFeatured: z.boolean().default(false),
+    }), [t])
+
+    type ListFormData = z.infer<typeof listSchema>
 
     // Estado do formulário
     const [isLoading, setIsLoading] = useState(false)
@@ -264,9 +263,9 @@ export function ListForm({ list }: ListFormProps) {
                 const pdfOk = await uploadPdf(list.id)
                 await updateList(list.id, payload)
                 if (pdfOk) {
-                    toast.success("Lista atualizada com sucesso!")
+                    toast.success(t("toastUpdated"))
                 } else {
-                    toast.warning("Lista salva, mas o envio do PDF falhou. Edite a lista para reenviar.")
+                    toast.warning(t("toastPdfFailed"))
                 }
                 router.push("/super-admin/marketplace/lists")
                 router.refresh()
@@ -288,21 +287,21 @@ export function ListForm({ list }: ListFormProps) {
                     const result = await uploadLeadsToList(newList.id, preparedLeads)
 
                     setUploadProgress(100)
-                    toast.success(`Lista criada com ${result.count} leads!`)
+                    toast.success(t("toastCreated", { count: result.count }))
                 } else {
-                    toast.success("Lista criada com sucesso!")
+                    toast.success(t("toastCreatedSimple"))
                 }
 
                 // 3. Avisar se PDF falhou
                 if (!pdfOk) {
-                    toast.warning("Lista criada, mas o envio do PDF falhou. Edite a lista para reenviar.")
+                    toast.warning(t("toastPdfFailed"))
                 }
 
                 if (data.isActive) {
                     toast.info(
                         pdfOk
-                            ? "A lista foi criada inativa. Acesse-a para ativá-la agora que o PDF foi anexado."
-                            : "A lista foi criada inativa. Anexe o PDF e ative-a na edição."
+                            ? t("toastCreatedInactive1")
+                            : t("toastCreatedInactive2")
                     )
                 }
 
@@ -310,7 +309,7 @@ export function ListForm({ list }: ListFormProps) {
                 router.refresh()
             }
         } catch (error) {
-            const message = error instanceof Error && error.message ? error.message : "Erro ao salvar lista"
+            const message = error instanceof Error && error.message ? error.message : t("toastSaveError")
             toast.error(message)
             console.error(error)
         } finally {
@@ -400,7 +399,7 @@ export function ListForm({ list }: ListFormProps) {
 
     // Callback quando importação direta é concluída (modo edit)
     const handleImportSuccess = (count: number) => {
-        toast.success(`${count} leads importados!`)
+        toast.success(t("toastLeadsImported", { count }))
         router.refresh()
     }
 
@@ -411,10 +410,10 @@ export function ListForm({ list }: ListFormProps) {
         try {
             const reviewedAt = await markListReviewed(list.id)
             setDataReviewedAt(reviewedAt)
-            toast.success("Revisão registrada. A data aparece agora na página da lista.")
+            toast.success(t("toastReviewSuccess"))
             router.refresh()
         } catch (error) {
-            const message = error instanceof Error && error.message ? error.message : "Erro ao registrar revisão"
+            const message = error instanceof Error && error.message ? error.message : t("toastReviewError")
             toast.error(message)
             console.error(error)
         } finally {
@@ -438,7 +437,7 @@ export function ListForm({ list }: ListFormProps) {
     // importação (criação vazia, criação com leads preparados, edição).
     const totalLeadsField = (
         <div className="space-y-2">
-            <Label htmlFor="totalLeads">Número de leads</Label>
+            <Label htmlFor="totalLeads">{t("leadCount")}</Label>
             <Input
                 id="totalLeads"
                 type="text"
@@ -447,8 +446,7 @@ export function ListForm({ list }: ListFormProps) {
                 {...form.register("totalLeads")}
             />
             <p className="text-xs text-muted-foreground">
-                Preenchido automaticamente pela importação. Para listas entregues
-                em PDF, informe o número manualmente.
+                {t("leadCountDesc")}
             </p>
             {form.formState.errors.totalLeads && (
                 <p className="text-sm text-destructive">
@@ -464,16 +462,16 @@ export function ListForm({ list }: ListFormProps) {
                 {/* Card: Informações Básicas */}
                 <Card>
                     <CardHeader>
-                        <CardTitle>Informações Básicas</CardTitle>
-                        <CardDescription>Dados principais da lista</CardDescription>
+                        <CardTitle>{t("basicInfo")}</CardTitle>
+                        <CardDescription>{t("basicInfoDesc")}</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div className="grid gap-4 md:grid-cols-2">
                             <div className="space-y-2">
-                                <Label htmlFor="name">Nome da Lista *</Label>
+                                <Label htmlFor="name">{t("nameLabel")}</Label>
                                 <Input
                                     id="name"
-                                    placeholder="Ex: Importadores de Alimentos - Alemanha"
+                                    placeholder={t("namePlaceholder")}
                                     {...form.register("name")}
                                     onChange={handleNameChange}
                                 />
@@ -485,10 +483,10 @@ export function ListForm({ list }: ListFormProps) {
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="slug">Slug (URL) *</Label>
+                                <Label htmlFor="slug">{t("slugLabel")}</Label>
                                 <Input
                                     id="slug"
-                                    placeholder="importadores-alimentos-alemanha"
+                                    placeholder={t("slugPlaceholder")}
                                     {...form.register("slug")}
                                 />
                                 {form.formState.errors.slug && (
@@ -500,10 +498,10 @@ export function ListForm({ list }: ListFormProps) {
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="description">Descrição</Label>
+                            <Label htmlFor="description">{t("descriptionLabel")}</Label>
                             <Textarea
                                 id="description"
-                                placeholder="Descrição detalhada da lista..."
+                                placeholder={t("descriptionPlaceholder")}
                                 rows={4}
                                 {...form.register("description")}
                             />
@@ -511,13 +509,13 @@ export function ListForm({ list }: ListFormProps) {
 
                         <div className="grid gap-4 md:grid-cols-2">
                             <div className="space-y-2">
-                                <Label htmlFor="language">Idioma da lista</Label>
+                                <Label htmlFor="language">{t("languageLabel")}</Label>
                                 <Select
                                     value={form.watch("language")}
                                     onValueChange={(value) => form.setValue("language", value)}
                                 >
                                     <SelectTrigger>
-                                        <SelectValue placeholder="Selecione o idioma" />
+                                        <SelectValue placeholder={t("languagePlaceholder")} />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {LIST_LANGUAGES.map((lang) => (
@@ -534,10 +532,10 @@ export function ListForm({ list }: ListFormProps) {
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="introduction">Introdução</Label>
+                            <Label htmlFor="introduction">{t("introLabel")}</Label>
                             <Textarea
                                 id="introduction"
-                                placeholder="Texto de introdução ao estudo de mercado..."
+                                placeholder={t("introPlaceholder")}
                                 rows={6}
                                 {...form.register("introduction")}
                             />
@@ -545,13 +543,13 @@ export function ListForm({ list }: ListFormProps) {
 
                         <div className="grid gap-4 md:grid-cols-2">
                             <div className="space-y-2">
-                                <Label htmlFor="category">Categoria *</Label>
+                                <Label htmlFor="category">{t("categoryLabel")}</Label>
                                 <Select
                                     value={form.watch("category")}
                                     onValueChange={(value) => form.setValue("category", value)}
                                 >
                                     <SelectTrigger>
-                                        <SelectValue placeholder="Selecione uma categoria" />
+                                        <SelectValue placeholder={t("categoryPlaceholder")} />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {categories.map((cat) => (
@@ -570,20 +568,20 @@ export function ListForm({ list }: ListFormProps) {
 
                             <div className="space-y-2">
                                 <Label htmlFor="countries">
-                                    Países (códigos ISO) *
+                                    {t("countriesLabel")}
                                     {hasPreparedLeads && (
                                         <Badge variant="outline" className="ml-2 text-xs">
-                                            Auto-preenchido
+                                            {t("autoFilled")}
                                         </Badge>
                                     )}
                                 </Label>
                                 <Input
                                     id="countries"
-                                    placeholder="DE, AT, CH"
+                                    placeholder={t("countriesPlaceholder")}
                                     {...form.register("countries")}
                                 />
                                 <p className="text-xs text-muted-foreground">
-                                    Separe por vírgula: DE, FR, IT
+                                    {t("countriesHint")}
                                 </p>
                                 {form.formState.errors.countries && (
                                     <p className="text-sm text-destructive">
@@ -596,10 +594,10 @@ export function ListForm({ list }: ListFormProps) {
                         {/* NOVO: Seletor de Indústrias */}
                         <div className="space-y-3">
                             <Label>
-                                Setores/Indústrias
+                                {t("industriesLabel")}
                                 {hasPreparedLeads && (
                                     <Badge variant="outline" className="ml-2 text-xs">
-                                        Auto-preenchido
+                                        {t("autoFilled")}
                                     </Badge>
                                 )}
                             </Label>
@@ -646,7 +644,7 @@ export function ListForm({ list }: ListFormProps) {
                             </div>
 
                             <p className="text-xs text-muted-foreground">
-                                Selecione um ou mais setores para esta lista
+                                {t("industriesDesc")}
                             </p>
                         </div>
                     </CardContent>
@@ -655,12 +653,12 @@ export function ListForm({ list }: ListFormProps) {
                 {/* Card: Preço */}
                 <Card>
                     <CardHeader>
-                        <CardTitle>Preço</CardTitle>
+                        <CardTitle>{t("priceSection")}</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div className="grid gap-4 md:grid-cols-2">
                             <div className="space-y-2">
-                                <Label htmlFor="price">Preço *</Label>
+                                <Label htmlFor="price">{t("priceLabel")}</Label>
                                 <Input
                                     id="price"
                                     type="number"
@@ -676,7 +674,7 @@ export function ListForm({ list }: ListFormProps) {
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="currency">Moeda</Label>
+                                <Label htmlFor="currency">{t("currencyLabel")}</Label>
                                 <Select
                                     value={form.watch("currency")}
                                     onValueChange={(value) => form.setValue("currency", value)}
@@ -702,13 +700,13 @@ export function ListForm({ list }: ListFormProps) {
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                             <Upload className="h-5 w-5" />
-                            Importar Leads
-                            <Badge variant="outline">Opcional</Badge>
+                            {t("importSection")}
+                            <Badge variant="outline">{t("optional")}</Badge>
                         </CardTitle>
                         <CardDescription>
                             {isEditing
-                                ? "Adicione mais leads a esta lista"
-                                : "Adicione leads diretamente ao criar a lista"
+                                ? t("importEditDesc")
+                                : t("importCreateDesc")
                             }
                         </CardDescription>
                     </CardHeader>
@@ -724,7 +722,7 @@ export function ListForm({ list }: ListFormProps) {
                                     onClick={() => setShowImportWizard(true)}
                                 >
                                     <Upload className="h-4 w-4 mr-2" />
-                                    Importar Mais Leads
+                                    {t("importMore")}
                                 </Button>
                             </div>
                         ) : hasPreparedLeads ? (
@@ -737,10 +735,10 @@ export function ListForm({ list }: ListFormProps) {
                                         <CheckCircle2 className="h-10 w-10 text-admin" />
                                         <div>
                                             <p className="text-xl font-bold text-admin dark:text-admin-soft">
-                                                {preparedLeads.length} leads prontos!
+                                                {t("leadsReady", { count: preparedLeads.length })}
                                             </p>
                                             <p className="text-sm text-admin dark:text-admin">
-                                                Serão importados quando você criar a lista
+                                                {t("willImportOnCreate")}
                                             </p>
                                         </div>
                                     </div>
@@ -762,7 +760,7 @@ export function ListForm({ list }: ListFormProps) {
                                         onClick={() => setShowImportWizard(true)}
                                         className="bg-white dark:bg-transparent"
                                     >
-                                        Importar mais leads
+                                        {t("importMoreButton")}
                                     </Button>
                                 </div>
                                 </div>
@@ -779,9 +777,9 @@ export function ListForm({ list }: ListFormProps) {
                                 >
                                     <div className="text-center">
                                         <FileSpreadsheet className="h-10 w-10 mx-auto mb-3 text-muted-foreground" />
-                                        <p className="font-medium">Clique para importar CSV ou Excel</p>
+                                        <p className="font-medium">{t("clickToImport")}</p>
                                         <p className="text-sm text-muted-foreground">
-                                            Formatos: .csv, .xlsx, .xls
+                                            {t("formats")}
                                         </p>
                                     </div>
                                 </Button>
@@ -795,10 +793,10 @@ export function ListForm({ list }: ListFormProps) {
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                             <FileText className="h-5 w-5" />
-                            Estudo de mercado (PDF)
+                            {t("pdfSection")}
                         </CardTitle>
                         <CardDescription>
-                            Este é o arquivo que o comprador vai baixar.
+                            {t("pdfDesc")}
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-3">
@@ -814,11 +812,11 @@ export function ListForm({ list }: ListFormProps) {
                         />
                         {pdfName && (
                             <p className="text-sm text-muted-foreground">
-                                Arquivo atual: <span className="font-medium">{pdfName}</span>
+                                {t("currentFile")} <span className="font-medium">{pdfName}</span>
                             </p>
                         )}
                         <p className="text-xs text-muted-foreground">
-                            Formato: PDF. Máximo 50MB.
+                            {t("pdfHint")}
                         </p>
                     </CardContent>
                 </Card>
@@ -826,17 +824,17 @@ export function ListForm({ list }: ListFormProps) {
                 {/* Card: Configurações */}
                 <Card>
                     <CardHeader>
-                        <CardTitle>Configurações</CardTitle>
+                        <CardTitle>{t("settingsSection")}</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div className="space-y-2">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <Label htmlFor="isActive">Lista Ativa</Label>
+                                    <Label htmlFor="isActive">{t("activeLabel")}</Label>
                                     <p className="text-sm text-muted-foreground">
                                         {isEditing
-                                            ? "Listas inativas não aparecem no catálogo"
-                                            : "Novas listas são criadas inativas — anexe o PDF e ative na edição"}
+                                            ? t("activeDesc")
+                                            : t("activeNewDesc")}
                                     </p>
                                 </div>
                                 <Switch
@@ -860,9 +858,9 @@ export function ListForm({ list }: ListFormProps) {
 
                         <div className="flex items-center justify-between">
                             <div>
-                                <Label htmlFor="isFeatured">Destaque</Label>
+                                <Label htmlFor="isFeatured">{t("featuredLabel")}</Label>
                                 <p className="text-sm text-muted-foreground">
-                                    Aparecer em destaque na página inicial
+                                    {t("featuredDesc")}
                                 </p>
                             </div>
                             <Switch
@@ -880,18 +878,17 @@ export function ListForm({ list }: ListFormProps) {
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
                                 <BadgeCheck className="h-5 w-5" />
-                                Revisão dos dados
+                                {t("reviewSection")}
                             </CardTitle>
                             <CardDescription>
-                                Esta é a data de frescor exibida ao comprador. Registre-a só depois de
-                                conferir de fato os dados — salvar o formulário não a altera.
+                                {t("reviewDesc")}
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-3">
                             <p className="text-sm text-muted-foreground">
                                 {dataReviewedAt
-                                    ? `Última revisão registrada: ${new Date(dataReviewedAt).toLocaleDateString("pt-BR")}`
-                                    : "Nenhuma revisão registrada. A página da lista não exibe data de revisão."}
+                                    ? t("lastReview", { date: new Date(dataReviewedAt).toLocaleDateString("pt-BR") })
+                                    : t("noReview")}
                             </p>
                             <Button
                                 type="button"
@@ -902,10 +899,10 @@ export function ListForm({ list }: ListFormProps) {
                                 {isMarkingReviewed ? (
                                     <>
                                         <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                                        Registrando...
+                                        {t("registering")}
                                     </>
                                 ) : (
-                                    "Marcar dados como revisados hoje"
+                                    t("markReviewed")
                                 )}
                             </Button>
                         </CardContent>
@@ -917,9 +914,9 @@ export function ListForm({ list }: ListFormProps) {
                     <div className="space-y-2">
                         <Progress value={uploadProgress} />
                         <p className="text-sm text-center text-muted-foreground">
-                            {uploadProgress < 30 && "Criando lista..."}
-                            {uploadProgress >= 30 && uploadProgress < 100 && "Importando leads..."}
-                            {uploadProgress === 100 && "Concluído!"}
+                            {uploadProgress < 30 && t("creatingList")}
+                            {uploadProgress >= 30 && uploadProgress < 100 && t("importingLeads")}
+                            {uploadProgress === 100 && t("completed")}
                         </p>
                     </div>
                 )}
@@ -927,18 +924,18 @@ export function ListForm({ list }: ListFormProps) {
                 {/* Botões de Ação */}
                 <div className="flex gap-4">
                     <Button type="submit" disabled={isLoading || (!form.formState.isDirty && !pdfFile)}>
-                        {isLoading ? (
-                            <>
-                                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                                {isEditing ? "Salvando..." : "Criando..."}
-                            </>
-                        ) : isEditing ? (
-                            "Salvar alterações"
-                        ) : hasPreparedLeads ? (
-                            `Criar lista com ${preparedLeads.length} leads`
-                        ) : (
-                            "Criar lista"
-                        )}
+                                {isLoading ? (
+                                    <>
+                                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                        {isEditing ? tc("saving") : t("creating")}
+                                    </>
+                                ) : isEditing ? (
+                                    t("saveChanges")
+                                ) : hasPreparedLeads ? (
+                                    t("createWithLeads", { count: preparedLeads.length })
+                                ) : (
+                                    t("createList")
+                                )}
                     </Button>
                     <Button
                         type="button"
@@ -946,7 +943,7 @@ export function ListForm({ list }: ListFormProps) {
                         onClick={() => router.back()}
                         disabled={isLoading}
                     >
-                        Cancelar
+                        {t("cancel")}
                     </Button>
                 </div>
             </form>
@@ -957,7 +954,7 @@ export function ListForm({ list }: ListFormProps) {
                 onOpenChange={setShowImportWizard}
                 mode={isEditing ? "import" : "prepare"}
                 listId={list?.id}
-                listName={form.watch("name") || "Nova lista"}
+                listName={form.watch("name") || t("newList")}
                 onSuccess={handleImportSuccess}
                 onLeadsPrepared={handleLeadsPrepared}
             />

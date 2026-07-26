@@ -4,6 +4,7 @@
 
 import { useState } from "react"
 import { toast } from "sonner"
+import { useTranslations } from "next-intl"
 import { KeyRound, Loader2, Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -24,6 +25,7 @@ interface ResetPasswordButtonProps {
 }
 
 export function ResetPasswordButton({ email }: ResetPasswordButtonProps) {
+    const t = useTranslations("admin.components.resetPassword")
     const [isLoading, setIsLoading] = useState(false)
     const [sent, setSent] = useState(false)
 
@@ -32,9 +34,9 @@ export function ResetPasswordButton({ email }: ResetPasswordButtonProps) {
         try {
             await sendPasswordReset(email)
             setSent(true)
-            toast.success("Email de reset enviado!")
+            toast.success(t("toastSuccess"))
         } catch {
-            toast.error("Erro ao enviar email de reset")
+            toast.error(t("toastError"))
         } finally {
             setIsLoading(false)
         }
@@ -44,7 +46,7 @@ export function ResetPasswordButton({ email }: ResetPasswordButtonProps) {
         return (
             <Button variant="outline" disabled>
                 <Check className="h-4 w-4 mr-2 text-admin" />
-                Email Enviado
+                {t("buttonSent")}
             </Button>
         )
     }
@@ -54,26 +56,26 @@ export function ResetPasswordButton({ email }: ResetPasswordButtonProps) {
             <AlertDialogTrigger asChild>
                 <Button variant="outline">
                     <KeyRound className="h-4 w-4 mr-2" />
-                    Reset de Senha
+                    {t("button")}
                 </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
                 <AlertDialogHeader>
-                    <AlertDialogTitle>Enviar reset de senha?</AlertDialogTitle>
+                    <AlertDialogTitle>{t("title")}</AlertDialogTitle>
                     <AlertDialogDescription>
-                        Um email será enviado para <strong>{email}</strong> com um link para redefinir a senha.
+                        {t.rich("description", { email: () => <strong>{email}</strong> })}
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel disabled={isLoading}>Cancelar</AlertDialogCancel>
+                    <AlertDialogCancel disabled={isLoading}>{t("cancel")}</AlertDialogCancel>
                     <AlertDialogAction onClick={handleReset} disabled={isLoading}>
                         {isLoading ? (
                             <>
                                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                                Enviando...
+                                {t("sending")}
                             </>
                         ) : (
-                            "Enviar Email"
+                            t("confirm")
                         )}
                     </AlertDialogAction>
                 </AlertDialogFooter>

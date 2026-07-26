@@ -1,6 +1,7 @@
 // components/admin/marketplace-import-wizard.tsx
 "use client"
 
+import { useTranslations } from "next-intl"
 import { useState, useCallback } from "react"
 import { toast } from "sonner"
 import Papa from "papaparse"
@@ -110,6 +111,8 @@ export function MarketplaceImportWizard({
                                             onSuccess,
                                             onLeadsPrepared,
                                         }: MarketplaceImportWizardProps) {
+    const t = useTranslations("admin.components.importWizard")
+    const tc = useTranslations("admin.common")
     // Estado do wizard
     const [step, setStep] = useState<WizardStep>("upload")
     const [isLoading, setIsLoading] = useState(false)
@@ -222,7 +225,7 @@ export function MarketplaceImportWizard({
         const isExcel = fileName.endsWith(".xlsx")
 
         if (!isCSV && !isExcel) {
-            toast.error("Formato não suportado. Use CSV ou Excel (.xlsx)")
+            toast.error(t("toastUnsupported"))
             return
         }
 
@@ -232,7 +235,7 @@ export function MarketplaceImportWizard({
             const parsed = isCSV ? await parseCSV(file) : await parseExcel(file)
 
             if (parsed.rows.length === 0) {
-                toast.error("O arquivo está vazio")
+                toast.error(t("toastEmpty"))
                 setIsLoading(false)
                 return
             }
@@ -247,10 +250,10 @@ export function MarketplaceImportWizard({
             setMapping(autoMapping)
 
             setStep("mapping")
-            toast.success(`${parsed.rows.length} linhas encontradas!`)
+            toast.success(t("toastRowsFound", { count: parsed.rows.length }))
         } catch (error) {
             console.error("Erro ao ler arquivo:", error)
-            toast.error("Erro ao ler o arquivo")
+            toast.error(t("toastReadError"))
         } finally {
             setIsLoading(false)
         }
@@ -283,7 +286,7 @@ export function MarketplaceImportWizard({
             URL.revokeObjectURL(url)
         }
 
-        toast.success(`Template ${type.toUpperCase()} baixado!`)
+        toast.success(t("toastTemplateDownloaded", { type: type.toUpperCase() }))
     }
 
     // ============================================
@@ -364,21 +367,21 @@ export function MarketplaceImportWizard({
             .map((l) => l.mapped as MarketplaceLeadData)
 
         if (validLeads.length === 0) {
-            toast.error("Nenhum lead válido para importar")
+            toast.error(t("toastNoValid"))
             return
         }
 
         // MODO PREPARE: Retorna os leads para o componente pai
         if (mode === "prepare") {
             onLeadsPrepared?.(validLeads)
-            toast.success(`${validLeads.length} leads prontos para importar!`)
+            toast.success(t("toastLeadsReady", { count: validLeads.length }))
             handleClose()
             return
         }
 
         // MODO IMPORT: Envia direto pro banco
         if (!listId) {
-            toast.error("ID da lista não encontrado")
+            toast.error(t("toastListNotFound"))
             return
         }
 
@@ -403,11 +406,11 @@ export function MarketplaceImportWizard({
                 errors: invalidCount,
             })
 
-            toast.success(`${result.count} leads importados com sucesso!`)
+            toast.success(t("toastImportSuccess", { count: result.count }))
             onSuccess?.(result.count)
         } catch (error) {
             console.error("Erro ao importar:", error)
-            toast.error("Erro ao importar leads")
+            toast.error(t("toastImportError"))
             setStep("preview")
         }
     }
@@ -427,13 +430,13 @@ export function MarketplaceImportWizard({
                 <DialogHeader className="px-6 py-4 border-b">
                     <DialogTitle>
                         {isPrepareMode
-                            ? `Preparar Leads para "${listName}"`
-                            : `Importar Leads para "${listName}"`}
+                            ? t("prepareTitle", { name: listName })
+                            : t("importTitle", { name: listName })}
                     </DialogTitle>
                     <DialogDescription>
                         {isPrepareMode
-                            ? "Selecione e mapeie os dados do arquivo. Os leads serão importados quando você criar a lista."
-                            : "Importe leads de um arquivo CSV ou Excel"}
+                            ? t("prepareDesc")
+                            : t("importDesc")}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -442,21 +445,21 @@ export function MarketplaceImportWizard({
                     <div className="flex items-center gap-2 text-sm">
                         <StepIndicator
                             step={1}
-                            label="Upload"
+                            label={t("stepUpload")}
                             active={step === "upload"}
                             completed={step !== "upload"}
                         />
                         <ChevronRight className="h-4 w-4 text-muted-foreground" />
                         <StepIndicator
                             step={2}
-                            label="Mapeamento"
+                            label={t("stepMapping")}
                             active={step === "mapping"}
                             completed={step === "preview" || step === "importing"}
                         />
                         <ChevronRight className="h-4 w-4 text-muted-foreground" />
                         <StepIndicator
                             step={3}
-                            label="Preview"
+                            label={t("stepPreview")}
                             active={step === "preview"}
                             completed={step === "importing"}
                         />
@@ -465,7 +468,7 @@ export function MarketplaceImportWizard({
                                 <ChevronRight className="h-4 w-4 text-muted-foreground" />
                                 <StepIndicator
                                     step={4}
-                                    label="Importação"
+                                    label={t("stepImport")}
                                     active={step === "importing"}
                                     completed={importResult !== null}
                                 />
@@ -482,10 +485,10 @@ export function MarketplaceImportWizard({
                             <div className="border-2 border-dashed rounded-lg p-12 text-center hover:border-primary/50 transition-colors">
                                 <FileSpreadsheet className="mx-auto h-16 w-16 text-muted-foreground mb-4" />
                                 <h3 className="text-lg font-medium mb-2">
-                                    Arraste um arquivo ou clique para selecionar
+                                    {t("dropzone")}
                                 </h3>
                                 <p className="text-sm text-muted-foreground mb-4">
-                                    Formatos aceitos: CSV, Excel (.xlsx)
+                                    {t("acceptedFormats")}
                                 </p>
                                 <Input
                                     type="file"
@@ -501,12 +504,12 @@ export function MarketplaceImportWizard({
                       {isLoading ? (
                           <>
                               <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                              Processando...
+                              {t("processing")}
                           </>
                       ) : (
                           <>
                               <Upload className="h-4 w-4 mr-2" />
-                              Selecionar Arquivo
+                              {t("selectFile")}
                           </>
                       )}
                     </span>
@@ -518,9 +521,9 @@ export function MarketplaceImportWizard({
                                 <CardContent className="p-4">
                                     <div className="flex items-center justify-between">
                                         <div>
-                                            <h4 className="font-medium">Precisa de um modelo?</h4>
+                                            <h4 className="font-medium">{t("needTemplate")}</h4>
                                             <p className="text-sm text-muted-foreground">
-                                                Baixe o template com todas as colunas
+                                                {t("downloadTemplate")}
                                             </p>
                                         </div>
                                         <div className="flex gap-2">
@@ -531,7 +534,7 @@ export function MarketplaceImportWizard({
                                                 onClick={() => handleDownloadTemplate("csv")}
                                             >
                                                 <FileText className="h-4 w-4 mr-2" />
-                                                CSV
+                                                {t("csv")}
                                             </Button>
                                             <Button
                                                 type="button"
@@ -540,7 +543,7 @@ export function MarketplaceImportWizard({
                                                 onClick={() => handleDownloadTemplate("excel")}
                                             >
                                                 <TableIcon className="h-4 w-4 mr-2" />
-                                                Excel
+                                                {t("excel")}
                                             </Button>
                                         </div>
                                     </div>
@@ -552,13 +555,13 @@ export function MarketplaceImportWizard({
                                     <AlertCircle className="h-5 w-5 text-amber-600 mt-0.5" />
                                     <div>
                                         <p className="font-medium text-amber-800 dark:text-amber-200">
-                                            Campos obrigatórios
+                                            {t("requiredFields")}
                                         </p>
                                         <p className="text-sm text-amber-700 dark:text-amber-300">
-                                            Country, Company Name (email é opcional)
+                                            {t("requiredFieldsDetail")}
                                         </p>
                                         <p className="text-xs text-amber-600 dark:text-amber-400 mt-1">
-                                            Leads sem email serão marcados como &quot;incompletos&quot;
+                                            {t("incompleteNote")}
                                         </p>
                                     </div>
                                 </div>
@@ -575,8 +578,7 @@ export function MarketplaceImportWizard({
                                     <div>
                                         <p className="font-medium">{parsedFile.fileName}</p>
                                         <p className="text-sm text-muted-foreground">
-                                            {parsedFile.rows.length} linhas • {parsedFile.headers.length} colunas •{" "}
-                                            {parsedFile.fileType.toUpperCase()}
+                                            {t("fileInfo", { rows: parsedFile.rows.length, headers: parsedFile.headers.length, type: parsedFile.fileType.toUpperCase() })}
                                         </p>
                                     </div>
                                 </div>
@@ -587,22 +589,22 @@ export function MarketplaceImportWizard({
                                             : "destructive"
                                     }
                                 >
-                                    {mappingStats.mappedRequired}/{mappingStats.requiredFields} obrigatórios
+                                    {t("requiredMapped", { mapped: mappingStats.mappedRequired, required: mappingStats.requiredFields })}
                                 </Badge>
                             </div>
 
                             <div className="grid grid-cols-3 gap-4">
                                 <div className="p-4 bg-muted rounded-lg text-center">
                                     <p className="text-2xl font-bold">{parsedFile.headers.length}</p>
-                                    <p className="text-sm text-muted-foreground">Colunas</p>
+                                    <p className="text-sm text-muted-foreground">{t("columns")}</p>
                                 </div>
                                 <div className="p-4 bg-admin-soft dark:bg-admin-soft/30 rounded-lg text-center">
                                     <p className="text-2xl font-bold text-admin">{mappingStats.mapped}</p>
-                                    <p className="text-sm text-muted-foreground">Mapeadas</p>
+                                    <p className="text-sm text-muted-foreground">{t("mapped")}</p>
                                 </div>
                                 <div className="p-4 bg-muted rounded-lg text-center">
                                     <p className="text-2xl font-bold">{mappingStats.total - mappingStats.mapped}</p>
-                                    <p className="text-sm text-muted-foreground">Ignoradas</p>
+                                    <p className="text-sm text-muted-foreground">{t("ignored")}</p>
                                 </div>
                             </div>
 
@@ -611,9 +613,9 @@ export function MarketplaceImportWizard({
                                     <Table>
                                         <TableHeader>
                                             <TableRow>
-                                                <TableHead className="w-1/3">Coluna do Arquivo</TableHead>
-                                                <TableHead className="w-1/3">Mapear para</TableHead>
-                                                <TableHead className="w-1/3">Exemplo</TableHead>
+                                                <TableHead className="w-1/3">{t("colFileColumn")}</TableHead>
+                                                <TableHead className="w-1/3">{t("colMapTo")}</TableHead>
+                                                <TableHead className="w-1/3">{t("colExample")}</TableHead>
                                             </TableRow>
                                         </TableHeader>
                                         <TableBody>
@@ -630,12 +632,12 @@ export function MarketplaceImportWizard({
                                                                 <code className="text-sm bg-muted px-2 py-1 rounded">{header}</code>
                                                                 {isRequired && (
                                                                     <Badge variant="outline" className="text-xs">
-                                                                        Obrigatório
+                                                                        {t("required")}
                                                                     </Badge>
                                                                 )}
                                                                 {isRecommended && (
                                                                     <Badge variant="outline" className="text-xs text-amber-600">
-                                                                        Recomendado
+                                                                        {t("recommended")}
                                                                     </Badge>
                                                                 )}
                                                             </div>
@@ -646,11 +648,11 @@ export function MarketplaceImportWizard({
                                                                 onValueChange={(value) => handleMappingChange(header, value)}
                                                             >
                                                                 <SelectTrigger className="w-full">
-                                                                    <SelectValue placeholder="Selecionar campo" />
+                                                                    <SelectValue placeholder={t("selectPlaceholder")} />
                                                                 </SelectTrigger>
                                                                 <SelectContent>
                                                                     <SelectItem value="none">
-                                                                        <span className="text-muted-foreground">— Ignorar —</span>
+                                                                        <span className="text-muted-foreground">{t("ignore")}</span>
                                                                     </SelectItem>
                                                                     {MARKETPLACE_CSV_FIELDS.map((field) => (
                                                                         <SelectItem key={field.key} value={field.key}>
@@ -686,10 +688,10 @@ export function MarketplaceImportWizard({
                                         <AlertCircle className="h-5 w-5 text-red-600 mt-0.5" />
                                         <div>
                                             <p className="font-medium text-red-800 dark:text-red-200">
-                                                Campos obrigatórios faltando
+                                                {t("missingRequired")}
                                             </p>
                                             <p className="text-sm text-red-700 dark:text-red-300">
-                                                Mapeie os campos: Country e Company Name
+                                                {t("missingRequiredDetail")}
                                             </p>
                                         </div>
                                     </div>
@@ -705,19 +707,19 @@ export function MarketplaceImportWizard({
                             <div className="grid grid-cols-4 gap-4">
                                 <div className="p-4 bg-muted rounded-lg text-center">
                                     <p className="text-3xl font-bold">{previewStats.total}</p>
-                                    <p className="text-sm text-muted-foreground">Total</p>
+                                    <p className="text-sm text-muted-foreground">{t("total")}</p>
                                 </div>
                                 <div className="p-4 bg-admin-soft dark:bg-admin-soft/30 rounded-lg text-center">
                                     <p className="text-3xl font-bold text-admin">{previewStats.complete}</p>
-                                    <p className="text-sm text-muted-foreground">Completos</p>
+                                    <p className="text-sm text-muted-foreground">{t("complete")}</p>
                                 </div>
                                 <div className="p-4 bg-amber-50 dark:bg-amber-950/30 rounded-lg text-center">
                                     <p className="text-3xl font-bold text-amber-600">{previewStats.incomplete}</p>
-                                    <p className="text-sm text-muted-foreground">Sem Email</p>
+                                    <p className="text-sm text-muted-foreground">{t("withoutEmail")}</p>
                                 </div>
                                 <div className="p-4 bg-red-50 dark:bg-red-950/30 rounded-lg text-center">
                                     <p className="text-3xl font-bold text-red-600">{previewStats.invalid}</p>
-                                    <p className="text-sm text-muted-foreground">Com Erros</p>
+                                    <p className="text-sm text-muted-foreground">{t("withErrors")}</p>
                                 </div>
                             </div>
 
@@ -726,15 +728,15 @@ export function MarketplaceImportWizard({
                                 <TabsList className="grid w-full grid-cols-3">
                                     <TabsTrigger value="complete" className="gap-2">
                                         <CheckCircle2 className="h-4 w-4 text-admin" />
-                                        Completos ({previewStats.complete})
+                                        {t("tabComplete", { count: previewStats.complete })}
                                     </TabsTrigger>
                                     <TabsTrigger value="incomplete" className="gap-2">
                                         <AlertCircle className="h-4 w-4 text-amber-600" />
-                                        Sem Email ({previewStats.incomplete})
+                                        {t("tabNoEmail", { count: previewStats.incomplete })}
                                     </TabsTrigger>
                                     <TabsTrigger value="invalid" className="gap-2">
                                         <X className="h-4 w-4 text-red-600" />
-                                        Erros ({previewStats.invalid})
+                                        {t("tabErrors", { count: previewStats.invalid })}
                                     </TabsTrigger>
                                 </TabsList>
 
@@ -743,17 +745,17 @@ export function MarketplaceImportWizard({
                                     {previewStats.complete === 0 ? (
                                         <div className="text-center py-12 text-muted-foreground">
                                             <AlertCircle className="h-12 w-12 mx-auto mb-4 text-amber-600" />
-                                            <p>Nenhum lead completo (com email)</p>
+                                            <p>{t("noComplete")}</p>
                                         </div>
                                     ) : (
                                         <ScrollArea className="h-[250px] border rounded-lg">
                                             <Table>
                                                 <TableHeader>
                                                     <TableRow>
-                                                        <TableHead>Empresa</TableHead>
-                                                        <TableHead>País</TableHead>
-                                                        <TableHead>Email</TableHead>
-                                                        <TableHead>Setor</TableHead>
+                                                        <TableHead>{t("colCompany")}</TableHead>
+                                                        <TableHead>{t("colCountry")}</TableHead>
+                                                        <TableHead>{t("colEmail")}</TableHead>
+                                                        <TableHead>{t("colSector")}</TableHead>
                                                     </TableRow>
                                                 </TableHeader>
                                                 <TableBody>
@@ -787,17 +789,17 @@ export function MarketplaceImportWizard({
                                     {previewStats.incomplete === 0 ? (
                                         <div className="text-center py-12 text-muted-foreground">
                                             <CheckCircle2 className="h-12 w-12 mx-auto mb-4 text-admin" />
-                                            <p>Todos os leads têm email! 🎉</p>
+                                            <p>{t("allHaveEmail")}</p>
                                         </div>
                                     ) : (
                                         <ScrollArea className="h-[250px] border rounded-lg">
                                             <Table>
                                                 <TableHeader>
                                                     <TableRow>
-                                                        <TableHead>Empresa</TableHead>
-                                                        <TableHead>País</TableHead>
-                                                        <TableHead>Telefone</TableHead>
-                                                        <TableHead>Website</TableHead>
+                                                        <TableHead>{t("colCompany")}</TableHead>
+                                                        <TableHead>{t("colCountry")}</TableHead>
+                                                        <TableHead>{t("colPhone")}</TableHead>
+                                                        <TableHead>{t("colWebsite")}</TableHead>
                                                     </TableRow>
                                                 </TableHeader>
                                                 <TableBody>
@@ -831,16 +833,16 @@ export function MarketplaceImportWizard({
                                     {previewStats.invalid === 0 ? (
                                         <div className="text-center py-12 text-muted-foreground">
                                             <CheckCircle2 className="h-12 w-12 mx-auto mb-4 text-admin" />
-                                            <p>Nenhum erro encontrado! 🎉</p>
+                                            <p>{t("noErrors")}</p>
                                         </div>
                                     ) : (
                                         <ScrollArea className="h-[250px] border rounded-lg">
                                             <Table>
                                                 <TableHeader>
                                                     <TableRow>
-                                                        <TableHead>Linha</TableHead>
-                                                        <TableHead>Dados</TableHead>
-                                                        <TableHead>Erros</TableHead>
+                                                        <TableHead>{t("colRow")}</TableHead>
+                                                        <TableHead>{t("colData")}</TableHead>
+                                                        <TableHead>{t("colErrors")}</TableHead>
                                                     </TableRow>
                                                 </TableHeader>
                                                 <TableBody>
@@ -877,11 +879,10 @@ export function MarketplaceImportWizard({
                                         <AlertCircle className="h-5 w-5 text-amber-600 mt-0.5" />
                                         <div>
                                             <p className="font-medium text-amber-800 dark:text-amber-200">
-                                                {previewStats.incomplete} leads sem email
+                                                {t("warningNoEmail", { count: previewStats.incomplete })}
                                             </p>
                                             <p className="text-sm text-amber-700 dark:text-amber-300">
-                                                Serão importados como &quot;incompletos&quot;. Você pode adicionar os emails
-                                                depois.
+                                                {t("warningNoEmailDetail")}
                                             </p>
                                         </div>
                                     </div>
@@ -894,10 +895,10 @@ export function MarketplaceImportWizard({
                                         <X className="h-5 w-5 text-red-600 mt-0.5" />
                                         <div>
                                             <p className="font-medium text-red-800 dark:text-red-200">
-                                                {previewStats.invalid} linhas com erros serão ignoradas
+                                                {t("errorInvalid", { count: previewStats.invalid })}
                                             </p>
                                             <p className="text-sm text-red-700 dark:text-red-300">
-                                                Faltam campos obrigatórios (Country ou Company Name)
+                                                {t("errorInvalidDetail")}
                                             </p>
                                         </div>
                                     </div>
@@ -913,32 +914,32 @@ export function MarketplaceImportWizard({
                                 <div className="text-center space-y-6">
                                     <Loader2 className="mx-auto h-16 w-16 animate-spin text-admin" />
                                     <div>
-                                        <h3 className="text-xl font-semibold mb-2">Importando leads...</h3>
+                                        <h3 className="text-xl font-semibold mb-2">{t("importing")}</h3>
                                         <p className="text-muted-foreground">
-                                            Aguarde enquanto processamos os dados
+                                            {t("pleaseWait")}
                                         </p>
                                     </div>
                                     <Progress value={importProgress} className="w-full max-w-md mx-auto" />
-                                    <p className="text-sm text-muted-foreground">{importProgress}% concluído</p>
+                                    <p className="text-sm text-muted-foreground">{t("progressPercent", { percent: importProgress })}</p>
                                 </div>
                             ) : (
                                 <div className="text-center space-y-6">
                                     <CheckCircle2 className="mx-auto h-20 w-20 text-admin" />
                                     <div>
                                         <h3 className="text-2xl font-bold text-admin mb-2">
-                                            {importResult.imported} leads importados!
+                                            {t("resultTitle", { count: importResult.imported })}
                                         </h3>
                                         {importResult.duplicates > 0 && (
                                             <p className="text-muted-foreground">
-                                                {importResult.duplicates} duplicados ignorados
+                                                {t("duplicatesIgnored", { count: importResult.duplicates })}
                                             </p>
                                         )}
                                         {importResult.errors > 0 && (
-                                            <p className="text-red-600">{importResult.errors} linhas com erros</p>
+                                            <p className="text-red-600">{t("errorLines", { count: importResult.errors })}</p>
                                         )}
                                     </div>
                                     <Button size="lg" onClick={handleClose}>
-                                        Fechar
+                                        {t("close")}
                                     </Button>
                                 </div>
                             )}
@@ -963,7 +964,7 @@ export function MarketplaceImportWizard({
                             }}
                         >
                             <ChevronLeft className="h-4 w-4 mr-2" />
-                            {step === "upload" ? "Cancelar" : "Voltar"}
+                            {step === "upload" ? tc("cancel") : t("back")}
                         </Button>
 
                         {step === "mapping" && (
@@ -972,7 +973,7 @@ export function MarketplaceImportWizard({
                                 onClick={handleProceedToPreview}
                                 disabled={!canProceedFromMapping()}
                             >
-                                Próximo
+                                {t("next")}
                                 <ChevronRight className="h-4 w-4 ml-2" />
                             </Button>
                         )}
@@ -986,12 +987,12 @@ export function MarketplaceImportWizard({
                                 {isPrepareMode ? (
                                     <>
                                         <CheckCircle2 className="h-4 w-4 mr-2" />
-                                        Confirmar {previewStats.valid} Leads
+                                        {t("confirmLeads", { count: previewStats.valid })}
                                     </>
                                 ) : (
                                     <>
                                         <Upload className="h-4 w-4 mr-2" />
-                                        Importar {previewStats.valid} Leads
+                                        {t("importLeads", { count: previewStats.valid })}
                                     </>
                                 )}
                             </Button>

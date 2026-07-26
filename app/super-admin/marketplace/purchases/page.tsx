@@ -1,4 +1,5 @@
 // app/super-admin/marketplace/purchases/page.tsx.bak
+import { getTranslations } from "next-intl/server"
 import { prisma } from "@/lib/prisma"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -50,28 +51,30 @@ export default async function PurchasesPage() {
     const refundedCount = purchases.filter((purchase) => purchase.status === "refunded").length
     const paidCount = purchases.filter((purchase) => purchase.status === "paid").length
     const paidRate = purchases.length > 0 ? Math.round((paidCount / purchases.length) * 100) : 0
+    const t = await getTranslations("admin.purchases")
+    const tc = await getTranslations("admin.common")
 
     return (
         <div className="space-y-6">
             {/* Header */}
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold">Vendas</h1>
+                    <h1 className="text-3xl font-bold">{t("title")}</h1>
                     <p className="text-muted-foreground">
-                        Veja quem comprou, o que foi comprado, o valor e a situação do pagamento.
+                        {t("subtitle")}
                     </p>
                 </div>
                 <Button variant="outline" asChild>
                     <Link href="/super-admin">
                         <ArrowLeft className="h-4 w-4" />
-                        Voltar ao painel
+                        {tc("backToDashboard")}
                     </Link>
                 </Button>
             </div>
 
             <Card className="border-admin-soft bg-admin-soft">
                 <CardContent className="p-4 text-sm text-admin">
-                    Use esta tela para conferir vendas pagas, pagamentos pendentes e quais listas cada cliente comprou.
+                    {t("infoCard")}
                 </CardContent>
             </Card>
 
@@ -79,7 +82,7 @@ export default async function PurchasesPage() {
             <div className="grid gap-4 md:grid-cols-4">
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium">Vendas pagas</CardTitle>
+                        <CardTitle className="text-sm font-medium">{t("paidSales")}</CardTitle>
                         <ShoppingCart className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
@@ -89,7 +92,7 @@ export default async function PurchasesPage() {
 
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium">Valor total vendido</CardTitle>
+                        <CardTitle className="text-sm font-medium">{t("totalSold")}</CardTitle>
                         <DollarSign className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
@@ -101,7 +104,7 @@ export default async function PurchasesPage() {
 
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium">Valor médio por venda</CardTitle>
+                        <CardTitle className="text-sm font-medium">{t("avgSale")}</CardTitle>
                         <TrendingUp className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
@@ -118,7 +121,7 @@ export default async function PurchasesPage() {
 
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium">Aguardando pagamento</CardTitle>
+                        <CardTitle className="text-sm font-medium">{t("awaitingPayment")}</CardTitle>
                         <Clock className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
@@ -130,14 +133,14 @@ export default async function PurchasesPage() {
             <Card className={pendingCount + failedCount + refundedCount > 0 ? "border-amber-300 dark:border-amber-900" : "border-admin dark:border-admin-soft"}>
                 <CardHeader className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                     <div>
-                        <CardTitle>Saúde das vendas</CardTitle>
+                        <CardTitle>{t("salesHealth")}</CardTitle>
                         <p className="mt-1 text-sm text-muted-foreground">
-                            Acompanhe pagamentos concluídos, pendências e falhas recentes do marketplace.
+                            {t("salesHealthDesc")}
                         </p>
                     </div>
                     <div className="w-full space-y-2 lg:w-64">
                         <div className="flex items-center justify-between text-sm">
-                            <span className="text-muted-foreground">Pagas</span>
+                            <span className="text-muted-foreground">{t("paid")}</span>
                             <span className="font-medium">{paidRate}%</span>
                         </div>
                         <Progress value={paidRate} />
@@ -145,10 +148,10 @@ export default async function PurchasesPage() {
                 </CardHeader>
                 <CardContent className="grid gap-3 md:grid-cols-4">
                     {[
-                        { label: "Pagas", value: paidCount, done: paidCount > 0, description: "Compras concluídas." },
-                        { label: "Pendentes", value: pendingCount, done: pendingCount === 0, description: "Aguardando confirmação." },
-                        { label: "Falhas", value: failedCount, done: failedCount === 0, description: "Pagamentos não concluídos." },
-                        { label: "Reembolsos", value: refundedCount, done: refundedCount === 0, description: "Compras devolvidas." },
+                        { label: t("paid"), value: paidCount, done: paidCount > 0, description: t("paidHealthDesc") },
+                        { label: t("pending"), value: pendingCount, done: pendingCount === 0, description: t("pendingHealthDesc") },
+                        { label: t("failed"), value: failedCount, done: failedCount === 0, description: t("failedHealthDesc") },
+                        { label: t("refunded"), value: refundedCount, done: refundedCount === 0, description: t("refundedHealthDesc") },
                     ].map((item) => (
                         <div key={item.label} className="flex min-h-[96px] items-start justify-between gap-3 rounded-lg border bg-background p-4">
                             <span className="flex min-w-0 gap-3">
@@ -171,26 +174,26 @@ export default async function PurchasesPage() {
             {/* Tabela */}
             <Card>
                 <CardHeader>
-                    <CardTitle>Compras realizadas</CardTitle>
+                    <CardTitle>{t("purchasesMade")}</CardTitle>
                 </CardHeader>
                 <CardContent>
                     {purchases.length === 0 ? (
                         <div className="text-center py-12">
                             <ShoppingCart className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                            <h3 className="text-lg font-medium mb-2">Nenhuma venda ainda</h3>
+                            <h3 className="text-lg font-medium mb-2">{t("emptyTitle")}</h3>
                             <p className="text-muted-foreground">
-                                As compras aparecerão aqui quando clientes comprarem listas
+                                {t("emptyDesc")}
                             </p>
                         </div>
                     ) : (
                         <Table>
                             <TableHeader>
                                 <TableRow>
-                                    <TableHead>Data</TableHead>
-                                    <TableHead>Cliente</TableHead>
-                                    <TableHead>Listas</TableHead>
-                                    <TableHead className="text-right">Total</TableHead>
-                                    <TableHead className="text-center">Status</TableHead>
+                                    <TableHead>{t("colDate")}</TableHead>
+                                    <TableHead>{t("colCustomer")}</TableHead>
+                                    <TableHead>{t("colLists")}</TableHead>
+                                    <TableHead className="text-right">{t("colTotal")}</TableHead>
+                                    <TableHead className="text-center">{t("colStatus")}</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -236,10 +239,10 @@ export default async function PurchasesPage() {
                                                             : "destructive"
                                                 }
                                             >
-                                                {purchase.status === "paid" && "Pago"}
-                                                {purchase.status === "pending" && "Pendente"}
-                                                {purchase.status === "failed" && "Falhou"}
-                                                {purchase.status === "refunded" && "Reembolsado"}
+                                                {purchase.status === "paid" && t("badgePaid")}
+                                                {purchase.status === "pending" && t("badgePending")}
+                                                {purchase.status === "failed" && t("badgeFailed")}
+                                                {purchase.status === "refunded" && t("badgeRefunded")}
                                             </Badge>
                                         </TableCell>
                                     </TableRow>

@@ -4,6 +4,7 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
+import { useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
 import {
     AlertDialog,
@@ -26,16 +27,17 @@ interface DeleteLeadButtonProps {
 
 export function DeleteLeadButton({ leadId, listId }: DeleteLeadButtonProps) {
     const router = useRouter()
+    const t = useTranslations("admin.components.deleteLead")
     const [isLoading, setIsLoading] = useState(false)
 
     const handleDelete = async () => {
         setIsLoading(true)
         try {
             await deleteMarketplaceLead(leadId, listId)
-            toast.success("Lead removido")
+            toast.success(t("toastSuccess"))
             router.refresh()
         } catch {
-            toast.error("Erro ao remover lead")
+            toast.error(t("toastError"))
         } finally {
             setIsLoading(false)
         }
@@ -50,18 +52,18 @@ export function DeleteLeadButton({ leadId, listId }: DeleteLeadButtonProps) {
             </AlertDialogTrigger>
             <AlertDialogContent>
                 <AlertDialogHeader>
-                    <AlertDialogTitle>Remover lead?</AlertDialogTitle>
+                    <AlertDialogTitle>{t("title")}</AlertDialogTitle>
                     <AlertDialogDescription>
-                        Esta ação não pode ser desfeita.
+                        {t("description")}
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                    <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
                     <AlertDialogAction onClick={handleDelete} disabled={isLoading}>
                         {isLoading ? (
                             <Loader2 className="h-4 w-4 animate-spin" />
                         ) : (
-                            "Remover"
+                            t("confirm")
                         )}
                     </AlertDialogAction>
                 </AlertDialogFooter>

@@ -3,6 +3,7 @@
 
 import { useState, useCallback } from "react"
 import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 import { toast } from "sonner"
 import Papa from "papaparse"
 import {
@@ -64,6 +65,7 @@ interface ParsedRow {
 
 export function LeadsUploadModal({ listId, listName, trigger }: LeadsUploadModalProps) {
     const router = useRouter()
+    const t = useTranslations("admin.components.leadsUpload")
     const [open, setOpen] = useState(false)
     const [step, setStep] = useState<UploadStep>("select")
     const [parsedRows, setParsedRows] = useState<ParsedRow[]>([])
@@ -102,7 +104,7 @@ export function LeadsUploadModal({ listId, listName, trigger }: LeadsUploadModal
         link.click()
         URL.revokeObjectURL(url)
 
-        toast.success("Template baixado!")
+        toast.success(t("toastTemplateDownloaded"))
     }
 
     // Handle file selection
@@ -111,7 +113,7 @@ export function LeadsUploadModal({ listId, listName, trigger }: LeadsUploadModal
         if (!selectedFile) return
 
         if (!selectedFile.name.endsWith(".csv")) {
-            toast.error("Por favor, selecione um arquivo CSV")
+            toast.error(t("toastSelectFile"))
             return
         }
 
@@ -161,7 +163,7 @@ export function LeadsUploadModal({ listId, listName, trigger }: LeadsUploadModal
                 setIsLoading(false)
             },
             error: (error) => {
-                toast.error(`Erro ao ler arquivo: ${error.message}`)
+                toast.error(t("toastReadError", { message: error.message }))
                 setIsLoading(false)
             },
         })
@@ -174,7 +176,7 @@ export function LeadsUploadModal({ listId, listName, trigger }: LeadsUploadModal
             .map(row => row.mapped as MarketplaceLeadData)
 
         if (validLeads.length === 0) {
-            toast.error("Nenhum lead válido para importar")
+            toast.error(t("toastNoValid"))
             return
         }
 
@@ -201,10 +203,10 @@ export function LeadsUploadModal({ listId, listName, trigger }: LeadsUploadModal
             })
             setStep("complete")
 
-            toast.success(`${uploadResult.count} leads importados com sucesso!`)
+            toast.success(t("toastSuccess", { count: uploadResult.count }))
         } catch (error) {
             console.error("Erro ao importar:", error)
-            toast.error("Erro ao importar leads")
+            toast.error(t("toastError"))
             setStep("preview")
         }
     }
@@ -220,7 +222,7 @@ export function LeadsUploadModal({ listId, listName, trigger }: LeadsUploadModal
                 {trigger || (
                     <Button>
                         <Upload className="h-4 w-4 mr-2" />
-                        Importar Leads
+                        {t("button")}
                     </Button>
                 )}
             </DialogTrigger>
@@ -228,10 +230,10 @@ export function LeadsUploadModal({ listId, listName, trigger }: LeadsUploadModal
             <DialogContent className="max-w-4xl max-h-[90vh] flex flex-col">
                 <DialogHeader>
                     <DialogTitle>
-                        Importar Leads para &ldquo;{listName}&rdquo;
+                        {t("dialogTitle", { name: listName })}
                     </DialogTitle>
                     <DialogDescription>
-                        Faça upload de um arquivo CSV com os leads para adicionar à lista.
+                        {t("dialogDesc")}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -242,7 +244,7 @@ export function LeadsUploadModal({ listId, listName, trigger }: LeadsUploadModal
                         <div className="border-2 border-dashed rounded-lg p-8 text-center hover:border-primary/50 transition-colors">
                             <FileSpreadsheet className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
                             <p className="text-sm text-muted-foreground mb-4">
-                                Arraste um arquivo CSV ou clique para selecionar
+                                {t("dropzone")}
                             </p>
                             <Input
                                 type="file"
@@ -258,10 +260,10 @@ export function LeadsUploadModal({ listId, listName, trigger }: LeadsUploadModal
                     {isLoading ? (
                         <>
                             <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                            Processando...
+                            {t("processing")}
                         </>
                     ) : (
-                        "Selecionar Arquivo"
+                        t("selectFile")
                     )}
                   </span>
                                 </Button>
@@ -271,14 +273,14 @@ export function LeadsUploadModal({ listId, listName, trigger }: LeadsUploadModal
                         {/* Template download */}
                         <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
                             <div>
-                                <p className="font-medium">Precisa de um modelo?</p>
+                                <p className="font-medium">{t("needTemplate")}</p>
                                 <p className="text-sm text-muted-foreground">
-                                    Baixe nosso template CSV com todas as colunas
+                                    {t("downloadTemplate")}
                                 </p>
                             </div>
                             <Button variant="outline" onClick={handleDownloadTemplate}>
                                 <Download className="mr-2 h-4 w-4" />
-                                Download Template
+                                {t("downloadBtn")}
                             </Button>
                         </div>
 
@@ -288,10 +290,10 @@ export function LeadsUploadModal({ listId, listName, trigger }: LeadsUploadModal
                                 <AlertCircle className="h-4 w-4 text-amber-600 mt-0.5" />
                                 <div className="text-sm">
                                     <p className="font-medium text-amber-800 dark:text-amber-200">
-                                        Campos obrigatórios:
+                                        {t("requiredFields")}
                                     </p>
                                     <p className="text-amber-700 dark:text-amber-300">
-                                        Country, Company Name, General Email
+                                        {t("requiredFieldsList")}
                                     </p>
                                 </div>
                             </div>
@@ -306,27 +308,27 @@ export function LeadsUploadModal({ listId, listName, trigger }: LeadsUploadModal
                         <div className="grid grid-cols-4 gap-3">
                             <div className="p-3 bg-muted rounded-lg text-center">
                                 <p className="text-2xl font-bold">{parsedRows.length}</p>
-                                <p className="text-xs text-muted-foreground">Total</p>
+                                <p className="text-xs text-muted-foreground">{t("total")}</p>
                             </div>
                             <div className="p-3 bg-admin-soft dark:bg-admin-soft/30 rounded-lg text-center">
                                 <p className="text-2xl font-bold text-admin">{validCount}</p>
-                                <p className="text-xs text-muted-foreground">Válidos</p>
+                                <p className="text-xs text-muted-foreground">{t("valid")}</p>
                             </div>
                             <div className="p-3 bg-red-50 dark:bg-red-950/30 rounded-lg text-center">
                                 <p className="text-2xl font-bold text-red-600">{invalidCount}</p>
-                                <p className="text-xs text-muted-foreground">Com Erros</p>
+                                <p className="text-xs text-muted-foreground">{t("errors")}</p>
                             </div>
                             <div className="p-3 bg-blue-50 dark:bg-blue-950/30 rounded-lg text-center">
                                 <p className="text-2xl font-bold text-blue-600">
                                     {mappedFieldsCount}/{totalFieldsCount}
                                 </p>
-                                <p className="text-xs text-muted-foreground">Mapeados</p>
+                                <p className="text-xs text-muted-foreground">{t("mapped")}</p>
                             </div>
                         </div>
 
                         {/* Mapeamento de colunas */}
                         <div className="p-3 bg-muted/50 rounded-lg">
-                            <p className="text-sm font-medium mb-2">Colunas mapeadas automaticamente:</p>
+                            <p className="text-sm font-medium mb-2">{t("autoMapped")}</p>
                             <div className="flex flex-wrap gap-1">
                                 {Object.entries(columnMapping).map(([csv, field]) => (
                                     <Badge
@@ -334,7 +336,7 @@ export function LeadsUploadModal({ listId, listName, trigger }: LeadsUploadModal
                                         variant={field ? "default" : "outline"}
                                         className="text-xs"
                                     >
-                                        {csv} → {field || "não mapeado"}
+                                        {csv} → {field || t("notMapped")}
                                     </Badge>
                                 ))}
                             </div>
@@ -345,12 +347,12 @@ export function LeadsUploadModal({ listId, listName, trigger }: LeadsUploadModal
                             <Table>
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead className="w-[50px]">Status</TableHead>
-                                        <TableHead>Empresa</TableHead>
-                                        <TableHead>País</TableHead>
-                                        <TableHead>Email</TableHead>
-                                        <TableHead>Setor</TableHead>
-                                        <TableHead>Erros</TableHead>
+                                        <TableHead className="w-[50px]">{t("colStatus")}</TableHead>
+                                        <TableHead>{t("colCompany")}</TableHead>
+                                        <TableHead>{t("colCountry")}</TableHead>
+                                        <TableHead>{t("colEmail")}</TableHead>
+                                        <TableHead>{t("colSector")}</TableHead>
+                                        <TableHead>{t("colErrors")}</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -395,18 +397,18 @@ export function LeadsUploadModal({ listId, listName, trigger }: LeadsUploadModal
 
                         {parsedRows.length > 50 && (
                             <p className="text-sm text-muted-foreground text-center">
-                                Mostrando 50 de {parsedRows.length} linhas
+                                {t("showing50", { count: parsedRows.length })}
                             </p>
                         )}
 
                         {/* Ações */}
                         <div className="flex justify-between pt-2">
                             <Button variant="outline" onClick={() => setStep("select")}>
-                                Voltar
+                                {t("back")}
                             </Button>
                             <Button onClick={handleUpload} disabled={validCount === 0}>
                                 <Upload className="h-4 w-4 mr-2" />
-                                Importar {validCount} Leads
+                                {t("importCount", { count: validCount })}
                             </Button>
                         </div>
                     </div>
@@ -417,14 +419,14 @@ export function LeadsUploadModal({ listId, listName, trigger }: LeadsUploadModal
                     <div className="py-12 space-y-6">
                         <div className="text-center">
                             <Loader2 className="mx-auto h-12 w-12 animate-spin text-primary mb-4" />
-                            <p className="text-lg font-medium">Importando leads...</p>
+                            <p className="text-lg font-medium">{t("importing")}</p>
                             <p className="text-sm text-muted-foreground">
-                                Aguarde enquanto processamos os dados
+                                {t("pleaseWait")}
                             </p>
                         </div>
                         <Progress value={progress} className="w-full" />
                         <p className="text-center text-sm text-muted-foreground">
-                            {progress}% concluído
+                            {t("progressPercent", { percent: progress })}
                         </p>
                     </div>
                 )}
@@ -435,16 +437,16 @@ export function LeadsUploadModal({ listId, listName, trigger }: LeadsUploadModal
                         <CheckCircle2 className="mx-auto h-16 w-16 text-admin" />
                         <div>
                             <p className="text-2xl font-bold text-admin">
-                                {result.success} leads importados!
+                                {t("resultTitle", { success: result.success })}
                             </p>
                             {result.duplicates > 0 && (
                                 <p className="text-sm text-muted-foreground">
-                                    {result.duplicates} duplicados ignorados
+                                    {t("duplicatesIgnored", { count: result.duplicates })}
                                 </p>
                             )}
                             {result.errors > 0 && (
                                 <p className="text-sm text-red-600">
-                                    {result.errors} linhas com erros
+                                    {t("errorLines", { count: result.errors })}
                                 </p>
                             )}
                         </div>
@@ -454,7 +456,7 @@ export function LeadsUploadModal({ listId, listName, trigger }: LeadsUploadModal
                                 router.refresh()
                             }}
                         >
-                            Fechar
+                            {t("close")}
                         </Button>
                     </div>
                 )}

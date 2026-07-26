@@ -1,6 +1,7 @@
 // components/admin/blog/post-editor.tsx
 "use client"
 
+import { useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
@@ -42,6 +43,7 @@ export function PostEditor({
     initial: PostEditorInitial
     categories: { id: string; name: string }[]
 }) {
+    const t = useTranslations("admin.blogEditor")
     const router = useRouter()
     const [cover, setCover] = useState(initial.coverImageUrl)
     const [categoryId, setCategoryId] = useState(initial.categoryId ?? "")
@@ -69,8 +71,8 @@ export function PostEditor({
 
     const onUpload = async (file: File) => {
         const res = await uploadBlogImage(file)
-        if (res.success && res.url) { setCover(res.url); toast.success("Capa enviada.") }
-        else toast.error(res.error ?? "Falha no upload.")
+        if (res.success && res.url) { setCover(res.url); toast.success(t("coverSent")) }
+        else toast.error(res.error ?? t("coverFailed"))
     }
 
     const handleSave = async () => {
@@ -96,11 +98,11 @@ export function PostEditor({
 
         setSaving(true)
         try {
-            if (initial.id) { await updatePost(initial.id, payload); toast.success("Post atualizado.") }
-            else { const id = await createPost(payload); toast.success("Post criado."); router.push(`/super-admin/blog/${id}`) }
+            if (initial.id) { await updatePost(initial.id, payload); toast.success(t("postUpdated")) }
+            else { const id = await createPost(payload); toast.success(t("postCreated")); router.push(`/super-admin/blog/${id}`) }
             router.refresh()
         } catch (e) {
-            toast.error(e instanceof Error ? e.message : "Erro ao salvar.")
+            toast.error(e instanceof Error ? e.message : t("saveError"))
         } finally {
             setSaving(false)
         }
@@ -111,27 +113,27 @@ export function PostEditor({
             {/* Núcleo */}
             <div className="grid gap-4 rounded-lg border p-4 sm:grid-cols-2">
                 <div className="space-y-2">
-                    <Label>Categoria</Label>
+                    <Label>{t("category")}</Label>
                     <select className="h-10 w-full rounded-md border bg-background px-3"
                         value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
-                        <option value="">— sem categoria —</option>
+                        <option value="">{t("noCategory")}</option>
                         {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
                     </select>
                 </div>
                 <div className="space-y-2">
-                    <Label>Status</Label>
+                    <Label>{t("status")}</Label>
                     <select className="h-10 w-full rounded-md border bg-background px-3"
                         value={status} onChange={(e) => setStatus(e.target.value as "DRAFT" | "PUBLISHED")}>
-                        <option value="DRAFT">Rascunho</option>
-                        <option value="PUBLISHED">Publicado</option>
+                        <option value="DRAFT">{t("draft")}</option>
+                        <option value="PUBLISHED">{t("published")}</option>
                     </select>
                 </div>
                 <div className="space-y-2">
-                    <Label>Data de publicação (futura = agendado)</Label>
+                    <Label>{t("publishDate")}</Label>
                     <Input type="datetime-local" value={publishedAt} onChange={(e) => setPublishedAt(e.target.value)} />
                 </div>
                 <div className="space-y-2">
-                    <Label>Capa</Label>
+                    <Label>{t("cover")}</Label>
                     <Input type="file" accept="image/png,image/jpeg,image/webp"
                         onChange={(e) => e.target.files?.[0] && onUpload(e.target.files[0])} />
                     {cover && <img src={cover} alt="" className="mt-2 h-24 rounded object-cover" />}
@@ -153,29 +155,29 @@ export function PostEditor({
 
             <div className="space-y-4" dir={dirForLocale(active)}>
                 <div className="space-y-2">
-                    <Label>Título</Label>
+                    <Label>{t("title")}</Label>
                     <Input value={current.title} onBlur={onTitleBlur} onChange={(e) => setField("title", e.target.value)} />
                 </div>
                 <div className="space-y-2">
-                    <Label>Slug</Label>
+                    <Label>{t("slug")}</Label>
                     <Input value={current.slug} onChange={(e) => setField("slug", e.target.value)} />
                 </div>
                 <div className="space-y-2">
-                    <Label>Resumo</Label>
+                    <Label>{t("summary")}</Label>
                     <Input value={current.excerpt} onChange={(e) => setField("excerpt", e.target.value)} />
                 </div>
                 <div className="space-y-2">
-                    <Label>Conteúdo</Label>
+                    <Label>{t("content")}</Label>
                     <RichTextEditor content={current.contentHtml} onChange={(html) => setField("contentHtml", html)} />
                 </div>
                 <div className="space-y-2">
-                    <Label>Meta description (SEO)</Label>
+                    <Label>{t("metaDescription")}</Label>
                     <Input value={current.metaDescription} onChange={(e) => setField("metaDescription", e.target.value)} />
                 </div>
             </div>
 
             <div className="flex justify-end">
-                <Button onClick={handleSave} disabled={saving}>{saving ? "Salvando..." : "Salvar"}</Button>
+                <Button onClick={handleSave} disabled={saving}>{saving ? t("saving") : t("save")}</Button>
             </div>
         </div>
     )
