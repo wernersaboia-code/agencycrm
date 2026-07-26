@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { Suspense } from "react"
 import { getTranslations } from "next-intl/server"
 import { alternatesFor } from "@/lib/i18n/alternates"
 import { ogLocaleFor, type Locale } from "@/lib/i18n/locales"
@@ -12,6 +13,10 @@ import { AdvantageSection, DataQualitySection } from "@/components/landing/text-
 import { HowItWorksSection } from "@/components/landing/how-it-works-section"
 import { BlogTeaserSection } from "@/components/landing/blog-teaser-section"
 import { FinalCtaSection } from "@/components/landing/final-cta-section"
+
+function SectionFallback({ className }: { className?: string }) {
+    return <div className={`animate-pulse bg-muted/30 ${className ?? "h-64"}`} />
+}
 
 export async function generateMetadata({
     params,
@@ -49,22 +54,36 @@ export default async function EasyProspectHome({
 
     return (
         <div className="min-h-screen bg-background text-foreground">
-            <HeroSection locale={locale} />
-            <IntroSection locale={locale} />
-            <TargetMarketsSection locale={locale} />
-            <BuyerProfilesSection locale={locale} />
-            <DeliverablesSection locale={locale} />
-            <DataQualitySection locale={locale} />
-            <AdvantageSection locale={locale} />
-            <HowItWorksSection locale={locale} />
-            {/* Aqui existia uma StatsSection com números do handoff ("6+ listas
-                vendidas", "100% qualidade verificada", "24/7 suporte"). Nenhum
-                era real, então o componente e as mensagens (landing.zahlen)
-                foram removidos: enquanto ficassem no repositório, bastava
-                remontar a seção para publicar três afirmações falsas. Uma
-                seção de números só volta com métrica medida. */}
-            <BlogTeaserSection locale={locale} />
-            <FinalCtaSection locale={locale} />
+            <Suspense fallback={<SectionFallback className="h-80" />}>
+                <HeroSection locale={locale} />
+            </Suspense>
+            <Suspense fallback={<SectionFallback className="h-64" />}>
+                <IntroSection locale={locale} />
+            </Suspense>
+            <Suspense fallback={<SectionFallback className="h-96" />}>
+                <TargetMarketsSection locale={locale} />
+            </Suspense>
+            <Suspense fallback={<SectionFallback className="h-96" />}>
+                <BuyerProfilesSection locale={locale} />
+            </Suspense>
+            <Suspense fallback={<SectionFallback className="h-96" />}>
+                <DeliverablesSection locale={locale} />
+            </Suspense>
+            <Suspense fallback={<SectionFallback className="h-48" />}>
+                <DataQualitySection locale={locale} />
+            </Suspense>
+            <Suspense fallback={<SectionFallback className="h-48" />}>
+                <AdvantageSection locale={locale} />
+            </Suspense>
+            <Suspense fallback={<SectionFallback className="h-96" />}>
+                <HowItWorksSection locale={locale} />
+            </Suspense>
+            <Suspense fallback={<SectionFallback className="h-96" />}>
+                <BlogTeaserSection locale={locale} />
+            </Suspense>
+            <Suspense fallback={<SectionFallback className="h-96" />}>
+                <FinalCtaSection locale={locale} />
+            </Suspense>
         </div>
     )
 }

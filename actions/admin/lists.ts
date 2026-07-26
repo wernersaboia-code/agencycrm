@@ -184,9 +184,29 @@ export async function deleteList(id: string) {
         select: { slug: true, name: true }
     })
 
-    await prisma.leadList.delete({
-        where: { id },
+    if (!list) {
+        throw new Error("Lista não encontrada")
+    }
+
+    // Verificar se a lista tem compras associadas antes de excluir
+    const purchaseCount = await prisma.purchaseItem.count({
+        where: { listId: id },
     })
+
+    if (purchaseCount > 0) {
+        throw new Error(
+            `Esta lista não pode ser excluída porque já foi comprada por ${purchaseCount} cliente(s).`
+        )
+    }
+
+    try {
+        await prisma.leadList.delete({
+            where: { id },
+        })
+    } catch (error) {
+        console.error("Erro ao excluir lista:", error)
+        throw new Error("Erro ao excluir lista. Tente novamente mais tarde.")
+    }
 
     await recordAudit({
         actorId: admin.id,
@@ -194,10 +214,10 @@ export async function deleteList(id: string) {
         action: "list.deleted",
         targetType: "list",
         targetId: id,
-        metadata: { name: list?.name ?? null },
+        metadata: { name: list.name },
     })
 
-    revalidateListPaths(list?.slug)
+    revalidateListPaths(list.slug)
 }
 
 /**

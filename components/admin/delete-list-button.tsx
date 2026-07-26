@@ -42,8 +42,8 @@ export function DeleteListButton({ listId, listName }: DeleteListButtonProps) {
             setOpen(false)
             router.refresh()
         } catch (error) {
-            console.error("Erro ao excluir lista:", error)
-            toast.error(t("toastError"))
+            const message = error instanceof Error ? error.message : t("toastError")
+            toast.error(message)
         } finally {
             setIsDeleting(false)
         }

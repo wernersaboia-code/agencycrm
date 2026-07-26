@@ -194,8 +194,7 @@ export function ListForm({ list }: ListFormProps) {
                 ? prev.filter((id) => id !== industryId)
                 : [...prev, industryId]
 
-            // Atualizar form
-            form.setValue("industries", newSelected.join(", "))
+            form.setValue("industries", newSelected.join(", "), { shouldDirty: true })
             return newSelected
         })
     }
@@ -203,7 +202,7 @@ export function ListForm({ list }: ListFormProps) {
     const removeIndustry = (industryId: string) => {
         setSelectedIndustries((prev) => {
             const newSelected = prev.filter((id) => id !== industryId)
-            form.setValue("industries", newSelected.join(", "))
+            form.setValue("industries", newSelected.join(", "), { shouldDirty: true })
             return newSelected
         })
     }
@@ -321,7 +320,7 @@ export function ListForm({ list }: ListFormProps) {
     // Auto-generate slug from name
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const name = e.target.value
-        form.setValue("name", name)
+        form.setValue("name", name, { shouldDirty: true })
 
         if (!list) {
             const slug = name
@@ -330,7 +329,7 @@ export function ListForm({ list }: ListFormProps) {
                 .replace(/[\u0300-\u036f]/g, "")
                 .replace(/[^a-z0-9]+/g, "-")
                 .replace(/^-|-$/g, "")
-            form.setValue("slug", slug)
+            form.setValue("slug", slug, { shouldDirty: true })
         }
     }
 
@@ -342,7 +341,7 @@ export function ListForm({ list }: ListFormProps) {
         const countriesFromLeads = [...new Set(leads.map((l) => l.country))]
 
         if (countriesFromLeads.length > 0 && !form.getValues("countries")) {
-            form.setValue("countries", countriesFromLeads.join(", "))
+            form.setValue("countries", countriesFromLeads.join(", "), { shouldDirty: true })
         }
 
         // Auto-preencher setores do CSV (se tiver)
@@ -392,7 +391,7 @@ export function ListForm({ list }: ListFormProps) {
 
             if (mappedIndustries.length > 0) {
                 setSelectedIndustries(mappedIndustries)
-                form.setValue("industries", mappedIndustries.join(", "))
+                form.setValue("industries", mappedIndustries.join(", "), { shouldDirty: true })
             }
         }
     }
@@ -512,7 +511,7 @@ export function ListForm({ list }: ListFormProps) {
                                 <Label htmlFor="language">{t("languageLabel")}</Label>
                                 <Select
                                     value={form.watch("language")}
-                                    onValueChange={(value) => form.setValue("language", value)}
+                                                    onValueChange={(value) => form.setValue("language", value, { shouldDirty: true })}
                                 >
                                     <SelectTrigger>
                                         <SelectValue placeholder={t("languagePlaceholder")} />
@@ -546,7 +545,7 @@ export function ListForm({ list }: ListFormProps) {
                                 <Label htmlFor="category">{t("categoryLabel")}</Label>
                                 <Select
                                     value={form.watch("category")}
-                                    onValueChange={(value) => form.setValue("category", value)}
+                                    onValueChange={(value) => form.setValue("category", value, { shouldDirty: true })}
                                 >
                                     <SelectTrigger>
                                         <SelectValue placeholder={t("categoryPlaceholder")} />
@@ -677,7 +676,7 @@ export function ListForm({ list }: ListFormProps) {
                                 <Label htmlFor="currency">{t("currencyLabel")}</Label>
                                 <Select
                                     value={form.watch("currency")}
-                                    onValueChange={(value) => form.setValue("currency", value)}
+                                    onValueChange={(value) => form.setValue("currency", value, { shouldDirty: true })}
                                 >
                                     <SelectTrigger>
                                         <SelectValue />
@@ -840,7 +839,7 @@ export function ListForm({ list }: ListFormProps) {
                                 <Switch
                                     id="isActive"
                                     checked={form.watch("isActive")}
-                                    onCheckedChange={(checked) => form.setValue("isActive", checked)}
+                                    onCheckedChange={(checked) => form.setValue("isActive", checked, { shouldDirty: true })}
                                 />
                             </div>
                             {isEditing && form.watch("isActive") && (() => {
@@ -866,7 +865,7 @@ export function ListForm({ list }: ListFormProps) {
                             <Switch
                                 id="isFeatured"
                                 checked={form.watch("isFeatured")}
-                                onCheckedChange={(checked) => form.setValue("isFeatured", checked)}
+                                onCheckedChange={(checked) => form.setValue("isFeatured", checked, { shouldDirty: true })}
                             />
                         </div>
                     </CardContent>
