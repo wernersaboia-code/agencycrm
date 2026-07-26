@@ -3,6 +3,7 @@
 
 import { prisma } from "@/lib/prisma"
 import { requireAuth, requireWorkspaceAccess } from "@/lib/auth"
+import { checkCrmRateLimit } from "@/lib/rate-limit"
 import { LeadSource, LeadStatus } from "@prisma/client"
 
 interface ImportToWorkspaceParams {
@@ -28,6 +29,12 @@ export async function importMarketplaceLeadsToWorkspace({
     try {
         const user = await requireWorkspaceAccess(workspaceId)
         const userId = user.id
+
+        const rateLimited = await checkCrmRateLimit("marketplace.import", userId, 3, 60_000)
+        if (!rateLimited) {
+            errors.push("Limite de importações excedido. Aguarde um minuto e tente novamente.")
+            return { success: false, imported: 0, skipped: 0, totalProcessed: 0, errors, workspaceName: "" }
+        }
 
         const workspace = await prisma.workspace.findUnique({
             where: { id: workspaceId },

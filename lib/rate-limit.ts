@@ -80,6 +80,33 @@ export async function checkAdminRateLimit(
     }
 }
 
+/**
+ * Wrapper para rate limiting de ações de escrita do CRM (envio de campanha,
+ * import de leads). Diferente de checkAdminRateLimit, retorna `false` em vez
+ * de lançar, para compatibilidade com o padrão ActionResult usado nas actions
+ * do CRM. Use `if (!await checkCrmRateLimit(...)) return { success: false,
+ * error: "..." }`.
+ *
+ * @param action Nome curto da ação (ex.: "campaign.send")
+ * @param userId ID do usuário que executa a ação
+ * @param limit Máximo de requisições na janela (default: 5)
+ * @param windowMs Janela em ms (default: 60000 = 1 minuto)
+ * @returns `true` se permitido, `false` se excedeu o limite
+ */
+export async function checkCrmRateLimit(
+    action: string,
+    userId: string,
+    limit = 5,
+    windowMs = 60_000
+): Promise<boolean> {
+    return checkPersistentRateLimit(
+        `crm:${action}`,
+        userId,
+        limit,
+        windowMs
+    )
+}
+
 export async function checkPersistentRateLimit(
     bucket: string,
     identifier: string,

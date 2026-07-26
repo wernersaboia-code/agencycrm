@@ -13,6 +13,7 @@ import {
 import type { LeadStatus } from '@prisma/client'
 import { LeadStatus as LeadStatusEnum } from '@prisma/client'
 import { ActionResult, success, failure } from '@/lib/types/actions'
+import { checkCrmRateLimit } from '@/lib/rate-limit'
 import {
     createServiceContext,
     createWorkspaceServiceContext,
@@ -245,6 +246,11 @@ export async function importLeads(
     const auth = await createWorkspaceServiceContext(workspaceId)
     if (!auth.ok) {
         return failure(auth.error)
+    }
+
+    const rateLimited = await checkCrmRateLimit("lead.import", auth.ctx.user.id, 3, 60_000)
+    if (!rateLimited) {
+        return failure("Limite de importações excedido. Aguarde um minuto e tente novamente.")
     }
 
     try {
