@@ -3,6 +3,7 @@ import type { PrismaClient } from "@prisma/client"
 import { sendEmail, replaceEmailVariables, type SmtpConfig } from "@/lib/email"
 import { decryptSecret } from "@/lib/secrets"
 import { filterSuppressed, normalizeEmail } from "@/lib/campaigns/suppression"
+import { normalizeMessageId } from "@/lib/campaigns/reply-detection"
 
 interface LeadData {
     firstName: string
@@ -168,6 +169,8 @@ export async function sendSingleCampaign(
         suppressedIds: [],
     }
 
+    const now = new Date()
+
     for (const emailSend of campaign.emailSends) {
         const lead = emailSend.lead
 
@@ -201,6 +204,18 @@ export async function sendSingleCampaign(
             if (lead.status === "NEW") {
                 result.newLeadIds.push(lead.id)
             }
+            // Grava messageId individualmente para detecção de resposta
+            await prisma.emailSend.update({
+                where: { id: emailSend.id },
+                data: {
+                    status: "SENT",
+                    sentAt: now,
+                    resendId: sendResult.id,
+                    messageId: sendResult.messageId
+                        ? normalizeMessageId(sendResult.messageId)
+                        : null,
+                },
+            })
         } else {
             result.bouncedIds.push(emailSend.id)
             result.bouncedReasons[emailSend.id] = sendResult.error || "Unknown error"
@@ -209,15 +224,6 @@ export async function sendSingleCampaign(
 
         // Rate limit between sends to avoid SMTP throttling
         await new Promise((resolve) => setTimeout(resolve, 100))
-    }
-
-    // Batch update all sent records
-    if (result.sentIds.length > 0) {
-        const now = new Date()
-        await prisma.emailSend.updateMany({
-            where: { id: { in: result.sentIds } },
-            data: { status: "SENT", sentAt: now },
-        })
     }
 
     // Batch update all bounced records
@@ -387,6 +393,8 @@ export async function sendSequenceFirstStep(
         data: { status: "active" },
     })
 
+    const now = new Date()
+
     for (const enrollment of campaign.enrollments) {
         const lead = enrollment.lead
 
@@ -424,6 +432,18 @@ export async function sendSequenceFirstStep(
             if (lead.status === "NEW") {
                 result.newLeadIds.push(lead.id)
             }
+            // Grava messageId individualmente para detecção de resposta
+            await prisma.emailSend.update({
+                where: { id: emailSendId },
+                data: {
+                    status: "SENT",
+                    sentAt: now,
+                    resendId: sendResult.id,
+                    messageId: sendResult.messageId
+                        ? normalizeMessageId(sendResult.messageId)
+                        : null,
+                },
+            })
 
             if (nextStep) {
                 result.enrollmentNextSendIds.push(enrollment.id)
@@ -440,13 +460,6 @@ export async function sendSequenceFirstStep(
     }
 
     // Batch updates
-    const now = new Date()
-    if (result.sentIds.length > 0) {
-        await prisma.emailSend.updateMany({
-            where: { id: { in: result.sentIds } },
-            data: { status: "SENT", sentAt: now },
-        })
-    }
     if (result.bouncedIds.length > 0) {
         await prisma.emailSend.updateMany({
             where: { id: { in: result.bouncedIds } },

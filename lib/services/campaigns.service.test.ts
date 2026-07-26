@@ -20,6 +20,7 @@ function createMockPrisma(overrides: Record<string, unknown> = {}): PrismaClient
         emailSend: {
             createMany: vi.fn().mockResolvedValue({ count: 0 }),
             findMany: vi.fn().mockResolvedValue([]),
+            update: vi.fn().mockResolvedValue({ id: "send-1" }),
             updateMany: vi.fn().mockResolvedValue({ count: 0 }),
             ...(overrides.emailSend as object),
         },
@@ -131,6 +132,16 @@ describe("sendSequenceFirstStep", () => {
         expect(prisma.emailSend.updateMany).toHaveBeenCalledWith({
             where: { id: { in: ["send-suppressed"] } },
             data: { status: "SUPPRESSED", bounceReason: "Endereço na lista de supressão" },
+        })
+
+        // O EmailSend do lead ok grava messageId individualmente
+        expect(prisma.emailSend.update).toHaveBeenCalledWith({
+            where: { id: "send-ok" },
+            data: expect.objectContaining({
+                status: "SENT",
+                resendId: "resend-1",
+                messageId: null,
+            }),
         })
     })
 
