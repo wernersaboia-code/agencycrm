@@ -57,7 +57,7 @@ export async function updateUserProfile(data: {
     try {
         const validated = profileUpdateSchema.safeParse(data)
         if (!validated.success) {
-            return { success: false, error: validated.error.issues[0]?.message ?? "Dados invÃ¡lidos" }
+            return { success: false, error: validated.error.issues[0]?.message ?? "Dados inválidos" }
         }
 
         const authUser = await requireAuth()

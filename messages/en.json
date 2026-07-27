@@ -8,7 +8,7 @@
         "signIn": {
             "chooseHeading": "Choose where to sign in",
             "mainAccess": "Main access",
-            "chooseHelp": "Your purchases come first â€” that's where most people go. The Administration Area is restricted to those who operate the system.",
+            "chooseHelp": "Your purchases come first — that's where most people go. The Administration Area is restricted to those who operate the system.",
             "cardDescription": "Enter your email and password to access this area.",
             "emailLabel": "Email",
             "passwordLabel": "Password",
@@ -39,19 +39,19 @@
             "emailLabel": "Email",
             "emailPlaceholder": "you@email.com",
             "passwordLabel": "Password",
-            "passwordPlaceholder": "â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢",
+            "passwordPlaceholder": "••••••••",
             "submitMkt": "Create Account and Continue",
             "submitCrm": "Create account",
             "haveAccount": "Already have an account?",
             "enter": "Sign in",
-            "createForPurchases": "â† Create an account for purchases",
+            "createForPurchases": "← Create an account for purchases",
             "success": "Account created successfully!",
             "error": "Error creating account",
             "benefitsTitle": "Benefits",
             "benefit1": "Lifetime access to purchased lists",
             "benefit2": "Unlimited downloads of the PDF study you bought",
             "benefit3": "Order history and receipts in your account",
-            "successTitle": "Account created successfully! ðŸŽ‰",
+            "successTitle": "Account created successfully! 🎉",
             "verifySent": "We've sent a verification email to:",
             "nextStepsTitle": "Next steps",
             "step1": "1. Open your email and click the confirmation link.",
@@ -96,7 +96,7 @@
         "terms": "Terms of use",
         "privacy": "Privacy",
         "contact": "Contact",
-        "copyright": "Â© {year} Easy Prospect. All rights reserved."
+        "copyright": "© {year} Easy Prospect. All rights reserved."
     },
     "landing": {
         "hero": {
@@ -112,7 +112,7 @@
         "intro": {
             "lede": "Our qualified importer and distributor lists are built for manufacturers, producers, and brand owners looking for new trading partners abroad.",
             "p1": "Select by country, industry, language region, or buying profile and receive ready-to-use databases, updated periodically.",
-            "p2": "Our lists bring together companies checked against public sources â€” their website, digital presence and available public records â€” within the industry and market each list sets out to cover. Every list comes with a PDF market study, so you can assess the companies' profile before reaching out."
+            "p2": "Our lists bring together companies checked against public sources — their website, digital presence and available public records — within the industry and market each list sets out to cover. Every list comes with a PDF market study, so you can assess the companies' profile before reaching out."
         },
         "zielmaerkte": {
             "eyebrow": "Target markets",
@@ -123,27 +123,27 @@
                 {
                     "flag": "DE",
                     "title": "German-speaking countries",
-                    "countries": "DE Â· AT Â· CH"
+                    "countries": "DE · AT · CH"
                 },
                 {
                     "flag": "FR",
                     "title": "French-speaking countries",
-                    "countries": "FR Â· BE Â· CH Â· LU"
+                    "countries": "FR · BE · CH · LU"
                 },
                 {
                     "flag": "ES",
                     "title": "Spanish-speaking countries",
-                    "countries": "ES Â· MX Â· AR Â· CL â€¦"
+                    "countries": "ES · MX · AR · CL …"
                 },
                 {
                     "flag": "PT",
                     "title": "Portuguese-speaking countries",
-                    "countries": "PT Â· BR Â· AO â€¦"
+                    "countries": "PT · BR · AO …"
                 },
                 {
                     "flag": "SE",
                     "title": "Scandinavian countries",
-                    "countries": "SE Â· NO Â· DK Â· FI Â· IS"
+                    "countries": "SE · NO · DK · FI · IS"
                 }
             ]
         },
@@ -191,12 +191,12 @@
         "daten": {
             "eyebrow": "Data quality",
             "title": "Data reviewed periodically.",
-            "body": "Lists are compiled by our operation, and each company is checked against public sources â€” its website, its digital presence and available public records â€” before it enters the catalogue. The catalogue is reviewed periodically: when a list no longer reflects the market it describes, we take it off sale."
+            "body": "Lists are compiled by our operation, and each company is checked against public sources — its website, its digital presence and available public records — before it enters the catalogue. The catalogue is reviewed periodically: when a list no longer reflects the market it describes, we take it off sale."
         },
         "vorteil": {
             "eyebrow": "Your advantage",
             "title": "Save time and increase your sales success.",
-            "body": "Instead of spending weeks or months researching suitable importers and distributors, you immediately receive a qualified selection of potential trading partners that fit your product and your target market. This lets you focus on what matters â€” successfully building your international trade."
+            "body": "Instead of spending weeks or months researching suitable importers and distributors, you immediately receive a qualified selection of potential trading partners that fit your product and your target market. This lets you focus on what matters — successfully building your international trade."
         },
         "howItWorks": {
             "eyebrow": "How it works",
@@ -241,7 +241,7 @@
         "items": [
             {
                 "question": "Where does the data come from and how is it verified?",
-                "answer": "The lists come out of our own research and are compiled by our operation. Before a company enters a list, we check it against publicly available sources â€” its website, its digital presence and available public records â€” to confirm that it exists, that it works in the stated industry and that its contact channels are active."
+                "answer": "The lists come out of our own research and are compiled by our operation. Before a company enters a list, we check it against publicly available sources — its website, its digital presence and available public records — to confirm that it exists, that it works in the stated industry and that its contact channels are active."
             },
             {
                 "question": "How current are the lists?",
@@ -265,16 +265,16 @@
             },
             {
                 "question": "What's included in the market report that comes with the list?",
-                "answer": "Every list comes with a market study as a PDF, prepared for that list's market. Because the content is tailored to the country and the industry, it differs from list to list â€” the introduction shown on each list's page summarises what that study covers."
+                "answer": "Every list comes with a market study as a PDF, prepared for that list's market. Because the content is tailored to the country and the industry, it differs from list to list — the introduction shown on each list's page summarises what that study covers."
             },
             {
                 "question": "What about data protection (LGPD/GDPR)?",
-                "answer": "The lists hold business contact data collected from publicly available sources: company name, country, industry, website, general e-mail addresses and phone numbers â€” and, in some lists, the name and role of a contact person as well. When you buy, we ask for your name, e-mail and tax id, used to process the payment and release the download. Any person or company can ask us to correct or remove their data from our lists: use the contact form further down this same page. The full policy is in our Privacy Policy, at /privacy."
+                "answer": "The lists hold business contact data collected from publicly available sources: company name, country, industry, website, general e-mail addresses and phone numbers — and, in some lists, the name and role of a contact person as well. When you buy, we ask for your name, e-mail and tax id, used to process the payment and release the download. Any person or company can ask us to correct or remove their data from our lists: use the contact form further down this same page. The full policy is in our Privacy Policy, at /privacy."
             }
         ],
         "form": {
             "title": "Didn't find your question?",
-            "subtitle": "Send us your question â€” we'll get back to you shortly.",
+            "subtitle": "Send us your question — we'll get back to you shortly.",
             "name": "Name",
             "company": "Company (optional)",
             "email": "Email",
@@ -282,7 +282,7 @@
             "message": "Your question",
             "consent": "I have read and agree to the <link>Privacy Policy</link>.",
             "submit": "Send question",
-            "submitting": "Sendingâ€¦",
+            "submitting": "Sending…",
             "success": "Thank you! We've received your question.",
             "error": "Something went wrong. Please try again.",
             "rateLimited": "Too many attempts. Please try again later.",
@@ -398,7 +398,11 @@
             "health": "Health & Pharma",
             "construction": "Construction",
             "retail": "Retail",
-            "industrial": "Industrial"
+            "industrial": "Industrial",
+            "agriculture": "Agriculture",
+            "electronics": "Electronics",
+            "chemicals": "Chemicals",
+            "machinery": "Machinery & Equipment"
         },
         "categories": {
             "importers": "Importers",
@@ -560,7 +564,7 @@
                 },
                 {
                     "title": "Checked against public sources",
-                    "body": "Before a company enters a list, it is checked against public sources â€” its institutional website, its digital presence and available public records â€” to confirm that it exists, that it operates in the stated sector and that its contact channels are active."
+                    "body": "Before a company enters a list, it is checked against public sources — its institutional website, its digital presence and available public records — to confirm that it exists, that it operates in the stated sector and that its contact channels are active."
                 },
                 {
                     "title": "Keeping the catalogue current",
@@ -911,8 +915,8 @@
             "colTarget": "Target",
             "colIp": "IP",
             "empty": "No events recorded yet.",
-            "previous": "â† Previous",
-            "next": "Next â†’"
+            "previous": "← Previous",
+            "next": "Next →"
         },
         "support": {
             "metaTitle": "Support | Administrative Area",
@@ -946,7 +950,7 @@
             "listsPublishedOk": "{count} list(s) in the catalog",
             "listsPublishedFail": "Create the first list to start the catalog.",
             "leadStock": "Lead stock",
-            "leadStockOk": "{count} lead(s) imported for internal use â€” delivery to the buyer is the PDF.",
+            "leadStockOk": "{count} lead(s) imported for internal use — delivery to the buyer is the PDF.",
             "leadStockFail": "No leads imported yet.",
             "paidSales": "Paid sales",
             "paidSalesOk": "{count} completed purchase(s)",
@@ -1076,7 +1080,7 @@
             "newTitle": "New post",
             "back": "Back",
             "category": "Category",
-            "noCategory": "â€” no category â€”",
+            "noCategory": "— no category —",
             "status": "Status",
             "draft": "Draft",
             "published": "Published",
@@ -1262,11 +1266,11 @@
                 "settingsSection": "Settings",
                 "activeLabel": "Active List",
                 "activeDesc": "Inactive lists do not appear in the catalog",
-                "activeNewDesc": "New lists are created inactive â€” attach the PDF and activate on edit",
+                "activeNewDesc": "New lists are created inactive — attach the PDF and activate on edit",
                 "featuredLabel": "Featured",
                 "featuredDesc": "Appear featured on the home page",
                 "reviewSection": "Data review",
-                "reviewDesc": "This is the freshness date displayed to the buyer. Record it only after actually checking the data â€” saving the form does not change it.",
+                "reviewDesc": "This is the freshness date displayed to the buyer. Record it only after actually checking the data — saving the form does not change it.",
                 "lastReview": "Last review recorded: {date}",
                 "noReview": "No review recorded. The list page does not display a review date.",
                 "registering": "Registering...",
@@ -1315,7 +1319,7 @@
                 "toastEmpty": "The file is empty",
                 "toastReadError": "Error reading the file",
                 "toastTemplateDownloaded": "Template {type} downloaded!",
-                "fileInfo": "{rows} rows â€¢ {headers} columns â€¢ {type}",
+                "fileInfo": "{rows} rows • {headers} columns • {type}",
                 "requiredMapped": "{mapped}/{required} required",
                 "columns": "Columns",
                 "mapped": "Mapped",
@@ -1326,7 +1330,7 @@
                 "required": "Required",
                 "recommended": "Recommended",
                 "selectPlaceholder": "Select field",
-                "ignore": "â€” Ignore â€”",
+                "ignore": "— Ignore —",
                 "missingRequired": "Required fields missing",
                 "missingRequiredDetail": "Map the fields: Country and Company Name",
                 "total": "Total",

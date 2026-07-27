@@ -8,7 +8,7 @@
         "signIn": {
             "chooseHeading": "Kies waar u wilt inloggen",
             "mainAccess": "Hoofdtoegang",
-            "chooseHelp": "Uw aankopen staan voorop â€” dat is de toegang voor de meeste mensen. De Beheeromgeving is voorbehouden aan wie het systeem beheert.",
+            "chooseHelp": "Uw aankopen staan voorop — dat is de toegang voor de meeste mensen. De Beheeromgeving is voorbehouden aan wie het systeem beheert.",
             "cardDescription": "Voer uw e-mail en wachtwoord in om deze omgeving te openen.",
             "emailLabel": "E-mail",
             "passwordLabel": "Wachtwoord",
@@ -20,7 +20,7 @@
             "error": "Fout bij het inloggen",
             "errLinkExpired": "Deze bevestigingslink is verlopen of al gebruikt. Log in met uw wachtwoord of vraag een nieuwe registratie aan.",
             "errLinkInvalid": "We konden deze bevestigingslink niet valideren. Probeer in te loggen met uw wachtwoord.",
-            "errLinkIncomplete": "Deze bevestigingslink is onvolledig. Open hem rechtstreeks vanuit de e-mail, zonder kopiÃ«ren en plakken.",
+            "errLinkIncomplete": "Deze bevestigingslink is onvolledig. Open hem rechtstreeks vanuit de e-mail, zonder kopiëren en plakken.",
             "errRateLimit": "Te veel inlogpogingen. Wacht een minuut en probeer het opnieuw.",
             "errGeneric": "We konden de bevestiging niet voltooien.",
             "areas": {
@@ -39,19 +39,19 @@
             "emailLabel": "E-mail",
             "emailPlaceholder": "u@email.com",
             "passwordLabel": "Wachtwoord",
-            "passwordPlaceholder": "â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢",
+            "passwordPlaceholder": "••••••••",
             "submitMkt": "Account aanmaken en doorgaan",
             "submitCrm": "Account aanmaken",
             "haveAccount": "Heeft u al een account?",
             "enter": "Inloggen",
-            "createForPurchases": "â† Account aanmaken voor aankopen",
+            "createForPurchases": "← Account aanmaken voor aankopen",
             "success": "Account succesvol aangemaakt!",
             "error": "Fout bij het aanmaken van het account",
             "benefitsTitle": "Voordelen",
             "benefit1": "Levenslange toegang tot gekochte lijsten",
             "benefit2": "Onbeperkt downloaden van de gekochte pdf-studie",
             "benefit3": "Bestelgeschiedenis en bonnen in uw account",
-            "successTitle": "Account succesvol aangemaakt! ðŸŽ‰",
+            "successTitle": "Account succesvol aangemaakt! 🎉",
             "verifySent": "We hebben een verificatie-e-mail gestuurd naar:",
             "nextStepsTitle": "Volgende stappen",
             "step1": "1. Open uw e-mail en klik op de bevestigingslink.",
@@ -96,7 +96,7 @@
         "terms": "Gebruiksvoorwaarden",
         "privacy": "Privacy",
         "contact": "Contact",
-        "copyright": "Â© {year} Easy Prospect. Alle rechten voorbehouden."
+        "copyright": "© {year} Easy Prospect. Alle rechten voorbehouden."
     },
     "landing": {
         "hero": {
@@ -112,38 +112,38 @@
         "intro": {
             "lede": "Onze gekwalificeerde lijsten van importeurs en distributeurs zijn ontwikkeld voor fabrikanten, producenten en merkeigenaren die op zoek zijn naar nieuwe handelspartners in het buitenland.",
             "p1": "Selecteer op land, sector, taalgebied of inkoopprofiel en ontvang direct bruikbare databases die periodiek worden bijgewerkt.",
-            "p2": "Onze lijsten bevatten bedrijven die zijn getoetst aan openbare bronnen â€” bedrijfswebsite, digitale aanwezigheid en beschikbare registraties â€” binnen de sector en markt die elke lijst wil bestrijken. Bij elke lijst hoort een marktstudie in pdf, zodat u het profiel van de bedrijven kunt beoordelen voordat u contact opneemt."
+            "p2": "Onze lijsten bevatten bedrijven die zijn getoetst aan openbare bronnen — bedrijfswebsite, digitale aanwezigheid en beschikbare registraties — binnen de sector en markt die elke lijst wil bestrijken. Bij elke lijst hoort een marktstudie in pdf, zodat u het profiel van de bedrijven kunt beoordelen voordat u contact opneemt."
         },
         "zielmaerkte": {
             "eyebrow": "Doelmarkten",
             "title": "Een nauwkeurige selectie op basis van uw doelmarkten.",
             "intro": "U ontvangt lijsten voor afzonderlijke landen of hele taalgebieden, bijvoorbeeld:",
-            "note": "We bieden ook sectorspecifieke lijsten aan voor tal van industrieÃ«n en productgroepen. Stap voor stap breiden we ons aanbod uit met gekwalificeerde lijsten voor markten over de hele wereld.",
+            "note": "We bieden ook sectorspecifieke lijsten aan voor tal van industrieën en productgroepen. Stap voor stap breiden we ons aanbod uit met gekwalificeerde lijsten voor markten over de hele wereld.",
             "regions": [
                 {
                     "flag": "DE",
                     "title": "Duitstalige landen",
-                    "countries": "DE Â· AT Â· CH"
+                    "countries": "DE · AT · CH"
                 },
                 {
                     "flag": "FR",
                     "title": "Franstalige landen",
-                    "countries": "FR Â· BE Â· CH Â· LU"
+                    "countries": "FR · BE · CH · LU"
                 },
                 {
                     "flag": "ES",
                     "title": "Spaanstalige landen",
-                    "countries": "ES Â· MX Â· AR Â· CL â€¦"
+                    "countries": "ES · MX · AR · CL …"
                 },
                 {
                     "flag": "PT",
                     "title": "Portugeestalige landen",
-                    "countries": "PT Â· BR Â· AO â€¦"
+                    "countries": "PT · BR · AO …"
                 },
                 {
                     "flag": "SE",
                     "title": "Scandinavische landen",
-                    "countries": "SE Â· NO Â· DK Â· FI Â· IS"
+                    "countries": "SE · NO · DK · FI · IS"
                 }
             ]
         },
@@ -151,7 +151,7 @@
             "eyebrow": "Inkoopprofielen",
             "title": "Niet alle importeurs zijn gelijk.",
             "intro": "Onze databases onderscheiden verschillende inkoopprofielen:",
-            "close": "Zo richt u uw commerciÃ«le activiteiten precies op de partners die bij uw product passen.",
+            "close": "Zo richt u uw commerciële activiteiten precies op de partners die bij uw product passen.",
             "cards": [
                 {
                     "title": "Wereldwijde inkoop",
@@ -182,21 +182,21 @@
                 "Actuele markt- en concurrentiesituatie",
                 "Verkoop- en distributiekansen",
                 "Bijzonderheden van elke markt",
-                "Eisen van potentiÃ«le handelspartners",
-                "Welke informatie en documenten importeurs verwachten vÃ³Ã³r een samenwerking",
-                "Hoe u potentiÃ«le distributeurs professioneel benadert",
+                "Eisen van potentiële handelspartners",
+                "Welke informatie en documenten importeurs verwachten vóór een samenwerking",
+                "Hoe u potentiële distributeurs professioneel benadert",
                 "Welke verkoopargumenten het meest kansrijk zijn bij het eerste contact"
             ]
         },
         "daten": {
             "eyebrow": "Datakwaliteit",
             "title": "Periodiek herziene gegevens.",
-            "body": "De lijsten worden samengesteld door onze organisatie, en elk bedrijf wordt getoetst aan openbare bronnen â€” bedrijfswebsite, digitale aanwezigheid en beschikbare registraties â€” voordat het in de catalogus wordt opgenomen. De catalogus wordt periodiek herzien: zodra een lijst de markt die ze beschrijft niet meer weerspiegelt, halen we ze uit de verkoop."
+            "body": "De lijsten worden samengesteld door onze organisatie, en elk bedrijf wordt getoetst aan openbare bronnen — bedrijfswebsite, digitale aanwezigheid en beschikbare registraties — voordat het in de catalogus wordt opgenomen. De catalogus wordt periodiek herzien: zodra een lijst de markt die ze beschrijft niet meer weerspiegelt, halen we ze uit de verkoop."
         },
         "vorteil": {
             "eyebrow": "Uw voordeel",
             "title": "Bespaar tijd en laat uw commercieel succes groeien.",
-            "body": "In plaats van weken of maanden te besteden aan het zoeken naar geschikte importeurs en distributeurs, ontvangt u direct een gekwalificeerde selectie van potentiÃ«le handelspartners die aansluiten bij uw product en doelmarkt. Zo kunt u zich concentreren op wat echt telt: het succesvol opbouwen van uw internationale handel."
+            "body": "In plaats van weken of maanden te besteden aan het zoeken naar geschikte importeurs en distributeurs, ontvangt u direct een gekwalificeerde selectie van potentiële handelspartners die aansluiten bij uw product en doelmarkt. Zo kunt u zich concentreren op wat echt telt: het succesvol opbouwen van uw internationale handel."
         },
         "howItWorks": {
             "eyebrow": "Hoe het werkt",
@@ -241,7 +241,7 @@
         "items": [
             {
                 "question": "Waar komen de gegevens vandaan en hoe worden ze geverifieerd?",
-                "answer": "De lijsten komen voort uit eigen onderzoek en worden door onze organisatie samengesteld. Voordat een bedrijf in een lijst wordt opgenomen, toetsen we het aan openbare bronnen â€” bedrijfswebsite, digitale aanwezigheid en beschikbare registraties â€” om te bevestigen dat het bestaat, dat het in de vermelde sector actief is en dat de contactkanalen actief zijn."
+                "answer": "De lijsten komen voort uit eigen onderzoek en worden door onze organisatie samengesteld. Voordat een bedrijf in een lijst wordt opgenomen, toetsen we het aan openbare bronnen — bedrijfswebsite, digitale aanwezigheid en beschikbare registraties — om te bevestigen dat het bestaat, dat het in de vermelde sector actief is en dat de contactkanalen actief zijn."
             },
             {
                 "question": "Hoe actueel zijn de lijsten?",
@@ -265,16 +265,16 @@
             },
             {
                 "question": "Wat staat er in het marktrapport bij de lijst?",
-                "answer": "Bij elke lijst hoort een marktstudie als PDF, opgesteld voor de markt van die lijst. Omdat de inhoud is toegesneden op het land en de sector, verschilt die per lijst â€” de inleiding op de pagina van elke lijst vat samen wat die studie behandelt."
+                "answer": "Bij elke lijst hoort een marktstudie als PDF, opgesteld voor de markt van die lijst. Omdat de inhoud is toegesneden op het land en de sector, verschilt die per lijst — de inleiding op de pagina van elke lijst vat samen wat die studie behandelt."
             },
             {
                 "question": "Hoe zit het met gegevensbescherming (AVG/LGPD)?",
-                "answer": "De lijsten bevatten zakelijke contactgegevens uit openbare bronnen: bedrijfsnaam, land, sector, website, algemene e-mailadressen en telefoonnummers â€” en in sommige lijsten ook de naam en functie van een contactpersoon. Bij een aankoop vragen we uw naam, e-mailadres en fiscaal nummer, die we gebruiken om de betaling te verwerken en de download vrij te geven. Iedere persoon of onderneming kan vragen om correctie of verwijdering van de eigen gegevens uit onze lijsten: gebruik daarvoor het contactformulier verderop op deze pagina. Het volledige beleid staat in ons Privacybeleid, op /privacy."
+                "answer": "De lijsten bevatten zakelijke contactgegevens uit openbare bronnen: bedrijfsnaam, land, sector, website, algemene e-mailadressen en telefoonnummers — en in sommige lijsten ook de naam en functie van een contactpersoon. Bij een aankoop vragen we uw naam, e-mailadres en fiscaal nummer, die we gebruiken om de betaling te verwerken en de download vrij te geven. Iedere persoon of onderneming kan vragen om correctie of verwijdering van de eigen gegevens uit onze lijsten: gebruik daarvoor het contactformulier verderop op deze pagina. Het volledige beleid staat in ons Privacybeleid, op /privacy."
             }
         ],
         "form": {
             "title": "Uw vraag niet gevonden?",
-            "subtitle": "Stuur ons uw vraag â€” we reageren snel.",
+            "subtitle": "Stuur ons uw vraag — we reageren snel.",
             "name": "Naam",
             "company": "Bedrijf (optioneel)",
             "email": "E-mail",
@@ -282,7 +282,7 @@
             "message": "Uw vraag",
             "consent": "Ik heb het <link>Privacybeleid</link> gelezen en ga ermee akkoord.",
             "submit": "Vraag versturen",
-            "submitting": "Bezig met versturenâ€¦",
+            "submitting": "Bezig met versturen…",
             "success": "Bedankt! We hebben uw vraag ontvangen.",
             "error": "Er is een fout opgetreden. Probeer het opnieuw.",
             "rateLimited": "Te veel pogingen. Probeer het later opnieuw.",
@@ -375,10 +375,10 @@
         "countries": {
             "DE": "Duitsland",
             "FR": "Frankrijk",
-            "IT": "ItaliÃ«",
+            "IT": "Italië",
             "ES": "Spanje",
             "NL": "Nederland",
-            "BE": "BelgiÃ«",
+            "BE": "België",
             "PL": "Polen",
             "SE": "Zweden",
             "AT": "Oostenrijk",
@@ -388,7 +388,7 @@
             "US": "Verenigde Staten",
             "CN": "China",
             "JP": "Japan",
-            "BR": "BraziliÃ«"
+            "BR": "Brazilië"
         },
         "industries": {
             "food": "Voeding & dranken",
@@ -398,7 +398,11 @@
             "health": "Gezondheid & farmacie",
             "construction": "Bouw",
             "retail": "Detailhandel",
-            "industrial": "Industrieel"
+            "industrial": "Industrieel",
+            "agriculture": "Landbouw",
+            "electronics": "Elektronica",
+            "chemicals": "Chemie",
+            "machinery": "Machines en apparatuur"
         },
         "categories": {
             "importers": "Importeurs",
@@ -521,7 +525,7 @@
         "statPurchases": "Aankopen",
         "statLists": "Lijsten",
         "statLeads": "Leads",
-        "statSpent": "GeÃ¯nvesteerd",
+        "statSpent": "Geïnvesteerd",
         "nextStepsTitle": "Volgende stappen",
         "guidancePdfTitle": "Download de pdf",
         "guidancePdfText": "Download het marktonderzoek als pdf en gebruik het als referentie voor je prospectie.",
@@ -560,7 +564,7 @@
                 },
                 {
                     "title": "Controle in openbare bronnen",
-                    "body": "Voordat een bedrijf in een lijst komt, wordt het gecontroleerd in openbare bronnen â€” de bedrijfswebsite, de digitale aanwezigheid en beschikbare openbare registers â€” om te bevestigen dat het bestaat, dat het in de aangegeven sector actief is en dat de contactkanalen werken."
+                    "body": "Voordat een bedrijf in een lijst komt, wordt het gecontroleerd in openbare bronnen — de bedrijfswebsite, de digitale aanwezigheid en beschikbare openbare registers — om te bevestigen dat het bestaat, dat het in de aangegeven sector actief is en dat de contactkanalen werken."
                 },
                 {
                     "title": "Onderhoud van de catalogus",

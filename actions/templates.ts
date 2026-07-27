@@ -55,7 +55,7 @@ export async function getTemplates(
         const parsedWorkspaceId = idSchema.safeParse(workspaceId)
         const parsedOptions = getTemplatesOptionsSchema.safeParse(options)
         if (!parsedWorkspaceId.success || !parsedOptions.success) {
-            return { success: false, error: "Filtros invÃ¡lidos" }
+            return { success: false, error: "Filtros inválidos" }
         }
 
         workspaceId = parsedWorkspaceId.data
@@ -107,7 +107,7 @@ export async function getTemplateById(
     try {
         const parsedId = idSchema.safeParse(id)
         if (!parsedId.success) {
-            return { success: false, error: "Template invÃ¡lido" }
+            return { success: false, error: "Template inválido" }
         }
 
         const user = await getAuthenticatedUser()
@@ -185,7 +185,7 @@ export async function updateTemplate(
     try {
         const parsedId = idSchema.safeParse(id)
         if (!parsedId.success) {
-            return { success: false, error: "Template invÃ¡lido" }
+            return { success: false, error: "Template inválido" }
         }
 
         const user = await getAuthenticatedUser()
@@ -229,7 +229,7 @@ export async function deleteTemplate(id: string): Promise<ActionResult> {
     try {
         const parsedId = idSchema.safeParse(id)
         if (!parsedId.success) {
-            return { success: false, error: "Template invÃ¡lido" }
+            return { success: false, error: "Template inválido" }
         }
 
         const user = await getAuthenticatedUser()
@@ -275,7 +275,7 @@ export async function duplicateTemplate(id: string): Promise<ActionResult<{ id: 
     try {
         const parsedId = idSchema.safeParse(id)
         if (!parsedId.success) {
-            return { success: false, error: "Template invÃ¡lido" }
+            return { success: false, error: "Template inválido" }
         }
 
         const user = await getAuthenticatedUser()
@@ -319,7 +319,7 @@ export async function toggleTemplateActive(id: string): Promise<ActionResult> {
     try {
         const parsedId = idSchema.safeParse(id)
         if (!parsedId.success) {
-            return { success: false, error: "Template invÃ¡lido" }
+            return { success: false, error: "Template inválido" }
         }
 
         const user = await getAuthenticatedUser()

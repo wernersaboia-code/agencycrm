@@ -46,6 +46,7 @@ import { createList, updateList, uploadLeadsToList, markListReviewed } from "@/a
 import { MarketplaceImportWizard } from "@/components/admin/marketplace-import-wizard"
 import type { MarketplaceLeadData } from "@/lib/constants/marketplace-csv.constants"
 import { LIST_LANGUAGES } from "@/lib/constants/list-languages"
+import { CATEGORY_IDS, INDUSTRY_IDS } from "@/lib/constants/catalog-facets"
 import { FlagIcon } from "@/components/ui/flag-icon"
 import { canPublishList } from "@/lib/marketplace/list-publishing"
 
@@ -84,35 +85,15 @@ interface ListFormProps {
 // CONSTANTES
 // ============================================
 
-const categories = [
-    { value: "importers", label: "Importadores" },
-    { value: "exporters", label: "Exportadores" },
-    { value: "manufacturers", label: "Fabricantes" },
-    { value: "distributors", label: "Distribuidores" },
-    { value: "retailers", label: "Varejistas" },
-    { value: "wholesalers", label: "Atacadistas" },
-]
-
 const currencies = [
     { value: "EUR", label: "Euro (€)" },
     { value: "USD", label: "Dólar ($)" },
     { value: "BRL", label: "Real (R$)" },
 ]
 
-const INDUSTRIES = [
-    { id: "food", name: "Alimentos & Bebidas" },
-    { id: "tech", name: "Tecnologia" },
-    { id: "fashion", name: "Moda & Têxtil" },
-    { id: "automotive", name: "Automotivo" },
-    { id: "health", name: "Saúde & Farmácia" },
-    { id: "construction", name: "Construção" },
-    { id: "retail", name: "Varejo" },
-    { id: "industrial", name: "Industrial" },
-    { id: "agriculture", name: "Agricultura" },
-    { id: "electronics", name: "Eletrônicos" },
-    { id: "chemicals", name: "Químicos" },
-    { id: "machinery", name: "Máquinas & Equipamentos" },
-]
+// Vocabulário e rótulos vêm da mesma fonte que o filtro público (ver
+// lib/constants/catalog-facets.ts): setor oferecido aqui e não conhecido lá
+// gerava lista impossível de encontrar no catálogo.
 
 // ============================================
 // COMPONENTE
@@ -122,6 +103,8 @@ export function ListForm({ list }: ListFormProps) {
     const router = useRouter()
     const t = useTranslations("admin.components.listForm")
     const tc = useTranslations("admin.common")
+    // Rótulos das facetas: os mesmos que o catálogo público mostra.
+    const tFacetas = useTranslations("catalog")
 
     const listSchema = useMemo(() => z.object({
         name: z.string().min(3, t("validationName")),
@@ -551,9 +534,9 @@ export function ListForm({ list }: ListFormProps) {
                                         <SelectValue placeholder={t("categoryPlaceholder")} />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        {categories.map((cat) => (
-                                            <SelectItem key={cat.value} value={cat.value}>
-                                                {cat.label}
+                                        {CATEGORY_IDS.map((categoryId) => (
+                                            <SelectItem key={categoryId} value={categoryId}>
+                                                {tFacetas(`categories.${categoryId}`)}
                                             </SelectItem>
                                         ))}
                                     </SelectContent>
@@ -605,14 +588,13 @@ export function ListForm({ list }: ListFormProps) {
                             {selectedIndustries.length > 0 && (
                                 <div className="flex flex-wrap gap-2 p-3 bg-muted rounded-lg">
                                     {selectedIndustries.map((id) => {
-                                        const industry = INDUSTRIES.find((i) => i.id === id)
                                         return (
                                             <Badge
                                                 key={id}
                                                 variant="secondary"
                                                 className="gap-1 pr-1"
                                             >
-                                                {industry?.name}
+                                                {tFacetas(`industries.${id}`)}
                                                 <button
                                                     type="button"
                                                     onClick={() => removeIndustry(id)}
@@ -628,16 +610,16 @@ export function ListForm({ list }: ListFormProps) {
 
                             {/* Grid de checkboxes */}
                             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 p-4 border rounded-lg">
-                                {INDUSTRIES.map((industry) => (
+                                {INDUSTRY_IDS.map((industryId) => (
                                     <label
-                                        key={industry.id}
+                                        key={industryId}
                                         className="flex items-center gap-2 cursor-pointer hover:bg-muted/50 p-2 rounded transition-colors"
                                     >
                                         <Checkbox
-                                            checked={selectedIndustries.includes(industry.id)}
-                                            onCheckedChange={() => toggleIndustry(industry.id)}
+                                            checked={selectedIndustries.includes(industryId)}
+                                            onCheckedChange={() => toggleIndustry(industryId)}
                                         />
-                                        <span className="text-sm">{industry.name}</span>
+                                        <span className="text-sm">{tFacetas(`industries.${industryId}`)}</span>
                                     </label>
                                 ))}
                             </div>

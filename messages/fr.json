@@ -398,7 +398,11 @@
             "health": "Santé & pharmacie",
             "construction": "Construction",
             "retail": "Commerce de détail",
-            "industrial": "Industriel"
+            "industrial": "Industriel",
+            "agriculture": "Agriculture",
+            "electronics": "Électronique",
+            "chemicals": "Chimie",
+            "machinery": "Machines et équipements"
         },
         "categories": {
             "importers": "Importateurs",

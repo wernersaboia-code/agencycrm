@@ -8,20 +8,12 @@ import { useTranslations } from "next-intl"
 import { Check, ChevronDown } from "lucide-react"
 import { FlagIcon } from "@/components/ui/flag-icon"
 
-const COUNTRY_CODES = [
-    "DE", "FR", "IT", "ES", "NL", "BE", "PL", "SE",
-    "AT", "CH", "PT", "GB", "US", "CN", "JP", "BR",
-] as const
-
-const INDUSTRY_IDS = [
-    "food", "tech", "fashion", "automotive",
-    "health", "construction", "retail", "industrial",
-] as const
-
-const CATEGORY_IDS = [
-    "importers", "exporters", "manufacturers",
-    "distributors", "retailers", "wholesalers",
-] as const
+import {
+    CATEGORY_IDS,
+    COUNTRY_CODES,
+    INDUSTRY_IDS,
+    visibleFacets,
+} from "@/lib/constants/catalog-facets"
 
 interface CatalogSidebarProps {
     selectedCountries: string[]
@@ -133,6 +125,17 @@ export function CatalogSidebar({
         selectedIndustries.length > 0 ||
         Boolean(selectedCategory)
 
+    // O vocabulário é maior do que a operação: só entram no filtro as facetas
+    // com lista publicada por trás (mais a que estiver selecionada). Uma seção
+    // sem nenhuma faceta visível não é renderizada.
+    const categorias = visibleFacets(
+        CATEGORY_IDS,
+        categoryCounts,
+        selectedCategory ? [selectedCategory] : []
+    )
+    const paises = visibleFacets(COUNTRY_CODES, countryCounts, selectedCountries)
+    const setores = visibleFacets(INDUSTRY_IDS, industryCounts, selectedIndustries)
+
     return (
         <div className={`space-y-6 transition-opacity ${isPending ? "pointer-events-none opacity-60" : ""}`}>
             {!hideHeading && (
@@ -143,6 +146,7 @@ export function CatalogSidebar({
             )}
 
             {/* Filtro de Categoria */}
+            {categorias.length > 0 && (
             <div>
                 <button
                     type="button"
@@ -160,7 +164,7 @@ export function CatalogSidebar({
 
                 <div id={`${panelId}-categories`} hidden={!categoriesOpen}>
                     <div className="space-y-2">
-                        {CATEGORY_IDS.map((categoryId) => {
+                        {categorias.map((categoryId) => {
                             const count = categoryCounts[categoryId] || 0
                             const isDisabled = count === 0
                             const isSelected = selectedCategory === categoryId
@@ -201,10 +205,12 @@ export function CatalogSidebar({
                     </div>
                 </div>
             </div>
+            )}
 
-            <hr className="border-border" />
+            {categorias.length > 0 && paises.length > 0 && <hr className="border-border" />}
 
             {/* Filtro de Países */}
+            {paises.length > 0 && (
             <div>
                 <button
                     type="button"
@@ -222,7 +228,7 @@ export function CatalogSidebar({
 
                 <div id={`${panelId}-countries`} hidden={!countriesOpen}>
                     <div className="space-y-2">
-                        {COUNTRY_CODES.map((code) => {
+                        {paises.map((code) => {
                             const count = countryCounts[code] || 0
                             const isDisabled = count === 0
                             const isChecked = selectedCountries.includes(code)
@@ -252,10 +258,12 @@ export function CatalogSidebar({
                     </div>
                 </div>
             </div>
+            )}
 
-            <hr className="border-border" />
+            {paises.length > 0 && setores.length > 0 && <hr className="border-border" />}
 
             {/* Filtro de Setores */}
+            {setores.length > 0 && (
             <div>
                 <button
                     type="button"
@@ -273,7 +281,7 @@ export function CatalogSidebar({
 
                 <div id={`${panelId}-industries`} hidden={!industriesOpen}>
                     <div className="space-y-2">
-                        {INDUSTRY_IDS.map((industryId) => {
+                        {setores.map((industryId) => {
                             const count = industryCounts[industryId] || 0
                             const isDisabled = count === 0
                             const isChecked = selectedIndustries.includes(industryId)
@@ -302,6 +310,7 @@ export function CatalogSidebar({
                     </div>
                 </div>
             </div>
+            )}
 
             {/* Botão de Limpar Filtros */}
             {hasActiveFilters && (

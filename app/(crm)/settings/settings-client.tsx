@@ -90,7 +90,7 @@ export function SettingsClient({ profile, workspace, stats, sendWindow, replyDet
         () => [
             {
                 label: "Identidade do workspace",
-                description: workspace.description ? "Nome e descri├º├úo preenchidos." : "Adicione uma descri├º├úo curta para orientar o time.",
+                description: workspace.description ? "Nome e descrição preenchidos." : "Adicione uma descrição curta para orientar o time.",
                 done: Boolean(workspace.name && workspace.description),
                 tab: "workspace",
             },
@@ -116,9 +116,9 @@ export function SettingsClient({ profile, workspace, stats, sendWindow, replyDet
         <div className="space-y-6">
             {/* Header */}
             <div>
-                <h1 className="text-3xl font-bold tracking-tight">Configura├º├Áes</h1>
+                <h1 className="text-3xl font-bold tracking-tight">Configurações</h1>
                 <p className="text-muted-foreground">
-                    Gerencie suas prefer├¬ncias e configura├º├Áes do workspace
+                    Gerencie suas preferências e configurações do workspace
                 </p>
             </div>
 
@@ -126,13 +126,13 @@ export function SettingsClient({ profile, workspace, stats, sendWindow, replyDet
                 <CardHeader className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                     <div className="space-y-2">
                         <div className="flex flex-wrap items-center gap-2">
-                            <CardTitle>Prontid├úo do workspace</CardTitle>
+                            <CardTitle>Prontidão do workspace</CardTitle>
                             <Badge variant={isWorkspaceReady ? "default" : "outline"}>
                                 {completedItems}/{readyItems.length} completo
                             </Badge>
                         </div>
                         <CardDescription>
-                            Confira os fundamentos que liberam campanhas, respostas e colabora├º├úo sem fric├º├úo.
+                            Confira os fundamentos que liberam campanhas, respostas e colaboração sem fricção.
                         </CardDescription>
                     </div>
                     <Button
@@ -185,7 +185,7 @@ export function SettingsClient({ profile, workspace, stats, sendWindow, replyDet
                     <p className="text-2xl font-bold">{stats.totalTemplates}</p>
                 </div>
                 <div className="rounded-lg border bg-card p-4">
-                    <p className="text-sm text-muted-foreground">Liga├º├Áes</p>
+                    <p className="text-sm text-muted-foreground">Ligações</p>
                     <p className="text-2xl font-bold">{stats.totalCalls}</p>
                 </div>
             </div>
@@ -203,7 +203,7 @@ export function SettingsClient({ profile, workspace, stats, sendWindow, replyDet
                     </TabsTrigger>
                     <TabsTrigger value="appearance" className="inline-flex items-center gap-2 px-3">
                         <Palette className="h-4 w-4" />
-                        <span className="hidden sm:inline">Apar├¬ncia</span>
+                        <span className="hidden sm:inline">Aparência</span>
                     </TabsTrigger>
                     <TabsTrigger value="email" className="inline-flex items-center gap-2 px-3">
                         <Mail className="h-4 w-4" />

@@ -32,11 +32,11 @@ import {
     describeCronHourIn,
 } from "@/lib/campaigns/send-window"
 
-// Fusos oferecidos na UI. Lista curta e expl├¡cita ÔÇö cobre opera├º├úo BR e p├║blico
-// europeu, que ├® o caso real do produto.
+// Fusos oferecidos na UI. Lista curta e explícita — cobre operação BR e público
+// europeu, que é o caso real do produto.
 const TIMEZONES = [
     { value: "UTC", label: "UTC" },
-    { value: "America/Sao_Paulo", label: "Bras├¡lia (America/Sao_Paulo)" },
+    { value: "America/Sao_Paulo", label: "Brasília (America/Sao_Paulo)" },
     { value: "Europe/Lisbon", label: "Lisboa (Europe/Lisbon)" },
     { value: "Europe/Berlin", label: "Berlim (Europe/Berlin)" },
     { value: "Europe/Madrid", label: "Madri (Europe/Madrid)" },
@@ -50,7 +50,7 @@ const WEEKDAYS = [
     { value: 3, label: "Qua" },
     { value: 4, label: "Qui" },
     { value: 5, label: "Sex" },
-    { value: 6, label: "S├íb" },
+    { value: 6, label: "Sáb" },
     { value: 7, label: "Dom" },
 ]
 
@@ -70,10 +70,10 @@ export function SendWindowSettings({ workspaceId, initial, replyDetection }: Sen
     )
     const [isPending, startTransition] = useTransition()
 
-    // Um input num├®rico esvaziado (backspace at├® o fim) chega aqui como
-    // event.target.value === "" ÔÇö Number("") ├® 0, o que empurraria o campo
-    // para um valor fora da faixa (ex.: sendEndHour: 0) sem o usu├írio ter
-    // digitado isso. Mant├®m o valor anterior em vez de zerar.
+    // Um input numérico esvaziado (backspace até o fim) chega aqui como
+    // event.target.value === "" — Number("") é 0, o que empurraria o campo
+    // para um valor fora da faixa (ex.: sendEndHour: 0) sem o usuário ter
+    // digitado isso. Mantém o valor anterior em vez de zerar.
     function parseNumberInput(value: string, previous: number): number {
         return value === "" ? previous : Number(value)
     }
@@ -113,15 +113,15 @@ export function SendWindowSettings({ workspaceId, initial, replyDetection }: Sen
                 </CardTitle>
                 <CardDescription>
                     Define quando as campanhas de e-mail podem sair. Envios fora da
-                    janela s├úo adiados para o pr├│ximo hor├írio v├ílido.
+                    janela são adiados para o próximo horário válido.
                 </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
                 <p className="rounded-md border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900 dark:border-amber-900/40 dark:bg-amber-950/30 dark:text-amber-200">
-                    Os envios s├úo processados <strong>uma vez por dia</strong>, ├ás{" "}
+                    Os envios são processados <strong>uma vez por dia</strong>, às{" "}
                     {CRON_SEND_HOUR_UTC}h UTC ({describeCronHourIn(form.sendTimezone)} no
-                    fuso selecionado). A janela precisa incluir esse hor├írio ÔÇö se n├úo
-                    incluir, nenhum e-mail ├® enviado.
+                    fuso selecionado). A janela precisa incluir esse horário — se não
+                    incluir, nenhum e-mail é enviado.
                 </p>
                 <div className="flex items-center justify-between">
                     <div>
@@ -143,7 +143,7 @@ export function SendWindowSettings({ workspaceId, initial, replyDetection }: Sen
                 </div>
 
                 <div className="space-y-2">
-                    <Label htmlFor="sendTimezone">Fuso hor├írio</Label>
+                    <Label htmlFor="sendTimezone">Fuso horário</Label>
                     <Select
                         value={form.sendTimezone}
                         onValueChange={(value) =>
@@ -224,7 +224,7 @@ export function SendWindowSettings({ workspaceId, initial, replyDetection }: Sen
                         />
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="sendJitterMinutes">Varia├º├úo (min)</Label>
+                        <Label htmlFor="sendJitterMinutes">Variação (min)</Label>
                         <Input
                             id="sendJitterMinutes"
                             type="number"
@@ -267,8 +267,8 @@ export function SendWindowSettings({ workspaceId, initial, replyDetection }: Sen
                                 Detectar respostas
                             </Label>
                             <p className="text-sm text-muted-foreground">
-                                L├¬ a caixa de entrada por IMAP (mesma senha do SMTP) e
-                                para a sequ├¬ncia de quem respondeu.
+                                Lê a caixa de entrada por IMAP (mesma senha do SMTP) e
+                                para a sequência de quem respondeu.
                             </p>
                         </div>
                         <Switch

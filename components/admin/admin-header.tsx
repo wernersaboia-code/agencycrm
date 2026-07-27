@@ -19,8 +19,8 @@ import { cn } from "@/lib/utils"
 const headerConfigs = {
     leadstore: {
         titleKey: "titleMarketplace",
-        badgeColors: "bg-admin-soft text-admin border-admin-soft dark:bg-indigo-950 dark:text-admin dark:border-admin-soft",
-        avatarColors: "bg-admin-soft text-admin dark:bg-indigo-900 dark:text-admin",
+        badgeColors: "bg-admin-soft text-admin border-admin-soft dark:bg-admin-soft dark:text-admin dark:border-admin-soft",
+        avatarColors: "bg-admin-soft text-admin dark:bg-admin-soft dark:text-admin",
     },
     "super-admin": {
         titleKey: "title",

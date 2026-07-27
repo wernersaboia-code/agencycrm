@@ -1025,7 +1025,7 @@ function StepIndicator({
                 className={`
           flex items-center justify-center w-6 h-6 rounded-full text-xs font-medium
           ${active ? "bg-admin text-white" : ""}
-          ${completed && !active ? "bg-admin-soft text-admin dark:bg-indigo-900 dark:text-admin" : ""}
+          ${completed && !active ? "bg-admin-soft text-admin dark:bg-admin-soft dark:text-admin" : ""}
           ${!active && !completed ? "bg-muted text-muted-foreground" : ""}
         `}
             >

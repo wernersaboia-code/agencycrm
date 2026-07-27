@@ -2,7 +2,8 @@
 
 import { headers } from "next/headers"
 import { prisma } from "@/lib/prisma"
-import { sendEmailResend } from "@/lib/email"
+import { sendEmail } from "@/lib/email"
+import { getSystemSmtpConfig } from "@/lib/email/system-smtp"
 import { rateLimit } from "@/lib/rate-limit"
 import { faqContactSchema } from "@/lib/validations/faq"
 
@@ -101,13 +102,22 @@ export async function submitFaqQuestion(input: unknown): Promise<SubmitFaqResult
             <p>${escapeHtml(data.message).replace(/\n/g, "<br />")}</p>
         `
 
+        // Sai pelo SMTP do sistema (o mesmo da confirmação de compra), com o
+        // Resend só como fallback. Antes ia direto pelo Resend, o que
+        // significava remetente `onboarding@resend.dev` — endereço de sandbox,
+        // fora do SPF do domínio e sem relação com a caixa que responde.
+        //
         // Falha no e-mail não falha a submissão: a pergunta já está persistida.
-        const result = await sendEmailResend({
-            to: notifyTo,
-            subject: `[FAQ] ${data.subject}`,
-            html,
-            replyTo: data.email,
-        })
+        const result = await sendEmail(
+            {
+                to: notifyTo,
+                subject: `[FAQ] ${data.subject}`,
+                html,
+                // Responder ao aviso responde a quem perguntou, não a nós.
+                replyTo: data.email,
+            },
+            getSystemSmtpConfig()
+        )
         if (!result.success) {
             console.error("Falha ao notificar pergunta do FAQ por e-mail:", result.error)
         }
