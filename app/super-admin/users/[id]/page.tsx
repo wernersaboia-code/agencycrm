@@ -109,7 +109,7 @@ export default async function UserDetailsPage({ params }: UserDetailsPageProps) 
                 </div>
             </div>
 
-            <Card className={readiness >= 75 ? "border-indigo-300 dark:border-indigo-900" : "border-amber-300 dark:border-amber-900"}>
+            <Card className={readiness >= 75 ? "border-admin dark:border-admin-soft" : "border-amber-300 dark:border-amber-900"}>
                 <CardHeader className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                     <div>
                         <CardTitle>{t("readiness")}</CardTitle>
@@ -129,7 +129,7 @@ export default async function UserDetailsPage({ params }: UserDetailsPageProps) 
                     {readinessChecks.map((check) => (
                         <div key={check.label} className="flex min-h-[98px] gap-3 rounded-lg border bg-background p-4">
                             {check.done ? (
-                                <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-indigo-600" />
+                                <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-admin" />
                             ) : (
                                 <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
                             )}
@@ -219,8 +219,8 @@ export default async function UserDetailsPage({ params }: UserDetailsPageProps) 
                                 <p className="text-sm text-muted-foreground">{t("campaigns")}</p>
                             </div>
 
-                            <div className="p-4 bg-indigo-50 dark:bg-indigo-950/30 rounded-lg text-center">
-                                <Mail className="h-6 w-6 mx-auto text-indigo-600 mb-2" />
+                            <div className="p-4 bg-admin-soft rounded-lg text-center">
+                                <Mail className="h-6 w-6 mx-auto text-admin mb-2" />
                                 <p className="text-2xl font-bold">{stats.totalEmails.toLocaleString()}</p>
                                 <p className="text-sm text-muted-foreground">{t("emailsSent")}</p>
                             </div>

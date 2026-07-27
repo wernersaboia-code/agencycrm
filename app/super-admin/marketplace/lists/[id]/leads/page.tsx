@@ -222,7 +222,7 @@ export default async function ListLeadsPage({ params }: ListLeadsPageProps) {
                                             </TableCell>
                                             <TableCell className="text-center">
                                                 {lead.emailVerified ? (
-                                                    <CheckCircle className="h-4 w-4 text-indigo-500 mx-auto" />
+                                                    <CheckCircle className="h-4 w-4 text-admin mx-auto" />
                                                 ) : (
                                                     <XCircle className="h-4 w-4 text-muted-foreground mx-auto" />
                                                 )}
