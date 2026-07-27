@@ -5,7 +5,7 @@ import { routing } from "@/lib/i18n/routing"
 import { stripLocale } from "@/lib/i18n/strip-locale"
 import { prisma } from "@/lib/prisma"
 import { isSuperAdminPath, canAccessSuperAdmin } from "@/lib/auth/super-admin-gate"
-import { checkPersistentRateLimit } from "@/lib/rate-limit"
+import { checkPersistentRateLimit, tooManyRequestsResponse } from "@/lib/rate-limit"
 
 const intlMiddleware = createIntlMiddleware(routing)
 
@@ -180,19 +180,25 @@ export async function proxy(request: NextRequest) {
     const isAuthRoute = matchesRoute(pathForMatching, authRoutes)
 
     // ============================================
-    // RATE LIMITING DE AUTH - proteção contra brute-force
+    // FREIO DE ABUSO NAS TELAS DE AUTH
     // ============================================
+    // Limita o CARREGAMENTO das telas de auth por IP. Não é proteção contra
+    // brute-force de senha e não deve ser confundida com uma: o login roda no
+    // cliente, chamando a API do Supabase direto do navegador com a chave
+    // pública, então a tentativa nunca passa por aqui e quem quisesse forçar
+    // senha simplesmente pularia esta página. O controle real de tentativas
+    // são os rate limits de auth do próprio Supabase, configurados no painel
+    // do projeto — este freio só evita que alguém use as telas de auth como
+    // alvo barato de flood.
     if (isAuthRoute) {
         const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
             || request.headers.get("x-real-ip")
             || "anonymous"
-        const allowed = await checkPersistentRateLimit("auth:page", ip, 20, 60_000)
+        const allowed = await checkPersistentRateLimit("auth:page", ip, 60, 60_000)
         if (!allowed) {
-            const url = request.nextUrl.clone()
-            url.pathname = "/sign-in"
-            url.search = ""
-            url.searchParams.set("erro", "rate_limit")
-            return NextResponse.redirect(url)
+            // 429 direto: redirecionar para /sign-in daria loop, porque a tela
+            // de destino também é rota de auth e cairia no mesmo limite.
+            return tooManyRequestsResponse(60)
         }
     }
 

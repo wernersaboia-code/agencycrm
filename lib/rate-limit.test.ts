@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest"
 
-import { checkAdminRateLimit } from "./rate-limit"
+import { checkAdminRateLimit, tooManyRequestsResponse } from "./rate-limit"
 
 // O helper checkAdminRateLimit chama checkPersistentRateLimit que usa
 // prisma.rateLimit.upsert. Mockamos o prisma para não tocar no banco.
@@ -44,5 +44,28 @@ describe("checkAdminRateLimit", () => {
         await checkAdminRateLimit("test.action", "admin-1")
 
         expect(prisma.rateLimit.upsert).toHaveBeenCalled()
+    })
+})
+
+describe("tooManyRequestsResponse", () => {
+    // O proxy usa esta resposta nas telas de auth, que são elas próprias
+    // limitadas. Qualquer redirect aqui viraria loop: a tela de destino cairia
+    // no mesmo limite e devolveria outro redirect.
+    it("responde 429 sem redirecionar", () => {
+        const response = tooManyRequestsResponse()
+
+        expect(response.status).toBe(429)
+        expect(response.headers.get("location")).toBeNull()
+    })
+
+    it("informa em quanto tempo tentar de novo", async () => {
+        const response = tooManyRequestsResponse(30)
+
+        expect(response.headers.get("retry-after")).toBe("30")
+        expect(await response.text()).toContain("30 segundos")
+    })
+
+    it("não é indexável", async () => {
+        expect(await tooManyRequestsResponse().text()).toContain("noindex")
     })
 })

@@ -39,18 +39,46 @@ export function rateLimit(tokenCount: number) {
 }
 
 /**
- * Rate limiter fixed-window persistido no Postgres, compartilhado entre todas
- * as instâncias serverless (ao contrário do limiter em memória acima, que é
- * por instância). Use em rotas sensíveis de baixo/médio volume — evite em
- * caminhos de altíssima frequência (ex.: pixel de tracking), onde a escrita no
- * banco a cada requisição seria custosa.
+ * Resposta para uma requisição barrada pelo limite.
  *
- * @returns `true` se a requisição está dentro do limite, `false` se excedeu.
- *
- * Fail-open: em caso de erro de banco, retorna `true` para não bloquear
- * usuários legítimos por um problema de infraestrutura. As verificações de
- * segurança de verdade (auth, valor do pagamento) são independentes disto.
+ * Devolve 429 direto, sem redirect. Redirecionar para uma página que também é
+ * limitada (o caso das telas de auth) faz a requisição seguinte bater no mesmo
+ * limite e devolver outro redirect, em loop, até o navegador desistir com
+ * ERR_TOO_MANY_REDIRECTS — o usuário fica sem tela nenhuma em vez de ver o
+ * aviso.
  */
+export function tooManyRequestsResponse(retryAfterSeconds = 60): Response {
+    const body = `<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Muitas requisições</title>
+<style>
+  body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; background:#f9fafb; color:#111827; margin:0; padding:40px 16px; }
+  .card { max-width:440px; margin:0 auto; background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:32px; text-align:center; }
+  h1 { font-size:20px; margin:0 0 12px; }
+  p { color:#6b7280; line-height:1.5; margin:0; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1>Muitas requisições</h1>
+    <p>Recebemos requisições demais deste endereço. Aguarde ${retryAfterSeconds} segundos e recarregue a página.</p>
+  </div>
+</body>
+</html>`
+
+    return new Response(body, {
+        status: 429,
+        headers: {
+            "Content-Type": "text/html; charset=utf-8",
+            "Retry-After": String(retryAfterSeconds),
+        },
+    })
+}
+
 /**
  * Wrapper para rate limiting de ações administrativas sensíveis. Reusa o
  * limiter persistente compartilhado entre instâncias. Ações que exigem
@@ -107,6 +135,19 @@ export async function checkCrmRateLimit(
     )
 }
 
+/**
+ * Rate limiter fixed-window persistido no Postgres, compartilhado entre todas
+ * as instâncias serverless (ao contrário do limiter em memória acima, que é
+ * por instância). Use em rotas sensíveis de baixo/médio volume — evite em
+ * caminhos de altíssima frequência (ex.: pixel de tracking), onde a escrita no
+ * banco a cada requisição seria custosa.
+ *
+ * @returns `true` se a requisição está dentro do limite, `false` se excedeu.
+ *
+ * Fail-open: em caso de erro de banco, retorna `true` para não bloquear
+ * usuários legítimos por um problema de infraestrutura. As verificações de
+ * segurança de verdade (auth, valor do pagamento) são independentes disto.
+ */
 export async function checkPersistentRateLimit(
     bucket: string,
     identifier: string,
