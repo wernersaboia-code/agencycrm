@@ -6,75 +6,75 @@
         "backToHome": "Volver al inicio",
         "language": "Idioma",
         "signIn": {
-            "chooseHeading": "Elige por dÃ³nde entrar",
+            "chooseHeading": "Elige por dónde entrar",
             "mainAccess": "Accesos principales",
-            "chooseHelp": "Tus compras van primero, que es el acceso de la mayorÃ­a. El Ãrea Administrativa estÃ¡ restringida a quienes operan el sistema.",
-            "cardDescription": "Introduce tu email y contraseÃ±a para acceder a esta Ã¡rea.",
+            "chooseHelp": "Tus compras van primero, que es el acceso de la mayoría. El Área Administrativa está restringida a quienes operan el sistema.",
+            "cardDescription": "Introduce tu email y contraseña para acceder a esta área.",
             "emailLabel": "Email",
-            "passwordLabel": "ContraseÃ±a",
+            "passwordLabel": "Contraseña",
             "emailPlaceholder": "tu@email.com",
             "passwordPlaceholder": "********",
-            "noAccount": "Â¿No tienes una cuenta?",
+            "noAccount": "¿No tienes una cuenta?",
             "createAccount": "Crear cuenta",
-            "success": "Â¡SesiÃ³n iniciada correctamente!",
-            "error": "Error al iniciar sesiÃ³n",
-            "errLinkExpired": "Este enlace de confirmaciÃ³n ha caducado o ya se ha usado. Inicia sesiÃ³n con tu contraseÃ±a o solicita un nuevo registro.",
-            "errLinkInvalid": "No se pudo validar este enlace de confirmaciÃ³n. Intenta iniciar sesiÃ³n con tu contraseÃ±a.",
-            "errLinkIncomplete": "Este enlace de confirmaciÃ³n estÃ¡ incompleto. Ãbrelo directamente desde el correo, sin copiar y pegar.",
-            "errRateLimit": "Demasiados intentos de inicio de sesiÃ³n. Espere un minuto y vuelva a intentarlo.",
-            "errGeneric": "No se pudo completar la confirmaciÃ³n.",
+            "success": "¡Sesión iniciada correctamente!",
+            "error": "Error al iniciar sesión",
+            "errLinkExpired": "Este enlace de confirmación ha caducado o ya se ha usado. Inicia sesión con tu contraseña o solicita un nuevo registro.",
+            "errLinkInvalid": "No se pudo validar este enlace de confirmación. Intenta iniciar sesión con tu contraseña.",
+            "errLinkIncomplete": "Este enlace de confirmación está incompleto. Ábrelo directamente desde el correo, sin copiar y pegar.",
+            "errRateLimit": "Demasiados intentos de inicio de sesión. Espere un minuto y vuelva a intentarlo.",
+            "errGeneric": "No se pudo completar la confirmación.",
             "areas": {
                 "purchases": { "title": "Mis compras", "shortTitle": "Ver compras", "description": "Listas compradas, pedidos y descargas de archivos.", "button": "Entrar en Mis compras" },
-                "admin": { "title": "Ãrea Administrativa", "shortTitle": "Ãrea Administrativa", "description": "Gestionar listas, usuarios, ventas y configuraciÃ³n.", "button": "Entrar en el Ãrea Administrativa" },
-                "crm": { "title": "CRM", "shortTitle": "Entrar en el CRM", "description": "Leads, campaÃ±as, llamadas, informes y rutina comercial.", "button": "Entrar en el CRM" }
+                "admin": { "title": "Área Administrativa", "shortTitle": "Área Administrativa", "description": "Gestionar listas, usuarios, ventas y configuración.", "button": "Entrar en el Área Administrativa" },
+                "crm": { "title": "CRM", "shortTitle": "Entrar en el CRM", "description": "Leads, campañas, llamadas, informes y rutina comercial.", "button": "Entrar en el CRM" }
             }
         },
         "signUp": {
             "mktTitle": "Crear Cuenta - Easy Prospect",
             "crmTitle": "Crear cuenta en el CRM",
             "mktSubtitle": "Crea tu cuenta para acceder a tus compras",
-            "crmSubtitle": "Completa los datos a continuaciÃ³n para crear tu cuenta",
+            "crmSubtitle": "Completa los datos a continuación para crear tu cuenta",
             "nameLabel": "Nombre",
             "namePlaceholder": "Tu nombre",
             "emailLabel": "Email",
             "emailPlaceholder": "tu@email.com",
-            "passwordLabel": "ContraseÃ±a",
-            "passwordPlaceholder": "â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢",
+            "passwordLabel": "Contraseña",
+            "passwordPlaceholder": "••••••••",
             "submitMkt": "Crear Cuenta y Continuar",
             "submitCrm": "Crear cuenta",
-            "haveAccount": "Â¿Ya tienes una cuenta?",
-            "enter": "Iniciar sesiÃ³n",
-            "createForPurchases": "â† Crear cuenta para compras",
-            "success": "Â¡Cuenta creada correctamente!",
+            "haveAccount": "¿Ya tienes una cuenta?",
+            "enter": "Iniciar sesión",
+            "createForPurchases": "← Crear cuenta para compras",
+            "success": "¡Cuenta creada correctamente!",
             "error": "Error al crear la cuenta",
             "benefitsTitle": "Beneficios",
             "benefit1": "Acceso de por vida a las listas compradas",
             "benefit2": "Descargas ilimitadas del estudio en PDF que compraste",
             "benefit3": "Historial de pedidos y recibos en tu cuenta",
-            "successTitle": "Â¡Cuenta creada correctamente! ðŸŽ‰",
-            "verifySent": "Hemos enviado un correo de verificaciÃ³n a:",
-            "nextStepsTitle": "PrÃ³ximos pasos",
-            "step1": "1. Abre tu correo y haz clic en el enlace de confirmaciÃ³n.",
+            "successTitle": "¡Cuenta creada correctamente! 🎉",
+            "verifySent": "Hemos enviado un correo de verificación a:",
+            "nextStepsTitle": "Próximos pasos",
+            "step1": "1. Abre tu correo y haz clic en el enlace de confirmación.",
             "step2Mkt": "2. Con el enlace entras directo a tus compras.",
             "step2Crm": "2. Con el enlace entras directo al CRM.",
-            "step3": "3. En los prÃ³ximos accesos, usa este correo y la contraseÃ±a que acabas de crear.",
-            "ctaMkt": "Explorar CatÃ¡logo",
+            "step3": "3. En los próximos accesos, usa este correo y la contraseña que acabas de crear.",
+            "ctaMkt": "Explorar Catálogo",
             "ctaCrm": "Ir al Panel",
-            "spamHint": "Â¿No recibiste el correo? Revisa tu carpeta de spam"
+            "spamHint": "¿No recibiste el correo? Revisa tu carpeta de spam"
         }
     },
     "nav": {
-        "catalog": "CatÃ¡logo",
-        "howItWorks": "CÃ³mo funciona",
+        "catalog": "Catálogo",
+        "howItWorks": "Cómo funciona",
         "blog": "Blog",
         "faq": "Preguntas frecuentes",
-        "login": "Iniciar sesiÃ³n",
+        "login": "Iniciar sesión",
         "myAccount": "Mi cuenta",
         "myPurchases": "Mis compras",
-        "adminArea": "Ãrea de administraciÃ³n",
-        "signOut": "Cerrar sesiÃ³n",
-        "signOutSuccess": "SesiÃ³n cerrada correctamente",
-        "openMenu": "Abrir menÃº",
+        "adminArea": "Área de administración",
+        "signOut": "Cerrar sesión",
+        "signOutSuccess": "Sesión cerrada correctamente",
+        "openMenu": "Abrir menú",
         "language": "Idioma",
         "theme": "Tema",
         "themeLight": "Claro",
@@ -84,66 +84,66 @@
     "footer": {
         "about": "Socios comerciales calificados para el comercio internacional, para hacer crecer su negocio.",
         "productTitle": "Producto",
-        "catalog": "CatÃ¡logo",
-        "howItWorks": "CÃ³mo funciona",
+        "catalog": "Catálogo",
+        "howItWorks": "Cómo funciona",
         "blog": "Blog",
         "faq": "Preguntas frecuentes",
         "aboutUs": "Sobre nosotros",
         "accountTitle": "Cuenta",
         "myPurchases": "Mis compras",
-        "login": "Iniciar sesiÃ³n",
+        "login": "Iniciar sesión",
         "legalTitle": "Legal",
-        "terms": "TÃ©rminos de uso",
+        "terms": "Términos de uso",
         "privacy": "Privacidad",
         "contact": "Contacto",
-        "copyright": "Â© {year} Easy Prospect. Todos los derechos reservados."
+        "copyright": "© {year} Easy Prospect. Todos los derechos reservados."
     },
     "landing": {
         "hero": {
             "badge": "Marketplace de socios comerciales B2B verificados",
             "title": "Listas calificadas de importadores y distribuidores para su comercio internacional.",
-            "subtitle": "Encuentre exactamente los socios comerciales que se ajustan a su producto y a su estrategia de exportaciÃ³n.",
-            "ctaPrimary": "Explorar catÃ¡logo",
-            "ctaSecondary": "CÃ³mo funciona",
+            "subtitle": "Encuentre exactamente los socios comerciales que se ajustan a su producto y a su estrategia de exportación.",
+            "ctaPrimary": "Explorar catálogo",
+            "ctaSecondary": "Cómo funciona",
             "trust1": "Listo para usar de inmediato",
             "trust2": "Empresas comprobadas",
-            "trust3": "ActualizaciÃ³n periÃ³dica"
+            "trust3": "Actualización periódica"
         },
         "intro": {
-            "lede": "Nuestras listas calificadas de importadores y distribuidores estÃ¡n hechas para fabricantes, productores y titulares de marca que buscan nuevos socios comerciales en el extranjero.",
-            "p1": "Seleccione por paÃ­s, sector, regiÃ³n lingÃ¼Ã­stica o perfil de compra y reciba bases de datos listas para usar, actualizadas periÃ³dicamente.",
-            "p2": "Nuestras listas reÃºnen empresas contrastadas con fuentes pÃºblicas â€” su sitio web, su presencia digital y los registros disponibles â€” dentro del sector y el mercado que cada lista se propone cubrir. Cada lista incluye un estudio de mercado en PDF, para que evalÃºe el perfil de las empresas antes de iniciar el contacto."
+            "lede": "Nuestras listas calificadas de importadores y distribuidores están hechas para fabricantes, productores y titulares de marca que buscan nuevos socios comerciales en el extranjero.",
+            "p1": "Seleccione por país, sector, región lingüística o perfil de compra y reciba bases de datos listas para usar, actualizadas periódicamente.",
+            "p2": "Nuestras listas reúnen empresas contrastadas con fuentes públicas — su sitio web, su presencia digital y los registros disponibles — dentro del sector y el mercado que cada lista se propone cubrir. Cada lista incluye un estudio de mercado en PDF, para que evalúe el perfil de las empresas antes de iniciar el contacto."
         },
         "zielmaerkte": {
             "eyebrow": "Mercados objetivo",
-            "title": "SelecciÃ³n precisa segÃºn sus mercados objetivo.",
-            "intro": "Reciba listas para paÃ­ses individuales o regiones lingÃ¼Ã­sticas completas, por ejemplo:",
-            "note": "AdemÃ¡s, hay listas especÃ­ficas por sector para diversas industrias y grupos de productos. Paso a paso, ampliamos nuestra oferta con listas calificadas para mercados de todo el mundo.",
+            "title": "Selección precisa según sus mercados objetivo.",
+            "intro": "Reciba listas para países individuales o regiones lingüísticas completas, por ejemplo:",
+            "note": "Además, hay listas específicas por sector para diversas industrias y grupos de productos. Paso a paso, ampliamos nuestra oferta con listas calificadas para mercados de todo el mundo.",
             "regions": [
                 {
                     "flag": "DE",
-                    "title": "PaÃ­ses de habla alemana",
-                    "countries": "DE Â· AT Â· CH"
+                    "title": "Países de habla alemana",
+                    "countries": "DE · AT · CH"
                 },
                 {
                     "flag": "FR",
-                    "title": "PaÃ­ses de habla francesa",
-                    "countries": "FR Â· BE Â· CH Â· LU"
+                    "title": "Países de habla francesa",
+                    "countries": "FR · BE · CH · LU"
                 },
                 {
                     "flag": "ES",
-                    "title": "PaÃ­ses de habla hispana",
-                    "countries": "ES Â· MX Â· AR Â· CL â€¦"
+                    "title": "Países de habla hispana",
+                    "countries": "ES · MX · AR · CL …"
                 },
                 {
                     "flag": "PT",
-                    "title": "PaÃ­ses de habla portuguesa",
-                    "countries": "PT Â· BR Â· AO â€¦"
+                    "title": "Países de habla portuguesa",
+                    "countries": "PT · BR · AO …"
                 },
                 {
                     "flag": "SE",
-                    "title": "PaÃ­ses escandinavos",
-                    "countries": "SE Â· NO Â· DK Â· FI Â· IS"
+                    "title": "Países escandinavos",
+                    "countries": "SE · NO · DK · FI · IS"
                 }
             ]
         },
@@ -151,7 +151,7 @@
             "eyebrow": "Perfiles de compra",
             "title": "No todos los importadores son iguales.",
             "intro": "Nuestras bases de datos distinguen varios perfiles de compra:",
-            "close": "AsÃ­ concentra sus actividades comerciales exactamente en los socios adecuados para su producto.",
+            "close": "Así concentra sus actividades comerciales exactamente en los socios adecuados para su producto.",
             "cards": [
                 {
                     "title": "Compra global",
@@ -159,7 +159,7 @@
                 },
                 {
                     "title": "Enfoque en la UE",
-                    "body": "Importadores que compran exclusivamente dentro de la UniÃ³n Europea."
+                    "body": "Importadores que compran exclusivamente dentro de la Unión Europea."
                 },
                 {
                     "title": "Orientados al Mercosur",
@@ -172,39 +172,39 @@
             ]
         },
         "lieferumfang": {
-            "eyebrow": "QuÃ© incluye",
-            "title": "MÃ¡s que listas de direcciones.",
+            "eyebrow": "Qué incluye",
+            "title": "Más que listas de direcciones.",
             "reportTitle": "Informe de mercado actualizado incluido",
-            "reportBody": "Cada lista incluye un informe de mercado actualizado, con informaciÃ³n valiosa sobre el sector y las oportunidades de venta en el mercado objetivo.",
-            "listIntro": "TambiÃ©n recibe orientaciÃ³n prÃ¡ctica sobre los siguientes temas:",
-            "close": "AsÃ­ aumenta las posibilidades de Ã©xito de su campaÃ±a de exportaciÃ³n desde el primer contacto.",
+            "reportBody": "Cada lista incluye un informe de mercado actualizado, con información valiosa sobre el sector y las oportunidades de venta en el mercado objetivo.",
+            "listIntro": "También recibe orientación práctica sobre los siguientes temas:",
+            "close": "Así aumenta las posibilidades de éxito de su campaña de exportación desde el primer contacto.",
             "items": [
-                "SituaciÃ³n actual del mercado y de la competencia",
-                "Oportunidades de venta y distribuciÃ³n",
+                "Situación actual del mercado y de la competencia",
+                "Oportunidades de venta y distribución",
                 "Particularidades de cada mercado",
                 "Requisitos de los potenciales socios comerciales",
-                "QuÃ© informaciÃ³n y documentos esperan los importadores antes de una colaboraciÃ³n",
-                "CÃ³mo abordar a potenciales distribuidores de forma profesional",
-                "QuÃ© argumentos de venta son mÃ¡s prometedores en el primer contacto"
+                "Qué información y documentos esperan los importadores antes de una colaboración",
+                "Cómo abordar a potenciales distribuidores de forma profesional",
+                "Qué argumentos de venta son más prometedores en el primer contacto"
             ]
         },
         "daten": {
             "eyebrow": "Calidad de los datos",
-            "title": "Datos revisados periÃ³dicamente.",
-            "body": "Las listas las compila nuestra operaciÃ³n, y cada empresa se contrasta con fuentes pÃºblicas â€” su sitio web, su presencia digital y los registros disponibles â€” antes de entrar en el catÃ¡logo. El catÃ¡logo se revisa periÃ³dicamente: cuando una lista deja de reflejar el mercado que describe, la retiramos de la venta."
+            "title": "Datos revisados periódicamente.",
+            "body": "Las listas las compila nuestra operación, y cada empresa se contrasta con fuentes públicas — su sitio web, su presencia digital y los registros disponibles — antes de entrar en el catálogo. El catálogo se revisa periódicamente: cuando una lista deja de reflejar el mercado que describe, la retiramos de la venta."
         },
         "vorteil": {
             "eyebrow": "Su ventaja",
-            "title": "Ahorre tiempo y aumente su Ã©xito comercial.",
-            "body": "En lugar de pasar semanas o meses investigando importadores y distribuidores adecuados, recibe de inmediato una selecciÃ³n calificada de potenciales socios comerciales que se ajustan a su producto y a su mercado objetivo. AsÃ­ puede concentrarse en lo esencial: construir con Ã©xito su comercio internacional."
+            "title": "Ahorre tiempo y aumente su éxito comercial.",
+            "body": "En lugar de pasar semanas o meses investigando importadores y distribuidores adecuados, recibe de inmediato una selección calificada de potenciales socios comerciales que se ajustan a su producto y a su mercado objetivo. Así puede concentrarse en lo esencial: construir con éxito su comercio internacional."
         },
         "howItWorks": {
-            "eyebrow": "CÃ³mo funciona",
-            "title": "De la bÃºsqueda al archivo listo en tres pasos.",
+            "eyebrow": "Cómo funciona",
+            "title": "De la búsqueda al archivo listo en tres pasos.",
             "steps": [
                 {
                     "title": "Filtre",
-                    "body": "Explore por paÃ­ses, regiones lingÃ¼Ã­sticas, sectores y perfiles de compra, y encuentre las listas compatibles con su campaÃ±a."
+                    "body": "Explore por países, regiones lingüísticas, sectores y perfiles de compra, y encuentre las listas compatibles con su campaña."
                 },
                 {
                     "title": "Compre",
@@ -212,23 +212,23 @@
                 },
                 {
                     "title": "Descargue",
-                    "body": "Tras confirmarse el pago, descargue el estudio de mercado en PDF en el Ã¡rea Mis compras."
+                    "body": "Tras confirmarse el pago, descargue el estudio de mercado en PDF en el área Mis compras."
                 }
             ]
         },
         "blog": {
-            "eyebrow": "MÃ¡s informaciÃ³n",
-            "title": "AnÃ¡lisis de mercado, informes sectoriales y oportunidades de exportaciÃ³n.",
-            "intro": "En nuestro blog publicamos regularmente anÃ¡lisis de mercado, informes sectoriales e informaciÃ³n sobre oportunidades de exportaciÃ³n, tendencias comerciales y posibilidades de venta en diversos paÃ­ses y regiones. AsÃ­ se mantiene siempre al dÃ­a de los movimientos del mercado internacional."
+            "eyebrow": "Más información",
+            "title": "Análisis de mercado, informes sectoriales y oportunidades de exportación.",
+            "intro": "En nuestro blog publicamos regularmente análisis de mercado, informes sectoriales e información sobre oportunidades de exportación, tendencias comerciales y posibilidades de venta en diversos países y regiones. Así se mantiene siempre al día de los movimientos del mercado internacional."
         },
         "cta": {
-            "title": "Â¿Listo para construir su comercio internacional?",
-            "body": "Explore el catÃ¡logo y encuentre importadores y distribuidores calificados que se ajusten a su producto y mercado objetivo.",
-            "button": "Explorar catÃ¡logo"
+            "title": "¿Listo para construir su comercio internacional?",
+            "body": "Explore el catálogo y encuentre importadores y distribuidores calificados que se ajusten a su producto y mercado objetivo.",
+            "button": "Explorar catálogo"
         },
         "meta": {
             "title": "Listas de importadores y distribuidores",
-            "description": "Listas de importadores y distribuidores por paÃ­s, sector y perfil de compra, con empresas verificadas en fuentes pÃºblicas. Para exportadores."
+            "description": "Listas de importadores y distribuidores por país, sector y perfil de compra, con empresas verificadas en fuentes públicas. Para exportadores."
         }
     },
     "faq": {
@@ -236,71 +236,71 @@
             "title": "Preguntas frecuentes",
             "subtitle": "Respuestas a las principales dudas sobre nuestras listas de importadores y distribuidores.",
             "metaTitle": "Preguntas frecuentes",
-            "metaDescription": "Respuestas a preguntas frecuentes sobre nuestras listas de importadores y distribuidores: calidad de los datos, formatos, pago y mÃ¡s."
+            "metaDescription": "Respuestas a preguntas frecuentes sobre nuestras listas de importadores y distribuidores: calidad de los datos, formatos, pago y más."
         },
         "items": [
             {
-                "question": "Â¿De dÃ³nde vienen los datos y cÃ³mo se verifican?",
-                "answer": "Las listas nacen de investigaciÃ³n propia y las compila nuestra operaciÃ³n. Antes de que una empresa entre en una lista, la contrastamos con fuentes pÃºblicas â€” su sitio web, su presencia digital y los registros disponibles â€” para confirmar que existe, que opera en el sector indicado y que sus canales de contacto estÃ¡n activos."
+                "question": "¿De dónde vienen los datos y cómo se verifican?",
+                "answer": "Las listas nacen de investigación propia y las compila nuestra operación. Antes de que una empresa entre en una lista, la contrastamos con fuentes públicas — su sitio web, su presencia digital y los registros disponibles — para confirmar que existe, que opera en el sector indicado y que sus canales de contacto están activos."
             },
             {
-                "question": "Â¿QuÃ© tan actualizadas estÃ¡n las listas?",
-                "answer": "La pÃ¡gina de cada lista muestra cuÃ¡ndo se revisaron sus datos por Ãºltima vez. El catÃ¡logo se revisa periÃ³dicamente y, cuando una lista deja de reflejar el mercado, se retira del catÃ¡logo en lugar de seguir a la venta."
+                "question": "¿Qué tan actualizadas están las listas?",
+                "answer": "La página de cada lista muestra cuándo se revisaron sus datos por última vez. El catálogo se revisa periódicamente y, cuando una lista deja de reflejar el mercado, se retira del catálogo en lugar de seguir a la venta."
             },
             {
-                "question": "Â¿En quÃ© formatos recibo los datos?",
+                "question": "¿En qué formatos recibo los datos?",
                 "answer": "La entrega es un estudio de mercado en PDF. En cuanto se confirma el pago, el archivo queda disponible para descarga en Mis compras y sigue accesible en tu cuenta."
             },
             {
-                "question": "Â¿Puedo ver los datos antes de comprar?",
-                "answer": "SÃ­. En la pÃ¡gina de cada lista ves la cobertura (paÃ­ses, sectores e idioma), la fecha en que se revisaron los datos, el precio y una muestra de registros con el correo parcialmente oculto. Los datos completos se liberan tras la compra."
+                "question": "¿Puedo ver los datos antes de comprar?",
+                "answer": "Sí. En la página de cada lista ves la cobertura (países, sectores e idioma), la fecha en que se revisaron los datos, el precio y una muestra de registros con el correo parcialmente oculto. Los datos completos se liberan tras la compra."
             },
             {
-                "question": "Â¿CÃ³mo funciona el pago?",
+                "question": "¿Cómo funciona el pago?",
                 "answer": "El pago se realiza con tarjeta (Stripe) o PayPal, en el checkout del sitio. En cuanto se confirma el pago, la compra aparece en Mis compras y se habilita la descarga."
             },
             {
-                "question": "Â¿Para quÃ© paÃ­ses y sectores hay listas disponibles?",
-                "answer": "La cobertura es la que estÃ© publicada en el catÃ¡logo en cada momento: allÃ­ puedes filtrar por paÃ­s, sector y categorÃ­a para ver lo que hay disponible hoy. Las listas nuevas se incorporan al catÃ¡logo a medida que estÃ¡n listas."
+                "question": "¿Para qué países y sectores hay listas disponibles?",
+                "answer": "La cobertura es la que esté publicada en el catálogo en cada momento: allí puedes filtrar por país, sector y categoría para ver lo que hay disponible hoy. Las listas nuevas se incorporan al catálogo a medida que están listas."
             },
             {
-                "question": "Â¿QuÃ© incluye el informe de mercado que acompaÃ±a a la lista?",
-                "answer": "Cada lista viene acompaÃ±ada de un estudio de mercado en PDF, preparado para el mercado de esa lista. Como el contenido se adapta al paÃ­s y al sector, varÃ­a de una lista a otra: la introducciÃ³n que se muestra en la pÃ¡gina de cada lista resume lo que cubre ese estudio."
+                "question": "¿Qué incluye el informe de mercado que acompaña a la lista?",
+                "answer": "Cada lista viene acompañada de un estudio de mercado en PDF, preparado para el mercado de esa lista. Como el contenido se adapta al país y al sector, varía de una lista a otra: la introducción que se muestra en la página de cada lista resume lo que cubre ese estudio."
             },
             {
-                "question": "Â¿CÃ³mo se gestiona la protecciÃ³n de datos (LGPD/GDPR)?",
-                "answer": "Las listas reÃºnen datos de contacto profesional recogidos de fuentes pÃºblicas: nombre de la empresa, paÃ­s, sector, sitio web, correos y telÃ©fonos institucionales â€” y, en algunas listas, tambiÃ©n el nombre y el cargo de una persona de contacto. En la compra te pedimos tu nombre, correo e identificaciÃ³n fiscal, que usamos para procesar el pago y habilitar la descarga. Cualquier persona o empresa puede pedir la correcciÃ³n o la eliminaciÃ³n de sus datos de nuestras listas: usa el formulario de contacto mÃ¡s abajo, en esta misma pÃ¡gina. La polÃ­tica completa estÃ¡ en nuestra PolÃ­tica de Privacidad, en /privacy."
+                "question": "¿Cómo se gestiona la protección de datos (LGPD/GDPR)?",
+                "answer": "Las listas reúnen datos de contacto profesional recogidos de fuentes públicas: nombre de la empresa, país, sector, sitio web, correos y teléfonos institucionales — y, en algunas listas, también el nombre y el cargo de una persona de contacto. En la compra te pedimos tu nombre, correo e identificación fiscal, que usamos para procesar el pago y habilitar la descarga. Cualquier persona o empresa puede pedir la corrección o la eliminación de sus datos de nuestras listas: usa el formulario de contacto más abajo, en esta misma página. La política completa está en nuestra Política de Privacidad, en /privacy."
             }
         ],
         "form": {
-            "title": "Â¿No encontrÃ³ su pregunta?",
-            "subtitle": "EnvÃ­e su pregunta â€” le responderemos en breve.",
+            "title": "¿No encontró su pregunta?",
+            "subtitle": "Envíe su pregunta — le responderemos en breve.",
             "name": "Nombre",
             "company": "Empresa (opcional)",
-            "email": "Correo electrÃ³nico",
+            "email": "Correo electrónico",
             "subject": "Asunto",
             "message": "Su pregunta",
-            "consent": "He leÃ­do y acepto la <link>PolÃ­tica de Privacidad</link>.",
+            "consent": "He leído y acepto la <link>Política de Privacidad</link>.",
             "submit": "Enviar pregunta",
-            "submitting": "Enviandoâ€¦",
-            "success": "Â¡Gracias! Hemos recibido su pregunta.",
-            "error": "Algo saliÃ³ mal. IntÃ©ntelo de nuevo.",
-            "rateLimited": "Demasiados intentos. IntÃ©ntelo de nuevo mÃ¡s tarde.",
+            "submitting": "Enviando…",
+            "success": "¡Gracias! Hemos recibido su pregunta.",
+            "error": "Algo salió mal. Inténtelo de nuevo.",
+            "rateLimited": "Demasiados intentos. Inténtelo de nuevo más tarde.",
             "errors": {
                 "name": "Indique su nombre.",
-                "email": "Indique un correo electrÃ³nico vÃ¡lido.",
+                "email": "Indique un correo electrónico válido.",
                 "subject": "Indique un asunto.",
                 "message": "Su pregunta debe tener al menos 10 caracteres.",
-                "consent": "Debe aceptar la PolÃ­tica de Privacidad."
+                "consent": "Debe aceptar la Política de Privacidad."
             }
         }
     },
     "cart": {
         "title": "Su carrito",
-        "items": "{count, plural, one {# artÃ­culo} other {# artÃ­culos}}",
-        "empty": "Su carrito estÃ¡ vacÃ­o",
+        "items": "{count, plural, one {# artículo} other {# artículos}}",
+        "empty": "Su carrito está vacío",
         "emptyHint": "Agregue listas de leads para comenzar",
-        "seeCatalog": "Ver catÃ¡logo",
+        "seeCatalog": "Ver catálogo",
         "subtotal": "Subtotal",
         "review": "Revisar carrito",
         "continue": "Seguir comprando",
@@ -308,77 +308,77 @@
         "leads": "{count} leads",
         "addToCart": "Agregar al carrito",
         "openCart": "Abrir carrito",
-        "openCartWithItems": "Abrir carrito, {count, plural, one {# artÃ­culo} other {# artÃ­culos}}",
+        "openCartWithItems": "Abrir carrito, {count, plural, one {# artículo} other {# artículos}}",
         "removeItem": "Quitar \"{name}\" del carrito",
         "pageTitle": "Revisar carrito",
         "pageSubtitle": "{count, plural, one {# lista seleccionada} other {# listas seleccionadas}} con {leads} leads en total.",
         "summaryTitle": "Resumen del pedido",
-        "summarySubtitle": "Revise los artÃ­culos antes de proceder al pago.",
+        "summarySubtitle": "Revise los artículos antes de proceder al pago.",
         "totalLeads": "Total de leads",
         "total": "Total",
         "checkout": "Finalizar compra",
         "clear": "Vaciar carrito",
-        "emptyDesc": "Elija una lista en el catÃ¡logo para revisar precio, cobertura y formato antes de finalizar la compra.",
+        "emptyDesc": "Elija una lista en el catálogo para revisar precio, cobertura y formato antes de finalizar la compra.",
         "formats": "PDF",
         "remove": "Quitar",
         "trustPaypal": "Pago procesado por PayPal",
         "trustSaved": "Pedido guardado en su cuenta",
-        "trustDownload": "Descarga habilitada tras la confirmaciÃ³n",
+        "trustDownload": "Descarga habilitada tras la confirmación",
         "trustReview": "Revise el pedido antes de pagar"
     },
     "catalog": {
-        "metaTitle": "CatÃ¡logo de listas",
-        "badge": "Bases listas para prospecciÃ³n B2B",
-        "heroTitle": "Encuentre la lista adecuada antes de invertir tiempo en prospecciÃ³n manual",
-        "heroSubtitle": "Filtre por mercado, sector y categorÃ­a para comprar solo los datos que tienen sentido para su campaÃ±a.",
-        "quickSearch": "BÃºsqueda rÃ¡pida",
-        "searchPlaceholder": "Buscar por nombre, paÃ­s, sector o descripciÃ³n",
+        "metaTitle": "Catálogo de listas",
+        "badge": "Bases listas para prospección B2B",
+        "heroTitle": "Encuentre la lista adecuada antes de invertir tiempo en prospección manual",
+        "heroSubtitle": "Filtre por mercado, sector y categoría para comprar solo los datos que tienen sentido para su campaña.",
+        "quickSearch": "Búsqueda rápida",
+        "searchPlaceholder": "Buscar por nombre, país, sector o descripción",
         "searchButton": "Buscar",
         "trustCompareTitle": "Compare",
-        "trustCompareDesc": "Vea volumen, paÃ­ses y sectores antes de decidir.",
+        "trustCompareDesc": "Vea volumen, países y sectores antes de decidir.",
         "trustBuyTitle": "Compre con seguridad",
         "trustBuyDesc": "Pago con PayPal o tarjeta y pedido registrado en su cuenta.",
         "trustDownloadTitle": "Descargue al instante",
         "trustDownloadDesc": "Accede al PDF del estudio en cuanto se confirme el pago.",
         "availableLists": "Listas disponibles",
         "results": "{count, plural, one {# resultado} other {# resultados}} para los criterios actuales",
-        "pageOf": "PÃ¡gina {page} de {pages}",
+        "pageOf": "Página {page} de {pages}",
         "statListsFound": "Listas encontradas",
-        "statLeadsOnPage": "Leads en esta pÃ¡gina",
+        "statLeadsOnPage": "Leads en esta página",
         "statActiveFilters": "Filtros activos",
-        "statCurrentPage": "PÃ¡gina actual",
-        "statCountriesOnPage": "PaÃ­ses en esta pÃ¡gina",
+        "statCurrentPage": "Página actual",
+        "statCountriesOnPage": "Países en esta página",
         "emptyTitle": "Ninguna lista coincide con los filtros actuales",
-        "emptyDesc": "Quite algunos filtros o busque un mercado mÃ¡s amplio para encontrar listas disponibles.",
+        "emptyDesc": "Quite algunos filtros o busque un mercado más amplio para encontrar listas disponibles.",
         "clearFilters": "Limpiar filtros",
         "featured": "Destacado",
         "companies": "{count} empresas",
-        "verifiedEmails": "Contactos comprobados en fuentes pÃºblicas",
+        "verifiedEmails": "Contactos comprobados en fuentes públicas",
         "updatedAt": "Actualizada el {date}",
         "seeDetails": "Ver detalles",
         "perLead": "{price} por lead",
-        "defaultDescription": "Base lista para prospecciÃ³n con empresas calificadas.",
-        "searchLabel": "Buscar listas en el catÃ¡logo",
+        "defaultDescription": "Base lista para prospección con empresas calificadas.",
+        "searchLabel": "Buscar listas en el catálogo",
         "filtersTitle": "Filtros",
-        "filtersSubtitle": "Refine el catÃ¡logo por perfil de lista.",
+        "filtersSubtitle": "Refine el catálogo por perfil de lista.",
         "filtersOpen": "Filtros",
         "filtersActive": "{count, plural, one {# filtro activo} other {# filtros activos}}",
-        "filterCategory": "CategorÃ­a",
-        "filterCountries": "PaÃ­ses",
+        "filterCategory": "Categoría",
+        "filterCountries": "Países",
         "filterIndustries": "Sectores",
-        "loadErrorTitle": "No se pudo cargar el catÃ¡logo",
-        "loadErrorDesc": "Hubo un error al buscar las listas. IntÃ©ntelo de nuevo en unos instantes.",
+        "loadErrorTitle": "No se pudo cargar el catálogo",
+        "loadErrorDesc": "Hubo un error al buscar las listas. Inténtelo de nuevo en unos instantes.",
         "loadErrorRetry": "Intentar de nuevo",
-        "previousPage": "PÃ¡gina anterior",
-        "nextPage": "PÃ¡gina siguiente",
-        "goToPage": "Ir a la pÃ¡gina {page}",
+        "previousPage": "Página anterior",
+        "nextPage": "Página siguiente",
+        "goToPage": "Ir a la página {page}",
         "countries": {
             "DE": "Alemania",
             "FR": "Francia",
             "IT": "Italia",
-            "ES": "EspaÃ±a",
-            "NL": "PaÃ­ses Bajos",
-            "BE": "BÃ©lgica",
+            "ES": "España",
+            "NL": "Países Bajos",
+            "BE": "Bélgica",
             "PL": "Polonia",
             "SE": "Suecia",
             "AT": "Austria",
@@ -387,16 +387,16 @@
             "GB": "Reino Unido",
             "US": "Estados Unidos",
             "CN": "China",
-            "JP": "JapÃ³n",
+            "JP": "Japón",
             "BR": "Brasil"
         },
         "industries": {
             "food": "Alimentos y bebidas",
-            "tech": "TecnologÃ­a",
+            "tech": "Tecnología",
             "fashion": "Moda y textil",
             "automotive": "Automotriz",
             "health": "Salud y farmacia",
-            "construction": "ConstrucciÃ³n",
+            "construction": "Construcción",
             "retail": "Retail",
             "industrial": "Industrial"
         },
@@ -410,20 +410,20 @@
         }
     },
     "listing": {
-        "back": "Volver al catÃ¡logo",
-        "breadcrumbCatalog": "CatÃ¡logo",
+        "back": "Volver al catálogo",
+        "breadcrumbCatalog": "Catálogo",
         "featured": "Destacado",
         "readyBadge": "Datos listos para descargar",
         "quickLeads": "Leads",
         "quickPricePerLead": "Precio/lead",
-        "quickCountries": "PaÃ­ses",
+        "quickCountries": "Países",
         "quickLanguage": "Idioma",
         "quickReviewed": "Datos revisados",
-        "introductionTitle": "IntroducciÃ³n",
+        "introductionTitle": "Introducción",
         "coverageTitle": "Cobertura de la lista",
-        "coverageSubtitle": "Use estas seÃ±ales para validar si la base se ajusta a su campaÃ±a.",
+        "coverageSubtitle": "Use estas señales para validar si la base se ajusta a su campaña.",
         "fieldName": "Nombre",
-        "fieldCountries": "PaÃ­ses",
+        "fieldCountries": "Países",
         "fieldLanguage": "Idioma",
         "fieldTotalLeads": "Total de leads",
         "fieldIndustries": "Sectores",
@@ -434,26 +434,26 @@
         "previewTitle": "Vista previa de los datos",
         "previewSubtitle": "Muestra de {count} registros para verificar estructura y calidad antes de comprar.",
         "previewColCompany": "Empresa",
-        "previewColCountry": "PaÃ­s",
+        "previewColCountry": "País",
         "previewColSector": "Sector",
         "previewColEmail": "Correo",
         "previewUnavailable": "Muestra no disponible para esta lista.",
-        "includedTitle": "QuÃ© incluye",
+        "includedTitle": "Qué incluye",
         "includedCompany": "Nombre de la empresa",
-        "includedEmail": "Correo comercial comprobado en fuentes pÃºblicas",
-        "includedPhone": "TelÃ©fono y contacto cuando estÃ© disponible",
-        "includedLocation": "PaÃ­s, ciudad y sitio web",
+        "includedEmail": "Correo comercial comprobado en fuentes públicas",
+        "includedPhone": "Teléfono y contacto cuando esté disponible",
+        "includedLocation": "País, ciudad y sitio web",
         "includedIndustry": "Sector de actividad",
         "includedFormats": "Estudio en PDF",
         "perLead": "{price} por lead",
         "leadsIncluded": "{count} leads incluidos",
-        "oneOffNote": "Compra Ãºnica, sin suscripciÃ³n. El acceso queda disponible en el Ã¡rea Mis compras.",
-        "beforeBuyNote": "Antes de comprar, revise la cobertura, la vista previa de los datos y el precio por lead. Tras la aprobaciÃ³n del pago, la descarga queda disponible en su cuenta.",
+        "oneOffNote": "Compra única, sin suscripción. El acceso queda disponible en el área Mis compras.",
+        "beforeBuyNote": "Antes de comprar, revise la cobertura, la vista previa de los datos y el precio por lead. Tras la aprobación del pago, la descarga queda disponible en su cuenta.",
         "benefitSecure": "Pago seguro con PayPal o tarjeta",
-        "benefitImmediate": "Descarga inmediata tras la confirmaciÃ³n",
+        "benefitImmediate": "Descarga inmediata tras la confirmación",
         "benefitRecorded": "Registro de la compra en su cuenta",
         "buyNow": "Comprar ahora",
-        "signInToBuy": "Iniciar sesiÃ³n y comprar",
+        "signInToBuy": "Iniciar sesión y comprar",
         "notFound": "Lista no encontrada",
         "metaFallbackDescription": "Estudio de mercado con importadores y distribuidores calificados."
     },
@@ -465,122 +465,122 @@
         "title": "Pago",
         "subtitle": "Complete el pago para desbloquear el estudio en PDF con {count} leads.",
         "secureTitle": "Pago seguro",
-        "secureDesc": "El proveedor elegido procesa el pago; el sistema habilita la compra automÃ¡ticamente tras la confirmaciÃ³n.",
-        "redirectNote": "SerÃ¡ redirigido al proveedor de pago para autorizar la transacciÃ³n de forma segura.",
+        "secureDesc": "El proveedor elegido procesa el pago; el sistema habilita la compra automáticamente tras la confirmación.",
+        "redirectNote": "Será redirigido al proveedor de pago para autorizar la transacción de forma segura.",
         "trustSecureTitle": "Seguro",
         "trustSecureText": "Pago externo con PayPal o Stripe.",
         "trustRecordedTitle": "Registrado",
         "trustRecordedText": "Pedido guardado para acceso futuro.",
         "trustImmediateTitle": "Inmediato",
-        "trustImmediateText": "Descarga habilitada tras la aprobaciÃ³n.",
+        "trustImmediateText": "Descarga habilitada tras la aprobación.",
         "summaryTitle": "Resumen",
         "summaryItems": "{count, plural, one {# lista} other {# listas}} en el pedido",
         "totalLeads": "Total de leads",
         "total": "Total",
-        "unavailable": "El pago no estÃ¡ disponible temporalmente. IntÃ©ntelo de nuevo en unos minutos.",
-        "sessionExpiredPay": "Su sesiÃ³n ha expirado. Inicie sesiÃ³n de nuevo para completar la compra.",
-        "sessionExpiredOrder": "Su sesiÃ³n ha expirado. Inicie sesiÃ³n de nuevo para ver el pedido.",
-        "createFailed": "No se pudo iniciar el pago. IntÃ©ntelo de nuevo.",
-        "captureFailed": "No pudimos confirmar el pago. Si se realizÃ³ el cargo, el pedido aparecerÃ¡ en Mis compras en unos minutos.",
-        "paymentConfirmed": "Â¡Pago confirmado!",
+        "unavailable": "El pago no está disponible temporalmente. Inténtelo de nuevo en unos minutos.",
+        "sessionExpiredPay": "Su sesión ha expirado. Inicie sesión de nuevo para completar la compra.",
+        "sessionExpiredOrder": "Su sesión ha expirado. Inicie sesión de nuevo para ver el pedido.",
+        "createFailed": "No se pudo iniciar el pago. Inténtelo de nuevo.",
+        "captureFailed": "No pudimos confirmar el pago. Si se realizó el cargo, el pedido aparecerá en Mis compras en unos minutos.",
+        "paymentConfirmed": "¡Pago confirmado!",
         "paypalError": "Error al procesar el pago",
         "payWithCard": "Pagar con tarjeta",
         "stripeConfirming": "Confirmando tu pago...",
-        "stripeConfirmFailed": "No pudimos confirmar el pago ahora. Si el importe fue cobrado, tu compra aparecerÃ¡ en Mis compras en cuanto Stripe lo confirme.",
+        "stripeConfirmFailed": "No pudimos confirmar el pago ahora. Si el importe fue cobrado, tu compra aparecerá en Mis compras en cuanto Stripe lo confirme.",
         "successMetaTitle": "Compra confirmada",
-        "successMetaDescription": "Su compra se confirmÃ³ correctamente",
+        "successMetaDescription": "Su compra se confirmó correctamente",
         "successTitle": "Compra confirmada",
-        "successSubtitle": "Su pedido fue aprobado y las listas ya estÃ¡n disponibles para descargar.",
+        "successSubtitle": "Su pedido fue aprobado y las listas ya están disponibles para descargar.",
         "successOrder": "Pedido",
         "successLeadsReleased": "Leads liberados",
         "successTotalPaid": "Total pagado",
         "successNextDownloadTitle": "Descargue",
         "successNextDownloadText": "Estudio en PDF en Mis compras.",
-        "successNextProspectTitle": "ProspecciÃ³n",
+        "successNextProspectTitle": "Prospección",
         "successNextProspectText": "Use el estudio para priorizar contactos y planificar su abordaje.",
-        "successNextReceiptTitle": "ConfirmaciÃ³n",
-        "successNextReceiptText": "El recibo se enviÃ³ a su correo electrÃ³nico.",
+        "successNextReceiptTitle": "Confirmación",
+        "successNextReceiptText": "El recibo se envió a su correo electrónico.",
         "successCtaPurchases": "Ir a mis compras",
         "successCtaContinue": "Seguir comprando",
         "cancelMetaTitle": "Compra cancelada",
         "cancelMetaDescription": "Su compra fue cancelada",
         "cancelTitle": "Pago no completado",
-        "cancelSubtitle": "No se completÃ³ ningÃºn cargo. Puede revisar el carrito o intentar el pago de nuevo.",
+        "cancelSubtitle": "No se completó ningún cargo. Puede revisar el carrito o intentar el pago de nuevo.",
         "cancelRetry": "Intentar de nuevo",
         "cancelReviewCart": "Revisar carrito",
-        "cancelBackToCatalog": "Volver al catÃ¡logo"
+        "cancelBackToCatalog": "Volver al catálogo"
     },
     "purchases": {
         "metaTitle": "Mis compras",
         "metaDescription": "Acceda y descargue sus listas de leads",
-        "back": "Volver al catÃ¡logo",
+        "back": "Volver al catálogo",
         "badge": "Descargas e historial de pedidos",
         "title": "Mis compras",
-        "subtitle": "Descargue sus listas, consulte el estado de los pedidos y use los archivos para alimentar sus campaÃ±as en el CRM.",
-        "magicLinkNotice": "Acceso por enlace mÃ¡gico, vÃ¡lido por 24 h.",
+        "subtitle": "Descargue sus listas, consulte el estado de los pedidos y use los archivos para alimentar sus campañas en el CRM.",
+        "magicLinkNotice": "Acceso por enlace mágico, válido por 24 h.",
         "statPurchases": "Compras",
         "statLists": "Listas",
         "statLeads": "Leads",
         "statSpent": "Invertido",
-        "nextStepsTitle": "PrÃ³ximos pasos",
+        "nextStepsTitle": "Próximos pasos",
         "guidancePdfTitle": "Descarga el PDF",
-        "guidancePdfText": "Descarga el estudio de mercado en PDF y Ãºsalo como referencia en tu prospecciÃ³n.",
+        "guidancePdfText": "Descarga el estudio de mercado en PDF y úsalo como referencia en tu prospección.",
         "guidanceCrmTitle": "Importe a su CRM",
-        "guidanceCrmText": "Cree una lista de trabajo y haga seguimiento de los contactos por campaÃ±a.",
+        "guidanceCrmText": "Cree una lista de trabajo y haga seguimiento de los contactos por campaña.",
         "guidanceMarketTitle": "Priorice por mercado",
-        "guidanceMarketText": "Comience por los paÃ­ses y sectores mÃ¡s cercanos a su oferta.",
+        "guidanceMarketText": "Comience por los países y sectores más cercanos a su oferta.",
         "loading": "Cargando sus compras...",
-        "invalidTokenTitle": "Enlace invÃ¡lido o expirado",
-        "invalidTokenExpired": "Este enlace ha expirado. Solicite un nuevo acceso desde su Ã¡rea de compras.",
-        "invalidTokenGeneric": "Este enlace no es vÃ¡lido o ya fue utilizado.",
-        "goToCatalog": "Ir al catÃ¡logo",
-        "emptyTitle": "AÃºn no hay compras",
-        "emptyDescription": "Explore el catÃ¡logo, seleccione una base que se ajuste a su campaÃ±a y vuelva aquÃ­ para descargar los archivos.",
-        "emptyCta": "Explorar catÃ¡logo",
-        "browseMoreLists": "Ver mÃ¡s listas"
+        "invalidTokenTitle": "Enlace inválido o expirado",
+        "invalidTokenExpired": "Este enlace ha expirado. Solicite un nuevo acceso desde su área de compras.",
+        "invalidTokenGeneric": "Este enlace no es válido o ya fue utilizado.",
+        "goToCatalog": "Ir al catálogo",
+        "emptyTitle": "Aún no hay compras",
+        "emptyDescription": "Explore el catálogo, seleccione una base que se ajuste a su campaña y vuelva aquí para descargar los archivos.",
+        "emptyCta": "Explorar catálogo",
+        "browseMoreLists": "Ver más listas"
     },
     "about": {
         "meta": {
-            "title": "QuiÃ©nes somos y cÃ³mo se hacen los datos",
-            "description": "CÃ³mo se elaboran las listas de importadores y distribuidores: investigaciÃ³n propia, verificaciÃ³n en fuentes pÃºblicas y revisiÃ³n periÃ³dica del catÃ¡logo."
+            "title": "Quiénes somos y cómo se hacen los datos",
+            "description": "Cómo se elaboran las listas de importadores y distribuidores: investigación propia, verificación en fuentes públicas y revisión periódica del catálogo."
         },
         "hero": {
             "eyebrow": "Sobre nosotros",
-            "title": "QuiÃ©n estÃ¡ detrÃ¡s de las listas",
-            "subtitle": "Easy Prospect reÃºne importadores y distribuidores en estudios de mercado en PDF, para que quien exporta sepa con quiÃ©n hablar. Esta pÃ¡gina explica cÃ³mo se producen esos datos."
+            "title": "Quién está detrás de las listas",
+            "subtitle": "Easy Prospect reúne importadores y distribuidores en estudios de mercado en PDF, para que quien exporta sepa con quién hablar. Esta página explica cómo se producen esos datos."
         },
         "methodology": {
-            "eyebrow": "MetodologÃ­a",
-            "title": "CÃ³mo se producen los datos",
-            "intro": "Quien paga por datos B2B tiene derecho a saber de dÃ³nde vienen. El proceso estÃ¡ descrito abajo, sin promesas que no podamos sostener.",
+            "eyebrow": "Metodología",
+            "title": "Cómo se producen los datos",
+            "intro": "Quien paga por datos B2B tiene derecho a saber de dónde vienen. El proceso está descrito abajo, sin promesas que no podamos sostener.",
             "blocks": [
                 {
                     "title": "Origen de los datos",
-                    "body": "Las listas nacen de investigaciÃ³n propia y las compila nuestra operaciÃ³n. Cada una se arma a partir del sector y del mercado que se propone cubrir."
+                    "body": "Las listas nacen de investigación propia y las compila nuestra operación. Cada una se arma a partir del sector y del mercado que se propone cubrir."
                 },
                 {
-                    "title": "VerificaciÃ³n en fuentes pÃºblicas",
-                    "body": "Antes de entrar en una lista, cada empresa se verifica en fuentes pÃºblicas â€” sitio institucional, presencia digital y registros disponibles â€” para confirmar que existe, que opera en el sector indicado y que sus canales de contacto estÃ¡n activos."
+                    "title": "Verificación en fuentes públicas",
+                    "body": "Antes de entrar en una lista, cada empresa se verifica en fuentes públicas — sitio institucional, presencia digital y registros disponibles — para confirmar que existe, que opera en el sector indicado y que sus canales de contacto están activos."
                 },
                 {
-                    "title": "Mantenimiento del catÃ¡logo",
-                    "body": "El catÃ¡logo se revisa periÃ³dicamente. Cuando una lista deja de reflejar el mercado que describe, la retiramos de la venta en lugar de dejarla publicada."
+                    "title": "Mantenimiento del catálogo",
+                    "body": "El catálogo se revisa periódicamente. Cuando una lista deja de reflejar el mercado que describe, la retiramos de la venta en lugar de dejarla publicada."
                 }
             ]
         },
         "delivery": {
-            "title": "QuÃ© recibes",
+            "title": "Qué recibes",
             "body": "Cada compra da acceso a un estudio de mercado en PDF con las empresas de la lista elegida."
         },
         "limits": {
-            "title": "QuÃ© no prometemos",
-            "body": "No prometemos que todas las empresas respondan a tu contacto, ni que una lista sustituya tu propia evaluaciÃ³n antes de negociar. Lo que sÃ­ garantizamos es el criterio: ninguna empresa entra en una lista sin haber sido verificada en fuentes pÃºblicas."
+            "title": "Qué no prometemos",
+            "body": "No prometemos que todas las empresas respondan a tu contacto, ni que una lista sustituya tu propia evaluación antes de negociar. Lo que sí garantizamos es el criterio: ninguna empresa entra en una lista sin haber sido verificada en fuentes públicas."
         },
         "cta": {
-            "title": "Â¿Te queda alguna duda?",
-            "body": "Las preguntas mÃ¡s frecuentes sobre las listas, la entrega y el pago estÃ¡n respondidas en el FAQ.",
+            "title": "¿Te queda alguna duda?",
+            "body": "Las preguntas más frecuentes sobre las listas, la entrega y el pago están respondidas en el FAQ.",
             "faq": "Ver preguntas frecuentes",
-            "catalog": "Ver catÃ¡logo"
+            "catalog": "Ver catálogo"
         },
         "breadcrumb": {
             "home": "Inicio",
