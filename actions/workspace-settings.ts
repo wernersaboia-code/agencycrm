@@ -40,11 +40,11 @@ const smtpSettingsSchema = z.object({
     smtpProvider: z.string().min(1, "Selecione um provedor"),
     smtpHost: z.string().optional().nullable(),
     smtpPort: z.number().optional().nullable(),
-    smtpUser: z.string().email("Email inv├ílido"),
-    smtpPass: z.string().min(1, "Senha ├® obrigat├│ria"),
+    smtpUser: z.string().email("Email inválido"),
+    smtpPass: z.string().min(1, "Senha é obrigatória"),
     smtpSecure: z.boolean().default(false),
     senderName: z.string().optional().nullable(),
-    senderEmail: z.string().email("Email inv├ílido").optional().nullable(),
+    senderEmail: z.string().email("Email inválido").optional().nullable(),
 })
 
 export type SmtpSettingsData = z.infer<typeof smtpSettingsSchema>
@@ -52,7 +52,7 @@ export type SmtpSettingsData = z.infer<typeof smtpSettingsSchema>
 const sendWindowSchema = z
     .object({
         sendWindowEnabled: z.boolean(),
-        sendTimezone: z.string().min(1, "Selecione um fuso hor├írio"),
+        sendTimezone: z.string().min(1, "Selecione um fuso horário"),
         sendDays: z
             .array(z.number().int().min(1).max(7))
             .min(1, "Selecione ao menos um dia"),
@@ -69,27 +69,27 @@ const sendWindowSchema = z
         sendJitterMinutes: z
             .number()
             .int()
-            .min(0, "A varia├º├úo deve estar entre 0 e 120 minutos")
-            .max(120, "A varia├º├úo deve estar entre 0 e 120 minutos"),
+            .min(0, "A variação deve estar entre 0 e 120 minutos")
+            .max(120, "A variação deve estar entre 0 e 120 minutos"),
     })
     .refine((data) => data.sendEndHour > data.sendStartHour, {
-        message: "O fim da janela precisa ser depois do in├¡cio",
+        message: "O fim da janela precisa ser depois do início",
         path: ["sendEndHour"],
     })
-    // Guard cr├¡tico: o cron de envio roda uma vez por dia, sempre no mesmo
-    // hor├írio UTC. Janela que n├úo contenha esse instante nunca envia nada ÔÇö o
-    // motor adia, o cron volta no mesmo hor├írio e adia de novo, para sempre.
-    // Recusar na escrita ├® a ├║nica forma de o usu├írio descobrir isso na hora
-    // de salvar, e n├úo semanas depois com a campanha parada em sil├¬ncio.
+    // Guard crítico: o cron de envio roda uma vez por dia, sempre no mesmo
+    // horário UTC. Janela que não contenha esse instante nunca envia nada — o
+    // motor adia, o cron volta no mesmo horário e adia de novo, para sempre.
+    // Recusar na escrita é a única forma de o usuário descobrir isso na hora
+    // de salvar, e não semanas depois com a campanha parada em silêncio.
     .refine((data) => windowCoversCronRun(resolveSendWindow(data, null)), {
         path: ["sendStartHour"],
-        // zod v4 n├úo aceita mais uma fun├º├úo para o params inteiro do refine ÔÇö
-        // s├│ `error` pode ser fun├º├úo, recebendo o issue (com `.input` cru).
+        // zod v4 não aceita mais uma função para o params inteiro do refine —
+        // só `error` pode ser função, recebendo o issue (com `.input` cru).
         error: (issue) => {
             const data = issue.input as { sendTimezone: string }
-            return `Os envios saem uma vez por dia, ├ás ${CRON_SEND_HOUR_UTC}h UTC (${describeCronHourIn(
+            return `Os envios saem uma vez por dia, às ${CRON_SEND_HOUR_UTC}h UTC (${describeCronHourIn(
                 data.sendTimezone
-            )} no fuso escolhido). A janela precisa incluir esse hor├írio, sen├úo nenhum e-mail ├® enviado.`
+            )} no fuso escolhido). A janela precisa incluir esse horário, senão nenhum e-mail é enviado.`
         },
     })
 
@@ -117,7 +117,7 @@ async function hasWorkspaceAccess(workspaceId: string): Promise<boolean> {
 // ============================================================
 
 /**
- * Busca configura├º├Áes gerais do workspace
+ * Busca configurações gerais do workspace
  */
 export async function getWorkspaceSettings(workspaceId: string) {
     try {
@@ -141,13 +141,13 @@ export async function getWorkspaceSettings(workspaceId: string) {
 
         return workspace
     } catch (error) {
-        console.error("Erro ao buscar configura├º├Áes:", error)
+        console.error("Erro ao buscar configurações:", error)
         return null
     }
 }
 
 /**
- * Busca configura├º├Áes de SMTP do workspace
+ * Busca configurações de SMTP do workspace
  */
 export async function getWorkspaceSmtpSettings(
     workspaceId: string
@@ -166,7 +166,7 @@ export async function getWorkspaceSmtpSettings(
     try {
         const canAccessWorkspace = await hasWorkspaceAccess(workspaceId)
         if (!canAccessWorkspace) {
-            return { success: false, error: "Workspace n├úo encontrado" }
+            return { success: false, error: "Workspace não encontrado" }
         }
 
         const workspace = await prisma.workspace.findUnique({
@@ -185,13 +185,13 @@ export async function getWorkspaceSmtpSettings(
         })
 
         if (!workspace) {
-            return { success: false, error: "Workspace n├úo encontrado" }
+            return { success: false, error: "Workspace não encontrado" }
         }
 
         return { success: true, data: { ...workspace, smtpPass: null } }
     } catch (error) {
-        console.error("Erro ao buscar configura├º├Áes:", error)
-        return { success: false, error: "Erro ao buscar configura├º├Áes" }
+        console.error("Erro ao buscar configurações:", error)
+        return { success: false, error: "Erro ao buscar configurações" }
     }
 }
 
@@ -200,7 +200,7 @@ export async function getWorkspaceSmtpSettings(
 // ============================================================
 
 /**
- * Atualiza configura├º├Áes gerais do workspace
+ * Atualiza configurações gerais do workspace
  */
 export async function updateWorkspaceSettings(
     workspaceId: string,
@@ -209,7 +209,7 @@ export async function updateWorkspaceSettings(
     try {
         const canAccessWorkspace = await hasWorkspaceAccess(workspaceId)
         if (!canAccessWorkspace) {
-            return { success: false, error: "Workspace n├úo encontrado" }
+            return { success: false, error: "Workspace não encontrado" }
         }
 
         await prisma.workspace.update({
@@ -229,7 +229,7 @@ export async function updateWorkspaceSettings(
         return { success: true }
     } catch (error) {
         console.error("Erro ao atualizar workspace:", error)
-        return { success: false, error: "Erro ao atualizar configura├º├Áes." }
+        return { success: false, error: "Erro ao atualizar configurações." }
     }
 }
 
@@ -243,7 +243,7 @@ export async function updateWorkspaceLogo(
     try {
         const canAccessWorkspace = await hasWorkspaceAccess(workspaceId)
         if (!canAccessWorkspace) {
-            return { success: false, error: "Workspace n├úo encontrado" }
+            return { success: false, error: "Workspace não encontrado" }
         }
 
         await prisma.workspace.update({
@@ -267,7 +267,7 @@ export async function updateWorkspaceLogo(
 // ============================================================
 
 /**
- * Salva configura├º├Áes de SMTP
+ * Salva configurações de SMTP
  */
 export async function saveSmtpSettings(
     workspaceId: string,
@@ -282,10 +282,10 @@ export async function saveSmtpSettings(
 
         const canAccessWorkspace = await hasWorkspaceAccess(workspaceId)
         if (!canAccessWorkspace) {
-            return { success: false, error: "Workspace n├úo encontrado" }
+            return { success: false, error: "Workspace não encontrado" }
         }
 
-        // Salvar configura├º├Áes
+        // Salvar configurações
         await prisma.workspace.update({
             where: { id: workspaceId },
             data: {
@@ -304,13 +304,13 @@ export async function saveSmtpSettings(
         revalidatePath("/workspaces")
         return { success: true }
     } catch (error) {
-        console.error("Erro ao salvar configura├º├Áes:", error)
-        return { success: false, error: "Erro ao salvar configura├º├Áes" }
+        console.error("Erro ao salvar configurações:", error)
+        return { success: false, error: "Erro ao salvar configurações" }
     }
 }
 
 /**
- * Testa conex├úo SMTP
+ * Testa conexão SMTP
  */
 export async function testSmtpSettings(
     data: SmtpSettingsData
@@ -318,7 +318,7 @@ export async function testSmtpSettings(
     try {
         const user = await getAuthenticatedUser()
         if (!user) {
-            return { success: false, error: "N├úo autorizado" }
+            return { success: false, error: "Não autorizado" }
         }
 
         // Validar dados
@@ -327,7 +327,7 @@ export async function testSmtpSettings(
             return { success: false, error: validated.error.issues[0].message }
         }
 
-        // Testar conex├úo
+        // Testar conexão
         const config: SmtpConfig = {
             provider: validated.data.smtpProvider,
             host: validated.data.smtpHost || null,
@@ -342,24 +342,24 @@ export async function testSmtpSettings(
         const result = await testSmtpConnection(config)
 
         if (result.success) {
-            return { success: true, data: { message: "Conex├úo estabelecida com sucesso!" } }
+            return { success: true, data: { message: "Conexão estabelecida com sucesso!" } }
         } else {
-            return { success: false, error: result.error || "Falha na conex├úo" }
+            return { success: false, error: result.error || "Falha na conexão" }
         }
     } catch (error) {
-        console.error("Erro ao testar conex├úo:", error)
-        return { success: false, error: "Erro ao testar conex├úo" }
+        console.error("Erro ao testar conexão:", error)
+        return { success: false, error: "Erro ao testar conexão" }
     }
 }
 
 /**
- * Limpa configura├º├Áes de SMTP
+ * Limpa configurações de SMTP
  */
 export async function clearSmtpSettings(workspaceId: string): Promise<ActionResult> {
     try {
         const canAccessWorkspace = await hasWorkspaceAccess(workspaceId)
         if (!canAccessWorkspace) {
-            return { success: false, error: "Workspace n├úo encontrado" }
+            return { success: false, error: "Workspace não encontrado" }
         }
 
         await prisma.workspace.update({
@@ -379,8 +379,8 @@ export async function clearSmtpSettings(workspaceId: string): Promise<ActionResu
         revalidatePath("/settings")
         return { success: true }
     } catch (error) {
-        console.error("Erro ao limpar configura├º├Áes:", error)
-        return { success: false, error: "Erro ao limpar configura├º├Áes" }
+        console.error("Erro ao limpar configurações:", error)
+        return { success: false, error: "Erro ao limpar configurações" }
     }
 }
 
@@ -394,7 +394,7 @@ export interface SendSettingsData {
 }
 
 /**
- * Busca a janela de envio e a configura├º├úo de detec├º├úo de resposta do workspace.
+ * Busca a janela de envio e a configuração de detecção de resposta do workspace.
  */
 export async function getSendWindowSettings(
     workspaceId: string
@@ -402,7 +402,7 @@ export async function getSendWindowSettings(
     try {
         const canAccessWorkspace = await hasWorkspaceAccess(workspaceId)
         if (!canAccessWorkspace) {
-            return { success: false, error: "Workspace n├úo encontrado" }
+            return { success: false, error: "Workspace não encontrado" }
         }
 
         const workspace = await prisma.workspace.findUnique({
@@ -421,7 +421,7 @@ export async function getSendWindowSettings(
         })
 
         if (!workspace) {
-            return { success: false, error: "Workspace n├úo encontrado" }
+            return { success: false, error: "Workspace não encontrado" }
         }
 
         const { replyDetectionEnabled, imapHost, imapPort, ...window } = workspace
@@ -434,14 +434,14 @@ export async function getSendWindowSettings(
             },
         }
     } catch (error) {
-        console.error("Erro ao buscar configura├º├Áes de envio:", error)
-        return { success: false, error: "Erro ao buscar configura├º├Áes de envio" }
+        console.error("Erro ao buscar configurações de envio:", error)
+        return { success: false, error: "Erro ao buscar configurações de envio" }
     }
 }
 
 /**
- * Atualiza a configura├º├úo de detec├º├úo de resposta (IMAP) do workspace.
- * A senha usada ├® a mesma do SMTP ÔÇö n├úo h├í credencial separada.
+ * Atualiza a configuração de detecção de resposta (IMAP) do workspace.
+ * A senha usada é a mesma do SMTP — não há credencial separada.
  */
 export async function updateReplyDetectionSettings(
     workspaceId: string,
@@ -450,14 +450,14 @@ export async function updateReplyDetectionSettings(
     try {
         const canAccessWorkspace = await hasWorkspaceAccess(workspaceId)
         if (!canAccessWorkspace) {
-            return { success: false, error: "Workspace n├úo encontrado" }
+            return { success: false, error: "Workspace não encontrado" }
         }
 
         const parsed = replyDetectionSchema.safeParse(data)
         if (!parsed.success) {
             return {
                 success: false,
-                error: parsed.error.issues[0]?.message || "Dados inv├ílidos",
+                error: parsed.error.issues[0]?.message || "Dados inválidos",
             }
         }
 
@@ -473,8 +473,8 @@ export async function updateReplyDetectionSettings(
         revalidatePath("/settings")
         return { success: true }
     } catch (error) {
-        console.error("Erro ao atualizar detec├º├úo de resposta:", error)
-        return { success: false, error: "Erro ao atualizar detec├º├úo de resposta." }
+        console.error("Erro ao atualizar detecção de resposta:", error)
+        return { success: false, error: "Erro ao atualizar detecção de resposta." }
     }
 }
 
@@ -488,14 +488,14 @@ export async function updateSendWindowSettings(
     try {
         const canAccessWorkspace = await hasWorkspaceAccess(workspaceId)
         if (!canAccessWorkspace) {
-            return { success: false, error: "Workspace n├úo encontrado" }
+            return { success: false, error: "Workspace não encontrado" }
         }
 
         const parsed = sendWindowSchema.safeParse(data)
         if (!parsed.success) {
             return {
                 success: false,
-                error: parsed.error.issues[0]?.message || "Dados inv├ílidos",
+                error: parsed.error.issues[0]?.message || "Dados inválidos",
             }
         }
 
@@ -521,7 +521,7 @@ export async function updateSendWindowSettings(
 }
 
 // ============================================================
-// MUTATIONS - LISTA DE SUPRESS├âO
+// MUTATIONS - LISTA DE SUPRESSÃO
 // ============================================================
 
 export interface SuppressionRow {
@@ -534,7 +534,7 @@ export interface SuppressionRow {
 }
 
 /**
- * Lista as supress├Áes que afetam este workspace (as pr├│prias e as globais).
+ * Lista as supressões que afetam este workspace (as próprias e as globais).
  */
 export async function listWorkspaceSuppressions(
     workspaceId: string
@@ -542,7 +542,7 @@ export async function listWorkspaceSuppressions(
     try {
         const canAccessWorkspace = await hasWorkspaceAccess(workspaceId)
         if (!canAccessWorkspace) {
-            return { success: false, error: "Workspace n├úo encontrado" }
+            return { success: false, error: "Workspace não encontrado" }
         }
 
         const rows = await prisma.suppression.findMany({
@@ -563,8 +563,8 @@ export async function listWorkspaceSuppressions(
             })),
         }
     } catch (error) {
-        console.error("Erro ao listar supress├Áes:", error)
-        return { success: false, error: "Erro ao listar supress├Áes" }
+        console.error("Erro ao listar supressões:", error)
+        return { success: false, error: "Erro ao listar supressões" }
     }
 }
 
@@ -575,10 +575,10 @@ export async function addWorkspaceSuppression(
     try {
         const canAccessWorkspace = await hasWorkspaceAccess(workspaceId)
         if (!canAccessWorkspace) {
-            return { success: false, error: "Workspace n├úo encontrado" }
+            return { success: false, error: "Workspace não encontrado" }
         }
 
-        const parsed = z.string().email("E-mail inv├ílido").safeParse(email.trim())
+        const parsed = z.string().email("E-mail inválido").safeParse(email.trim())
         if (!parsed.success) {
             return { success: false, error: parsed.error.issues[0].message }
         }
@@ -592,8 +592,8 @@ export async function addWorkspaceSuppression(
         revalidatePath("/settings")
         return { success: true }
     } catch (error) {
-        console.error("Erro ao adicionar supress├úo:", error)
-        return { success: false, error: "Erro ao adicionar supress├úo" }
+        console.error("Erro ao adicionar supressão:", error)
+        return { success: false, error: "Erro ao adicionar supressão" }
     }
 }
 
@@ -604,16 +604,16 @@ export async function deleteWorkspaceSuppression(
     try {
         const canAccessWorkspace = await hasWorkspaceAccess(workspaceId)
         if (!canAccessWorkspace) {
-            return { success: false, error: "Workspace n├úo encontrado" }
+            return { success: false, error: "Workspace não encontrado" }
         }
 
-        // removeSuppression filtra por workspaceId ÔÇö supress├úo global n├úo sai daqui.
+        // removeSuppression filtra por workspaceId — supressão global não sai daqui.
         await removeSuppression(prisma, id, workspaceId)
 
         revalidatePath("/settings")
         return { success: true }
     } catch (error) {
-        console.error("Erro ao remover supress├úo:", error)
-        return { success: false, error: "Erro ao remover supress├úo" }
+        console.error("Erro ao remover supressão:", error)
+        return { success: false, error: "Erro ao remover supressão" }
     }
 }

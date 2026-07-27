@@ -62,8 +62,8 @@ function buildLeadData(lead: {
 }
 
 /**
- * Marca em lote os EmailSends suprimidos: nunca foram enviados, ent├úo o
- * status precisa refletir isso (n├úo ├® bounce nem envio real).
+ * Marca em lote os EmailSends suprimidos: nunca foram enviados, então o
+ * status precisa refletir isso (não é bounce nem envio real).
  */
 async function markSuppressedEmailSends(
     prisma: PrismaClient,
@@ -73,7 +73,7 @@ async function markSuppressedEmailSends(
 
     await prisma.emailSend.updateMany({
         where: { id: { in: emailSendIds } },
-        data: { status: "SUPPRESSED", bounceReason: "Endere├ºo na lista de supress├úo" },
+        data: { status: "SUPPRESSED", bounceReason: "Endereço na lista de supressão" },
     })
 }
 
@@ -150,9 +150,9 @@ export async function sendSingleCampaign(
             }
             : null
 
-    // Consulta antes de qualquer envio: se o banco falhar, a exce├º├úo sobe e o
-    // disparo inteiro ├® abortado sem mandar e-mail nenhum e sem gravar bounce
-    // falso. ├ë o fail-closed correto para este caminho.
+    // Consulta antes de qualquer envio: se o banco falhar, a exceção sobe e o
+    // disparo inteiro é abortado sem mandar e-mail nenhum e sem gravar bounce
+    // falso. É o fail-closed correto para este caminho.
     const suppressed = await filterSuppressed(
         prisma,
         campaign.emailSends.map((emailSend) => emailSend.lead.email),
@@ -204,7 +204,7 @@ export async function sendSingleCampaign(
             if (lead.status === "NEW") {
                 result.newLeadIds.push(lead.id)
             }
-            // Grava messageId individualmente para detec├º├úo de resposta
+            // Grava messageId individualmente para detecção de resposta
             await prisma.emailSend.update({
                 where: { id: emailSend.id },
                 data: {
@@ -310,9 +310,9 @@ export async function sendSequenceFirstStep(
 
     const nextStep = campaign.steps.find((s) => s.order === 2)
 
-    // Consulta antes de qualquer envio: se o banco falhar, a exce├º├úo sobe e o
-    // disparo inteiro ├® abortado sem mandar e-mail nenhum e sem gravar bounce
-    // falso. ├ë o fail-closed correto para este caminho.
+    // Consulta antes de qualquer envio: se o banco falhar, a exceção sobe e o
+    // disparo inteiro é abortado sem mandar e-mail nenhum e sem gravar bounce
+    // falso. É o fail-closed correto para este caminho.
     const suppressed = await filterSuppressed(
         prisma,
         campaign.enrollments.map((enrollment) => enrollment.lead.email),
@@ -432,7 +432,7 @@ export async function sendSequenceFirstStep(
             if (lead.status === "NEW") {
                 result.newLeadIds.push(lead.id)
             }
-            // Grava messageId individualmente para detec├º├úo de resposta
+            // Grava messageId individualmente para detecção de resposta
             await prisma.emailSend.update({
                 where: { id: emailSendId },
                 data: {

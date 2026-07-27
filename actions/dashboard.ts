@@ -453,7 +453,7 @@ export async function getDashboardGuidance(
         try {
             await requireWorkspaceAccess(workspaceId)
         } catch {
-            return { success: false, error: "Workspace nÃ£o encontrado" }
+            return { success: false, error: "Workspace não encontrado" }
         }
 
         const now = new Date()
@@ -532,7 +532,7 @@ export async function getDashboardGuidance(
             },
         }
     } catch (error) {
-        console.error("Erro ao buscar orientaÃ§Ãµes do dashboard:", error)
-        return { success: false, error: "Erro ao buscar orientaÃ§Ãµes" }
+        console.error("Erro ao buscar orientações do dashboard:", error)
+        return { success: false, error: "Erro ao buscar orientações" }
     }
 }

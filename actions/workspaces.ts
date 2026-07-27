@@ -57,7 +57,7 @@ export async function createWorkspace(data: WorkspaceFormData) {
     try {
         const validated = workspaceFormSchema.safeParse(data)
         if (!validated.success) {
-            return { success: false, error: validated.error.issues[0]?.message ?? "Dados invÃ¡lidos" }
+            return { success: false, error: validated.error.issues[0]?.message ?? "Dados inválidos" }
         }
 
         const user = await requireAuth()
@@ -113,7 +113,7 @@ export async function getWorkspaceById(id: string) {
     try {
         const parsedId = idSchema.safeParse(id)
         if (!parsedId.success) {
-            return { success: false, error: "Workspace invÃ¡lido" }
+            return { success: false, error: "Workspace inválido" }
         }
 
         await requireWorkspaceAccess(parsedId.data)
@@ -156,7 +156,7 @@ export async function updateWorkspace(id: string, data: WorkspaceFormData) {
         const parsedId = idSchema.safeParse(id)
         const validated = workspaceFormSchema.safeParse(data)
         if (!parsedId.success || !validated.success) {
-            return { success: false, error: validated.error?.issues[0]?.message ?? "Dados invÃ¡lidos" }
+            return { success: false, error: validated.error?.issues[0]?.message ?? "Dados inválidos" }
         }
 
         try {
@@ -184,7 +184,7 @@ export async function deleteWorkspace(id: string) {
     try {
         const parsedId = idSchema.safeParse(id)
         if (!parsedId.success) {
-            return { success: false, error: "Workspace invÃ¡lido" }
+            return { success: false, error: "Workspace inválido" }
         }
 
         try {
@@ -227,7 +227,7 @@ export async function getWorkspaceStats(workspaceId: string) {
     try {
         const parsedWorkspaceId = idSchema.safeParse(workspaceId)
         if (!parsedWorkspaceId.success) {
-            return { success: false, error: "Workspace invÃ¡lido" }
+            return { success: false, error: "Workspace inválido" }
         }
 
         try {

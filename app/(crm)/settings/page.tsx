@@ -56,7 +56,7 @@ export default async function SettingsPage() {
         smtpPass: null,
     }
 
-    // Buscar perfil completo do usu├írio
+    // Buscar perfil completo do usuário
     const profileResult = await getUserProfile()
     const profile = profileResult.success ? profileResult.data : null
 
@@ -80,7 +80,7 @@ export default async function SettingsPage() {
     const sendSettingsResult = await getSendWindowSettings(activeWorkspaceId)
     const sendSettings = sendSettingsResult.success ? sendSettingsResult.data ?? null : null
 
-    // Buscar lista de supress├úo do workspace (falha n├úo derruba a p├ígina)
+    // Buscar lista de supressão do workspace (falha não derruba a página)
     const suppressionsResult = await listWorkspaceSuppressions(activeWorkspaceId)
     const suppressions = suppressionsResult.success ? suppressionsResult.data ?? [] : []
 

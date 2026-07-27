@@ -21,11 +21,11 @@ import type { CampaignEnrollment, StepCondition } from "@prisma/client"
 // Configurar em vercel.json
 
 export const dynamic = "force-dynamic"
-export const maxDuration = 300 // 5 minutos m├íximo
+export const maxDuration = 300 // 5 minutos máximo
 
 export async function GET(request: Request) {
     try {
-        // Verificar secret para seguran├ºa (opcional em dev)
+        // Verificar secret para segurança (opcional em dev)
         const authHeader = request.headers.get("authorization")
         const cronSecret = process.env.CRON_SECRET
 
@@ -39,14 +39,14 @@ export async function GET(request: Request) {
         }
 
         const now = new Date()
-        console.log(`[Cron] Iniciando processamento de sequ├¬ncias: ${now.toISOString()}`)
+        console.log(`[Cron] Iniciando processamento de sequências: ${now.toISOString()}`)
 
-        // In├¡cio do dia (para o limite di├írio de envios por workspace).
+        // Início do dia (para o limite diário de envios por workspace).
         const startOfToday = new Date(now)
         startOfToday.setHours(0, 0, 0, 0)
 
         // Contagem de envios de hoje por workspace, resolvida sob demanda e
-        // incrementada a cada envio dentro desta execu├º├úo, para n├úo consultar
+        // incrementada a cada envio dentro desta execução, para não consultar
         // o banco a cada enrollment.
         const workspaceSentToday = new Map<string, number>()
 
@@ -94,7 +94,7 @@ export async function GET(request: Request) {
         let deferred = 0
         let errors = 0
 
-        // Workspaces j├í alertados sobre janela inalcan├º├ível nesta execu├º├úo.
+        // Workspaces já alertados sobre janela inalcançável nesta execução.
         const unreachableWindowWarned = new Set<string>()
 
         for (const enrollment of pendingEnrollments) {
@@ -104,7 +104,7 @@ export async function GET(request: Request) {
 
                 const sendWindow = resolveSendWindow(campaign.workspace, campaign)
 
-                // Verificar se deve parar a sequ├¬ncia
+                // Verificar se deve parar a sequência
                 if (campaign.stopOnConverted && lead.status === "CONVERTED") {
                     await prisma.campaignEnrollment.update({
                         where: { id: enrollment.id },
@@ -115,7 +115,7 @@ export async function GET(request: Request) {
                         },
                     })
                     skipped++
-                    console.log(`[Cron] Lead ${lead.id} convertido - parando sequ├¬ncia`)
+                    console.log(`[Cron] Lead ${lead.id} convertido - parando sequência`)
                     continue
                 }
 
@@ -129,7 +129,7 @@ export async function GET(request: Request) {
                         },
                     })
                     skipped++
-                    console.log(`[Cron] Lead ${lead.id} descadastrado - parando sequ├¬ncia`)
+                    console.log(`[Cron] Lead ${lead.id} descadastrado - parando sequência`)
                     continue
                 }
 
@@ -143,7 +143,7 @@ export async function GET(request: Request) {
                         },
                     })
                     skipped++
-                    console.log(`[Cron] Lead ${lead.id} respondeu - parando sequ├¬ncia`)
+                    console.log(`[Cron] Lead ${lead.id} respondeu - parando sequência`)
                     continue
                 }
 
@@ -153,7 +153,7 @@ export async function GET(request: Request) {
                 )
 
                 if (!currentStep) {
-                    // N├úo tem mais steps - completar
+                    // Não tem mais steps - completar
                     await prisma.campaignEnrollment.update({
                         where: { id: enrollment.id },
                         data: {
@@ -166,14 +166,14 @@ export async function GET(request: Request) {
                     continue
                 }
 
-                // Verificar condi├º├úo do step
+                // Verificar condição do step
                 const shouldSend = await checkStepCondition(
                     enrollment,
                     currentStep.condition
                 )
 
                 if (!shouldSend) {
-                    // Condi├º├úo n├úo atendida - pular para pr├│ximo step
+                    // Condição não atendida - pular para próximo step
                     const nextStep = campaign.steps.find(
                         (s) => s.order === enrollment.currentStep + 1
                     )
@@ -187,9 +187,9 @@ export async function GET(request: Request) {
                                 nextSendAt,
                             },
                         })
-                        console.log(`[Cron] Condi├º├úo n├úo atendida - pulando para step ${nextStep.order}`)
+                        console.log(`[Cron] Condição não atendida - pulando para step ${nextStep.order}`)
                     } else {
-                        // N├úo tem pr├│ximo step - completar
+                        // Não tem próximo step - completar
                         await prisma.campaignEnrollment.update({
                             where: { id: enrollment.id },
                             data: {
@@ -202,17 +202,17 @@ export async function GET(request: Request) {
                     continue
                 }
 
-                // A janela s├│ restringe o envio em si, n├úo a limpeza de estado do
+                // A janela só restringe o envio em si, não a limpeza de estado do
                 // enrollment: os ramos acima (convertido, descadastrado, sem step,
-                // condi├º├úo n├úo atendida) encerram ou avan├ºam o enrollment sem
+                // condição não atendida) encerram ou avançam o enrollment sem
                 // enviar e-mail. Se a checagem de janela viesse antes deles, um
                 // lead convertido/descadastrado cujo workspace tenha janela que
-                // n├úo cobre o instante do cron ficaria "active" para sempre, sendo
-                // reselecionado a cada execu├º├úo. Por isso ela s├│ entra aqui,
+                // não cobre o instante do cron ficaria "active" para sempre, sendo
+                // reselecionado a cada execução. Por isso ela só entra aqui,
                 // imediatamente antes do envio de fato.
                 //
-                // Fora da janela: n├úo envia e n├úo avan├ºa o step ÔÇö apenas reagenda
-                // para o pr├│ximo hor├írio v├ílido. O enrollment segue ativo.
+                // Fora da janela: não envia e não avança o step — apenas reagenda
+                // para o próximo horário válido. O enrollment segue ativo.
                 if (!isWithinSendWindow(now, sendWindow)) {
                     const deferredTo = nextWindowStart(now, sendWindow)
                     await prisma.campaignEnrollment.update({
@@ -221,21 +221,21 @@ export async function GET(request: Request) {
                     })
                     deferred++
 
-                    // Este cron roda uma vez por dia, sempre no mesmo hor├írio.
-                    // Se a janela n├úo cobre esse instante, o adiamento acima vai
+                    // Este cron roda uma vez por dia, sempre no mesmo horário.
+                    // Se a janela não cobre esse instante, o adiamento acima vai
                     // se repetir todo dia e o enrollment NUNCA envia. A UI
-                    // valida isso na hora de salvar (Task 4); aqui ├® a rede de
-                    // seguran├ºa para configura├º├úo que escapou por outro caminho.
+                    // valida isso na hora de salvar (Task 4); aqui é a rede de
+                    // segurança para configuração que escapou por outro caminho.
                     if (
                         !windowCoversCronRun(sendWindow) &&
                         !unreachableWindowWarned.has(campaign.workspaceId)
                     ) {
                         unreachableWindowWarned.add(campaign.workspaceId)
                         console.error(
-                            `[Cron] JANELA INALCAN├ç├üVEL: o workspace ${campaign.workspaceId} tem janela ` +
+                            `[Cron] JANELA INALCANÇÁVEL: o workspace ${campaign.workspaceId} tem janela ` +
                             `${sendWindow.startHour}h-${sendWindow.endHour}h em ${sendWindow.timezone}, que nunca ` +
-                            `cont├®m a execu├º├úo di├íria das ${CRON_SEND_HOUR_UTC}h UTC. O enrollment ${enrollment.id} ` +
-                            `n├úo ser├í enviado enquanto a janela n├úo for corrigida.`
+                            `contém a execução diária das ${CRON_SEND_HOUR_UTC}h UTC. O enrollment ${enrollment.id} ` +
+                            `não será enviado enquanto a janela não for corrigida.`
                         )
                     } else {
                         console.log(
@@ -245,23 +245,23 @@ export async function GET(request: Request) {
                     continue
                 }
 
-                // Respeitar o limite di├írio de envios do workspace.
+                // Respeitar o limite diário de envios do workspace.
                 // maxEmailsPerDay === 0 significa ilimitado.
                 const maxEmailsPerDay = campaign.workspace.maxEmailsPerDay
                 if (maxEmailsPerDay > 0) {
                     const sentToday = await getWorkspaceSentToday(campaign.workspaceId)
                     if (sentToday >= maxEmailsPerDay) {
-                        // N├úo avan├ºa o step: o enrollment segue ativo e ser├í
-                        // reprocessado na pr├│xima execu├º├úo, quando a cota resetar.
+                        // Não avança o step: o enrollment segue ativo e será
+                        // reprocessado na próxima execução, quando a cota resetar.
                         throttled++
                         console.log(
-                            `[Cron] Limite di├írio atingido (workspace ${campaign.workspaceId}: ${sentToday}/${maxEmailsPerDay}) - adiando enrollment ${enrollment.id}`
+                            `[Cron] Limite diário atingido (workspace ${campaign.workspaceId}: ${sentToday}/${maxEmailsPerDay}) - adiando enrollment ${enrollment.id}`
                         )
                         continue
                     }
                 }
 
-                // Supress├úo vence qualquer configura├º├úo de campanha.
+                // Supressão vence qualquer configuração de campanha.
                 if (await isSuppressed(prisma, lead.email, campaign.workspaceId)) {
                     await prisma.campaignEnrollment.update({
                         where: { id: enrollment.id },
@@ -273,7 +273,7 @@ export async function GET(request: Request) {
                     })
                     skipped++
                     console.log(
-                        `[Cron] Lead ${lead.id} est├í na lista de supress├úo - parando sequ├¬ncia`
+                        `[Cron] Lead ${lead.id} está na lista de supressão - parando sequência`
                     )
                     continue
                 }
@@ -365,7 +365,7 @@ export async function GET(request: Request) {
                         },
                     })
 
-                    // Atualizar m├®tricas da campanha
+                    // Atualizar métricas da campanha
                     await prisma.campaign.update({
                         where: { id: campaign.id },
                         data: {
@@ -373,7 +373,7 @@ export async function GET(request: Request) {
                         },
                     })
 
-                    // Calcular pr├│ximo envio
+                    // Calcular próximo envio
                     const nextStep = campaign.steps.find(
                         (s) => s.order === enrollment.currentStep + 1
                     )
@@ -388,7 +388,7 @@ export async function GET(request: Request) {
                             },
                         })
                     } else {
-                        // ├Ültimo step - completar
+                        // Último step - completar
                         await prisma.campaignEnrollment.update({
                             where: { id: enrollment.id },
                             data: {
@@ -400,7 +400,7 @@ export async function GET(request: Request) {
                     }
 
                     sent++
-                    // Contabiliza no limite di├írio do workspace nesta execu├º├úo.
+                    // Contabiliza no limite diário do workspace nesta execução.
                     workspaceSentToday.set(
                         campaign.workspaceId,
                         (workspaceSentToday.get(campaign.workspaceId) ?? 0) + 1
@@ -423,10 +423,10 @@ export async function GET(request: Request) {
                     })
 
                     if (bounceType === "hard") {
-                        // Supress├úo primeiro: ela nunca lan├ºa. Se as atualiza├º├Áes
-                        // de lead/enrollment abaixo falharem, a supress├úo j├í
+                        // Supressão primeiro: ela nunca lança. Se as atualizações
+                        // de lead/enrollment abaixo falharem, a supressão já
                         // ficou gravada e a checagem de isSuppressed no topo do
-                        // loop encerra o enrollment na pr├│xima execu├º├úo do cron.
+                        // loop encerra o enrollment na próxima execução do cron.
                         await addSuppression(prisma, {
                             email: lead.email,
                             workspaceId: campaign.workspaceId,
@@ -451,7 +451,7 @@ export async function GET(request: Request) {
                     console.error(`[Cron] Erro ao enviar para ${lead.email}: ${result.error}`)
                 }
 
-                // Delay entre envios para n├úo sobrecarregar
+                // Delay entre envios para não sobrecarregar
                 await new Promise((resolve) => setTimeout(resolve, 200))
             } catch (error) {
                 errors++
@@ -459,8 +459,8 @@ export async function GET(request: Request) {
             }
         }
 
-        // Limpeza oportunista das janelas de rate limit j├í expiradas (> 1h),
-        // para o cron n├úo deixar a tabela crescer indefinidamente.
+        // Limpeza oportunista das janelas de rate limit já expiradas (> 1h),
+        // para o cron não deixar a tabela crescer indefinidamente.
         try {
             await prisma.rateLimit.deleteMany({
                 where: { windowStart: { lt: new Date(now.getTime() - 60 * 60 * 1000) } },
@@ -495,7 +495,7 @@ export async function GET(request: Request) {
 }
 
 // ============================================================
-// FUN├ç├òES AUXILIARES
+// FUNÇÕES AUXILIARES
 // ============================================================
 
 async function checkStepCondition(
@@ -506,7 +506,7 @@ async function checkStepCondition(
         return true
     }
 
-    // Buscar o ├║ltimo envio do step anterior
+    // Buscar o último envio do step anterior
     const previousStepNumber = enrollment.currentStep - 1
 
     if (previousStepNumber < 1) {
@@ -523,7 +523,7 @@ async function checkStepCondition(
     })
 
     if (!previousSend) {
-        return true // Se n├úo encontrou envio anterior, envia
+        return true // Se não encontrou envio anterior, envia
     }
 
     switch (condition) {

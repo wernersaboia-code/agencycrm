@@ -2,8 +2,8 @@
 import type { PrismaClient } from "@prisma/client"
 import { sendSequenceFirstStep } from "./campaigns.service"
 
-// sendEmail nunca deve tocar rede em teste unit├írio: mockamos o m├│dulo
-// inteiro e verificamos apenas com quais destinat├írios ele foi chamado.
+// sendEmail nunca deve tocar rede em teste unitário: mockamos o módulo
+// inteiro e verificamos apenas com quais destinatários ele foi chamado.
 vi.mock("@/lib/email", () => ({
     sendEmail: vi.fn().mockResolvedValue({ success: true, id: "resend-1" }),
     replaceEmailVariables: (template: string) => template,
@@ -79,7 +79,7 @@ describe("sendSequenceFirstStep", () => {
         vi.clearAllMocks()
     })
 
-    it("n├úo envia para lead suprimido e marca o EmailSend como SUPPRESSED", async () => {
+    it("não envia para lead suprimido e marca o EmailSend como SUPPRESSED", async () => {
         const suppressedLead = buildLead("lead-suppressed", "suprimido@empresa.com")
         const okLead = buildLead("lead-ok", "ok@empresa.com")
 
@@ -108,7 +108,7 @@ describe("sendSequenceFirstStep", () => {
             ],
         })
 
-        // O suprimido nunca chega a sendEmail; s├│ o lead ok ├® chamado.
+        // O suprimido nunca chega a sendEmail; só o lead ok é chamado.
         expect(sendEmail).toHaveBeenCalledTimes(1)
         expect(sendEmail).toHaveBeenCalledWith(
             expect.objectContaining({ to: "ok@empresa.com" }),
@@ -119,7 +119,7 @@ describe("sendSequenceFirstStep", () => {
         expect(result.sentIds).toEqual(["send-ok"])
         expect(result.totalSent).toBe(1)
 
-        // filterSuppressed ├® chamado antes de qualquer envio (fail-closed).
+        // filterSuppressed é chamado antes de qualquer envio (fail-closed).
         expect(prisma.suppression.findMany).toHaveBeenCalledWith({
             where: {
                 email: { in: ["suprimido@empresa.com", "ok@empresa.com"] },
@@ -128,10 +128,10 @@ describe("sendSequenceFirstStep", () => {
             select: { email: true },
         })
 
-        // O EmailSend do suprimido ├® marcado como SUPPRESSED, nunca BOUNCED.
+        // O EmailSend do suprimido é marcado como SUPPRESSED, nunca BOUNCED.
         expect(prisma.emailSend.updateMany).toHaveBeenCalledWith({
             where: { id: { in: ["send-suppressed"] } },
-            data: { status: "SUPPRESSED", bounceReason: "Endere├ºo na lista de supress├úo" },
+            data: { status: "SUPPRESSED", bounceReason: "Endereço na lista de supressão" },
         })
 
         // O EmailSend do lead ok grava messageId individualmente
@@ -145,7 +145,7 @@ describe("sendSequenceFirstStep", () => {
         })
     })
 
-    it("aborta o lote inteiro sem enviar nada se a consulta de supress├úo falhar", async () => {
+    it("aborta o lote inteiro sem enviar nada se a consulta de supressão falhar", async () => {
         const lead = buildLead("lead-1", "lead1@empresa.com")
 
         const prisma = createMockPrisma({
@@ -165,7 +165,7 @@ describe("sendSequenceFirstStep", () => {
         ).rejects.toThrow("db down")
 
         expect(sendEmail).not.toHaveBeenCalled()
-        // Como a exce├º├úo sobe antes de qualquer cria├º├úo de EmailSend, nada ├® gravado.
+        // Como a exceção sobe antes de qualquer criação de EmailSend, nada é gravado.
         expect(prisma.emailSend.createMany).not.toHaveBeenCalled()
     })
 })
