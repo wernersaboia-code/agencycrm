@@ -5,6 +5,7 @@ import { sendEmail, SmtpConfig } from "@/lib/email"
 import { generatePurchaseConfirmationEmail } from "./templates/purchase-confirmation"
 import { prisma } from "@/lib/prisma"
 import { SMTP_PROVIDERS } from "@/lib/constants/smtp.constants"
+import { getSystemSmtpConfig } from "./system-smtp"
 import { decryptSecret } from "@/lib/secrets"
 
 interface SendPurchaseConfirmationParams {
@@ -12,55 +13,6 @@ interface SendPurchaseConfirmationParams {
     purchaseId: string
     accessToken: string
     accessUrl: string
-}
-
-// 🆕 Função para obter configuração SMTP padrão do sistema
-function getSystemSmtpConfig(): SmtpConfig {
-    // Verificar se tem SMTP configurado no .env
-    if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
-        console.log("📧 Usando SMTP do sistema (.env)")
-        return {
-            provider: "custom",
-            host: process.env.SMTP_HOST,
-            port: parseInt(process.env.SMTP_PORT || "587"),
-            user: process.env.SMTP_USER,
-            pass: process.env.SMTP_PASS,
-            secure: process.env.SMTP_SECURE === "true",
-            senderName: process.env.SMTP_FROM_NAME || "Easy Prospect",
-            // Precisa bater com a conta autenticada no SMTP: a maioria dos
-            // provedores rejeita (ou marca como spam) um From de domínio
-            // diferente do que fez login.
-            senderEmail: process.env.SMTP_FROM_EMAIL || "contato@easyprospect.com.br",
-        }
-    }
-
-    // Fallback: Tentar usar Gmail com credenciais do .env
-    if (process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD) {
-        console.log("📧 Usando Gmail como fallback")
-        return {
-            provider: "google",
-            host: SMTP_PROVIDERS.google.host,
-            port: SMTP_PROVIDERS.google.port,
-            user: process.env.GMAIL_USER,
-            pass: process.env.GMAIL_APP_PASSWORD,
-            secure: SMTP_PROVIDERS.google.secure,
-            senderName: "Easy Prospect",
-            senderEmail: process.env.GMAIL_USER,
-        }
-    }
-
-    // Se não tiver nada, retornar configuração vazia (vai falhar)
-    console.warn("⚠️ Nenhuma configuração SMTP encontrada!")
-    return {
-        provider: null,
-        host: null,
-        port: null,
-        user: null,
-        pass: null,
-        secure: false,
-        senderName: null,
-        senderEmail: null,
-    }
 }
 
 export async function sendPurchaseConfirmationEmail({
@@ -146,7 +98,7 @@ export async function sendPurchaseConfirmationEmail({
             smtpConfig = getSystemSmtpConfig()
 
             // Se mesmo assim não tem SMTP, não tem como enviar
-            if (!smtpConfig.user || !smtpConfig.pass) {
+            if (!smtpConfig?.user || !smtpConfig.pass) {
                 console.error("❌ Nenhuma configuração SMTP disponível!")
                 console.error("   Configure SMTP no .env ou no workspace do usuário")
                 return {
