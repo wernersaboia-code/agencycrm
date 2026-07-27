@@ -398,7 +398,11 @@
             "health": "Gezondheid & farmacie",
             "construction": "Bouw",
             "retail": "Detailhandel",
-            "industrial": "Industrieel"
+            "industrial": "Industrieel",
+            "agriculture": "Landbouw",
+            "electronics": "Elektronica",
+            "chemicals": "Chemie",
+            "machinery": "Machines en apparatuur"
         },
         "categories": {
             "importers": "Importeurs",

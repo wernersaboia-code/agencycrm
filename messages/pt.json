@@ -398,7 +398,11 @@
             "health": "Saúde & Farmácia",
             "construction": "Construção",
             "retail": "Varejo",
-            "industrial": "Industrial"
+            "industrial": "Industrial",
+            "agriculture": "Agricultura",
+            "electronics": "Eletrônicos",
+            "chemicals": "Químicos",
+            "machinery": "Máquinas & Equipamentos"
         },
         "categories": {
             "importers": "Importadores",
