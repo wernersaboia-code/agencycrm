@@ -13,6 +13,10 @@
  * `catalog.categories.*`, `catalog.industries.*` e `catalog.countries.*`. Id
  * novo aqui exige o rótulo nos sete idiomas — o teste de paridade em
  * `lib/i18n/messages-integridade.test.ts` cobra isso.
+ *
+ * `foodservice` foi avaliado e deixado de fora: no comércio internacional ele
+ * se sobrepõe demais a HORECA, e faceta que o cliente não sabe escolher é pior
+ * que faceta a menos. Revisar quando o catálogo tiver volume que justifique.
  */
 
 export const CATEGORY_IDS = [
@@ -25,7 +29,9 @@ export const CATEGORY_IDS = [
 ] as const
 
 export const INDUSTRY_IDS = [
-    "food",
+    "fmcg_food",
+    "fmcg_nonfood",
+    "horeca",
     "tech",
     "fashion",
     "automotive",

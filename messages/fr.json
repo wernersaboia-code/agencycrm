@@ -391,7 +391,9 @@
             "BR": "Brésil"
         },
         "industries": {
-            "food": "Alimentation & boissons",
+            "fmcg_food": "FMCG — Produits de Grande Consommation Alimentaires",
+            "fmcg_nonfood": "FMCG — Produits de Grande Consommation Non Alimentaires",
+            "horeca": "CHR — Cafés, Hôtels, Restaurants et Traiteurs",
             "tech": "Technologie",
             "fashion": "Mode & textile",
             "automotive": "Automobile",

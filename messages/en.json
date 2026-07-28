@@ -391,7 +391,9 @@
             "BR": "Brazil"
         },
         "industries": {
-            "food": "Food & Beverage",
+            "fmcg_food": "FMCG — Food & Beverage",
+            "fmcg_nonfood": "FMCG — Non-Food",
+            "horeca": "HORECA — Hotels, Restaurants & Catering",
             "tech": "Technology",
             "fashion": "Fashion & Textiles",
             "automotive": "Automotive",
