@@ -12,7 +12,6 @@ import { CartBadge } from "@/components/marketplace/cart-badge"
 import { LocaleSwitcher } from "@/components/marketplace/locale-switcher"
 import { ThemeToggle } from "@/components/marketplace/theme-toggle"
 import { useAuth } from "@/hooks/useAuth"
-import { createClient } from "@/lib/supabase/client"
 import { useState } from "react"
 import {
     Sheet,
@@ -41,6 +40,10 @@ export function MarketplaceHeader() {
     const howItWorksHref = `/#${howItWorksAnchor}`
 
     const handleSignOut = async () => {
+        // Import sob demanda: sair da conta é clique raro, e o cliente do
+        // Supabase pesa ~210 KB. Carregar no clique tira esse peso do
+        // carregamento inicial de toda página do funil.
+        const { createClient } = await import("@/lib/supabase/client")
         const supabase = createClient()
 
         await supabase.auth.signOut()
