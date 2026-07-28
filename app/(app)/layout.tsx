@@ -6,8 +6,8 @@ import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { getLocale } from "next-intl/server"
 import { htmlLangFor, dirForLocale, type Locale } from "@/lib/i18n/locales"
-import "./globals.css"
-import { Providers } from "./providers"
+import "../globals.css"
+import { Providers } from "../providers"
 import { JsonLd } from "@/components/seo/json-ld"
 import { buildOrganizationSchema, buildWebSiteSchema } from "@/lib/seo/schema"
 
@@ -36,7 +36,19 @@ export const metadata: Metadata = {
     manifest: "/manifest.json",
 }
 
-export default async function RootLayout({
+/**
+ * Root layout das áreas internas: CRM, super-admin, autenticação, `/crm`,
+ * `/privacy` e `/terms`. O funil tem o SEU root layout em `app/[locale]`.
+ *
+ * São dois porque o `<html lang>` precisa sair certo já no servidor e cada
+ * lado descobre o idioma de um jeito: o funil tem o locale na própria URL, e
+ * aqui só existe o cookie. Enquanto um único layout servia os dois, ele
+ * chamava `getLocale()` — que lê cookie — e isso desligava a renderização
+ * estática de TODAS as páginas, inclusive as do funil, que não dependiam
+ * disso. Aqui a leitura de cookie continua (não há alternativa e não custa
+ * nada: toda rota deste grupo exige sessão ou é `noindex`).
+ */
+export default async function AppRootLayout({
     children,
 }: Readonly<{
     children: React.ReactNode

@@ -98,6 +98,7 @@ export async function proxy(request: NextRequest) {
     const marketplaceRoutes = [
         "/",
         "/faq",
+        "/about",
         "/opengraph-image",
         "/catalog",
         "/list",
