@@ -60,9 +60,10 @@ export async function generateMetadata({ params }: ListPageProps) {
 
 export default async function ListPage({ params }: ListPageProps) {
     const { locale, slug } = await params
-    const [list, t, format] = await Promise.all([
+    const [list, t, tCatalog, format] = await Promise.all([
         getList(slug),
         getTranslations("listing"),
+        getTranslations("catalog"),
         getFormatter(),
     ])
 
@@ -191,7 +192,12 @@ export default async function ListPage({ params }: ListPageProps) {
                                 icon={Globe}
                                 fallback={t("notInformed")}
                             />
-                            <DataItem label={t("fieldIndustries")} value={list.industries.join(", ")} icon={Target} fallback={t("notInformed")} />
+                            <DataItem
+                                label={t("fieldIndustries")}
+                                value={list.industries.map((id) => tCatalog(`industries.${id}`)).join(", ")}
+                                icon={Target}
+                                fallback={t("notInformed")}
+                            />
                             {dataReviewedAt && (
                                 <DataItem label={t("fieldReviewedAt")} value={dataReviewedAt} icon={BadgeCheck} fallback={t("notInformed")} />
                             )}
