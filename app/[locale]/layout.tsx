@@ -27,6 +27,15 @@ export async function generateMetadata({
 }): Promise<Metadata> {
     const { locale } = await params
 
+    // Segmento que não é idioma (`/llms.txt`, `/qualquer-coisa`) casa com esta
+    // rota e vai terminar em 404 — mas a metadata roda ANTES do `notFound()` do
+    // layout. Sem esta saída antecipada, o next-intl é acionado com um locale
+    // inválido, cai no cookie e transforma uma página pré-renderizada em
+    // dinâmica no meio da requisição: o Next responde 500 no lugar do 404.
+    if (!hasLocale(routing.locales, locale)) {
+        return {}
+    }
+
     return {
         // Vinham do layout único que existia acima deste. Como agora ESTE é o
         // root layout do funil, precisam ser declarados aqui: sem
@@ -60,6 +69,19 @@ export async function generateMetadata({
 export function generateStaticParams() {
     return routing.locales.map((locale) => ({ locale }))
 }
+
+/**
+ * A lista de idiomas é fechada: só os 8 de `generateStaticParams` existem.
+ *
+ * Sem isto, um caminho de um segmento só que não é idioma (`/llms.txt`,
+ * `/ads.txt` — bots pedem esses o tempo todo) casa com `/[locale]` e o Next
+ * tenta renderizá-lo sob demanda. Como a rota foi pré-renderizada, qualquer
+ * API dinâmica no caminho (o `requestLocale` do next-intl lê header) estoura
+ * "Page changed from static to dynamic at runtime" e o servidor responde 500
+ * no lugar de 404. Com `dynamicParams = false`, o Next devolve 404 direto, sem
+ * renderizar nada.
+ */
+export const dynamicParams = false
 
 export default async function MarketplaceLayout({
     children,

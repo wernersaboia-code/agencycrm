@@ -1,6 +1,8 @@
 import type { Metadata } from "next"
 import { Suspense } from "react"
+import { hasLocale } from "next-intl"
 import { getTranslations } from "next-intl/server"
+import { routing } from "@/lib/i18n/routing"
 import { alternatesFor } from "@/lib/i18n/alternates"
 import { ogLocaleFor, type Locale } from "@/lib/i18n/locales"
 import { toLandingLocale } from "@/components/landing/types"
@@ -24,6 +26,13 @@ export async function generateMetadata({
     params: Promise<{ locale: string }>
 }): Promise<Metadata> {
     const { locale } = await params
+
+    // Ver o comentário em `layout.tsx`: locale inválido aqui vira 500 no lugar
+    // de 404, porque a metadata roda antes do `notFound()`.
+    if (!hasLocale(routing.locales, locale)) {
+        return {}
+    }
+
     const t = await getTranslations({ locale, namespace: "landing.meta" })
 
     return {
