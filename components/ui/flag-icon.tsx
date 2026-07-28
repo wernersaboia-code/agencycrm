@@ -28,6 +28,11 @@ export function FlagIcon({ code, className = "", size = "md", decorative = false
             aria-hidden={decorative || undefined}
             width={40}
             height={30}
+            // Sem passar pelo otimizador do Next: a origem já é um CDN e o
+            // arquivo é um PNG de 40px (~1 KB). Otimizar custava uma invocação
+            // de função por bandeira e um salto a mais no caminho — o seletor
+            // de idioma sozinho tem sete delas em toda página do funil.
+            unoptimized
             className={`${sizes[size]} rounded-sm object-cover shadow-sm ${className}`}
             style={{ imageRendering: "crisp-edges" }}
         />
