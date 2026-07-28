@@ -12,6 +12,7 @@ import {
     CATEGORY_IDS,
     COUNTRY_CODES,
     INDUSTRY_IDS,
+    secaoOfereceEscolha,
     visibleFacets,
 } from "@/lib/constants/catalog-facets"
 import { LIST_LANGUAGES, LIST_LANGUAGE_CODES } from "@/lib/constants/list-languages"
@@ -151,6 +152,15 @@ export function CatalogSidebar({
     const setores = visibleFacets(INDUSTRY_IDS, industryCounts, selectedIndustries)
     const idiomas = visibleFacets(LIST_LANGUAGE_CODES, languageCounts, selectedLanguages)
 
+    // Uma faceta sozinha não filtra nada: marcar a única opção devolve o mesmo
+    // catálogo. A exceção é filtro já ativo (link antigo), senão ele ficaria
+    // aplicado sem aparecer em lugar nenhum para ser desmarcado.
+    const selecaoCategoria = selectedCategory ? [selectedCategory] : []
+    const mostrarCategorias = secaoOfereceEscolha(categorias, selecaoCategoria)
+    const mostrarPaises = secaoOfereceEscolha(paises, selectedCountries)
+    const mostrarSetores = secaoOfereceEscolha(setores, selectedIndustries)
+    const mostrarIdiomas = secaoOfereceEscolha(idiomas, selectedLanguages)
+
     return (
         <div className={`space-y-6 transition-opacity ${isPending ? "pointer-events-none opacity-60" : ""}`}>
             {!hideHeading && (
@@ -161,7 +171,7 @@ export function CatalogSidebar({
             )}
 
             {/* Filtro de Categoria */}
-            {categorias.length > 0 && (
+            {mostrarCategorias && (
             <div>
                 <button
                     type="button"
@@ -222,10 +232,10 @@ export function CatalogSidebar({
             </div>
             )}
 
-            {categorias.length > 0 && paises.length > 0 && <hr className="border-border" />}
+            {mostrarCategorias && mostrarPaises && <hr className="border-border" />}
 
             {/* Filtro de Países */}
-            {paises.length > 0 && (
+            {mostrarPaises && (
             <div>
                 <button
                     type="button"
@@ -275,10 +285,10 @@ export function CatalogSidebar({
             </div>
             )}
 
-            {paises.length > 0 && setores.length > 0 && <hr className="border-border" />}
+            {mostrarPaises && mostrarSetores && <hr className="border-border" />}
 
             {/* Filtro de Setores */}
-            {setores.length > 0 && (
+            {mostrarSetores && (
             <div>
                 <button
                     type="button"
@@ -327,10 +337,10 @@ export function CatalogSidebar({
             </div>
             )}
 
-            {setores.length > 0 && idiomas.length > 0 && <hr className="border-border" />}
+            {mostrarSetores && mostrarIdiomas && <hr className="border-border" />}
 
             {/* Filtro de Idioma da lista */}
-            {idiomas.length > 0 && (
+            {mostrarIdiomas && (
             <div>
                 <button
                     type="button"

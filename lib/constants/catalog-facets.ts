@@ -70,3 +70,20 @@ export function visibleFacets<T extends string>(
 ): T[] {
     return ids.filter((id) => (counts[id] ?? 0) > 0 || selected.includes(id))
 }
+
+/**
+ * Se vale a pena renderizar a seção de filtro.
+ *
+ * Uma faceta sozinha não oferece escolha — marcar a única opção devolve o mesmo
+ * catálogo. A seção só ocupa espaço e sugere que o catálogo está incompleto.
+ *
+ * A exceção é filtro já ativo: aí a seção fica visível mesmo com uma faceta só,
+ * senão um filtro vindo de link antigo ficaria aplicado sem aparecer em lugar
+ * nenhum para ser desmarcado.
+ */
+export function secaoOfereceEscolha(
+    visiveis: readonly string[],
+    selecionados: readonly string[]
+): boolean {
+    return visiveis.length > 1 || selecionados.length > 0
+}
