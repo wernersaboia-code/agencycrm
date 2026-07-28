@@ -165,20 +165,31 @@ e as seis traduções) tem a mesma estrutura da página atual. O que muda:
 
 - **Ênfase na IA.** Os documentos abrem com "utilizando os recursos mais avançados
   da Inteligência Artificial". Em dados B2B isso desconta a percepção de
-  qualidade em vez de somar. A versão alemã mais recente do próprio autor já
-  corrige o tom ("análise apoiada por IA *e* revisão manual final") — é essa que
-  vale. A IA é mencionada como método, não como argumento de venda.
-- **Fontes não confirmadas.** Câmaras de comércio, catálogos de feiras,
-  associações setoriais e portais especializados aparecem como origem dos dados.
-  Só entram as fontes que a operação realmente consulta — a página foi escrita
-  para não afirmar o que não se sustenta, inclusive diante de questionamento
-  sobre dados pessoais.
-- **"Muitos anos de experiência"** na voz da empresa. Com o site lançando agora,
-  soa a currículo emprestado. A experiência é real, mas é *de uma pessoa*: fica
-  mais forte nomeada, na seção de quem está por trás.
+  qualidade em vez de somar. **A versão alemã `Warum EasyProspect- (1).docx` é a
+  fonte de tom para todos os idiomas**: nela a IA aparece como método de análise
+  ao lado da revisão manual final, não como argumento de venda. A versão PT-BR e
+  o rascunho alemão antigo (`Warum EasyProspect-.docx`) ficam de fora.
 - **O número `100000`**, que aparece quatro vezes solto entre seções dos
-  documentos. É resto de formatação. Se a intenção era "100.000 empresas", não
-  há base para o número.
+  documentos. Origem desconhecida, confirmada com o autor. Sai.
+
+**Entra com ressalva de fraseado:**
+
+- **As fontes de dados são reais** — câmaras de comércio inclusive. O ajuste é de
+  registro, não de veracidade: a página lista as fontes sem prometer que *toda*
+  lista passou por *todas* elas, porque a composição varia de lista para lista.
+  Formulação: as listas são compostas a partir de fontes públicas, **entre elas**
+  as citadas.
+- **Os 20+ anos de experiência são verdadeiros**, e são de uma pessoa, não da
+  empresa. Na voz do CNPJ recém-criado soam a currículo emprestado; atribuídos a
+  quem os tem, viram o argumento mais forte da página. O texto passa a dizer que
+  o catálogo nasce da experiência de mais de duas décadas no comércio de
+  exportação de quem está por trás do projeto — e que a base documental existente
+  foi ampliada e reconferida antes de virar produto.
+
+  **Sem nomear ninguém nesta fase.** Publicar nome de pessoa real numa página
+  pública exige o consentimento dela, e isso não cabe no prazo. A formulação
+  escolhida é impessoal de propósito, de modo que acrescentar nome, bio e foto
+  depois seja adição, não reescrita.
 
 A estrutura de `messages/*.json` sob `about.*` não muda — só o conteúdo das
 chaves, nos sete idiomas. As traduções do sócio (en, de, es, fr, it, nl) servem
