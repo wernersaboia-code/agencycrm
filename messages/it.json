@@ -366,6 +366,7 @@
         "filterCategory": "Categoria",
         "filterCountries": "Paesi",
         "filterIndustries": "Settori",
+        "filterLanguages": "Lingua dell'elenco",
         "loadErrorTitle": "Impossibile caricare il catalogo",
         "loadErrorDesc": "Si è verificato un errore durante il recupero degli elenchi. Riprova tra un momento.",
         "loadErrorRetry": "Riprova",

@@ -366,6 +366,7 @@
         "filterCategory": "Kategorie",
         "filterCountries": "Länder",
         "filterIndustries": "Branchen",
+        "filterLanguages": "Sprache der Liste",
         "loadErrorTitle": "Katalog konnte nicht geladen werden",
         "loadErrorDesc": "Beim Abrufen der Listen ist ein Fehler aufgetreten. Bitte versuchen Sie es in Kürze erneut.",
         "loadErrorRetry": "Erneut versuchen",

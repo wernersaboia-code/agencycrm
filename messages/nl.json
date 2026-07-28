@@ -366,6 +366,7 @@
         "filterCategory": "Categorie",
         "filterCountries": "Landen",
         "filterIndustries": "Sectoren",
+        "filterLanguages": "Taal van de lijst",
         "loadErrorTitle": "Catalogus kan niet worden geladen",
         "loadErrorDesc": "Er is een fout opgetreden bij het ophalen van de lijsten. Probeer het over een moment opnieuw.",
         "loadErrorRetry": "Opnieuw proberen",

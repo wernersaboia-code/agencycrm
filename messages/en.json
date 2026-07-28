@@ -366,6 +366,7 @@
         "filterCategory": "Category",
         "filterCountries": "Countries",
         "filterIndustries": "Industries",
+        "filterLanguages": "List language",
         "loadErrorTitle": "Couldn't load the catalog",
         "loadErrorDesc": "There was a failure fetching the lists. Please try again in a moment.",
         "loadErrorRetry": "Try again",

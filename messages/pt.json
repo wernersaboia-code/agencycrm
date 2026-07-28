@@ -366,6 +366,7 @@
         "filterCategory": "Categoria",
         "filterCountries": "Países",
         "filterIndustries": "Setores",
+        "filterLanguages": "Idioma da lista",
         "loadErrorTitle": "Não foi possível carregar o catálogo",
         "loadErrorDesc": "Houve uma falha ao buscar as listas. Tente novamente em alguns instantes.",
         "loadErrorRetry": "Tentar novamente",
