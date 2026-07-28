@@ -10,7 +10,6 @@ import { formatCurrency } from "@/lib/utils"
 import { Globe, CheckCircle, ArrowRight, ShoppingCart, CalendarClock } from "lucide-react"
 import { FlagIcon } from "@/components/ui/flag-icon"
 import { useCart } from "@/contexts/cart-context"
-import { getListLanguage } from "@/lib/constants/list-languages"
 
 export interface PreviewLead {
     companyName: string
@@ -46,7 +45,6 @@ export function ListCard({ list }: ListCardProps) {
     const t = useTranslations("catalog")
     const tCart = useTranslations("cart")
     const { addItem } = useCart()
-    const language = getListLanguage(list.language)
     const updatedAt = new Date(list.updatedAt).toLocaleDateString("pt-BR", {
         month: "short",
         year: "numeric",
@@ -95,11 +93,6 @@ export function ListCard({ list }: ListCardProps) {
                             {list.countries.length > 3 && (
                                 <span className="text-xs text-muted-foreground ml-1">
                                     +{list.countries.length - 3}
-                                </span>
-                            )}
-                            {language && (
-                                <span className="ml-1 flex items-center" title={language.label}>
-                                    <FlagIcon code={language.flagCode} size="sm" className="shadow-sm ring-1 ring-brand-accent/40" />
                                 </span>
                             )}
                         </div>
