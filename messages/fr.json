@@ -555,7 +555,7 @@
         "hero": {
             "eyebrow": "À propos",
             "title": "Qui se trouve derrière les listes",
-            "subtitle": "La personne derrière Easy Prospect cumule plus de vingt ans d'expérience dans le commerce d'exportation. Chaque liste réunit les importateurs et les distributeurs d'un marché, accompagnée d'une étude d'entrée sur le marché condensée — pour que celui qui exporte sache à qui parler, et comment."
+            "subtitle": "La personne derrière Easy Prospect cumule plus de vingt ans d'expérience dans le commerce d'exportation. Chaque liste réunit les importateurs et les distributeurs d'un marché, accompagnée d'une étude condensée d'entrée sur le marché — pour que celui qui exporte sache à qui parler, et comment."
         },
         "methodology": {
             "eyebrow": "Méthodologie",
@@ -564,7 +564,7 @@
             "blocks": [
                 {
                     "title": "Origine des données",
-                    "body": "Les listes partent d'un matériau accumulé au fil d'années passées dans le commerce d'exportation et sont enrichies par des recherches dans des sources publiques — parmi lesquelles les sites institutionnels, les chambres de commerce, les associations sectorielles et les annuaires d'entreprises. La technologie appuie l'analyse ; ce qui entre dans une liste est décidé par celui qui la relit."
+                    "body": "Les listes partent d'éléments accumulés au fil d'années passées dans le commerce d'exportation et sont enrichies par des recherches dans des sources publiques — parmi lesquelles les sites institutionnels, les chambres de commerce, les associations sectorielles et les annuaires d'entreprises. L'analyse s'appuie sur la technologie ; la décision de ce qui entre revient à la personne qui vérifie la liste."
                 },
                 {
                     "title": "Vérification entreprise par entreprise",
