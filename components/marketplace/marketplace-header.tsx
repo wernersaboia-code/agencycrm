@@ -80,6 +80,12 @@ export function MarketplaceHeader() {
                         {t("blog")}
                     </LocaleLink>
                     <LocaleLink
+                        href="/about"
+                        className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                    >
+                        {t("about")}
+                    </LocaleLink>
+                    <LocaleLink
                         href="/faq"
                         className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
                     >
@@ -161,6 +167,11 @@ export function MarketplaceHeader() {
                                 <SheetClose asChild>
                                     <LocaleLink href="/blog" className="text-lg font-medium">
                                         {t("blog")}
+                                    </LocaleLink>
+                                </SheetClose>
+                                <SheetClose asChild>
+                                    <LocaleLink href="/about" className="text-lg font-medium">
+                                        {t("about")}
                                     </LocaleLink>
                                 </SheetClose>
                                 <SheetClose asChild>
