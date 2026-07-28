@@ -549,45 +549,45 @@
     },
     "about": {
         "meta": {
-            "title": "Chi siamo e come nascono i dati",
-            "description": "Come nascono le liste di importatori e distributori: ricerca propria, verifica su fonti pubbliche e revisione periodica del catalogo."
+            "title": "Chi siamo e come nascono le liste",
+            "description": "Come nascono le liste di importatori e distributori: oltre vent'anni di esperienza nel commercio di esportazione, ricerca su fonti pubbliche e verifica azienda per azienda."
         },
         "hero": {
             "eyebrow": "Chi siamo",
             "title": "Chi c'è dietro le liste",
-            "subtitle": "Easy Prospect raccoglie importatori e distributori in studi di mercato in PDF, perché chi esporta sappia con chi parlare. Questa pagina spiega come nascono questi dati."
+            "subtitle": "Chi c'è dietro Easy Prospect ha alle spalle oltre vent'anni di esperienza nel commercio di esportazione. Ogni lista raccoglie gli importatori e i distributori di un mercato, accompagnata da uno studio di ingresso nel mercato in forma sintetica — perché chi esporta sappia con chi parlare, e come."
         },
         "methodology": {
             "eyebrow": "Metodologia",
-            "title": "Come nascono i dati",
+            "title": "Come nascono le liste",
             "intro": "Chi paga per dati B2B ha il diritto di sapere da dove arrivano. Il processo è descritto qui sotto, senza promesse che non possiamo mantenere.",
             "blocks": [
                 {
                     "title": "Origine dei dati",
-                    "body": "Le liste nascono da ricerca propria e sono compilate da Easy Prospect. Ognuna è costruita a partire dal settore e dal mercato che intende coprire."
+                    "body": "Le liste partono da materiale accumulato in anni di attività nel commercio di esportazione e vengono ampliate con ricerche su fonti pubbliche — tra cui siti istituzionali, camere di commercio, associazioni di settore e directory aziendali. La tecnologia sostiene l'analisi; che cosa entra in una lista lo decide chi la revisiona."
                 },
                 {
-                    "title": "Verifica su fonti pubbliche",
-                    "body": "Prima di entrare in una lista, ogni azienda viene verificata su fonti pubbliche — sito istituzionale, presenza digitale e registri disponibili — per confermare che esiste, che opera nel settore indicato e che i suoi canali di contatto sono attivi."
+                    "title": "Verifica azienda per azienda",
+                    "body": "Prima di entrare in una lista, ogni azienda viene verificata su fonti pubbliche: se opera nel settore indicato, se risulta attività di importazione o distribuzione, se mantiene una presenza professionale e se i canali di contatto sono attivi. La verifica non sostituisce la sua qualificazione commerciale, ma aumenta la probabilità che l'azienda elencata sia rilevante."
                 },
                 {
                     "title": "Manutenzione del catalogo",
-                    "body": "Il catalogo viene rivisto periodicamente. Quando una lista non rispecchia più il mercato che descrive, viene tolta dalla vendita invece di restare online."
+                    "body": "Contatti e assetti societari cambiano di continuo. Il catalogo viene rivisto periodicamente e, quando una lista non rispecchia più il mercato che descrive, viene ritirata dalla vendita anziché restare disponibile."
                 }
             ]
         },
         "delivery": {
-            "title": "Che cosa ricevi",
-            "body": "Ogni acquisto dà accesso a uno studio di mercato in PDF con le aziende della lista scelta."
+            "title": "Che cosa riceve",
+            "body": "Ogni acquisto dà accesso a uno studio di ingresso nel mercato in PDF: panoramica del settore nel paese di destinazione, requisiti di accesso, struttura distributiva e la directory di importatori e distributori della lista scelta, con indicazioni su come preparare il primo contatto."
         },
         "limits": {
             "title": "Che cosa non promettiamo",
-            "body": "Non promettiamo che ogni azienda risponderà al tuo contatto, né che una lista sostituisca la tua valutazione prima di trattare. Quello di cui rispondiamo è il criterio: nessuna azienda entra in una lista senza essere stata verificata su fonti pubbliche."
+            "body": "Non promettiamo che ogni azienda risponderà al suo contatto, né che una lista sostituisca la sua valutazione prima di trattare. Il commercio internazionale dipende da domanda reale, prezzo competitivo e tempismo — fattori fuori dal nostro controllo. Le nostre directory non sono nemmeno pensate per invii di massa: servono a un approccio preparato, azienda per azienda. Quello che garantiamo è il criterio: nessuna azienda entra in una lista senza essere stata verificata su fonti pubbliche."
         },
         "cta": {
-            "title": "Hai ancora dubbi?",
+            "title": "Ha ancora dubbi?",
             "body": "Le domande più frequenti su liste, consegna e pagamento trovano risposta nelle FAQ.",
-            "faq": "Vedi le FAQ",
+            "faq": "Vedi le domande frequenti",
             "catalog": "Vedi il catalogo"
         },
         "breadcrumb": {

@@ -549,45 +549,45 @@
     },
     "about": {
         "meta": {
-            "title": "Qui nous sommes et d'où viennent les données",
-            "description": "Comment les listes d'importateurs et de distributeurs sont constituées : recherche propre, vérification dans des sources publiques, revue du catalogue."
+            "title": "Qui nous sommes et comment les listes sont constituées",
+            "description": "Comment les listes d'importateurs et de distributeurs sont constituées : plus de vingt ans d'expérience dans le commerce d'exportation, recherche dans des sources publiques et vérification entreprise par entreprise."
         },
         "hero": {
             "eyebrow": "À propos",
             "title": "Qui se trouve derrière les listes",
-            "subtitle": "Easy Prospect rassemble importateurs et distributeurs dans des études de marché en PDF, pour que les exportateurs sachent à qui parler. Cette page explique comment ces données sont produites."
+            "subtitle": "La personne derrière Easy Prospect cumule plus de vingt ans d'expérience dans le commerce d'exportation. Chaque liste réunit les importateurs et les distributeurs d'un marché, accompagnée d'une étude d'entrée sur le marché condensée — pour que celui qui exporte sache à qui parler, et comment."
         },
         "methodology": {
             "eyebrow": "Méthodologie",
-            "title": "Comment les données sont produites",
+            "title": "Comment les listes sont constituées",
             "intro": "Qui paie pour des données B2B a le droit de savoir d'où elles viennent. Le processus est décrit ci-dessous, sans promesses que nous ne pourrions pas tenir.",
             "blocks": [
                 {
                     "title": "Origine des données",
-                    "body": "Les listes naissent de nos propres recherches et sont constituées par Easy Prospect. Chacune est bâtie à partir du secteur et du marché qu'elle entend couvrir."
+                    "body": "Les listes partent d'un matériau accumulé au fil d'années passées dans le commerce d'exportation et sont enrichies par des recherches dans des sources publiques — parmi lesquelles les sites institutionnels, les chambres de commerce, les associations sectorielles et les annuaires d'entreprises. La technologie appuie l'analyse ; ce qui entre dans une liste est décidé par celui qui la relit."
                 },
                 {
-                    "title": "Vérification dans des sources publiques",
-                    "body": "Avant d'entrer dans une liste, chaque entreprise est vérifiée dans des sources publiques — site institutionnel, présence numérique et registres disponibles — afin de confirmer qu'elle existe, qu'elle opère dans le secteur indiqué et que ses canaux de contact sont actifs."
+                    "title": "Vérification entreprise par entreprise",
+                    "body": "Avant d'entrer dans une liste, chaque entreprise est vérifiée dans des sources publiques : si elle est active dans le secteur indiqué, s'il existe une activité d'importation ou de distribution, si elle entretient une présence professionnelle et si ses canaux de contact sont actifs. Cette vérification ne remplace pas votre propre qualification commerciale, mais elle augmente les chances que l'entreprise listée soit pertinente."
                 },
                 {
                     "title": "Entretien du catalogue",
-                    "body": "Le catalogue est revu périodiquement. Lorsqu'une liste ne reflète plus le marché qu'elle décrit, elle est retirée de la vente plutôt que laissée en ligne."
+                    "body": "Les contacts et les structures de détention changent en permanence. Le catalogue est revu périodiquement et, lorsqu'une liste ne reflète plus le marché qu'elle décrit, elle est retirée de la vente plutôt que laissée disponible."
                 }
             ]
         },
         "delivery": {
             "title": "Ce que vous recevez",
-            "body": "Chaque achat donne accès à une étude de marché en PDF réunissant les entreprises de la liste choisie."
+            "body": "Chaque achat donne accès à une étude d'entrée sur le marché au format PDF : vue d'ensemble du secteur dans le pays de destination, conditions d'accès, structure de distribution et annuaire des importateurs et distributeurs de la liste choisie, avec des repères pour préparer la première prise de contact."
         },
         "limits": {
             "title": "Ce que nous ne promettons pas",
-            "body": "Nous ne promettons pas que toutes les entreprises répondront à votre prise de contact, ni qu'une liste remplace votre propre évaluation avant de négocier. Ce que nous garantissons, c'est le critère : aucune entreprise n'entre dans une liste sans avoir été vérifiée dans des sources publiques."
+            "body": "Nous ne promettons pas que chaque entreprise répondra à votre prise de contact, ni qu'une liste remplace votre propre évaluation avant de négocier. Le commerce international dépend d'une demande réelle, d'un prix compétitif et du bon moment — des facteurs hors de notre contrôle. Nos annuaires ne sont pas non plus faits pour l'envoi en masse : ils servent une approche préparée, entreprise par entreprise. Ce que nous garantissons, c'est le critère : aucune entreprise n'entre dans une liste sans avoir été vérifiée dans des sources publiques."
         },
         "cta": {
             "title": "Encore des questions ?",
             "body": "Les questions les plus fréquentes sur les listes, la livraison et le paiement trouvent leur réponse dans la FAQ.",
-            "faq": "Voir la FAQ",
+            "faq": "Voir les questions fréquentes",
             "catalog": "Voir le catalogue"
         },
         "breadcrumb": {

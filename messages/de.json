@@ -549,44 +549,44 @@
     },
     "about": {
         "meta": {
-            "title": "Wer wir sind und wie die Daten entstehen",
-            "description": "Wie die Listen von Importeuren und Distributoren entstehen: eigene Recherche, Prüfung in öffentlichen Quellen und regelmäßige Pflege des Katalogs."
+            "title": "Wer wir sind und wie die Listen entstehen",
+            "description": "Wie die Listen von Importeuren und Distributoren entstehen: über zwei Jahrzehnte Erfahrung im Exportgeschäft, Recherche in öffentlichen Quellen und Prüfung Unternehmen für Unternehmen."
         },
         "hero": {
             "eyebrow": "Über uns",
             "title": "Wer hinter den Listen steht",
-            "subtitle": "Easy Prospect bündelt Importeure und Distributoren in Marktstudien als PDF, damit Exporteure wissen, mit wem sie sprechen. Diese Seite erklärt, wie diese Daten entstehen."
+            "subtitle": "Wer hinter Easy Prospect steht, bringt über zwei Jahrzehnte Erfahrung im Exportgeschäft mit. Jede Liste bündelt die Importeure und Distributoren eines Marktes und wird von einer kompakten Markteintrittsstudie zu diesem Markt begleitet – damit Exporteure wissen, mit wem sie sprechen und wie."
         },
         "methodology": {
             "eyebrow": "Methodik",
-            "title": "Wie die Daten entstehen",
+            "title": "Wie die Listen entstehen",
             "intro": "Wer für B2B-Daten bezahlt, hat ein Recht darauf zu erfahren, woher sie stammen. Der Ablauf steht unten – ohne Versprechen, die wir nicht halten können.",
             "blocks": [
                 {
                     "title": "Herkunft der Daten",
-                    "body": "Die Listen entstehen aus eigener Recherche und werden von Easy Prospect selbst zusammengestellt. Jede Liste wird nach der Branche und dem Markt aufgebaut, den sie abdecken soll."
+                    "body": "Die Listen gehen von Material aus, das in Jahren im Exportgeschäft zusammengekommen ist, und werden durch Recherche in öffentlichen Quellen ergänzt – unter anderem Unternehmenswebsites, Handelskammern, Branchenverbände und Firmenverzeichnisse. Die Analyse wird durch Technik unterstützt; was in eine Liste aufgenommen wird, entscheidet, wer sie prüft."
                 },
                 {
-                    "title": "Prüfung in öffentlichen Quellen",
-                    "body": "Bevor ein Unternehmen in eine Liste aufgenommen wird, wird es in öffentlichen Quellen geprüft – Unternehmenswebsite, digitale Präsenz und verfügbare Register –, um zu bestätigen, dass es existiert, dass es in der angegebenen Branche tätig ist und dass seine Kontaktwege aktiv sind."
+                    "title": "Prüfung Unternehmen für Unternehmen",
+                    "body": "Bevor ein Unternehmen in eine Liste kommt, wird es in öffentlichen Quellen geprüft: ob es in der angegebenen Branche tätig ist, ob es Import- oder Vertriebstätigkeit gibt, ob es eine professionelle Präsenz unterhält und ob die Kontaktwege aktiv sind. Die Prüfung ersetzt nicht Ihre eigene kaufmännische Qualifizierung, erhöht aber die Wahrscheinlichkeit, dass das gelistete Unternehmen relevant ist."
                 },
                 {
                     "title": "Pflege des Katalogs",
-                    "body": "Der Katalog wird regelmäßig überprüft. Wenn eine Liste den Markt, den sie beschreibt, nicht mehr abbildet, nehmen wir sie aus dem Verkauf, statt sie stehen zu lassen."
+                    "body": "Kontakte und Beteiligungsstrukturen ändern sich laufend. Der Katalog wird regelmäßig überprüft, und wenn eine Liste den Markt, den sie beschreibt, nicht mehr abbildet, nehmen wir sie aus dem Verkauf, statt sie weiter anzubieten."
                 }
             ]
         },
         "delivery": {
             "title": "Was Sie erhalten",
-            "body": "Mit jedem Kauf erhalten Sie eine Marktstudie als PDF mit den Unternehmen der gewählten Liste."
+            "body": "Jeder Kauf gibt Zugang zu einer Markteintrittsstudie als PDF: Überblick über die Branche im Zielland, Zugangsvoraussetzungen, Vertriebsstruktur und das Verzeichnis der Importeure und Distributoren der gewählten Liste, dazu Hinweise zur Vorbereitung der ersten Kontaktaufnahme."
         },
         "limits": {
             "title": "Was wir nicht versprechen",
-            "body": "Wir versprechen nicht, dass jedes Unternehmen auf Ihre Kontaktaufnahme antwortet, und eine Liste ersetzt nicht Ihre eigene Prüfung vor einem Geschäft. Wofür wir einstehen, ist das Kriterium: Kein Unternehmen kommt in eine Liste, ohne in öffentlichen Quellen geprüft worden zu sein."
+            "body": "Wir versprechen nicht, dass jedes Unternehmen auf Ihre Kontaktaufnahme antwortet, und auch nicht, dass eine Liste Ihre eigene Prüfung vor dem Geschäft ersetzt. Internationales Geschäft hängt von tatsächlicher Nachfrage, wettbewerbsfähigem Preis und dem richtigen Zeitpunkt ab – Faktoren außerhalb unseres Einflusses. Unsere Verzeichnisse sind auch nicht für Massenversand gemacht: Sie dienen einer vorbereiteten Ansprache, Unternehmen für Unternehmen. Wofür wir einstehen, ist das Kriterium: Kein Unternehmen kommt in eine Liste, ohne in öffentlichen Quellen geprüft worden zu sein."
         },
         "cta": {
             "title": "Noch Fragen?",
-            "body": "Die häufigsten Fragen zu Listen, Lieferung und Bezahlung beantworten wir in den FAQ.",
+            "body": "Die häufigsten Fragen zu den Listen, zur Lieferung und zur Bezahlung beantworten wir in den FAQ.",
             "faq": "Häufige Fragen ansehen",
             "catalog": "Katalog ansehen"
         },
