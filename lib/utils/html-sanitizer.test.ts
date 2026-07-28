@@ -10,8 +10,11 @@ describe("html sanitizer", () => {
     })
 
     it("removes event handlers", () => {
+        // A tag vazia sai fechada (`<img />`) desde a troca de DOMPurify+jsdom
+        // por sanitize-html. É a única diferença de saída entre as duas
+        // bibliotecas: as duas formas são HTML5 válido e renderizam igual.
         expect(sanitizeHtmlForPreview('<img src="/logo.png" onerror="alert(1)">')).toBe(
-            '<img src="/logo.png">'
+            '<img src="/logo.png" />'
         )
     })
 
