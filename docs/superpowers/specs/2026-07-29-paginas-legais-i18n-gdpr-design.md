@@ -53,8 +53,19 @@ pessoa. O texto reflete essa realidade em vez de falar de "a empresa" — afirma
 existência de pessoa jurídica inexistente é exatamente o tipo de coisa que este
 projeto não faz.
 
-**Identificação:** nome completo do responsável mais e-mail de contato do
-domínio. Endereço postal fica como pendência registrada, não inventado.
+**Identificação, confirmada pelo responsável em 2026-07-29:**
+
+- Nome: **Werner Wild Saboia Carvalho Marinho**
+- Contato: **contato@easyprospect.com.br**
+
+Endereço postal continua pendente — não há endereço comercial, e endereço
+residencial não vai ao ar. A norma pede "dados de contato", e o e-mail cumpre
+essa função enquanto não houver alternativa.
+
+Vale conferir que o nome exibido no recibo do Stripe conte a mesma história que
+a política. Se o painel estiver configurado com nome comercial "Easy Prospect" e
+a política trouxer o nome da pessoa, tudo bem — mas os dois documentos precisam
+ser coerentes entre si.
 
 ## Arquitetura
 
@@ -112,7 +123,7 @@ Mantidas as 7 atuais. Entram cinco:
 
 | Seção nova | O que diz |
 |---|---|
-| Quem é o responsável | Nome da pessoa física, e-mail de contato. Endereço postal pendente |
+| Quem é o responsável | Werner Wild Saboia Carvalho Marinho, contato@easyprospect.com.br. Endereço postal pendente |
 | Base legal de cada tratamento | Execução de contrato (compra e entrega), interesse legítimo (composição das listas), consentimento (analytics) — sujeito a revisão jurídica |
 | Transferências internacionais | Onde cada subprocessador opera e que dado sai da UE |
 | Dados de contato nas listas | Art. 14: origem pública, categorias, direito de oposição e como exercê-lo |
@@ -139,9 +150,9 @@ Efeito: a lacuna fica **registrada e visível**, não bloqueia o lançamento, e 
 da lista só quando for de fato preenchida. Seção marcada como pendente não é
 renderizada — a página nunca mostra um texto de mentira nem um `TODO`.
 
-Pendências iniciais:
+Pendências iniciais (a identificação do responsável **não** está entre elas —
+foi confirmada e entra preenchida):
 
-- `responsavel.nomeCompleto` — nome legal exato do responsável
 - `responsavel.enderecoPostal` — enquanto não houver endereço comercial
 - `representanteUE` — Art. 27, decisão jurídica e contratação
 - `baseLegal.listas` — o fundamento do tratamento dos dados das listas
