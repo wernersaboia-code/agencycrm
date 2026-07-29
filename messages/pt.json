@@ -258,7 +258,7 @@
             },
             {
                 "question": "Como funciona o pagamento?",
-                "answer": "O pagamento é feito por cartão (Stripe) ou PayPal, no checkout do site. Assim que o pagamento é confirmado, a compra aparece em Minhas compras e o download é liberado."
+                "answer": "O pagamento é feito por cartão, no checkout do site, processado pelo Stripe. Assim que o pagamento é confirmado, a compra aparece em Minhas compras e o download é liberado."
             },
             {
                 "question": "Para quais países e setores há listas disponíveis?",
@@ -305,7 +305,7 @@
         "subtotal": "Subtotal",
         "review": "Revisar carrinho",
         "continue": "Continuar comprando",
-        "securePayment": "Pagamento seguro via PayPal ou cartão",
+        "securePayment": "Pagamento seguro com cartão",
         "leads": "{count} leads",
         "addToCart": "Adicionar ao carrinho",
         "openCart": "Abrir carrinho",
@@ -322,7 +322,7 @@
         "emptyDesc": "Escolha uma lista no catálogo para revisar preço, cobertura e formato antes de finalizar a compra.",
         "formats": "PDF",
         "remove": "Remover",
-        "trustPaypal": "Pagamento processado pelo PayPal",
+        "trustPayment": "Pagamento processado pelo Stripe",
         "trustSaved": "Pedido salvo na sua conta",
         "trustDownload": "Download liberado após confirmação",
         "trustReview": "Você revisa o pedido antes de pagar"
@@ -338,7 +338,7 @@
         "trustCompareTitle": "Compare",
         "trustCompareDesc": "Veja volume, países e setores antes de decidir.",
         "trustBuyTitle": "Compre com segurança",
-        "trustBuyDesc": "Checkout via PayPal ou cartão e pedido registrado na sua conta.",
+        "trustBuyDesc": "Checkout com cartão e pedido registrado na sua conta.",
         "trustDownloadTitle": "Baixe na hora",
         "trustDownloadDesc": "Acesse o PDF do estudo assim que o pagamento for confirmado.",
         "availableLists": "Listas disponíveis",
@@ -457,7 +457,7 @@
         "leadsIncluded": "{count} leads incluídos",
         "oneOffNote": "Compra avulsa, sem assinatura. O acesso fica disponível na área Minhas compras.",
         "beforeBuyNote": "Antes de comprar, confira a cobertura, a prévia dos dados e o preço por lead. Depois da aprovação do pagamento, o download fica disponível na sua conta.",
-        "benefitSecure": "Pagamento seguro via PayPal ou cartão",
+        "benefitSecure": "Pagamento seguro com cartão",
         "benefitImmediate": "Download imediato após confirmação",
         "benefitRecorded": "Registro da compra na sua conta",
         "buyNow": "Comprar",

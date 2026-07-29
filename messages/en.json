@@ -258,7 +258,7 @@
             },
             {
                 "question": "How does payment work?",
-                "answer": "Payment is handled by credit card (Stripe) or PayPal in the site checkout. As soon as the payment is confirmed, the purchase appears under My purchases and the download is unlocked."
+                "answer": "Payment is handled by credit card in the site checkout, processed by Stripe. As soon as the payment is confirmed, the purchase appears under My purchases and the download is unlocked."
             },
             {
                 "question": "Which countries and industries are lists available for?",
@@ -305,7 +305,7 @@
         "subtotal": "Subtotal",
         "review": "Review cart",
         "continue": "Continue shopping",
-        "securePayment": "Secure payment via PayPal or card",
+        "securePayment": "Secure card payment",
         "leads": "{count} leads",
         "addToCart": "Add to cart",
         "openCart": "Open cart",
@@ -322,7 +322,7 @@
         "emptyDesc": "Choose a list in the catalog to review price, coverage, and format before completing your purchase.",
         "formats": "PDF",
         "remove": "Remove",
-        "trustPaypal": "Payment processed by PayPal",
+        "trustPayment": "Payment processed by Stripe",
         "trustSaved": "Order saved to your account",
         "trustDownload": "Download unlocked after confirmation",
         "trustReview": "Review your order before you pay"
@@ -338,7 +338,7 @@
         "trustCompareTitle": "Compare",
         "trustCompareDesc": "See volume, countries, and industries before deciding.",
         "trustBuyTitle": "Buy securely",
-        "trustBuyDesc": "Checkout via PayPal or card, with your order recorded to your account.",
+        "trustBuyDesc": "Card checkout, with your order recorded to your account.",
         "trustDownloadTitle": "Download instantly",
         "trustDownloadDesc": "Get the study PDF as soon as payment is confirmed.",
         "availableLists": "Available lists",
@@ -457,7 +457,7 @@
         "leadsIncluded": "{count} leads included",
         "oneOffNote": "One-off purchase, no subscription. Access remains available in your My Purchases area.",
         "beforeBuyNote": "Before buying, check the coverage, data preview, and price per lead. Once payment is approved, the download becomes available in your account.",
-        "benefitSecure": "Secure payment via PayPal or card",
+        "benefitSecure": "Secure card payment",
         "benefitImmediate": "Instant download after confirmation",
         "benefitRecorded": "Purchase recorded to your account",
         "buyNow": "Buy now",

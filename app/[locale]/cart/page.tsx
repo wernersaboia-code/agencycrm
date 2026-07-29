@@ -187,7 +187,7 @@ export default function CartPage() {
                             </Button>
 
                             <div className="space-y-3 rounded-lg border bg-muted/40 p-4">
-                                <TrustItem icon={ShieldCheck} text={t("trustPaypal")} />
+                                <TrustItem icon={ShieldCheck} text={t("trustPayment")} />
                                 <TrustItem icon={CheckCircle2} text={t("trustSaved")} />
                                 <TrustItem icon={FileDown} text={t("trustDownload")} />
                                 <TrustItem icon={HelpCircle} text={t("trustReview")} />
