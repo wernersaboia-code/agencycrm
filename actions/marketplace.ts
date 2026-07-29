@@ -7,6 +7,7 @@ import type { Prisma } from "@prisma/client"
 interface GetListsParams {
     countries?: string[]
     industries?: string[]
+    languages?: string[]
     category?: string // ← ADICIONAR
     search?: string
     page?: number
@@ -17,6 +18,7 @@ export async function getMarketplaceLists(params: GetListsParams = {}) {
     const {
         countries = [],
         industries = [],
+        languages = [],
         category, // ← ADICIONAR
         search = "",
         page = 1,
@@ -42,6 +44,11 @@ export async function getMarketplaceLists(params: GetListsParams = {}) {
         where.industries = {
             hasSome: industries,
         }
+    }
+
+    // `language` é coluna escalar, não array: casa por inclusão, não por hasSome.
+    if (languages.length > 0) {
+        where.language = { in: languages }
     }
 
     // Filtro de categoria ← ADICIONAR
@@ -86,6 +93,7 @@ export async function getFilterCounts() {
             countries: true,
             industries: true,
             category: true, // ← ADICIONAR
+            language: true,
         },
     })
 
@@ -93,6 +101,7 @@ export async function getFilterCounts() {
     const countryCounts: Record<string, number> = {}
     const industryCounts: Record<string, number> = {}
     const categoryCounts: Record<string, number> = {} // ← ADICIONAR
+    const languageCounts: Record<string, number> = {}
 
     lists.forEach((list) => {
         list.countries.forEach((country) => {
@@ -105,7 +114,10 @@ export async function getFilterCounts() {
         if (list.category) {
             categoryCounts[list.category] = (categoryCounts[list.category] || 0) + 1
         }
+        if (list.language) {
+            languageCounts[list.language] = (languageCounts[list.language] || 0) + 1
+        }
     })
 
-    return { countryCounts, industryCounts, categoryCounts } // ← ADICIONAR categoryCounts
+    return { countryCounts, industryCounts, categoryCounts, languageCounts }
 }

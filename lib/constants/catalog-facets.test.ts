@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest"
-import { CATEGORY_IDS, INDUSTRY_IDS, visibleFacets } from "./catalog-facets"
+import { CATEGORY_IDS, INDUSTRY_IDS, secaoOfereceEscolha, visibleFacets } from "./catalog-facets"
 
 describe("visibleFacets", () => {
     it("mostra só as facetas com lista publicada por trás", () => {
@@ -40,5 +40,25 @@ describe("vocabulário controlado", () => {
         for (const id of INDUSTRY_IDS) {
             expect(messages.catalog.industries).toHaveProperty(id)
         }
+    })
+})
+
+describe("secaoOfereceEscolha", () => {
+    it("esconde a seção com uma faceta só", () => {
+        expect(secaoOfereceEscolha(["importers"], [])).toBe(false)
+    })
+
+    it("mostra a seção com duas ou mais", () => {
+        expect(secaoOfereceEscolha(["importers", "exporters"], [])).toBe(true)
+    })
+
+    it("esconde a seção vazia", () => {
+        expect(secaoOfereceEscolha([], [])).toBe(false)
+    })
+
+    it("mostra a seção com faceta única SE houver filtro ativo nela", () => {
+        // Link antigo com ?category=importers: sem esta exceção o filtro ficaria
+        // aplicado e invisível, sem como desmarcar.
+        expect(secaoOfereceEscolha(["importers"], ["importers"])).toBe(true)
     })
 })

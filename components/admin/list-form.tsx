@@ -342,7 +342,7 @@ export function ListForm({ list }: ListFormProps) {
 
                 // Tentar mapear para IDs conhecidos
                 if (lowerSector.includes("food") || lowerSector.includes("aliment")) {
-                    industryId = "food"
+                    industryId = "fmcg_food"
                 } else if (lowerSector.includes("tech")) {
                     industryId = "tech"
                 } else if (lowerSector.includes("fashion") || lowerSector.includes("moda")) {

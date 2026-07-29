@@ -12,15 +12,19 @@ import {
     CATEGORY_IDS,
     COUNTRY_CODES,
     INDUSTRY_IDS,
+    secaoOfereceEscolha,
     visibleFacets,
 } from "@/lib/constants/catalog-facets"
+import { LIST_LANGUAGES, LIST_LANGUAGE_CODES } from "@/lib/constants/list-languages"
 
 interface CatalogSidebarProps {
     selectedCountries: string[]
     selectedIndustries: string[]
+    selectedLanguages: string[]
     selectedCategory?: string
     countryCounts: Record<string, number>
     industryCounts: Record<string, number>
+    languageCounts: Record<string, number>
     categoryCounts: Record<string, number>
     onNavigate?: () => void
     /** Dentro da gaveta mobile o título já vem do SheetHeader. */
@@ -52,9 +56,11 @@ function FilterCheckbox({ checked, disabled }: { checked: boolean; disabled: boo
 export function CatalogSidebar({
                                    selectedCountries,
                                    selectedIndustries,
+                                   selectedLanguages,
                                    selectedCategory,
                                    countryCounts,
                                    industryCounts,
+                                   languageCounts,
                                    categoryCounts,
                                    onNavigate,
                                    hideHeading = false,
@@ -66,6 +72,7 @@ export function CatalogSidebar({
     const [countriesOpen, setCountriesOpen] = useState(true)
     const [industriesOpen, setIndustriesOpen] = useState(true)
     const [categoriesOpen, setCategoriesOpen] = useState(true)
+    const [languagesOpen, setLanguagesOpen] = useState(true)
 
     const panelId = useId()
 
@@ -108,6 +115,13 @@ export function CatalogSidebar({
         updateFilters("industries", newIndustries)
     }
 
+    const toggleLanguage = (code: string) => {
+        const newLanguages = selectedLanguages.includes(code)
+            ? selectedLanguages.filter((l) => l !== code)
+            : [...selectedLanguages, code]
+        updateFilters("languages", newLanguages)
+    }
+
     const selectCategory = (id: string) => {
         // Se clicar na mesma categoria, deseleciona
         updateFilters("category", selectedCategory === id ? undefined : id)
@@ -123,6 +137,7 @@ export function CatalogSidebar({
     const hasActiveFilters =
         selectedCountries.length > 0 ||
         selectedIndustries.length > 0 ||
+        selectedLanguages.length > 0 ||
         Boolean(selectedCategory)
 
     // O vocabulário é maior do que a operação: só entram no filtro as facetas
@@ -135,6 +150,16 @@ export function CatalogSidebar({
     )
     const paises = visibleFacets(COUNTRY_CODES, countryCounts, selectedCountries)
     const setores = visibleFacets(INDUSTRY_IDS, industryCounts, selectedIndustries)
+    const idiomas = visibleFacets(LIST_LANGUAGE_CODES, languageCounts, selectedLanguages)
+
+    // Uma faceta sozinha não filtra nada: marcar a única opção devolve o mesmo
+    // catálogo. A exceção é filtro já ativo (link antigo), senão ele ficaria
+    // aplicado sem aparecer em lugar nenhum para ser desmarcado.
+    const selecaoCategoria = selectedCategory ? [selectedCategory] : []
+    const mostrarCategorias = secaoOfereceEscolha(categorias, selecaoCategoria)
+    const mostrarPaises = secaoOfereceEscolha(paises, selectedCountries)
+    const mostrarSetores = secaoOfereceEscolha(setores, selectedIndustries)
+    const mostrarIdiomas = secaoOfereceEscolha(idiomas, selectedLanguages)
 
     return (
         <div className={`space-y-6 transition-opacity ${isPending ? "pointer-events-none opacity-60" : ""}`}>
@@ -146,7 +171,7 @@ export function CatalogSidebar({
             )}
 
             {/* Filtro de Categoria */}
-            {categorias.length > 0 && (
+            {mostrarCategorias && (
             <div>
                 <button
                     type="button"
@@ -207,10 +232,10 @@ export function CatalogSidebar({
             </div>
             )}
 
-            {categorias.length > 0 && paises.length > 0 && <hr className="border-border" />}
+            {mostrarCategorias && mostrarPaises && <hr className="border-border" />}
 
             {/* Filtro de Países */}
-            {paises.length > 0 && (
+            {mostrarPaises && (
             <div>
                 <button
                     type="button"
@@ -260,10 +285,10 @@ export function CatalogSidebar({
             </div>
             )}
 
-            {paises.length > 0 && setores.length > 0 && <hr className="border-border" />}
+            {mostrarPaises && mostrarSetores && <hr className="border-border" />}
 
             {/* Filtro de Setores */}
-            {setores.length > 0 && (
+            {mostrarSetores && (
             <div>
                 <button
                     type="button"
@@ -299,6 +324,61 @@ export function CatalogSidebar({
                                         className="peer sr-only"
                                         checked={isChecked}
                                         onChange={() => toggleIndustry(industryId)}
+                                        disabled={isDisabled}
+                                    />
+                                    <FilterCheckbox checked={isChecked} disabled={isDisabled} />
+                                    <span className="flex-1 text-sm text-muted-foreground">{name}</span>
+                                    <span className="text-xs text-muted-foreground">({count})</span>
+                                </label>
+                            )
+                        })}
+                    </div>
+                </div>
+            </div>
+            )}
+
+            {mostrarSetores && mostrarIdiomas && <hr className="border-border" />}
+
+            {/* Filtro de Idioma da lista */}
+            {mostrarIdiomas && (
+            <div>
+                <button
+                    type="button"
+                    onClick={() => setLanguagesOpen(!languagesOpen)}
+                    aria-expanded={languagesOpen}
+                    aria-controls={`${panelId}-languages`}
+                    className="mb-3 flex w-full items-center justify-between text-left font-semibold text-foreground"
+                >
+                    <span>{t("filterLanguages")}</span>
+                    <ChevronDown
+                        aria-hidden="true"
+                        className={`h-4 w-4 transition-transform ${languagesOpen ? "rotate-180" : ""}`}
+                    />
+                </button>
+
+                <div id={`${panelId}-languages`} hidden={!languagesOpen}>
+                    <div className="space-y-2">
+                        {idiomas.map((code) => {
+                            const count = languageCounts[code] || 0
+                            const isDisabled = count === 0
+                            const isChecked = selectedLanguages.includes(code)
+                            // Nome do idioma na própria língua: "Deutsch", não
+                            // "Alemão". Endônimo é o padrão em seletor de idioma
+                            // e dispensa 7x7 traduções.
+                            const name = LIST_LANGUAGES.find((l) => l.code === code)?.label ?? code
+
+                            return (
+                                <label
+                                    key={code}
+                                    className={`group flex items-center gap-3 ${
+                                        isDisabled ? "cursor-not-allowed opacity-40" : "cursor-pointer"
+                                    }`}
+                                >
+                                    <input
+                                        type="checkbox"
+                                        className="peer sr-only"
+                                        checked={isChecked}
+                                        onChange={() => toggleLanguage(code)}
                                         disabled={isDisabled}
                                     />
                                     <FilterCheckbox checked={isChecked} disabled={isDisabled} />

@@ -66,6 +66,7 @@
     "nav": {
         "catalog": "Catálogo",
         "howItWorks": "Como funciona",
+        "about": "Quem somos",
         "blog": "Blog",
         "faq": "FAQ",
         "login": "Entrar",
@@ -366,6 +367,7 @@
         "filterCategory": "Categoria",
         "filterCountries": "Países",
         "filterIndustries": "Setores",
+        "filterLanguages": "Idioma da lista",
         "loadErrorTitle": "Não foi possível carregar o catálogo",
         "loadErrorDesc": "Houve uma falha ao buscar as listas. Tente novamente em alguns instantes.",
         "loadErrorRetry": "Tentar novamente",
@@ -391,7 +393,9 @@
             "BR": "Brasil"
         },
         "industries": {
-            "food": "Alimentos & Bebidas",
+            "fmcg_food": "FMCG — Bens de Consumo Alimentares",
+            "fmcg_nonfood": "FMCG — Bens de Consumo Não-Alimentares",
+            "horeca": "HORECA — Hotelaria, Restauração e Catering",
             "tech": "Tecnologia",
             "fashion": "Moda & Têxtil",
             "automotive": "Automotivo",
@@ -545,40 +549,40 @@
     },
     "about": {
         "meta": {
-            "title": "Quem somos e como os dados são feitos",
-            "description": "Como as listas de importadores e distribuidores são produzidas: pesquisa própria, conferência em fontes públicas e revisão periódica do catálogo."
+            "title": "Quem somos e como as listas são feitas",
+            "description": "Como as listas de importadores e distribuidores são produzidas: mais de duas décadas de experiência em exportação, pesquisa em fontes públicas e conferência empresa por empresa."
         },
         "hero": {
             "eyebrow": "Sobre",
             "title": "Quem está por trás das listas",
-            "subtitle": "O Easy Prospect reúne importadores e distribuidores em estudos de mercado em PDF, para quem exporta saber com quem falar. Esta página explica como esses dados são produzidos."
+            "subtitle": "Quem está por trás do Easy Prospect acumula mais de duas décadas de experiência no comércio de exportação. Cada lista reúne importadores e distribuidores de um mercado, acompanhada de um estudo compacto de entrada nesse mercado — para quem exporta saber com quem falar, e como."
         },
         "methodology": {
             "eyebrow": "Metodologia",
-            "title": "Como os dados são produzidos",
+            "title": "Como as listas são produzidas",
             "intro": "Quem paga por dados B2B tem o direito de saber de onde eles vêm. O processo está descrito abaixo, sem promessas que não possamos sustentar.",
             "blocks": [
                 {
                     "title": "Origem dos dados",
-                    "body": "As listas nascem de pesquisa própria e são compiladas pela nossa operação. Cada uma é montada a partir do setor e do mercado que ela se propõe a cobrir."
+                    "body": "As listas partem de material acumulado em anos de operação no comércio de exportação e são ampliadas com pesquisa em fontes públicas — entre elas sites institucionais, câmaras de comércio, associações setoriais e diretórios empresariais. A análise é apoiada por tecnologia; a decisão do que entra é de quem revisa."
                 },
                 {
-                    "title": "Conferência em fontes públicas",
-                    "body": "Antes de entrar numa lista, cada empresa é conferida em fontes públicas — site institucional, presença digital e registros disponíveis — para confirmar que existe, que atua no setor indicado e que os canais de contato estão ativos."
+                    "title": "Conferência empresa por empresa",
+                    "body": "Antes de entrar numa lista, cada empresa é conferida em fontes públicas: se atua no setor indicado, se há atividade de importação ou distribuição, se mantém presença profissional e se os canais de contato estão ativos. A conferência não substitui a sua própria qualificação comercial, mas aumenta a chance de que a empresa listada seja relevante."
                 },
                 {
                     "title": "Manutenção do catálogo",
-                    "body": "O catálogo é revisado periodicamente. Quando uma lista deixa de refletir o mercado que descreve, ela sai de venda em vez de continuar disponível."
+                    "body": "Contatos e estruturas societárias mudam o tempo todo. O catálogo é revisado periodicamente, e quando uma lista deixa de refletir o mercado que descreve, ela sai de venda em vez de continuar disponível."
                 }
             ]
         },
         "delivery": {
             "title": "O que você recebe",
-            "body": "Cada compra dá acesso a um estudo de mercado em PDF com as empresas da lista escolhida."
+            "body": "Cada compra dá acesso a um estudo de entrada no mercado em PDF: visão geral do setor no país de destino, requisitos de acesso, estrutura de distribuição e o diretório de importadores e distribuidores da lista escolhida, com orientação sobre como preparar o primeiro contato."
         },
         "limits": {
             "title": "O que não prometemos",
-            "body": "Não prometemos que toda empresa vai responder ao seu contato, nem que uma lista substitui a sua própria avaliação antes de negociar. O que garantimos é o critério: nenhuma empresa entra numa lista sem ter sido conferida em fontes públicas."
+            "body": "Não prometemos que toda empresa vai responder ao seu contato, nem que uma lista substitui a sua avaliação antes de negociar. Negócio internacional depende de demanda real, preço competitivo e do momento certo — fatores fora do nosso controle. Nossos diretórios também não foram feitos para disparo em massa: eles servem a uma abordagem preparada, empresa por empresa. O que garantimos é o critério: nenhuma empresa entra numa lista sem ter sido conferida em fontes públicas."
         },
         "cta": {
             "title": "Ainda com dúvidas?",

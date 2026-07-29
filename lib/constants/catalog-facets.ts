@@ -13,6 +13,10 @@
  * `catalog.categories.*`, `catalog.industries.*` e `catalog.countries.*`. Id
  * novo aqui exige o rótulo nos sete idiomas — o teste de paridade em
  * `lib/i18n/messages-integridade.test.ts` cobra isso.
+ *
+ * `foodservice` foi avaliado e deixado de fora: no comércio internacional ele
+ * se sobrepõe demais a HORECA, e faceta que o cliente não sabe escolher é pior
+ * que faceta a menos. Revisar quando o catálogo tiver volume que justifique.
  */
 
 export const CATEGORY_IDS = [
@@ -25,7 +29,9 @@ export const CATEGORY_IDS = [
 ] as const
 
 export const INDUSTRY_IDS = [
-    "food",
+    "fmcg_food",
+    "fmcg_nonfood",
+    "horeca",
     "tech",
     "fashion",
     "automotive",
@@ -63,4 +69,21 @@ export function visibleFacets<T extends string>(
     selected: readonly string[]
 ): T[] {
     return ids.filter((id) => (counts[id] ?? 0) > 0 || selected.includes(id))
+}
+
+/**
+ * Se vale a pena renderizar a seção de filtro.
+ *
+ * Uma faceta sozinha não oferece escolha — marcar a única opção devolve o mesmo
+ * catálogo. A seção só ocupa espaço e sugere que o catálogo está incompleto.
+ *
+ * A exceção é filtro já ativo: aí a seção fica visível mesmo com uma faceta só,
+ * senão um filtro vindo de link antigo ficaria aplicado sem aparecer em lugar
+ * nenhum para ser desmarcado.
+ */
+export function secaoOfereceEscolha(
+    visiveis: readonly string[],
+    selecionados: readonly string[]
+): boolean {
+    return visiveis.length > 1 || selecionados.length > 0
 }

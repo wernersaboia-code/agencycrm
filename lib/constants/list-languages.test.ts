@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest"
-import { LIST_LANGUAGES, getListLanguage } from "./list-languages"
+import { visibleFacets } from "@/lib/constants/catalog-facets"
+import { LIST_LANGUAGES, LIST_LANGUAGE_CODES, getListLanguage } from "./list-languages"
 
 describe("list-languages", () => {
     it("tem as 7 línguas do app", () => {
@@ -20,5 +21,16 @@ describe("list-languages", () => {
         expect(getListLanguage("xx")).toBeNull()
         expect(getListLanguage(null)).toBeNull()
         expect(getListLanguage(undefined)).toBeNull()
+    })
+})
+
+describe("LIST_LANGUAGE_CODES", () => {
+    it("expõe os códigos na mesma ordem de LIST_LANGUAGES", () => {
+        expect(LIST_LANGUAGE_CODES).toEqual(LIST_LANGUAGES.map((l) => l.code))
+    })
+
+    it("serve de vocabulário para visibleFacets", () => {
+        // Só idioma com lista publicada entra no filtro, igual às outras facetas.
+        expect(visibleFacets(LIST_LANGUAGE_CODES, { pt: 2, en: 17 }, [])).toEqual(["pt", "en"])
     })
 })
