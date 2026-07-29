@@ -7,6 +7,10 @@ import { Link, useRouter } from "@/lib/i18n/navigation"
 import { useCart } from "@/contexts/cart-context"
 import { PayPalButtonsWrapper } from "@/components/checkout/paypal-buttons"
 import { StripeCheckoutButton } from "@/components/checkout/stripe-checkout-button"
+import {
+    getOptionalPublicPaypalClientId,
+    getOptionalPublicStripePublishableKey,
+} from "@/lib/env"
 import { formatCurrency } from "@/lib/utils"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
@@ -26,6 +30,15 @@ export default function CheckoutPage() {
     const router = useRouter()
     const t = useTranslations("checkout")
     const format = useFormatter()
+
+    // Cada botão de pagamento se esconde sozinho quando seu provedor não está
+    // configurado. Isso deixava um caso sem dono: com nenhum configurado, o
+    // cartão de pagamento ficava vazio e o comprador não tinha como saber se a
+    // culpa era dele. Só esta página enxerga os dois provedores, então é aqui
+    // que o aviso mora.
+    const hasAnyPaymentProvider =
+        Boolean(getOptionalPublicStripePublishableKey()) ||
+        Boolean(getOptionalPublicPaypalClientId())
 
     useEffect(() => {
         if (items.length === 0) {
@@ -91,11 +104,31 @@ export default function CheckoutPage() {
                                 {t("redirectNote")}
                             </div>
 
-                            <PayPalButtonsWrapper items={paypalItems} />
+                            {hasAnyPaymentProvider ? (
+                                <>
+                                    {/* Stripe primeiro: é o meio principal. Cada botão
+                                        some sozinho quando seu provedor não está
+                                        configurado, então a ordem aqui é a ordem que o
+                                        comprador vê. */}
+                                    <StripeCheckoutButton items={paypalItems} />
 
-                            <div className="mt-3">
-                                <StripeCheckoutButton items={paypalItems} />
-                            </div>
+                                    <div className="mt-3">
+                                        <PayPalButtonsWrapper items={paypalItems} />
+                                    </div>
+                                </>
+                            ) : (
+                                <div
+                                    role="alert"
+                                    className="rounded-lg border border-destructive/30 bg-destructive/10 p-4"
+                                >
+                                    <p className="font-medium text-destructive">
+                                        {t("noProviderTitle")}
+                                    </p>
+                                    <p className="mt-1 text-sm text-destructive/90">
+                                        {t("noProviderDesc")}
+                                    </p>
+                                </div>
+                            )}
                         </CardContent>
                     </Card>
 

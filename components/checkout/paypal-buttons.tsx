@@ -49,16 +49,13 @@ export function PayPalButtonsWrapper({ items }: PayPalButtonsWrapperProps) {
     const paypalClientId = getOptionalPublicPaypalClientId()
 
     if (!paypalClientId) {
-        // O nome da variável de ambiente é problema do time, não do comprador.
-        console.error("NEXT_PUBLIC_PAYPAL_CLIENT_ID ausente — botões do PayPal não renderizados")
-
-        return (
-            <div className="rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-center">
-                <p className="text-sm text-destructive">
-                    {t("unavailable")}
-                </p>
-            </div>
-        )
+        // PayPal desconfigurado some da tela, mesmo comportamento do botão do
+        // Stripe. Antes daqui saía uma caixa de erro vermelha: fazia sentido
+        // quando o PayPal era o único meio de pagamento, mas hoje ele é
+        // opcional — e erro de configuração de um provedor inativo não é
+        // assunto do comprador. Quem avisa quando NENHUM provedor está
+        // configurado é a página de checkout, que enxerga os dois.
+        return null
     }
 
     return (
