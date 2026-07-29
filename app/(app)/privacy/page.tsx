@@ -21,7 +21,7 @@ export default function PrivacyPage() {
                         <li><strong>Dados de conta:</strong> nome, e-mail, avatar (via Supabase Auth).</li>
                         <li><strong>Dados de leads:</strong> nome, e-mail, telefone, empresa, cargo, endereço (inseridos por você ou importados).</li>
                         <li><strong>Dados de uso:</strong> interações com campanhas (aberturas, cliques), registros de ligações, compras no marketplace.</li>
-                        <li><strong>Dados de pagamento:</strong> dados de transações PayPal (não armazenamos cartões).</li>
+                        <li><strong>Dados de pagamento:</strong> dados de transações Stripe (não armazenamos cartões).</li>
                     </ul>
                 </section>
 
@@ -42,7 +42,7 @@ export default function PrivacyPage() {
                     </p>
                     <ul className="mt-2 list-disc space-y-1 pl-5">
                         <li><strong>Supabase</strong> — hospedagem de banco de dados, autenticação e armazenamento.</li>
-                        <li><strong>PayPal</strong> — processamento de pagamentos.</li>
+                        <li><strong>Stripe</strong> — processamento de pagamentos.</li>
                         <li><strong>Resend</strong> — envio de e-mails transacionais e de campanha.</li>
                         <li><strong>Vercel</strong> — hospedagem da aplicação e analytics de performance.</li>
                     </ul>
