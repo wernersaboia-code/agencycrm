@@ -326,7 +326,8 @@
         "trustPayment": "Payment processed by Stripe",
         "trustSaved": "Order saved to your account",
         "trustDownload": "Download unlocked after confirmation",
-        "trustReview": "Review your order before you pay"
+        "trustReview": "Review your order before you pay",
+        "currencyFellBack": "One of the lists in your cart has no price in that currency. The cart switched back to euros."
     },
     "catalog": {
         "metaTitle": "List Catalog",

@@ -326,7 +326,8 @@
         "trustPayment": "Pagamento processado pelo Stripe",
         "trustSaved": "Pedido salvo na sua conta",
         "trustDownload": "Download liberado após confirmação",
-        "trustReview": "Você revisa o pedido antes de pagar"
+        "trustReview": "Você revisa o pedido antes de pagar",
+        "currencyFellBack": "Uma das listas do carrinho não tem preço nessa moeda. O carrinho voltou para euro."
     },
     "catalog": {
         "metaTitle": "Catálogo de Listas",

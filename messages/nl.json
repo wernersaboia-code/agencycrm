@@ -326,7 +326,8 @@
         "trustPayment": "Betaling verwerkt door Stripe",
         "trustSaved": "Bestelling opgeslagen in uw account",
         "trustDownload": "Download beschikbaar na bevestiging",
-        "trustReview": "U controleert de bestelling voordat u betaalt"
+        "trustReview": "U controleert de bestelling voordat u betaalt",
+        "currencyFellBack": "Een van de lijsten in je winkelwagen heeft geen prijs in die valuta. De winkelwagen staat weer in euro's."
     },
     "catalog": {
         "metaTitle": "Catalogus met lijsten",

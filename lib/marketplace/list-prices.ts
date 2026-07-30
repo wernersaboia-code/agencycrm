@@ -120,3 +120,20 @@ export async function writeListPrices(
         })
     })
 }
+
+/**
+ * Um carrinho com duas moedas não tem total. Se qualquer item não tem preço na
+ * moeda escolhida, o carrinho inteiro cai para EUR — e quem chama avisa a
+ * pessoa, porque o número na tela acabou de mudar sem ela ter pedido.
+ */
+export function cartCurrencyFor(
+    prices: Map<string, ResolvedPrice>,
+    wanted: Currency
+): { currency: Currency; fellBack: boolean } {
+    for (const price of prices.values()) {
+        if (price.isFallback) {
+            return { currency: DEFAULT_CURRENCY, fellBack: true }
+        }
+    }
+    return { currency: wanted, fellBack: false }
+}

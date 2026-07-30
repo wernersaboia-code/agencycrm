@@ -326,7 +326,8 @@
         "trustPayment": "Pagamento elaborato da Stripe",
         "trustSaved": "Ordine salvato nel tuo account",
         "trustDownload": "Download sbloccato dopo la conferma",
-        "trustReview": "Verifichi l'ordine prima di pagare"
+        "trustReview": "Verifichi l'ordine prima di pagare",
+        "currencyFellBack": "Una delle liste nel carrello non ha un prezzo in questa valuta. Il carrello è tornato all'euro."
     },
     "catalog": {
         "metaTitle": "Catalogo elenchi",

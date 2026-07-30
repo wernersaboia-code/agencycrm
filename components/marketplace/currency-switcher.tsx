@@ -5,6 +5,7 @@ import { Coins } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { useRouter } from "@/lib/i18n/navigation"
 import { setCurrencyCookie } from "@/actions/currency"
+import { useCart } from "@/contexts/cart-context"
 import {
     CURRENCY_COOKIE,
     DEFAULT_CURRENCY,
@@ -42,6 +43,7 @@ function subscribeToCurrency() {
 export function CurrencySwitcher() {
     const router = useRouter()
     const t = useTranslations("nav")
+    const { repriceTo } = useCart()
     // O primeiro render é o do servidor, que não vê document.cookie. Ler via
     // useSyncExternalStore evita a divergência de hidratação sem precisar de
     // um setState dentro de useEffect: getServerSnapshot devolve o default
@@ -54,6 +56,7 @@ export function CurrencySwitcher() {
     const switchTo = async (target: Currency) => {
         if (target === current) return
         await setCurrencyCookie(target)
+        await repriceTo(target)
         router.refresh()
     }
 

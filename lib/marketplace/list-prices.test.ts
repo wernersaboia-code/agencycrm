@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest"
-import { pickPrice, resolveListPrices, writeListPrices } from "./list-prices"
+import { pickPrice, resolveListPrices, writeListPrices, cartCurrencyFor } from "./list-prices"
 
 describe("pickPrice", () => {
     const prices = [
@@ -108,5 +108,27 @@ describe("writeListPrices", () => {
         expect(tx.leadListPrice.deleteMany).toHaveBeenCalledWith({
             where: { listId: "list-1", currency: { in: ["BRL", "USD"] } },
         })
+    })
+})
+
+describe("cartCurrencyFor", () => {
+    it("mantém a moeda pedida quando todos os itens têm preço nela", () => {
+        const prices = new Map([
+            ["a", { amount: 289, currency: "BRL" as const, isFallback: false }],
+            ["b", { amount: 129, currency: "BRL" as const, isFallback: false }],
+        ])
+        expect(cartCurrencyFor(prices, "BRL")).toEqual({ currency: "BRL", fellBack: false })
+    })
+
+    it("derruba o carrinho INTEIRO para EUR se um único item não tem preço na moeda", () => {
+        const prices = new Map([
+            ["a", { amount: 289, currency: "BRL" as const, isFallback: false }],
+            ["b", { amount: 20, currency: "EUR" as const, isFallback: true }],
+        ])
+        expect(cartCurrencyFor(prices, "BRL")).toEqual({ currency: "EUR", fellBack: true })
+    })
+
+    it("carrinho vazio fica na moeda pedida", () => {
+        expect(cartCurrencyFor(new Map(), "USD")).toEqual({ currency: "USD", fellBack: false })
     })
 })

@@ -3,6 +3,8 @@
 
 import { createContext, useContext, useMemo, useState, useSyncExternalStore, ReactNode } from "react"
 import { toast } from "sonner"
+import { useTranslations } from "next-intl"
+import { resolveCartPrices } from "@/actions/cart-prices"
 
 export interface CartItem {
     id: string
@@ -25,6 +27,8 @@ interface CartContextType {
     isOpen: boolean
     openCart: () => void
     closeCart: () => void
+    currency: string
+    repriceTo: (currency: string) => Promise<void>
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined)
@@ -71,6 +75,26 @@ export function CartProvider({ children }: { children: ReactNode }) {
     const cartSnapshot = useSyncExternalStore(subscribeToCart, getCartSnapshot, () => EMPTY_CART)
     const items = useMemo(() => parseCartItems(cartSnapshot), [cartSnapshot])
     const [isOpen, setIsOpen] = useState(false)
+    const tCart = useTranslations("cart")
+
+    const repriceTo = async (currency: string) => {
+        const current = parseCartItems(getCartSnapshot())
+        if (current.length === 0) return
+
+        const result = await resolveCartPrices(current.map((i) => i.id), currency)
+
+        writeCartItems(
+            current.map((item) => ({
+                ...item,
+                price: result.prices[item.id] ?? item.price,
+                currency: result.currency,
+            }))
+        )
+
+        if (result.fellBack) {
+            toast.info(tCart("currencyFellBack"))
+        }
+    }
 
     const setCartItems = (updater: (current: CartItem[]) => CartItem[]) => {
         writeCartItems(updater(parseCartItems(getCartSnapshot())))
@@ -135,6 +159,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
     const openCart = () => setIsOpen(true)
     const closeCart = () => setIsOpen(false)
+    const currency = items[0]?.currency ?? "EUR"
 
     return (
         <CartContext.Provider
@@ -149,6 +174,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
                 isOpen,
                 openCart,
                 closeCart,
+                currency,
+                repriceTo,
             }}
         >
             {children}
