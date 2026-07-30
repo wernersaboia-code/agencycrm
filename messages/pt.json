@@ -1104,6 +1104,11 @@
             "postUpdated": "Post atualizado.",
             "postCreated": "Post criado.",
             "saveError": "Erro ao salvar.",
+            "validationFailed": "Corrija os campos abaixo antes de salvar.",
+            "notPublishable": "Publicar exige ao menos um idioma com título e conteúdo.",
+            "tooBig": "passou do limite de {limite} caracteres",
+            "invalidField": "valor inválido",
+            "metaDescriptionHint": "Escreva entre 140 e 155 caracteres: o buscador corta o restante. Se ficar vazio, o resumo é usado no lugar.",
             "saving": "Salvando...",
             "save": "Salvar"
         },

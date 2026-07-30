@@ -36,7 +36,15 @@ export function CategoryManager({ initial }: { initial: CategoryRow[] }) {
         }
         setSaving(true)
         try {
-            await createCategory({ key: slugify(key), translations })
+            // A action devolve resultado em vez de lançar: exceção de Server
+            // Action chega ao cliente redigida pelo Next.js em produção, sem
+            // mensagem aproveitável.
+            const res = await createCategory({ key: slugify(key), translations })
+            if (!res.success) {
+                toast.error(t("categoryError"))
+                return
+            }
+
             toast.success(t("categoryCreated"))
             setKey(""); setNames({})
             router.refresh()

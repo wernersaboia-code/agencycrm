@@ -12,7 +12,52 @@ import { RichTextEditor } from "@/components/ui/rich-text-editor/rich-text-edito
 import { BLOG_LOCALES, dirForLocale, type BlogLocale } from "@/lib/blog/locales"
 import { slugify } from "@/lib/blog/slug"
 import { uploadBlogImage } from "@/lib/blog/storage"
-import { createPost, updatePost } from "@/actions/admin/blog"
+import { createPost, updatePost, type BlogFieldError } from "@/actions/admin/blog"
+import { LIMITES_DE_POST } from "@/lib/validations/blog"
+
+/**
+ * Contador ao vivo do campo. Existe porque o editor não tinha nenhum: o
+ * primeiro post do blog falhou com um resumo acima do limite e o autor só
+ * descobriu ao salvar, com uma mensagem opaca. O número vem de
+ * LIMITES_DE_POST, o mesmo que o schema cobra — contador que discorda da
+ * validação é pior que contador nenhum.
+ *
+ * Não usamos `maxLength` no input: truncar um texto colado sem avisar perde o
+ * fim do trabalho de alguém em silêncio.
+ */
+/**
+ * Nome do campo do schema para o rótulo que o autor vê na tela.
+ *
+ * Mapa explícito, e não `t(\`field_${campo}\`)`: chave montada em tempo de
+ * execução some do grep e, se o Zod reclamar de um campo sem rótulo
+ * cadastrado, o autor veria o caminho cru da chave em vez do nome. Campo
+ * desconhecido cai no próprio id, que é feio mas legível.
+ */
+function rotuloDoCampo(campo: string, t: (chave: string) => string): string {
+    const rotulos: Record<string, string> = {
+        title: t("title"),
+        slug: t("slug"),
+        excerpt: t("summary"),
+        contentHtml: t("content"),
+        metaDescription: t("metaDescription"),
+        categoryId: t("category"),
+    }
+
+    return rotulos[campo] ?? campo
+}
+
+function ContadorDeCaracteres({ valor, limite }: { valor: string; limite: number }) {
+    const excedeu = valor.trim().length > limite
+
+    return (
+        <p
+            className={`text-xs tabular-nums ${excedeu ? "font-medium text-destructive" : "text-muted-foreground"}`}
+            aria-live="polite"
+        >
+            {valor.trim().length}/{limite}
+        </p>
+    )
+}
 
 type TranslationState = {
     title: string; slug: string; excerpt: string; contentHtml: string; metaDescription: string
@@ -52,6 +97,7 @@ export function PostEditor({
     const [active, setActive] = useState<BlogLocale>("pt")
     const [tr, setTr] = useState<Partial<Record<BlogLocale, TranslationState>>>(initial.translations)
     const [saving, setSaving] = useState(false)
+    const [erros, setErros] = useState<BlogFieldError[]>([])
 
     useEffect(() => {
         if (initial.publishedAt) {
@@ -97,9 +143,27 @@ export function PostEditor({
         }
 
         setSaving(true)
+        setErros([])
         try {
-            if (initial.id) { await updatePost(initial.id, payload); toast.success(t("postUpdated")) }
-            else { const id = await createPost(payload); toast.success(t("postCreated")); router.push(`/super-admin/blog/${id}`) }
+            const res = initial.id
+                ? await updatePost(initial.id, payload)
+                : await createPost(payload)
+
+            if (!res.success) {
+                // Erro de validação volta como RESULTADO, não como exceção: em
+                // produção o Next.js redige a mensagem de exceção de Server
+                // Action e o autor via só "ocorreu um erro" + digest.
+                setErros(res.fieldErrors ?? [])
+                toast.error(res.error === "notPublishable" ? t("notPublishable") : t("validationFailed"))
+                return
+            }
+
+            if ("id" in res) {
+                toast.success(t("postCreated"))
+                router.push(`/super-admin/blog/${res.id}`)
+            } else {
+                toast.success(t("postUpdated"))
+            }
             router.refresh()
         } catch (e) {
             toast.error(e instanceof Error ? e.message : t("saveError"))
@@ -163,7 +227,10 @@ export function PostEditor({
                     <Input value={current.slug} onChange={(e) => setField("slug", e.target.value)} />
                 </div>
                 <div className="space-y-2">
-                    <Label>{t("summary")}</Label>
+                    <div className="flex items-baseline justify-between gap-2">
+                        <Label>{t("summary")}</Label>
+                        <ContadorDeCaracteres valor={current.excerpt} limite={LIMITES_DE_POST.excerpt} />
+                    </div>
                     <Input value={current.excerpt} onChange={(e) => setField("excerpt", e.target.value)} />
                 </div>
                 <div className="space-y-2">
@@ -171,10 +238,31 @@ export function PostEditor({
                     <RichTextEditor content={current.contentHtml} onChange={(html) => setField("contentHtml", html)} />
                 </div>
                 <div className="space-y-2">
-                    <Label>{t("metaDescription")}</Label>
+                    <div className="flex items-baseline justify-between gap-2">
+                        <Label>{t("metaDescription")}</Label>
+                        <ContadorDeCaracteres valor={current.metaDescription} limite={LIMITES_DE_POST.metaDescription} />
+                    </div>
                     <Input value={current.metaDescription} onChange={(e) => setField("metaDescription", e.target.value)} />
+                    <p className="text-xs text-muted-foreground">{t("metaDescriptionHint")}</p>
                 </div>
             </div>
+
+            {erros.length > 0 && (
+                <div role="alert" className="rounded-lg border border-destructive/30 bg-destructive/10 p-4">
+                    <p className="font-medium text-destructive">{t("validationFailed")}</p>
+                    <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-destructive/90">
+                        {erros.map((erro, i) => (
+                            <li key={`${erro.campo}-${erro.locale ?? "geral"}-${i}`}>
+                                {erro.locale ? `[${erro.locale.toUpperCase()}] ` : ""}
+                                {rotuloDoCampo(erro.campo, t)}
+                                {erro.codigo === "too_big" && erro.limite !== undefined
+                                    ? ` — ${t("tooBig", { limite: erro.limite })}`
+                                    : ` — ${t("invalidField")}`}
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
 
             <div className="flex justify-end">
                 <Button onClick={handleSave} disabled={saving}>{saving ? t("saving") : t("save")}</Button>

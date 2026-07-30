@@ -1104,6 +1104,11 @@
             "postUpdated": "Post updated.",
             "postCreated": "Post created.",
             "saveError": "Error saving.",
+            "validationFailed": "Fix the fields below before saving.",
+            "notPublishable": "Publishing requires at least one language with a title and content.",
+            "tooBig": "exceeds the {limite} character limit",
+            "invalidField": "invalid value",
+            "metaDescriptionHint": "Aim for 140–155 characters: search engines cut the rest. If left empty, the summary is used instead.",
             "saving": "Saving...",
             "save": "Save"
         },

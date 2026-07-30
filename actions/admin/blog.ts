@@ -11,6 +11,7 @@ import {
     categoryInputSchema,
     assertPublishable,
 } from "@/lib/validations/blog"
+import { traduzirErrosDoPost, type ErroDeCampo } from "@/lib/validations/blog-erros"
 import { z } from "zod"
 
 const createPostSchema = postCoreSchema.extend({
@@ -22,6 +23,34 @@ export type PostCoreInput = z.infer<typeof postCoreSchema> & {
     translations: TranslationInput[]
 }
 export type CategoryInput = z.infer<typeof categoryInputSchema>
+
+// Resultado em vez de exceção: .parse() jogava o ZodError pra fora do Server
+// Action e, em produção, o Next.js redige a mensagem (só sobra "ocorreu um
+// erro" + digest). fieldErrors carrega o suficiente pra UI apontar campo e
+// idioma; "error" é a mensagem genérica pra toast quando não há fieldErrors.
+export type BlogFieldError = ErroDeCampo
+type PostActionError = { success: false; error: string; fieldErrors?: BlogFieldError[] }
+export type CreatePostResult = { success: true; id: string } | PostActionError
+export type UpdatePostResult = { success: true } | PostActionError
+type CategoryActionError = { success: false; error: string; fieldErrors?: BlogFieldError[] }
+export type CreateCategoryResult = { success: true; id: string } | CategoryActionError
+export type UpdateCategoryResult = { success: true } | CategoryActionError
+
+// Extrai os locales na mesma ordem do array `translations` enviado, direto do
+// input bruto — na falha do safeParse não temos `data` parseado, e o
+// ZodIssue só carrega o índice numérico (path: ["translations", 0, "excerpt"]),
+// não o locale em si.
+function localesDoInput(input: unknown): string[] {
+    if (input && typeof input === "object" && "translations" in input) {
+        const translations = (input as { translations?: unknown }).translations
+        if (Array.isArray(translations)) {
+            return translations.map((t) =>
+                t && typeof t === "object" && "locale" in t ? String((t as { locale?: unknown }).locale) : ""
+            )
+        }
+    }
+    return []
+}
 
 function revalidateBlog() {
     revalidatePath("/super-admin/blog")
@@ -43,27 +72,36 @@ export async function listCategoriesAdmin() {
     })
 }
 
-export async function createCategory(input: unknown) {
+export async function createCategory(input: unknown): Promise<CreateCategoryResult> {
     await requireAdmin()
-    const data = categoryInputSchema.parse(input)
+    const parsed = categoryInputSchema.safeParse(input)
+    if (!parsed.success) {
+        return { success: false, error: "invalid", fieldErrors: traduzirErrosDoPost(parsed.error.issues, localesDoInput(input)) }
+    }
+
     const category = await prisma.blogCategory.create({
-        data: { key: data.key, translations: { create: data.translations } },
+        data: { key: parsed.data.key, translations: { create: parsed.data.translations } },
     })
     revalidateBlog()
-    return category.id
+    return { success: true, id: category.id }
 }
 
-export async function updateCategory(id: string, input: unknown) {
+export async function updateCategory(id: string, input: unknown): Promise<UpdateCategoryResult> {
     await requireAdmin()
-    const data = categoryInputSchema.parse(input)
+    const parsed = categoryInputSchema.safeParse(input)
+    if (!parsed.success) {
+        return { success: false, error: "invalid", fieldErrors: traduzirErrosDoPost(parsed.error.issues, localesDoInput(input)) }
+    }
+
     await prisma.$transaction([
         prisma.blogCategoryTranslation.deleteMany({ where: { categoryId: id } }),
         prisma.blogCategory.update({
             where: { id },
-            data: { key: data.key, translations: { create: data.translations } },
+            data: { key: parsed.data.key, translations: { create: parsed.data.translations } },
         }),
     ])
     revalidateBlog()
+    return { success: true }
 }
 
 export async function deleteCategory(id: string) {
@@ -96,11 +134,19 @@ export async function getPostAdmin(id: string) {
     })
 }
 
-export async function createPost(input: unknown) {
+export async function createPost(input: unknown): Promise<CreatePostResult> {
     const admin = await requireAdmin()
-    const data = createPostSchema.parse(input)
+    const parsed = createPostSchema.safeParse(input)
+    if (!parsed.success) {
+        return { success: false, error: "invalid", fieldErrors: traduzirErrosDoPost(parsed.error.issues, localesDoInput(input)) }
+    }
+
+    const data = parsed.data
     const translations = sanitizeTranslations(data.translations)
-    assertPublishable(data.status, translations)
+    const publicavel = assertPublishable(data.status, translations)
+    if (!publicavel.ok) {
+        return { success: false, error: "notPublishable" }
+    }
 
     const post = await prisma.blogPost.create({
         data: {
@@ -113,14 +159,22 @@ export async function createPost(input: unknown) {
         },
     })
     revalidateBlog()
-    return post.id
+    return { success: true, id: post.id }
 }
 
-export async function updatePost(id: string, input: unknown) {
+export async function updatePost(id: string, input: unknown): Promise<UpdatePostResult> {
     await requireAdmin()
-    const data = createPostSchema.parse(input)
+    const parsed = createPostSchema.safeParse(input)
+    if (!parsed.success) {
+        return { success: false, error: "invalid", fieldErrors: traduzirErrosDoPost(parsed.error.issues, localesDoInput(input)) }
+    }
+
+    const data = parsed.data
     const translations = sanitizeTranslations(data.translations)
-    assertPublishable(data.status, translations)
+    const publicavel = assertPublishable(data.status, translations)
+    if (!publicavel.ok) {
+        return { success: false, error: "notPublishable" }
+    }
 
     await prisma.$transaction([
         prisma.blogPostTranslation.deleteMany({ where: { postId: id } }),
@@ -136,6 +190,7 @@ export async function updatePost(id: string, input: unknown) {
         }),
     ])
     revalidateBlog()
+    return { success: true }
 }
 
 export async function deletePost(id: string) {
