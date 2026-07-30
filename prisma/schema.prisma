@@ -611,6 +611,7 @@ model LeadList {
   // Relacionamentos
   leads         MarketplaceLead[]
   purchaseItems PurchaseItem[]
+  prices        LeadListPrice[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -623,6 +624,29 @@ model LeadList {
   @@index([category])
   @@index([isActive, isFeatured])
   @@map("lead_lists")
+}
+
+// Preço de uma lista numa moeda. Um registro por moeda oferecida.
+//
+// O preço é FIXO e cadastrado, nunca convertido em runtime.
+// LeadList.price/currency continuam existindo e significam o preço em EUR —
+// a linha EUR desta tabela é o mesmo número, mantido em sincronia por
+// lib/marketplace/list-prices.ts, que é o único caminho de escrita.
+model LeadListPrice {
+  id String @id @default(cuid())
+
+  listId String
+  list   LeadList @relation(fields: [listId], references: [id], onDelete: Cascade)
+
+  currency String
+  amount   Decimal @db.Decimal(10, 2)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([listId, currency])
+  @@index([listId])
+  @@map("lead_list_prices")
 }
 
 // Leads do marketplace (separados dos leads do CRM)
