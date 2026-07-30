@@ -12,6 +12,11 @@ import { getOptionalPublicPaypalClientId } from "@/lib/env"
 
 interface PayPalButtonsWrapperProps {
     items: Array<{ listId: string; quantity: number }>
+    /**
+     * Moeda do carrinho. O SDK precisa carregar nela — com "EUR" fixo aqui, o
+     * script abria em euro enquanto o pedido era montado noutra moeda.
+     */
+    currency: string
 }
 
 type CreateOrderResponse = {
@@ -38,7 +43,7 @@ function isSessionExpired(error: unknown): boolean {
     return error instanceof CheckoutError && (error.status === 401 || error.status === 403)
 }
 
-export function PayPalButtonsWrapper({ items }: PayPalButtonsWrapperProps) {
+export function PayPalButtonsWrapper({ items, currency }: PayPalButtonsWrapperProps) {
     const router = useRouter()
     // /sign-in fica fora do segmento de locale — usa o router puro do Next
     // para não ganhar um prefixo de idioma que a rota não tem.
@@ -62,7 +67,7 @@ export function PayPalButtonsWrapper({ items }: PayPalButtonsWrapperProps) {
         <PayPalScriptProvider
             options={{
                 clientId: paypalClientId,
-                currency: "EUR",
+                currency,
                 intent: "capture",
             }}
         >
@@ -79,7 +84,7 @@ export function PayPalButtonsWrapper({ items }: PayPalButtonsWrapperProps) {
                         const response = await fetch("/api/checkout/create-order", {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({ items }),
+                            body: JSON.stringify({ items, currency }),
                         })
 
                         const data = await response.json() as CreateOrderResponse

@@ -11,12 +11,16 @@ import { z } from "zod"
 import { getAuthenticatedActiveDbUser } from "@/lib/auth"
 import { getPublicAppUrl } from "@/lib/env"
 import { getClientIp, checkPersistentRateLimit } from "@/lib/rate-limit"
+import { SUPPORTED_CURRENCIES } from "@/lib/currency"
+import { resolveListPrices } from "@/lib/marketplace/list-prices"
 
 const createOrderSchema = z.object({
     items: z.array(z.object({
         listId: z.string().min(1),
         quantity: z.number().int().positive().max(99).default(1),
     })).min(1).max(50),
+    // O cliente envia o CÓDIGO da moeda, nunca um valor. O preço sai do banco.
+    currency: z.enum(SUPPORTED_CURRENCIES),
 })
 
 export async function POST(request: NextRequest) {
@@ -73,28 +77,39 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: "Invalid items" }, { status: 400 })
         }
 
-        const currencies = new Set(lists.map((list) => list.currency))
-        if (currencies.size !== 1) {
-            return NextResponse.json({ error: "Mixed currencies are not supported" }, { status: 400 })
+        // A moeda é uma só por definição: vem do corpo da requisição e já foi
+        // validada contra SUPPORTED_CURRENCIES. A verificação antiga de moedas
+        // misturadas existia porque cada lista carregava a sua.
+        const currency = parsedBody.data.currency
+        const prices = await resolveListPrices(prisma, listIds, currency)
+
+        // Fallback é comportamento de VITRINE. No checkout, exibir euro e
+        // cobrar euro depois de a pessoa ter escolhido real seria cobrar
+        // diferente do combinado — então aqui é erro, não queda silenciosa.
+        const semPreco = lists.filter((list) => prices.get(list.id)?.currency !== currency)
+        if (semPreco.length > 0) {
+            return NextResponse.json(
+                { error: "Item without price in the selected currency" },
+                { status: 400 }
+            )
         }
 
         // Calcular total
         let subtotal = 0
         const purchaseItems = lists.map((list) => {
             const quantity = items.find((item) => item.listId === list.id)?.quantity ?? 1
-            const itemTotal = Number(list.price) * quantity
-            subtotal += itemTotal
+            const unitPrice = prices.get(list.id)!.amount
+            subtotal += unitPrice * quantity
 
             return {
                 listId: list.id,
                 name: list.name,
-                price: Number(list.price),
+                price: unitPrice,
                 quantity,
                 leadsCount: list.totalLeads,
             }
         })
 
-        const currency = lists[0].currency
         const total = subtotal.toFixed(2)
         const appUrl = getPublicAppUrl()
 
