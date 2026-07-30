@@ -126,18 +126,20 @@ describe("buildProductSchema", () => {
         name: "Importadores de Café — Alemanha",
         slug: "importadores-cafe-alemanha",
         description: "Lista de importadores alemães.",
-        price: 149.9,
-        currency: "EUR",
+        offers: [{ price: 149.9, currency: "EUR" }],
         isActive: true,
         locale: "pt",
     }
+
+    const offersOf = (schema: Record<string, unknown>) =>
+        schema.offers as Array<Record<string, unknown>>
 
     it("declara a oferta com preço, moeda e url canônica", () => {
         const schema = buildProductSchema(base)
 
         expect(schema["@type"]).toBe("Product")
         expect(schema.name).toBe(base.name)
-        const offer = schema.offers as Record<string, unknown>
+        const offer = offersOf(schema)[0]
         expect(offer["@type"]).toBe("Offer")
         expect(offer.price).toBe("149.90")
         expect(offer.priceCurrency).toBe("EUR")
@@ -146,18 +148,16 @@ describe("buildProductSchema", () => {
 
     it("pt (default locale): url e offer.url não têm prefixo de idioma", () => {
         const schema = buildProductSchema(base)
-        const offer = schema.offers as Record<string, unknown>
 
         expect(schema.url).toBe(`${BASE_URL}/list/${base.slug}`)
-        expect(offer.url).toBe(`${BASE_URL}/list/${base.slug}`)
+        expect(offersOf(schema)[0].url).toBe(`${BASE_URL}/list/${base.slug}`)
     })
 
     it("de: url e offer.url levam o prefixo /de", () => {
         const schema = buildProductSchema({ ...base, locale: "de" })
-        const offer = schema.offers as Record<string, unknown>
 
         expect(schema.url).toBe(`${BASE_URL}/de/list/${base.slug}`)
-        expect(offer.url).toBe(`${BASE_URL}/de/list/${base.slug}`)
+        expect(offersOf(schema)[0].url).toBe(`${BASE_URL}/de/list/${base.slug}`)
     })
 
     it("declara o idioma da página", () => {
@@ -165,8 +165,8 @@ describe("buildProductSchema", () => {
     })
 
     it("marca disponibilidade a partir de isActive", () => {
-        const ativo = buildProductSchema(base).offers as Record<string, unknown>
-        const inativo = buildProductSchema({ ...base, isActive: false }).offers as Record<string, unknown>
+        const ativo = offersOf(buildProductSchema(base))[0]
+        const inativo = offersOf(buildProductSchema({ ...base, isActive: false }))[0]
 
         expect(ativo.availability).toBe("https://schema.org/InStock")
         expect(inativo.availability).toBe("https://schema.org/OutOfStock")
@@ -177,6 +177,38 @@ describe("buildProductSchema", () => {
 
         expect(schema.aggregateRating).toBeUndefined()
         expect(schema.review).toBeUndefined()
+    })
+})
+
+describe("buildProductSchema com várias moedas", () => {
+    const input = {
+        name: "Importadores de alimentos — Alemanha",
+        slug: "importadores-alimentos-alemanha",
+        description: null,
+        offers: [
+            { price: 45, currency: "EUR" },
+            { price: 289, currency: "BRL" },
+        ],
+        isActive: true,
+        locale: "pt",
+    }
+
+    it("emite um Offer por moeda cadastrada", () => {
+        const schema = buildProductSchema(input) as { offers: Array<Record<string, unknown>> }
+        expect(schema.offers).toHaveLength(2)
+        expect(schema.offers.map((o) => o.priceCurrency)).toEqual(["EUR", "BRL"])
+    })
+
+    it("mantém o preço como texto com duas casas", () => {
+        const schema = buildProductSchema(input) as { offers: Array<Record<string, unknown>> }
+        expect(schema.offers[0].price).toBe("45.00")
+    })
+
+    it("uma moeda só continua saindo como lista de um item", () => {
+        const schema = buildProductSchema({ ...input, offers: [{ price: 45, currency: "EUR" }] }) as {
+            offers: Array<Record<string, unknown>>
+        }
+        expect(schema.offers).toHaveLength(1)
     })
 })
 

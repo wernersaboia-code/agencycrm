@@ -92,9 +92,9 @@ async function PurchasesDashboard({
     tokenNotice?: string
 }) {
     const stats = getPurchaseStats(purchases)
-    const currency = purchases[0]?.currency || "EUR"
     const t = await getTranslations("purchases")
     const format = await getFormatter()
+    const locale = await getLocale()
 
     return (
         <div className="min-h-screen bg-muted/40">
@@ -154,7 +154,11 @@ async function PurchasesDashboard({
                         />
                         <StatCard
                             label={t("statSpent")}
-                            value={formatCurrency(stats.totalSpent, currency)}
+                            // Sem compra nenhuma o mapa é vazio, e um cartão em
+                            // branco leria como erro: mostra zero em euro.
+                            value={Object.entries(stats.spentByCurrency)
+                                .map(([moeda, valor]) => formatCurrency(valor, moeda, locale))
+                                .join(" + ") || formatCurrency(0, "EUR", locale)}
                             icon={DollarSign}
                             tone="amber"
                         />
@@ -208,14 +212,16 @@ function getPurchaseStats(purchases: UserPurchase[]) {
             stats.totalPurchases += 1
             stats.totalLists += purchase.items.length
             stats.totalLeads += purchase.items.reduce((sum, item) => sum + item.list.totalLeads, 0)
-            stats.totalSpent += purchase.total
+            // Somar EUR com BRL num número só produz um valor que não existe.
+            stats.spentByCurrency[purchase.currency] =
+                (stats.spentByCurrency[purchase.currency] ?? 0) + purchase.total
             return stats
         },
         {
             totalPurchases: 0,
             totalLists: 0,
             totalLeads: 0,
-            totalSpent: 0,
+            spentByCurrency: {} as Record<string, number>,
         }
     )
 }

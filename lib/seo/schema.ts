@@ -68,8 +68,7 @@ export interface ProductSchemaInput {
     name: string
     slug: string
     description: string | null
-    price: number
-    currency: string
+    offers: Array<{ price: number; currency: string }>
     isActive: boolean
     locale: string
 }
@@ -92,16 +91,20 @@ export function buildProductSchema(input: ProductSchemaInput): Record<string, un
         url,
         inLanguage: input.locale,
         brand: { "@id": ORGANIZATION_ID },
-        offers: {
+        // Um Offer por moeda cadastrada. O crawler não tem cookie de moeda:
+        // emitir só euro enquanto a página é renderizada em real seria dado
+        // estruturado amplificando divergência — exatamente o que este projeto
+        // decidiu não fazer.
+        offers: input.offers.map((offer) => ({
             "@type": "Offer",
-            price: Number(input.price).toFixed(2),
-            priceCurrency: input.currency,
+            price: Number(offer.price).toFixed(2),
+            priceCurrency: offer.currency,
             availability: input.isActive
                 ? "https://schema.org/InStock"
                 : "https://schema.org/OutOfStock",
             url,
             seller: { "@id": ORGANIZATION_ID },
-        },
+        })),
     }
 }
 

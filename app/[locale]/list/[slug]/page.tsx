@@ -102,14 +102,14 @@ export default async function ListPage({ params }: ListPageProps) {
     //   (ou no euro do fallback). Alimenta a caixa de preço visível e o carrinho
     //   (listForCart), espelhando como components/marketplace/list-card.tsx já
     //   monta o carrinho a partir do catálogo. A Task 7 reprecifica no servidor.
-    // - `precoEmEuro`/`moedaEmEuro`: par legado, sempre em euro (list.price +
-    //   list.currency, que writeListPrices grava fixo como "EUR"). Só o JSON-LD
-    //   (buildProductSchema) usa este par: um crawler não manda cookie de moeda,
-    //   então o schema fica ancorado no euro até a Task 11 emitir um Offer por
-    //   moeda. NUNCA junte `price` com `list.currency` — são pares de fontes
+    // - `ofertas`: TODAS as moedas cadastradas, cada valor com o seu próprio
+    //   código. Só o JSON-LD usa este par — um crawler não manda cookie de
+    //   moeda, então o schema declara as ofertas que existem em vez de eleger
+    //   uma. NUNCA junte `price` com `list.currency`: são pares de fontes
     //   diferentes e o resultado é um valor com o código de moeda errado.
-    const precoEmEuro = Number(list.price)
-    const moedaEmEuro = list.currency
+    const ofertas = priceRows.length > 0
+        ? priceRows.map((row) => ({ price: Number(row.amount), currency: row.currency }))
+        : [{ price: Number(list.price), currency: list.currency }]
     const listForCart = {
         id: list.id,
         name: list.name,
@@ -126,8 +126,7 @@ export default async function ListPage({ params }: ListPageProps) {
                     name: list.name,
                     slug: list.slug,
                     description: list.description,
-                    price: precoEmEuro,
-                    currency: moedaEmEuro,
+                    offers: ofertas,
                     isActive: list.isActive,
                     locale,
                 })}
