@@ -97,12 +97,25 @@ export default async function ListPage({ params }: ListPageProps) {
     // viram linha na tabela, então não podem contar para o "amostra de N".
     const previewCount = toRows(list.previewData).length
     const language = getListLanguage(list.language)
+    // Dois pares moeda+valor coexistem de propósito, cada um com seu consumidor:
+    // - `price`/`resolved.currency`: par resolvido na moeda ativa do visitante
+    //   (ou no euro do fallback). Alimenta a caixa de preço visível e o carrinho
+    //   (listForCart), espelhando como components/marketplace/list-card.tsx já
+    //   monta o carrinho a partir do catálogo. A Task 7 reprecifica no servidor.
+    // - `precoEmEuro`/`moedaEmEuro`: par legado, sempre em euro (list.price +
+    //   list.currency, que writeListPrices grava fixo como "EUR"). Só o JSON-LD
+    //   (buildProductSchema) usa este par: um crawler não manda cookie de moeda,
+    //   então o schema fica ancorado no euro até a Task 11 emitir um Offer por
+    //   moeda. NUNCA junte `price` com `list.currency` — são pares de fontes
+    //   diferentes e o resultado é um valor com o código de moeda errado.
+    const precoEmEuro = Number(list.price)
+    const moedaEmEuro = list.currency
     const listForCart = {
         id: list.id,
         name: list.name,
         slug: list.slug,
         price,
-        currency: list.currency,
+        currency: resolved.currency,
         totalLeads: list.totalLeads,
     }
 
@@ -113,8 +126,8 @@ export default async function ListPage({ params }: ListPageProps) {
                     name: list.name,
                     slug: list.slug,
                     description: list.description,
-                    price,
-                    currency: list.currency,
+                    price: precoEmEuro,
+                    currency: moedaEmEuro,
                     isActive: list.isActive,
                     locale,
                 })}
