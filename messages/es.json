@@ -327,7 +327,8 @@
         "trustSaved": "Pedido guardado en su cuenta",
         "trustDownload": "Descarga habilitada tras la confirmación",
         "trustReview": "Revise el pedido antes de pagar",
-        "currencyFellBack": "Una de las listas del carrito no tiene precio en esa moneda. El carrito volvió a euros."
+        "currencyFellBack": "Una de las listas del carrito no tiene precio en esa moneda. El carrito volvió a euros.",
+        "itemUnavailable": "Una lista salió del catálogo y se eliminó de tu carrito."
     },
     "catalog": {
         "metaTitle": "Catálogo de listas",

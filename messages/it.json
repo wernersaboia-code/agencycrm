@@ -327,7 +327,8 @@
         "trustSaved": "Ordine salvato nel tuo account",
         "trustDownload": "Download sbloccato dopo la conferma",
         "trustReview": "Verifichi l'ordine prima di pagare",
-        "currencyFellBack": "Una delle liste nel carrello non ha un prezzo in questa valuta. Il carrello è tornato all'euro."
+        "currencyFellBack": "Una delle liste nel carrello non ha un prezzo in questa valuta. Il carrello è tornato all'euro.",
+        "itemUnavailable": "Una lista è stata rimossa dal catalogo ed eliminata dal tuo carrello."
     },
     "catalog": {
         "metaTitle": "Catalogo elenchi",

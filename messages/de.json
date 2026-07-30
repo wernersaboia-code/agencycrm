@@ -327,7 +327,8 @@
         "trustSaved": "Bestellung in Ihrem Konto gespeichert",
         "trustDownload": "Download nach der Bestätigung freigegeben",
         "trustReview": "Sie prüfen die Bestellung vor der Zahlung",
-        "currencyFellBack": "Eine der Listen im Warenkorb hat keinen Preis in dieser Währung. Der Warenkorb wurde auf Euro zurückgestellt."
+        "currencyFellBack": "Eine der Listen im Warenkorb hat keinen Preis in dieser Währung. Der Warenkorb wurde auf Euro zurückgestellt.",
+        "itemUnavailable": "Eine Liste wurde aus dem Katalog entfernt und aus Ihrem Warenkorb genommen."
     },
     "catalog": {
         "metaTitle": "Listenkatalog",

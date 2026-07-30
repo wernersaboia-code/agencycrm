@@ -4,7 +4,8 @@
 import { createContext, useContext, useMemo, useState, useSyncExternalStore, ReactNode } from "react"
 import { toast } from "sonner"
 import { useTranslations } from "next-intl"
-import { resolveCartPrices } from "@/actions/cart-prices"
+import { resolveCartPrices, type RepricedCart } from "@/actions/cart-prices"
+import { readCurrencyCookie } from "@/lib/currency/client"
 
 export interface CartItem {
     id: string
@@ -77,23 +78,53 @@ export function CartProvider({ children }: { children: ReactNode }) {
     const [isOpen, setIsOpen] = useState(false)
     const tCart = useTranslations("cart")
 
-    const repriceTo = async (currency: string) => {
-        const current = parseCartItems(getCartSnapshot())
-        if (current.length === 0) return
-
-        const result = await resolveCartPrices(current.map((i) => i.id), currency)
+    // Aplica o resultado de resolveCartPrices ao que estiver no localStorage
+    // NA HORA de escrever (não ao snapshot que disparou a consulta): entre o
+    // await e a escrita, quantidade/itens podem ter mudado. queriedIds marca
+    // quais itens fizeram parte desta consulta — um item fora dela não é
+    // tocado, mesmo que também exista em `current`.
+    const applyRepriced = (queriedIds: string[], result: RepricedCart) => {
+        const latest = parseCartItems(getCartSnapshot())
+        const kept = latest.filter((item) => !result.unpriced.includes(item.id))
 
         writeCartItems(
-            current.map((item) => ({
-                ...item,
-                price: result.prices[item.id] ?? item.price,
-                currency: result.currency,
-            }))
+            kept.map((item) =>
+                queriedIds.includes(item.id)
+                    ? { ...item, price: result.prices[item.id], currency: result.currency }
+                    : item
+            )
         )
 
         if (result.fellBack) {
             toast.info(tCart("currencyFellBack"))
         }
+        if (result.unpriced.length > 0) {
+            toast.warning(tCart("itemUnavailable"))
+        }
+    }
+
+    const repriceTo = async (currency: string) => {
+        const current = parseCartItems(getCartSnapshot())
+        if (current.length === 0) return
+
+        const ids = current.map((i) => i.id)
+        const result = await resolveCartPrices(ids, currency)
+        applyRepriced(ids, result)
+    }
+
+    // Cada lista resolve o preço de forma independente (ver list-card,
+    // add-to-cart-button, buy-now-button): com o cookie em BRL, uma lista com
+    // preço em real entra como BRL e outra sem preço em BRL entra em EUR — o
+    // carrinho ficaria com duas moedas sob um total só. Por isso, toda inserção
+    // reconcilia o carrinho inteiro contra a moeda ativa (a mesma lida pelo
+    // seletor), reusando o caminho de repreço do servidor.
+    const reconcileToActiveCurrency = async () => {
+        const current = parseCartItems(getCartSnapshot())
+        if (current.length === 0) return
+
+        const ids = current.map((i) => i.id)
+        const result = await resolveCartPrices(ids, readCurrencyCookie())
+        applyRepriced(ids, result)
     }
 
     const setCartItems = (updater: (current: CartItem[]) => CartItem[]) => {
@@ -120,9 +151,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
         })
 
         // Abrir o drawer numa re-adição contradiz o toast "já está no carrinho":
-        // a gaveta saltando na tela lê como sucesso.
+        // a gaveta saltando na tela lê como sucesso. A reconciliação de moeda só
+        // vale a pena quando algo de fato entrou — re-adicionar um item já
+        // presente não muda a composição de moedas do carrinho.
         if (wasAdded) {
             setIsOpen(true)
+            void reconcileToActiveCurrency()
         }
     }
 

@@ -6,13 +6,8 @@ import { useTranslations } from "next-intl"
 import { useRouter } from "@/lib/i18n/navigation"
 import { setCurrencyCookie } from "@/actions/currency"
 import { useCart } from "@/contexts/cart-context"
-import {
-    CURRENCY_COOKIE,
-    DEFAULT_CURRENCY,
-    SUPPORTED_CURRENCIES,
-    parseCurrency,
-    type Currency,
-} from "@/lib/currency"
+import { DEFAULT_CURRENCY, SUPPORTED_CURRENCIES, type Currency } from "@/lib/currency"
+import { readCurrencyCookie } from "@/lib/currency/client"
 import { Button } from "@/components/ui/button"
 import {
     DropdownMenu,
@@ -25,12 +20,6 @@ const SYMBOLS: Record<Currency, string> = {
     EUR: "€",
     BRL: "R$",
     USD: "US$",
-}
-
-function readCurrencyCookie(): Currency {
-    if (typeof document === "undefined") return DEFAULT_CURRENCY
-    const match = document.cookie.match(new RegExp(`(?:^|;\\s*)${CURRENCY_COOKIE}=([^;]+)`))
-    return parseCurrency(match?.[1]) ?? DEFAULT_CURRENCY
 }
 
 // Sem listeners reais: nada além deste componente muda o cookie de moeda no

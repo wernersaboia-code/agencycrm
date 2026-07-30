@@ -327,7 +327,8 @@
         "trustSaved": "Order saved to your account",
         "trustDownload": "Download unlocked after confirmation",
         "trustReview": "Review your order before you pay",
-        "currencyFellBack": "One of the lists in your cart has no price in that currency. The cart switched back to euros."
+        "currencyFellBack": "One of the lists in your cart has no price in that currency. The cart switched back to euros.",
+        "itemUnavailable": "A list was removed from the catalog and taken out of your cart."
     },
     "catalog": {
         "metaTitle": "List Catalog",
