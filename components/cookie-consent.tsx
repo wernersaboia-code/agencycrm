@@ -1,6 +1,9 @@
 "use client"
 
 import { useState, useSyncExternalStore } from "react"
+// CookieConsent é renderizado por <Providers> fora do <NextIntlClientProvider>
+// (ver app/[locale]/layout.tsx), então o Link ciente de locale quebra aqui com
+// "No intl context found" mesmo agora que /privacy está no segmento de idioma.
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 
@@ -40,9 +43,6 @@ export function CookieConsent() {
                     Usamos cookies essenciais para autenticação e preferências.
                     Cookies de analytics são carregados apenas com seu consentimento.
                     {" "}
-                    {/* /privacy fica fora do segmento de locale, então o Link
-                        puro é o correto — o wrapper ciente de idioma geraria
-                        um prefixo que não existe nessa rota. */}
                     <Link href="/privacy" className="underline hover:text-foreground">
                         Saiba mais
                     </Link>
