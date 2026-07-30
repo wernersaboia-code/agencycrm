@@ -3,6 +3,7 @@ import { NextResponse, type NextRequest } from "next/server"
 import createIntlMiddleware from "next-intl/middleware"
 import { routing } from "@/lib/i18n/routing"
 import { stripLocale } from "@/lib/i18n/strip-locale"
+import { decideCurrencyCookie, CURRENCY_COOKIE } from "@/lib/currency"
 import { prisma } from "@/lib/prisma"
 import { isSuperAdminPath, canAccessSuperAdmin } from "@/lib/auth/super-admin-gate"
 import { checkPersistentRateLimit, tooManyRequestsResponse } from "@/lib/rate-limit"
@@ -155,6 +156,27 @@ export async function proxy(request: NextRequest) {
     // aplicados. Rotas fora do segmento (CRM, super-admin, auth legado) não
     // têm página correspondente com prefixo de idioma e virariam 404 se
     // passassem por aqui.
+    // A moeda é decidida uma única vez, na primeira visita, a partir do país do
+    // IP. Só vale para as rotas do funil — CRM e super-admin não têm vitrine.
+    const currencyToSet = isLocaleSegmentRoute
+        ? decideCurrencyCookie({
+            existing: request.cookies.get(CURRENCY_COOKIE)?.value ?? null,
+            country: request.headers.get("x-vercel-ip-country"),
+            pathname,
+        })
+        : null
+
+    const withCurrencyCookie = (response: NextResponse) => {
+        if (currencyToSet) {
+            response.cookies.set(CURRENCY_COOKIE, currencyToSet, {
+                path: "/",
+                sameSite: "lax",
+                maxAge: 60 * 60 * 24 * 365,
+            })
+        }
+        return response
+    }
+
     const respond = () => {
         if (!isLocaleSegmentRoute) return supabaseResponse
 
@@ -162,7 +184,7 @@ export async function proxy(request: NextRequest) {
         for (const cookie of supabaseResponse.cookies.getAll()) {
             intlResponse.cookies.set(cookie)
         }
-        return intlResponse
+        return withCurrencyCookie(intlResponse)
     }
 
     // ============================================

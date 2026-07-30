@@ -4,6 +4,7 @@ import {
     DEFAULT_CURRENCY,
     parseCurrency,
     guessCurrency,
+    decideCurrencyCookie,
 } from "./index"
 
 describe("SUPPORTED_CURRENCIES", () => {
@@ -67,5 +68,28 @@ describe("guessCurrency", () => {
 
     it("país em minúsculas conta igual", () => {
         expect(guessCurrency({ country: "br" })).toBe("BRL")
+    })
+})
+
+describe("decideCurrencyCookie", () => {
+    it("não regrava quando o cookie já existe — escolha da pessoa não é sobrescrita", () => {
+        expect(decideCurrencyCookie({ existing: "EUR", country: "BR", pathname: "/catalog" })).toBeNull()
+    })
+
+    it("grava o palpite quando não há cookie", () => {
+        expect(decideCurrencyCookie({ existing: null, country: "BR", pathname: "/catalog" })).toBe("BRL")
+    })
+
+    it("cookie com valor inválido é tratado como ausente", () => {
+        expect(decideCurrencyCookie({ existing: "GBP", country: "US", pathname: "/catalog" })).toBe("USD")
+    })
+
+    it("sem país, usa o idioma do caminho", () => {
+        expect(decideCurrencyCookie({ existing: null, country: null, pathname: "/en/catalog" })).toBe("USD")
+        expect(decideCurrencyCookie({ existing: null, country: null, pathname: "/de/catalog" })).toBe("EUR")
+    })
+
+    it("caminho sem prefixo de idioma é português (o locale padrão do site)", () => {
+        expect(decideCurrencyCookie({ existing: null, country: null, pathname: "/catalog" })).toBe("BRL")
     })
 })

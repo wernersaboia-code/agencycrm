@@ -1,3 +1,5 @@
+import { stripLocale } from "@/lib/i18n/strip-locale"
+
 /**
  * Vocabulário único de moedas do marketplace.
  *
@@ -56,4 +58,25 @@ export function guessCurrency(input: { country?: string | null; locale?: string 
     }
 
     return DEFAULT_CURRENCY
+}
+
+/**
+ * Decide o que o proxy grava no cookie. `null` = não mexer.
+ *
+ * A geografia só é consultada UMA vez, aqui. As páginas leem o cookie e nada
+ * mais: ler geografia dentro do render foi o que já tornou o funil inteiro
+ * dinâmico neste projeto uma vez, e o custo não se paga de novo.
+ */
+export function decideCurrencyCookie(input: {
+    existing: string | null
+    country: string | null
+    pathname: string
+}): Currency | null {
+    if (parseCurrency(input.existing)) return null
+
+    // stripLocale devolve DEFAULT_LOCALE ("pt") quando o caminho não tem
+    // prefixo de idioma — é por isso que "/catalog" resulta em BRL.
+    const { locale } = stripLocale(input.pathname)
+
+    return guessCurrency({ country: input.country, locale })
 }
