@@ -18,7 +18,8 @@
 - **Node não está no PATH desta máquina.** Todo comando de shell precisa de `export PATH="/c/Program Files/nodejs:$PATH"` antes (não persiste entre chamadas).
 - **`prisma migrate dev` FALHA neste projeto** (o pooler do Supabase não permite criar shadow database). Migração se faz com `migrate diff` → `db execute` → `migrate resolve`, como detalhado na Task 2.
 - **Vitest só coleta `**/*.test.ts`** (não `.tsx`) em ambiente `node`. Nenhuma tarefa deste plano escreve teste de componente React; o que precisa de teste vira função pura em `lib/`.
-- Testes seguem o padrão de `lib/checkout/fulfillment.test.ts`: banco injetado como parâmetro e mockado com `vi.fn()`, nunca um Prisma real.
+- Testes seguem o padrão de `lib/checkout/fulfillment.test.ts`: banco injetado como parâmetro e mockado com `vi.fn()`, nunca um Prisma real. **Nenhum teste deste repositório abre conexão com o banco** — `lib/rate-limit.test.ts` e `lib/exports/purchase-export.test.ts` mockam `@/lib/prisma` de propósito, e o vitest não carrega `.env`. Nenhuma tarefa deste plano quebra essa regra; a verificação que precisa do banco real é um script (Task 12).
+- **`npm run lint` exit 0 é impossível neste repositório**: a linha de base, medida em 2026-07-30, é **1361 erros e 94648 avisos** pré-existentes (`react-hooks`, `no-img-element`), nenhum deles nos arquivos desta fase. O critério válido é **zero problema novo nos arquivos tocados**, verificável com `npx eslint <arquivos que a task alterou>`.
 - Branch de trabalho: `feat/multimoeda` (já criada, com a spec commitada).
 
 ---
@@ -38,7 +39,7 @@
 | `actions/cart-prices.ts` | Server action que recalcula o carrinho numa moeda |
 | `components/marketplace/currency-switcher.tsx` | Seletor no header |
 | `components/admin/seed-prices-dialog.tsx` | Diálogo do gerador em massa |
-| `lib/marketplace/precos-integridade.test.ts` | Guarda: toda lista ativa tem preço em EUR |
+| `prisma/check-precos.ts` | Guarda de dados: toda lista ativa tem preço em EUR |
 | `prisma/migrations/20260730120000_add_lead_list_price/migration.sql` | Tabela nova + semeadura das linhas EUR |
 
 **Modificados**
@@ -877,7 +878,7 @@ export function formatCurrency(
 - [ ] **Step 2: Compilar e corrigir as chamadas existentes**
 
 ```bash
-export PATH="/c/Program Files/nodejs:$PATH" && npx tsc --noEmit && npm run lint
+export PATH="/c/Program Files/nodejs:$PATH" && npx tsc --noEmit && npx eslint lib/utils.ts
 ```
 
 Esperado: exit 0. O terceiro parâmetro tem default, então nenhuma chamada atual quebra. As chamadas passam a receber o locale nas Tasks 6, 7 e 11.
@@ -1351,7 +1352,7 @@ Acrescentar a chave `currencyFellBack` ao namespace `cart`:
 - [ ] **Step 10: Verificar**
 
 ```bash
-export PATH="/c/Program Files/nodejs:$PATH" && npx tsc --noEmit && npx vitest run && npm run lint
+export PATH="/c/Program Files/nodejs:$PATH" && npx tsc --noEmit && npx vitest run && npx eslint $(git diff --name-only HEAD | grep -E "\.(ts|tsx)$")
 ```
 
 Esperado: exit 0 nos três.
@@ -1560,7 +1561,7 @@ A action que carrega a lista para edição precisa devolver os preços; inclua `
 - [ ] **Step 4: Verificar**
 
 ```bash
-export PATH="/c/Program Files/nodejs:$PATH" && npx tsc --noEmit && npm run lint && npx vitest run
+export PATH="/c/Program Files/nodejs:$PATH" && npx tsc --noEmit && npx vitest run && npx eslint $(git diff --name-only HEAD | grep -E "\.(ts|tsx)$")
 ```
 
 Esperado: exit 0 nos três.
@@ -1999,7 +2000,7 @@ Com `locale` vindo dos `params` da página.
 - [ ] **Step 6: Verificar**
 
 ```bash
-export PATH="/c/Program Files/nodejs:$PATH" && npx tsc --noEmit && npx vitest run && npm run lint
+export PATH="/c/Program Files/nodejs:$PATH" && npx tsc --noEmit && npx vitest run && npx eslint $(git diff --name-only HEAD | grep -E "\.(ts|tsx)$")
 ```
 
 Esperado: exit 0 nos três.
@@ -2013,74 +2014,116 @@ git commit -m "fix(multimoeda): total por moeda, schema com um Offer por moeda"
 
 ---
 
-### Task 12: Teste-guarda e verificação final
+### Task 12: Script de integridade e verificação final
 
 **Files:**
-- Create: `lib/marketplace/precos-integridade.test.ts`
+- Create: `prisma/check-precos.ts`
+- Modify: `package.json` (script `check:precos`)
 
 **Interfaces:**
-- Consumes: `SUPPORTED_CURRENCIES`, `DEFAULT_CURRENCY`.
-- Produces: nada.
+- Consumes: `DEFAULT_CURRENCY`.
+- Produces: comando `npm run check:precos`.
 
-- [ ] **Step 1: Escrever o teste-guarda**
+**Por que script e não teste:** nenhum dos testes deste repositório abre conexão com o banco — `lib/rate-limit.test.ts` e `lib/exports/purchase-export.test.ts` mockam `@/lib/prisma` explicitamente, e o vitest não carrega `.env`. Um teste que conectasse ao Supabase levaria a suite inteira ao banco de produção a cada execução e quebraria em qualquer ambiente sem `DATABASE_URL`. A verificação é de **dados**, não de lógica, então ela vive fora da suite. Decisão do Werner em 2026-07-30.
 
-Este é o único teste do plano que fala com o banco real — é uma verificação de integridade dos dados, não de lógica, e é o que impede uma lista chegar à vitrine sem preço em euro. Criar `lib/marketplace/precos-integridade.test.ts`:
+- [ ] **Step 1: Escrever o script**
+
+Criar `prisma/check-precos.ts`:
 
 ```ts
-import { describe, it, expect } from "vitest"
-import { prisma } from "@/lib/prisma"
-import { DEFAULT_CURRENCY } from "@/lib/currency"
-
 /**
- * Guarda de integridade dos dados, não de lógica.
+ * Integridade dos preços do catálogo. Roda com `npm run check:precos`.
  *
- * A vitrine cai para euro quando falta preço na moeda escolhida. Se faltar o
- * euro TAMBÉM, não há para onde cair: a lista aparece sem preço. Este teste
- * transforma esse estado em falha visível.
+ * Duas invariantes que a vitrine não consegue defender sozinha:
+ *
+ * 1. Toda lista ativa tem preço em EUR. A vitrine cai para euro quando falta
+ *    preço na moeda escolhida; se faltar o euro também, não há para onde cair
+ *    e a lista aparece sem preço.
+ * 2. `LeadList.price` bate com a linha em EUR de `LeadListPrice`. O preço em
+ *    euro vive em dois lugares, e este é o alarme de eles terem divergido.
+ *
+ * Fica fora do vitest de propósito: nenhum teste deste projeto toca o banco.
  */
-describe("integridade dos preços", () => {
-    it("toda lista ativa tem preço em EUR", async () => {
-        const semEuro = await prisma.leadList.findMany({
-            where: { isActive: true, prices: { none: { currency: DEFAULT_CURRENCY } } },
-            select: { slug: true },
-        })
+import { PrismaClient } from "@prisma/client"
+import { config } from "dotenv"
 
-        expect(semEuro.map((l) => l.slug)).toEqual([])
+config()
+
+const DEFAULT_CURRENCY = "EUR"
+const prisma = new PrismaClient()
+
+async function main() {
+    const semEuro = await prisma.leadList.findMany({
+        where: { isActive: true, prices: { none: { currency: DEFAULT_CURRENCY } } },
+        select: { slug: true },
     })
 
-    it("LeadList.price bate com a linha em EUR — os dois espelhos não divergiram", async () => {
-        const lists = await prisma.leadList.findMany({
-            where: { isActive: true },
-            select: {
-                slug: true,
-                price: true,
-                prices: { where: { currency: DEFAULT_CURRENCY }, select: { amount: true } },
-            },
-        })
-
-        const divergentes = lists
-            .filter((l) => l.prices[0] && Number(l.prices[0].amount) !== Number(l.price))
-            .map((l) => l.slug)
-
-        expect(divergentes).toEqual([])
+    const lists = await prisma.leadList.findMany({
+        where: { isActive: true },
+        select: {
+            slug: true,
+            price: true,
+            prices: { where: { currency: DEFAULT_CURRENCY }, select: { amount: true } },
+        },
     })
+
+    const divergentes = lists
+        .filter((l) => l.prices[0] && Number(l.prices[0].amount) !== Number(l.price))
+        .map((l) => l.slug)
+
+    let falhou = false
+
+    if (semEuro.length > 0) {
+        falhou = true
+        console.error(`✖ ${semEuro.length} lista(s) ativa(s) sem preço em EUR:`)
+        for (const l of semEuro) console.error(`   - ${l.slug}`)
+        console.error("  Corrija pelo formulário do admin, NUNCA por SQL direto: o caminho")
+        console.error("  único de escrita existe justamente para os dois espelhos não divergirem.")
+    } else {
+        console.log(`✓ ${lists.length} lista(s) ativa(s), todas com preço em EUR`)
+    }
+
+    if (divergentes.length > 0) {
+        falhou = true
+        console.error(`✖ ${divergentes.length} lista(s) com LeadList.price divergindo da linha EUR:`)
+        for (const slug of divergentes) console.error(`   - ${slug}`)
+    } else {
+        console.log("✓ LeadList.price bate com a linha em EUR em todas as listas ativas")
+    }
+
+    await prisma.$disconnect()
+    process.exit(falhou ? 1 : 0)
+}
+
+main().catch(async (error) => {
+    console.error(error)
+    await prisma.$disconnect()
+    process.exit(1)
 })
 ```
 
-- [ ] **Step 2: Rodar**
+- [ ] **Step 2: Registrar o comando**
 
-```bash
-export PATH="/c/Program Files/nodejs:$PATH" && npx vitest run lib/marketplace/precos-integridade.test.ts
+Em `package.json`, ao lado de `seed:templates` (que já usa o mesmo `tsconfig.seed.json`):
+
+```json
+    "check:precos": "npx ts-node --project tsconfig.seed.json prisma/check-precos.ts",
 ```
 
-Esperado: PASS. Se falhar listando slugs, essas listas precisam de preço em EUR — grave pelo form do admin, **não** por SQL direto (o caminho único de escrita existe justamente para os dois espelhos não divergirem).
+- [ ] **Step 3: Rodar**
 
-Se o teste não conseguir conectar ao banco (falta `DATABASE_URL` no ambiente de teste), pare e relate ao usuário em vez de enfraquecer o teste — a alternativa é rodá-lo como verificação manual via SQL, e essa decisão é dele.
+```bash
+export PATH="/c/Program Files/nodejs:$PATH" && npm run check:precos
+```
+
+Esperado: exit 0, com as duas linhas `✓`. Se sair `✖` listando slugs, essas listas precisam de preço em EUR pelo formulário do admin.
+
+Se o script não conseguir conectar (falta `DATABASE_URL` no `.env`), pare e relate ao usuário — não enfraqueça a verificação para ela "passar".
 
 - [ ] **Step 3: Suite completa**
 
 ```bash
-export PATH="/c/Program Files/nodejs:$PATH" && npx tsc --noEmit && npm run lint && npx vitest run && npm run build
+export PATH="/c/Program Files/nodejs:$PATH" && npx tsc --noEmit && npx vitest run && npm run build && npx eslint $(git diff --name-only main...HEAD | grep -E "\.(ts|tsx)$")
 ```
 
 Esperado: exit 0 nos quatro.
@@ -2092,8 +2135,8 @@ Abrir `docs/superpowers/specs/2026-07-30-fase2b-multimoeda-design.md` e marcar i
 - [ ] **Step 5: Commit**
 
 ```bash
-git add lib/marketplace/precos-integridade.test.ts
-git commit -m "test(multimoeda): guarda de integridade dos precos em EUR"
+git add prisma/check-precos.ts package.json
+git commit -m "chore(multimoeda): script de integridade dos precos em EUR"
 ```
 
 ---

@@ -95,7 +95,9 @@ semeadura é direta e verificável por contagem.
 Consequência a administrar: o preço em EUR passa a existir em dois lugares. A
 regra é **um único caminho de escrita** (`lib/marketplace/list-prices.ts`), que
 grava a linha EUR e `LeadList.price` na mesma transação. Nenhum outro módulo
-escreve preço. Um teste garante a igualdade dos dois para toda lista ativa.
+escreve preço. O script `npm run check:precos` garante a igualdade dos dois para
+toda lista ativa — verificação de dados, fora da suite de testes, que neste
+repositório nunca toca o banco.
 
 Leitura: `LeadListPrice` é a fonte de verdade. `LeadList.price` fica como o
 espelho que o resto do sistema (SEO, super-admin, e-mail) já consome.
@@ -206,8 +208,8 @@ do Werner, e não bloqueia esta implementação.
 ## Verificação de aceite
 
 - [ ] Migração aplicada: `select count(*) from lead_list_prices where currency='EUR'` = 20, e cada `amount` igual ao `LeadList.price` correspondente
-- [ ] Teste-guarda: toda lista ativa tem preço em EUR; falha se uma lista for criada sem ele
-- [ ] Teste-guarda: `LeadList.price` e a linha EUR de `LeadListPrice` batem para toda lista ativa
+- [ ] `npm run check:precos` sai com exit 0: toda lista ativa tem preço em EUR (script, fora do vitest — nenhum teste deste repositório toca o banco)
+- [ ] `npm run check:precos` confirma que `LeadList.price` e a linha EUR de `LeadListPrice` batem para toda lista ativa
 - [ ] `lib/currency/` tem teste de unidade cobrindo palpite (BR/US/CA/outros), ausência de header, código inválido em cookie
 - [ ] Trocar a moeda no header muda os preços do catálogo e da página de lista sem trocar o idioma; trocar o idioma não muda a moeda
 - [ ] Visitante novo com `x-vercel-ip-country: BR` vê R$ sem clicar em nada; com `DE`, vê €
@@ -220,4 +222,4 @@ do Werner, e não bloqueia esta implementação.
 - [ ] Gerador em massa não sobrescreve preço existente (rodar duas vezes com taxas diferentes não altera o segundo resultado) e grava `AuditLog`
 - [ ] `/my-purchases` com compras em duas moedas mostra um total por moeda, nenhum total somando as duas
 - [ ] JSON-LD da página de lista traz um `Offer` por moeda cadastrada, e o preço visível na página está entre eles
-- [ ] `npx tsc --noEmit && npm run lint && npx vitest run && npm run build` — exit 0
+- [ ] `npx tsc --noEmit && npx vitest run && npm run build` — exit 0; e `npx eslint` sem problema novo nos arquivos tocados (a linha de base do repositório é 1361 erros pré-existentes, medida em 2026-07-30 — `npm run lint` exit 0 é inatingível)
