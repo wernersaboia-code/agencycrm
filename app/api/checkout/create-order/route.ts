@@ -7,21 +7,13 @@ import {
     OrderApplicationContextUserAction,
 } from "@paypal/paypal-server-sdk"
 import { prisma } from "@/lib/prisma"
-import { z } from "zod"
 import { getAuthenticatedActiveDbUser } from "@/lib/auth"
 import { getPublicAppUrl } from "@/lib/env"
 import { getClientIp, checkPersistentRateLimit } from "@/lib/rate-limit"
-import { SUPPORTED_CURRENCIES } from "@/lib/currency"
 import { resolveListPrices } from "@/lib/marketplace/list-prices"
-
-const createOrderSchema = z.object({
-    items: z.array(z.object({
-        listId: z.string().min(1),
-        quantity: z.number().int().positive().max(99).default(1),
-    })).min(1).max(50),
-    // O cliente envia o CÓDIGO da moeda, nunca um valor. O preço sai do banco.
-    currency: z.enum(SUPPORTED_CURRENCIES),
-})
+// O cliente envia o CÓDIGO da moeda, nunca um valor. O preço sai do banco.
+// Schema compartilhado com a rota do Stripe (ver lib/checkout/request-schema).
+import { checkoutRequestSchema } from "@/lib/checkout/request-schema"
 
 export async function POST(request: NextRequest) {
     try {
@@ -59,7 +51,7 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: "Too many pending orders" }, { status: 429 })
         }
 
-        const parsedBody = createOrderSchema.safeParse(await request.json())
+        const parsedBody = checkoutRequestSchema.safeParse(await request.json())
 
         if (!parsedBody.success) {
             return NextResponse.json({ error: "Invalid checkout items" }, { status: 400 })

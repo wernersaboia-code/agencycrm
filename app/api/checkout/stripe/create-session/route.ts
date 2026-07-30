@@ -5,22 +5,15 @@
 // rate limit, mesmo backstop de pedidos pendentes e mesma validação de itens.
 import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
-import { z } from "zod"
 import { getAuthenticatedActiveDbUser } from "@/lib/auth"
 import { getPublicAppUrl } from "@/lib/env"
 import { getClientIp, checkPersistentRateLimit } from "@/lib/rate-limit"
 import { getStripe, isStripeConfigured, toStripeAmount } from "@/lib/stripe"
-import { SUPPORTED_CURRENCIES } from "@/lib/currency"
+// Schema compartilhado com a rota do PayPal: as duas aceitam exatamente o
+// mesmo corpo, e divergirem em silêncio custaria uma cobrança errada.
+import { checkoutRequestSchema } from "@/lib/checkout/request-schema"
 import { resolveListPrices } from "@/lib/marketplace/list-prices"
 
-const createSessionSchema = z.object({
-    items: z.array(z.object({
-        listId: z.string().min(1),
-        quantity: z.number().int().positive().max(99).default(1),
-    })).min(1).max(50),
-    // O cliente envia o CÓDIGO da moeda, nunca um valor. O preço sai do banco.
-    currency: z.enum(SUPPORTED_CURRENCIES),
-})
 
 export async function POST(request: NextRequest) {
     try {
@@ -62,7 +55,7 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: "Too many pending orders" }, { status: 429 })
         }
 
-        const parsedBody = createSessionSchema.safeParse(await request.json())
+        const parsedBody = checkoutRequestSchema.safeParse(await request.json())
 
         if (!parsedBody.success) {
             return NextResponse.json({ error: "Invalid checkout items" }, { status: 400 })
