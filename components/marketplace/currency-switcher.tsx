@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useSyncExternalStore } from "react"
 import { Coins } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { useRouter } from "@/lib/i18n/navigation"
@@ -32,17 +32,21 @@ function readCurrencyCookie(): Currency {
     return parseCurrency(match?.[1]) ?? DEFAULT_CURRENCY
 }
 
+// Sem listeners reais: nada além deste componente muda o cookie de moeda no
+// cliente, e a troca já dispara router.refresh() para os Server Components
+// relerem o cookie. subscribe é só o contrato que useSyncExternalStore exige.
+function subscribeToCurrency() {
+    return () => {}
+}
+
 export function CurrencySwitcher() {
     const router = useRouter()
     const t = useTranslations("nav")
-    // O primeiro render é o do servidor, que não vê document.cookie. Ler no
-    // efeito evita divergência de hidratação; o custo é o rótulo aparecer como
-    // EUR por um instante, num badge de 3 letras.
-    const [current, setCurrent] = useState<Currency>(DEFAULT_CURRENCY)
-
-    useEffect(() => {
-        setCurrent(readCurrencyCookie())
-    }, [])
+    // O primeiro render é o do servidor, que não vê document.cookie. Ler via
+    // useSyncExternalStore evita a divergência de hidratação sem precisar de
+    // um setState dentro de useEffect: getServerSnapshot devolve o default
+    // (EUR) no servidor, e o cliente já monta com o valor real do cookie.
+    const current = useSyncExternalStore(subscribeToCurrency, readCurrencyCookie, () => DEFAULT_CURRENCY)
 
     // Trocar de moeda NÃO troca de idioma: são cookies independentes e a rota
     // continua a mesma. router.refresh() basta para os Server Components
@@ -50,7 +54,6 @@ export function CurrencySwitcher() {
     const switchTo = async (target: Currency) => {
         if (target === current) return
         await setCurrencyCookie(target)
-        setCurrent(target)
         router.refresh()
     }
 
