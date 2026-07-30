@@ -867,12 +867,24 @@ Hoje ele deriva o locale da moeda — BRL sempre sai `pt-BR`, mesmo para um leit
  * moeda. Derivar o locale da moeda, como era antes, mostrava "R$ 1.234,56" com
  * pontuação brasileira para um leitor alemão lendo a página em alemão.
  */
+const LOCALE_BY_CURRENCY: Record<string, string> = {
+  EUR: "de-DE",
+  BRL: "pt-BR",
+  USD: "en-US",
+}
+
 export function formatCurrency(
   value: number,
   currency: string = "EUR",
-  locale: string = "de-DE"
+  locale?: string
 ): string {
-  return new Intl.NumberFormat(locale, {
+  // Sem locale, cai no mapa antigo — ponte para os ~15 call sites ainda não
+  // migrados. Um default fixo aqui mudaria a saída deles em silêncio:
+  // "R$ 1.234,50" viraria "1.234,50 R$" sem nenhum erro de compilação.
+  // Não imitar esse fallback em código novo: passe o locale.
+  const resolvedLocale = locale ?? LOCALE_BY_CURRENCY[currency] ?? "en-US"
+
+  return new Intl.NumberFormat(resolvedLocale, {
     style: "currency",
     currency: currency,
   }).format(value)
