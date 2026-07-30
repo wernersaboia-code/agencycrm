@@ -7,14 +7,17 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function formatCurrency(value: number, currency: string = "EUR"): string {
-  const locales: Record<string, string> = {
-    EUR: "de-DE",
-    BRL: "pt-BR",
-    USD: "en-US",
-  }
-
-  return new Intl.NumberFormat(locales[currency] || "en-US", {
+/**
+ * O locale formata (separador de milhar, posição do símbolo); a moeda é só a
+ * moeda. Derivar o locale da moeda, como era antes, mostrava "R$ 1.234,56" com
+ * pontuação brasileira para um leitor alemão lendo a página em alemão.
+ */
+export function formatCurrency(
+  value: number,
+  currency: string = "EUR",
+  locale: string = "de-DE"
+): string {
+  return new Intl.NumberFormat(locale, {
     style: "currency",
     currency: currency,
   }).format(value)
