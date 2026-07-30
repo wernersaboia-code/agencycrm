@@ -10,6 +10,8 @@ import { z } from "zod"
 import { recordAudit } from "@/lib/audit"
 import { canPublishList } from "@/lib/marketplace/list-publishing"
 import { checkAdminRateLimit } from "@/lib/rate-limit"
+import { DEFAULT_CURRENCY } from "@/lib/currency"
+import { writeListPrices } from "@/lib/marketplace/list-prices"
 
 interface CreateListData {
     name: string
@@ -20,8 +22,12 @@ interface CreateListData {
     category: string
     countries: string[]
     industries: string[]
-    price: number
-    currency: string
+    // A lista não tem mais UMA moeda: tem um preço por moeda oferecida.
+    prices: {
+        EUR: number
+        BRL?: number
+        USD?: number
+    }
     totalLeads?: number
     isActive: boolean
     isFeatured: boolean
@@ -36,8 +42,12 @@ const listDataSchema = z.object({
     category: z.string().trim().min(1).max(80),
     countries: z.array(z.string().trim().min(2).max(3)).min(1).max(100),
     industries: z.array(z.string().trim().min(1).max(80)).max(100),
-    price: z.number().finite().positive().max(999999),
-    currency: z.enum(["EUR", "USD", "BRL"]),
+    // EUR é obrigatório — é a moeda de referência e o fallback da vitrine.
+    prices: z.object({
+        EUR: z.number().finite().positive().max(999999),
+        BRL: z.number().finite().positive().max(999999).optional(),
+        USD: z.number().finite().positive().max(999999).optional(),
+    }),
     // Número declarado manualmente pelo admin. A importação de leads
     // sobrescreve com a contagem real (fonte mais confiável quando existe).
     totalLeads: z.number().int().min(0).max(999999999).optional(),
@@ -115,13 +125,17 @@ export async function createList(data: CreateListData): Promise<SerializedList> 
             category: validated.category,
             countries: validated.countries,
             industries: validated.industries,
-            price: validated.price,
-            currency: validated.currency,
+            price: validated.prices.EUR,
+            currency: DEFAULT_CURRENCY,
             totalLeads: validated.totalLeads ?? 0,
             isActive: false,
             isFeatured: validated.isFeatured,
         },
     })
+
+    // Caminho único de escrita de preço: é ele que mantém LeadList.price e a
+    // linha EUR de LeadListPrice em sincronia.
+    await writeListPrices(prisma, list.id, validated.prices)
 
     revalidateListPaths(list.slug)
 
@@ -158,8 +172,8 @@ export async function updateList(id: string, data: CreateListData): Promise<Seri
             category: validated.category,
             countries: validated.countries,
             industries: validated.industries,
-            price: validated.price,
-            currency: validated.currency,
+            // price/currency não são gravados aqui: o espelho em EUR sai de
+            // writeListPrices, logo abaixo.
             // undefined = form não enviou o campo: preserva o valor atual
             // em vez de zerar uma contagem já existente.
             ...(validated.totalLeads !== undefined
@@ -170,9 +184,13 @@ export async function updateList(id: string, data: CreateListData): Promise<Seri
         },
     })
 
+    await writeListPrices(prisma, list.id, validated.prices)
+
     revalidateListPaths(list.slug)
 
-    return serializeList(list)
+    // `list` foi lido antes da escrita dos preços: sem este ajuste o retorno
+    // traria o preço anterior à edição.
+    return { ...serializeList(list), price: validated.prices.EUR, currency: DEFAULT_CURRENCY }
 }
 
 export async function deleteList(id: string): Promise<{ success: true } | { success: false; error: string }> {

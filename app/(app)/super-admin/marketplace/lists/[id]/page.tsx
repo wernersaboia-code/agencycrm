@@ -13,6 +13,7 @@ export default async function EditListPage({ params }: EditListPageProps) {
 
     const list = await prisma.leadList.findUnique({
         where: { id },
+        include: { prices: { select: { currency: true, amount: true } } },
     })
 
     if (!list) {
@@ -21,9 +22,16 @@ export default async function EditListPage({ params }: EditListPageProps) {
 
     const t = await getTranslations("admin.listDetails")
 
+    // O form edita um campo por moeda; o banco guarda uma linha por moeda.
+    const prices: Record<string, number> = {}
+    for (const row of list.prices) {
+        prices[row.currency] = Number(row.amount)
+    }
+
     // Serializar para passar ao Client Component
     const serializedList = {
         ...list,
+        prices,
         price: Number(list.price),
         createdAt: list.createdAt.toISOString(),
         updatedAt: list.updatedAt.toISOString(),
