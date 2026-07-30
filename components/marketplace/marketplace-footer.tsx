@@ -1,4 +1,4 @@
-// eslint-disable-next-line no-restricted-imports -- usos restantes são /sign-in, /terms, /privacy, fora do segmento de locale
+// eslint-disable-next-line no-restricted-imports -- único uso restante é /sign-in, fora do segmento de locale
 import Link from "next/link"
 import Image from "next/image"
 import { getTranslations } from "next-intl/server"
@@ -49,8 +49,8 @@ export async function MarketplaceFooter({ locale = "pt" }: { locale?: Locale }) 
                     <div>
                         <h4 className="mb-4 font-semibold">{t("legalTitle")}</h4>
                         <ul className="space-y-2 text-sm text-muted-foreground">
-                            <li><Link href="/terms" className="hover:text-foreground">{t("terms")}</Link></li>
-                            <li><Link href="/privacy" className="hover:text-foreground">{t("privacy")}</Link></li>
+                            <li><LocaleLink href="/terms" className="hover:text-foreground">{t("terms")}</LocaleLink></li>
+                            <li><LocaleLink href="/privacy" className="hover:text-foreground">{t("privacy")}</LocaleLink></li>
                             <li><LocaleLink href="/faq" className="hover:text-foreground">{t("contact")}</LocaleLink></li>
                         </ul>
                     </div>

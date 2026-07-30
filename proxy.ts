@@ -112,13 +112,17 @@ export async function proxy(request: NextRequest) {
 
     // Lista de EXCLUSÃO: prefixos que estruturalmente ficam fora de
     // app/[locale] (grupos de rota app/(crm), app/(auth), e as pastas de raiz
-    // app/crm, app/super-admin, app/privacy, app/terms, além do arquivo
-    // especial app/opengraph-image.tsx). Tudo que não estiver aqui é
-    // considerado parte do segmento de locale por padrão — assim uma rota
-    // nova do funil (ex.: app/[locale]/nova-rota) passa a funcionar sem
-    // ninguém lembrar de listá-la. Antes desta inversão, o esquecimento
-    // silencioso ia na direção oposta: "/de/nova-rota" funcionava e
-    // "/nova-rota" (locale padrão) dava 404.
+    // app/crm, app/super-admin, além do arquivo especial
+    // app/opengraph-image.tsx). Tudo que não estiver aqui é considerado parte
+    // do segmento de locale por padrão — assim uma rota nova do funil (ex.:
+    // app/[locale]/nova-rota) passa a funcionar sem ninguém lembrar de
+    // listá-la. Antes desta inversão, o esquecimento silencioso ia na direção
+    // oposta: "/de/nova-rota" funcionava e "/nova-rota" (locale padrão) dava
+    // 404.
+    // /privacy e /terms saíram desta lista: agora moram em app/[locale], não
+    // mais em app/(app). Deixá-los aqui fazia o middleware de intl ser pulado
+    // e "/privacy" (locale padrão, sem prefixo) dar 404 — só "/de/privacy" e
+    // demais locales com prefixo funcionavam, por acaso da estrutura de pastas.
     // Nota: /api já é interceptado no bloco anterior (linhas 148-154), não
     // precisa estar listado aqui.
     const nonLocaleSegmentPrefixes = [
@@ -130,8 +134,6 @@ export async function proxy(request: NextRequest) {
         // Callback de confirmação de e-mail: não tem versão por idioma e o
         // prefixo de locale quebraria o link que o Supabase já enviou.
         "/auth",
-        "/privacy",
-        "/terms",
         "/opengraph-image",
         // app/(crm) — grupo de rota, sem prefixo na URL, mas fora de [locale]
         "/dashboard",

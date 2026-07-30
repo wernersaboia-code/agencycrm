@@ -12,12 +12,14 @@ const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || "https://www.easyprospect.co
 // Iteramos sobre PUBLISHED_LOCALES, não LOCALES: locales roteáveis sem
 // tradução própria caem no fallback para pt (ver i18n/request.ts) e não
 // devem ser submetidos ao buscador como se tivessem conteúdo próprio.
-const ROUTES: { path: string; changeFrequency: "daily" | "weekly" | "monthly"; priority: number }[] = [
+const ROUTES: { path: string; changeFrequency: "daily" | "weekly" | "monthly" | "yearly"; priority: number }[] = [
     { path: "/", changeFrequency: "weekly", priority: 1 },
     { path: "/catalog", changeFrequency: "daily", priority: 0.9 },
     { path: "/faq", changeFrequency: "monthly", priority: 0.7 },
     { path: "/blog", changeFrequency: "weekly", priority: 0.8 },
     { path: "/about", changeFrequency: "monthly", priority: 0.6 },
+    { path: "/privacy", changeFrequency: "yearly", priority: 0.3 },
+    { path: "/terms", changeFrequency: "yearly", priority: 0.3 },
 ]
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

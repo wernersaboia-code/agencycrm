@@ -596,6 +596,9 @@
             "current": "Sobre"
         }
     },
+    "legal": {
+        "lastUpdated": "Última atualização: {date}"
+    },
     "admin": {
         "common": {
             "brand": "Easy Prospect",
