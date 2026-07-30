@@ -3,6 +3,8 @@
 
 import { prisma } from "@/lib/prisma"
 import type { Prisma } from "@prisma/client"
+import { getActiveCurrency } from "@/lib/currency/server"
+import { resolveListPrices } from "@/lib/marketplace/list-prices"
 
 interface GetListsParams {
     countries?: string[]
@@ -75,11 +77,25 @@ export async function getMarketplaceLists(params: GetListsParams = {}) {
         prisma.leadList.count({ where }),
     ])
 
-    return {
-        lists: lists.map((list) => ({
+    const currency = await getActiveCurrency()
+    const prices = await resolveListPrices(prisma, lists.map((l) => l.id), currency)
+
+    // O card recebe o preço JÁ resolvido: `price` e `currency` passam a
+    // significar "o que esta pessoa vê", não "o que a lista custa em euro".
+    // Lista sem preço nenhum mantém o valor da coluna antiga em vez de
+    // desaparecer da vitrine.
+    const listsWithPrice = lists.map((list) => {
+        const resolved = prices.get(list.id)
+        return {
             ...list,
-            price: Number(list.price),
-        })),
+            price: resolved ? resolved.amount : Number(list.price),
+            currency: resolved ? resolved.currency : list.currency,
+            priceIsFallback: resolved?.isFallback ?? false,
+        }
+    })
+
+    return {
+        lists: listsWithPrice,
         total,
         pages: Math.ceil(total / limit),
     }

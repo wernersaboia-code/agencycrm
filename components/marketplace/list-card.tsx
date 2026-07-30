@@ -2,7 +2,7 @@
 "use client"
 
 import { Link } from "@/lib/i18n/navigation"
-import { useTranslations } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -30,6 +30,7 @@ export interface MarketplaceListCardData {
     totalLeads: number
     price: number
     currency: string
+    priceIsFallback?: boolean
     isActive: boolean
     isFeatured: boolean
     previewData: unknown
@@ -44,6 +45,7 @@ interface ListCardProps {
 export function ListCard({ list }: ListCardProps) {
     const t = useTranslations("catalog")
     const tCart = useTranslations("cart")
+    const locale = useLocale()
     const { addItem } = useCart()
     const updatedAt = new Date(list.updatedAt).toLocaleDateString("pt-BR", {
         month: "short",
@@ -136,7 +138,7 @@ export function ListCard({ list }: ListCardProps) {
                     <div className="flex items-center justify-between">
                         <div>
                             <span className="text-2xl font-bold text-brand">
-                                {formatCurrency(list.price, list.currency)}
+                                {formatCurrency(list.price, list.currency, locale)}
                             </span>
                         </div>
                         <Link

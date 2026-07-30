@@ -15,6 +15,9 @@ import { JsonLd } from "@/components/seo/json-ld"
 import { buildProductSchema, buildBreadcrumbSchema, buildListBreadcrumbTrail } from "@/lib/seo/schema"
 import { alternatesFor } from "@/lib/i18n/alternates"
 import type { Locale } from "@/lib/i18n/locales"
+import { getActiveCurrency } from "@/lib/currency/server"
+import { pickPrice } from "@/lib/marketplace/list-prices"
+import type { Currency } from "@/lib/currency"
 import {
     ArrowLeft,
     BadgeCheck,
@@ -71,7 +74,16 @@ export default async function ListPage({ params }: ListPageProps) {
         notFound()
     }
 
-    const price = Number(list.price)
+    const currency = await getActiveCurrency()
+    const priceRows = await prisma.leadListPrice.findMany({
+        where: { listId: list.id },
+        select: { currency: true, amount: true },
+    })
+    // Lista sem nenhuma linha de preço cai na coluna antiga: a página nunca
+    // fica sem preço por causa de um cadastro incompleto.
+    const resolved = pickPrice(priceRows, currency)
+        ?? { amount: Number(list.price), currency: list.currency as Currency, isFallback: false }
+    const price = resolved.amount
     // Formatado no locale ativo: "fev. de 2026" para um leitor alemão é ruído.
     const dateFormat = { day: "2-digit", month: "short", year: "numeric" } as const
     const updatedAt = format.dateTime(new Date(list.updatedAt), dateFormat)
@@ -236,7 +248,7 @@ export default async function ListPage({ params }: ListPageProps) {
                     <div className="rounded-lg border bg-card p-6 shadow-sm">
                         <div className="mb-6">
                             <div className="text-4xl font-bold text-brand">
-                                {formatCurrency(price, list.currency)}
+                                {formatCurrency(price, resolved.currency, locale)}
                             </div>
                         </div>
 
