@@ -219,8 +219,12 @@ const LOCALE_CURRENCY: Record<string, Currency> = {
  */
 export function guessCurrency(input: { country?: string | null; locale?: string | null }): Currency {
     const country = input.country?.toUpperCase()
-    if (country && COUNTRY_CURRENCY[country]) {
-        return COUNTRY_CURRENCY[country]
+    // Saber o país ENCERRA a decisão, mesmo que ele não esteja mapeado: um
+    // visitante na Alemanha vê euro, não o real que o idioma "pt" sugeriria.
+    // Deixar país não mapeado cair na regra de idioma quebra os dois casos que
+    // motivaram usar geografia em primeiro lugar.
+    if (country) {
+        return COUNTRY_CURRENCY[country] ?? DEFAULT_CURRENCY
     }
 
     const locale = input.locale?.toLowerCase()
