@@ -327,8 +327,8 @@
         "trustSaved": "Bestelling opgeslagen in uw account",
         "trustDownload": "Download beschikbaar na bevestiging",
         "trustReview": "U controleert de bestelling voordat u betaalt",
-        "currencyFellBack": "Een van de lijsten in je winkelwagen heeft geen prijs in die valuta. De winkelwagen staat weer in euro's.",
-        "itemUnavailable": "Een lijst is uit de catalogus gehaald en uit je winkelwagen verwijderd."
+        "currencyFellBack": "Een van de lijsten in uw winkelwagen heeft geen prijs in die valuta. De winkelwagen staat weer in euro's.",
+        "itemUnavailable": "Een lijst is uit de catalogus gehaald en uit uw winkelwagen verwijderd."
     },
     "catalog": {
         "metaTitle": "Catalogus met lijsten",
