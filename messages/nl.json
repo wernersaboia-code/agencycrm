@@ -595,6 +595,9 @@
             "home": "Home",
             "current": "Over ons"
         }
+    },
+    "legal": {
+        "lastUpdated": "Laatst bijgewerkt: {date}"
     }
 }
 

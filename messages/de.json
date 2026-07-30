@@ -595,5 +595,8 @@
             "home": "Start",
             "current": "Über uns"
         }
+    },
+    "legal": {
+        "lastUpdated": "Zuletzt aktualisiert: {date}"
     }
 }
