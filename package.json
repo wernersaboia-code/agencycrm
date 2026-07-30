@@ -13,7 +13,8 @@
     "test:watch": "vitest",
     "lint": "eslint .",
     "postinstall": "prisma generate",
-    "seed:templates": "npx ts-node --project tsconfig.seed.json prisma/seed-templates.ts"
+    "seed:templates": "npx ts-node --project tsconfig.seed.json prisma/seed-templates.ts",
+    "check:precos": "npx ts-node --project tsconfig.seed.json prisma/check-precos.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
