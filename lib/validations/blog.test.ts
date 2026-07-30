@@ -20,8 +20,8 @@ describe("blog validations", () => {
         expect(hasCompleteTranslation([{ title: "", contentHtml: "<p>corpo</p>" }])).toBe(false)
     })
     it("bloqueia publicação sem idioma completo", () => {
-        expect(() => assertPublishable("PUBLISHED", [{ title: "T", contentHtml: "<p></p>" }])).toThrow()
-        expect(() => assertPublishable("DRAFT", [{ title: "", contentHtml: "" }])).not.toThrow()
-        expect(() => assertPublishable("PUBLISHED", [{ title: "T", contentHtml: "<p>x</p>" }])).not.toThrow()
+        expect(assertPublishable("PUBLISHED", [{ title: "T", contentHtml: "<p></p>" }]).ok).toBe(false)
+        expect(assertPublishable("DRAFT", [{ title: "", contentHtml: "" }]).ok).toBe(true)
+        expect(assertPublishable("PUBLISHED", [{ title: "T", contentHtml: "<p>x</p>" }]).ok).toBe(true)
     })
 })
