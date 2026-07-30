@@ -7,6 +7,30 @@ export function publishedWhere(now: Date = new Date()) {
     return { status: "PUBLISHED" as const, publishedAt: { lte: now } }
 }
 
+/**
+ * Categorias que têm ao menos um post publicado NAQUELE idioma.
+ *
+ * Mora aqui, ao lado de `publishedWhere`, porque os dois precisam concordar:
+ * se o chip aparecer com um critério e a listagem filtrar com outro, o leitor
+ * clica na categoria e recebe "nenhum artigo publicado". É a mesma regra que o
+ * catálogo já aplica às facetas — categoria vazia é promessa de conteúdo que
+ * não existe.
+ */
+export async function getCategoriesWithPosts(locale: BlogLocale) {
+    return prisma.blogCategory.findMany({
+        where: {
+            posts: {
+                some: {
+                    ...publishedWhere(),
+                    translations: { some: { locale } },
+                },
+            },
+        },
+        orderBy: { createdAt: "asc" },
+        include: { translations: { where: { locale } } },
+    })
+}
+
 export async function getPublishedPostsForLocale(
     locale: BlogLocale,
     opts: { categoryKey?: string; page?: number; pageSize?: number } = {}

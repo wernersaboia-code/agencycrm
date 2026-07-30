@@ -1,10 +1,9 @@
 import { notFound } from "next/navigation"
 // eslint-disable-next-line no-restricted-imports -- href sempre montado via getPathname() abaixo, prefixo de locale já correto
 import Link from "next/link"
-import { prisma } from "@/lib/prisma"
 import { isBlogLocale, dirForLocale, type BlogLocale } from "@/lib/blog/locales"
 import { getBlogLabels } from "@/lib/blog/i18n"
-import { getPublishedPostsForLocale } from "@/lib/blog/queries"
+import { getCategoriesWithPosts, getPublishedPostsForLocale } from "@/lib/blog/queries"
 import { PostCard } from "@/components/blog/post-card"
 import { getPathname } from "@/lib/i18n/navigation"
 
@@ -21,7 +20,7 @@ export default async function BlogIndexPage({
 
     const [{ posts }, categories] = await Promise.all([
         getPublishedPostsForLocale(locale, { categoryKey: categoria, page: page ? Number(page) : 1 }),
-        prisma.blogCategory.findMany({ include: { translations: { where: { locale } } } }),
+        getCategoriesWithPosts(locale),
     ])
 
     return (
