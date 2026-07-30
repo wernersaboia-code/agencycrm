@@ -137,3 +137,25 @@ export function cartCurrencyFor(
     }
     return { currency: wanted, fellBack: false }
 }
+
+/**
+ * Arredondamento comercial: sobe até o próximo valor terminado em 9. Nunca
+ * arredonda para baixo — o preço convertido é um piso, não um alvo.
+ *
+ * Real usa passo de 10 porque os valores são uma ordem de grandeza maiores
+ * (€45 ≈ R$289): terminar em 9 na unidade não muda nada perceptível ali.
+ */
+const ROUNDING_STEP: Record<Currency, number> = {
+    // Hoje as três usam o mesmo passo: o alvo é o próximo valor terminado em 9
+    // (R$ 232,50 → R$ 239; US$ 46,20 → US$ 49). O mapa existe porque uma moeda
+    // de ordem de grandeza muito diferente precisaria de outro passo, e o lugar
+    // de decidir isso é aqui, não espalhado por quem chama.
+    EUR: 10,
+    BRL: 10,
+    USD: 10,
+}
+
+export function roundCommercial(value: number, currency: Currency): number {
+    const step = ROUNDING_STEP[currency]
+    return Math.ceil((value + 1) / step) * step - 1
+}

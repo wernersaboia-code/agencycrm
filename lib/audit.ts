@@ -11,6 +11,7 @@ export type AuditAction =
     | "list.deleted"
     | "list.reviewed"
     | "list.unpublished"
+    | "list.prices.seed"
     | "marketplace_lead.deleted"
     | "workspace.exported"
 

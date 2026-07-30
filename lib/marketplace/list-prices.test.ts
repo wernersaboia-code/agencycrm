@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest"
-import { pickPrice, resolveListPrices, writeListPrices, cartCurrencyFor } from "./list-prices"
+import { pickPrice, resolveListPrices, writeListPrices, cartCurrencyFor, roundCommercial } from "./list-prices"
 
 describe("pickPrice", () => {
     const prices = [
@@ -130,5 +130,21 @@ describe("cartCurrencyFor", () => {
 
     it("carrinho vazio fica na moeda pedida", () => {
         expect(cartCurrencyFor(new Map(), "USD")).toEqual({ currency: "USD", fellBack: false })
+    })
+})
+
+describe("roundCommercial", () => {
+    it("real arredonda para o 9 acima da dezena", () => {
+        expect(roundCommercial(232.5, "BRL")).toBe(239)
+        expect(roundCommercial(240, "BRL")).toBe(249)
+    })
+
+    it("dólar e euro arredondam para o 9 acima da unidade", () => {
+        expect(roundCommercial(46.2, "USD")).toBe(49)
+        expect(roundCommercial(21.4, "EUR")).toBe(29)
+    })
+
+    it("nunca devolve valor menor que a entrada", () => {
+        expect(roundCommercial(289, "BRL")).toBeGreaterThanOrEqual(289)
     })
 })

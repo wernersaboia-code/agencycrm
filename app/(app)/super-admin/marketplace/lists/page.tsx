@@ -17,6 +17,7 @@ import {
 import { AlertCircle, ArrowLeft, CheckCircle2, Edit, Plus, Star, Users } from "lucide-react"
 import { formatCurrency } from "@/lib/utils"
 import { DeleteListButton } from "@/components/admin/delete-list-button"
+import { SeedPricesDialog } from "@/components/admin/seed-prices-dialog"
 
 export default async function MarketplaceListsPage() {
     const lists = await prisma.leadList.findMany({
@@ -89,6 +90,7 @@ export default async function MarketplaceListsPage() {
                             {tc("backToDashboard")}
                         </Link>
                     </Button>
+                    <SeedPricesDialog />
                     <Button className="bg-admin hover:bg-admin" asChild>
                         <Link href="/super-admin/marketplace/lists/new">
                             <Plus className="h-4 w-4" />
