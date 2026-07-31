@@ -12,6 +12,7 @@ import { canPublishList } from "@/lib/marketplace/list-publishing"
 import { checkAdminRateLimit } from "@/lib/rate-limit"
 import { DEFAULT_CURRENCY } from "@/lib/currency"
 import { writeListPrices } from "@/lib/marketplace/list-prices"
+import { describeListError, type ActionResult } from "@/lib/admin/action-errors"
 
 interface CreateListData {
     name: string
@@ -105,9 +106,25 @@ function revalidateListPaths(listSlug?: string) {
     }
 }
 
-export async function createList(data: CreateListData): Promise<SerializedList> {
+/**
+ * Falha previsível volta como valor, não como exceção: em produção o Next
+ * apaga a mensagem de tudo que é lançado dentro de uma server action, e o
+ * admin recebia "An error occurred in the Server Components render" sem
+ * qualquer pista — inclusive para um simples slug repetido.
+ */
+export async function createList(data: CreateListData): Promise<ActionResult<SerializedList>> {
     const admin = await requireAdmin()
     await checkAdminRateLimit("list.create", admin.id, 10, 60_000)
+
+    try {
+        return { success: true, data: await criarLista(data) }
+    } catch (error) {
+        console.error("Erro ao criar lista:", error)
+        return { success: false, error: describeListError(error) }
+    }
+}
+
+async function criarLista(data: CreateListData): Promise<SerializedList> {
     const validated = listDataSchema.parse(data)
 
     // O estudo em PDF só é enviado depois que a lista existe (rota de upload
@@ -142,9 +159,22 @@ export async function createList(data: CreateListData): Promise<SerializedList> 
     return serializeList(list)
 }
 
-export async function updateList(id: string, data: CreateListData): Promise<SerializedList> {
+export async function updateList(
+    id: string,
+    data: CreateListData
+): Promise<ActionResult<SerializedList>> {
     const admin = await requireAdmin()
     await checkAdminRateLimit("list.update", admin.id, 20, 60_000)
+
+    try {
+        return { success: true, data: await atualizarLista(id, data) }
+    } catch (error) {
+        console.error("Erro ao atualizar lista:", error)
+        return { success: false, error: describeListError(error) }
+    }
+}
+
+async function atualizarLista(id: string, data: CreateListData): Promise<SerializedList> {
     const validated = listDataSchema.parse(data)
 
     if (validated.isActive) {
