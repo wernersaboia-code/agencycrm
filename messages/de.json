@@ -1188,7 +1188,10 @@
             "invalidField": "ungültiger Wert",
             "metaDescriptionHint": "Schreiben Sie zwischen 140 und 155 Zeichen: Die Suchmaschine schneidet den Rest ab. Bleibt das Feld leer, wird stattdessen die Zusammenfassung verwendet.",
             "saving": "Wird gespeichert ...",
-            "save": "Speichern"
+            "save": "Speichern",
+            "preview": "Vorschau",
+            "previewNeedsSave": "Speichern Sie den Beitrag einmal, bevor Sie die Vorschau öffnen.",
+            "previewIsSavedVersion": "Sie haben ungespeicherte Änderungen; die Vorschau zeigt die zuletzt gespeicherte Version."
         },
         "blogCategories": {
             "title": "Blog-Kategorien",
