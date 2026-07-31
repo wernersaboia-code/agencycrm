@@ -1,4 +1,3 @@
-import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { requireAdmin } from "@/lib/auth"
 import { getPostForPreview } from "@/lib/blog/queries"
@@ -6,10 +5,7 @@ import { getBlogLabels } from "@/lib/blog/i18n"
 import { isBlogLocale, DEFAULT_BLOG_LOCALE, type BlogLocale } from "@/lib/blog/locales"
 import { PostArticle } from "@/components/blog/post-article"
 
-// Prévia nunca é indexada: é conteúdo não publicado, atrás de login.
-export const metadata: Metadata = {
-    robots: { index: false, follow: false },
-}
+// robots: ver app/blog-preview/layout.tsx — a prévia nunca é indexada.
 
 /**
  * Prévia do post como o leitor verá.
