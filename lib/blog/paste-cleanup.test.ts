@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest"
-import { limparHtmlDeColagem } from "./paste-cleanup"
+import { ehColagemInterna, limparHtmlDeColagem } from "./paste-cleanup"
 
 /**
  * Texto visível, sem tags.
@@ -149,5 +149,17 @@ describe("limparHtmlDeColagem", () => {
     it("aguenta entrada vazia e HTML malformado", () => {
         expect(limparHtmlDeColagem("")).toBe("")
         expect(limparHtmlDeColagem("<p>sem fechar")).toContain("sem fechar")
+    })
+})
+
+describe("ehColagemInterna", () => {
+    it("reconhece o marcador que o ProseMirror grava no HTML que ele mesmo copia", () => {
+        const html = '<p data-pm-slice="1 1 []">Parágrafo movido</p>'
+        expect(ehColagemInterna(html)).toBe(true)
+    })
+
+    it("HTML do Word não é colagem interna", () => {
+        const html = '<p class="MsoNormal" style="font-family:Calibri">Texto</p>'
+        expect(ehColagemInterna(html)).toBe(false)
     })
 })

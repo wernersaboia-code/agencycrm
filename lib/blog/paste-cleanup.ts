@@ -65,6 +65,21 @@ function atributosLimpos(attribs: Record<string, string>): Record<string, string
     return limpos
 }
 
+/**
+ * Detecta colagem interna: recortar/colar dentro do próprio editor (Ctrl+X /
+ * Ctrl+V para mover um parágrafo, por exemplo).
+ *
+ * O ProseMirror marca o HTML que ele mesmo põe na área de transferência com
+ * `data-pm-slice`. Quando esse marcador está presente, o conteúdo já passou
+ * pela limpeza e pelos gates de acessibilidade na primeira vez que entrou no
+ * editor — rodar `limparHtmlDeColagem` de novo, com `descartarImagens: true`,
+ * apagaria imagens que o autor só está movendo de lugar. HTML de fora (Word,
+ * Google Docs, um navegador) nunca carrega esse atributo.
+ */
+export function ehColagemInterna(html: string): boolean {
+    return /data-pm-slice/.test(html)
+}
+
 export function limparHtmlDeColagem(
     html: string,
     opcoes: { descartarImagens?: boolean } = {}
