@@ -66,7 +66,11 @@ export function RichTextEditor({
             ...(ehArtigo
                 ? [
                     TextAlign.configure({ types: ["heading", "paragraph"] }),
-                    Image.configure({ HTMLAttributes: { class: "rounded-lg" } }),
+                    // Sem HTMLAttributes: `class` não sobrevive a nenhum sanitizador
+                    // (paste-cleanup nem html-sanitizer preservam `class`) — prometer
+                    // "rounded-lg" aqui e entregar imagem quadrada no post publicado
+                    // é pior do que não prometer nada.
+                    Image,
                 ]
                 : []),
         ],

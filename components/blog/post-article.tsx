@@ -17,9 +17,9 @@ interface PostArticleProps {
  * admin. Existe para que a prévia não possa divergir do publicado: se
  * divergir, é bug nos dois.
  *
- * Segurança: `contentHtml` já passou por limpeza e sanitização no servidor ao
- * salvar. Não acrescentar sanitização aqui — ver o comentário em
- * `lib/utils/html-sanitizer.ts` sobre por que isso não roda no cliente.
+ * Segurança: `contentHtml` já foi limpo e sanitizado no SERVIDOR ao salvar
+ * (`lib/blog/sanitize-translations.ts`) — por isso não se sanitiza de novo
+ * aqui.
  */
 export function PostArticle({
     locale,
