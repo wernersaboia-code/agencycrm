@@ -60,6 +60,15 @@ describe("sanitizeTranslations (função de produção)", () => {
         expect(result.contentHtml).toBe("<p>keep</p>")
     })
 
+    it("preserva a imagem inserida pelo botão de imagem (com alt) ao salvar o post", () => {
+        const [result] = sanitizeTranslations([
+            translation('<p>Antes</p><img src="https://exemplo.com/a.png" alt="x"><p>Depois</p>'),
+        ])
+        expect(result.contentHtml).toContain('<img src="https://exemplo.com/a.png" alt="x"')
+        expect(result.contentHtml).toContain("<p>Antes</p>")
+        expect(result.contentHtml).toContain("<p>Depois</p>")
+    })
+
     it("preserva os demais campos da tradução, alterando só contentHtml", () => {
         const input = translation('<p style="font-family:Calibri">ok</p>', {
             locale: "en",

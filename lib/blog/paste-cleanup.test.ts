@@ -80,13 +80,13 @@ describe("limparHtmlDeColagem", () => {
         expect(limpo).toBe("<p>Ok</p>")
     })
 
-    it("mantém a estrutura que o autor quer: títulos, listas e links — imagem colada é descartada de propósito", () => {
+    it("mantém a estrutura que o autor quer: títulos, listas e links — imagem colada é descartada de propósito ({ descartarImagens: true })", () => {
         const colado =
             '<h2 style="font-family:Arial">Título</h2>' +
             "<ul><li>Item</li></ul>" +
             '<a href="https://exemplo.com" style="color:#0000EE">Link</a>' +
             '<img src="https://exemplo.com/a.png" alt="Alt">'
-        const limpo = limparHtmlDeColagem(colado)
+        const limpo = limparHtmlDeColagem(colado, { descartarImagens: true })
 
         expect(limpo).toContain("<h2>Título</h2>")
         expect(limpo).toContain("<li>Item</li>")
@@ -95,13 +95,23 @@ describe("limparHtmlDeColagem", () => {
         expect(limpo).not.toContain("<img")
     })
 
-    it("descarta <img> colado inteiramente, mesmo com src e alt válidos, mantendo o texto ao redor intacto", () => {
+    it("descarta <img> colado inteiramente com { descartarImagens: true }, mesmo com src e alt válidos, mantendo o texto ao redor intacto", () => {
         const colado =
             '<p>Antes.</p><img src="https://exemplo.com/a.png" alt="Alt"><p>Depois.</p>'
-        const limpo = limparHtmlDeColagem(colado)
+        const limpo = limparHtmlDeColagem(colado, { descartarImagens: true })
 
         expect(limpo).not.toContain("<img")
         expect(limpo).not.toContain("Alt")
+        expect(limpo).toContain("<p>Antes.</p>")
+        expect(limpo).toContain("<p>Depois.</p>")
+    })
+
+    it("sem a opção (default), preserva <img> com src e alt intactos — é o que sobrevive ao salvamento do post", () => {
+        const colado =
+            '<p>Antes.</p><img src="https://exemplo.com/a.png" alt="x"><p>Depois.</p>'
+        const limpo = limparHtmlDeColagem(colado)
+
+        expect(limpo).toContain('<img src="https://exemplo.com/a.png" alt="x"')
         expect(limpo).toContain("<p>Antes.</p>")
         expect(limpo).toContain("<p>Depois.</p>")
     })

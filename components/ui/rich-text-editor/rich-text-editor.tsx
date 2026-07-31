@@ -81,7 +81,10 @@ export function RichTextEditor({
             // uma versão bonita que muda ao salvar. No preset de e-mail nada
             // muda — os chips de variável dependem do HTML colado como veio.
             ...(ehArtigo
-                ? { transformPastedHTML: (html: string) => limparHtmlDeColagem(html) }
+                ? {
+                      transformPastedHTML: (html: string) =>
+                          limparHtmlDeColagem(html, { descartarImagens: true }),
+                  }
                 : {}),
             attributes: {
                 class: cn(

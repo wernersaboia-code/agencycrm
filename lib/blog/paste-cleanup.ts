@@ -60,28 +60,47 @@ function atributosLimpos(attribs: Record<string, string>): Record<string, string
     return limpos
 }
 
-export function limparHtmlDeColagem(html: string): string {
+export function limparHtmlDeColagem(
+    html: string,
+    opcoes: { descartarImagens?: boolean } = {}
+): string {
     if (!html.trim()) return ""
+
+    const { descartarImagens = false } = opcoes
 
     const limpo = sanitizeHtml(html, {
         // Mesma lista de tags do sanitizador de segurança, menos as de tabela
         // que o preset de artigo não produz. Tag fora da lista é descartada,
         // mas seu TEXTO permanece (comportamento padrão do sanitize-html).
-        // `img` fica de fora de propósito: imagem colada de Word/Docs já chega
-        // quebrada (vem com `src="file:///..."` ou `data:`, esquemas fora de
-        // `allowedSchemes` abaixo, então sobraria um <img> sem src) e, mesmo
-        // quando o src sobrevivesse, deixar passar imagem colada sem alt
-        // tornaria decorativa a garantia de acessibilidade que o botão de
-        // imagem do editor existe para dar (ele exige texto alternativo).
-        // Quem quiser imagem no post usa o botão.
-        allowedTags: [
-            "a", "blockquote", "br", "code", "em", "h1", "h2", "h3", "h4", "h5", "h6",
-            "hr", "li", "ol", "p", "pre", "s", "strong", "sub", "sup", "u", "ul",
-            "table", "thead", "tbody", "tr", "th", "td",
-        ],
+        //
+        // `img` só sai da lista quando `descartarImagens: true` — e isso é
+        // decisão de quem CHAMA a função, não da função em si. Esta mesma
+        // limpeza roda em dois lugares: no editor, sobre HTML recém-colado
+        // (aí faz sentido descartar: imagem colada de Word/Docs já chega
+        // quebrada, com `src="file:///..."` ou `data:`, esquemas fora de
+        // `allowedSchemes` abaixo, e mesmo quando o src sobrevivesse, deixar
+        // passar imagem colada sem alt tornaria decorativa a garantia de
+        // acessibilidade que o botão de imagem do editor existe para dar —
+        // ele exige texto alternativo); e no servidor, sobre o `contentHtml`
+        // inteiro do post ao salvar, onde a mesma imagem inserida pelo botão
+        // (com alt) precisa sobreviver. O default é `false` — manter a
+        // imagem — de propósito: quem esquecer de passar a opção preserva
+        // conteúdo em vez de apagar o que o autor colocou.
+        allowedTags: descartarImagens
+            ? [
+                  "a", "blockquote", "br", "code", "em", "h1", "h2", "h3", "h4", "h5", "h6",
+                  "hr", "li", "ol", "p", "pre", "s", "strong", "sub", "sup", "u", "ul",
+                  "table", "thead", "tbody", "tr", "th", "td",
+              ]
+            : [
+                  "a", "blockquote", "br", "code", "em", "h1", "h2", "h3", "h4", "h5", "h6",
+                  "hr", "img", "li", "ol", "p", "pre", "s", "strong", "sub", "sup", "u", "ul",
+                  "table", "thead", "tbody", "tr", "th", "td",
+              ],
         allowedAttributes: {
             "*": ["style", "align"],
             a: ["href", "title", "target", "style"],
+            ...(descartarImagens ? {} : { img: ["src", "alt", "title", "width", "height"] }),
             td: ["colspan", "rowspan", "style"],
             th: ["colspan", "rowspan", "style"],
         },
