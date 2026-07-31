@@ -136,6 +136,10 @@ export async function proxy(request: NextRequest) {
         // prefixo de locale quebraria o link que o Supabase já enviou.
         "/auth",
         "/opengraph-image",
+        // Prévia de post do blog: o idioma vem de ?locale=, não do caminho, e a
+        // página vive em app/blog-preview (fora de [locale]). Sem esta linha o
+        // middleware de idioma reescreve para /pt/blog-preview/… e a rota some.
+        "/blog-preview",
         // app/(crm) — grupo de rota, sem prefixo na URL, mas fora de [locale]
         "/dashboard",
         "/calls",
