@@ -6,7 +6,7 @@ import { GeistMono } from "geist/font/mono"
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { hasLocale, NextIntlClientProvider } from "next-intl"
-import { getMessages, setRequestLocale } from "next-intl/server"
+import { getMessages, getTranslations, setRequestLocale } from "next-intl/server"
 import { routing } from "@/lib/i18n/routing"
 import { htmlLangFor, dirForLocale, type Locale } from "@/lib/i18n/locales"
 import { robotsForLocale } from "@/lib/seo/indexability"
@@ -98,6 +98,9 @@ export default async function MarketplaceLayout({
 
     const messages = await getMessages()
 
+    const tCookies = await getTranslations({ locale, namespace: "cookies" })
+    const tA11y = await getTranslations({ locale, namespace: "a11y" })
+
     return (
         // Este é o root layout do funil: o `<html>` sai daqui, e não de um
         // layout único no topo de `app/`. O motivo é o `lang`: um layout acima
@@ -119,9 +122,16 @@ export default async function MarketplaceLayout({
             href="#main-content"
             className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground"
         >
-            Pular para o conteúdo
+            {tA11y("skipToContent")}
         </a>
-        <Providers>
+        <Providers
+            cookieConsent={{
+                message: tCookies("message"),
+                learnMore: tCookies("learnMore"),
+                decline: tCookies("decline"),
+                accept: tCookies("accept"),
+            }}
+        >
             <NextIntlClientProvider locale={locale} messages={messages}>
                 <CartProvider>
                     <div className="min-h-screen flex flex-col">

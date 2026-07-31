@@ -676,5 +676,14 @@
     },
     "legal": {
         "lastUpdated": "Zuletzt aktualisiert: {date}"
+    },
+    "cookies": {
+        "message": "Wir verwenden essenzielle Cookies für Authentifizierung und Einstellungen. Analyse-Cookies werden nur mit Ihrer Einwilligung geladen.",
+        "learnMore": "Mehr erfahren",
+        "decline": "Ablehnen",
+        "accept": "Akzeptieren"
+    },
+    "a11y": {
+        "skipToContent": "Zum Inhalt springen"
     }
 }

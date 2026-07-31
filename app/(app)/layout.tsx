@@ -4,7 +4,7 @@ import { GeistSans } from "geist/font/sans"
 import { GeistMono } from "geist/font/mono"
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
-import { getLocale } from "next-intl/server"
+import { getLocale, getTranslations } from "next-intl/server"
 import { htmlLangFor, dirForLocale, type Locale } from "@/lib/i18n/locales"
 import "../globals.css"
 import { Providers } from "../providers"
@@ -57,6 +57,12 @@ export default async function AppRootLayout({
     // idioma errado ao leitor de tela na primeira renderização e ao crawler.
     const locale = (await getLocale()) as Locale
 
+    // Mesma origem do `lang` acima: o cookie NEXT_LOCALE resolvido por
+    // i18n/request.ts. O super-admin troca para o idioma da conta só dentro do
+    // seu próprio NextIntlClientProvider, abaixo daqui.
+    const tCookies = await getTranslations("cookies")
+    const tA11y = await getTranslations("a11y")
+
     return (
         <html lang={htmlLangFor(locale)} dir={dirForLocale(locale)} suppressHydrationWarning>
         <head>
@@ -71,9 +77,18 @@ export default async function AppRootLayout({
             href="#main-content"
             className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground"
         >
-            Pular para o conteúdo
+            {tA11y("skipToContent")}
         </a>
-        <Providers>{children}</Providers>
+        <Providers
+            cookieConsent={{
+                message: tCookies("message"),
+                learnMore: tCookies("learnMore"),
+                decline: tCookies("decline"),
+                accept: tCookies("accept"),
+            }}
+        >
+            {children}
+        </Providers>
         <Analytics />
         <SpeedInsights />
         </body>
