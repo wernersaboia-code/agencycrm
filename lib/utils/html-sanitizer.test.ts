@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest"
 
 import { sanitizeHtmlForPreview } from "./html-sanitizer"
+import { limparHtmlDeColagem } from "@/lib/blog/paste-cleanup"
 
 describe("html sanitizer", () => {
     it("removes blocked script-like tags", () => {
@@ -48,5 +49,27 @@ describe("html sanitizer", () => {
 
     it("handles empty input", () => {
         expect(sanitizeHtmlForPreview("")).toBe("")
+    })
+})
+
+describe("limpar e depois sanitizar (ordem usada ao salvar post)", () => {
+    const pipeline = (html: string) => sanitizeHtmlForPreview(limparHtmlDeColagem(html))
+
+    it("a limpeza não reabre javascript: para o sanitizador", () => {
+        expect(pipeline('<a href="javascript:alert(1)" style="font-size:11pt">x</a>')).not.toContain(
+            "javascript:"
+        )
+    })
+
+    it("script continua sendo descartado com o conteúdo", () => {
+        expect(pipeline('<p style="font-family:Calibri">ok</p><script>alert(1)</script>')).toBe(
+            "<p>ok</p>"
+        )
+    })
+
+    it("text-align sobrevive às duas etapas", () => {
+        expect(pipeline('<p style="text-align:center; color:red">meio</p>')).toMatch(
+            /text-align:\s*center/
+        )
     })
 })

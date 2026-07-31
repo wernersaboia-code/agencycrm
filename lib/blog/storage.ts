@@ -9,7 +9,14 @@ export interface BlogUploadResult {
     error?: string
 }
 
-export async function uploadBlogImage(file: File): Promise<BlogUploadResult> {
+/**
+ * `prefixo` separa capa de imagem de corpo dentro do bucket. Sem isso as duas
+ * se misturam numa pasta só e não dá para saber o que está em uso onde.
+ */
+export async function uploadBlogImage(
+    file: File,
+    prefixo: "covers" | "body" = "covers"
+): Promise<BlogUploadResult> {
     const allowed = ["image/png", "image/jpeg", "image/webp"]
     if (!allowed.includes(file.type)) {
         return { success: false, error: "Formato inválido. Use PNG, JPG ou WebP." }
@@ -20,7 +27,7 @@ export async function uploadBlogImage(file: File): Promise<BlogUploadResult> {
 
     const supabase = createClient()
     const ext = file.name.split(".").pop() || "jpg"
-    const fileName = `covers/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`
+    const fileName = `${prefixo}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`
 
     const { error } = await supabase.storage.from(BUCKET).upload(fileName, file, {
         cacheControl: "3600",

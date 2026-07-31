@@ -15,11 +15,21 @@ import {
     Heading2,
     Undo,
     Redo,
+    AlignCenter,
+    AlignJustify,
+    AlignLeft,
+    AlignRight,
+    Heading3,
+    Minus,
+    Quote,
+    RemoveFormatting,
+    ImagePlus,
 } from "lucide-react"
 import { Toggle } from "@/components/ui/toggle"
 import { Separator } from "@/components/ui/separator"
 import { VariableDropdown } from "./variable-dropdown"
 import { useState } from "react"
+import { toast } from "sonner"
 import {
     Popover,
     PopoverContent,
@@ -29,15 +39,45 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { getVariableChipHtml } from "@/lib/constants/template.constants"
+import { uploadBlogImage } from "@/lib/blog/storage"
+import type { RichTextPreset } from "./rich-text-editor"
 
 interface RichTextToolbarProps {
     editor: Editor
     disabled?: boolean
+    preset?: RichTextPreset
 }
 
-export function RichTextToolbar({ editor, disabled }: RichTextToolbarProps) {
+export function RichTextToolbar({ editor, disabled, preset = "email" }: RichTextToolbarProps) {
+    const ehArtigo = preset === "article"
     const [linkUrl, setLinkUrl] = useState("")
     const [linkPopoverOpen, setLinkPopoverOpen] = useState(false)
+    const [imagePopoverOpen, setImagePopoverOpen] = useState(false)
+    const [imageAlt, setImageAlt] = useState("")
+    const [enviandoImagem, setEnviandoImagem] = useState(false)
+
+    // O alt é obrigatório: imagem sem texto alternativo é falha de
+    // acessibilidade, e este site publica dado estruturado sobre o próprio
+    // conteúdo — descrever imagem não é opcional aqui.
+    const inserirImagem = async (file: File) => {
+        if (!imageAlt.trim()) {
+            toast.error("Descreva a imagem no texto alternativo antes de enviar.")
+            return
+        }
+
+        setEnviandoImagem(true)
+        const res = await uploadBlogImage(file, "body")
+        setEnviandoImagem(false)
+
+        if (!res.success || !res.url) {
+            toast.error(res.error ?? "Falha no upload.")
+            return
+        }
+
+        editor.chain().focus().setImage({ src: res.url, alt: imageAlt.trim() }).run()
+        setImageAlt("")
+        setImagePopoverOpen(false)
+    }
 
     const addLink = () => {
         if (linkUrl) {
@@ -107,6 +147,17 @@ export function RichTextToolbar({ editor, disabled }: RichTextToolbarProps) {
             >
                 <Heading2 className="h-4 w-4" />
             </Toggle>
+            {ehArtigo && (
+                <Toggle
+                    size="sm"
+                    pressed={editor.isActive("heading", { level: 3 })}
+                    onPressedChange={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+                    disabled={disabled}
+                    title="Título 3"
+                >
+                    <Heading3 className="h-4 w-4" />
+                </Toggle>
+            )}
 
             <Separator orientation="vertical" className="mx-1 h-6" />
 
@@ -172,6 +223,91 @@ export function RichTextToolbar({ editor, disabled }: RichTextToolbarProps) {
 
             <Separator orientation="vertical" className="mx-1 h-6" />
 
+            {ehArtigo && (
+                <>
+                    {([
+                        ["left", AlignLeft, "Alinhar à esquerda"],
+                        ["center", AlignCenter, "Centralizar"],
+                        ["right", AlignRight, "Alinhar à direita"],
+                        ["justify", AlignJustify, "Justificar"],
+                    ] as const).map(([alinhamento, Icone, titulo]) => (
+                        <Toggle
+                            key={alinhamento}
+                            size="sm"
+                            pressed={editor.isActive({ textAlign: alinhamento })}
+                            onPressedChange={() =>
+                                editor.chain().focus().setTextAlign(alinhamento).run()
+                            }
+                            disabled={disabled}
+                            title={titulo}
+                        >
+                            <Icone className="h-4 w-4" />
+                        </Toggle>
+                    ))}
+
+                    <Separator orientation="vertical" className="mx-1 h-6" />
+
+                    <Toggle
+                        size="sm"
+                        pressed={editor.isActive("blockquote")}
+                        onPressedChange={() => editor.chain().focus().toggleBlockquote().run()}
+                        disabled={disabled}
+                        title="Citação"
+                    >
+                        <Quote className="h-4 w-4" />
+                    </Toggle>
+                    <Toggle
+                        size="sm"
+                        pressed={false}
+                        onPressedChange={() => editor.chain().focus().setHorizontalRule().run()}
+                        disabled={disabled}
+                        title="Linha divisória"
+                    >
+                        <Minus className="h-4 w-4" />
+                    </Toggle>
+                    <Toggle
+                        size="sm"
+                        pressed={false}
+                        onPressedChange={() =>
+                            editor.chain().focus().unsetAllMarks().clearNodes().run()
+                        }
+                        disabled={disabled}
+                        title="Limpar formatação"
+                    >
+                        <RemoveFormatting className="h-4 w-4" />
+                    </Toggle>
+
+                    <Popover open={imagePopoverOpen} onOpenChange={setImagePopoverOpen}>
+                        <PopoverTrigger asChild>
+                            <Toggle size="sm" pressed={false} disabled={disabled} title="Inserir imagem">
+                                <ImagePlus className="h-4 w-4" />
+                            </Toggle>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-80" align="start">
+                            <div className="space-y-3">
+                                <Label htmlFor="image-alt">Texto alternativo *</Label>
+                                <Input
+                                    id="image-alt"
+                                    placeholder="O que a imagem mostra"
+                                    value={imageAlt}
+                                    onChange={(e) => setImageAlt(e.target.value)}
+                                />
+                                <Input
+                                    type="file"
+                                    accept="image/png,image/jpeg,image/webp"
+                                    disabled={!imageAlt.trim() || enviandoImagem}
+                                    onChange={(e) => e.target.files?.[0] && inserirImagem(e.target.files[0])}
+                                />
+                                <p className="text-xs text-muted-foreground">
+                                    PNG, JPG ou WebP, até 4 MB. O campo de arquivo libera depois
+                                    que a imagem estiver descrita.
+                                </p>
+                            </div>
+                        </PopoverContent>
+                    </Popover>
+                </>
+            )}
+
             {/* Link */}
             <Popover open={linkPopoverOpen} onOpenChange={setLinkPopoverOpen}>
                 <PopoverTrigger asChild>
@@ -220,10 +356,12 @@ export function RichTextToolbar({ editor, disabled }: RichTextToolbarProps) {
                 </Toggle>
             )}
 
-            <Separator orientation="vertical" className="mx-1 h-6" />
-
-            {/* Custom fields */}
-            <VariableDropdown onSelect={insertVariable} disabled={disabled} />
+            {!ehArtigo && (
+                <>
+                    <Separator orientation="vertical" className="mx-1 h-6" />
+                    <VariableDropdown onSelect={insertVariable} disabled={disabled} />
+                </>
+            )}
         </div>
     )
 }

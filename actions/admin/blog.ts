@@ -4,7 +4,7 @@
 import { revalidatePath } from "next/cache"
 import { prisma } from "@/lib/prisma"
 import { requireAdmin } from "@/lib/auth"
-import { sanitizeHtmlForPreview } from "@/lib/utils/html-sanitizer"
+import { sanitizeTranslations } from "@/lib/blog/sanitize-translations"
 import {
     postCoreSchema,
     translationInputSchema,
@@ -57,10 +57,6 @@ function revalidateBlog() {
     revalidatePath("/blog", "layout")
     revalidatePath("/", "page")
     revalidatePath("/de", "page")
-}
-
-function sanitizeTranslations<T extends { contentHtml: string }>(translations: T[]): T[] {
-    return translations.map((t) => ({ ...t, contentHtml: sanitizeHtmlForPreview(t.contentHtml) }))
 }
 
 // ---------- Categorias ----------

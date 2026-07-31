@@ -119,3 +119,29 @@ export async function getLatestPostsForTeaser(locale: BlogLocale, limit = 3) {
         categoryName: p.category?.translations[0]?.name ?? null,
     }))
 }
+
+/**
+ * Consulta da PRÉVIA: busca por id e **não** filtra por publicado — é
+ * exatamente o que `getPostBySlug` recusa a fazer, e por isso não dá para
+ * reaproveitá-la. Só é chamada de rota protegida por requireAdmin.
+ *
+ * `translation` volta null quando o idioma pedido ainda não foi escrito: a
+ * prévia mostra um aviso, em vez de 404 num post que existe.
+ */
+export async function getPostForPreview(id: string, locale: BlogLocale) {
+    const post = await prisma.blogPost.findUnique({
+        where: { id },
+        include: {
+            translations: { where: { locale } },
+            category: { include: { translations: { where: { locale } } } },
+        },
+    })
+
+    if (!post) return null
+
+    return {
+        post,
+        translation: post.translations[0] ?? null,
+        categoryName: post.category?.translations[0]?.name ?? null,
+    }
+}

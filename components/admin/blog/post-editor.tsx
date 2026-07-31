@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { PreviewButton } from "@/components/admin/blog/preview-button"
 import { Label } from "@/components/ui/label"
 import { RichTextEditor } from "@/components/ui/rich-text-editor/rich-text-editor"
 import { BLOG_LOCALES, dirForLocale, type BlogLocale } from "@/lib/blog/locales"
@@ -14,6 +15,7 @@ import { slugify } from "@/lib/blog/slug"
 import { uploadBlogImage } from "@/lib/blog/storage"
 import { createPost, updatePost, type BlogFieldError } from "@/actions/admin/blog"
 import { LIMITES_DE_POST } from "@/lib/validations/blog"
+import { temAlteracaoNaoSalva as calcularAlteracaoNaoSalva, toDatetimeLocalValue } from "@/lib/blog/unsaved-changes"
 
 /**
  * Contador ao vivo do campo. Existe porque o editor não tinha nenhum: o
@@ -64,14 +66,6 @@ type TranslationState = {
 }
 const EMPTY: TranslationState = { title: "", slug: "", excerpt: "", contentHtml: "", metaDescription: "" }
 
-// Converte um ISO/UTC para o formato de <input type="datetime-local"> no fuso
-// LOCAL do navegador (YYYY-MM-DDTHH:mm). Precisa rodar no cliente.
-function toDatetimeLocalValue(iso: string): string {
-    const d = new Date(iso)
-    const pad = (n: number) => String(n).padStart(2, "0")
-    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
-}
-
 export type PostEditorInitial = {
     id?: string
     coverImageUrl: string | null
@@ -99,6 +93,22 @@ export function PostEditor({
     const [saving, setSaving] = useState(false)
     const [erros, setErros] = useState<BlogFieldError[]>([])
 
+    // Linha de base do aviso "alterações não salvas". Começa igual a `initial`,
+    // mas NÃO é `initial`: o servidor normaliza o HTML ao salvar (remove
+    // `<p></p>` vazio, remove `class`, troca `<br>` por `<br />`), então o
+    // estado do editor nunca volta a ser bit-a-bit igual ao que o servidor
+    // devolveria depois de normalizar — comparar contra `initial` faria o
+    // aviso aparecer para sempre depois do primeiro salvamento. A linha de
+    // base só se move quando o salvamento dá certo (nunca antes, nunca em
+    // erro), para o estado que o EDITOR tinha naquele momento.
+    const [baseline, setBaseline] = useState({
+        translations: initial.translations,
+        coverImageUrl: initial.coverImageUrl,
+        categoryId: initial.categoryId,
+        status: initial.status,
+        publishedAt: initial.publishedAt,
+    })
+
     useEffect(() => {
         if (initial.publishedAt) {
             setPublishedAt(toDatetimeLocalValue(initial.publishedAt))
@@ -108,6 +118,30 @@ export function PostEditor({
     }, [])
 
     const current = tr[active] ?? EMPTY
+
+    // Comparação contra a linha de base (ver comentário acima), não contra
+    // `initial` direto. Serialização basta: os dois lados são objetos simples
+    // de string, montados pelo mesmo código.
+    //
+    // publishedAt é o campo delicado: o estado guarda o valor no formato de
+    // <input type="datetime-local"> (fuso LOCAL), enquanto baseline.publishedAt
+    // é o ISO/UTC persistido — comparar direto daria falso positivo sempre,
+    // já que os dois formatos nunca são iguais. calcularAlteracaoNaoSalva
+    // converte o lado do servidor com a mesma função que o efeito de
+    // montagem usa (toDatetimeLocalValue) antes de comparar.
+    const temAlteracaoNaoSalva = calcularAlteracaoNaoSalva({
+        tr,
+        initialTranslations: baseline.translations,
+        cover,
+        initialCoverImageUrl: baseline.coverImageUrl,
+        categoryId,
+        initialCategoryId: baseline.categoryId,
+        status,
+        initialStatus: baseline.status,
+        publishedAt,
+        initialPublishedAt: baseline.publishedAt,
+    })
+
     const setField = (field: keyof TranslationState, value: string) =>
         setTr((prev) => ({ ...prev, [active]: { ...(prev[active] ?? EMPTY), [field]: value } }))
 
@@ -157,6 +191,17 @@ export function PostEditor({
                 toast.error(res.error === "notPublishable" ? t("notPublishable") : t("validationFailed"))
                 return
             }
+
+            // Só aqui, com o salvamento confirmado: a linha de base vira o
+            // estado que o editor tinha agora — nunca antes (enquanto salva)
+            // nem no branch de erro acima.
+            setBaseline({
+                translations: tr,
+                coverImageUrl: cover,
+                categoryId: categoryId || null,
+                status,
+                publishedAt: publishedAt ? new Date(publishedAt).toISOString() : null,
+            })
 
             if ("id" in res) {
                 toast.success(t("postCreated"))
@@ -235,7 +280,12 @@ export function PostEditor({
                 </div>
                 <div className="space-y-2">
                     <Label>{t("content")}</Label>
-                    <RichTextEditor content={current.contentHtml} onChange={(html) => setField("contentHtml", html)} />
+                    <RichTextEditor
+                        content={current.contentHtml}
+                        onChange={(html) => setField("contentHtml", html)}
+                        preset="article"
+                        placeholder="Cole ou escreva o texto do post..."
+                    />
                 </div>
                 <div className="space-y-2">
                     <div className="flex items-baseline justify-between gap-2">
@@ -264,8 +314,15 @@ export function PostEditor({
                 </div>
             )}
 
-            <div className="flex justify-end">
-                <Button onClick={handleSave} disabled={saving}>{saving ? t("saving") : t("save")}</Button>
+            <div className="flex justify-end gap-2">
+                <PreviewButton
+                    postId={initial.id}
+                    locale={active}
+                    temAlteracaoNaoSalva={temAlteracaoNaoSalva}
+                />
+                <Button onClick={handleSave} disabled={saving}>
+                    {saving ? t("saving") : t("save")}
+                </Button>
             </div>
         </div>
     )
