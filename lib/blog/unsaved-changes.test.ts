@@ -49,4 +49,37 @@ describe("temAlteracaoNaoSalva", () => {
         params.initialPublishedAt = null
         expect(temAlteracaoNaoSalva(params)).toBe(false)
     })
+
+    it("linha de base igual ao estado atual -> false, mesmo com o HTML do servidor normalizado de forma diferente", () => {
+        // Simula o cenário real do editor: o servidor normaliza o contentHtml
+        // ao salvar (remove <p></p> vazio, remove class, troca <br> por
+        // <br />), então "o que o servidor devolveria normalizado" nunca bate
+        // bit-a-bit com o que o editor tinha na tela. A linha de base pós-save
+        // não é essa versão normalizada — é o estado que o EDITOR tinha no
+        // momento em que salvou. Comparar contra ELA dá false.
+        const editadoAoSalvar: TranslationStateLike = {
+            ...traducaoPt,
+            contentHtml: '<p class="MsoNormal">Conteúdo</p><p></p><br>',
+        }
+        const normalizadoPeloServidor: TranslationStateLike = {
+            ...traducaoPt,
+            contentHtml: "<p>Conteúdo</p><br />",
+        }
+
+        const params = baseParams()
+        params.tr = { pt: editadoAoSalvar }
+        // A linha de base é o estado do editor, não a versão normalizada —
+        // por isso usamos editadoAoSalvar aqui, não normalizadoPeloServidor.
+        params.initialTranslations = { pt: editadoAoSalvar }
+        expect(temAlteracaoNaoSalva(params)).toBe(false)
+
+        // E, para provar que a distinção importa: comparar o mesmo estado
+        // contra a versão normalizada (o que aconteceria SEM a linha de base,
+        // comparando direto contra `initial` do servidor) dá true — é
+        // exatamente o falso positivo permanente que a linha de base evita.
+        const paramsSemBaseline = baseParams()
+        paramsSemBaseline.tr = { pt: editadoAoSalvar }
+        paramsSemBaseline.initialTranslations = { pt: normalizadoPeloServidor }
+        expect(temAlteracaoNaoSalva(paramsSemBaseline)).toBe(true)
+    })
 })

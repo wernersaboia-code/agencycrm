@@ -93,6 +93,22 @@ export function PostEditor({
     const [saving, setSaving] = useState(false)
     const [erros, setErros] = useState<BlogFieldError[]>([])
 
+    // Linha de base do aviso "alterações não salvas". Começa igual a `initial`,
+    // mas NÃO é `initial`: o servidor normaliza o HTML ao salvar (remove
+    // `<p></p>` vazio, remove `class`, troca `<br>` por `<br />`), então o
+    // estado do editor nunca volta a ser bit-a-bit igual ao que o servidor
+    // devolveria depois de normalizar — comparar contra `initial` faria o
+    // aviso aparecer para sempre depois do primeiro salvamento. A linha de
+    // base só se move quando o salvamento dá certo (nunca antes, nunca em
+    // erro), para o estado que o EDITOR tinha naquele momento.
+    const [baseline, setBaseline] = useState({
+        translations: initial.translations,
+        coverImageUrl: initial.coverImageUrl,
+        categoryId: initial.categoryId,
+        status: initial.status,
+        publishedAt: initial.publishedAt,
+    })
+
     useEffect(() => {
         if (initial.publishedAt) {
             setPublishedAt(toDatetimeLocalValue(initial.publishedAt))
@@ -103,26 +119,27 @@ export function PostEditor({
 
     const current = tr[active] ?? EMPTY
 
-    // Comparação contra o que veio do servidor. Serialização basta: os dois
-    // lados são objetos simples de string, montados pelo mesmo código.
+    // Comparação contra a linha de base (ver comentário acima), não contra
+    // `initial` direto. Serialização basta: os dois lados são objetos simples
+    // de string, montados pelo mesmo código.
     //
     // publishedAt é o campo delicado: o estado guarda o valor no formato de
-    // <input type="datetime-local"> (fuso LOCAL), enquanto initial.publishedAt
+    // <input type="datetime-local"> (fuso LOCAL), enquanto baseline.publishedAt
     // é o ISO/UTC persistido — comparar direto daria falso positivo sempre,
     // já que os dois formatos nunca são iguais. calcularAlteracaoNaoSalva
     // converte o lado do servidor com a mesma função que o efeito de
     // montagem usa (toDatetimeLocalValue) antes de comparar.
     const temAlteracaoNaoSalva = calcularAlteracaoNaoSalva({
         tr,
-        initialTranslations: initial.translations,
+        initialTranslations: baseline.translations,
         cover,
-        initialCoverImageUrl: initial.coverImageUrl,
+        initialCoverImageUrl: baseline.coverImageUrl,
         categoryId,
-        initialCategoryId: initial.categoryId,
+        initialCategoryId: baseline.categoryId,
         status,
-        initialStatus: initial.status,
+        initialStatus: baseline.status,
         publishedAt,
-        initialPublishedAt: initial.publishedAt,
+        initialPublishedAt: baseline.publishedAt,
     })
 
     const setField = (field: keyof TranslationState, value: string) =>
@@ -174,6 +191,17 @@ export function PostEditor({
                 toast.error(res.error === "notPublishable" ? t("notPublishable") : t("validationFailed"))
                 return
             }
+
+            // Só aqui, com o salvamento confirmado: a linha de base vira o
+            // estado que o editor tinha agora — nunca antes (enquanto salva)
+            // nem no branch de erro acima.
+            setBaseline({
+                translations: tr,
+                coverImageUrl: cover,
+                categoryId: categoryId || null,
+                status,
+                publishedAt: publishedAt ? new Date(publishedAt).toISOString() : null,
+            })
 
             if ("id" in res) {
                 toast.success(t("postCreated"))
