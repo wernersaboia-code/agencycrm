@@ -77,6 +77,7 @@
         "signOutSuccess": "Erfolgreich abgemeldet",
         "openMenu": "Menü öffnen",
         "language": "Sprache",
+        "currency": "Währung",
         "theme": "Design",
         "themeLight": "Hell",
         "themeDark": "Dunkel",
@@ -325,7 +326,9 @@
         "trustPayment": "Zahlung wird über Stripe abgewickelt",
         "trustSaved": "Bestellung in Ihrem Konto gespeichert",
         "trustDownload": "Download nach der Bestätigung freigegeben",
-        "trustReview": "Sie prüfen die Bestellung vor der Zahlung"
+        "trustReview": "Sie prüfen die Bestellung vor der Zahlung",
+        "currencyFellBack": "Eine der Listen im Warenkorb hat keinen Preis in dieser Währung. Der Warenkorb wurde auf Euro zurückgestellt.",
+        "itemUnavailable": "Eine Liste wurde aus dem Katalog entfernt und aus Ihrem Warenkorb genommen."
     },
     "catalog": {
         "metaTitle": "Listenkatalog",

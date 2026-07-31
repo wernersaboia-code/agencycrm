@@ -5,18 +5,15 @@
 // rate limit, mesmo backstop de pedidos pendentes e mesma validação de itens.
 import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
-import { z } from "zod"
 import { getAuthenticatedActiveDbUser } from "@/lib/auth"
 import { getPublicAppUrl } from "@/lib/env"
 import { getClientIp, checkPersistentRateLimit } from "@/lib/rate-limit"
 import { getStripe, isStripeConfigured, toStripeAmount } from "@/lib/stripe"
+// Schema compartilhado com a rota do PayPal: as duas aceitam exatamente o
+// mesmo corpo, e divergirem em silêncio custaria uma cobrança errada.
+import { checkoutRequestSchema } from "@/lib/checkout/request-schema"
+import { resolveListPrices } from "@/lib/marketplace/list-prices"
 
-const createSessionSchema = z.object({
-    items: z.array(z.object({
-        listId: z.string().min(1),
-        quantity: z.number().int().positive().max(99).default(1),
-    })).min(1).max(50),
-})
 
 export async function POST(request: NextRequest) {
     try {
@@ -58,7 +55,7 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: "Too many pending orders" }, { status: 429 })
         }
 
-        const parsedBody = createSessionSchema.safeParse(await request.json())
+        const parsedBody = checkoutRequestSchema.safeParse(await request.json())
 
         if (!parsedBody.success) {
             return NextResponse.json({ error: "Invalid checkout items" }, { status: 400 })
@@ -76,28 +73,38 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: "Invalid items" }, { status: 400 })
         }
 
-        const currencies = new Set(lists.map((list) => list.currency))
-        if (currencies.size !== 1) {
-            return NextResponse.json({ error: "Mixed currencies are not supported" }, { status: 400 })
+        // A moeda vem do corpo e vale para o pedido inteiro (mesma regra do
+        // PayPal): não existe mais moeda por lista para conferir.
+        const currency = parsedBody.data.currency
+        const prices = await resolveListPrices(prisma, listIds, currency)
+
+        // No checkout, item sem preço na moeda escolhida é erro 400 — a queda
+        // para euro é comportamento de vitrine, e cobrar numa moeda diferente
+        // da exibida é cobrar diferente do combinado.
+        const semPreco = lists.filter((list) => prices.get(list.id)?.currency !== currency)
+        if (semPreco.length > 0) {
+            return NextResponse.json(
+                { error: "Item without price in the selected currency" },
+                { status: 400 }
+            )
         }
 
         // Calcular total (mesma regra do PayPal)
         let subtotal = 0
         const purchaseItems = lists.map((list) => {
             const quantity = items.find((item) => item.listId === list.id)?.quantity ?? 1
-            const itemTotal = Number(list.price) * quantity
-            subtotal += itemTotal
+            const unitPrice = prices.get(list.id)!.amount
+            subtotal += unitPrice * quantity
 
             return {
                 listId: list.id,
                 name: list.name,
-                price: Number(list.price),
+                price: unitPrice,
                 quantity,
                 leadsCount: list.totalLeads,
             }
         })
 
-        const currency = lists[0].currency
         const appUrl = getPublicAppUrl()
 
         const session = await getStripe().checkout.sessions.create({

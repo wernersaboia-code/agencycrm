@@ -9,6 +9,7 @@ import { useLocale, useTranslations } from "next-intl"
 import { Link as LocaleLink, useRouter } from "@/lib/i18n/navigation"
 import { Button } from "@/components/ui/button"
 import { CartBadge } from "@/components/marketplace/cart-badge"
+import { CurrencySwitcher } from "@/components/marketplace/currency-switcher"
 import { LocaleSwitcher } from "@/components/marketplace/locale-switcher"
 import { ThemeToggle } from "@/components/marketplace/theme-toggle"
 import { useAuth } from "@/hooks/useAuth"
@@ -96,6 +97,7 @@ export function MarketplaceHeader() {
                 <div className="flex items-center gap-2">
                     <ThemeToggle />
                     <LocaleSwitcher />
+                    <CurrencySwitcher />
                     <CartBadge />
 
                     {!isLoading && (

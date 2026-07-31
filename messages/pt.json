@@ -77,6 +77,7 @@
         "signOutSuccess": "Logout realizado com sucesso",
         "openMenu": "Abrir menu",
         "language": "Idioma",
+        "currency": "Moeda",
         "theme": "Tema",
         "themeLight": "Claro",
         "themeDark": "Escuro",
@@ -325,7 +326,9 @@
         "trustPayment": "Pagamento processado pelo Stripe",
         "trustSaved": "Pedido salvo na sua conta",
         "trustDownload": "Download liberado após confirmação",
-        "trustReview": "Você revisa o pedido antes de pagar"
+        "trustReview": "Você revisa o pedido antes de pagar",
+        "currencyFellBack": "Uma das listas do carrinho não tem preço nessa moeda. O carrinho voltou para euro.",
+        "itemUnavailable": "Uma lista saiu do catálogo e foi removida do seu carrinho."
     },
     "catalog": {
         "metaTitle": "Catálogo de Listas",
@@ -1260,8 +1263,10 @@
                 "industriesLabel": "Setores/Indústrias",
                 "industriesDesc": "Selecione um ou mais setores para esta lista",
                 "priceSection": "Preço",
-                "priceLabel": "Preço *",
-                "currencyLabel": "Moeda",
+                "priceLabelEur": "Preço (EUR) *",
+                "priceLabelBrl": "Preço (BRL)",
+                "priceLabelUsd": "Preço (USD)",
+                "priceOptionalNote": "BRL e USD são opcionais. Sem eles, quem escolher essa moeda vê o preço em euro.",
                 "importSection": "Importar Leads",
                 "optional": "Opcional",
                 "importEditDesc": "Adicione mais leads a esta lista",

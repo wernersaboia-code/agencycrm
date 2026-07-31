@@ -69,6 +69,8 @@ interface SerializedLeadList {
     totalLeads: number
     price: number
     currency: string
+    /** Preços cadastrados por moeda. EUR sempre existe nas listas semeadas. */
+    prices?: { EUR?: number; BRL?: number; USD?: number }
     isActive: boolean
     isFeatured: boolean
     previewData: unknown
@@ -84,12 +86,6 @@ interface ListFormProps {
 // ============================================
 // CONSTANTES
 // ============================================
-
-const currencies = [
-    { value: "EUR", label: "Euro (€)" },
-    { value: "USD", label: "Dólar ($)" },
-    { value: "BRL", label: "Real (R$)" },
-]
 
 // Vocabulário e rótulos vêm da mesma fonte que o filtro público (ver
 // lib/constants/catalog-facets.ts): setor oferecido aqui e não conhecido lá
@@ -116,8 +112,11 @@ export function ListForm({ list }: ListFormProps) {
         category: z.string().min(1, t("validationCategory")),
         countries: z.string().min(1, t("validationCountry")),
         industries: z.string().optional(),
+        // Um campo por moeda. Só o euro é obrigatório: sem preço em BRL/USD, a
+        // vitrine cai para o euro — sem preço em EUR não há para onde cair.
         price: z.string().min(1, t("validationPrice")),
-        currency: z.string().default("EUR"),
+        priceBRL: z.string().optional(),
+        priceUSD: z.string().optional(),
         totalLeads: z.string().regex(/^\d*$/, t("validationInteger")).optional(),
         isActive: z.boolean().default(true),
         isFeatured: z.boolean().default(false),
@@ -159,8 +158,9 @@ export function ListForm({ list }: ListFormProps) {
             category: list?.category || "",
             countries: list?.countries.join(", ") || "",
             industries: list?.industries.join(", ") || "",
-            price: list ? String(list.price) : "",
-            currency: list?.currency || "EUR",
+            price: list ? String(list.prices?.EUR ?? list.price) : "",
+            priceBRL: list?.prices?.BRL !== undefined ? String(list.prices.BRL) : "",
+            priceUSD: list?.prices?.USD !== undefined ? String(list.prices.USD) : "",
             totalLeads: list ? String(list.totalLeads) : "",
             isActive: list?.isActive ?? true,
             isFeatured: list?.isFeatured ?? false,
@@ -223,9 +223,21 @@ export function ListForm({ list }: ListFormProps) {
         }
 
         try {
+            // Campo vazio = a lista deixa de ter preço naquela moeda (a linha é
+            // apagada por writeListPrices), não zero.
+            const optionalPrice = (value?: string) => {
+                const trimmed = value?.trim()
+                return trimmed ? parseFloat(trimmed) : undefined
+            }
+
+            const { priceBRL, priceUSD, price, ...rest } = data
             const payload = {
-                ...data,
-                price: parseFloat(data.price),
+                ...rest,
+                prices: {
+                    EUR: parseFloat(price),
+                    BRL: optionalPrice(priceBRL),
+                    USD: optionalPrice(priceUSD),
+                },
                 countries: data.countries.split(",").map((c) => c.trim().toUpperCase()),
                 industries: selectedIndustries, // Usar array direto
                 introduction: data.introduction || undefined,
@@ -637,14 +649,14 @@ export function ListForm({ list }: ListFormProps) {
                         <CardTitle>{t("priceSection")}</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                        <div className="grid gap-4 md:grid-cols-2">
+                        <div className="grid gap-4 md:grid-cols-3">
                             <div className="space-y-2">
-                                <Label htmlFor="price">{t("priceLabel")}</Label>
+                                <Label htmlFor="price">{t("priceLabelEur")}</Label>
                                 <Input
                                     id="price"
                                     type="number"
                                     step="0.01"
-                                    placeholder="297.00"
+                                    placeholder="45.00"
                                     {...form.register("price")}
                                 />
                                 {form.formState.errors.price && (
@@ -655,24 +667,31 @@ export function ListForm({ list }: ListFormProps) {
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="currency">{t("currencyLabel")}</Label>
-                                <Select
-                                    value={form.watch("currency")}
-                                    onValueChange={(value) => form.setValue("currency", value, { shouldDirty: true })}
-                                >
-                                    <SelectTrigger>
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {currencies.map((curr) => (
-                                            <SelectItem key={curr.value} value={curr.value}>
-                                                {curr.label}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
+                                <Label htmlFor="priceBRL">{t("priceLabelBrl")}</Label>
+                                <Input
+                                    id="priceBRL"
+                                    type="number"
+                                    step="0.01"
+                                    placeholder="289.00"
+                                    {...form.register("priceBRL")}
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label htmlFor="priceUSD">{t("priceLabelUsd")}</Label>
+                                <Input
+                                    id="priceUSD"
+                                    type="number"
+                                    step="0.01"
+                                    placeholder="49.00"
+                                    {...form.register("priceUSD")}
+                                />
                             </div>
                         </div>
+
+                        <p className="text-xs text-muted-foreground">
+                            {t("priceOptionalNote")}
+                        </p>
                     </CardContent>
                 </Card>
 

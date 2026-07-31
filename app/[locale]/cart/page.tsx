@@ -2,7 +2,7 @@
 
 import type { ComponentType } from "react"
 import { Link } from "@/lib/i18n/navigation"
-import { useFormatter, useTranslations } from "next-intl"
+import { useFormatter, useLocale, useTranslations } from "next-intl"
 import { useCart } from "@/contexts/cart-context"
 import { formatCurrency } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -22,12 +22,12 @@ import {
 } from "lucide-react"
 
 export default function CartPage() {
-    const { items, removeItem, total, clearCart, itemCount } = useCart()
+    const { items, removeItem, total, clearCart, itemCount, currency } = useCart()
     const t = useTranslations("cart")
     const tCheckout = useTranslations("checkout")
     const format = useFormatter()
+    const locale = useLocale()
     const totalLeads = items.reduce((sum, item) => sum + item.totalLeads * item.quantity, 0)
-    const currency = items[0]?.currency || "EUR"
 
     if (items.length === 0) {
         return (
@@ -110,7 +110,7 @@ export default function CartPage() {
 
                                             <div className="text-left md:text-right">
                                                 <div className="text-2xl font-bold text-brand">
-                                                    {formatCurrency(item.price, item.currency)}
+                                                    {formatCurrency(item.price, currency, locale)}
                                                 </div>
                                                 <Button
                                                     variant="ghost"
@@ -156,7 +156,7 @@ export default function CartPage() {
                                     <div key={item.id} className="flex justify-between gap-3 text-sm">
                                         <span className="truncate text-muted-foreground">{item.name}</span>
                                         <span className="shrink-0 font-semibold text-foreground">
-                                            {formatCurrency(item.price, item.currency)}
+                                            {formatCurrency(item.price, currency, locale)}
                                         </span>
                                     </div>
                                 ))}
@@ -171,7 +171,7 @@ export default function CartPage() {
                                 </div>
                                 <div className="flex items-center justify-between text-xl font-bold">
                                     <span className="text-foreground">{t("total")}</span>
-                                    <span className="text-brand">{formatCurrency(total, currency)}</span>
+                                    <span className="text-brand">{formatCurrency(total, currency, locale)}</span>
                                 </div>
                             </div>
 

@@ -77,6 +77,7 @@
         "signOutSuccess": "Signed out successfully",
         "openMenu": "Open menu",
         "language": "Language",
+        "currency": "Currency",
         "theme": "Theme",
         "themeLight": "Light",
         "themeDark": "Dark",
@@ -325,7 +326,9 @@
         "trustPayment": "Payment processed by Stripe",
         "trustSaved": "Order saved to your account",
         "trustDownload": "Download unlocked after confirmation",
-        "trustReview": "Review your order before you pay"
+        "trustReview": "Review your order before you pay",
+        "currencyFellBack": "One of the lists in your cart has no price in that currency. The cart switched back to euros.",
+        "itemUnavailable": "A list was removed from the catalog and taken out of your cart."
     },
     "catalog": {
         "metaTitle": "List Catalog",
@@ -1260,8 +1263,10 @@
                 "industriesLabel": "Sectors/Industries",
                 "industriesDesc": "Select one or more sectors for this list",
                 "priceSection": "Price",
-                "priceLabel": "Price *",
-                "currencyLabel": "Currency",
+                "priceLabelEur": "Price (EUR) *",
+                "priceLabelBrl": "Price (BRL)",
+                "priceLabelUsd": "Price (USD)",
+                "priceOptionalNote": "BRL and USD are optional. Without them, whoever picks that currency sees the price in euros.",
                 "importSection": "Import Leads",
                 "optional": "Optional",
                 "importEditDesc": "Add more leads to this list",

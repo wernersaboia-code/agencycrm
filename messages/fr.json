@@ -77,6 +77,7 @@
         "signOutSuccess": "Déconnexion réussie",
         "openMenu": "Ouvrir le menu",
         "language": "Langue",
+        "currency": "Devise",
         "theme": "Thème",
         "themeLight": "Clair",
         "themeDark": "Sombre",
@@ -325,7 +326,9 @@
         "trustPayment": "Paiement traité par Stripe",
         "trustSaved": "Commande enregistrée sur votre compte",
         "trustDownload": "Téléchargement débloqué après confirmation",
-        "trustReview": "Vous vérifiez la commande avant de payer"
+        "trustReview": "Vous vérifiez la commande avant de payer",
+        "currencyFellBack": "L'une des listes du panier n'a pas de prix dans cette devise. Le panier est revenu à l'euro.",
+        "itemUnavailable": "Une liste a été retirée du catalogue et supprimée de votre panier."
     },
     "catalog": {
         "metaTitle": "Catalogue de listes",

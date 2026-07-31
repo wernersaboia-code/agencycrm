@@ -2,7 +2,7 @@
 
 import { useEffect } from "react"
 import type { ComponentType } from "react"
-import { useFormatter, useTranslations } from "next-intl"
+import { useFormatter, useLocale, useTranslations } from "next-intl"
 import { Link, useRouter } from "@/lib/i18n/navigation"
 import { useCart } from "@/contexts/cart-context"
 import { PayPalButtonsWrapper } from "@/components/checkout/paypal-buttons"
@@ -26,10 +26,11 @@ import {
 } from "lucide-react"
 
 export default function CheckoutPage() {
-    const { items, total } = useCart()
+    const { items, total, currency } = useCart()
     const router = useRouter()
     const t = useTranslations("checkout")
     const format = useFormatter()
+    const locale = useLocale()
 
     // Cada botão de pagamento se esconde sozinho quando seu provedor não está
     // configurado. Isso deixava um caso sem dono: com nenhum configurado, o
@@ -50,7 +51,6 @@ export default function CheckoutPage() {
         return null
     }
 
-    const currency = items[0]?.currency || "EUR"
     const totalLeads = items.reduce((sum, item) => sum + item.totalLeads * item.quantity, 0)
     const paypalItems = items.map((item) => ({
         listId: item.id,
@@ -110,10 +110,10 @@ export default function CheckoutPage() {
                                         some sozinho quando seu provedor não está
                                         configurado, então a ordem aqui é a ordem que o
                                         comprador vê. */}
-                                    <StripeCheckoutButton items={paypalItems} />
+                                    <StripeCheckoutButton items={paypalItems} currency={currency} />
 
                                     <div className="mt-3">
-                                        <PayPalButtonsWrapper items={paypalItems} />
+                                        <PayPalButtonsWrapper items={paypalItems} currency={currency} />
                                     </div>
                                 </>
                             ) : (
@@ -166,7 +166,7 @@ export default function CheckoutPage() {
                                                 {format.number(item.totalLeads)} leads
                                             </div>
                                             <div className="mt-1 font-semibold text-brand">
-                                                {formatCurrency(item.price, item.currency)}
+                                                {formatCurrency(item.price, item.currency, locale)}
                                             </div>
                                         </div>
                                     </div>
@@ -182,7 +182,7 @@ export default function CheckoutPage() {
                                 </div>
                                 <div className="flex items-center justify-between text-xl font-bold">
                                     <span className="text-foreground">{t("total")}</span>
-                                    <span className="text-brand">{formatCurrency(total, currency)}</span>
+                                    <span className="text-brand">{formatCurrency(total, currency, locale)}</span>
                                 </div>
                             </div>
                         </CardContent>

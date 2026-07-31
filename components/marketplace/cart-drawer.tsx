@@ -3,18 +3,19 @@
 
 import { useCart } from "@/contexts/cart-context"
 import { formatCurrency } from "@/lib/utils"
+import { useLocale, useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { ShoppingBag, ArrowRight, ShieldCheck } from "lucide-react"
 import { Link } from "@/lib/i18n/navigation"
-import { useTranslations } from "next-intl"
 import { CartItem } from "./cart-item"
 
 export function CartDrawer() {
-    const { items, isOpen, closeCart, total, itemCount } = useCart()
+    const { items, isOpen, closeCart, total, itemCount, currency } = useCart()
     const t = useTranslations("cart")
+    const locale = useLocale()
 
     return (
         <Sheet open={isOpen} onOpenChange={closeCart}>
@@ -67,7 +68,7 @@ export function CartDrawer() {
                         <div className="flex items-center justify-between text-lg font-semibold">
                             <span className="text-foreground">{t("subtotal")}</span>
                             <span className="text-brand">
-                {formatCurrency(total, items[0]?.currency || "EUR")}
+                {formatCurrency(total, currency, locale)}
               </span>
                         </div>
 

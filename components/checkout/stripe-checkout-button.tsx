@@ -12,6 +12,8 @@ import { getOptionalPublicStripePublishableKey } from "@/lib/env"
 
 interface StripeCheckoutButtonProps {
     items: Array<{ listId: string; quantity: number }>
+    /** Moeda do carrinho. O preço em si continua saindo do banco, na rota. */
+    currency: string
 }
 
 type CreateSessionResponse = {
@@ -19,7 +21,7 @@ type CreateSessionResponse = {
     error?: string
 }
 
-export function StripeCheckoutButton({ items }: StripeCheckoutButtonProps) {
+export function StripeCheckoutButton({ items, currency }: StripeCheckoutButtonProps) {
     const t = useTranslations("checkout")
     const locale = useLocale()
     // /sign-in fica fora do segmento de locale — usa o router puro do Next
@@ -40,7 +42,7 @@ export function StripeCheckoutButton({ items }: StripeCheckoutButtonProps) {
             const response = await fetch("/api/checkout/stripe/create-session", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ items }),
+                body: JSON.stringify({ items, currency }),
             })
 
             const data = await response.json() as CreateSessionResponse

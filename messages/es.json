@@ -77,6 +77,7 @@
         "signOutSuccess": "Sesión cerrada correctamente",
         "openMenu": "Abrir menú",
         "language": "Idioma",
+        "currency": "Moneda",
         "theme": "Tema",
         "themeLight": "Claro",
         "themeDark": "Oscuro",
@@ -325,7 +326,9 @@
         "trustPayment": "Pago procesado por Stripe",
         "trustSaved": "Pedido guardado en su cuenta",
         "trustDownload": "Descarga habilitada tras la confirmación",
-        "trustReview": "Revise el pedido antes de pagar"
+        "trustReview": "Revise el pedido antes de pagar",
+        "currencyFellBack": "Una de las listas del carrito no tiene precio en esa moneda. El carrito volvió a euros.",
+        "itemUnavailable": "Una lista salió del catálogo y se eliminó de su carrito."
     },
     "catalog": {
         "metaTitle": "Catálogo de listas",

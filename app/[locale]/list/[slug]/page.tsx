@@ -15,6 +15,9 @@ import { JsonLd } from "@/components/seo/json-ld"
 import { buildProductSchema, buildBreadcrumbSchema, buildListBreadcrumbTrail } from "@/lib/seo/schema"
 import { alternatesFor } from "@/lib/i18n/alternates"
 import type { Locale } from "@/lib/i18n/locales"
+import { getActiveCurrency } from "@/lib/currency/server"
+import { pickPrice } from "@/lib/marketplace/list-prices"
+import type { Currency } from "@/lib/currency"
 import {
     ArrowLeft,
     BadgeCheck,
@@ -71,7 +74,16 @@ export default async function ListPage({ params }: ListPageProps) {
         notFound()
     }
 
-    const price = Number(list.price)
+    const currency = await getActiveCurrency()
+    const priceRows = await prisma.leadListPrice.findMany({
+        where: { listId: list.id },
+        select: { currency: true, amount: true },
+    })
+    // Lista sem nenhuma linha de preço cai na coluna antiga: a página nunca
+    // fica sem preço por causa de um cadastro incompleto.
+    const resolved = pickPrice(priceRows, currency)
+        ?? { amount: Number(list.price), currency: list.currency as Currency, isFallback: false }
+    const price = resolved.amount
     // Formatado no locale ativo: "fev. de 2026" para um leitor alemão é ruído.
     const dateFormat = { day: "2-digit", month: "short", year: "numeric" } as const
     const updatedAt = format.dateTime(new Date(list.updatedAt), dateFormat)
@@ -85,12 +97,25 @@ export default async function ListPage({ params }: ListPageProps) {
     // viram linha na tabela, então não podem contar para o "amostra de N".
     const previewCount = toRows(list.previewData).length
     const language = getListLanguage(list.language)
+    // Dois pares moeda+valor coexistem de propósito, cada um com seu consumidor:
+    // - `price`/`resolved.currency`: par resolvido na moeda ativa do visitante
+    //   (ou no euro do fallback). Alimenta a caixa de preço visível e o carrinho
+    //   (listForCart), espelhando como components/marketplace/list-card.tsx já
+    //   monta o carrinho a partir do catálogo. A Task 7 reprecifica no servidor.
+    // - `ofertas`: TODAS as moedas cadastradas, cada valor com o seu próprio
+    //   código. Só o JSON-LD usa este par — um crawler não manda cookie de
+    //   moeda, então o schema declara as ofertas que existem em vez de eleger
+    //   uma. NUNCA junte `price` com `list.currency`: são pares de fontes
+    //   diferentes e o resultado é um valor com o código de moeda errado.
+    const ofertas = priceRows.length > 0
+        ? priceRows.map((row) => ({ price: Number(row.amount), currency: row.currency }))
+        : [{ price: Number(list.price), currency: list.currency }]
     const listForCart = {
         id: list.id,
         name: list.name,
         slug: list.slug,
         price,
-        currency: list.currency,
+        currency: resolved.currency,
         totalLeads: list.totalLeads,
     }
 
@@ -101,8 +126,7 @@ export default async function ListPage({ params }: ListPageProps) {
                     name: list.name,
                     slug: list.slug,
                     description: list.description,
-                    price,
-                    currency: list.currency,
+                    offers: ofertas,
                     isActive: list.isActive,
                     locale,
                 })}
@@ -236,7 +260,7 @@ export default async function ListPage({ params }: ListPageProps) {
                     <div className="rounded-lg border bg-card p-6 shadow-sm">
                         <div className="mb-6">
                             <div className="text-4xl font-bold text-brand">
-                                {formatCurrency(price, list.currency)}
+                                {formatCurrency(price, resolved.currency, locale)}
                             </div>
                         </div>
 
