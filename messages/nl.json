@@ -210,7 +210,7 @@
                 },
                 {
                     "title": "Koop",
-                    "body": "Controleer het volume, de prijs per lead en de details van de lijst voordat u uw bestelling afrondt via een veilige betaling."
+                    "body": "Controleer de dekking, de prijs en de details van de studie voordat u uw bestelling afrondt via een veilige betaling."
                 },
                 {
                     "title": "Download",
@@ -459,7 +459,7 @@
         "perLead": "{price} per lead",
         "leadsIncluded": "{count} leads inbegrepen",
         "oneOffNote": "Eenmalige aankoop, zonder abonnement. Toegang blijft beschikbaar in Mijn aankopen.",
-        "beforeBuyNote": "Controleer voor aankoop de dekking, het gegevensvoorbeeld en de prijs per lead. Zodra de betaling is goedgekeurd, wordt de download beschikbaar in uw account.",
+        "beforeBuyNote": "Controleer voor aankoop de dekking, het gegevensvoorbeeld en de prijs. Zodra de betaling is goedgekeurd, wordt de download beschikbaar in uw account.",
         "benefitSecure": "Veilig betalen met kaart",
         "benefitImmediate": "Direct downloaden na bevestiging",
         "benefitRecorded": "Aankoop geregistreerd in uw account",

@@ -210,7 +210,7 @@
                 },
                 {
                     "title": "Acquista",
-                    "body": "Verifica il volume, il prezzo per lead e i dettagli dell'elenco prima di completare l'ordine tramite pagamento sicuro."
+                    "body": "Verifica la copertura, il prezzo e i dettagli dello studio prima di completare l'ordine tramite pagamento sicuro."
                 },
                 {
                     "title": "Scarica",
@@ -459,7 +459,7 @@
         "perLead": "{price} per lead",
         "leadsIncluded": "{count} lead inclusi",
         "oneOffNote": "Acquisto una tantum, senza abbonamento. L'accesso resta disponibile nell'area I miei acquisti.",
-        "beforeBuyNote": "Prima di acquistare, verifica la copertura, l'anteprima dei dati e il prezzo per lead. Dopo l'approvazione del pagamento, il download diventa disponibile nel tuo account.",
+        "beforeBuyNote": "Prima di acquistare, verifica la copertura, l'anteprima dei dati e il prezzo. Dopo l'approvazione del pagamento, il download diventa disponibile nel tuo account.",
         "benefitSecure": "Pagamento sicuro tramite carta",
         "benefitImmediate": "Download immediato dopo la conferma",
         "benefitRecorded": "Acquisto registrato nel tuo account",
