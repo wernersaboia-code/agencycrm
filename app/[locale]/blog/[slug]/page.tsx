@@ -1,11 +1,12 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
-import { isBlogLocale, dirForLocale, type BlogLocale } from "@/lib/blog/locales"
+import { isBlogLocale, type BlogLocale } from "@/lib/blog/locales"
 import { getBlogLabels } from "@/lib/blog/i18n"
 import { getPostBySlug } from "@/lib/blog/queries"
 import { LanguageSwitcher } from "@/components/blog/language-switcher"
 import { JsonLd } from "@/components/seo/json-ld"
 import { buildBlogPostingSchema } from "@/lib/seo/schema"
+import { PostArticle } from "@/components/blog/post-article"
 
 export async function generateMetadata({
     params,
@@ -46,7 +47,7 @@ export default async function BlogPostPage({
         : ""
 
     return (
-        <article className="min-h-screen bg-white text-gray-950" dir={dirForLocale(locale)}>
+        <>
             {post.publishedAt && (
                 <JsonLd
                     data={buildBlogPostingSchema({
@@ -60,22 +61,20 @@ export default async function BlogPostPage({
                     })}
                 />
             )}
-            <div className="mx-auto max-w-3xl px-4 py-14">
-                {categoryName && <p className="text-xs font-semibold uppercase tracking-wider text-indigo-700">{categoryName}</p>}
-                <h1 className="mt-2 text-3xl font-bold tracking-tight md:text-4xl">{translation.title}</h1>
-                {dateLabel && <p className="mt-3 text-sm text-gray-500">{dateLabel}</p>}
-                {post.coverImageUrl && <img src={post.coverImageUrl} alt="" className="mt-6 w-full rounded-lg object-cover" />}
-                {/*
-                  Segurança: contentHtml já foi sanitizado no servidor no momento da escrita
-                  (Task 8), então renderizá-lo aqui via dangerouslySetInnerHTML é seguro. Não
-                  adicionar sanitização client-side.
-                */}
-                <div
-                    className="prose prose-indigo mt-8 max-w-none"
-                    dangerouslySetInnerHTML={{ __html: translation.contentHtml }}
+            <PostArticle
+                locale={locale as BlogLocale}
+                categoryName={categoryName}
+                title={translation.title}
+                dateLabel={dateLabel}
+                coverImageUrl={post.coverImageUrl}
+                contentHtml={translation.contentHtml}
+            >
+                <LanguageSwitcher
+                    locale={locale as BlogLocale}
+                    availableLocales={availableLocales}
+                    localeSlugs={localeSlugs}
                 />
-                <LanguageSwitcher locale={locale as BlogLocale} availableLocales={availableLocales} localeSlugs={localeSlugs} />
-            </div>
-        </article>
+            </PostArticle>
+        </>
     )
 }
