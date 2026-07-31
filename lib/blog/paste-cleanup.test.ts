@@ -80,7 +80,7 @@ describe("limparHtmlDeColagem", () => {
         expect(limpo).toBe("<p>Ok</p>")
     })
 
-    it("mantém a estrutura que o autor quer: títulos, listas, links e imagens", () => {
+    it("mantém a estrutura que o autor quer: títulos, listas e links — imagem colada é descartada de propósito", () => {
         const colado =
             '<h2 style="font-family:Arial">Título</h2>' +
             "<ul><li>Item</li></ul>" +
@@ -91,7 +91,19 @@ describe("limparHtmlDeColagem", () => {
         expect(limpo).toContain("<h2>Título</h2>")
         expect(limpo).toContain("<li>Item</li>")
         expect(limpo).toContain('href="https://exemplo.com"')
-        expect(limpo).toContain('alt="Alt"')
+        // Imagem no artigo entra só pelo botão de imagem, que exige alt.
+        expect(limpo).not.toContain("<img")
+    })
+
+    it("descarta <img> colado inteiramente, mesmo com src e alt válidos, mantendo o texto ao redor intacto", () => {
+        const colado =
+            '<p>Antes.</p><img src="https://exemplo.com/a.png" alt="Alt"><p>Depois.</p>'
+        const limpo = limparHtmlDeColagem(colado)
+
+        expect(limpo).not.toContain("<img")
+        expect(limpo).not.toContain("Alt")
+        expect(limpo).toContain("<p>Antes.</p>")
+        expect(limpo).toContain("<p>Depois.</p>")
     })
 
     it("não altera uma letra do texto visível", () => {

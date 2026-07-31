@@ -67,15 +67,21 @@ export function limparHtmlDeColagem(html: string): string {
         // Mesma lista de tags do sanitizador de segurança, menos as de tabela
         // que o preset de artigo não produz. Tag fora da lista é descartada,
         // mas seu TEXTO permanece (comportamento padrão do sanitize-html).
+        // `img` fica de fora de propósito: imagem colada de Word/Docs já chega
+        // quebrada (vem com `src="file:///..."` ou `data:`, esquemas fora de
+        // `allowedSchemes` abaixo, então sobraria um <img> sem src) e, mesmo
+        // quando o src sobrevivesse, deixar passar imagem colada sem alt
+        // tornaria decorativa a garantia de acessibilidade que o botão de
+        // imagem do editor existe para dar (ele exige texto alternativo).
+        // Quem quiser imagem no post usa o botão.
         allowedTags: [
             "a", "blockquote", "br", "code", "em", "h1", "h2", "h3", "h4", "h5", "h6",
-            "hr", "img", "li", "ol", "p", "pre", "s", "strong", "sub", "sup", "u", "ul",
+            "hr", "li", "ol", "p", "pre", "s", "strong", "sub", "sup", "u", "ul",
             "table", "thead", "tbody", "tr", "th", "td",
         ],
         allowedAttributes: {
             "*": ["style", "align"],
             a: ["href", "title", "target", "style"],
-            img: ["src", "alt", "title", "width", "height", "style"],
             td: ["colspan", "rowspan", "style"],
             th: ["colspan", "rowspan", "style"],
         },
