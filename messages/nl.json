@@ -676,6 +676,15 @@
     },
     "legal": {
         "lastUpdated": "Laatst bijgewerkt: {date}"
+    },
+    "cookies": {
+        "message": "We gebruiken essentiële cookies voor authenticatie en voorkeuren. Analytische cookies worden alleen met uw toestemming geladen.",
+        "learnMore": "Meer informatie",
+        "decline": "Weigeren",
+        "accept": "Accepteren"
+    },
+    "a11y": {
+        "skipToContent": "Ga naar de inhoud"
     }
 }
 
