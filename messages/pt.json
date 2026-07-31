@@ -556,116 +556,7 @@
             "title": "Por que Easy Prospect — como os estudos são feitos",
             "description": "Estudos de entrada em mercado e diretórios de importadores e distribuidores: de onde vêm os dados, como cada empresa é conferida, o que vem em cada estudo e o que não prometemos."
         },
-        "hero": {
-            "eyebrow": "Por que Easy Prospect",
-            "title": "Seu parceiro para entrar em novos mercados",
-            "paragraphs": [
-                "Novos mercados de exportação abrem espaço para crescer. Ao mesmo tempo, encontrar importadores e distribuidores adequados — e informação de mercado confiável — costuma consumir semanas ou meses.",
-                "O Easy Prospect existe para encurtar esse caminho: estudos de entrada em mercado e diretórios de importadores e distribuidores pesquisados com cuidado, para fabricantes, marcas e exportadores.",
-                "Os estudos reúnem mais de duas décadas de experiência no comércio internacional e uma metodologia de pesquisa atual. A análise é apoiada por tecnologia; a conferência final é sempre humana."
-            ]
-        },
-        "methodology": {
-            "eyebrow": "Metodologia",
-            "title": "Pesquisa cuidadosa, não lista de endereços",
-            "intro": "Quem paga por dados B2B tem o direito de saber de onde eles vêm. O processo está descrito abaixo, sem promessas que não possamos sustentar.",
-            "body": [
-                "Aqui o que conta não é a quantidade de dados, e sim a relevância prática. Para cada estudo, um conjunto de fontes públicas é avaliado de forma sistemática, e todo resultado passa por revisão antes de ser publicado.",
-                "O objetivo não é listar o maior número possível de empresas, e sim identificar as que podem de fato interessar ao seu projeto de exportação."
-            ]
-        },
-        "sources": {
-            "title": "De onde vêm os dados",
-            "intro": "Toda informação vem de fontes de acesso público. Entre elas:",
-            "items": [
-                "sites das próprias empresas",
-                "câmaras de comércio",
-                "associações setoriais",
-                "catálogos de feiras",
-                "diretórios empresariais",
-                "portais especializados",
-                "outras informações econômicas de livre acesso"
-            ],
-            "note": "Antes de publicar, os dados são conferidos quanto a plausibilidade, completude e utilidade prática. O material de partida vem de anos de operação no comércio de exportação e é ampliado com essa pesquisa."
-        },
-        "review": {
-            "title": "Conferência empresa por empresa",
-            "intro": "Antes de entrar num diretório, cada empresa é conferida em fontes públicas. Verificamos, em especial:",
-            "items": [
-                "se atua no setor indicado",
-                "se há atividade de importação ou distribuição identificável",
-                "se mantém presença profissional",
-                "se os canais de contato estão ativos",
-                "se faz sentido considerá-la como possível parceira de distribuição"
-            ],
-            "note": "Essa conferência não substitui a sua própria qualificação comercial, mas aumenta a chance de que a empresa listada seja relevante para o seu projeto."
-        },
-        "updates": {
-            "title": "Atualização do catálogo",
-            "body": "Contatos e estruturas societárias mudam o tempo todo. O catálogo é revisado periodicamente, e quando uma lista deixa de refletir o mercado que descreve, ela sai de venda em vez de continuar disponível."
-        },
-        "delivery": {
-            "title": "O que você recebe",
-            "intro": "Cada compra dá acesso a um estudo de entrada no mercado em PDF — bem mais do que uma lista de endereços. Conforme o setor, um estudo traz:",
-            "items": [
-                "visão geral do mercado de destino",
-                "análise da situação do setor",
-                "potencial de mercado e tendências atuais",
-                "requisitos de acesso ao mercado",
-                "estruturas de venda e distribuição",
-                "diretório de importadores e distribuidores relevantes",
-                "orientação para abordar as empresas certas",
-                "recomendações para preparar sua entrada no mercado"
-            ],
-            "note": "A ideia é tirar do seu caminho boa parte da pesquisa demorada, para você se concentrar em construir relações comerciais."
-        },
-        "limits": {
-            "title": "O que não prometemos",
-            "intro": "O sucesso de um projeto de exportação depende de muitos fatores. Não garantimos que toda empresa responda a um contato, nem que uma relação comercial nasça de imediato. Pesam, entre outros:",
-            "items": [
-                "a competitividade do seu produto",
-                "a demanda no mercado de destino",
-                "sua política de preços",
-                "sua capacidade de entrega",
-                "sua estratégia de marketing e vendas",
-                "o momento do contato",
-                "a decisão de compra de cada importador"
-            ],
-            "note": "Nossos diretórios também não foram feitos para disparo em massa: eles servem a uma abordagem preparada, empresa por empresa. O que garantimos é o critério — nenhuma empresa entra numa lista sem ter sido conferida em fontes públicas."
-        },
-        "trust": {
-            "eyebrow": "Em resumo",
-            "title": "Por que o Easy Prospect",
-            "cards": [
-                {
-                    "title": "Feito para a prática",
-                    "body": "Os estudos são escritos para fabricantes, exportadores e responsáveis por vendas internacionais — não para consumo genérico."
-                },
-                {
-                    "title": "Mais que lista de endereços",
-                    "body": "Você recebe informação de mercado estruturada, recomendações concretas e um diretório de importadores e distribuidores pesquisado com cuidado."
-                },
-                {
-                    "title": "Pesquisa conferida",
-                    "body": "A pesquisa segue uma metodologia sistemática e passa por conferência humana antes da publicação."
-                },
-                {
-                    "title": "Tempo economizado",
-                    "body": "Em vez de semanas pesquisando quem procurar, você começa direto pela abordagem dos parceiros possíveis."
-                },
-                {
-                    "title": "Catálogo mantido",
-                    "body": "Os estudos são revisados periodicamente e corrigidos ou ampliados quando o mercado muda."
-                },
-                {
-                    "title": "Base de trabalho, não volume",
-                    "body": "O objetivo não é vender o máximo de dados, e sim entregar uma base sólida para abrir mercados com método."
-                }
-            ]
-        },
         "cta": {
-            "title": "Já sabe qual mercado quer atacar?",
-            "body": "Veja os estudos de entrada em mercado e os diretórios de importadores disponíveis por país e setor. As dúvidas mais comuns sobre entrega e pagamento estão no FAQ.",
             "faq": "Ver perguntas frequentes",
             "catalog": "Ver catálogo"
         },
@@ -881,6 +772,7 @@
         },
         "workspaceDetails": {
             "backToWorkspaces": "Voltar para empresas/contas",
+            "noName": "Sem nome",
             "readiness": "Prontidão operacional",
             "readinessDesc": "Fundamentos que indicam se este cliente está pronto para operar campanhas e acompanhamento.",
             "coverage": "Cobertura",
@@ -927,6 +819,7 @@
             "viewAnalytics": "Ver analytics",
             "environment": "Ambiente",
             "varsConfigured": "{count}/{total} variáveis configuradas",
+            "varsConfiguredLabel": "variáveis configuradas",
             "paypal": "PayPal",
             "checkoutReady": "checkout configurado",
             "checkoutIncomplete": "checkout incompleto",
@@ -953,7 +846,21 @@
             "leads5k": "5.000 leads",
             "leads50k": "50.000 leads",
             "users3": "3 usuários",
-            "configurableDaily": "Diário configurável"
+            "configurableDaily": "Diário configurável",
+            "vars": {
+                "NEXT_PUBLIC_SUPABASE_URL": "Endpoint público usado pelo cliente e autenticação.",
+                "NEXT_PUBLIC_SUPABASE_ANON_KEY": "Chave pública de autenticação do Supabase.",
+                "DATABASE_URL": "Conexão principal usada pelo Prisma.",
+                "DIRECT_URL": "Conexão direta usada por Prisma/migrations quando necessário.",
+                "SECRETS_ENCRYPTION_KEY": "Chave usada para criptografar segredos como SMTP.",
+                "NEXT_PUBLIC_PAYPAL_CLIENT_ID": "Identificador público do checkout PayPal.",
+                "PAYPAL_CLIENT_SECRET": "Segredo do PayPal usado para criar e capturar pedidos.",
+                "CRON_SECRET": "Protege a rota de processamento automático de sequências.",
+                "NEXT_PUBLIC_APP_URL": "URL pública usada em callbacks, links e redirecionamentos.",
+                "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY": "Chave pública do Stripe usada no frontend do checkout.",
+                "STRIPE_SECRET_KEY": "Chave secreta do Stripe usada no servidor para criar sessões de checkout.",
+                "STRIPE_WEBHOOK_SECRET": "Segredo usado para verificar a assinatura dos webhooks do Stripe."
+            }
         },
         "analytics": {
             "metaTitle": "Relatórios | Área Administrativa",
@@ -1159,7 +1066,8 @@
             "colPublished": "Publicado",
             "empty": "Nenhum post ainda.",
             "badgePublished": "Publicado",
-            "badgeDraft": "Rascunho"
+            "badgeDraft": "Rascunho",
+            "noTitle": "(sem título)"
         },
         "blogEditor": {
             "editTitle": "Editar post",

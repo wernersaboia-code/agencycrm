@@ -5,7 +5,7 @@ import type { AbstractIntlMessages } from "next-intl"
 import { NextIntlClientProvider } from "next-intl"
 import { redirect } from "next/navigation"
 import { getAuthenticatedDbUser } from "@/lib/auth"
-import { resolveMessagesLocale, DEFAULT_LOCALE, type Locale } from "@/lib/i18n/locales"
+import { getAdminLocale } from "@/lib/i18n/admin-locale"
 import { loadMessages } from "@/lib/i18n/load-messages"
 import { AdminSidebar } from "@/components/admin/admin-sidebar"
 import { AdminHeader } from "@/components/admin/admin-header"
@@ -26,7 +26,9 @@ export default async function SuperAdminLayout({
         redirect("/dashboard")
     }
 
-    const locale: Locale = (dbUser.language && resolveMessagesLocale(dbUser.language as Locale)) || DEFAULT_LOCALE
+    // Mesma fonte que as páginas server usam via getAdminTranslations, para o
+    // conteúdo e a moldura (sidebar/header) nunca saírem em idiomas diferentes.
+    const locale = await getAdminLocale()
     const messages: AbstractIntlMessages = await loadMessages(locale)
 
     return (

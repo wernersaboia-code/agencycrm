@@ -1,5 +1,6 @@
 import Link from "next/link"
-import { getTranslations } from "next-intl/server"
+import { getAdminLocale, getAdminTranslations } from "@/lib/i18n/admin-locale"
+import { htmlLangFor } from "@/lib/i18n/locales"
 import { getAuditLogs } from "@/actions/admin/audit"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
@@ -12,8 +13,9 @@ export default async function AuditPage({
 }: {
     searchParams: Promise<{ page?: string }>
 }) {
-    const t = await getTranslations("admin.audit")
-    const tc = await getTranslations("admin.common")
+    const t = await getAdminTranslations("admin.audit")
+    const tc = await getAdminTranslations("admin.common")
+    const bcp47 = htmlLangFor(await getAdminLocale())
 
     const { page } = await searchParams
     const currentPage = Math.max(1, Number(page) || 1)
@@ -49,7 +51,7 @@ export default async function AuditPage({
                                 {items.map((row) => (
                                     <tr key={row.id} className="border-t">
                                         <td className="py-2 whitespace-nowrap">
-                                            {new Date(row.createdAt).toLocaleString("pt-BR")}
+                                            {new Date(row.createdAt).toLocaleString(bcp47)}
                                         </td>
                                         <td className="whitespace-nowrap">{row.actorEmail}</td>
                                         <td className="whitespace-nowrap">{row.action}</td>

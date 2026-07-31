@@ -1,6 +1,6 @@
 // app/super-admin/marketplace/lists/[id]/page.tsx.bak
 import { notFound } from "next/navigation"
-import { getTranslations } from "next-intl/server"
+import { getAdminTranslations } from "@/lib/i18n/admin-locale"
 import { prisma } from "@/lib/prisma"
 import { ListForm } from "@/components/admin/list-form"
 
@@ -20,7 +20,7 @@ export default async function EditListPage({ params }: EditListPageProps) {
         notFound()
     }
 
-    const t = await getTranslations("admin.listDetails")
+    const t = await getAdminTranslations("admin.listDetails")
 
     // O form edita um campo por moeda; o banco guarda uma linha por moeda.
     const prices: Record<string, number> = {}

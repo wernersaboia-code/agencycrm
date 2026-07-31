@@ -1,6 +1,7 @@
 import Link from "next/link"
 import type { ComponentType } from "react"
-import { getTranslations } from "next-intl/server"
+import { getAdminLocale, getAdminTranslations } from "@/lib/i18n/admin-locale"
+import { htmlLangFor } from "@/lib/i18n/locales"
 import {
     ArrowRight,
     BarChart3,
@@ -21,8 +22,9 @@ import { formatCurrency } from "@/lib/utils"
 
 export default async function SuperAdminDashboardPage() {
     const stats = await getGlobalStats()
-    const t = await getTranslations("admin.dashboard")
-    const common = await getTranslations("admin.common")
+    const t = await getAdminTranslations("admin.dashboard")
+    const common = await getAdminTranslations("admin.common")
+    const bcp47 = htmlLangFor(await getAdminLocale())
 
     const mainActions = [
         {
@@ -65,13 +67,13 @@ export default async function SuperAdminDashboardPage() {
     const metrics = [
         {
             label: t("activeLists"),
-            value: stats.totalLists.toLocaleString("pt-BR"),
+            value: stats.totalLists.toLocaleString(bcp47),
             detail: t("listsWithLeads", { count: stats.totalLeadsMarketplace }),
             icon: Store,
         },
         {
             label: t("paidSales"),
-            value: stats.totalPurchases.toLocaleString("pt-BR"),
+            value: stats.totalPurchases.toLocaleString(bcp47),
             detail: t("thisMonth", { count: stats.purchasesThisMonth }),
             icon: ShoppingCart,
         },
@@ -200,7 +202,7 @@ async function AdminActionCard({
     icon: ComponentType<{ className?: string }>
     tone: "primary" | "default"
 }) {
-    const t = await getTranslations("admin.dashboard")
+    const t = await getAdminTranslations("admin.dashboard")
     const isPrimary = tone === "primary"
 
     return (

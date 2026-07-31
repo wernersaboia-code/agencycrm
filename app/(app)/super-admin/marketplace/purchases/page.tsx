@@ -1,5 +1,6 @@
 // app/super-admin/marketplace/purchases/page.tsx.bak
-import { getTranslations } from "next-intl/server"
+import { getAdminLocale, getAdminTranslations } from "@/lib/i18n/admin-locale"
+import { dateFnsLocaleFor } from "@/lib/i18n/date-locale"
 import { prisma } from "@/lib/prisma"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -14,7 +15,6 @@ import {
 import { AlertCircle, ArrowLeft, CheckCircle2, ShoppingCart, DollarSign, TrendingUp, Clock } from "lucide-react"
 import { formatCurrency } from "@/lib/utils"
 import { format } from "date-fns"
-import { ptBR } from "date-fns/locale"
 import { Progress } from "@/components/ui/progress"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
@@ -51,8 +51,9 @@ export default async function PurchasesPage() {
     const refundedCount = purchases.filter((purchase) => purchase.status === "refunded").length
     const paidCount = purchases.filter((purchase) => purchase.status === "paid").length
     const paidRate = purchases.length > 0 ? Math.round((paidCount / purchases.length) * 100) : 0
-    const t = await getTranslations("admin.purchases")
-    const tc = await getTranslations("admin.common")
+    const t = await getAdminTranslations("admin.purchases")
+    const tc = await getAdminTranslations("admin.common")
+    const dateLocale = dateFnsLocaleFor(await getAdminLocale())
 
     return (
         <div className="space-y-6">
@@ -202,10 +203,10 @@ export default async function PurchasesPage() {
                                         <TableCell>
                                             <div>
                                                 <p className="font-medium">
-                                                    {format(purchase.createdAt, "dd/MM/yyyy", { locale: ptBR })}
+                                                    {format(purchase.createdAt, "P", { locale: dateLocale })}
                                                 </p>
                                                 <p className="text-xs text-muted-foreground">
-                                                    {format(purchase.createdAt, "HH:mm", { locale: ptBR })}
+                                                    {format(purchase.createdAt, "p", { locale: dateLocale })}
                                                 </p>
                                             </div>
                                         </TableCell>

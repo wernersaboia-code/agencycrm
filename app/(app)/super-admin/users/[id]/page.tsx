@@ -2,7 +2,8 @@
 
 import { notFound } from "next/navigation"
 import Link from "next/link"
-import { getTranslations } from "next-intl/server"
+import { getAdminLocale, getAdminTranslations } from "@/lib/i18n/admin-locale"
+import { dateFnsLocaleFor } from "@/lib/i18n/date-locale"
 import {
     AlertCircle,
     ArrowLeft,
@@ -26,7 +27,6 @@ import { UserRoleSelect } from "@/components/admin/user-role-select"
 import { UserStatusToggle } from "@/components/admin/user-status-toggle"
 import { ResetPasswordButton } from "@/components/admin/reset-password-button"
 import { format } from "date-fns"
-import { ptBR } from "date-fns/locale"
 
 interface UserDetailsPageProps {
     params: Promise<{ id: string }>
@@ -34,7 +34,8 @@ interface UserDetailsPageProps {
 
 export default async function UserDetailsPage({ params }: UserDetailsPageProps) {
     const { id } = await params
-    const t = await getTranslations("admin.userDetails")
+    const t = await getAdminTranslations("admin.userDetails")
+    const dateLocale = dateFnsLocaleFor(await getAdminLocale())
 
     const [user, stats] = await Promise.all([
         getUserDetails(id),
@@ -177,7 +178,7 @@ export default async function UserDetailsPage({ params }: UserDetailsPageProps) 
                                 <Calendar className="h-4 w-4 text-muted-foreground" />
                                 <span className="text-muted-foreground">{t("createdLabel")}</span>
                                 <span>
-                                    {format(new Date(user.createdAt), "dd/MM/yyyy", { locale: ptBR })}
+                                    {format(new Date(user.createdAt), "P", { locale: dateLocale })}
                                 </span>
                             </div>
 
@@ -186,7 +187,7 @@ export default async function UserDetailsPage({ params }: UserDetailsPageProps) 
                                 <span className="text-muted-foreground">{t("lastAccessLabel")}</span>
                                 <span>
                                     {user.lastLoginAt
-                                        ? format(new Date(user.lastLoginAt), "dd/MM/yyyy HH:mm", { locale: ptBR })
+                                        ? format(new Date(user.lastLoginAt), "Pp", { locale: dateLocale })
                                         : t("never")}
                                 </span>
                             </div>
@@ -234,7 +235,7 @@ export default async function UserDetailsPage({ params }: UserDetailsPageProps) 
 
                         {stats.lastActivity && (
                             <p className="text-sm text-muted-foreground mt-4 text-center">
-                                {t("lastActivity", { date: format(new Date(stats.lastActivity), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR }) })}
+                                {t("lastActivity", { date: format(new Date(stats.lastActivity), "Pp", { locale: dateLocale }) })}
                             </p>
                         )}
                     </CardContent>
