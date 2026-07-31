@@ -69,7 +69,7 @@ export function limparHtmlDeColagem(html: string): string {
         // mas seu TEXTO permanece (comportamento padrão do sanitize-html).
         allowedTags: [
             "a", "blockquote", "br", "code", "em", "h1", "h2", "h3", "h4", "h5", "h6",
-            "hr", "img", "li", "ol", "p", "pre", "s", "span", "strong", "sub", "sup", "u", "ul",
+            "hr", "img", "li", "ol", "p", "pre", "s", "strong", "sub", "sup", "u", "ul",
             "table", "thead", "tbody", "tr", "th", "td",
         ],
         allowedAttributes: {
@@ -102,10 +102,7 @@ export function limparHtmlDeColagem(html: string): string {
     return (
         limpo
             // <span> que sobrou sem atributo nenhum não diz nada: some, o texto fica.
-            // Adiciona espaço se o span é seguido por conteúdo (não espaço, não tag),
-            // para preservar o espaçamento que a tag adicionaria em textoVisivel.
-            .replace(/<span[^>]*>([\s\S]*?)<\/span>(?=[^\s<])/g, "$1 ")
-            .replace(/<span[^>]*>([\s\S]*?)<\/span>/g, "$1")
+            .replace(/<span>([\s\S]*?)<\/span>/g, "$1")
             // Parágrafo vazio (inclusive só com &nbsp;) é ruído do Word.
             .replace(/<p>(\s|&nbsp;|<br\s*\/?>)*<\/p>/g, "")
             .trim()

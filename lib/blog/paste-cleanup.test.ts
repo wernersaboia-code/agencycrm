@@ -1,9 +1,23 @@
 import { describe, it, expect } from "vitest"
 import { limparHtmlDeColagem } from "./paste-cleanup"
 
-/** Texto visível, sem tags — usado para provar que nenhuma regra come conteúdo. */
+/**
+ * Texto visível, sem tags.
+ *
+ * A distinção entre bloco e inline não é capricho: `</p>` produz separação
+ * visual, `</span>` não. Tratar as duas igual quebra a comparação nos dois
+ * sentidos — trocar toda tag por espaço fazia a entrada com <span> divergir da
+ * saída sem ele (e foi assim que uma função que inseria espaço no texto do
+ * autor passou no teste); não trocar nenhuma cola dois parágrafos num só.
+ */
 function textoVisivel(html: string): string {
-    return html.replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").replace(/\s+/g, " ").trim()
+    return html
+        .replace(/<\/(p|div|li|h[1-6]|blockquote|tr)>/gi, " ")
+        .replace(/<(br|hr)\s*\/?>/gi, " ")
+        .replace(/<[^>]+>/g, "")
+        .replace(/&nbsp;/g, " ")
+        .replace(/\s+/g, " ")
+        .trim()
 }
 
 describe("limparHtmlDeColagem", () => {
@@ -42,6 +56,15 @@ describe("limparHtmlDeColagem", () => {
     it("desembrulha span que ficou sem atributo, mantendo o texto", () => {
         expect(limparHtmlDeColagem('<p><span style="font-size:12pt">Frase</span></p>')).toBe(
             "<p>Frase</p>"
+        )
+    })
+
+    it("não insere espaço ao desembrulhar span colado a pontuação ou palavra", () => {
+        expect(limparHtmlDeColagem('<p>com <span style="color:red">cor</span>.</p>')).toBe(
+            '<p>com cor.</p>'
+        )
+        expect(limparHtmlDeColagem('<p>uma<span style="color:red">palavra</span>junta</p>')).toBe(
+            '<p>umapalavrajunta</p>'
         )
     })
 
