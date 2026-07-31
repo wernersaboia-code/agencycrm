@@ -235,7 +235,12 @@ export function PostEditor({
                 </div>
                 <div className="space-y-2">
                     <Label>{t("content")}</Label>
-                    <RichTextEditor content={current.contentHtml} onChange={(html) => setField("contentHtml", html)} />
+                    <RichTextEditor
+                        content={current.contentHtml}
+                        onChange={(html) => setField("contentHtml", html)}
+                        preset="article"
+                        placeholder="Cole ou escreva o texto do post..."
+                    />
                 </div>
                 <div className="space-y-2">
                     <div className="flex items-baseline justify-between gap-2">

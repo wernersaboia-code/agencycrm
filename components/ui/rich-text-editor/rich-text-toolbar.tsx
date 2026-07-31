@@ -15,6 +15,14 @@ import {
     Heading2,
     Undo,
     Redo,
+    AlignCenter,
+    AlignJustify,
+    AlignLeft,
+    AlignRight,
+    Heading3,
+    Minus,
+    Quote,
+    RemoveFormatting,
 } from "lucide-react"
 import { Toggle } from "@/components/ui/toggle"
 import { Separator } from "@/components/ui/separator"
@@ -29,13 +37,16 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { getVariableChipHtml } from "@/lib/constants/template.constants"
+import type { RichTextPreset } from "./rich-text-editor"
 
 interface RichTextToolbarProps {
     editor: Editor
     disabled?: boolean
+    preset?: RichTextPreset
 }
 
-export function RichTextToolbar({ editor, disabled }: RichTextToolbarProps) {
+export function RichTextToolbar({ editor, disabled, preset = "email" }: RichTextToolbarProps) {
+    const ehArtigo = preset === "article"
     const [linkUrl, setLinkUrl] = useState("")
     const [linkPopoverOpen, setLinkPopoverOpen] = useState(false)
 
@@ -107,6 +118,17 @@ export function RichTextToolbar({ editor, disabled }: RichTextToolbarProps) {
             >
                 <Heading2 className="h-4 w-4" />
             </Toggle>
+            {ehArtigo && (
+                <Toggle
+                    size="sm"
+                    pressed={editor.isActive("heading", { level: 3 })}
+                    onPressedChange={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+                    disabled={disabled}
+                    title="Título 3"
+                >
+                    <Heading3 className="h-4 w-4" />
+                </Toggle>
+            )}
 
             <Separator orientation="vertical" className="mx-1 h-6" />
 
@@ -172,6 +194,64 @@ export function RichTextToolbar({ editor, disabled }: RichTextToolbarProps) {
 
             <Separator orientation="vertical" className="mx-1 h-6" />
 
+            {ehArtigo && (
+                <>
+                    <Separator orientation="vertical" className="mx-1 h-6" />
+
+                    {([
+                        ["left", AlignLeft, "Alinhar à esquerda"],
+                        ["center", AlignCenter, "Centralizar"],
+                        ["right", AlignRight, "Alinhar à direita"],
+                        ["justify", AlignJustify, "Justificar"],
+                    ] as const).map(([alinhamento, Icone, titulo]) => (
+                        <Toggle
+                            key={alinhamento}
+                            size="sm"
+                            pressed={editor.isActive({ textAlign: alinhamento })}
+                            onPressedChange={() =>
+                                editor.chain().focus().setTextAlign(alinhamento).run()
+                            }
+                            disabled={disabled}
+                            title={titulo}
+                        >
+                            <Icone className="h-4 w-4" />
+                        </Toggle>
+                    ))}
+
+                    <Separator orientation="vertical" className="mx-1 h-6" />
+
+                    <Toggle
+                        size="sm"
+                        pressed={editor.isActive("blockquote")}
+                        onPressedChange={() => editor.chain().focus().toggleBlockquote().run()}
+                        disabled={disabled}
+                        title="Citação"
+                    >
+                        <Quote className="h-4 w-4" />
+                    </Toggle>
+                    <Toggle
+                        size="sm"
+                        pressed={false}
+                        onPressedChange={() => editor.chain().focus().setHorizontalRule().run()}
+                        disabled={disabled}
+                        title="Linha divisória"
+                    >
+                        <Minus className="h-4 w-4" />
+                    </Toggle>
+                    <Toggle
+                        size="sm"
+                        pressed={false}
+                        onPressedChange={() =>
+                            editor.chain().focus().unsetAllMarks().clearNodes().run()
+                        }
+                        disabled={disabled}
+                        title="Limpar formatação"
+                    >
+                        <RemoveFormatting className="h-4 w-4" />
+                    </Toggle>
+                </>
+            )}
+
             {/* Link */}
             <Popover open={linkPopoverOpen} onOpenChange={setLinkPopoverOpen}>
                 <PopoverTrigger asChild>
@@ -220,10 +300,12 @@ export function RichTextToolbar({ editor, disabled }: RichTextToolbarProps) {
                 </Toggle>
             )}
 
-            <Separator orientation="vertical" className="mx-1 h-6" />
-
-            {/* Custom fields */}
-            <VariableDropdown onSelect={insertVariable} disabled={disabled} />
+            {!ehArtigo && (
+                <>
+                    <Separator orientation="vertical" className="mx-1 h-6" />
+                    <VariableDropdown onSelect={insertVariable} disabled={disabled} />
+                </>
+            )}
         </div>
     )
 }
