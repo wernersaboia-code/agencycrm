@@ -25,7 +25,8 @@ import { TransferWorkspaceModal } from "@/components/admin/transfer-workspace-mo
 import { DeleteWorkspaceButton } from "@/components/admin/delete-workspace-button"
 import { ExportWorkspaceButton } from "@/components/admin/export-workspace-button"
 import { format } from "date-fns"
-import { ptBR } from "date-fns/locale"
+import { getAdminLocale, getAdminTranslations } from "@/lib/i18n/admin-locale"
+import { dateFnsLocaleFor } from "@/lib/i18n/date-locale"
 
 interface WorkspaceDetailsPageProps {
     params: Promise<{ id: string }>
@@ -42,6 +43,9 @@ export default async function WorkspaceDetailsPage({ params }: WorkspaceDetailsP
     if (!workspace) {
         notFound()
     }
+
+    const t = await getAdminTranslations("admin.workspaceDetails")
+    const dateLocale = dateFnsLocaleFor(await getAdminLocale())
 
     const ownerInitials = workspace.user.name
         ?.split(" ")
@@ -60,28 +64,28 @@ export default async function WorkspaceDetailsPage({ params }: WorkspaceDetailsP
     }
     const readinessChecks = [
         {
-            label: "Leads",
-            description: stats.totalLeads > 0 ? `${stats.totalLeads.toLocaleString()} na base.` : "Sem leads importados.",
+            label: t("leadsCheck"),
+            description: stats.totalLeads > 0 ? t("leadsCheckOk", { count: stats.totalLeads.toLocaleString() }) : t("leadsCheckFail"),
             done: stats.totalLeads > 0,
         },
         {
-            label: "Templates",
-            description: workspace._count.emailTemplates > 0 ? `${workspace._count.emailTemplates} modelo${workspace._count.emailTemplates !== 1 ? "s" : ""}.` : "Sem templates de email.",
+            label: t("templatesCheck"),
+            description: workspace._count.emailTemplates > 0 ? t("templatesCheckOk", { count: workspace._count.emailTemplates }) : t("templatesCheckFail"),
             done: workspace._count.emailTemplates > 0,
         },
         {
-            label: "Envio configurado",
-            description: workspace.smtpProvider ? `SMTP ${workspace.smtpProvider}.` : "SMTP ainda não configurado.",
+            label: t("smtpCheck"),
+            description: workspace.smtpProvider ? t("smtpCheckOk", { provider: workspace.smtpProvider }) : t("smtpCheckFail"),
             done: Boolean(workspace.smtpProvider),
         },
         {
-            label: "Campanhas",
-            description: stats.campaignsSent > 0 ? `${stats.campaignsSent} enviada${stats.campaignsSent !== 1 ? "s" : ""}.` : "Nenhuma campanha enviada.",
+            label: t("campaignsCheck"),
+            description: stats.campaignsSent > 0 ? t("campaignsCheckOk", { count: stats.campaignsSent }) : t("campaignsCheckFail"),
             done: stats.campaignsSent > 0,
         },
         {
-            label: "Ligações",
-            description: stats.totalCalls > 0 ? `${stats.callsAnswered}/${stats.totalCalls} atendidas.` : "Sem ligações registradas.",
+            label: t("callsCheck"),
+            description: stats.totalCalls > 0 ? t("callsCheckOk", { answered: stats.callsAnswered, total: stats.totalCalls }) : t("callsCheckFail"),
             done: stats.totalCalls > 0,
         },
     ]
@@ -97,7 +101,7 @@ export default async function WorkspaceDetailsPage({ params }: WorkspaceDetailsP
                     className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4"
                 >
                     <ArrowLeft className="h-4 w-4 mr-1" />
-                    Voltar para empresas/contas
+                    {t("backToWorkspaces")}
                 </Link>
 
                 <div className="flex items-start justify-between">
@@ -137,14 +141,14 @@ export default async function WorkspaceDetailsPage({ params }: WorkspaceDetailsP
             <Card className={readiness >= 80 ? "border-admin dark:border-admin-soft" : "border-amber-300 dark:border-amber-900"}>
                 <CardHeader className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                     <div>
-                        <CardTitle>Prontidão operacional</CardTitle>
+                        <CardTitle>{t("readiness")}</CardTitle>
                         <p className="mt-1 text-sm text-muted-foreground">
-                            Fundamentos que indicam se este cliente está pronto para operar campanhas e acompanhamento.
+                            {t("readinessDesc")}
                         </p>
                     </div>
                     <div className="w-full space-y-2 lg:w-64">
                         <div className="flex items-center justify-between text-sm">
-                            <span className="text-muted-foreground">Cobertura</span>
+                            <span className="text-muted-foreground">{t("coverage")}</span>
                             <span className="font-medium">{readiness}%</span>
                         </div>
                         <Progress value={readiness} />
@@ -174,7 +178,7 @@ export default async function WorkspaceDetailsPage({ params }: WorkspaceDetailsP
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                             <User className="h-5 w-5" />
-                            Responsável
+                            {t("ownerTitle")}
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
@@ -189,7 +193,7 @@ export default async function WorkspaceDetailsPage({ params }: WorkspaceDetailsP
                             </Avatar>
                             <div>
                                 <p className="font-medium">
-                                    {workspace.user.name || "Sem nome"}
+                                    {workspace.user.name || t("noName")}
                                 </p>
                                 <p className="text-sm text-muted-foreground">
                                     {workspace.user.email}
@@ -202,15 +206,15 @@ export default async function WorkspaceDetailsPage({ params }: WorkspaceDetailsP
                         <div className="space-y-2 text-sm">
                             <div className="flex items-center gap-2">
                                 <Calendar className="h-4 w-4 text-muted-foreground" />
-                                <span className="text-muted-foreground">Criado em:</span>
+                                <span className="text-muted-foreground">{t("createdLabel")}</span>
                                 <span>
-                                    {format(new Date(workspace.createdAt), "dd/MM/yyyy", { locale: ptBR })}
+                                    {format(new Date(workspace.createdAt), "P", { locale: dateLocale })}
                                 </span>
                             </div>
                             {workspace.smtpProvider && (
                                 <div className="flex items-center gap-2">
                                     <Mail className="h-4 w-4 text-muted-foreground" />
-                                    <span className="text-muted-foreground">SMTP:</span>
+                                    <span className="text-muted-foreground">{t("smtpLabel")}</span>
                                     <Badge variant="outline">{workspace.smtpProvider}</Badge>
                                 </div>
                             )}
@@ -221,32 +225,32 @@ export default async function WorkspaceDetailsPage({ params }: WorkspaceDetailsP
                 {/* Stats Overview */}
                 <Card className="md:col-span-2">
                     <CardHeader>
-                        <CardTitle>Visão Geral</CardTitle>
+                        <CardTitle>{t("overviewTitle")}</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                             <div className="p-4 bg-blue-50 dark:bg-blue-950/30 rounded-lg text-center">
                                 <Users className="h-6 w-6 mx-auto text-blue-600 mb-2" />
                                 <p className="text-2xl font-bold">{stats.totalLeads.toLocaleString()}</p>
-                                <p className="text-sm text-muted-foreground">Leads</p>
+                                <p className="text-sm text-muted-foreground">{t("leads")}</p>
                             </div>
 
                             <div className="p-4 bg-purple-50 dark:bg-purple-950/30 rounded-lg text-center">
                                 <Send className="h-6 w-6 mx-auto text-purple-600 mb-2" />
                                 <p className="text-2xl font-bold">{stats.totalCampaigns}</p>
-                                <p className="text-sm text-muted-foreground">Campanhas</p>
+                                <p className="text-sm text-muted-foreground">{t("campaigns")}</p>
                             </div>
 
                             <div className="p-4 bg-admin-soft rounded-lg text-center">
                                 <Mail className="h-6 w-6 mx-auto text-admin mb-2" />
                                 <p className="text-2xl font-bold">{stats.totalEmails.toLocaleString()}</p>
-                                <p className="text-sm text-muted-foreground">Emails</p>
+                                <p className="text-sm text-muted-foreground">{t("emails")}</p>
                             </div>
 
                             <div className="p-4 bg-amber-50 dark:bg-amber-950/30 rounded-lg text-center">
                                 <Phone className="h-6 w-6 mx-auto text-amber-600 mb-2" />
                                 <p className="text-2xl font-bold">{stats.totalCalls}</p>
-                                <p className="text-sm text-muted-foreground">Ligações</p>
+                                <p className="text-sm text-muted-foreground">{t("calls")}</p>
                             </div>
                         </div>
 
@@ -254,12 +258,12 @@ export default async function WorkspaceDetailsPage({ params }: WorkspaceDetailsP
                         {stats.totalEmails > 0 && (
                             <div className="mt-6 p-4 bg-muted/50 rounded-lg">
                                 <div className="flex items-center justify-between mb-2">
-                                    <span className="text-sm font-medium">Taxa de Abertura</span>
+                                    <span className="text-sm font-medium">{t("openRate")}</span>
                                     <span className="text-sm font-bold">{stats.openRate}%</span>
                                 </div>
                                 <Progress value={stats.openRate} className="h-2" />
                                 <p className="text-xs text-muted-foreground mt-1">
-                                    {stats.emailsOpened.toLocaleString()} de {stats.totalEmails.toLocaleString()} emails abertos
+                                    {t("openRateDetail", { opened: stats.emailsOpened.toLocaleString(), total: stats.totalEmails.toLocaleString() })}
                                 </p>
                             </div>
                         )}
@@ -273,7 +277,7 @@ export default async function WorkspaceDetailsPage({ params }: WorkspaceDetailsP
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                             <Tag className="h-5 w-5" />
-                            Leads por Status
+                            {t("leadsByStatusTitle")}
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
@@ -301,7 +305,7 @@ export default async function WorkspaceDetailsPage({ params }: WorkspaceDetailsP
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                             <Send className="h-5 w-5" />
-                            Campanhas Recentes
+                            {t("recentCampaignsTitle")}
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
@@ -315,8 +319,8 @@ export default async function WorkspaceDetailsPage({ params }: WorkspaceDetailsP
                                         <p className="font-medium">{campaign.name}</p>
                                         <p className="text-sm text-muted-foreground">
                                             {campaign.sentAt
-                                                ? `Enviada em ${format(new Date(campaign.sentAt), "dd/MM/yyyy", { locale: ptBR })}`
-                                                : "Não enviada"}
+                                                ? t("campaignSent", { date: format(new Date(campaign.sentAt), "P", { locale: dateLocale }) })
+                                                : t("campaignNotSent")}
                                         </p>
                                     </div>
                                     <div className="flex items-center gap-3">
@@ -326,7 +330,7 @@ export default async function WorkspaceDetailsPage({ params }: WorkspaceDetailsP
                                             {campaign.status}
                                         </Badge>
                                         <span className="text-sm text-muted-foreground">
-                                            {campaign.totalSent} enviados
+                                            {campaign.totalSent} {t("sent")}
                                         </span>
                                     </div>
                                 </div>
@@ -341,22 +345,22 @@ export default async function WorkspaceDetailsPage({ params }: WorkspaceDetailsP
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                         <FileText className="h-5 w-5" />
-                        Recursos
+                        {t("resourcesTitle")}
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
                     <div className="grid gap-4 md:grid-cols-3">
                         <div className="p-4 border rounded-lg text-center">
                             <p className="text-3xl font-bold">{workspace._count.emailTemplates}</p>
-                            <p className="text-sm text-muted-foreground">Templates de Email</p>
+                            <p className="text-sm text-muted-foreground">{t("templatesCount")}</p>
                         </div>
                         <div className="p-4 border rounded-lg text-center">
                             <p className="text-3xl font-bold">{workspace._count.tags}</p>
-                            <p className="text-sm text-muted-foreground">Tags</p>
+                            <p className="text-sm text-muted-foreground">{t("tags")}</p>
                         </div>
                         <div className="p-4 border rounded-lg text-center">
                             <p className="text-3xl font-bold">{stats.campaignsSent}</p>
-                            <p className="text-sm text-muted-foreground">Campanhas Enviadas</p>
+                            <p className="text-sm text-muted-foreground">{t("campaignsSent")}</p>
                         </div>
                     </div>
                 </CardContent>

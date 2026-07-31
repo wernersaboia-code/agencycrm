@@ -1,13 +1,13 @@
 // app/super-admin/marketplace/lists/new/page.tsx.bak
 import { ListForm } from "@/components/admin/list-form"
 import Link from "next/link"
-import { getTranslations } from "next-intl/server"
+import { getAdminTranslations } from "@/lib/i18n/admin-locale"
 import { ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 
 export default async function NewListPage() {
-    const t = await getTranslations("admin.newList")
+    const t = await getAdminTranslations("admin.newList")
 
     return (
         <div className="space-y-6">

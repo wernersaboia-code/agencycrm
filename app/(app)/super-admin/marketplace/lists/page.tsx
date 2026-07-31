@@ -1,6 +1,6 @@
 // app/super-admin/marketplace/lists/page.tsx.bak
 import Link from "next/link"
-import { getTranslations } from "next-intl/server"
+import { getAdminTranslations } from "@/lib/i18n/admin-locale"
 import { prisma } from "@/lib/prisma"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -37,8 +37,8 @@ export default async function MarketplaceListsPage() {
     const listsWithSales = lists.filter((list) => list._count.purchaseItems > 0).length
     const totalLeads = lists.reduce((acc, list) => acc + list._count.leads, 0)
     const totalSales = lists.reduce((acc, list) => acc + list._count.purchaseItems, 0)
-    const t = await getTranslations("admin.lists")
-    const tc = await getTranslations("admin.common")
+    const t = await getAdminTranslations("admin.lists")
+    const tc = await getAdminTranslations("admin.common")
     const readinessChecks = [
         {
             label: t("active"),

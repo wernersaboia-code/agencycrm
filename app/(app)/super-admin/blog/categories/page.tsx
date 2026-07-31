@@ -4,17 +4,19 @@ import { ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { listCategoriesAdmin } from "@/actions/admin/blog"
 import { CategoryManager } from "@/components/admin/blog/category-manager"
+import { getAdminTranslations } from "@/lib/i18n/admin-locale"
 
 export const dynamic = "force-dynamic"
 
 export default async function BlogCategoriesPage() {
     const categories = await listCategoriesAdmin()
+    const t = await getAdminTranslations("admin.blogCategories")
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
-                <h1 className="text-3xl font-bold">Categorias do blog</h1>
+                <h1 className="text-3xl font-bold">{t("title")}</h1>
                 <Button variant="outline" asChild>
-                    <Link href="/super-admin/blog"><ArrowLeft className="h-4 w-4" /> Voltar</Link>
+                    <Link href="/super-admin/blog"><ArrowLeft className="h-4 w-4" /> {t("back")}</Link>
                 </Button>
             </div>
             <CategoryManager initial={categories.map((c) => ({

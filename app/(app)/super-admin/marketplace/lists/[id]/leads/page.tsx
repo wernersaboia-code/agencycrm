@@ -1,7 +1,7 @@
 // app/super-admin/marketplace/lists/[id]/leads/page.tsx.bak
 import { notFound } from "next/navigation"
 import Link from "next/link"
-import { getTranslations } from "next-intl/server"
+import { getAdminTranslations } from "@/lib/i18n/admin-locale"
 import { prisma } from "@/lib/prisma"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -52,7 +52,7 @@ export default async function ListLeadsPage({ params }: ListLeadsPageProps) {
         notFound()
     }
 
-    const t = await getTranslations("admin.listLeads")
+    const t = await getAdminTranslations("admin.listLeads")
 
     // Calcular estatísticas a partir dos leads
     const countries = [...new Set(list.leads.map(l => l.country))]

@@ -30,7 +30,8 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { getWorkspaces } from "@/actions/admin/workspaces"
 import { formatDistanceToNow } from "date-fns"
-import { ptBR } from "date-fns/locale"
+import { getAdminLocale, getAdminTranslations } from "@/lib/i18n/admin-locale"
+import { dateFnsLocaleFor } from "@/lib/i18n/date-locale"
 
 interface WorkspacesPageProps {
     searchParams: Promise<{
@@ -41,28 +42,30 @@ interface WorkspacesPageProps {
 
 export default async function WorkspacesPage({ searchParams }: WorkspacesPageProps) {
     const params = await searchParams
+    const t = await getAdminTranslations("admin.workspaces")
+    const common = await getAdminTranslations("admin.common")
 
     return (
         <div className="space-y-6">
             {/* Header */}
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold">Empresas/Contas</h1>
+                    <h1 className="text-3xl font-bold">{t("title")}</h1>
                     <p className="text-muted-foreground">
-                        Visualize as empresas e contas que usam o CRM.
+                        {t("subtitle")}
                     </p>
                 </div>
                 <Button variant="outline" asChild>
                     <Link href="/super-admin">
                         <ArrowLeft className="h-4 w-4" />
-                        Voltar ao painel
+                        {common("backToDashboard")}
                     </Link>
                 </Button>
             </div>
 
             <Card className="border-admin-soft bg-admin-soft">
                 <CardContent className="p-4 text-sm text-admin">
-                    Use esta tela para acompanhar quais empresas já têm leads, campanhas, ligações e modelos de email cadastrados.
+                    {t("infoCard")}
                 </CardContent>
             </Card>
 
@@ -75,7 +78,7 @@ export default async function WorkspacesPage({ searchParams }: WorkspacesPagePro
                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                                 <Input
                                     name="search"
-                                    placeholder="Buscar por empresa/conta ou responsável..."
+                                    placeholder={t("searchPlaceholder")}
                                     defaultValue={params.search}
                                     className="pl-10"
                                 />
@@ -83,7 +86,7 @@ export default async function WorkspacesPage({ searchParams }: WorkspacesPagePro
                         </div>
                         <Button type="submit">
                             <Filter className="h-4 w-4 mr-2" />
-                            Buscar
+                            {t("searchButton")}
                         </Button>
                     </form>
                 </CardContent>
@@ -112,14 +115,18 @@ async function WorkspacesTable({
         page,
     })
 
+    const t = await getAdminTranslations("admin.workspaces")
+    const common = await getAdminTranslations("admin.common")
+    const dateLocale = dateFnsLocaleFor(await getAdminLocale())
+
     if (workspaces.length === 0) {
         return (
             <Card>
                 <CardContent className="py-12 text-center">
                     <Building2 className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                    <h3 className="text-lg font-medium mb-2">Nenhuma empresa/conta encontrada</h3>
+                    <h3 className="text-lg font-medium mb-2">{t("emptyTitle")}</h3>
                     <p className="text-muted-foreground">
-                        {search ? "Tente ajustar a busca" : "Ainda não há empresas/contas cadastradas"}
+                        {search ? t("emptyDesc") : t("emptyDescNoSearch")}
                     </p>
                 </CardContent>
             </Card>
@@ -137,30 +144,30 @@ async function WorkspacesTable({
     ).length
     const workspaceSignals = [
         {
-            label: "Sem leads",
+            label: t("noLeads"),
             value: withoutLeads,
-            description: "Clientes ainda sem base importada.",
+            description: t("noLeadsDesc"),
             icon: Users,
             tone: withoutLeads > 0 ? "warning" : "success",
         },
         {
-            label: "Sem templates",
+            label: t("noTemplates"),
             value: withoutTemplates,
-            description: "Clientes sem modelos para campanhas.",
+            description: t("noTemplatesDesc"),
             icon: FileText,
             tone: withoutTemplates > 0 ? "warning" : "success",
         },
         {
-            label: "Sem campanhas",
+            label: t("noCampaigns"),
             value: withoutCampaigns,
-            description: "Clientes que ainda não ativaram envios.",
+            description: t("noCampaignsDesc"),
             icon: Megaphone,
             tone: withoutCampaigns > 0 ? "warning" : "success",
         },
         {
-            label: "Sem ligações",
+            label: t("noCalls"),
             value: withoutCalls,
-            description: "Clientes sem acompanhamento comercial.",
+            description: t("noCallsDesc"),
             icon: Phone,
             tone: withoutCalls > 0 ? "warning" : "success",
         },
@@ -171,13 +178,13 @@ async function WorkspacesTable({
         <Card className={activeWorkspaces === workspaces.length ? "border-admin dark:border-admin-soft" : "border-amber-300 dark:border-amber-900"}>
             <CardHeader className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                 <div>
-                    <CardTitle>Saúde das empresas/contas</CardTitle>
+                    <CardTitle>{t("healthTitle")}</CardTitle>
                     <p className="text-sm text-muted-foreground">
-                        {activeWorkspaces}/{workspaces.length} empresas/contas desta página já têm alguma operação registrada.
+                        {t("healthDesc", { active: activeWorkspaces, total: workspaces.length })}
                     </p>
                 </div>
                 <Badge variant={activeWorkspaces === workspaces.length ? "default" : "outline"}>
-                    {activeWorkspaces === workspaces.length ? "Operação ativa" : "Há clientes travados"}
+                    {activeWorkspaces === workspaces.length ? t("operationActive") : t("stuckClients")}
                 </Badge>
             </CardHeader>
             <CardContent className="grid gap-3 md:grid-cols-4">
@@ -205,20 +212,20 @@ async function WorkspacesTable({
 
         <Card>
             <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>Empresas/Contas ({total})</CardTitle>
+                <CardTitle>{t("workspacesCount", { count: total })}</CardTitle>
             </CardHeader>
             <CardContent>
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead>Empresa/Conta</TableHead>
-                            <TableHead>Responsável</TableHead>
-                            <TableHead className="text-center">Leads</TableHead>
-                            <TableHead className="text-center">Campanhas</TableHead>
-                            <TableHead className="text-center">Ligações</TableHead>
-                            <TableHead className="text-center">Templates</TableHead>
-                            <TableHead>Criado</TableHead>
-                            <TableHead className="text-right">Ações</TableHead>
+                            <TableHead>{t("colWorkspace")}</TableHead>
+                            <TableHead>{t("colManager")}</TableHead>
+                            <TableHead className="text-center">{t("colLeads")}</TableHead>
+                            <TableHead className="text-center">{t("colCampaigns")}</TableHead>
+                            <TableHead className="text-center">{t("colCalls")}</TableHead>
+                            <TableHead className="text-center">{t("colTemplates")}</TableHead>
+                            <TableHead>{t("colCreated")}</TableHead>
+                            <TableHead className="text-right">{t("colActions")}</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -284,14 +291,14 @@ async function WorkspacesTable({
                                         <span className="text-sm text-muted-foreground">
                                             {formatDistanceToNow(new Date(workspace.createdAt), {
                                                 addSuffix: true,
-                                                locale: ptBR,
+                                                locale: dateLocale,
                                             })}
                                         </span>
                                     </TableCell>
                                     <TableCell className="text-right">
                                         <Button variant="ghost" size="sm" asChild>
                                             <Link href={`/super-admin/workspaces/${workspace.id}`}>
-                                                Ver detalhes
+                                                {t("viewDetails")}
                                                 <ArrowRight className="ml-2 h-4 w-4" />
                                             </Link>
                                         </Button>
@@ -306,20 +313,20 @@ async function WorkspacesTable({
                 {pages > 1 && (
                     <div className="flex items-center justify-between mt-4 pt-4 border-t">
                         <p className="text-sm text-muted-foreground">
-                            Página {currentPage} de {pages}
+                            {common("pageXofY", { current: currentPage, total: pages })}
                         </p>
                         <div className="flex gap-2">
                             {currentPage > 1 && (
                                 <Button variant="outline" size="sm" asChild>
                                     <Link href={`/super-admin/workspaces?page=${currentPage - 1}${search ? `&search=${search}` : ""}`}>
-                                        Anterior
+                                        {common("previous")}
                                     </Link>
                                 </Button>
                             )}
                             {currentPage < pages && (
                                 <Button variant="outline" size="sm" asChild>
                                     <Link href={`/super-admin/workspaces?page=${currentPage + 1}${search ? `&search=${search}` : ""}`}>
-                                        Próxima
+                                        {common("next")}
                                     </Link>
                                 </Button>
                             )}

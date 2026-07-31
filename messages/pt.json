@@ -881,6 +881,7 @@
         },
         "workspaceDetails": {
             "backToWorkspaces": "Voltar para empresas/contas",
+            "noName": "Sem nome",
             "readiness": "Prontidão operacional",
             "readinessDesc": "Fundamentos que indicam se este cliente está pronto para operar campanhas e acompanhamento.",
             "coverage": "Cobertura",
@@ -927,6 +928,7 @@
             "viewAnalytics": "Ver analytics",
             "environment": "Ambiente",
             "varsConfigured": "{count}/{total} variáveis configuradas",
+            "varsConfiguredLabel": "variáveis configuradas",
             "paypal": "PayPal",
             "checkoutReady": "checkout configurado",
             "checkoutIncomplete": "checkout incompleto",
@@ -953,7 +955,21 @@
             "leads5k": "5.000 leads",
             "leads50k": "50.000 leads",
             "users3": "3 usuários",
-            "configurableDaily": "Diário configurável"
+            "configurableDaily": "Diário configurável",
+            "vars": {
+                "NEXT_PUBLIC_SUPABASE_URL": "Endpoint público usado pelo cliente e autenticação.",
+                "NEXT_PUBLIC_SUPABASE_ANON_KEY": "Chave pública de autenticação do Supabase.",
+                "DATABASE_URL": "Conexão principal usada pelo Prisma.",
+                "DIRECT_URL": "Conexão direta usada por Prisma/migrations quando necessário.",
+                "SECRETS_ENCRYPTION_KEY": "Chave usada para criptografar segredos como SMTP.",
+                "NEXT_PUBLIC_PAYPAL_CLIENT_ID": "Identificador público do checkout PayPal.",
+                "PAYPAL_CLIENT_SECRET": "Segredo do PayPal usado para criar e capturar pedidos.",
+                "CRON_SECRET": "Protege a rota de processamento automático de sequências.",
+                "NEXT_PUBLIC_APP_URL": "URL pública usada em callbacks, links e redirecionamentos.",
+                "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY": "Chave pública do Stripe usada no frontend do checkout.",
+                "STRIPE_SECRET_KEY": "Chave secreta do Stripe usada no servidor para criar sessões de checkout.",
+                "STRIPE_WEBHOOK_SECRET": "Segredo usado para verificar a assinatura dos webhooks do Stripe."
+            }
         },
         "analytics": {
             "metaTitle": "Relatórios | Área Administrativa",
@@ -1159,7 +1175,8 @@
             "colPublished": "Publicado",
             "empty": "Nenhum post ainda.",
             "badgePublished": "Publicado",
-            "badgeDraft": "Rascunho"
+            "badgeDraft": "Rascunho",
+            "noTitle": "(sem título)"
         },
         "blogEditor": {
             "editTitle": "Editar post",

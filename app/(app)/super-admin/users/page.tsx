@@ -2,7 +2,8 @@
 
 import { Suspense } from "react"
 import Link from "next/link"
-import { getTranslations } from "next-intl/server"
+import { getAdminLocale, getAdminTranslations } from "@/lib/i18n/admin-locale"
+import { dateFnsLocaleFor } from "@/lib/i18n/date-locale"
 import {
     AlertCircle,
     ArrowLeft,
@@ -40,7 +41,6 @@ import { getUsers } from "@/actions/admin/users"
 import { UserRoleSelect } from "@/components/admin/user-role-select"
 import { UserStatusToggle } from "@/components/admin/user-status-toggle"
 import { formatDistanceToNow } from "date-fns"
-import { ptBR } from "date-fns/locale"
 import { UserRole, UserStatus } from "@prisma/client"
 
 interface UsersPageProps {
@@ -64,8 +64,8 @@ function parseUserStatus(status?: string): UserStatus | "ALL" | undefined {
 
 export default async function UsersPage({ searchParams }: UsersPageProps) {
     const params = await searchParams
-    const t = await getTranslations("admin.users")
-    const common = await getTranslations("admin.common")
+    const t = await getAdminTranslations("admin.users")
+    const common = await getAdminTranslations("admin.common")
 
     return (
         <div className="space-y-6">
@@ -175,7 +175,7 @@ async function UsersTable({
     })
 
     if (users.length === 0) {
-        const t = await getTranslations("admin.users")
+        const t = await getAdminTranslations("admin.users")
         return (
             <Card>
                 <CardContent className="py-12 text-center">
@@ -189,8 +189,9 @@ async function UsersTable({
         )
     }
 
-    const t = await getTranslations("admin.users")
-    const common = await getTranslations("admin.common")
+    const t = await getAdminTranslations("admin.users")
+    const common = await getAdminTranslations("admin.common")
+    const dateLocale = dateFnsLocaleFor(await getAdminLocale())
     const admins = users.filter((user) => user.role === "ADMIN").length
     const pendingUsers = users.filter((user) => user.status === "PENDING").length
     const inactiveUsers = users.filter((user) => user.status === "INACTIVE").length
@@ -341,7 +342,7 @@ async function UsersTable({
                                         <span className="text-sm text-muted-foreground">
                                             {formatDistanceToNow(new Date(user.createdAt), {
                                                 addSuffix: true,
-                                                locale: ptBR,
+                                                locale: dateLocale,
                                             })}
                                         </span>
                                     </TableCell>
@@ -350,7 +351,7 @@ async function UsersTable({
                                             {user.lastLoginAt
                                                 ? formatDistanceToNow(new Date(user.lastLoginAt), {
                                                     addSuffix: true,
-                                                    locale: ptBR,
+                                                    locale: dateLocale,
                                                 })
                                                 : t("never")}
                                         </span>

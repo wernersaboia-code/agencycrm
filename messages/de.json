@@ -881,6 +881,7 @@
         },
         "workspaceDetails": {
             "backToWorkspaces": "Zurück zu den Unternehmen/Konten",
+            "noName": "Ohne Namen",
             "readiness": "Betriebsbereitschaft",
             "readinessDesc": "Grundlagen, die zeigen, ob dieser Kunde bereit ist, Kampagnen und Nachverfolgung zu betreiben.",
             "coverage": "Abdeckung",
@@ -927,6 +928,7 @@
             "viewAnalytics": "Analytics ansehen",
             "environment": "Umgebung",
             "varsConfigured": "{count}/{total} Variablen konfiguriert",
+            "varsConfiguredLabel": "konfigurierte Variablen",
             "paypal": "PayPal",
             "checkoutReady": "Checkout konfiguriert",
             "checkoutIncomplete": "Checkout unvollständig",
@@ -953,7 +955,21 @@
             "leads5k": "5.000 Leads",
             "leads50k": "50.000 Leads",
             "users3": "3 Benutzer",
-            "configurableDaily": "Täglich konfigurierbar"
+            "configurableDaily": "Täglich konfigurierbar",
+            "vars": {
+                "NEXT_PUBLIC_SUPABASE_URL": "Öffentlicher Endpunkt für Client und Authentifizierung.",
+                "NEXT_PUBLIC_SUPABASE_ANON_KEY": "Öffentlicher Authentifizierungsschlüssel von Supabase.",
+                "DATABASE_URL": "Hauptverbindung, die Prisma verwendet.",
+                "DIRECT_URL": "Direkte Verbindung, die Prisma/Migrationen bei Bedarf verwenden.",
+                "SECRETS_ENCRYPTION_KEY": "Schlüssel zur Verschlüsselung von Geheimnissen wie SMTP.",
+                "NEXT_PUBLIC_PAYPAL_CLIENT_ID": "Öffentliche Kennung des PayPal-Checkouts.",
+                "PAYPAL_CLIENT_SECRET": "PayPal-Geheimnis zum Erstellen und Erfassen von Bestellungen.",
+                "CRON_SECRET": "Schützt die Route für die automatische Verarbeitung von Sequenzen.",
+                "NEXT_PUBLIC_APP_URL": "Öffentliche URL für Callbacks, Links und Weiterleitungen.",
+                "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY": "Öffentlicher Stripe-Schlüssel für das Frontend des Checkouts.",
+                "STRIPE_SECRET_KEY": "Geheimer Stripe-Schlüssel, den der Server zum Erstellen von Checkout-Sitzungen verwendet.",
+                "STRIPE_WEBHOOK_SECRET": "Geheimnis zur Überprüfung der Signatur der Stripe-Webhooks."
+            }
         },
         "analytics": {
             "metaTitle": "Berichte | Administrationsbereich",
@@ -1159,7 +1175,8 @@
             "colPublished": "Veröffentlicht",
             "empty": "Noch kein Beitrag.",
             "badgePublished": "Veröffentlicht",
-            "badgeDraft": "Entwurf"
+            "badgeDraft": "Entwurf",
+            "noTitle": "(ohne Titel)"
         },
         "blogEditor": {
             "editTitle": "Beitrag bearbeiten",

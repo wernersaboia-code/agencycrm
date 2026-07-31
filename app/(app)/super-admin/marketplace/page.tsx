@@ -1,6 +1,6 @@
 // app/super-admin/marketplace/page.tsx.bak
 import Link from "next/link"
-import { getTranslations } from "next-intl/server"
+import { getAdminTranslations } from "@/lib/i18n/admin-locale"
 import { prisma } from "@/lib/prisma"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -37,7 +37,7 @@ export default async function MarketplacePage() {
         })
     ])
 
-    const t = await getTranslations("admin.marketplace")
+    const t = await getAdminTranslations("admin.marketplace")
 
     const stats = [
         {

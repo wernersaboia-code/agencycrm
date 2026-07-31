@@ -881,6 +881,7 @@
         },
         "workspaceDetails": {
             "backToWorkspaces": "Back to companies/accounts",
+            "noName": "No name",
             "readiness": "Operational readiness",
             "readinessDesc": "Fundamentals that indicate whether this client is ready to operate campaigns and follow-up.",
             "coverage": "Coverage",
@@ -927,6 +928,7 @@
             "viewAnalytics": "View analytics",
             "environment": "Environment",
             "varsConfigured": "{count}/{total} variables configured",
+            "varsConfiguredLabel": "configured variables",
             "paypal": "PayPal",
             "checkoutReady": "checkout ready",
             "checkoutIncomplete": "checkout incomplete",
@@ -953,7 +955,21 @@
             "leads5k": "5,000 leads",
             "leads50k": "50,000 leads",
             "users3": "3 users",
-            "configurableDaily": "Configurable daily"
+            "configurableDaily": "Configurable daily",
+            "vars": {
+                "NEXT_PUBLIC_SUPABASE_URL": "Public endpoint used by the client and authentication.",
+                "NEXT_PUBLIC_SUPABASE_ANON_KEY": "Supabase public authentication key.",
+                "DATABASE_URL": "Main connection used by Prisma.",
+                "DIRECT_URL": "Direct connection used by Prisma/migrations when needed.",
+                "SECRETS_ENCRYPTION_KEY": "Key used to encrypt secrets such as SMTP.",
+                "NEXT_PUBLIC_PAYPAL_CLIENT_ID": "Public identifier of the PayPal checkout.",
+                "PAYPAL_CLIENT_SECRET": "PayPal secret used to create and capture orders.",
+                "CRON_SECRET": "Protects the automatic sequence processing route.",
+                "NEXT_PUBLIC_APP_URL": "Public URL used in callbacks, links and redirects.",
+                "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY": "Stripe public key used in the checkout frontend.",
+                "STRIPE_SECRET_KEY": "Stripe secret key used on the server to create checkout sessions.",
+                "STRIPE_WEBHOOK_SECRET": "Secret used to verify the signature of Stripe webhooks."
+            }
         },
         "analytics": {
             "metaTitle": "Reports | Administrative Area",
@@ -1159,7 +1175,8 @@
             "colPublished": "Published",
             "empty": "No posts yet.",
             "badgePublished": "Published",
-            "badgeDraft": "Draft"
+            "badgeDraft": "Draft",
+            "noTitle": "(untitled)"
         },
         "blogEditor": {
             "editTitle": "Edit post",

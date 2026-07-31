@@ -1,11 +1,11 @@
 import Link from "next/link"
 import { LifeBuoy, Mail, Settings, Users } from "lucide-react"
-import { getTranslations } from "next-intl/server"
+import { getAdminTranslations } from "@/lib/i18n/admin-locale"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 
 export async function generateMetadata() {
-    const t = await getTranslations("admin.support")
+    const t = await getAdminTranslations("admin.support")
     return {
         title: t("metaTitle"),
         description: t("metaDesc"),
@@ -13,7 +13,7 @@ export async function generateMetadata() {
 }
 
 export default async function SuperAdminSupportPage() {
-    const t = await getTranslations("admin.support")
+    const t = await getAdminTranslations("admin.support")
 
     return (
         <div className="space-y-6">
@@ -76,7 +76,7 @@ function SupportCard({
     description: string
     href: string
     icon: React.ComponentType<{ className?: string }>
-    t: Awaited<ReturnType<typeof getTranslations>>
+    t: Awaited<ReturnType<typeof getAdminTranslations>>
 }) {
     return (
         <Card>

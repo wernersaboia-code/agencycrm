@@ -13,7 +13,7 @@ import {
     TrendingUp,
     Users,
 } from "lucide-react"
-import { getTranslations } from "next-intl/server"
+import { getAdminTranslations } from "@/lib/i18n/admin-locale"
 import { prisma } from "@/lib/prisma"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -22,7 +22,7 @@ import { Progress } from "@/components/ui/progress"
 import { formatCurrency } from "@/lib/utils"
 
 export async function generateMetadata() {
-    const t = await getTranslations("admin.analytics")
+    const t = await getAdminTranslations("admin.analytics")
     return {
         title: t("metaTitle"),
         description: t("metaDesc"),
@@ -191,7 +191,7 @@ async function getAnalyticsData() {
 }
 
 export default async function SuperAdminAnalyticsPage() {
-    const t = await getTranslations("admin.analytics")
+    const t = await getAdminTranslations("admin.analytics")
     const data = await getAnalyticsData()
     const activationRate = percentage(data.activeUsers, data.usersTotal)
     const crmMomentum = data.leadsLast30 + data.campaignsLast30 + data.callsTotal
@@ -436,7 +436,7 @@ function Signal({
     )
 }
 
-function TopWorkspaces({ data, t }: { data: AnalyticsData; t: Awaited<ReturnType<typeof getTranslations>> }) {
+function TopWorkspaces({ data, t }: { data: AnalyticsData; t: Awaited<ReturnType<typeof getAdminTranslations>> }) {
     return (
         <Card>
             <CardHeader className="flex flex-row items-center justify-between">
@@ -480,7 +480,7 @@ function TopWorkspaces({ data, t }: { data: AnalyticsData; t: Awaited<ReturnType
     )
 }
 
-function TopLists({ data, t }: { data: AnalyticsData; t: Awaited<ReturnType<typeof getTranslations>> }) {
+function TopLists({ data, t }: { data: AnalyticsData; t: Awaited<ReturnType<typeof getAdminTranslations>> }) {
     return (
         <Card>
             <CardHeader className="flex flex-row items-center justify-between">
