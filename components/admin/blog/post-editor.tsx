@@ -15,6 +15,7 @@ import { slugify } from "@/lib/blog/slug"
 import { uploadBlogImage } from "@/lib/blog/storage"
 import { createPost, updatePost, type BlogFieldError } from "@/actions/admin/blog"
 import { LIMITES_DE_POST } from "@/lib/validations/blog"
+import { temAlteracaoNaoSalva as calcularAlteracaoNaoSalva, toDatetimeLocalValue } from "@/lib/blog/unsaved-changes"
 
 /**
  * Contador ao vivo do campo. Existe porque o editor não tinha nenhum: o
@@ -65,14 +66,6 @@ type TranslationState = {
 }
 const EMPTY: TranslationState = { title: "", slug: "", excerpt: "", contentHtml: "", metaDescription: "" }
 
-// Converte um ISO/UTC para o formato de <input type="datetime-local"> no fuso
-// LOCAL do navegador (YYYY-MM-DDTHH:mm). Precisa rodar no cliente.
-function toDatetimeLocalValue(iso: string): string {
-    const d = new Date(iso)
-    const pad = (n: number) => String(n).padStart(2, "0")
-    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
-}
-
 export type PostEditorInitial = {
     id?: string
     coverImageUrl: string | null
@@ -112,11 +105,25 @@ export function PostEditor({
 
     // Comparação contra o que veio do servidor. Serialização basta: os dois
     // lados são objetos simples de string, montados pelo mesmo código.
-    const temAlteracaoNaoSalva =
-        JSON.stringify(tr) !== JSON.stringify(initial.translations) ||
-        cover !== initial.coverImageUrl ||
-        categoryId !== (initial.categoryId ?? "") ||
-        status !== initial.status
+    //
+    // publishedAt é o campo delicado: o estado guarda o valor no formato de
+    // <input type="datetime-local"> (fuso LOCAL), enquanto initial.publishedAt
+    // é o ISO/UTC persistido — comparar direto daria falso positivo sempre,
+    // já que os dois formatos nunca são iguais. calcularAlteracaoNaoSalva
+    // converte o lado do servidor com a mesma função que o efeito de
+    // montagem usa (toDatetimeLocalValue) antes de comparar.
+    const temAlteracaoNaoSalva = calcularAlteracaoNaoSalva({
+        tr,
+        initialTranslations: initial.translations,
+        cover,
+        initialCoverImageUrl: initial.coverImageUrl,
+        categoryId,
+        initialCategoryId: initial.categoryId,
+        status,
+        initialStatus: initial.status,
+        publishedAt,
+        initialPublishedAt: initial.publishedAt,
+    })
 
     const setField = (field: keyof TranslationState, value: string) =>
         setTr((prev) => ({ ...prev, [active]: { ...(prev[active] ?? EMPTY), [field]: value } }))
