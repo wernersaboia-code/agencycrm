@@ -210,7 +210,7 @@
                 },
                 {
                     "title": "Compre",
-                    "body": "Revise volume, preço por lead e detalhes da lista antes de finalizar o pedido com checkout seguro."
+                    "body": "Revise a cobertura, o preço e os detalhes do estudo antes de finalizar o pedido com checkout seguro."
                 },
                 {
                     "title": "Baixe",
@@ -459,7 +459,7 @@
         "perLead": "{price} por lead",
         "leadsIncluded": "{count} leads incluídos",
         "oneOffNote": "Compra avulsa, sem assinatura. O acesso fica disponível na área Minhas compras.",
-        "beforeBuyNote": "Antes de comprar, confira a cobertura, a prévia dos dados e o preço por lead. Depois da aprovação do pagamento, o download fica disponível na sua conta.",
+        "beforeBuyNote": "Antes de comprar, confira a cobertura, a prévia dos dados e o preço. Depois da aprovação do pagamento, o download fica disponível na sua conta.",
         "benefitSecure": "Pagamento seguro com cartão",
         "benefitImmediate": "Download imediato após confirmação",
         "benefitRecorded": "Registro da compra na sua conta",
