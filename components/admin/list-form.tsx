@@ -255,7 +255,13 @@ export function ListForm({ list }: ListFormProps) {
                 // o gate do servidor (canPublishList) já veja o PDF recém
                 // anexado em vez do studyPdfUrl antigo.
                 const pdfOk = await uploadPdf(list.id)
-                await updateList(list.id, payload)
+                const updated = await updateList(list.id, payload)
+                // A action devolve a falha em vez de lançá-la (o Next apagaria
+                // a mensagem em produção), então o motivo real chega aqui.
+                if (!updated.success) {
+                    toast.error(updated.error)
+                    return
+                }
                 if (pdfOk) {
                     toast.success(t("toastUpdated"))
                 } else {
@@ -270,7 +276,13 @@ export function ListForm({ list }: ListFormProps) {
                 // 1. Criar a lista (sempre inativa: o PDF só existe depois
                 // que a lista tem id, então uma lista nova nunca pode nascer
                 // publicada — ative-a depois de anexar o PDF)
-                const newList = await createList(payload)
+                const created = await createList(payload)
+                if (!created.success) {
+                    toast.error(created.error)
+                    return
+                }
+
+                const newList = created.data
                 const pdfOk = await uploadPdf(newList.id)
                 setUploadProgress(30)
 

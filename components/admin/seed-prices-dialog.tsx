@@ -30,8 +30,12 @@ export function SeedPricesDialog() {
     async function handleSubmit() {
         setIsSaving(true)
         try {
-            const { updated } = await seedPricesFromRate(currency, parsedRate)
-            toast.success(`${updated} lista(s) ganharam preço em ${currency}.`)
+            const resultado = await seedPricesFromRate(currency, parsedRate)
+            if (!resultado.success) {
+                toast.error(resultado.error)
+                return
+            }
+            toast.success(`${resultado.data.updated} lista(s) ganharam preço em ${currency}.`)
             setOpen(false)
         } catch (error) {
             toast.error(error instanceof Error ? error.message : "Falha ao gerar preços.")

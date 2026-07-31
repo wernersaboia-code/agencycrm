@@ -5,8 +5,9 @@ import { prisma } from "@/lib/prisma"
 import { requireAdmin } from "@/lib/auth"
 import { recordAudit } from "@/lib/audit"
 import { checkAdminRateLimit } from "@/lib/rate-limit"
-import { parseCurrency, DEFAULT_CURRENCY } from "@/lib/currency"
+import { parseCurrency, DEFAULT_CURRENCY, type Currency } from "@/lib/currency"
 import { roundCommercial } from "@/lib/marketplace/list-prices"
+import { describeListError, type ActionResult } from "@/lib/admin/action-errors"
 
 /**
  * Semeia preços numa moeda a partir de uma taxa digitada pelo admin.
@@ -18,18 +19,36 @@ import { roundCommercial } from "@/lib/marketplace/list-prices"
 export async function seedPricesFromRate(
     currency: string,
     rate: number
-): Promise<{ updated: number }> {
+): Promise<ActionResult<{ updated: number }>> {
     const admin = await requireAdmin()
     await checkAdminRateLimit("list.prices.seed", admin.id, 5, 60_000)
 
+    // Recusa devolvida, não lançada: em produção o Next apaga a mensagem de
+    // exceção que sai de server action, e o admin veria erro sem motivo.
     const target = parseCurrency(currency)
     if (!target || target === DEFAULT_CURRENCY) {
-        throw new Error("Escolha BRL ou USD: o preço em euro é o de referência, não é gerado.")
+        return {
+            success: false,
+            error: "Escolha BRL ou USD: o preço em euro é o de referência, não é gerado.",
+        }
     }
     if (!(rate > 0) || rate > 1000) {
-        throw new Error("Taxa inválida.")
+        return { success: false, error: "Taxa inválida." }
     }
 
+    try {
+        return { success: true, data: await semear(target, rate, admin) }
+    } catch (error) {
+        console.error("Erro ao gerar preços:", error)
+        return { success: false, error: describeListError(error) }
+    }
+}
+
+async function semear(
+    target: Currency,
+    rate: number,
+    admin: { id: string; email: string }
+): Promise<{ updated: number }> {
     const semPreco = await prisma.leadList.findMany({
         where: { prices: { none: { currency: target } } },
         select: { id: true, prices: { where: { currency: DEFAULT_CURRENCY }, select: { amount: true } } },
