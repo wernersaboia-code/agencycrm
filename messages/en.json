@@ -66,7 +66,7 @@
     "nav": {
         "catalog": "Catalog",
         "howItWorks": "How it works",
-        "about": "About us",
+        "about": "Why Easy Prospect",
         "blog": "Blog",
         "faq": "FAQ",
         "login": "Sign in",
@@ -90,7 +90,7 @@
         "howItWorks": "How it works",
         "blog": "Blog",
         "faq": "FAQ",
-        "aboutUs": "About us",
+        "aboutUs": "Why Easy Prospect",
         "accountTitle": "Account",
         "myPurchases": "My purchases",
         "login": "Sign in",
@@ -553,50 +553,125 @@
     },
     "about": {
         "meta": {
-            "title": "Who we are and how the lists are built",
-            "description": "How the lists of importers and distributors are built: over two decades of experience in export, research in public sources and company-by-company checking."
+            "title": "Why Easy Prospect — how the studies are made",
+            "description": "Market entry studies and importer and distributor directories: where the data comes from, how each company is checked, what every study contains and what we do not promise."
         },
         "hero": {
-            "eyebrow": "About",
-            "title": "Who is behind the lists",
-            "subtitle": "The person behind Easy Prospect brings over two decades of experience in the export trade. Each list gathers the importers and distributors of one market, together with a compact market entry study for that market — so that exporters know who to talk to, and how."
+            "eyebrow": "Why Easy Prospect",
+            "title": "Your partner for entering new markets",
+            "paragraphs": [
+                "New export markets offer real room to grow. At the same time, finding suitable importers and distributors — and reliable market information — often takes weeks or months.",
+                "Easy Prospect exists to shorten that path: market entry studies and carefully researched importer and distributor directories, for manufacturers, brand owners and exporters.",
+                "The studies combine more than two decades of experience in international trade with a current research methodology. Analysis is supported by technology; the final check is always human."
+            ]
         },
         "methodology": {
             "eyebrow": "Methodology",
-            "title": "How the lists are built",
-            "intro": "Anyone paying for B2B data has the right to know where it comes from. The process is set out below, with no promises we cannot keep.",
-            "blocks": [
-                {
-                    "title": "Where the data comes from",
-                    "body": "The lists start from material built up over years of working in the export trade and are extended with research in public sources — among them company websites, chambers of commerce, industry associations and business directories. The analysis is supported by technology; what goes into a list is decided by whoever reviews it."
-                },
-                {
-                    "title": "Company-by-company checking",
-                    "body": "Before a company enters a list, it is checked against public sources: whether it operates in the sector indicated, whether there is import or distribution activity, whether it keeps a professional presence and whether its contact channels are active. This checking does not replace your own commercial qualification, but it raises the chance that the company listed is relevant."
-                },
-                {
-                    "title": "Keeping the catalogue current",
-                    "body": "Contacts and ownership structures change all the time. The catalogue is reviewed periodically, and when a list no longer reflects the market it describes, it is withdrawn from sale rather than left available."
-                }
+            "title": "Careful research, not an address list",
+            "intro": "Anyone paying for B2B data has the right to know where it comes from. The process is described below, with no promises we cannot keep.",
+            "body": [
+                "What counts here is not the quantity of data but its practical relevance. For each study, a set of public sources is evaluated systematically, and every result is reviewed before publication.",
+                "The goal is not to list as many companies as possible, but to identify the ones that could genuinely matter to your export project."
             ]
+        },
+        "sources": {
+            "title": "Where the data comes from",
+            "intro": "All information comes from publicly accessible sources. Among them:",
+            "items": [
+                "company websites",
+                "chambers of commerce",
+                "industry associations",
+                "trade fair catalogues",
+                "business directories",
+                "specialist portals",
+                "other freely accessible business information"
+            ],
+            "note": "Before publication, the data is checked for plausibility, completeness and practical usability. The starting material comes from years of work in export trade and is extended through this research."
+        },
+        "review": {
+            "title": "Company-by-company review",
+            "intro": "Before a company enters a directory, it is checked against public sources. In particular we look at:",
+            "items": [
+                "whether it operates in the stated sector",
+                "whether import or distribution activity is identifiable",
+                "whether it keeps a professional presence",
+                "whether its contact channels are active",
+                "whether it makes sense to consider it a possible distribution partner"
+            ],
+            "note": "This review does not replace your own sales qualification, but it raises the odds that a listed company is relevant to your project."
+        },
+        "updates": {
+            "title": "Keeping the catalogue current",
+            "body": "Contacts and company structures change all the time. The catalogue is reviewed periodically, and when a list no longer reflects the market it describes, it is withdrawn from sale rather than left available."
         },
         "delivery": {
             "title": "What you receive",
-            "body": "Every purchase gives access to a market entry study in PDF: an overview of the sector in the destination country, access requirements, distribution structure and the directory of importers and distributors from the list chosen, with guidance on how to prepare the first approach."
+            "intro": "Every purchase gives you a market entry study as a PDF — considerably more than an address list. Depending on the sector, a study includes:",
+            "items": [
+                "an overview of the target market",
+                "an analysis of the sector situation",
+                "market potential and current trends",
+                "market access requirements",
+                "sales and distribution structures",
+                "a directory of relevant importers and distributors",
+                "guidance on approaching the right companies",
+                "recommendations for preparing your market entry"
+            ],
+            "note": "The point is to take a large part of the time-consuming research off your hands so you can concentrate on building business relationships."
         },
         "limits": {
             "title": "What we do not promise",
-            "body": "We do not promise that every company will reply to your approach, nor that a list replaces your own assessment before doing business. International trade depends on real demand, a competitive price and the right timing — factors outside our control. Our directories are also not made for mass mailing: they serve a prepared approach, company by company. What we do guarantee is the criterion: no company enters a list without having been checked against public sources."
+            "intro": "The success of an export project depends on many factors. We do not guarantee that every company will answer, or that a business relationship follows immediately. Among the things that weigh:",
+            "items": [
+                "how competitive your product is",
+                "demand in the target market",
+                "your pricing",
+                "your ability to deliver",
+                "your marketing and sales strategy",
+                "the timing of your approach",
+                "each importer's own purchasing decisions"
+            ],
+            "note": "Our directories are also not built for mass mailing: they serve a prepared, company-by-company approach. What we do guarantee is the criterion — no company enters a list without having been checked against public sources."
+        },
+        "trust": {
+            "eyebrow": "In short",
+            "title": "Why Easy Prospect",
+            "cards": [
+                {
+                    "title": "Built for practice",
+                    "body": "The studies are written for manufacturers, exporters and international sales managers — not for general consumption."
+                },
+                {
+                    "title": "More than address lists",
+                    "body": "You get structured market information, concrete recommendations and a carefully researched importer and distributor directory."
+                },
+                {
+                    "title": "Research that is checked",
+                    "body": "The research follows a systematic methodology and goes through a human check before publication."
+                },
+                {
+                    "title": "Time saved",
+                    "body": "Instead of weeks spent working out who to approach, you start with the approach itself."
+                },
+                {
+                    "title": "A maintained catalogue",
+                    "body": "Studies are reviewed periodically and corrected or extended when the market moves."
+                },
+                {
+                    "title": "A working basis, not volume",
+                    "body": "The goal is not to sell as much data as possible, but to hand you a solid basis for opening markets methodically."
+                }
+            ]
         },
         "cta": {
-            "title": "Still have questions?",
-            "body": "The most common questions about the lists, delivery and payment are answered in the FAQ.",
-            "faq": "See frequently asked questions",
-            "catalog": "See catalogue"
+            "title": "Already know which market you want?",
+            "body": "Browse the market entry studies and importer directories available by country and sector. The most common questions about delivery and payment are answered in the FAQ.",
+            "faq": "Read the FAQ",
+            "catalog": "Browse the catalogue"
         },
         "breadcrumb": {
             "home": "Home",
-            "current": "About"
+            "current": "Why Easy Prospect"
         }
     },
     "legal": {
