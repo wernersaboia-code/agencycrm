@@ -23,11 +23,13 @@ import {
     Minus,
     Quote,
     RemoveFormatting,
+    ImagePlus,
 } from "lucide-react"
 import { Toggle } from "@/components/ui/toggle"
 import { Separator } from "@/components/ui/separator"
 import { VariableDropdown } from "./variable-dropdown"
 import { useState } from "react"
+import { toast } from "sonner"
 import {
     Popover,
     PopoverContent,
@@ -37,6 +39,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { getVariableChipHtml } from "@/lib/constants/template.constants"
+import { uploadBlogImage } from "@/lib/blog/storage"
 import type { RichTextPreset } from "./rich-text-editor"
 
 interface RichTextToolbarProps {
@@ -49,6 +52,32 @@ export function RichTextToolbar({ editor, disabled, preset = "email" }: RichText
     const ehArtigo = preset === "article"
     const [linkUrl, setLinkUrl] = useState("")
     const [linkPopoverOpen, setLinkPopoverOpen] = useState(false)
+    const [imagePopoverOpen, setImagePopoverOpen] = useState(false)
+    const [imageAlt, setImageAlt] = useState("")
+    const [enviandoImagem, setEnviandoImagem] = useState(false)
+
+    // O alt é obrigatório: imagem sem texto alternativo é falha de
+    // acessibilidade, e este site publica dado estruturado sobre o próprio
+    // conteúdo — descrever imagem não é opcional aqui.
+    const inserirImagem = async (file: File) => {
+        if (!imageAlt.trim()) {
+            toast.error("Descreva a imagem no texto alternativo antes de enviar.")
+            return
+        }
+
+        setEnviandoImagem(true)
+        const res = await uploadBlogImage(file, "body")
+        setEnviandoImagem(false)
+
+        if (!res.success || !res.url) {
+            toast.error(res.error ?? "Falha no upload.")
+            return
+        }
+
+        editor.chain().focus().setImage({ src: res.url, alt: imageAlt.trim() }).run()
+        setImageAlt("")
+        setImagePopoverOpen(false)
+    }
 
     const addLink = () => {
         if (linkUrl) {
@@ -196,8 +225,6 @@ export function RichTextToolbar({ editor, disabled, preset = "email" }: RichText
 
             {ehArtigo && (
                 <>
-                    <Separator orientation="vertical" className="mx-1 h-6" />
-
                     {([
                         ["left", AlignLeft, "Alinhar à esquerda"],
                         ["center", AlignCenter, "Centralizar"],
@@ -249,6 +276,35 @@ export function RichTextToolbar({ editor, disabled, preset = "email" }: RichText
                     >
                         <RemoveFormatting className="h-4 w-4" />
                     </Toggle>
+
+                    <Popover open={imagePopoverOpen} onOpenChange={setImagePopoverOpen}>
+                        <PopoverTrigger asChild>
+                            <Toggle size="sm" pressed={false} disabled={disabled} title="Inserir imagem">
+                                <ImagePlus className="h-4 w-4" />
+                            </Toggle>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-80" align="start">
+                            <div className="space-y-3">
+                                <Label htmlFor="image-alt">Texto alternativo *</Label>
+                                <Input
+                                    id="image-alt"
+                                    placeholder="O que a imagem mostra"
+                                    value={imageAlt}
+                                    onChange={(e) => setImageAlt(e.target.value)}
+                                />
+                                <Input
+                                    type="file"
+                                    accept="image/png,image/jpeg,image/webp"
+                                    disabled={!imageAlt.trim() || enviandoImagem}
+                                    onChange={(e) => e.target.files?.[0] && inserirImagem(e.target.files[0])}
+                                />
+                                <p className="text-xs text-muted-foreground">
+                                    PNG, JPG ou WebP, até 4 MB. O campo de arquivo libera depois
+                                    que a imagem estiver descrita.
+                                </p>
+                            </div>
+                        </PopoverContent>
+                    </Popover>
                 </>
             )}
 

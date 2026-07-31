@@ -7,6 +7,7 @@ import Link from "@tiptap/extension-link"
 import Placeholder from "@tiptap/extension-placeholder"
 import Underline from "@tiptap/extension-underline"
 import TextAlign from "@tiptap/extension-text-align"
+import Image from "@tiptap/extension-image"
 import { useEffect } from "react"
 import { cn } from "@/lib/utils"
 import { RichTextToolbar } from "./rich-text-toolbar"
@@ -63,7 +64,10 @@ export function RichTextEditor({
             }),
             // Grava style="text-align: …", que o sanitizador do servidor preserva.
             ...(ehArtigo
-                ? [TextAlign.configure({ types: ["heading", "paragraph"] })]
+                ? [
+                    TextAlign.configure({ types: ["heading", "paragraph"] }),
+                    Image.configure({ HTMLAttributes: { class: "rounded-lg" } }),
+                ]
                 : []),
         ],
         content: editorContent,
