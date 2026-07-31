@@ -81,6 +81,13 @@ describe("limparHtmlDeColagem", () => {
         )
     })
 
+    it("preserva a separação entre <div>s — juntar palavras quebraria a invariante de texto visível", () => {
+        const limpo = limparHtmlDeColagem("<div>Linha um</div><div>Linha dois</div>")
+
+        expect(limpo).not.toContain("umLinha")
+        expect(textoVisivel(limpo)).toBe("Linha um Linha dois")
+    })
+
     it("remove parágrafos vazios que o Word gera em série", () => {
         const limpo = limparHtmlDeColagem("<p>Um</p><p></p><p>&nbsp;</p><p> </p><p>Dois</p>")
 

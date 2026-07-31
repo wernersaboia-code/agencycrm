@@ -93,12 +93,12 @@ export function limparHtmlDeColagem(
         // conteúdo em vez de apagar o que o autor colocou.
         allowedTags: descartarImagens
             ? [
-                  "a", "blockquote", "br", "code", "em", "h1", "h2", "h3", "h4", "h5", "h6",
+                  "a", "blockquote", "br", "code", "div", "em", "h1", "h2", "h3", "h4", "h5", "h6",
                   "hr", "li", "ol", "p", "pre", "s", "strong", "sub", "sup", "u", "ul",
                   "table", "thead", "tbody", "tr", "th", "td",
               ]
             : [
-                  "a", "blockquote", "br", "code", "em", "h1", "h2", "h3", "h4", "h5", "h6",
+                  "a", "blockquote", "br", "code", "div", "em", "h1", "h2", "h3", "h4", "h5", "h6",
                   "hr", "img", "li", "ol", "p", "pre", "s", "strong", "sub", "sup", "u", "ul",
                   "table", "thead", "tbody", "tr", "th", "td",
               ],
