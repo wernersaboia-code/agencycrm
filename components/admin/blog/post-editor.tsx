@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { PreviewButton } from "@/components/admin/blog/preview-button"
 import { Label } from "@/components/ui/label"
 import { RichTextEditor } from "@/components/ui/rich-text-editor/rich-text-editor"
 import { BLOG_LOCALES, dirForLocale, type BlogLocale } from "@/lib/blog/locales"
@@ -108,6 +109,15 @@ export function PostEditor({
     }, [])
 
     const current = tr[active] ?? EMPTY
+
+    // Comparação contra o que veio do servidor. Serialização basta: os dois
+    // lados são objetos simples de string, montados pelo mesmo código.
+    const temAlteracaoNaoSalva =
+        JSON.stringify(tr) !== JSON.stringify(initial.translations) ||
+        cover !== initial.coverImageUrl ||
+        categoryId !== (initial.categoryId ?? "") ||
+        status !== initial.status
+
     const setField = (field: keyof TranslationState, value: string) =>
         setTr((prev) => ({ ...prev, [active]: { ...(prev[active] ?? EMPTY), [field]: value } }))
 
@@ -269,8 +279,15 @@ export function PostEditor({
                 </div>
             )}
 
-            <div className="flex justify-end">
-                <Button onClick={handleSave} disabled={saving}>{saving ? t("saving") : t("save")}</Button>
+            <div className="flex justify-end gap-2">
+                <PreviewButton
+                    postId={initial.id}
+                    locale={active}
+                    temAlteracaoNaoSalva={temAlteracaoNaoSalva}
+                />
+                <Button onClick={handleSave} disabled={saving}>
+                    {saving ? t("saving") : t("save")}
+                </Button>
             </div>
         </div>
     )

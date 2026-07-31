@@ -1188,7 +1188,10 @@
             "invalidField": "valor inválido",
             "metaDescriptionHint": "Escreva entre 140 e 155 caracteres: o buscador corta o restante. Se ficar vazio, o resumo é usado no lugar.",
             "saving": "Salvando...",
-            "save": "Salvar"
+            "save": "Salvar",
+            "preview": "Ver como fica",
+            "previewNeedsSave": "Salve o post uma vez para poder pré-visualizar.",
+            "previewIsSavedVersion": "Você tem alterações não salvas; a prévia mostra a última versão salva."
         },
         "blogCategories": {
             "title": "Categorias do blog",

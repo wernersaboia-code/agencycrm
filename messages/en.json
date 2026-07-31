@@ -1188,7 +1188,10 @@
             "invalidField": "invalid value",
             "metaDescriptionHint": "Aim for 140–155 characters: search engines cut the rest. If left empty, the summary is used instead.",
             "saving": "Saving...",
-            "save": "Save"
+            "save": "Save",
+            "preview": "Preview",
+            "previewNeedsSave": "Save the post once before previewing.",
+            "previewIsSavedVersion": "You have unsaved changes; the preview shows the last saved version."
         },
         "blogCategories": {
             "title": "Blog categories",
