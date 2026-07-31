@@ -53,6 +53,19 @@ describe("limparHtmlDeColagem", () => {
         expect(limparHtmlDeColagem("<b>a</b><i>b</i>")).toBe("<strong>a</strong><em>b</em>")
     })
 
+    it("não deixa o post inteiro em negrito por causa do wrapper <b> do Google Docs", () => {
+        const doDocs =
+            '<b style="font-weight:normal" id="docs-internal-guid-1">' +
+            '<p dir="ltr" style="text-align:center">texto <span style="font-weight:700">forte</span></p>' +
+            "</b>"
+        const limpo = limparHtmlDeColagem(doDocs)
+
+        expect(limpo).not.toMatch(/<strong>[\s\S]*<p/)
+        expect(limpo).not.toContain("<strong><p")
+        expect(limpo).toMatch(/text-align:\s*center/)
+        expect(limpo).toContain("<strong>forte</strong>")
+    })
+
     it("desembrulha span que ficou sem atributo, mantendo o texto", () => {
         expect(limparHtmlDeColagem('<p><span style="font-size:12pt">Frase</span></p>')).toBe(
             "<p>Frase</p>"

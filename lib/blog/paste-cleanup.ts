@@ -25,6 +25,11 @@ function ehItalico(style: string): boolean {
     return /font-style\s*:\s*italic/i.test(style)
 }
 
+/** O Google Docs cola `font-weight:normal`/`font-style:normal` — ausência de ênfase, não presença. */
+function ehPesoOuEstiloNormal(style: string): boolean {
+    return /font-weight\s*:\s*normal/i.test(style) || /font-style\s*:\s*normal/i.test(style)
+}
+
 /** Reescreve o `style`, mantendo só as propriedades da lista branca. */
 function filtrarStyle(style: string | undefined): string | undefined {
     if (!style) return undefined
@@ -109,8 +114,23 @@ export function limparHtmlDeColagem(
         nonTextTags: ["script", "style", "textarea", "option", "noscript", "xml"],
         parseStyleAttributes: false,
         transformTags: {
-            b: "strong",
-            i: "em",
+            // O Google Docs envolve TODO o conteúdo copiado num
+            // <b style="font-weight:normal" id="docs-internal-guid-...">
+            // — não é ênfase, é wrapper do clipboard. Convertê-lo para
+            // <strong> incondicionalmente colocaria o post inteiro em
+            // negrito. `font-weight:normal`/`font-style:normal` denuncia o
+            // wrapper: vira `span` sem atributos, que a limpeza final abaixo
+            // desembrulha, mantendo o conteúdo.
+            b: (tagName, attribs) => {
+                const style = attribs.style ?? ""
+                if (ehPesoOuEstiloNormal(style)) return { tagName: "span", attribs: {} }
+                return { tagName: "strong", attribs: {} }
+            },
+            i: (tagName, attribs) => {
+                const style = attribs.style ?? ""
+                if (ehPesoOuEstiloNormal(style)) return { tagName: "span", attribs: {} }
+                return { tagName: "em", attribs: {} }
+            },
             // O Google Docs cola negrito/itálico como <span style=...>. Vira
             // marcação semântica; span sem nada a dizer é desembrulhado na
             // limpeza final abaixo.
