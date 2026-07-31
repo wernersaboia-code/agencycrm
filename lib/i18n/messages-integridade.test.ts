@@ -26,7 +26,6 @@ function raw(locale: string): string {
  * registrada aqui para não sumir de vista. Tirar da lista quando traduzir.
  */
 const LACUNAS_CONHECIDAS: Record<string, string[]> = {
-    de: ["admin"],
     es: ["admin"],
     fr: ["admin"],
     it: ["admin"],
