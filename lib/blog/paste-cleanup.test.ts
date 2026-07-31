@@ -1,0 +1,88 @@
+import { describe, it, expect } from "vitest"
+import { limparHtmlDeColagem } from "./paste-cleanup"
+
+/** Texto visível, sem tags — usado para provar que nenhuma regra come conteúdo. */
+function textoVisivel(html: string): string {
+    return html.replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").replace(/\s+/g, " ").trim()
+}
+
+describe("limparHtmlDeColagem", () => {
+    it("descarta font-family, font-size e cor do Word", () => {
+        const colado =
+            '<p class="MsoNormal" style="font-family:Calibri; font-size:11pt; color:#1F497D">Texto</p>'
+        const limpo = limparHtmlDeColagem(colado)
+
+        expect(limpo).not.toMatch(/font-family/i)
+        expect(limpo).not.toMatch(/font-size/i)
+        expect(limpo).not.toMatch(/color/i)
+        expect(limpo).not.toMatch(/MsoNormal/)
+        expect(limpo).toContain("Texto")
+    })
+
+    it("PRESERVA text-align — é a centralização que o autor aplicou", () => {
+        const limpo = limparHtmlDeColagem('<p style="text-align: center; font-size: 14pt">Meio</p>')
+
+        expect(limpo).toMatch(/text-align:\s*center/)
+        expect(limpo).not.toMatch(/font-size/i)
+    })
+
+    it("converte negrito e itálico do Google Docs em marcação semântica", () => {
+        expect(limparHtmlDeColagem('<span style="font-weight:700">Forte</span>')).toBe(
+            "<strong>Forte</strong>"
+        )
+        expect(limparHtmlDeColagem('<span style="font-style:italic">Ênfase</span>')).toBe(
+            "<em>Ênfase</em>"
+        )
+    })
+
+    it("converte b e i em strong e em", () => {
+        expect(limparHtmlDeColagem("<b>a</b><i>b</i>")).toBe("<strong>a</strong><em>b</em>")
+    })
+
+    it("desembrulha span que ficou sem atributo, mantendo o texto", () => {
+        expect(limparHtmlDeColagem('<p><span style="font-size:12pt">Frase</span></p>')).toBe(
+            "<p>Frase</p>"
+        )
+    })
+
+    it("remove parágrafos vazios que o Word gera em série", () => {
+        const limpo = limparHtmlDeColagem("<p>Um</p><p></p><p>&nbsp;</p><p> </p><p>Dois</p>")
+
+        expect(limpo).toBe("<p>Um</p><p>Dois</p>")
+    })
+
+    it("remove comentários condicionais do Word", () => {
+        const limpo = limparHtmlDeColagem("<!--[if gte mso 9]><xml>lixo</xml><![endif]--><p>Ok</p>")
+
+        expect(limpo).toBe("<p>Ok</p>")
+    })
+
+    it("mantém a estrutura que o autor quer: títulos, listas, links e imagens", () => {
+        const colado =
+            '<h2 style="font-family:Arial">Título</h2>' +
+            "<ul><li>Item</li></ul>" +
+            '<a href="https://exemplo.com" style="color:#0000EE">Link</a>' +
+            '<img src="https://exemplo.com/a.png" alt="Alt">'
+        const limpo = limparHtmlDeColagem(colado)
+
+        expect(limpo).toContain("<h2>Título</h2>")
+        expect(limpo).toContain("<li>Item</li>")
+        expect(limpo).toContain('href="https://exemplo.com"')
+        expect(limpo).toContain('alt="Alt"')
+    })
+
+    it("não altera uma letra do texto visível", () => {
+        const colado =
+            '<p class="MsoNormal" style="font-family:Calibri">Primeiro <b>parágrafo</b> com ' +
+            '<span style="color:red">cor</span>.</p><p>&nbsp;</p><p>Segundo.</p>'
+
+        expect(textoVisivel(limparHtmlDeColagem(colado))).toBe(
+            textoVisivel(colado)
+        )
+    })
+
+    it("aguenta entrada vazia e HTML malformado", () => {
+        expect(limparHtmlDeColagem("")).toBe("")
+        expect(limparHtmlDeColagem("<p>sem fechar")).toContain("sem fechar")
+    })
+})
