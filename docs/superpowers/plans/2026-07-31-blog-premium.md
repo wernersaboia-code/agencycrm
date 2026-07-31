@@ -65,7 +65,7 @@ Função pura, sem React e sem DOM do navegador. É o coração da fase: as Task
 - Consumes: `sanitize-html` (já é dependência do projeto).
 - Produces: `limparHtmlDeColagem(html: string): string`.
 
-- [ ] **Step 1: Escrever o teste que falha**
+- [x] **Step 1: Escrever o teste que falha**
 
 Criar `lib/blog/paste-cleanup.test.ts`:
 
@@ -160,7 +160,7 @@ describe("limparHtmlDeColagem", () => {
 })
 ```
 
-- [ ] **Step 2: Rodar e ver falhar**
+- [x] **Step 2: Rodar e ver falhar**
 
 ```bash
 export PATH="/c/Program Files/nodejs:$PATH" && npx vitest run lib/blog/paste-cleanup.test.ts
@@ -168,7 +168,7 @@ export PATH="/c/Program Files/nodejs:$PATH" && npx vitest run lib/blog/paste-cle
 
 Esperado: FAIL, `Failed to resolve import "./paste-cleanup"`.
 
-- [ ] **Step 3: Implementar**
+- [x] **Step 3: Implementar**
 
 Criar `lib/blog/paste-cleanup.ts`:
 
@@ -296,7 +296,7 @@ export function limparHtmlDeColagem(html: string): string {
 
 **Nota para quem implementa:** `transformTags["*"]` e uma entrada específica (`span`) coexistem — o `sanitize-html` aplica a específica quando existe, então `atributosLimpos` é chamado dentro da função de `span` de propósito. Se ao rodar os testes o `class` sobreviver em `<span>`, é este ponto.
 
-- [ ] **Step 4: Rodar e ver passar**
+- [x] **Step 4: Rodar e ver passar**
 
 ```bash
 export PATH="/c/Program Files/nodejs:$PATH" && npx vitest run lib/blog/paste-cleanup.test.ts
@@ -304,7 +304,7 @@ export PATH="/c/Program Files/nodejs:$PATH" && npx vitest run lib/blog/paste-cle
 
 Esperado: PASS, 10 testes. Se `<p>Um</p><p>Dois</p>` sair com espaço entre as tags, ajustar a regex de parágrafo vazio — não afrouxar o teste.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add lib/blog/paste-cleanup.ts lib/blog/paste-cleanup.test.ts
@@ -323,7 +323,7 @@ git commit -m "feat(blog): limpeza de HTML colado de Word e Google Docs"
 - Consumes: `limparHtmlDeColagem` (Task 1), `sanitizeHtmlForPreview`.
 - Produces: nada novo — `sanitizeTranslations` passa a limpar antes de sanitizar.
 
-- [ ] **Step 1: Escrever o teste da sequência**
+- [x] **Step 1: Escrever o teste da sequência**
 
 Acrescentar ao final de `lib/utils/html-sanitizer.test.ts`:
 
@@ -353,7 +353,7 @@ describe("limpar e depois sanitizar (ordem usada ao salvar post)", () => {
 })
 ```
 
-- [ ] **Step 2: Rodar e ver o estado atual**
+- [x] **Step 2: Rodar e ver o estado atual**
 
 ```bash
 export PATH="/c/Program Files/nodejs:$PATH" && npx vitest run lib/utils/html-sanitizer.test.ts
@@ -361,7 +361,7 @@ export PATH="/c/Program Files/nodejs:$PATH" && npx vitest run lib/utils/html-san
 
 Esperado: PASS (a função de limpeza já existe desde a Task 1; este bloco fixa a ordem para que ninguém a inverta depois).
 
-- [ ] **Step 3: Ligar no salvamento**
+- [x] **Step 3: Ligar no salvamento**
 
 Em `actions/admin/blog.ts`, importar no topo:
 
@@ -386,7 +386,7 @@ function sanitizeTranslations<T extends { contentHtml: string }>(translations: T
 }
 ```
 
-- [ ] **Step 4: Verificar**
+- [x] **Step 4: Verificar**
 
 ```bash
 export PATH="/c/Program Files/nodejs:$PATH" && npx tsc --noEmit && npx vitest run && npx eslint actions/admin/blog.ts lib/utils/html-sanitizer.test.ts
@@ -394,7 +394,7 @@ export PATH="/c/Program Files/nodejs:$PATH" && npx tsc --noEmit && npx vitest ru
 
 Esperado: exit 0 nos três.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add actions/admin/blog.ts lib/utils/html-sanitizer.test.ts
@@ -415,7 +415,7 @@ Aqui o editor deixa de ser um só para dois usos diferentes. **O preset `email` 
 - Consumes: `limparHtmlDeColagem` (Task 1).
 - Produces: `RichTextEditor` e `RichTextToolbar` aceitam `preset?: "email" | "article"` (default `"email"`).
 
-- [ ] **Step 1: Instalar a extensão de alinhamento**
+- [x] **Step 1: Instalar a extensão de alinhamento**
 
 ```bash
 export PATH="/c/Program Files/nodejs:$PATH" && npm install @tiptap/extension-text-align@^3.22.5
@@ -423,7 +423,7 @@ export PATH="/c/Program Files/nodejs:$PATH" && npm install @tiptap/extension-tex
 
 Esperado: instala sem alterar a versão das outras `@tiptap/*` (todas em `^3.22.5`).
 
-- [ ] **Step 2: Aceitar o preset no editor**
+- [x] **Step 2: Aceitar o preset no editor**
 
 Em `components/ui/rich-text-editor/rich-text-editor.tsx`, trocar a interface de props e o começo do componente:
 
@@ -463,7 +463,7 @@ export function RichTextEditor({
     const editorContent = ehArtigo ? content : renderTemplateVariablesForEditor(content)
 ```
 
-- [ ] **Step 3: Ligar extensão e limpeza por preset**
+- [x] **Step 3: Ligar extensão e limpeza por preset**
 
 No mesmo arquivo, dentro de `useEditor`, acrescentar a extensão à lista e o `transformPastedHTML` ao `editorProps`:
 
@@ -509,7 +509,7 @@ E passar o preset adiante, na linha do `<RichTextToolbar>`:
             <RichTextToolbar editor={editor} disabled={disabled} preset={preset} />
 ```
 
-- [ ] **Step 4: Barra de ferramentas por preset**
+- [x] **Step 4: Barra de ferramentas por preset**
 
 Em `components/ui/rich-text-editor/rich-text-toolbar.tsx`, acrescentar aos imports de ícones:
 
@@ -632,7 +632,7 @@ Por fim, esconder as variáveis fora do e-mail — trocar a última linha (hoje 
 
 O `<Separator />` que precedia o dropdown (linha 223) entra no bloco acima; remova o solto para não sobrar uma barra vertical no fim da barra do artigo.
 
-- [ ] **Step 5: Usar o preset no editor de post**
+- [x] **Step 5: Usar o preset no editor de post**
 
 Em `components/admin/blog/post-editor.tsx`, trocar a linha 238:
 
@@ -645,7 +645,7 @@ Em `components/admin/blog/post-editor.tsx`, trocar a linha 238:
                     />
 ```
 
-- [ ] **Step 6: Verificar que o build aguenta a limpeza no cliente**
+- [x] **Step 6: Verificar que o build aguenta a limpeza no cliente**
 
 Este é o ponto de decisão registrado na spec: `sanitize-html` é biblioteca de origem Node e agora entra no pacote do navegador.
 
@@ -655,14 +655,14 @@ export PATH="/c/Program Files/nodejs:$PATH" && npx tsc --noEmit && npm run build
 
 Esperado: exit 0 nos dois. **Se o build falhar com erro de módulo de Node** (`ERR_REQUIRE_ESM`, `Can't resolve 'fs'` ou similar — o projeto já apanhou disso com jsdom, ver o cabeçalho de `lib/utils/html-sanitizer.ts`), aplicar o plano B da spec **nesta task, sem improvisar**: remover o `transformPastedHTML` do Step 3 e acrescentar à barra do artigo um botão "colar limpo" que lê `navigator.clipboard.readText()`, passa por `limparHtmlDeColagem` **no servidor** (uma server action nova `limparHtmlColado` em `actions/admin/blog.ts`, protegida por `requireAdmin`) e insere o resultado. O HTML salvo é o mesmo — a Task 2 garante isso; muda só o momento em que o autor vê.
 
-- [ ] **Step 7: Verificar na tela**
+- [x] **Step 7: Verificar na tela**
 
 Subir o dev server pelo `.claude/launch.json` (porta 3001, **nunca** via Bash) e, logado como admin:
 - em `/super-admin/blog/new`, a barra mostra alinhamento, H3, citação, divisória e limpar formatação, e **não** mostra o menu de variáveis;
 - em um template de cold mail (`/settings` → templates), a barra continua **exatamente** como era, com o menu de variáveis;
 - colar um trecho do Word no editor de post não traz fonte nem cor.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add package.json package-lock.json components/ui/rich-text-editor/ components/admin/blog/post-editor.tsx
@@ -681,13 +681,13 @@ git commit -m "feat(blog): preset de artigo no editor, com alinhamento e limpeza
 - Consumes: `uploadBlogImage`.
 - Produces: `uploadBlogImage(file: File, prefixo?: "covers" | "body"): Promise<BlogUploadResult>`.
 
-- [ ] **Step 1: Instalar a extensão de imagem**
+- [x] **Step 1: Instalar a extensão de imagem**
 
 ```bash
 export PATH="/c/Program Files/nodejs:$PATH" && npm install @tiptap/extension-image@^3.22.5
 ```
 
-- [ ] **Step 2: Separar capa de imagem de corpo no bucket**
+- [x] **Step 2: Separar capa de imagem de corpo no bucket**
 
 Em `lib/blog/storage.ts`, trocar a assinatura e a linha do nome do arquivo:
 
@@ -708,7 +708,7 @@ export async function uploadBlogImage(
 
 Nenhum call site quebra: o parâmetro tem default e a capa continua em `covers/`.
 
-- [ ] **Step 3: Ligar a extensão no preset de artigo**
+- [x] **Step 3: Ligar a extensão no preset de artigo**
 
 Em `components/ui/rich-text-editor/rich-text-editor.tsx`, importar e acrescentar à lista de extensões, junto do `TextAlign`:
 
@@ -725,7 +725,7 @@ import Image from "@tiptap/extension-image"
                 : []),
 ```
 
-- [ ] **Step 4: Botão de imagem com texto alternativo obrigatório**
+- [x] **Step 4: Botão de imagem com texto alternativo obrigatório**
 
 Em `components/ui/rich-text-editor/rich-text-toolbar.tsx`, acrescentar ao topo:
 
@@ -799,7 +799,7 @@ E o controle na barra, dentro do bloco `{ehArtigo && (…)}` criado na Task 3, l
                     </Popover>
 ```
 
-- [ ] **Step 5: Verificar**
+- [x] **Step 5: Verificar**
 
 ```bash
 export PATH="/c/Program Files/nodejs:$PATH" && npx tsc --noEmit && npx vitest run && npx eslint components/ui/rich-text-editor/rich-text-toolbar.tsx components/ui/rich-text-editor/rich-text-editor.tsx lib/blog/storage.ts
@@ -809,7 +809,7 @@ Esperado: exit 0 nos três.
 
 Com o dev server no ar: inserir uma imagem num post, conferir que o campo de arquivo só libera com o alt preenchido, e que o arquivo caiu em `body/` no bucket `blog` do Supabase.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add package.json package-lock.json components/ui/rich-text-editor/ lib/blog/storage.ts
@@ -830,7 +830,7 @@ Tarefa mecânica e de risco alto se feita com pressa: esta é a página de post 
 - Consumes: `dirForLocale`, `BlogLocale`.
 - Produces: `<PostArticle locale categoryName title dateLabel coverImageUrl contentHtml />`.
 
-- [ ] **Step 1: Guardar o HTML atual para comparar depois**
+- [x] **Step 1: Guardar o HTML atual para comparar depois**
 
 Com o dev server no ar e um post publicado à mão (pegue um slug em `/blog`):
 
@@ -838,7 +838,7 @@ Com o dev server no ar e um post publicado à mão (pegue um slug em `/blog`):
 curl -s "http://localhost:3001/blog/<slug>" > /tmp/post-antes.html && wc -c /tmp/post-antes.html
 ```
 
-- [ ] **Step 2: Criar o componente**
+- [x] **Step 2: Criar o componente**
 
 Criar `components/blog/post-article.tsx`:
 
@@ -900,7 +900,7 @@ export function PostArticle({
 }
 ```
 
-- [ ] **Step 3: Consumir na página pública**
+- [x] **Step 3: Consumir na página pública**
 
 Em `app/[locale]/blog/[slug]/page.tsx`, trocar todo o `return` (do `<article …>` até `</article>`) por:
 
@@ -940,7 +940,7 @@ Em `app/[locale]/blog/[slug]/page.tsx`, trocar todo o `return` (do `<article …
 
 Importar `PostArticle` e remover o import de `dirForLocale` se ele não for mais usado no arquivo (o `tsc`/eslint acusa).
 
-- [ ] **Step 4: Provar que a página não mudou**
+- [x] **Step 4: Provar que a página não mudou**
 
 ```bash
 curl -s "http://localhost:3001/blog/<slug>" > /tmp/post-depois.html && diff <(grep -o '<article[\s\S]*</article>' /tmp/post-antes.html) <(grep -o '<article[\s\S]*</article>' /tmp/post-depois.html) && echo "IDENTICO"
@@ -948,7 +948,7 @@ curl -s "http://localhost:3001/blog/<slug>" > /tmp/post-depois.html && diff <(gr
 
 Esperado: `IDENTICO`. Diferença em atributo de hidratação do React (`data-reactroot`, ids de Suspense) é aceitável; **diferença de classe, tag ou ordem não é** — nesse caso, corrigir o componente até bater.
 
-- [ ] **Step 5: Verificar e commitar**
+- [x] **Step 5: Verificar e commitar**
 
 ```bash
 export PATH="/c/Program Files/nodejs:$PATH" && npx tsc --noEmit && npx vitest run && npx eslint components/blog/post-article.tsx "app/[locale]/blog/[slug]/page.tsx"
@@ -968,7 +968,7 @@ git commit -m "refactor(blog): extrai PostArticle para publico e previa comparti
 - Consumes: `PostArticle` (Task 5), `requireAdmin`, `getBlogLabels`, `isBlogLocale`.
 - Produces: `getPostForPreview(id: string, locale: BlogLocale)`, devolvendo `{ post, translation, categoryName } | null` — `translation` pode ser `null` quando o idioma ainda não foi escrito.
 
-- [ ] **Step 1: Consulta que enxerga rascunho**
+- [x] **Step 1: Consulta que enxerga rascunho**
 
 Acrescentar ao final de `lib/blog/queries.ts`:
 
@@ -1000,7 +1000,7 @@ export async function getPostForPreview(id: string, locale: BlogLocale) {
 }
 ```
 
-- [ ] **Step 2: Criar a rota**
+- [x] **Step 2: Criar a rota**
 
 Criar `app/blog-preview/[id]/page.tsx`:
 
@@ -1083,7 +1083,7 @@ export default async function BlogPreviewPage({
 }
 ```
 
-- [ ] **Step 3: Verificar**
+- [x] **Step 3: Verificar**
 
 ```bash
 export PATH="/c/Program Files/nodejs:$PATH" && npx tsc --noEmit && npx vitest run && npx eslint lib/blog/queries.ts "app/blog-preview/[id]/page.tsx"
@@ -1093,7 +1093,7 @@ Esperado: exit 0 nos três.
 
 Com o dev server no ar e logado como admin, abrir `/blog-preview/<id de um post>?locale=pt`: aparece o post com a tipografia real. Trocar para um idioma sem tradução mostra o aviso. Deslogado (ou como usuário comum), a rota **não** pode renderizar o conteúdo.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add lib/blog/queries.ts "app/blog-preview/[id]/page.tsx"
@@ -1112,7 +1112,7 @@ git commit -m "feat(blog): rota de previa do post, so para admin"
 - Consumes: a rota da Task 6.
 - Produces: `<PreviewButton postId={string | undefined} locale={BlogLocale} temAlteracaoNaoSalva={boolean} />`.
 
-- [ ] **Step 1: Criar o botão**
+- [x] **Step 1: Criar o botão**
 
 Criar `components/admin/blog/preview-button.tsx`:
 
@@ -1166,7 +1166,7 @@ export function PreviewButton({
 }
 ```
 
-- [ ] **Step 2: Detectar alteração não salva e montar o botão**
+- [x] **Step 2: Detectar alteração não salva e montar o botão**
 
 Em `components/admin/blog/post-editor.tsx`, acrescentar o import:
 
@@ -1201,7 +1201,7 @@ E trocar o rodapé de botões (hoje linhas 267-269) por:
             </div>
 ```
 
-- [ ] **Step 3: Traduzir os rótulos**
+- [x] **Step 3: Traduzir os rótulos**
 
 Acrescentar ao namespace `admin.blogEditor`, em `messages/pt.json`:
 
@@ -1221,7 +1221,7 @@ E em `messages/en.json`:
 
 Os demais idiomas caem no português pelo fallback de `loadMessages` — o namespace `admin` está registrado em `LACUNAS_CONHECIDAS` no teste de paridade, então isto não reprova nada.
 
-- [ ] **Step 4: Verificar**
+- [x] **Step 4: Verificar**
 
 ```bash
 export PATH="/c/Program Files/nodejs:$PATH" && npx tsc --noEmit && npx vitest run && npx eslint components/admin/blog/ && npx vitest run lib/i18n/messages-integridade.test.ts
@@ -1231,7 +1231,7 @@ Esperado: exit 0 em todos.
 
 Com o dev server no ar: em um post salvo, "Ver como fica" abre a prévia em outra aba no idioma da aba ativa; alterar um campo sem salvar e clicar mostra o aviso e **abre mesmo assim** (a versão salva); em `/super-admin/blog/new` o botão aparece desabilitado.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add components/admin/blog/ messages/pt.json messages/en.json
@@ -1244,7 +1244,7 @@ git commit -m "feat(blog): botao Ver como fica no editor de post"
 
 **Files:** nenhum novo.
 
-- [ ] **Step 1: Suíte completa**
+- [x] **Step 1: Suíte completa**
 
 ```bash
 export PATH="/c/Program Files/nodejs:$PATH" && npx tsc --noEmit && npx vitest run && npm run build && npx eslint $(git diff --name-only main...HEAD | grep -E "\.(ts|tsx)$")
@@ -1252,7 +1252,7 @@ export PATH="/c/Program Files/nodejs:$PATH" && npx tsc --noEmit && npx vitest ru
 
 Esperado: exit 0 nos quatro. **O build precisa rodar com o dev server parado** — o Windows não deixa o Prisma renomear a DLL do query engine enquanto o servidor está no ar (`EPERM ... query_engine-windows.dll.node`).
 
-- [ ] **Step 2: Percorrer a verificação de aceite da spec**
+- [~] **Step 2: Percorrer a verificação de aceite da spec** — PARCIAL, ver a spec
 
 Abrir `docs/superpowers/specs/2026-07-31-blog-premium-design.md` e marcar item a item a seção "Verificação de aceite". Os itens que exigem login de ADMIN e navegador real (colar do Word, publicar, prévia, upload de imagem) **não podem ser marcados sem terem sido executados de fato** — se não houver acesso, relatar ao usuário quais itens ficaram por conferir, nominalmente.
 
@@ -1264,7 +1264,7 @@ select left("contentHtml", 400) from blog_post_translations order by "updatedAt"
 
 Esperado: nenhum `font-family`, nenhum `class="Mso…"`, e `text-align` presente se o autor centralizou algo.
 
-- [ ] **Step 3: Commit final, se houver ajuste**
+- [x] **Step 3: Commit final, se houver ajuste**
 
 ```bash
 git add -A

@@ -209,15 +209,31 @@ IA/Word) e cada um é um projeto próprio.
 
 ## Verificação de aceite
 
-- [ ] Colar um post inteiro do Word no editor não traz `font-family` nem `MsoNormal`
+Estado em 2026-07-31 (`[x]` conferido, `[~]` conferido só onde não exige login de
+ADMIN em navegador, `[ ]` não conferido). Werner faz os `[~]`/`[ ]` na tela.
+
+- [~] Colar um post inteiro do Word no editor não traz `font-family` nem `MsoNormal`
       para o HTML salvo (conferir no banco, não só na tela)
+      → SQL em `BlogPostTranslation`: nenhuma das 5 traduções salvas tem `font-family`
+      nem `Mso`. Mas nenhuma delas veio comprovadamente de uma colagem do Word, então
+      isto é ausência de defeito, não prova da colagem. A limpeza em si está travada
+      por `lib/blog/paste-cleanup.test.ts`.
 - [ ] Centralizar um parágrafo sobrevive a salvar, recarregar e publicar
-- [ ] O menu de variáveis `{{nome}}` não aparece mais no editor de post, e continua
+      → nenhuma tradução no banco tem `text-align`: o recurso nunca foi exercido de verdade.
+- [~] O menu de variáveis `{{nome}}` não aparece mais no editor de post, e continua
       aparecendo no editor de template de cold mail
+      → conferido no código (`rich-text-toolbar.tsx:359`, `{!ehArtigo && …}`), não na tela.
 - [ ] Inserir imagem no corpo exige texto alternativo e o arquivo vai para `body/`
+      → nenhuma tradução no banco tem `<img>`: o recurso nunca foi exercido de verdade.
 - [ ] "Ver como fica" abre o post com a tipografia, a largura e a capa reais
 - [ ] A prévia funciona com post em rascunho e com idioma ainda não traduzido
-- [ ] A prévia exige login de ADMIN e não é indexável
-- [ ] Editar um post publicado e clicar em "Ver como fica" **não** publica a alteração
-- [ ] `npx tsc --noEmit && npx vitest run && npm run build` — exit 0; `npx eslint`
+- [~] A prévia exige login de ADMIN e não é indexável
+      → conferido no código: `requireAdmin()` na página e `robots: { index: false }` em
+      `app/blog-preview/layout.tsx`. Falta o teste ponta a ponta com usuário não-ADMIN.
+- [~] Editar um post publicado e clicar em "Ver como fica" **não** publica a alteração
+      → estrutural: `PreviewButton` só abre uma aba, não chama nenhuma action de escrita,
+      e `getPostForPreview` lê o banco. Falta conferir na tela.
+- [x] `npx tsc --noEmit && npx vitest run && npm run build` — exit 0; `npx eslint`
       sem problema novo nos arquivos tocados
+      → 2026-07-31: tsc exit 0; 57 arquivos / 485 testes passam; build exit 0; eslint
+      com 1 aviso só, o `<img>` de `post-editor.tsx` que já existia na `main`.
