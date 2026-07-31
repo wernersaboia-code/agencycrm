@@ -66,7 +66,7 @@
     "nav": {
         "catalog": "Catalogus",
         "howItWorks": "Hoe het werkt",
-        "about": "Over ons",
+        "about": "Waarom Easy Prospect",
         "blog": "Blog",
         "faq": "FAQ",
         "login": "Inloggen",
@@ -90,7 +90,7 @@
         "howItWorks": "Hoe het werkt",
         "blog": "Blog",
         "faq": "FAQ",
-        "aboutUs": "Over ons",
+        "aboutUs": "Waarom Easy Prospect",
         "accountTitle": "Account",
         "myPurchases": "Mijn aankopen",
         "login": "Inloggen",
@@ -553,50 +553,125 @@
     },
     "about": {
         "meta": {
-            "title": "Wie we zijn en hoe de lijsten tot stand komen",
-            "description": "Hoe de lijsten met importeurs en distributeurs tot stand komen: ruim twintig jaar ervaring in de exporthandel, onderzoek in openbare bronnen en controle bedrijf voor bedrijf."
+            "title": "Waarom Easy Prospect — hoe de studies tot stand komen",
+            "description": "Markttoetredingsstudies en gidsen van importeurs en distributeurs: waar de gegevens vandaan komen, hoe elk bedrijf wordt gecontroleerd, wat elke studie bevat en wat we niet beloven."
         },
         "hero": {
-            "eyebrow": "Over ons",
-            "title": "Wie er achter de lijsten zit",
-            "subtitle": "Wie er achter Easy Prospect zit, heeft ruim twintig jaar ervaring in de exporthandel. Elke lijst brengt de importeurs en distributeurs van één markt samen, met daarbij een beknopte marktintredestudie voor die markt – zodat exporteurs weten met wie ze moeten praten, en hoe."
+            "eyebrow": "Waarom Easy Prospect",
+            "title": "Uw partner om nieuwe markten te betreden",
+            "paragraphs": [
+                "Nieuwe exportmarkten bieden echte ruimte om te groeien. Tegelijk kost het zoeken naar geschikte importeurs en distributeurs — en naar betrouwbare marktinformatie — vaak weken of maanden.",
+                "Easy Prospect bekort die weg: markttoetredingsstudies en zorgvuldig onderzochte gidsen van importeurs en distributeurs, voor fabrikanten, merkbedrijven en exporteurs.",
+                "De studies combineren ruim twee decennia ervaring in de internationale handel met een actuele onderzoeksmethode. De analyse wordt ondersteund door technologie; de laatste controle is altijd menselijk."
+            ]
         },
         "methodology": {
-            "eyebrow": "Methodiek",
-            "title": "Hoe de lijsten tot stand komen",
-            "intro": "Wie voor B2B-data betaalt, heeft het recht te weten waar die vandaan komt. Het proces staat hieronder beschreven, zonder beloften die we niet kunnen waarmaken.",
-            "blocks": [
-                {
-                    "title": "Herkomst van de data",
-                    "body": "De lijsten vertrekken vanuit materiaal dat in jaren werk in de exporthandel is opgebouwd en worden aangevuld met onderzoek in openbare bronnen – onder meer bedrijfswebsites, kamers van koophandel, brancheverenigingen en bedrijvengidsen. De analyse wordt ondersteund door technologie; wat in een lijst terechtkomt, beslist de persoon die ze nakijkt."
-                },
-                {
-                    "title": "Controle bedrijf voor bedrijf",
-                    "body": "Voordat een bedrijf in een lijst komt, wordt het in openbare bronnen gecontroleerd: of het actief is in de aangegeven sector, of er import- of distributieactiviteit is, of het een professionele aanwezigheid onderhoudt en of de contactkanalen actief zijn. Die controle vervangt uw eigen commerciële kwalificatie niet, maar vergroot de kans dat het vermelde bedrijf relevant is."
-                },
-                {
-                    "title": "Onderhoud van de catalogus",
-                    "body": "Contacten en eigendomsstructuren veranderen voortdurend. De catalogus wordt periodiek herzien, en wanneer een lijst de markt die ze beschrijft niet meer weergeeft, halen we ze uit de verkoop in plaats van ze beschikbaar te laten."
-                }
+            "eyebrow": "Methode",
+            "title": "Zorgvuldig onderzoek, geen adressenlijst",
+            "intro": "Wie voor B2B-gegevens betaalt, heeft het recht te weten waar die vandaan komen. Het proces staat hieronder, zonder beloftes die we niet waar kunnen maken.",
+            "body": [
+                "Wat hier telt is niet de hoeveelheid gegevens, maar de praktische relevantie ervan. Voor elke studie wordt een reeks openbare bronnen systematisch beoordeeld, en elk resultaat wordt vóór publicatie nagekeken.",
+                "Het doel is niet om zo veel mogelijk bedrijven op te sommen, maar om de bedrijven te vinden die echt interessant kunnen zijn voor uw exportproject."
             ]
+        },
+        "sources": {
+            "title": "Waar de gegevens vandaan komen",
+            "intro": "Alle informatie komt uit openbaar toegankelijke bronnen. Daaronder:",
+            "items": [
+                "websites van de bedrijven zelf",
+                "kamers van koophandel",
+                "brancheverenigingen",
+                "beurscatalogi",
+                "bedrijvengidsen",
+                "vakportalen",
+                "andere vrij toegankelijke bedrijfsinformatie"
+            ],
+            "note": "Vóór publicatie worden de gegevens gecontroleerd op plausibiliteit, volledigheid en praktische bruikbaarheid. Het uitgangsmateriaal komt uit jaren werk in de exporthandel en wordt met dit onderzoek uitgebreid."
+        },
+        "review": {
+            "title": "Controle per bedrijf",
+            "intro": "Voordat een bedrijf in een gids komt, wordt het gecontroleerd aan de hand van openbare bronnen. We kijken vooral naar:",
+            "items": [
+                "of het actief is in de genoemde branche",
+                "of import- of distributieactiviteit herkenbaar is",
+                "of het een professionele aanwezigheid onderhoudt",
+                "of de contactkanalen actief zijn",
+                "of het zinvol is het als mogelijke distributiepartner te beschouwen"
+            ],
+            "note": "Deze controle vervangt uw eigen commerciële kwalificatie niet, maar vergroot de kans dat een vermeld bedrijf relevant is voor uw project."
+        },
+        "updates": {
+            "title": "Onderhoud van de catalogus",
+            "body": "Contactpersonen en bedrijfsstructuren veranderen voortdurend. De catalogus wordt periodiek nagelopen, en wanneer een lijst de beschreven markt niet meer weergeeft, gaat die uit de verkoop in plaats van beschikbaar te blijven."
         },
         "delivery": {
             "title": "Wat u ontvangt",
-            "body": "Elke aankoop geeft toegang tot een marktintredestudie als PDF: overzicht van de sector in het bestemmingsland, toegangsvereisten, distributiestructuur en de gids met importeurs en distributeurs van de gekozen lijst, met aanwijzingen om het eerste contact voor te bereiden."
+            "intro": "Elke aankoop geeft toegang tot een markttoetredingsstudie als pdf — aanzienlijk meer dan een adressenlijst. Afhankelijk van de branche bevat een studie:",
+            "items": [
+                "een overzicht van de doelmarkt",
+                "een analyse van de situatie in de branche",
+                "marktpotentieel en actuele trends",
+                "voorwaarden voor markttoegang",
+                "verkoop- en distributiestructuren",
+                "een gids van relevante importeurs en distributeurs",
+                "aanwijzingen om de juiste bedrijven te benaderen",
+                "aanbevelingen om uw markttoetreding voor te bereiden"
+            ],
+            "note": "Het doel is u een groot deel van het tijdrovende onderzoek uit handen te nemen, zodat u zich kunt richten op het opbouwen van zakelijke relaties."
         },
         "limits": {
             "title": "Wat we niet beloven",
-            "body": "We beloven niet dat elk bedrijf op uw contact zal reageren, en evenmin dat een lijst uw eigen beoordeling vóór het zakendoen vervangt. Internationale handel hangt af van echte vraag, een concurrerende prijs en het juiste moment – factoren buiten onze invloed. Onze gidsen zijn ook niet gemaakt voor massamailing: ze dienen een voorbereide benadering, bedrijf voor bedrijf. Wat we wel garanderen is het criterium: geen enkel bedrijf komt in een lijst zonder in openbare bronnen te zijn gecontroleerd."
+            "intro": "Het succes van een exportproject hangt van veel factoren af. We garanderen niet dat elk bedrijf op een contact reageert, of dat er meteen een zakelijke relatie ontstaat. Mee wegen onder meer:",
+            "items": [
+                "hoe concurrerend uw product is",
+                "de vraag in de doelmarkt",
+                "uw prijsstelling",
+                "uw leveringscapaciteit",
+                "uw marketing- en verkoopstrategie",
+                "het moment van contact",
+                "de inkoopbeslissing van elke importeur"
+            ],
+            "note": "Onze gidsen zijn ook niet gemaakt voor massamailing: ze dienen een voorbereide benadering, bedrijf voor bedrijf. Wat we wel garanderen is het criterium: geen enkel bedrijf komt in een lijst zonder aan openbare bronnen te zijn getoetst."
+        },
+        "trust": {
+            "eyebrow": "Kort samengevat",
+            "title": "Waarom Easy Prospect",
+            "cards": [
+                {
+                    "title": "Gemaakt voor de praktijk",
+                    "body": "De studies zijn geschreven voor fabrikanten, exporteurs en internationale verkoopverantwoordelijken, niet voor algemeen gebruik."
+                },
+                {
+                    "title": "Meer dan adressenlijsten",
+                    "body": "U krijgt gestructureerde marktinformatie, concrete aanbevelingen en een zorgvuldig onderzochte gids van importeurs en distributeurs."
+                },
+                {
+                    "title": "Gecontroleerd onderzoek",
+                    "body": "Het onderzoek volgt een systematische methode en gaat vóór publicatie door een menselijke controle."
+                },
+                {
+                    "title": "Tijdwinst",
+                    "body": "In plaats van weken uitzoeken wie u moet benaderen, begint u meteen met benaderen."
+                },
+                {
+                    "title": "Onderhouden catalogus",
+                    "body": "De studies worden periodiek nagelopen en bijgewerkt of aangevuld wanneer de markt beweegt."
+                },
+                {
+                    "title": "Werkbasis, geen volume",
+                    "body": "Het doel is niet zo veel mogelijk gegevens verkopen, maar u een stevige basis geven om markten met methode te openen."
+                }
+            ]
         },
         "cta": {
-            "title": "Nog vragen?",
-            "body": "De meest gestelde vragen over de lijsten, de levering en de betaling worden beantwoord in de FAQ.",
-            "faq": "Bekijk de veelgestelde vragen",
-            "catalog": "Bekijk de catalogus"
+            "title": "Weet u al welke markt u wilt aangaan?",
+            "body": "Bekijk de markttoetredingsstudies en importeursgidsen per land en branche. De meest gestelde vragen over levering en betaling staan in de FAQ.",
+            "faq": "Naar de FAQ",
+            "catalog": "Naar de catalogus"
         },
         "breadcrumb": {
-            "home": "Home",
-            "current": "Over ons"
+            "home": "Start",
+            "current": "Waarom Easy Prospect"
         }
     },
     "legal": {

@@ -66,7 +66,7 @@
     "nav": {
         "catalog": "Catalogue",
         "howItWorks": "Comment ça marche",
-        "about": "À propos",
+        "about": "Pourquoi Easy Prospect",
         "blog": "Blog",
         "faq": "FAQ",
         "login": "Se connecter",
@@ -90,7 +90,7 @@
         "howItWorks": "Comment ça marche",
         "blog": "Blog",
         "faq": "FAQ",
-        "aboutUs": "À propos",
+        "aboutUs": "Pourquoi Easy Prospect",
         "accountTitle": "Compte",
         "myPurchases": "Mes achats",
         "login": "Se connecter",
@@ -553,50 +553,125 @@
     },
     "about": {
         "meta": {
-            "title": "Qui nous sommes et comment les listes sont constituées",
-            "description": "Comment les listes d'importateurs et de distributeurs sont constituées : plus de vingt ans d'expérience dans le commerce d'exportation, recherche dans des sources publiques et vérification entreprise par entreprise."
+            "title": "Pourquoi Easy Prospect — comment les études sont faites",
+            "description": "Études d'entrée sur le marché et annuaires d'importateurs et de distributeurs : d'où viennent les données, comment chaque entreprise est vérifiée, ce que contient chaque étude et ce que nous ne promettons pas."
         },
         "hero": {
-            "eyebrow": "À propos",
-            "title": "Qui se trouve derrière les listes",
-            "subtitle": "La personne derrière Easy Prospect cumule plus de vingt ans d'expérience dans le commerce d'exportation. Chaque liste réunit les importateurs et les distributeurs d'un marché, accompagnée d'une étude condensée d'entrée sur le marché — pour que les exportateurs sachent à qui parler, et comment."
+            "eyebrow": "Pourquoi Easy Prospect",
+            "title": "Votre partenaire pour aborder de nouveaux marchés",
+            "paragraphs": [
+                "Les nouveaux marchés d'exportation offrent une vraie marge de croissance. En même temps, trouver des importateurs et des distributeurs adaptés — et une information de marché fiable — prend souvent des semaines, voire des mois.",
+                "Easy Prospect existe pour raccourcir ce chemin : des études d'entrée sur le marché et des annuaires d'importateurs et de distributeurs recherchés avec soin, pour les fabricants, les marques et les exportateurs.",
+                "Les études associent plus de deux décennies d'expérience dans le commerce international à une méthodologie de recherche actuelle. L'analyse est assistée par la technologie ; la vérification finale est toujours humaine."
+            ]
         },
         "methodology": {
             "eyebrow": "Méthodologie",
-            "title": "Comment les listes sont constituées",
+            "title": "Une recherche soignée, pas une liste d'adresses",
             "intro": "Qui paie pour des données B2B a le droit de savoir d'où elles viennent. Le processus est décrit ci-dessous, sans promesses que nous ne pourrions pas tenir.",
-            "blocks": [
-                {
-                    "title": "Origine des données",
-                    "body": "Les listes partent d'éléments accumulés au fil d'années passées dans le commerce d'exportation et sont enrichies par des recherches dans des sources publiques — parmi lesquelles les sites institutionnels, les chambres de commerce, les associations sectorielles et les annuaires d'entreprises. L'analyse s'appuie sur la technologie ; la décision de ce qui entre revient à la personne qui vérifie la liste."
-                },
-                {
-                    "title": "Vérification entreprise par entreprise",
-                    "body": "Avant d'entrer dans une liste, chaque entreprise est vérifiée dans des sources publiques : si elle est active dans le secteur indiqué, s'il existe une activité d'importation ou de distribution, si elle entretient une présence professionnelle et si ses canaux de contact sont actifs. Cette vérification ne remplace pas votre propre qualification commerciale, mais elle augmente les chances que l'entreprise listée soit pertinente."
-                },
-                {
-                    "title": "Entretien du catalogue",
-                    "body": "Les contacts et les structures de détention changent en permanence. Le catalogue est revu périodiquement et, lorsqu'une liste ne reflète plus le marché qu'elle décrit, elle est retirée de la vente plutôt que laissée disponible."
-                }
+            "body": [
+                "Ce qui compte ici n'est pas la quantité de données, mais leur pertinence pratique. Pour chaque étude, un ensemble de sources publiques est évalué de façon systématique, et chaque résultat est revu avant publication.",
+                "L'objectif n'est pas de lister le plus d'entreprises possible, mais d'identifier celles qui peuvent réellement intéresser votre projet d'exportation."
             ]
+        },
+        "sources": {
+            "title": "D'où viennent les données",
+            "intro": "Toutes les informations proviennent de sources accessibles au public. Parmi elles :",
+            "items": [
+                "les sites web des entreprises elles-mêmes",
+                "les chambres de commerce",
+                "les associations professionnelles",
+                "les catalogues de salons",
+                "les annuaires d'entreprises",
+                "les portails spécialisés",
+                "d'autres informations économiques librement accessibles"
+            ],
+            "note": "Avant publication, les données sont vérifiées quant à leur plausibilité, leur exhaustivité et leur utilité pratique. Le matériau de départ vient d'années de travail dans le commerce d'exportation et est élargi par cette recherche."
+        },
+        "review": {
+            "title": "Vérification entreprise par entreprise",
+            "intro": "Avant d'entrer dans un annuaire, chaque entreprise est vérifiée dans des sources publiques. Nous regardons en particulier :",
+            "items": [
+                "si elle est active dans le secteur indiqué",
+                "si une activité d'import ou de distribution est identifiable",
+                "si elle maintient une présence professionnelle",
+                "si ses canaux de contact sont actifs",
+                "s'il est pertinent de la considérer comme partenaire de distribution possible"
+            ],
+            "note": "Cette vérification ne remplace pas votre propre qualification commerciale, mais elle augmente la probabilité qu'une entreprise listée soit pertinente pour votre projet."
+        },
+        "updates": {
+            "title": "Entretien du catalogue",
+            "body": "Les interlocuteurs et les structures d'entreprise changent en permanence. Le catalogue est revu périodiquement, et lorsqu'une liste ne reflète plus le marché qu'elle décrit, elle est retirée de la vente plutôt que laissée disponible."
         },
         "delivery": {
             "title": "Ce que vous recevez",
-            "body": "Chaque achat donne accès à une étude d'entrée sur le marché au format PDF : vue d'ensemble du secteur dans le pays de destination, conditions d'accès, structure de distribution et annuaire des importateurs et distributeurs de la liste choisie, avec des repères pour préparer la première prise de contact."
+            "intro": "Chaque achat donne accès à une étude d'entrée sur le marché en PDF — nettement plus qu'une liste d'adresses. Selon le secteur, une étude comprend :",
+            "items": [
+                "un aperçu du marché cible",
+                "une analyse de la situation du secteur",
+                "le potentiel de marché et les tendances actuelles",
+                "les conditions d'accès au marché",
+                "les structures de vente et de distribution",
+                "un annuaire des importateurs et distributeurs pertinents",
+                "des indications pour aborder les bonnes entreprises",
+                "des recommandations pour préparer votre entrée sur le marché"
+            ],
+            "note": "L'idée est de vous retirer une grande part de la recherche chronophage, pour que vous puissiez vous concentrer sur la construction de relations commerciales."
         },
         "limits": {
             "title": "Ce que nous ne promettons pas",
-            "body": "Nous ne promettons pas que chaque entreprise répondra à votre prise de contact, ni qu'une liste remplace votre propre évaluation avant de négocier. Le commerce international dépend d'une demande réelle, d'un prix compétitif et du bon moment — des facteurs hors de notre contrôle. Nos annuaires ne sont pas non plus faits pour l'envoi en masse : ils servent une approche préparée, entreprise par entreprise. Ce que nous garantissons, c'est le critère : aucune entreprise n'entre dans une liste sans avoir été vérifiée dans des sources publiques."
+            "intro": "Le succès d'un projet d'exportation dépend de nombreux facteurs. Nous ne garantissons pas que chaque entreprise réponde, ni qu'une relation commerciale naisse immédiatement. Comptent notamment :",
+            "items": [
+                "la compétitivité de votre produit",
+                "la demande sur le marché cible",
+                "votre politique de prix",
+                "votre capacité de livraison",
+                "votre stratégie marketing et commerciale",
+                "le moment de la prise de contact",
+                "la décision d'achat de chaque importateur"
+            ],
+            "note": "Nos annuaires ne sont pas non plus faits pour l'envoi en masse : ils servent une approche préparée, entreprise par entreprise. Ce que nous garantissons, c'est le critère : aucune entreprise n'entre dans une liste sans avoir été vérifiée dans des sources publiques."
+        },
+        "trust": {
+            "eyebrow": "En bref",
+            "title": "Pourquoi Easy Prospect",
+            "cards": [
+                {
+                    "title": "Fait pour la pratique",
+                    "body": "Les études sont écrites pour des fabricants, des exportateurs et des responsables commerciaux à l'international, pas pour un usage général."
+                },
+                {
+                    "title": "Plus que des listes d'adresses",
+                    "body": "Vous recevez une information de marché structurée, des recommandations concrètes et un annuaire d'importateurs et de distributeurs recherché avec soin."
+                },
+                {
+                    "title": "Une recherche vérifiée",
+                    "body": "La recherche suit une méthodologie systématique et passe par une vérification humaine avant publication."
+                },
+                {
+                    "title": "Du temps gagné",
+                    "body": "Au lieu de semaines à chercher qui contacter, vous commencez directement par la prise de contact."
+                },
+                {
+                    "title": "Un catalogue entretenu",
+                    "body": "Les études sont revues périodiquement, corrigées ou complétées quand le marché bouge."
+                },
+                {
+                    "title": "Une base de travail, pas du volume",
+                    "body": "L'objectif n'est pas de vendre le plus de données possible, mais de vous donner une base solide pour ouvrir des marchés avec méthode."
+                }
+            ]
         },
         "cta": {
-            "title": "Encore des questions ?",
-            "body": "Les questions les plus fréquentes sur les listes, la livraison et le paiement trouvent leur réponse dans la FAQ.",
-            "faq": "Voir les questions fréquentes",
+            "title": "Vous savez déjà quel marché viser ?",
+            "body": "Parcourez les études d'entrée sur le marché et les annuaires d'importateurs disponibles par pays et par secteur. Les questions les plus courantes sur la livraison et le paiement sont dans la FAQ.",
+            "faq": "Voir la FAQ",
             "catalog": "Voir le catalogue"
         },
         "breadcrumb": {
             "home": "Accueil",
-            "current": "À propos"
+            "current": "Pourquoi Easy Prospect"
         }
     },
     "legal": {

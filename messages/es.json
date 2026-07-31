@@ -66,7 +66,7 @@
     "nav": {
         "catalog": "Catálogo",
         "howItWorks": "Cómo funciona",
-        "about": "Quiénes somos",
+        "about": "Por qué Easy Prospect",
         "blog": "Blog",
         "faq": "Preguntas frecuentes",
         "login": "Iniciar sesión",
@@ -90,7 +90,7 @@
         "howItWorks": "Cómo funciona",
         "blog": "Blog",
         "faq": "Preguntas frecuentes",
-        "aboutUs": "Sobre nosotros",
+        "aboutUs": "Por qué Easy Prospect",
         "accountTitle": "Cuenta",
         "myPurchases": "Mis compras",
         "login": "Iniciar sesión",
@@ -553,50 +553,125 @@
     },
     "about": {
         "meta": {
-            "title": "Quiénes somos y cómo se elaboran las listas",
-            "description": "Cómo se elaboran las listas de importadores y distribuidores: más de dos décadas de experiencia en exportación, investigación en fuentes públicas y verificación empresa por empresa."
+            "title": "Por qué Easy Prospect — cómo se hacen los estudios",
+            "description": "Estudios de entrada en mercado y directorios de importadores y distribuidores: de dónde vienen los datos, cómo se comprueba cada empresa, qué incluye cada estudio y qué no prometemos."
         },
         "hero": {
-            "eyebrow": "Sobre nosotros",
-            "title": "Quién está detrás de las listas",
-            "subtitle": "Quien está detrás de Easy Prospect acumula más de dos décadas de experiencia en el comercio de exportación. Cada lista reúne a los importadores y distribuidores de un mercado, acompañada de un estudio compacto de entrada en el mercado — para que quien exporta sepa con quién hablar, y cómo."
+            "eyebrow": "Por qué Easy Prospect",
+            "title": "Su socio para entrar en nuevos mercados",
+            "paragraphs": [
+                "Los nuevos mercados de exportación ofrecen margen real para crecer. Al mismo tiempo, encontrar importadores y distribuidores adecuados — e información de mercado fiable — suele llevar semanas o meses.",
+                "Easy Prospect existe para acortar ese camino: estudios de entrada en mercado y directorios de importadores y distribuidores investigados con cuidado, para fabricantes, marcas y exportadores.",
+                "Los estudios combinan más de dos décadas de experiencia en el comercio internacional con una metodología de investigación actual. El análisis se apoya en tecnología; la comprobación final siempre es humana."
+            ]
         },
         "methodology": {
             "eyebrow": "Metodología",
-            "title": "Cómo se elaboran las listas",
+            "title": "Investigación cuidadosa, no una lista de direcciones",
             "intro": "Quien paga por datos B2B tiene derecho a saber de dónde vienen. El proceso está descrito abajo, sin promesas que no podamos sostener.",
-            "blocks": [
-                {
-                    "title": "Origen de los datos",
-                    "body": "Las listas parten de material acumulado en años de trabajo en el comercio de exportación y se amplían con investigación en fuentes públicas — entre ellas sitios institucionales, cámaras de comercio, asociaciones sectoriales y directorios de empresas. El análisis se apoya en la tecnología; la decisión de lo que entra es de quien revisa."
-                },
-                {
-                    "title": "Verificación empresa por empresa",
-                    "body": "Antes de entrar en una lista, cada empresa se verifica en fuentes públicas: si opera en el sector indicado, si hay actividad de importación o distribución, si mantiene una presencia profesional y si sus canales de contacto están activos. La verificación no sustituye su propia cualificación comercial, pero aumenta la probabilidad de que la empresa listada sea relevante."
-                },
-                {
-                    "title": "Mantenimiento del catálogo",
-                    "body": "Los contactos y las estructuras societarias cambian todo el tiempo. El catálogo se revisa periódicamente y, cuando una lista deja de reflejar el mercado que describe, se retira de la venta en lugar de seguir disponible."
-                }
+            "body": [
+                "Lo que cuenta aquí no es la cantidad de datos, sino su relevancia práctica. Para cada estudio se evalúa de forma sistemática un conjunto de fuentes públicas, y todo resultado se revisa antes de publicarse.",
+                "El objetivo no es listar el mayor número de empresas, sino identificar las que realmente pueden interesar a su proyecto de exportación."
             ]
+        },
+        "sources": {
+            "title": "De dónde vienen los datos",
+            "intro": "Toda la información procede de fuentes de acceso público. Entre ellas:",
+            "items": [
+                "sitios web de las propias empresas",
+                "cámaras de comercio",
+                "asociaciones sectoriales",
+                "catálogos de ferias",
+                "directorios de empresas",
+                "portales especializados",
+                "otra información económica de libre acceso"
+            ],
+            "note": "Antes de publicarse, los datos se comprueban en cuanto a plausibilidad, integridad y utilidad práctica. El material de partida procede de años de trabajo en el comercio de exportación y se amplía con esta investigación."
+        },
+        "review": {
+            "title": "Comprobación empresa por empresa",
+            "intro": "Antes de entrar en un directorio, cada empresa se comprueba en fuentes públicas. En particular verificamos:",
+            "items": [
+                "si opera en el sector indicado",
+                "si se identifica actividad de importación o distribución",
+                "si mantiene una presencia profesional",
+                "si sus canales de contacto están activos",
+                "si tiene sentido considerarla como posible socio de distribución"
+            ],
+            "note": "Esta comprobación no sustituye su propia cualificación comercial, pero aumenta la probabilidad de que la empresa listada sea relevante para su proyecto."
+        },
+        "updates": {
+            "title": "Mantenimiento del catálogo",
+            "body": "Los contactos y las estructuras societarias cambian continuamente. El catálogo se revisa periódicamente, y cuando una lista deja de reflejar el mercado que describe, se retira de la venta en lugar de seguir disponible."
         },
         "delivery": {
             "title": "Qué recibe",
-            "body": "Cada compra da acceso a un estudio de entrada en el mercado en PDF: visión general del sector en el país de destino, requisitos de acceso, estructura de distribución y el directorio de importadores y distribuidores de la lista elegida, con orientación sobre cómo preparar el primer contacto."
+            "intro": "Cada compra da acceso a un estudio de entrada en mercado en PDF — bastante más que una lista de direcciones. Según el sector, un estudio incluye:",
+            "items": [
+                "una visión general del mercado de destino",
+                "un análisis de la situación del sector",
+                "potencial de mercado y tendencias actuales",
+                "requisitos de acceso al mercado",
+                "estructuras de venta y distribución",
+                "un directorio de importadores y distribuidores relevantes",
+                "orientación para abordar a las empresas adecuadas",
+                "recomendaciones para preparar su entrada en el mercado"
+            ],
+            "note": "La idea es quitarle de encima buena parte de la investigación que consume tiempo, para que pueda concentrarse en construir relaciones comerciales."
         },
         "limits": {
-            "title": "Lo que no prometemos",
-            "body": "No prometemos que todas las empresas respondan a su contacto, ni que una lista sustituya su propia evaluación antes de negociar. El negocio internacional depende de una demanda real, de un precio competitivo y del momento adecuado — factores fuera de nuestro control. Nuestros directorios tampoco están hechos para envíos masivos: sirven a un acercamiento preparado, empresa por empresa. Lo que garantizamos es el criterio: ninguna empresa entra en una lista sin haber sido verificada en fuentes públicas."
+            "title": "Qué no prometemos",
+            "intro": "El éxito de un proyecto de exportación depende de muchos factores. No garantizamos que toda empresa responda a un contacto, ni que surja de inmediato una relación comercial. Pesan, entre otros:",
+            "items": [
+                "la competitividad de su producto",
+                "la demanda en el mercado de destino",
+                "su política de precios",
+                "su capacidad de entrega",
+                "su estrategia de marketing y ventas",
+                "el momento del contacto",
+                "la decisión de compra de cada importador"
+            ],
+            "note": "Nuestros directorios tampoco están hechos para envíos masivos: sirven a un acercamiento preparado, empresa por empresa. Lo que sí garantizamos es el criterio: ninguna empresa entra en una lista sin haber sido comprobada en fuentes públicas."
+        },
+        "trust": {
+            "eyebrow": "En resumen",
+            "title": "Por qué Easy Prospect",
+            "cards": [
+                {
+                    "title": "Hecho para la práctica",
+                    "body": "Los estudios se escriben para fabricantes, exportadores y responsables de ventas internacionales, no para consumo general."
+                },
+                {
+                    "title": "Más que listas de direcciones",
+                    "body": "Recibe información de mercado estructurada, recomendaciones concretas y un directorio de importadores y distribuidores investigado con cuidado."
+                },
+                {
+                    "title": "Investigación comprobada",
+                    "body": "La investigación sigue una metodología sistemática y pasa por una comprobación humana antes de publicarse."
+                },
+                {
+                    "title": "Tiempo ahorrado",
+                    "body": "En vez de semanas averiguando a quién dirigirse, empieza directamente por el contacto."
+                },
+                {
+                    "title": "Catálogo mantenido",
+                    "body": "Los estudios se revisan periódicamente y se corrigen o amplían cuando el mercado se mueve."
+                },
+                {
+                    "title": "Base de trabajo, no volumen",
+                    "body": "El objetivo no es vender la mayor cantidad de datos, sino darle una base sólida para abrir mercados con método."
+                }
+            ]
         },
         "cta": {
-            "title": "¿Todavía tiene dudas?",
-            "body": "Las preguntas más frecuentes sobre las listas, la entrega y el pago están respondidas en las FAQ.",
+            "title": "¿Ya sabe qué mercado quiere abordar?",
+            "body": "Vea los estudios de entrada en mercado y los directorios de importadores disponibles por país y sector. Las dudas más comunes sobre entrega y pago están en el FAQ.",
             "faq": "Ver preguntas frecuentes",
             "catalog": "Ver catálogo"
         },
         "breadcrumb": {
             "home": "Inicio",
-            "current": "Sobre nosotros"
+            "current": "Por qué Easy Prospect"
         }
     },
     "legal": {
