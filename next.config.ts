@@ -1,5 +1,6 @@
 // next.config.ts
 
+import { withSentryConfig } from '@sentry/nextjs'
 import type { NextConfig } from 'next'
 import createNextIntlPlugin from 'next-intl/plugin'
 
@@ -38,7 +39,7 @@ const nextConfig: NextConfig = {
         const securityHeaders = [
             {
                 key: 'Content-Security-Policy',
-                value: `default-src 'self'; script-src ${scriptSrc}; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://*.supabase.co https://api.paypal.com https://api.resend.com; frame-src 'self' https://www.paypal.com https://www.sandbox.paypal.com; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'`,
+                value: `default-src 'self'; script-src ${scriptSrc}; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://*.supabase.co https://api.paypal.com https://api.resend.com https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://*.ingest.de.sentry.io; frame-src 'self' https://www.paypal.com https://www.sandbox.paypal.com; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'`,
             },
             {
                 key: 'Referrer-Policy',
@@ -81,4 +82,22 @@ const nextConfig: NextConfig = {
     },
 }
 
-export default withNextIntl(nextConfig)
+export default withSentryConfig(withNextIntl(nextConfig), {
+    org: process.env.SENTRY_ORG,
+    project: process.env.SENTRY_PROJECT,
+
+    // Source maps só são enviados quando existe token. Sem ele o build segue
+    // normal (o deploy não pode quebrar porque falta uma variável de
+    // observabilidade) — mas as stack traces chegam minificadas.
+    // deleteSourcemapsAfterUpload: os mapas ficam só no Sentry; publicá-los
+    // junto com o bundle expõe o código-fonte para qualquer visitante.
+    sourcemaps: {
+        disable: !process.env.SENTRY_AUTH_TOKEN,
+        deleteSourcemapsAfterUpload: true,
+    },
+
+    widenClientFileUpload: true,
+
+    silent: !process.env.CI,
+    telemetry: false,
+})

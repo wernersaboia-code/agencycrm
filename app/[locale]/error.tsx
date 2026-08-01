@@ -1,5 +1,6 @@
 "use client"
 
+import * as Sentry from "@sentry/nextjs"
 import { useEffect } from "react"
 
 export default function Error({
@@ -11,6 +12,10 @@ export default function Error({
 }) {
     useEffect(() => {
         console.error("Marketplace Error:", error)
+        // Erro que estoura no cliente não passa pelo onRequestError do
+        // instrumentation.ts — sem esta chamada ele fica só no console de
+        // quem viu a tela quebrar.
+        Sentry.captureException(error)
     }, [error])
 
     return (
