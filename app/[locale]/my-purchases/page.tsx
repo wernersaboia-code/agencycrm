@@ -5,10 +5,11 @@ import { redirect } from "next/navigation"
 import {
     AlertTriangle,
     ArrowLeft,
-    Database,
+    BookOpen,
     DollarSign,
     FileDown,
     KeyRound,
+    MessageSquarePlus,
     Package,
     Rocket,
     ShoppingBag,
@@ -133,7 +134,10 @@ async function PurchasesDashboard({
                         )}
                     </div>
 
-                    <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                    {/* Três colunas, não quatro: o cartão de Leads saiu. Contar
+                        leads era a leitura antiga do produto (base para
+                        campanha); o que se compra hoje é o estudo de mercado. */}
+                    <div className="mt-6 grid gap-3 sm:grid-cols-3">
                         <StatCard
                             label={t("statPurchases")}
                             value={format.number(stats.totalPurchases)}
@@ -141,16 +145,10 @@ async function PurchasesDashboard({
                             tone="blue"
                         />
                         <StatCard
-                            label={t("statLists")}
-                            value={format.number(stats.totalLists)}
+                            label={t("statStudies")}
+                            value={format.number(stats.totalStudies)}
                             icon={Package}
                             tone="indigo"
-                        />
-                        <StatCard
-                            label={t("statLeads")}
-                            value={format.number(stats.totalLeads)}
-                            icon={Database}
-                            tone="violet"
                         />
                         <StatCard
                             label={t("statSpent")}
@@ -188,14 +186,16 @@ async function PurchasesDashboard({
                                     text={t("guidancePdfText")}
                                 />
                                 <GuidanceItem
-                                    icon={Database}
-                                    title={t("guidanceCrmTitle")}
-                                    text={t("guidanceCrmText")}
+                                    icon={BookOpen}
+                                    title={t("guidanceReadTitle")}
+                                    text={t("guidanceReadText")}
                                 />
                                 <GuidanceItem
-                                    icon={Rocket}
-                                    title={t("guidanceMarketTitle")}
-                                    text={t("guidanceMarketText")}
+                                    icon={MessageSquarePlus}
+                                    title={t("guidanceRequestTitle")}
+                                    text={t("guidanceRequestText")}
+                                    href="/faq"
+                                    linkLabel={t("guidanceRequestLink")}
                                 />
                             </div>
                         </aside>
@@ -210,8 +210,7 @@ function getPurchaseStats(purchases: UserPurchase[]) {
     return purchases.reduce(
         (stats, purchase) => {
             stats.totalPurchases += 1
-            stats.totalLists += purchase.items.length
-            stats.totalLeads += purchase.items.reduce((sum, item) => sum + item.list.totalLeads, 0)
+            stats.totalStudies += purchase.items.length
             // Somar EUR com BRL num número só produz um valor que não existe.
             stats.spentByCurrency[purchase.currency] =
                 (stats.spentByCurrency[purchase.currency] ?? 0) + purchase.total
@@ -219,8 +218,7 @@ function getPurchaseStats(purchases: UserPurchase[]) {
         },
         {
             totalPurchases: 0,
-            totalLists: 0,
-            totalLeads: 0,
+            totalStudies: 0,
             spentByCurrency: {} as Record<string, number>,
         }
     )
@@ -288,10 +286,16 @@ function GuidanceItem({
     icon: Icon,
     title,
     text,
+    href,
+    linkLabel,
 }: {
     icon: ComponentType<{ className?: string }>
     title: string
     text: string
+    // Um item que pede uma ação ("peça outro mercado") precisa levar até ela:
+    // sem link, o texto vira instrução para a pessoa procurar sozinha.
+    href?: string
+    linkLabel?: string
 }) {
     return (
         <div className="flex gap-3">
@@ -301,6 +305,14 @@ function GuidanceItem({
             <div>
                 <div className="font-medium text-foreground">{title}</div>
                 <p className="mt-1 text-sm text-muted-foreground">{text}</p>
+                {href && linkLabel && (
+                    <LocaleLink
+                        href={href}
+                        className="mt-1 inline-block text-sm font-medium text-brand-accent-strong underline underline-offset-4 hover:no-underline"
+                    >
+                        {linkLabel}
+                    </LocaleLink>
+                )}
             </div>
         </div>
     )
