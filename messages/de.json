@@ -24,9 +24,24 @@
             "errRateLimit": "Zu viele Anmeldeversuche. Bitte warten Sie eine Minute und versuchen Sie es erneut.",
             "errGeneric": "Die Bestätigung konnte nicht abgeschlossen werden.",
             "areas": {
-                "purchases": { "title": "Meine Einkäufe", "shortTitle": "Einkäufe ansehen", "description": "Gekaufte Listen, Bestellungen und Datei-Downloads.", "button": "Zu Meine Einkäufe" },
-                "admin": { "title": "Administrationsbereich", "shortTitle": "Administrationsbereich", "description": "Listen, Nutzer, Verkäufe und Einstellungen verwalten.", "button": "Zum Administrationsbereich" },
-                "crm": { "title": "CRM", "shortTitle": "Zum CRM", "description": "Leads, Kampagnen, Anrufe, Berichte und Vertriebsalltag.", "button": "Zum CRM" }
+                "purchases": {
+                    "title": "Meine Einkäufe",
+                    "shortTitle": "Einkäufe ansehen",
+                    "description": "Gekaufte Listen, Bestellungen und Datei-Downloads.",
+                    "button": "Zu Meine Einkäufe"
+                },
+                "admin": {
+                    "title": "Administrationsbereich",
+                    "shortTitle": "Administrationsbereich",
+                    "description": "Listen, Nutzer, Verkäufe und Einstellungen verwalten.",
+                    "button": "Zum Administrationsbereich"
+                },
+                "crm": {
+                    "title": "CRM",
+                    "shortTitle": "Zum CRM",
+                    "description": "Leads, Kampagnen, Anrufe, Berichte und Vertriebsalltag.",
+                    "button": "Zum CRM"
+                }
             }
         },
         "signUp": {
@@ -242,20 +257,20 @@
         },
         "items": [
             {
-                "question": "Woher stammen die Daten und wie werden sie verifiziert?",
-                "answer": "Die Listen entstehen aus eigener Recherche und werden von unserem Betrieb zusammengestellt. Bevor ein Unternehmen in eine Liste aufgenommen wird, prüfen wir es anhand öffentlich zugänglicher Quellen — Unternehmenswebsite, digitale Präsenz und verfügbare Einträge —, um zu bestätigen, dass es existiert, in der angegebenen Branche tätig ist und die Kontaktwege aktiv sind."
+                "question": "Woher stammen die Daten für die Markteintrittsstudien und wie werden sie verifiziert?",
+                "answer": "Unsere Markteintrittsstudien und Importeursverzeichnisse basieren auf einer eigens entwickelten Recherchemethodik. Hierfür werden zahlreiche öffentlich zugängliche Informationsquellen systematisch ausgewertet. Moderne KI-Technologien unterstützen die Recherche, Strukturierung und Analyse der Daten. Anschließend werden sämtliche Ergebnisse manuell überprüft und hinsichtlich ihrer Plausibilität, Aktualität und praktischen Relevanz bewertet.\nAlle Informationen stammen ausschließlich aus öffentlich zugänglichen Quellen, beispielsweise von Unternehmenswebsites, Branchenverzeichnissen, Handelskammern, Verbänden, Messekatalogen und weiteren frei verfügbaren Informationsquellen.\nVor der Veröffentlichung werden die Daten hinsichtlich Plausibilität, Vollständigkeit und ihrer praktischen Verwendbarkeit geprüft.\nDa Unternehmen ihre Ansprechpartner, Organisationsstrukturen oder Geschäftsschwerpunkte laufend anpassen, können sich einzelne Kontaktdaten im Laufe der Zeit ändern. Deshalb werden unsere Studien regelmäßig überprüft und gegebenenfalls aktualisiert."
             },
             {
-                "question": "Wie aktuell sind die Listen?",
-                "answer": "Die Seite jeder Liste zeigt, wann die Daten zuletzt überprüft wurden. Der Katalog wird regelmäßig überprüft; wenn eine Liste den Markt nicht mehr abbildet, nehmen wir sie aus dem Katalog, statt sie weiter zu verkaufen."
+                "question": "Wie aktuell sind die Markteintrittsstudien und Importeursverzeichnisse?",
+                "answer": "Internationale Märkte entwickeln sich ständig weiter. Deshalb überprüfen und aktualisieren wir unsere Markteintrittsstudien und die darin enthaltenen Listen potenziell relevanter Importeure und Distributoren in regelmäßigen Abständen. So stellen wir sicher, dass Ihnen möglichst aktuelle und praxisrelevante Informationen für Ihre Exportplanung zur Verfügung stehen. Das Datum der Erstellung können Sie dem Titelblatt der jeweiligen Markteintrittsstudie entnehmen."
             },
             {
-                "question": "In welchen Formaten erhalte ich die Daten?",
-                "answer": "Geliefert wird eine Marktstudie als PDF. Sobald die Zahlung bestätigt ist, steht die Datei unter Meine Käufe zum Download bereit und bleibt in Ihrem Konto verfügbar."
+                "question": "In welchen Formaten erhalte ich die Markteintrittsstudien?",
+                "answer": "Die Markteintrittsstudien werden als PDF-Dateien zur Verfügung gestellt. Sobald die Zahlung bestätigt ist, steht die Datei unter Meine Käufe zum Download bereit und bleibt dauerhaft in Ihrem Konto verfügbar."
             },
             {
-                "question": "Kann ich die Daten vor dem Kauf ansehen?",
-                "answer": "Ja. Auf der Seite jeder Liste sehen Sie die Abdeckung (Länder, Branchen und Sprache), das Datum, an dem die Daten überprüft wurden, den Preis und eine Stichprobe von Einträgen mit teilweise verdeckter E-Mail-Adresse. Die vollständigen Daten werden nach dem Kauf freigegeben."
+                "question": "Was genau erhalten Sie mit jeder Markteintrittsstudie?",
+                "answer": "Sie erhalten eine kompakte Marktanalyse mit den wichtigsten Informationen für Ihren erfolgreichen Markteintritt sowie ein sorgfältig recherchiertes Verzeichnis potenzieller Importeure und Distributoren. Im Gegensatz zu weit umfangreicheren Marktstudien anderer Anbieter umfassen unsere Markteintrittsstudien genau die Informationen, die Lieferanten tatsächlich brauchen, um in neuen Auslandsmärkten erfolgreich Fuß zu fassen.\nJede Markteintrittsstudie umfasst:\n— Marktübersicht und Branchensituation\n— Marktpotenzial und aktuelle Entwicklungen\n— Relevante Vertriebs- und Distributionskanäle\n— Potenzielle Importeure und Distributoren\n— Hinweise zur erfolgreichen Marktbearbeitung\n— Empfehlungen für die erste Kontaktaufnahme\n— Informationen über Anforderungen an potenzielle Lieferanten\nAufgrund unserer komprimierten Marktinformationen sparen Sie oft viele Tage oder sogar Wochen eigener Recherche und können sich mit klarem Fokus direkt auf den Aufbau neuer Geschäftsbeziehungen konzentrieren."
             },
             {
                 "question": "Wie funktioniert die Bezahlung?",
@@ -263,11 +278,7 @@
             },
             {
                 "question": "Für welche Länder und Branchen sind Listen verfügbar?",
-                "answer": "Verfügbar ist immer das, was gerade im Katalog veröffentlicht ist: Dort filtern Sie nach Land, Branche und Kategorie und sehen den aktuellen Stand. Neue Listen kommen hinzu, sobald sie fertig sind."
-            },
-            {
-                "question": "Was ist im beiliegenden Marktbericht enthalten?",
-                "answer": "Zu jeder Liste gehört eine Marktstudie als PDF, die für den Markt dieser Liste erstellt wurde. Da der Inhalt auf Land und Branche zugeschnitten ist, unterscheidet er sich von Liste zu Liste — die Einleitung auf der Seite der jeweiligen Liste fasst zusammen, was die Studie abdeckt."
+                "answer": "Unser Portfolio an Markteintrittsstudien wird ständig erweitert. Unser Ziel ist es, eine Vielzahl relevanter Branchen und Länder abzudecken. Falls Sie eine Markteintrittsstudie für eine bestimmte Branche in einem bestimmten Land benötigen, teilen Sie uns das gerne über unser Kontaktformular mit — wir bemühen uns, die Studie baldmöglichst in unser Portfolio aufzunehmen."
             },
             {
                 "question": "Wie steht es um Datenschutz und DSGVO?",

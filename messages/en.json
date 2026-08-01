@@ -24,9 +24,24 @@
             "errRateLimit": "Too many login attempts. Please wait a minute and try again.",
             "errGeneric": "We couldn't complete the confirmation.",
             "areas": {
-                "purchases": { "title": "My purchases", "shortTitle": "View purchases", "description": "Purchased lists, orders and file downloads.", "button": "Go to My purchases" },
-                "admin": { "title": "Administration Area", "shortTitle": "Administration Area", "description": "Manage lists, users, sales and settings.", "button": "Go to Administration Area" },
-                "crm": { "title": "CRM", "shortTitle": "Go to CRM", "description": "Leads, campaigns, calls, reports and daily sales work.", "button": "Go to CRM" }
+                "purchases": {
+                    "title": "My purchases",
+                    "shortTitle": "View purchases",
+                    "description": "Purchased lists, orders and file downloads.",
+                    "button": "Go to My purchases"
+                },
+                "admin": {
+                    "title": "Administration Area",
+                    "shortTitle": "Administration Area",
+                    "description": "Manage lists, users, sales and settings.",
+                    "button": "Go to Administration Area"
+                },
+                "crm": {
+                    "title": "CRM",
+                    "shortTitle": "Go to CRM",
+                    "description": "Leads, campaigns, calls, reports and daily sales work.",
+                    "button": "Go to CRM"
+                }
             }
         },
         "signUp": {
@@ -242,20 +257,20 @@
         },
         "items": [
             {
-                "question": "Where does the data come from and how is it verified?",
-                "answer": "The lists come out of our own research and are compiled by our operation. Before a company enters a list, we check it against publicly available sources — its website, its digital presence and available public records — to confirm that it exists, that it works in the stated industry and that its contact channels are active."
+                "question": "Where does the data for the market entry studies come from, and how is it verified?",
+                "answer": "Our market entry studies and importer directories are based on a research methodology we developed ourselves. For each study, a wide range of publicly accessible information sources is evaluated systematically. Modern AI technologies support the research, structuring and analysis of the data. All results are then reviewed manually and assessed for plausibility, currency and practical relevance.\nAll information comes exclusively from publicly accessible sources: company websites, industry directories, chambers of commerce, trade associations, trade fair catalogues and other freely available sources.\nBefore publication, the data is checked for plausibility, completeness and practical usability.\nBecause companies continually adjust their contact people, organisational structures and business focus, individual contact details can change over time. That is why our studies are reviewed at regular intervals and updated where necessary."
             },
             {
-                "question": "How current are the lists?",
-                "answer": "Each list's page shows when its data was last reviewed. The catalogue is reviewed periodically, and when a list no longer reflects the market it is taken out of the catalogue instead of staying on sale."
+                "question": "How up to date are the market entry studies and importer directories?",
+                "answer": "International markets evolve constantly. That is why we review and update our market entry studies — and the lists of potentially relevant importers and distributors they contain — at regular intervals. This ensures that the information available for your export planning is as current and practically relevant as possible. The date the study was produced is shown on the cover page of each market entry study."
             },
             {
-                "question": "What formats do I receive the data in?",
-                "answer": "What you receive is a market study as a PDF. Once payment is confirmed, the file is available for download under My purchases and stays accessible in your account."
+                "question": "What formats do I receive the market entry studies in?",
+                "answer": "The market entry studies are provided as PDF files. Once payment is confirmed, the file is available for download under My purchases and remains permanently available in your account."
             },
             {
-                "question": "Can I see the data before buying?",
-                "answer": "Yes. On each list's page you can see the coverage (countries, industries and language), the date the data was reviewed, the price and a sample of records with the email partially masked. The full data is released after purchase."
+                "question": "What exactly do you receive with each market entry study?",
+                "answer": "You receive a compact market analysis with the key information for a successful market entry, together with a carefully researched directory of potential importers and distributors. Unlike the far more extensive market studies offered by other providers, our market entry studies contain exactly the information suppliers actually need to gain a foothold in new foreign markets.\nEach market entry study includes:\n— Market overview and industry situation\n— Market potential and current developments\n— Relevant sales and distribution channels\n— Potential importers and distributors\n— Guidance on approaching the market successfully\n— Recommendations for making first contact\n— Information on the requirements placed on potential suppliers\nBecause the market information is condensed, you often save many days or even weeks of your own research and can focus directly on building new business relationships."
             },
             {
                 "question": "How does payment work?",
@@ -263,11 +278,7 @@
             },
             {
                 "question": "Which countries and industries are lists available for?",
-                "answer": "Coverage is whatever is published in the catalogue at any given moment: there you can filter by country, industry and category to see what is available today. New lists are added to the catalogue as they are finished."
-            },
-            {
-                "question": "What's included in the market report that comes with the list?",
-                "answer": "Every list comes with a market study as a PDF, prepared for that list's market. Because the content is tailored to the country and the industry, it differs from list to list — the introduction shown on each list's page summarises what that study covers."
+                "answer": "Our portfolio of market entry studies is expanding continuously. Our goal is to cover a wide range of relevant industries and countries. If you need a market entry study for a particular industry in a particular country, let us know via our contact form — we will do our best to add that study to our portfolio as soon as possible."
             },
             {
                 "question": "What about data protection (LGPD/GDPR)?",
@@ -1434,4 +1445,3 @@
         "skipToContent": "Skip to content"
     }
 }
-

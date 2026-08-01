@@ -24,9 +24,24 @@
             "errRateLimit": "Demasiados intentos de inicio de sesión. Espere un minuto y vuelva a intentarlo.",
             "errGeneric": "No se pudo completar la confirmación.",
             "areas": {
-                "purchases": { "title": "Mis compras", "shortTitle": "Ver compras", "description": "Listas compradas, pedidos y descargas de archivos.", "button": "Entrar en Mis compras" },
-                "admin": { "title": "Área Administrativa", "shortTitle": "Área Administrativa", "description": "Gestionar listas, usuarios, ventas y configuración.", "button": "Entrar en el Área Administrativa" },
-                "crm": { "title": "CRM", "shortTitle": "Entrar en el CRM", "description": "Leads, campañas, llamadas, informes y rutina comercial.", "button": "Entrar en el CRM" }
+                "purchases": {
+                    "title": "Mis compras",
+                    "shortTitle": "Ver compras",
+                    "description": "Listas compradas, pedidos y descargas de archivos.",
+                    "button": "Entrar en Mis compras"
+                },
+                "admin": {
+                    "title": "Área Administrativa",
+                    "shortTitle": "Área Administrativa",
+                    "description": "Gestionar listas, usuarios, ventas y configuración.",
+                    "button": "Entrar en el Área Administrativa"
+                },
+                "crm": {
+                    "title": "CRM",
+                    "shortTitle": "Entrar en el CRM",
+                    "description": "Leads, campañas, llamadas, informes y rutina comercial.",
+                    "button": "Entrar en el CRM"
+                }
             }
         },
         "signUp": {
@@ -242,20 +257,20 @@
         },
         "items": [
             {
-                "question": "¿De dónde vienen los datos y cómo se verifican?",
-                "answer": "Las listas nacen de investigación propia y las compila nuestra operación. Antes de que una empresa entre en una lista, la contrastamos con fuentes públicas — su sitio web, su presencia digital y los registros disponibles — para confirmar que existe, que opera en el sector indicado y que sus canales de contacto están activos."
+                "question": "¿De dónde proceden los datos de los estudios de entrada en el mercado y cómo se verifican?",
+                "answer": "Nuestros estudios de entrada en el mercado y directorios de importadores se basan en una metodología de investigación propia. Para cada estudio evaluamos sistemáticamente numerosas fuentes de información de acceso público. Las tecnologías modernas de IA apoyan la búsqueda, la estructuración y el análisis de los datos. Después, todos los resultados se revisan manualmente y se valoran en cuanto a plausibilidad, actualidad y relevancia práctica.\nToda la información procede exclusivamente de fuentes de acceso público: sitios web de empresas, directorios sectoriales, cámaras de comercio, asociaciones, catálogos de ferias y otras fuentes libremente disponibles.\nAntes de la publicación, los datos se comprueban en cuanto a plausibilidad, integridad y utilidad práctica.\nComo las empresas ajustan continuamente sus personas de contacto, estructuras organizativas y focos de negocio, algunos datos de contacto pueden cambiar con el tiempo. Por eso revisamos nuestros estudios periódicamente y los actualizamos cuando es necesario."
             },
             {
-                "question": "¿Qué tan actualizadas están las listas?",
-                "answer": "La página de cada lista muestra cuándo se revisaron sus datos por última vez. El catálogo se revisa periódicamente y, cuando una lista deja de reflejar el mercado, se retira del catálogo en lugar de seguir a la venta."
+                "question": "¿Qué grado de actualización tienen los estudios de entrada en el mercado y los directorios de importadores?",
+                "answer": "Los mercados internacionales evolucionan constantemente. Por eso revisamos y actualizamos periódicamente nuestros estudios de entrada en el mercado y las listas de importadores y distribuidores potencialmente relevantes que contienen. Así dispones de información lo más actual y práctica posible para tu planificación de exportación. La fecha de elaboración aparece en la portada de cada estudio."
             },
             {
-                "question": "¿En qué formatos recibo los datos?",
-                "answer": "La entrega es un estudio de mercado en PDF. En cuanto se confirma el pago, el archivo queda disponible para descarga en Mis compras y sigue accesible en tu cuenta."
+                "question": "¿En qué formatos recibo los estudios de entrada en el mercado?",
+                "answer": "Los estudios de entrada en el mercado se entregan como archivos PDF. En cuanto se confirma el pago, el archivo queda disponible para descarga en Mis compras y permanece siempre accesible en tu cuenta."
             },
             {
-                "question": "¿Puedo ver los datos antes de comprar?",
-                "answer": "Sí. En la página de cada lista ves la cobertura (países, sectores e idioma), la fecha en que se revisaron los datos, el precio y una muestra de registros con el correo parcialmente oculto. Los datos completos se liberan tras la compra."
+                "question": "¿Qué recibes exactamente con cada estudio de entrada en el mercado?",
+                "answer": "Recibes un análisis de mercado compacto con la información más importante para una entrada exitosa, junto con un directorio cuidadosamente investigado de importadores y distribuidores potenciales. A diferencia de los estudios de mercado mucho más extensos de otros proveedores, los nuestros reúnen exactamente la información que un proveedor necesita de verdad para asentarse en nuevos mercados exteriores.\nCada estudio de entrada en el mercado incluye:\n— Panorama del mercado y situación del sector\n— Potencial de mercado y evolución actual\n— Canales de venta y distribución relevantes\n— Importadores y distribuidores potenciales\n— Indicaciones para trabajar el mercado con éxito\n— Recomendaciones para el primer contacto\n— Información sobre los requisitos exigidos a los proveedores potenciales\nGracias a esta información condensada, ahorras muchos días —a veces semanas— de investigación propia y puedes concentrarte directamente en construir nuevas relaciones comerciales."
             },
             {
                 "question": "¿Cómo funciona el pago?",
@@ -263,11 +278,7 @@
             },
             {
                 "question": "¿Para qué países y sectores hay listas disponibles?",
-                "answer": "La cobertura es la que esté publicada en el catálogo en cada momento: allí puedes filtrar por país, sector y categoría para ver lo que hay disponible hoy. Las listas nuevas se incorporan al catálogo a medida que están listas."
-            },
-            {
-                "question": "¿Qué incluye el informe de mercado que acompaña a la lista?",
-                "answer": "Cada lista viene acompañada de un estudio de mercado en PDF, preparado para el mercado de esa lista. Como el contenido se adapta al país y al sector, varía de una lista a otra: la introducción que se muestra en la página de cada lista resume lo que cubre ese estudio."
+                "answer": "Nuestro portfolio de estudios de entrada en el mercado se amplía constantemente. Nuestro objetivo es cubrir una gran variedad de sectores y países relevantes. Si necesitas un estudio para un sector concreto en un país concreto, escríbenos a través del formulario de contacto y haremos lo posible por incorporarlo al portfolio lo antes posible."
             },
             {
                 "question": "¿Cómo se gestiona la protección de datos (LGPD/GDPR)?",
@@ -578,4 +589,3 @@
         "skipToContent": "Saltar al contenido"
     }
 }
-

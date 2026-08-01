@@ -20,7 +20,10 @@ export function FaqAccordion({ items }: { items: FaqEntry[] }) {
                     <AccordionTrigger className="text-base font-semibold text-foreground">
                         {item.question}
                     </AccordionTrigger>
-                    <AccordionContent className="leading-7 text-muted-foreground">
+                    {/* whitespace-pre-line: as respostas em messages/*.json usam
+                        \n para separar parágrafos e itens de lista. Sem isso a
+                        lista de "o que vem em cada estudo" vira parágrafo corrido. */}
+                    <AccordionContent className="whitespace-pre-line leading-7 text-muted-foreground">
                         {item.answer || "—"}
                     </AccordionContent>
                 </AccordionItem>

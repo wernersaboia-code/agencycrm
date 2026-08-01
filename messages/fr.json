@@ -24,9 +24,24 @@
             "errRateLimit": "Trop de tentatives de connexion. Veuillez attendre une minute et réessayer.",
             "errGeneric": "Impossible de finaliser la confirmation.",
             "areas": {
-                "purchases": { "title": "Mes achats", "shortTitle": "Voir les achats", "description": "Listes achetées, commandes et téléchargements de fichiers.", "button": "Accéder à Mes achats" },
-                "admin": { "title": "Espace administration", "shortTitle": "Espace administration", "description": "Gérer les listes, utilisateurs, ventes et paramètres.", "button": "Accéder à l'Espace administration" },
-                "crm": { "title": "CRM", "shortTitle": "Accéder au CRM", "description": "Leads, campagnes, appels, rapports et activité commerciale.", "button": "Accéder au CRM" }
+                "purchases": {
+                    "title": "Mes achats",
+                    "shortTitle": "Voir les achats",
+                    "description": "Listes achetées, commandes et téléchargements de fichiers.",
+                    "button": "Accéder à Mes achats"
+                },
+                "admin": {
+                    "title": "Espace administration",
+                    "shortTitle": "Espace administration",
+                    "description": "Gérer les listes, utilisateurs, ventes et paramètres.",
+                    "button": "Accéder à l'Espace administration"
+                },
+                "crm": {
+                    "title": "CRM",
+                    "shortTitle": "Accéder au CRM",
+                    "description": "Leads, campagnes, appels, rapports et activité commerciale.",
+                    "button": "Accéder au CRM"
+                }
             }
         },
         "signUp": {
@@ -242,20 +257,20 @@
         },
         "items": [
             {
-                "question": "D'où viennent les données et comment sont-elles vérifiées ?",
-                "answer": "Les listes sont issues de nos propres recherches et compilées par notre opération. Avant qu'une entreprise n'entre dans une liste, nous la vérifions à partir de sources publiques — site institutionnel, présence en ligne et registres disponibles — afin de confirmer qu'elle existe, qu'elle opère bien dans le secteur indiqué et que ses canaux de contact sont actifs."
+                "question": "D’où proviennent les données des études d’entrée sur le marché et comment sont-elles vérifiées ?",
+                "answer": "Nos études d’entrée sur le marché et nos répertoires d’importateurs reposent sur une méthodologie de recherche que nous avons développée nous-mêmes. Pour chaque étude, de nombreuses sources d’information accessibles au public sont analysées de manière systématique. Les technologies d’IA modernes assistent la recherche, la structuration et l’analyse des données. Tous les résultats sont ensuite vérifiés manuellement et évalués quant à leur plausibilité, leur actualité et leur pertinence pratique.\nToutes les informations proviennent exclusivement de sources accessibles au public : sites web d’entreprises, annuaires sectoriels, chambres de commerce, fédérations professionnelles, catalogues de salons et autres sources librement disponibles.\nAvant publication, les données sont contrôlées quant à leur plausibilité, leur exhaustivité et leur utilité pratique.\nComme les entreprises modifient continuellement leurs interlocuteurs, leurs structures et leurs axes d’activité, certaines coordonnées peuvent évoluer avec le temps. C’est pourquoi nos études sont réexaminées à intervalles réguliers et mises à jour si nécessaire."
             },
             {
-                "question": "Quelle est l'actualité des listes ?",
-                "answer": "La page de chaque liste indique quand ses données ont été revues pour la dernière fois. Le catalogue est revu périodiquement et, lorsqu'une liste ne reflète plus le marché, elle est retirée du catalogue plutôt que de rester en vente."
+                "question": "Les études d’entrée sur le marché et les répertoires d’importateurs sont-ils à jour ?",
+                "answer": "Les marchés internationaux évoluent en permanence. C’est pourquoi nous réexaminons et mettons à jour à intervalles réguliers nos études d’entrée sur le marché ainsi que les listes d’importateurs et de distributeurs potentiellement pertinents qu’elles contiennent. Vous disposez ainsi d’informations aussi actuelles et exploitables que possible pour votre planification à l’export. La date de réalisation figure sur la page de couverture de chaque étude."
             },
             {
-                "question": "Dans quels formats est-ce que je reçois les données ?",
-                "answer": "La livraison prend la forme d'une étude de marché en PDF. Dès que le paiement est confirmé, le fichier est disponible au téléchargement dans Mes achats et reste accessible dans votre compte."
+                "question": "Dans quels formats est-ce que je reçois les études d’entrée sur le marché ?",
+                "answer": "Les études d’entrée sur le marché sont fournies au format PDF. Dès que le paiement est confirmé, le fichier est disponible au téléchargement dans Mes achats et reste accessible en permanence dans votre compte."
             },
             {
-                "question": "Puis-je voir les données avant d'acheter ?",
-                "answer": "Oui. Sur la page de chaque liste, vous voyez la couverture (pays, secteurs et langue), la date à laquelle les données ont été revues, le prix et un échantillon d'enregistrements dont l'e-mail est partiellement masqué. Les données complètes sont débloquées après l'achat."
+                "question": "Que recevez-vous exactement avec chaque étude d’entrée sur le marché ?",
+                "answer": "Vous recevez une analyse de marché compacte réunissant les informations essentielles à une entrée réussie, ainsi qu’un répertoire soigneusement documenté d’importateurs et de distributeurs potentiels. Contrairement aux études de marché bien plus volumineuses d’autres prestataires, les nôtres contiennent exactement les informations dont un fournisseur a réellement besoin pour s’implanter sur de nouveaux marchés étrangers.\nChaque étude d’entrée sur le marché comprend :\n— Panorama du marché et situation du secteur\n— Potentiel du marché et évolutions actuelles\n— Canaux de vente et de distribution pertinents\n— Importateurs et distributeurs potentiels\n— Conseils pour aborder le marché avec succès\n— Recommandations pour la prise de contact initiale\n— Informations sur les exigences posées aux fournisseurs potentiels\nGrâce à ces informations condensées, vous économisez souvent plusieurs jours, voire plusieurs semaines, de recherches et pouvez vous concentrer directement sur la construction de nouvelles relations commerciales."
             },
             {
                 "question": "Comment fonctionne le paiement ?",
@@ -263,11 +278,7 @@
             },
             {
                 "question": "Pour quels pays et secteurs des listes sont-elles disponibles ?",
-                "answer": "La couverture correspond à ce qui est publié dans le catalogue à un moment donné : vous y filtrez par pays, secteur et catégorie pour voir ce qui est disponible aujourd'hui. De nouvelles listes s'ajoutent au catalogue au fur et à mesure qu'elles sont prêtes."
-            },
-            {
-                "question": "Que comprend le rapport de marché fourni avec la liste ?",
-                "answer": "Chaque liste est accompagnée d'une étude de marché en PDF, préparée pour le marché de cette liste. Le contenu étant adapté au pays et au secteur, il varie d'une liste à l'autre : l'introduction affichée sur la page de chaque liste résume ce que cette étude couvre."
+                "answer": "Notre portefeuille d’études d’entrée sur le marché s’élargit en permanence. Notre objectif est de couvrir un grand nombre de secteurs et de pays pertinents. Si vous avez besoin d’une étude pour un secteur précis dans un pays précis, faites-le nous savoir via notre formulaire de contact : nous nous efforcerons de l’ajouter à notre portefeuille dans les meilleurs délais."
             },
             {
                 "question": "Qu'en est-il de la protection des données (RGPD/LGPD) ?",
