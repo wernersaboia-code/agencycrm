@@ -4,10 +4,9 @@ import { useSyncExternalStore } from "react"
 import { Coins } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { useRouter } from "@/lib/i18n/navigation"
-import { setCurrencyCookie } from "@/actions/currency"
 import { useCart } from "@/contexts/cart-context"
 import { DEFAULT_CURRENCY, SUPPORTED_CURRENCIES, type Currency } from "@/lib/currency"
-import { readCurrencyCookie } from "@/lib/currency/client"
+import { readCurrencyCookie, writeCurrencyCookie } from "@/lib/currency/client"
 import { Button } from "@/components/ui/button"
 import {
     DropdownMenu,
@@ -42,9 +41,14 @@ export function CurrencySwitcher() {
     // Trocar de moeda NÃO troca de idioma: são cookies independentes e a rota
     // continua a mesma. router.refresh() basta para os Server Components
     // relerem o cookie e recalcularem os preços.
+    //
+    // O cookie é gravado no cliente, não por Server Action: aba aberta durante
+    // um deploy mandava um ID de ação que já não existia e o clique morria em
+    // silêncio (UnrecognizedActionError). Cookie de preferência não precisa do
+    // servidor para ser gravado.
     const switchTo = async (target: Currency) => {
         if (target === current) return
-        await setCurrencyCookie(target)
+        writeCurrencyCookie(target)
         await repriceTo(target)
         router.refresh()
     }

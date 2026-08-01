@@ -3,7 +3,7 @@
 import { Globe2 } from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
 import { usePathname, useRouter } from "@/lib/i18n/navigation"
-import { setLocaleCookie } from "@/actions/locale"
+import { PREFERENCE_COOKIE_MAX_AGE, writePreferenceCookie } from "@/lib/cookies/client"
 import { PUBLISHED_LOCALES, type Locale } from "@/lib/i18n/locales"
 import { Button } from "@/components/ui/button"
 import {
@@ -13,6 +13,9 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
+// Nome fixado pelo next-intl; i18n/request.ts lê o mesmo cookie no servidor.
+const LOCALE_COOKIE = "NEXT_LOCALE"
+
 export function LocaleSwitcher() {
     const locale = useLocale()
     // usePathname do wrapper devolve o caminho SEM o prefixo de idioma, então
@@ -21,9 +24,13 @@ export function LocaleSwitcher() {
     const router = useRouter()
     const t = useTranslations("nav")
 
-    const switchTo = async (target: Locale) => {
+    // Cookie gravado no cliente, não por Server Action: aba aberta durante um
+    // deploy mandava um ID de ação inexistente e a troca de idioma morria em
+    // silêncio (UnrecognizedActionError). O alvo vem de PUBLISHED_LOCALES, então
+    // já é um locale válido — a normalização que a ação fazia era redundante.
+    const switchTo = (target: Locale) => {
         if (target === locale) return
-        await setLocaleCookie(target)
+        writePreferenceCookie(LOCALE_COOKIE, target, PREFERENCE_COOKIE_MAX_AGE)
         router.replace(pathname, { locale: target })
     }
 

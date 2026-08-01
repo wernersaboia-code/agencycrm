@@ -6,7 +6,6 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { CheckCircle2, Loader2, TriangleAlert } from "lucide-react"
-import { submitFaqQuestion } from "@/actions/faq"
 import type { LandingLocale } from "@/components/landing/types"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -88,14 +87,32 @@ export function FaqContactForm({ locale, labels }: FaqContactFormProps) {
     const onSubmit = async (values: FormValues) => {
         setStatus("idle")
 
-        const result = await submitFaqQuestion({ ...values, consent: true as const, locale })
+        // try/catch obrigatório: antes a chamada era uma Server Action sem
+        // proteção, e quando ela rejeitava (aba velha depois de um deploy) a
+        // exceção subia como unhandledrejection. O estado ficava em "idle", ou
+        // seja, a pessoa clicava em enviar e NADA aparecia na tela — nem
+        // sucesso, nem erro. Falhar visivelmente é o mínimo aqui.
+        try {
+            const response = await fetch("/api/faq", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ ...values, consent: true as const, locale }),
+            })
 
-        if (result.success) {
-            setStatus("success")
-            form.reset()
-        } else if (result.error === "rate_limited") {
-            setStatus("rate_limited")
-        } else {
+            const result: { success: boolean; error?: string } = await response.json()
+
+            if (result.success) {
+                setStatus("success")
+                form.reset()
+            } else if (result.error === "rate_limited") {
+                setStatus("rate_limited")
+            } else {
+                setStatus("error")
+            }
+        } catch {
+            // Rede fora, resposta ilegível, qualquer coisa: mostra o erro em
+            // vez de deixar a tela muda. O texto digitado continua no campo,
+            // então dá para tentar de novo sem reescrever nada.
             setStatus("error")
         }
     }
