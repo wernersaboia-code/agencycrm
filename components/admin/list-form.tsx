@@ -112,10 +112,10 @@ export function ListForm({ list }: ListFormProps) {
         category: z.string().min(1, t("validationCategory")),
         countries: z.string().min(1, t("validationCountry")),
         industries: z.string().optional(),
-        // Um campo por moeda. Só o euro é obrigatório: sem preço em BRL/USD, a
-        // vitrine cai para o euro — sem preço em EUR não há para onde cair.
+        // Um campo por moeda. EUR e BRL são obrigatórios: EUR é a referência
+        // da vitrine, BRL é a moeda em que o Mercado Pago cobra. Só USD é opcional.
         price: z.string().min(1, t("validationPrice")),
-        priceBRL: z.string().optional(),
+        priceBRL: z.string().min(1, t("validationPriceBrl")),
         priceUSD: z.string().optional(),
         totalLeads: z.string().regex(/^\d*$/, t("validationInteger")).optional(),
         isActive: z.boolean().default(true),
@@ -235,7 +235,7 @@ export function ListForm({ list }: ListFormProps) {
                 ...rest,
                 prices: {
                     EUR: parseFloat(price),
-                    BRL: optionalPrice(priceBRL),
+                    BRL: parseFloat(priceBRL),
                     USD: optionalPrice(priceUSD),
                 },
                 countries: data.countries.split(",").map((c) => c.trim().toUpperCase()),
@@ -687,6 +687,11 @@ export function ListForm({ list }: ListFormProps) {
                                     placeholder="289.00"
                                     {...form.register("priceBRL")}
                                 />
+                                {form.formState.errors.priceBRL && (
+                                    <p className="text-sm text-destructive">
+                                        {form.formState.errors.priceBRL.message}
+                                    </p>
+                                )}
                             </div>
 
                             <div className="space-y-2">

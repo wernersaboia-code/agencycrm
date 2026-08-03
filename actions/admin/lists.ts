@@ -26,7 +26,7 @@ interface CreateListData {
     // A lista não tem mais UMA moeda: tem um preço por moeda oferecida.
     prices: {
         EUR: number
-        BRL?: number
+        BRL: number
         USD?: number
     }
     totalLeads?: number
@@ -43,10 +43,11 @@ const listDataSchema = z.object({
     category: z.string().trim().min(1).max(80),
     countries: z.array(z.string().trim().min(2).max(3)).min(1).max(100),
     industries: z.array(z.string().trim().min(1).max(80)).max(100),
-    // EUR é obrigatório — é a moeda de referência e o fallback da vitrine.
+    // EUR é a moeda de referência e o fallback da vitrine; BRL é a moeda da
+    // cobrança (o Mercado Pago só cobra em reais). Os dois são obrigatórios.
     prices: z.object({
         EUR: z.number().finite().positive().max(999999),
-        BRL: z.number().finite().positive().max(999999).optional(),
+        BRL: z.number().finite().positive().max(999999),
         USD: z.number().finite().positive().max(999999).optional(),
     }),
     // Número declarado manualmente pelo admin. A importação de leads

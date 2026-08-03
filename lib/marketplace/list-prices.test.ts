@@ -97,17 +97,66 @@ describe("writeListPrices", () => {
 
     it("recusa valor não positivo", async () => {
         const { db } = createMockDb()
-        await expect(writeListPrices(db as never, "list-1", { EUR: 0 })).rejects.toThrow(/positivo/)
+        await expect(
+            writeListPrices(db as never, "list-1", { EUR: 0, BRL: 289 })
+        ).rejects.toThrow(/positivo/)
     })
 
-    it("apaga a linha da moeda cujo valor foi enviado como undefined", async () => {
+    it("apaga a linha da moeda opcional cujo valor foi enviado como undefined", async () => {
         const { db, tx } = createMockDb()
 
-        await writeListPrices(db as never, "list-1", { EUR: 45, BRL: undefined })
+        // USD continua opcional — EUR e BRL, os obrigatórios, sempre vão aqui.
+        await writeListPrices(db as never, "list-1", { EUR: 45, BRL: 289, USD: undefined })
 
         expect(tx.leadListPrice.deleteMany).toHaveBeenCalledWith({
-            where: { listId: "list-1", currency: { in: ["BRL", "USD"] } },
+            where: { listId: "list-1", currency: { in: ["USD"] } },
         })
+    })
+})
+
+describe("writeListPrices — moedas obrigatórias", () => {
+    function createMockDb() {
+        return {
+            leadListPrice: { upsert: vi.fn(), deleteMany: vi.fn() },
+            leadList: { update: vi.fn() },
+            $transaction: vi.fn(),
+        }
+    }
+
+    it("recusa lista sem preço em BRL", async () => {
+        const db = createMockDb()
+
+        await expect(
+            writeListPrices(db as never, "lista-1", { EUR: 45 })
+        ).rejects.toThrow(/BRL/)
+
+        expect(db.$transaction).not.toHaveBeenCalled()
+    })
+
+    it("recusa lista sem preço em EUR", async () => {
+        const db = createMockDb()
+
+        await expect(
+            writeListPrices(db as never, "lista-1", { BRL: 289 })
+        ).rejects.toThrow(/EUR/)
+
+        expect(db.$transaction).not.toHaveBeenCalled()
+    })
+
+    it("aceita EUR e BRL, com USD opcional", async () => {
+        const db = createMockDb()
+        db.$transaction.mockImplementation(async (fn: (tx: unknown) => Promise<void>) => {
+            await fn({
+                leadListPrice: { upsert: vi.fn(), deleteMany: vi.fn() },
+                leadList: { update: vi.fn() },
+            })
+        })
+
+        await expect(
+            writeListPrices(db as never, "lista-1", { EUR: 45, BRL: 289 })
+        ).resolves.toBeUndefined()
+
+        expect(db.$transaction).toHaveBeenCalled()
     })
 })
 

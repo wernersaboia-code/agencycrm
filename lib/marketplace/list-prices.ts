@@ -76,16 +76,23 @@ export async function resolveListPrices(
  * divergirem. Nenhum outro módulo grava preço.
  *
  * Moeda ausente do objeto = a lista deixa de ter preço nela (a linha é
- * apagada). EUR nunca pode ser ausente.
+ * apagada). EUR e BRL nunca podem ser ausentes.
  */
 export async function writeListPrices(
     db: PriceDb,
     listId: string,
     amounts: Partial<Record<Currency, number>>
 ): Promise<void> {
+    // EUR é a moeda de referência da exibição; BRL é a moeda em que o dinheiro
+    // efetivamente entra — o Mercado Pago, único provedor ativo, cobra sempre
+    // em reais. Lista sem um dos dois é lista que ninguém consegue comprar.
     const eur = amounts[DEFAULT_CURRENCY]
     if (eur === undefined) {
         throw new Error("Preço em EUR é obrigatório: é a moeda de referência da lista.")
+    }
+
+    if (amounts.BRL === undefined) {
+        throw new Error("Preço em BRL é obrigatório: é a moeda em que a cobrança acontece.")
     }
 
     for (const [currency, amount] of Object.entries(amounts)) {
