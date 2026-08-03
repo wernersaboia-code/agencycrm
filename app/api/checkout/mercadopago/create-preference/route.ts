@@ -155,9 +155,12 @@ export async function POST(request: NextRequest) {
                 data: { mercadoPagoPreferenceId: preference.id },
             })
         } catch (error) {
-            // Preferência criada mas não persistida no banco: o webhook do Mercado Pago
-            // não encontrará o purchase para atualizar o pagamento. Marca como falha e
-            // libera o slot do backstop de pendentes.
+            // A preferência EXISTE no Mercado Pago mas não ficou gravada aqui. O webhook
+            // ainda acharia esta compra — ele correlaciona pelo external_reference, que é
+            // o purchase.id, não pelo preferenceId. O problema é outro: o comprador nunca
+            // recebeu a URL, então o pedido não aconteceu, e sem o preferenceId gravado
+            // ninguém consegue casar essa preferência solta com o pedido para conciliar.
+            // Marcar como falha é o desfecho honesto e devolve o slot do backstop.
             console.error("[Mercado Pago] Falha ao persistir preferência:", {
                 preferenceId: preference.id,
                 purchaseId: purchase.id,
