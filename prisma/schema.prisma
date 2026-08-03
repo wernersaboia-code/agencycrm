@@ -167,7 +167,7 @@ model User {
   workspaces           Workspace[]
   purchases            Purchase[]
   purchaseAccessTokens PurchaseAccessToken[]
-  blogPosts            BlogPost[]             @relation("BlogAuthor")
+  blogPosts            BlogPost[]            @relation("BlogAuthor")
 
   @@map("users")
 }
@@ -501,9 +501,9 @@ model EmailSend {
 
   // Rastreamento
   openedAt     DateTime?
-  openCount    Int       @default(0)
+  openCount    Int         @default(0)
   clickedAt    DateTime?
-  clickCount   Int       @default(0)
+  clickCount   Int         @default(0)
   repliedAt    DateTime?
   bouncedAt    DateTime?
   bounceReason String?
@@ -715,15 +715,17 @@ model Purchase {
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
-  // Pagamento (PayPal ou Stripe — provider define quais campos valem)
-  provider              PaymentProvider @default(paypal)
-  paypalOrderId         String?         @unique
-  paypalPayerId         String?
-  stripeSessionId       String?         @unique
-  stripePaymentIntentId String?
-  mercadoPagoPreferenceId String?       @unique
+  // Pagamento — `provider` define quais campos valem. O Mercado Pago é o caso
+  // diferente: ele correlaciona pelo `id` desta linha (external_reference), e
+  // não pelo preferenceId, que serve só para conciliação.
+  provider                PaymentProvider @default(paypal)
+  paypalOrderId           String?         @unique
+  paypalPayerId           String?
+  stripeSessionId         String?         @unique
+  stripePaymentIntentId   String?
+  mercadoPagoPreferenceId String?         @unique
   mercadoPagoPaymentId    String?
-  status                PurchaseStatus  @default(pending)
+  status                  PurchaseStatus  @default(pending)
 
   // Valores
   subtotal Decimal @db.Decimal(10, 2)
@@ -820,17 +822,17 @@ enum BlogPostStatus {
 }
 
 model BlogPost {
-  id            String                 @id @default(cuid())
+  id            String                @id @default(cuid())
   coverImageUrl String?
-  status        BlogPostStatus         @default(DRAFT)
+  status        BlogPostStatus        @default(DRAFT)
   publishedAt   DateTime?
   authorId      String?
-  author        User?                  @relation("BlogAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+  author        User?                 @relation("BlogAuthor", fields: [authorId], references: [id], onDelete: SetNull)
   categoryId    String?
-  category      BlogCategory?          @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  category      BlogCategory?         @relation(fields: [categoryId], references: [id], onDelete: Restrict)
   translations  BlogPostTranslation[]
-  createdAt     DateTime               @default(now())
-  updatedAt     DateTime               @updatedAt
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
 
   @@index([status, publishedAt])
   @@index([categoryId])
@@ -856,12 +858,12 @@ model BlogPostTranslation {
 }
 
 model BlogCategory {
-  id           String                     @id @default(cuid())
-  key          String                     @unique
+  id           String                    @id @default(cuid())
+  key          String                    @unique
   posts        BlogPost[]
   translations BlogCategoryTranslation[]
-  createdAt    DateTime                   @default(now())
-  updatedAt    DateTime                   @updatedAt
+  createdAt    DateTime                  @default(now())
+  updatedAt    DateTime                  @updatedAt
 }
 
 model BlogCategoryTranslation {

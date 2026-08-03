@@ -1,12 +1,17 @@
 // lib/checkout/fulfillment.ts
 //
 // Lógica compartilhada de "fulfillment" de uma compra do marketplace, válida
-// para os dois provedores de pagamento (PayPal e Stripe).
+// para os três provedores de pagamento (PayPal, Stripe e Mercado Pago).
 // É chamada por caminhos que podem correr em paralelo:
-//   1. /api/checkout/capture-order            (PayPal, frontend após o pagamento)
-//   2. /api/checkout/webhook                  (PayPal, PAYMENT.CAPTURE.COMPLETED)
-//   3. /api/checkout/stripe/confirm-session   (Stripe, frontend ao voltar)
-//   4. /api/checkout/stripe/webhook           (Stripe, checkout.session.completed)
+//   1. /api/checkout/capture-order                (PayPal, frontend após o pagamento)
+//   2. /api/checkout/webhook                      (PayPal, PAYMENT.CAPTURE.COMPLETED)
+//   3. /api/checkout/stripe/confirm-session       (Stripe, frontend ao voltar)
+//   4. /api/checkout/stripe/webhook               (Stripe, checkout.session.completed)
+//   5. /api/checkout/mercadopago/confirm-payment  (Mercado Pago, frontend ao voltar)
+//   6. /api/checkout/mercadopago/webhook          (Mercado Pago, notificação de pagamento)
+//
+// Hoje só o Mercado Pago está visível no checkout; os outros dois continuam
+// aqui inteiros para religar por variável de ambiente.
 //
 // A transição pending -> paid é feita com um updateMany condicional, de modo
 // que apenas UM dos caminhos efetive a compra e dispare o e-mail de
@@ -49,8 +54,9 @@ export function amountMatches(
 }
 
 /**
- * Efetiva uma compra de forma idempotente, a partir do identificador do
- * provedor de pagamento (order do PayPal ou session do Stripe).
+ * Efetiva uma compra de forma idempotente, a partir do identificador que
+ * localiza o pedido: order do PayPal, session do Stripe ou — no Mercado Pago —
+ * o nosso próprio purchase.id, que viaja como `external_reference`.
  *
  * - Se a compra não existe: `not_found`.
  * - Se já está paga (ou em estado terminal): `already_fulfilled` (no-op).
@@ -85,11 +91,11 @@ export async function fulfillPurchase(
     db: PrismaClient,
     params: {
         provider: PaymentProviderInput
-        /** paypalOrderId (PayPal) ou stripeSessionId (Stripe). */
+        /** paypalOrderId (PayPal), stripeSessionId (Stripe) ou purchase.id (Mercado Pago). */
         providerOrderId: string
         capturedAmount: CapturedAmount | null
         payer?: PayerInfo
-        /** paymentIntentId (Stripe) — gravado na efetivação. */
+        /** paymentIntentId (Stripe) ou id do pagamento (Mercado Pago) — gravado na efetivação. */
         providerPaymentId?: string | null
     }
 ): Promise<FulfillOutcome> {
@@ -100,6 +106,7 @@ export async function fulfillPurchase(
         select: {
             id: true,
             userId: true,
+            provider: true,
             status: true,
             total: true,
             currency: true,
@@ -110,8 +117,26 @@ export async function fulfillPurchase(
         return { status: "not_found" }
     }
 
-    // Qualquer estado não-pending é terminal para este fluxo (paid/failed/refunded).
-    if (purchase.status !== "pending") {
+    // As buscas de PayPal e Stripe já são exclusivas do provedor pela própria
+    // coluna. A do Mercado Pago é por chave primária e acharia qualquer compra
+    // — esta é a única linha que impede um pagamento de um provedor efetivar o
+    // pedido de outro.
+    if (purchase.provider !== provider) {
+        return { status: "not_found" }
+    }
+
+    // No Mercado Pago, `failed` NÃO é o fim do pedido. Uma recusa encerra a
+    // TENTATIVA: a mesma preferência continua válida e a própria documentação
+    // manda o comprador recusado escolher outro meio e tentar de novo. Cartão
+    // recusado seguido de Pix aprovado é fluxo normal, e tratar isso como
+    // terminal cobrava o dinheiro sem entregar a lista.
+    // Nos outros provedores `failed` continua terminal — lá ele só é gravado
+    // em evento realmente definitivo (sessão expirada, no Stripe).
+    const RESGATAVEIS = provider === "mercadopago" ? ["pending", "failed"] : ["pending"]
+
+    // `paid` e `refunded` são terminais em todos os provedores: reefetivar
+    // reenviaria o e-mail de uma compra já concluída.
+    if (!RESGATAVEIS.includes(purchase.status)) {
         return { status: "already_fulfilled", purchaseId: purchase.id }
     }
 
@@ -119,9 +144,15 @@ export async function fulfillPurchase(
         return { status: "amount_mismatch", purchaseId: purchase.id }
     }
 
-    // Transição condicional: só efetiva quem encontrar o registro ainda pending.
+    // Transição condicional: só efetiva quem encontrar o registro num estado
+    // ainda resgatável. É esta cláusula — e não a leitura acima — que garante a
+    // idempotência quando o retorno do navegador e o webhook chegam juntos: o
+    // segundo encontra count 0.
     const updated = await db.purchase.updateMany({
-        where: { id: purchase.id, status: "pending" },
+        where: {
+            id: purchase.id,
+            status: provider === "mercadopago" ? { in: ["pending", "failed"] } : "pending",
+        },
         data: {
             status: "paid",
             paidAt: new Date(),

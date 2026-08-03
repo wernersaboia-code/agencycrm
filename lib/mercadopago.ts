@@ -165,6 +165,16 @@ export async function createPreference(
         payment_methods: {
             excluded_payment_types: [{ id: "ticket" }],
         },
+        // Sem `auto_return` o Checkout Pro não devolve o comprador para o site:
+        // ele para na tela do Mercado Pago com um botão manual, e a página de
+        // retorno — o caminho rápido de confirmação — quase nunca é alcançada.
+        //
+        // Condicional de propósito, não por descuido: o Mercado Pago RECUSA a
+        // preferência inteira quando `auto_return` vem com uma back_url que não
+        // é pública. Em desenvolvimento a URL cai em http://localhost, então
+        // fixar isso incondicionalmente quebraria a criação de preferência na
+        // máquina de quem estiver desenvolvendo.
+        ...(input.successUrl.startsWith("https://") ? { auto_return: "approved" } : {}),
     }
 
     const data = (await mercadoPagoFetch("/checkout/preferences", {

@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
 
     // O `data.id` da assinatura vem da query string quando presente; o Mercado
     // Pago manda os dois caminhos e a query tem precedência na documentação.
-    const dataId = request.nextUrl.searchParams.get("data.id") ?? String(body.data?.id ?? "")
+    const dataId = request.nextUrl.searchParams.get("data.id") ?? String(body?.data?.id ?? "")
 
     if (!dataId) {
         return NextResponse.json({ error: "Missing payment id" }, { status: 400 })
