@@ -4,6 +4,7 @@ const publicEnv = {
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
     NEXT_PUBLIC_PAYPAL_CLIENT_ID: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID,
     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
+    NEXT_PUBLIC_MERCADOPAGO_PUBLIC_KEY: process.env.NEXT_PUBLIC_MERCADOPAGO_PUBLIC_KEY,
 } as const
 
 type PublicEnvName = keyof typeof publicEnv
@@ -54,6 +55,15 @@ export function getOptionalPublicPaypalClientId() {
  */
 export function getOptionalPublicStripePublishableKey() {
     return publicEnv.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || ""
+}
+
+/**
+ * Sinal público de "Mercado Pago habilitado" para a UI, espelhando o padrão de
+ * PayPal e Stripe. O Checkout Pro é hospedado e não usa a public key no
+ * client, mas manter o par documentado evita configuração pela metade.
+ */
+export function getOptionalPublicMercadoPagoPublicKey() {
+    return publicEnv.NEXT_PUBLIC_MERCADOPAGO_PUBLIC_KEY || ""
 }
 
 export function getServiceSupabaseConfig() {

@@ -31,3 +31,17 @@ export function getStripeServerConfig() {
 export function getStripeWebhookSecret(): string {
     return getRequiredServerEnv("STRIPE_WEBHOOK_SECRET")
 }
+
+export function getMercadoPagoServerConfig() {
+    return {
+        accessToken: getRequiredServerEnv("MERCADOPAGO_ACCESS_TOKEN"),
+    }
+}
+
+/**
+ * Getter próprio, mesmo motivo do Stripe: a rota de criação de preferência não
+ * pode falhar por causa de uma variável que só o webhook usa.
+ */
+export function getMercadoPagoWebhookSecret(): string {
+    return getRequiredServerEnv("MERCADOPAGO_WEBHOOK_SECRET")
+}
