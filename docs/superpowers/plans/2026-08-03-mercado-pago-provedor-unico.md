@@ -22,7 +22,11 @@
 - **Toda verificação de assinatura de webhook é fail-closed:** sem secret ou com assinatura inválida, responde 401 sem processar.
 - Base da API: `https://api.mercadopago.com`.
 - Textos de UI existem em 7 idiomas: `messages/{pt,en,de,fr,es,it,nl}.json`. Chave nova entra nos 7.
-- Rodar testes com `npm test`. Rodar lint com `npm run lint`.
+- **Node não está no PATH por padrão.** Antes de qualquer `npm`/`npx`, no Bash: `export PATH="/c/Program Files/nodejs:$PATH"`.
+- **Linha de base da suíte: 61 arquivos, 550 testes passando.** Nenhum teste do repositório toca o banco. Vitest só coleta `**/*.test.ts` (não `.tsx`) — não existe teste de componente React neste projeto.
+- **`npm run lint` com exit 0 é inatingível:** a linha de base tem 2378 erros e 112 mil avisos pré-existentes. O critério é **zero problema novo nos arquivos tocados**, verificado com `npx eslint <arquivos>`. Nunca rodar `npm run lint` esperando saída limpa.
+- **Nunca usar `git add <diretório>`** — já arrastou arquivo não rastreado do Werner para um commit. Sempre listar os arquivos explicitamente.
+- **Dev server só pelo preview (`.claude/launch.json`), porta 3001, nunca pelo Bash.** E `npm run build` exige o dev server parado no Windows: com ele no ar, o Prisma falha com `EPERM ... query_engine-windows.dll.node`.
 
 ---
 
@@ -486,10 +490,10 @@ export function getOptionalPublicMercadoPagoPublicKey() {
 Run: `npm test -- lib/mercadopago.test.ts`
 Expected: PASS — 13 testes.
 
-- [ ] **Step 6: Rodar o lint**
+- [ ] **Step 6: Rodar o lint nos arquivos tocados**
 
-Run: `npm run lint`
-Expected: sem erros nos arquivos tocados.
+Run: `npx eslint lib/mercadopago.ts lib/mercadopago.test.ts lib/server-env.ts lib/env.ts`
+Expected: zero problema novo. (`npm run lint` no projeto inteiro tem 2378 erros de linha de base — não é critério.)
 
 - [ ] **Step 7: Commit**
 
@@ -668,7 +672,8 @@ Expected: PASS — os testes antigos de paypal e stripe continuam verdes, mais o
 - [ ] **Step 7: Commit**
 
 ```bash
-git add prisma/schema.prisma prisma/migrations lib/checkout/fulfillment.ts lib/checkout/fulfillment.test.ts
+git add prisma/schema.prisma lib/checkout/fulfillment.ts lib/checkout/fulfillment.test.ts
+git add prisma/migrations/<timestamp>_add_mercadopago_provider/migration.sql
 git commit -m "feat(mercadopago): provedor no schema e busca por provedor no fulfillment"
 ```
 
@@ -879,7 +884,7 @@ Expected: relatório listando quantas listas ativas estão sem preço em BRL. **
 - [ ] **Step 9: Commit**
 
 ```bash
-git add lib/marketplace/list-prices.ts lib/marketplace/list-prices.test.ts actions/admin/lists.ts components/admin/list-form.tsx prisma/check-precos.ts messages/
+git add lib/marketplace/list-prices.ts lib/marketplace/list-prices.test.ts actions/admin/lists.ts components/admin/list-form.tsx prisma/check-precos.ts messages/pt.json messages/en.json messages/de.json messages/fr.json messages/es.json messages/it.json messages/nl.json
 git commit -m "feat(precos): torna BRL obrigatório, moeda em que a cobrança acontece"
 ```
 
@@ -1163,18 +1168,18 @@ export async function POST(request: NextRequest) {
 Run: `npx tsc --noEmit`
 Expected: sem erros.
 
-Run: `npm run lint`
-Expected: sem erros.
+Run: `npx eslint app/api/checkout/mercadopago/quote/route.ts app/api/checkout/mercadopago/create-preference/route.ts`
+Expected: zero problema novo.
 
 - [ ] **Step 4: Rodar a suíte inteira**
 
 Run: `npm test`
-Expected: PASS — nada quebrou.
+Expected: PASS — 550 testes ou mais, nada quebrou.
 
 - [ ] **Step 5: Commit**
 
 ```bash
-git add app/api/checkout/mercadopago/
+git add app/api/checkout/mercadopago/quote/route.ts app/api/checkout/mercadopago/create-preference/route.ts
 git commit -m "feat(mercadopago): rotas de cotação em BRL e criação de preferência"
 ```
 
@@ -1428,7 +1433,7 @@ Expected: PASS.
 - [ ] **Step 7: Commit**
 
 ```bash
-git add app/api/checkout/mercadopago/webhook lib/checkout/mercadopago-status.ts lib/checkout/mercadopago-status.test.ts
+git add app/api/checkout/mercadopago/webhook/route.ts lib/checkout/mercadopago-status.ts lib/checkout/mercadopago-status.test.ts
 git commit -m "feat(mercadopago): webhook assinado e ciclo assíncrono do Pix"
 ```
 
@@ -1780,16 +1785,18 @@ Na seção `"checkout"` de cada `messages/*.json`, junto de `stripeConfirming`:
 Run: `npx tsc --noEmit`
 Expected: sem erros.
 
-Run: `npm run lint`
-Expected: sem erros.
+Run: `npx eslint app/api/checkout/mercadopago/confirm-payment/route.ts "app/[locale]/checkout/mercadopago-return/page.tsx"`
+Expected: zero problema novo.
 
 Run: `npm test`
 Expected: PASS.
 
 - [ ] **Step 5: Commit**
 
+Listar os arquivos explicitamente — `git add <diretório>` já arrastou arquivo não rastreado neste repositório.
+
 ```bash
-git add app/api/checkout/mercadopago/confirm-payment "app/[locale]/checkout/mercadopago-return" messages/
+git add app/api/checkout/mercadopago/confirm-payment/route.ts "app/[locale]/checkout/mercadopago-return/page.tsx" messages/pt.json messages/en.json messages/de.json messages/fr.json messages/es.json messages/it.json messages/nl.json
 git commit -m "feat(mercadopago): confirmação no retorno e tela de pagamento pendente"
 ```
 
@@ -2009,10 +2016,10 @@ Na seção `"checkout"` de cada `messages/*.json`:
 - [ ] **Step 4: Verificar tipos, lint e suíte**
 
 Run: `npx tsc --noEmit`
-Expected: sem erros. Se `StripeCheckoutButton` ou `PayPalButtonsWrapper` ficarem sem uso, o lint aponta — os arquivos permanecem no repositório, apenas deixam de ser importados pela página de checkout.
+Expected: sem erros. `StripeCheckoutButton` e `PayPalButtonsWrapper` permanecem no repositório, apenas deixam de ser importados pela página de checkout — isso não é erro de tipo.
 
-Run: `npm run lint`
-Expected: sem erros.
+Run: `npx eslint components/checkout/mercadopago-button.tsx "app/[locale]/checkout/page.tsx"`
+Expected: zero problema novo.
 
 Run: `npm test`
 Expected: PASS.
@@ -2028,7 +2035,7 @@ Rodar o dev server pelo preview (`.claude/launch.json`, `npm run dev`, porta 300
 - [ ] **Step 6: Commit**
 
 ```bash
-git add components/checkout/mercadopago-button.tsx "app/[locale]/checkout/page.tsx" messages/
+git add components/checkout/mercadopago-button.tsx "app/[locale]/checkout/page.tsx" messages/pt.json messages/en.json messages/de.json messages/fr.json messages/es.json messages/it.json messages/nl.json
 git commit -m "feat(checkout): Mercado Pago como único provedor visível, com aviso de cobrança em BRL"
 ```
 
