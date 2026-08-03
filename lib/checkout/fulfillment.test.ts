@@ -167,4 +167,63 @@ describe("fulfillPurchase", () => {
 
         expect(outcome).toEqual({ status: "already_fulfilled", purchaseId: "purchase-1" })
     })
+
+    it("mercadopago: localiza a compra pelo próprio purchase.id", async () => {
+        // O webhook do Mercado Pago entrega só o ID do pagamento; quem amarra
+        // o pagamento ao pedido é o external_reference, que É o nosso id.
+        const db = createMockDb()
+        db.purchase.findUnique.mockResolvedValue({ ...pendingPurchase, currency: "BRL", total: "289.00" })
+        db.purchase.updateMany.mockResolvedValue({ count: 1 })
+
+        const outcome = await fulfillPurchase(db as unknown as PrismaClient, {
+            provider: "mercadopago",
+            providerOrderId: "purchase-1",
+            capturedAmount: { value: "289.00", currency: "BRL" },
+            payer: { email: "comprador@teste.com", name: "Comprador" },
+            providerPaymentId: "mp-pay-1",
+        })
+
+        expect(db.purchase.findUnique).toHaveBeenCalledWith(
+            expect.objectContaining({ where: { id: "purchase-1" } })
+        )
+        expect(outcome.status).toBe("fulfilled")
+    })
+
+    it("mercadopago: grava mercadoPagoPaymentId e nenhum campo dos outros provedores", async () => {
+        const db = createMockDb()
+        db.purchase.findUnique.mockResolvedValue({ ...pendingPurchase, currency: "BRL", total: "289.00" })
+        db.purchase.updateMany.mockResolvedValue({ count: 1 })
+
+        await fulfillPurchase(db as unknown as PrismaClient, {
+            provider: "mercadopago",
+            providerOrderId: "purchase-1",
+            capturedAmount: { value: "289.00", currency: "BRL" },
+            providerPaymentId: "mp-pay-1",
+        })
+
+        const [updateArgs] = db.purchase.updateMany.mock.calls[0]
+        expect(updateArgs.data).toMatchObject({
+            status: "paid",
+            mercadoPagoPaymentId: "mp-pay-1",
+        })
+        expect(updateArgs.data).not.toHaveProperty("paypalPayerId")
+        expect(updateArgs.data).not.toHaveProperty("stripePaymentIntentId")
+    })
+
+    it("mercadopago: valor em moeda diferente de BRL não efetiva", async () => {
+        // Rede de proteção contra o modo de falha central do Mercado Pago:
+        // ele não converte, então um valor rotulado EUR sobre compra em BRL
+        // significa que alguma coisa a montante montou o pedido errado.
+        const db = createMockDb()
+        db.purchase.findUnique.mockResolvedValue({ ...pendingPurchase, currency: "BRL", total: "289.00" })
+
+        const outcome = await fulfillPurchase(db as unknown as PrismaClient, {
+            provider: "mercadopago",
+            providerOrderId: "purchase-1",
+            capturedAmount: { value: "289.00", currency: "EUR" },
+        })
+
+        expect(outcome).toEqual({ status: "amount_mismatch", purchaseId: "purchase-1" })
+        expect(db.purchase.updateMany).not.toHaveBeenCalled()
+    })
 })

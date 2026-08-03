@@ -25,7 +25,7 @@ export type PayerInfo = {
     name?: string | null
 }
 
-export type PaymentProviderInput = "paypal" | "stripe"
+export type PaymentProviderInput = "paypal" | "stripe" | "mercadopago"
 
 export type FulfillOutcome =
     | { status: "fulfilled"; purchaseId: string; accessUrl: string }
@@ -62,6 +62,25 @@ export function amountMatches(
  * O `db` vem por parâmetro (padrão dos helpers de domínio) para a função ser
  * testável sem banco real.
  */
+
+/**
+ * Como localizar a compra a partir do identificador que cada provedor
+ * devolve.
+ *
+ * O Mercado Pago é o caso diferente: o webhook dele entrega só o ID do
+ * pagamento, e o que amarra o pagamento ao pedido é o `external_reference` —
+ * que É o nosso purchase.id. Um ternário aqui mandaria silenciosamente todo
+ * provedor novo para a busca do Stripe.
+ */
+const BUSCA_POR_PROVEDOR: Record<
+    PaymentProviderInput,
+    (providerOrderId: string) => { paypalOrderId: string } | { stripeSessionId: string } | { id: string }
+> = {
+    paypal: (id) => ({ paypalOrderId: id }),
+    stripe: (id) => ({ stripeSessionId: id }),
+    mercadopago: (id) => ({ id }),
+}
+
 export async function fulfillPurchase(
     db: PrismaClient,
     params: {
@@ -77,10 +96,7 @@ export async function fulfillPurchase(
     const { provider, providerOrderId, capturedAmount, payer, providerPaymentId } = params
 
     const purchase = await db.purchase.findUnique({
-        where:
-            provider === "paypal"
-                ? { paypalOrderId: providerOrderId }
-                : { stripeSessionId: providerOrderId },
+        where: BUSCA_POR_PROVEDOR[provider](providerOrderId),
         select: {
             id: true,
             userId: true,
@@ -114,6 +130,9 @@ export async function fulfillPurchase(
                 : {}),
             ...(provider === "stripe" && providerPaymentId
                 ? { stripePaymentIntentId: providerPaymentId }
+                : {}),
+            ...(provider === "mercadopago" && providerPaymentId
+                ? { mercadoPagoPaymentId: providerPaymentId }
                 : {}),
             ...(payer?.email ? { buyerEmail: payer.email } : {}),
             ...(payer?.name ? { buyerName: payer.name } : {}),
