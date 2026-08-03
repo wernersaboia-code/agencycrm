@@ -220,7 +220,7 @@ Diferenças:
 - `back_urls` de sucesso/pendente/falha e `notification_url` do webhook.
 - Devolve o `init_point` para o redirecionamento.
 
-### `GET /api/checkout/mercadopago/confirm-payment`
+### `POST /api/checkout/mercadopago/confirm-payment`
 
 Chamada pela página de retorno `/[locale]/checkout/mercadopago-return`. Faz
 `getPayment` e chama `fulfillPurchase`. É o caminho rápido; o webhook é a rede de
@@ -288,7 +288,7 @@ Quando o carrinho está em EUR ou USD, o checkout exibe — antes do botão — 
 exato em reais que será cobrado, e a nota de que o banco do comprador faz a
 conversão.
 
-O número vem de `GET /api/checkout/mercadopago/quote`: mesmos itens, total
+O número vem de `POST /api/checkout/mercadopago/quote`: mesmos itens, total
 calculado em BRL no servidor. O preço nunca sai do cliente.
 
 Se a cotação falhar, o botão não aparece. Melhor não vender que redirecionar
