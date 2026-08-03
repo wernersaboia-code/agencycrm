@@ -149,10 +149,26 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: "Failed to create preference" }, { status: 500 })
         }
 
-        await prisma.purchase.update({
-            where: { id: purchase.id },
-            data: { mercadoPagoPreferenceId: preference.id },
-        })
+        try {
+            await prisma.purchase.update({
+                where: { id: purchase.id },
+                data: { mercadoPagoPreferenceId: preference.id },
+            })
+        } catch (error) {
+            // Preferência criada mas não persistida no banco: o webhook do Mercado Pago
+            // não encontrará o purchase para atualizar o pagamento. Marca como falha e
+            // libera o slot do backstop de pendentes.
+            console.error("[Mercado Pago] Falha ao persistir preferência:", {
+                preferenceId: preference.id,
+                purchaseId: purchase.id,
+                error,
+            })
+            await prisma.purchase.updateMany({
+                where: { id: purchase.id, status: "pending" },
+                data: { status: "failed" },
+            })
+            return NextResponse.json({ error: "Failed to save preference" }, { status: 500 })
+        }
 
         return NextResponse.json({
             url: preference.initPoint,
