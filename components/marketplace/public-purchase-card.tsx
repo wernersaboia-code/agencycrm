@@ -7,6 +7,23 @@ import { Button } from "@/components/ui/button"
 import { Calendar, CheckCircle, ChevronDown, Database, Download } from "lucide-react"
 import { toast } from "sonner"
 
+/**
+ * Opções de data, não formato nomeado.
+ *
+ * Este componente pedia `format.dateTime(data, "short")`, e `short` nunca foi
+ * declarado em lugar nenhum — o next-intl não tem fallback para formato
+ * ausente: lança MISSING_FORMAT e derruba "Minhas compras" inteira.
+ *
+ * Declarar em `getRequestConfig` não resolveria: os `NextIntlClientProvider`
+ * deste projeto são montados só com `locale` e `messages`, e este componente é
+ * de cliente. Formato nomeado exigiria plumbing em todo provider, presente e
+ * futuro, sem o TypeScript avisar quando alguém esquecesse.
+ *
+ * Mesma forma usada na página de lista: mês abreviado no idioma ativo, porque
+ * "fev. de 2026" para um leitor alemão é ruído.
+ */
+const DATA_CURTA = { day: "2-digit", month: "short", year: "numeric" } as const
+
 interface PurchaseItem {
     id: string
     list: {
@@ -107,7 +124,7 @@ export function PublicPurchaseCard({ purchase }: PublicPurchaseCardProps) {
                             <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
                                 <span className="flex items-center gap-1">
                                     <Calendar className="h-3 w-3" />
-                                    {format.dateTime(new Date(purchase.createdAt), "short")}
+                                    {format.dateTime(new Date(purchase.createdAt), DATA_CURTA)}
                                 </span>
                                 <span>{purchase.items.length} lista(s)</span>
                             </div>
