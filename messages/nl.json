@@ -508,6 +508,8 @@
         "paymentConfirmed": "Betaling bevestigd!",
         "paypalError": "Fout bij het verwerken van de betaling",
         "payWithCard": "Betalen met kaart",
+        "payWithMercadoPago": "Betalen met Mercado Pago",
+        "brlChargeNotice": "Er wordt afgerekend in Braziliaanse real: {amount}. Als je kaart uit een ander land komt, verzorgt je bank de omrekening.",
         "stripeConfirming": "Je betaling wordt bevestigd...",
         "stripeConfirmFailed": "We konden je betaling nu niet bevestigen. Als het bedrag is afgeschreven, verschijnt je aankoop in Mijn aankopen zodra Stripe bevestigt.",
         "mpConfirming": "Je betaling wordt bevestigd...",

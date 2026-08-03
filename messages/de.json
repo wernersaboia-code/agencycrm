@@ -508,6 +508,8 @@
         "paymentConfirmed": "Zahlung bestätigt!",
         "paypalError": "Fehler bei der Zahlungsabwicklung",
         "payWithCard": "Mit Karte zahlen",
+        "payWithMercadoPago": "Mit Mercado Pago bezahlen",
+        "brlChargeNotice": "Die Abbuchung erfolgt in brasilianischen Real: {amount}. Bei einer Karte aus einem anderen Land übernimmt Ihre Bank die Umrechnung.",
         "stripeConfirming": "Ihre Zahlung wird bestätigt...",
         "stripeConfirmFailed": "Wir konnten Ihre Zahlung gerade nicht bestätigen. Wenn der Betrag abgebucht wurde, erscheint Ihr Kauf unter Meine Käufe, sobald Stripe ihn bestätigt.",
         "mpConfirming": "Zahlung wird bestätigt...",

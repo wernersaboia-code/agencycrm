@@ -508,6 +508,8 @@
         "paymentConfirmed": "¡Pago confirmado!",
         "paypalError": "Error al procesar el pago",
         "payWithCard": "Pagar con tarjeta",
+        "payWithMercadoPago": "Pagar con Mercado Pago",
+        "brlChargeNotice": "El cobro se realiza en reales brasileños: {amount}. Si tu tarjeta es de otro país, tu banco hace la conversión.",
         "stripeConfirming": "Confirmando tu pago...",
         "stripeConfirmFailed": "No pudimos confirmar el pago ahora. Si el importe fue cobrado, tu compra aparecerá en Mis compras en cuanto Stripe lo confirme.",
         "mpConfirming": "Confirmando tu pago...",

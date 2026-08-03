@@ -508,6 +508,8 @@
         "paymentConfirmed": "Pagamento confermato!",
         "paypalError": "Errore durante l'elaborazione del pagamento",
         "payWithCard": "Paga con carta",
+        "payWithMercadoPago": "Paga con Mercado Pago",
+        "brlChargeNotice": "L'addebito avviene in real brasiliani: {amount}. Se la tua carta è di un altro paese, la conversione è a cura della tua banca.",
         "stripeConfirming": "Conferma del pagamento in corso...",
         "stripeConfirmFailed": "Non siamo riusciti a confermare il pagamento. Se l'importo è stato addebitato, il tuo acquisto apparirà in I miei acquisti non appena Stripe lo confermerà.",
         "mpConfirming": "Conferma del pagamento in corso...",

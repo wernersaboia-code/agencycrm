@@ -5,12 +5,8 @@ import type { ComponentType } from "react"
 import { useFormatter, useLocale, useTranslations } from "next-intl"
 import { Link, useRouter } from "@/lib/i18n/navigation"
 import { useCart } from "@/contexts/cart-context"
-import { PayPalButtonsWrapper } from "@/components/checkout/paypal-buttons"
-import { StripeCheckoutButton } from "@/components/checkout/stripe-checkout-button"
-import {
-    getOptionalPublicPaypalClientId,
-    getOptionalPublicStripePublishableKey,
-} from "@/lib/env"
+import { MercadoPagoButton } from "@/components/checkout/mercadopago-button"
+import { getOptionalPublicMercadoPagoPublicKey } from "@/lib/env"
 import { formatCurrency } from "@/lib/utils"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
@@ -32,14 +28,10 @@ export default function CheckoutPage() {
     const format = useFormatter()
     const locale = useLocale()
 
-    // Cada botão de pagamento se esconde sozinho quando seu provedor não está
-    // configurado. Isso deixava um caso sem dono: com nenhum configurado, o
-    // cartão de pagamento ficava vazio e o comprador não tinha como saber se a
-    // culpa era dele. Só esta página enxerga os dois provedores, então é aqui
-    // que o aviso mora.
-    const hasAnyPaymentProvider =
-        Boolean(getOptionalPublicStripePublishableKey()) ||
-        Boolean(getOptionalPublicPaypalClientId())
+    // Stripe e PayPal saíram da tela — a conta do primeiro está com pendências
+    // e a do segundo foi cancelada. As rotas dos dois continuam no código, e
+    // religar qualquer um volta a ser questão de variável de ambiente.
+    const hasAnyPaymentProvider = Boolean(getOptionalPublicMercadoPagoPublicKey())
 
     useEffect(() => {
         if (items.length === 0) {
@@ -52,7 +44,7 @@ export default function CheckoutPage() {
     }
 
     const totalLeads = items.reduce((sum, item) => sum + item.totalLeads * item.quantity, 0)
-    const paypalItems = items.map((item) => ({
+    const checkoutItems = items.map((item) => ({
         listId: item.id,
         quantity: item.quantity,
     }))
@@ -105,17 +97,7 @@ export default function CheckoutPage() {
                             </div>
 
                             {hasAnyPaymentProvider ? (
-                                <>
-                                    {/* Stripe primeiro: é o meio principal. Cada botão
-                                        some sozinho quando seu provedor não está
-                                        configurado, então a ordem aqui é a ordem que o
-                                        comprador vê. */}
-                                    <StripeCheckoutButton items={paypalItems} currency={currency} />
-
-                                    <div className="mt-3">
-                                        <PayPalButtonsWrapper items={paypalItems} currency={currency} />
-                                    </div>
-                                </>
+                                <MercadoPagoButton items={checkoutItems} currency={currency} />
                             ) : (
                                 <div
                                     role="alert"
