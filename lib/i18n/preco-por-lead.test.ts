@@ -27,7 +27,6 @@ function valor(objeto: unknown, caminho: string): string {
  * nenhum componente as usa — se voltarem a ser usadas, entram aqui.
  */
 const CHAVES_VISIVEIS = [
-    "listing.beforeBuyNote",
     "landing.howItWorks.steps.1.body",
 ]
 

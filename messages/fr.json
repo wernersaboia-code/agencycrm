@@ -465,7 +465,6 @@
         "perLead": "{price} par lead",
         "leadsIncluded": "{count} leads inclus",
         "oneOffNote": "Achat unique, sans abonnement. L'accès reste disponible dans l'espace Mes achats.",
-        "beforeBuyNote": "Avant d'acheter, vérifiez la couverture, l'aperçu des données et le prix. Une fois le paiement approuvé, le téléchargement devient disponible sur votre compte.",
         "benefitSecure": "Paiement sécurisé par carte",
         "benefitImmediate": "Téléchargement immédiat après confirmation",
         "benefitRecorded": "Achat enregistré sur votre compte",

@@ -265,10 +265,6 @@ export default async function ListPage({ params }: ListPageProps) {
                             <p>{t("oneOffNote")}</p>
                         </div>
 
-                        <div className="mb-6 rounded-lg border border-primary/30 bg-primary/10 p-4 text-sm text-foreground">
-                            {t("beforeBuyNote")}
-                        </div>
-
                         <div className="space-y-3">
                             <BuyNowButton list={listForCart} />
                             <AddToCartButton list={listForCart} />
