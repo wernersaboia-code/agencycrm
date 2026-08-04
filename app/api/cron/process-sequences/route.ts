@@ -352,7 +352,7 @@ export async function GET(request: Request) {
                         where: { id: emailSend.id },
                         data: {
                             status: "SENT",
-                            sentAt: now,
+                            sentAt: now,
                             messageId: result.messageId
                                 ? normalizeMessageId(result.messageId)
                                 : null,

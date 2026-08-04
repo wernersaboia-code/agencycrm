@@ -205,7 +205,7 @@ export async function sendSingleCampaign(
                 where: { id: emailSend.id },
                 data: {
                     status: "SENT",
-                    sentAt: now,
+                    sentAt: now,
                     messageId: sendResult.messageId
                         ? normalizeMessageId(sendResult.messageId)
                         : null,
@@ -427,7 +427,7 @@ export async function sendSequenceFirstStep(
                 where: { id: emailSendId },
                 data: {
                     status: "SENT",
-                    sentAt: now,
+                    sentAt: now,
                     messageId: sendResult.messageId
                         ? normalizeMessageId(sendResult.messageId)
                         : null,
