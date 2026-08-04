@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { useFormatter, useTranslations } from "next-intl"
+import { useFormatter } from "next-intl"
 import { formatCurrency } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Calendar, CheckCircle, ChevronDown, Database, Download } from "lucide-react"
@@ -50,7 +50,6 @@ export function PublicPurchaseCard({ purchase }: PublicPurchaseCardProps) {
     const [expanded, setExpanded] = useState(false)
     const [downloading, setDownloading] = useState<string | null>(null)
     const format = useFormatter()
-    const t = useTranslations("catalog")
 
     const statusColors: Record<string, string> = {
         paid: "bg-indigo-100 text-indigo-700",

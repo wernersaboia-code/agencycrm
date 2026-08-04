@@ -258,7 +258,7 @@
         "items": [
             {
                 "question": "De onde vêm os dados dos estudos de entrada em mercado e como são verificados?",
-                "answer": "Nossos estudos de entrada em mercado e diretórios de importadores seguem uma metodologia de pesquisa desenvolvida por nós. Para cada estudo, avaliamos sistematicamente um grande número de fontes de informação de acesso público. Tecnologias modernas de IA apoiam a pesquisa, a estruturação e a análise dos dados. Em seguida, todos os resultados são revisados manualmente e avaliados quanto à plausibilidade, à atualidade e à relevância prática.\nTodas as informações vêm exclusivamente de fontes de acesso público: sites institucionais, diretórios setoriais, câmaras de comércio, associações, catálogos de feiras e outras fontes livremente disponíveis.\nAntes da publicação, os dados são conferidos quanto à plausibilidade, à integridade e à utilidade prática.\nComo as empresas ajustam continuamente seus contatos, estruturas organizacionais e focos de negócio, alguns dados de contato podem mudar ao longo do tempo. Por isso, nossos estudos são revisados periodicamente e atualizados quando necessário."
+                "answer": "Nossos estudos de entrada em mercado e diretórios de importadores seguem uma metodologia de pesquisa desenvolvida por nós. Para cada estudo, avaliamos sistematicamente um grande número de fontes de informação de acesso público. Tecnologias modernas de IA apoiam a pesquisa, a estruturação e a análise dos dados. Em seguida, todos os resultados são revisados manualmente e avaliados quanto à plausibilidade, à atualidade e à relevância prática.\nTodas as informações vêm exclusivamente de fontes de acesso público: sites institucionais, diretórios setoriais, câmaras de comércio, associações, catálogos de feiras e outras fontes livremente disponíveis.\nComo as empresas ajustam continuamente seus contatos, estruturas organizacionais e focos de negócio, alguns dados de contato podem mudar ao longo do tempo. Por isso, nossos estudos são revisados periodicamente e atualizados quando necessário."
             },
             {
                 "question": "Quão atualizados estão os estudos de entrada em mercado e os diretórios de importadores?",
@@ -973,6 +973,15 @@
         "lists": {
             "title": "Listas de Leads",
             "subtitle": "Gerencie as listas disponíveis no catálogo público.",
+            "filtersSearchLabel": "Buscar lista",
+            "filtersSearchPlaceholder": "Buscar por nome ou slug…",
+            "filtersAllCountries": "Todos os países",
+            "filtersAllIndustries": "Todos os setores",
+            "filtersAllStatus": "Todos os status",
+            "filtersInactive": "Inativas",
+            "filtersResult": "Mostrando {shown} de {total} lista(s).",
+            "filtersClear": "Limpar filtros",
+            "emptyFiltered": "Nenhuma lista bate com esse filtro.",
             "backToDashboard": "Voltar ao painel",
             "createNewList": "Criar nova lista",
             "infoCard": "Para publicar uma nova base, clique em Criar nova lista. Depois, confira se a lista tem o PDF anexado, os dados marcados como revisados e está marcada como ativa.",

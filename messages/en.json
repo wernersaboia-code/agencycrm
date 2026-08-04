@@ -258,7 +258,7 @@
         "items": [
             {
                 "question": "Where does the data for the market entry studies come from, and how is it verified?",
-                "answer": "Our market entry studies and importer directories are based on a research methodology we developed ourselves. For each study, a wide range of publicly accessible information sources is evaluated systematically. Modern AI technologies support the research, structuring and analysis of the data. All results are then reviewed manually and assessed for plausibility, currency and practical relevance.\nAll information comes exclusively from publicly accessible sources: company websites, industry directories, chambers of commerce, trade associations, trade fair catalogues and other freely available sources.\nBefore publication, the data is checked for plausibility, completeness and practical usability.\nBecause companies continually adjust their contact people, organisational structures and business focus, individual contact details can change over time. That is why our studies are reviewed at regular intervals and updated where necessary."
+                "answer": "Our market entry studies and importer directories are based on a research methodology we developed ourselves. For each study, a wide range of publicly accessible information sources is evaluated systematically. Modern AI technologies support the research, structuring and analysis of the data. All results are then reviewed manually and assessed for plausibility, currency and practical relevance.\nAll information comes exclusively from publicly accessible sources: company websites, industry directories, chambers of commerce, trade associations, trade fair catalogues and other freely available sources.\nBecause companies continually adjust their contact people, organisational structures and business focus, individual contact details can change over time. That is why our studies are reviewed at regular intervals and updated where necessary."
             },
             {
                 "question": "How up to date are the market entry studies and importer directories?",
@@ -973,6 +973,15 @@
         "lists": {
             "title": "Lead Lists",
             "subtitle": "Manage the lists available in the public catalog.",
+            "filtersSearchLabel": "Search list",
+            "filtersSearchPlaceholder": "Search by name or slug…",
+            "filtersAllCountries": "All countries",
+            "filtersAllIndustries": "All sectors",
+            "filtersAllStatus": "All statuses",
+            "filtersInactive": "Inactive",
+            "filtersResult": "Showing {shown} of {total} list(s).",
+            "filtersClear": "Clear filters",
+            "emptyFiltered": "No list matches this filter.",
             "backToDashboard": "Back to dashboard",
             "createNewList": "Create new list",
             "infoCard": "To publish a new base, click Create new list. Then check if the list has the PDF attached, the data marked as reviewed and is marked as active.",

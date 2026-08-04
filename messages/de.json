@@ -258,7 +258,7 @@
         "items": [
             {
                 "question": "Woher stammen die Daten für die Markteintrittsstudien und wie werden sie verifiziert?",
-                "answer": "Unsere Markteintrittsstudien und Importeursverzeichnisse basieren auf einer eigens entwickelten Recherchemethodik. Hierfür werden zahlreiche öffentlich zugängliche Informationsquellen systematisch ausgewertet. Moderne KI-Technologien unterstützen die Recherche, Strukturierung und Analyse der Daten. Anschließend werden sämtliche Ergebnisse manuell überprüft und hinsichtlich ihrer Plausibilität, Aktualität und praktischen Relevanz bewertet.\nAlle Informationen stammen ausschließlich aus öffentlich zugänglichen Quellen, beispielsweise von Unternehmenswebsites, Branchenverzeichnissen, Handelskammern, Verbänden, Messekatalogen und weiteren frei verfügbaren Informationsquellen.\nVor der Veröffentlichung werden die Daten hinsichtlich Plausibilität, Vollständigkeit und ihrer praktischen Verwendbarkeit geprüft.\nDa Unternehmen ihre Ansprechpartner, Organisationsstrukturen oder Geschäftsschwerpunkte laufend anpassen, können sich einzelne Kontaktdaten im Laufe der Zeit ändern. Deshalb werden unsere Studien regelmäßig überprüft und gegebenenfalls aktualisiert."
+                "answer": "Unsere Markteintrittsstudien und Importeursverzeichnisse basieren auf einer eigens entwickelten Recherchemethodik. Hierfür werden zahlreiche öffentlich zugängliche Informationsquellen systematisch ausgewertet. Moderne KI-Technologien unterstützen die Recherche, Strukturierung und Analyse der Daten. Anschließend werden sämtliche Ergebnisse manuell überprüft und hinsichtlich ihrer Plausibilität, Aktualität und praktischen Relevanz bewertet.\nAlle Informationen stammen ausschließlich aus öffentlich zugänglichen Quellen, beispielsweise von Unternehmenswebsites, Branchenverzeichnissen, Handelskammern, Verbänden, Messekatalogen und weiteren frei verfügbaren Informationsquellen.\nDa Unternehmen ihre Ansprechpartner, Organisationsstrukturen oder Geschäftsschwerpunkte laufend anpassen, können sich einzelne Kontaktdaten im Laufe der Zeit ändern. Deshalb werden unsere Studien regelmäßig überprüft und gegebenenfalls aktualisiert."
             },
             {
                 "question": "Wie aktuell sind die Markteintrittsstudien und Importeursverzeichnisse?",
@@ -973,6 +973,15 @@
         "lists": {
             "title": "Lead-Listen",
             "subtitle": "Verwalten Sie die im öffentlichen Katalog verfügbaren Listen.",
+            "filtersSearchLabel": "Liste suchen",
+            "filtersSearchPlaceholder": "Nach Name oder Slug suchen…",
+            "filtersAllCountries": "Alle Länder",
+            "filtersAllIndustries": "Alle Sektoren",
+            "filtersAllStatus": "Alle Status",
+            "filtersInactive": "Inaktiv",
+            "filtersResult": "{shown} von {total} Liste(n) werden angezeigt.",
+            "filtersClear": "Filter zurücksetzen",
+            "emptyFiltered": "Keine Liste entspricht diesem Filter.",
             "backToDashboard": "Zurück zum Dashboard",
             "createNewList": "Neue Liste erstellen",
             "infoCard": "Um eine neue Datenbasis zu veröffentlichen, klicken Sie auf Neue Liste erstellen. Prüfen Sie danach, ob die Liste das PDF angehängt hat, die Daten als geprüft markiert sind und die Liste als aktiv markiert ist.",

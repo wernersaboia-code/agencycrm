@@ -18,8 +18,20 @@ import { AlertCircle, ArrowLeft, CheckCircle2, Edit, Plus, Star, Users } from "l
 import { formatCurrency } from "@/lib/utils"
 import { DeleteListButton } from "@/components/admin/delete-list-button"
 import { SeedPricesDialog } from "@/components/admin/seed-prices-dialog"
+import { ListsFilterBar } from "@/components/admin/lists-filter-bar"
+import { filtrarListas, temFiltroAtivo } from "@/lib/admin/filtro-listas"
 
-export default async function MarketplaceListsPage() {
+interface MarketplaceListsPageProps {
+    searchParams: Promise<{
+        q?: string
+        country?: string
+        industry?: string
+        status?: string
+    }>
+}
+
+export default async function MarketplaceListsPage({ searchParams }: MarketplaceListsPageProps) {
+    const filtros = await searchParams
     const lists = await prisma.leadList.findMany({
         orderBy: { createdAt: "desc" },
         include: {
@@ -31,6 +43,10 @@ export default async function MarketplaceListsPage() {
             },
         },
     })
+    // Os cards de saúde contam o catálogo INTEIRO, nunca o filtrado. Se
+    // "Sem PDF: 0" respondesse ao filtro, ele diria que está tudo certo
+    // justamente quando o admin isolou um pedaço — é o número que ele usa
+    // para decidir que não há mais nada a fazer.
     const activeLists = lists.filter((list) => list.isActive).length
     const listsWithoutPdf = lists.filter((list) => !list.studyPdfUrl).length
     const featuredLists = lists.filter((list) => list.isFeatured).length
@@ -73,6 +89,18 @@ export default async function MarketplaceListsPage() {
     const readiness = lists.length > 0
         ? Math.round((completedReadiness / readinessChecks.length) * 100)
         : 0
+
+    // Filtro em memória: a consulta já traz o catálogo todo para os cards de
+    // saúde, então repetir a ida ao banco só para recortá-lo custa mais do que
+    // percorrer as linhas aqui. Revisar quando o catálogo passar de algumas
+    // centenas de listas.
+    const listasFiltradas = filtrarListas(lists, filtros)
+    const temFiltro = temFiltroAtivo(filtros)
+
+    // As opções vêm do catálogo real: faceta sem lista por trás é filtro que
+    // nunca devolve nada.
+    const paisesDisponiveis = [...new Set(lists.flatMap((l) => l.countries))].sort()
+    const setoresDisponiveis = [...new Set(lists.flatMap((l) => l.industries))].sort()
 
     return (
         <div className="space-y-6">
@@ -142,6 +170,15 @@ export default async function MarketplaceListsPage() {
                 </CardContent>
             </Card>
 
+            {lists.length > 0 && (
+                <ListsFilterBar
+                    countries={paisesDisponiveis}
+                    industries={setoresDisponiveis}
+                    shown={listasFiltradas.length}
+                    total={lists.length}
+                />
+            )}
+
             <div className="border rounded-lg">
                 <Table>
                     <TableHeader>
@@ -157,22 +194,28 @@ export default async function MarketplaceListsPage() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {lists.length === 0 ? (
+                        {listasFiltradas.length === 0 ? (
                             <TableRow>
                                 <TableCell colSpan={8} className="text-center py-12">
+                                    {/* Catálogo vazio e filtro sem resultado são
+                                        problemas diferentes: no segundo, "criar a
+                                        primeira lista" manda o admin criar uma
+                                        lista que provavelmente já existe. */}
                                     <p className="text-muted-foreground mb-4">
-                                        {t("emptyTitle")}
+                                        {temFiltro ? t("emptyFiltered") : t("emptyTitle")}
                                     </p>
-                                    <Link href="/super-admin/marketplace/lists/new">
-                                        <Button>
-                                            <Plus className="h-4 w-4 mr-2" />
-                                            {t("createFirst")}
-                                        </Button>
-                                    </Link>
+                                    {!temFiltro && (
+                                        <Link href="/super-admin/marketplace/lists/new">
+                                            <Button>
+                                                <Plus className="h-4 w-4 mr-2" />
+                                                {t("createFirst")}
+                                            </Button>
+                                        </Link>
+                                    )}
                                 </TableCell>
                             </TableRow>
                         ) : (
-                            lists.map((list) => (
+                            listasFiltradas.map((list) => (
                                 <TableRow key={list.id}>
                                     <TableCell>
                                         <div>

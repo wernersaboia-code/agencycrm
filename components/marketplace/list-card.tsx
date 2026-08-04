@@ -82,14 +82,13 @@ export function ListCard({ list }: ListCardProps) {
                                 {list.description || t("defaultDescription")}
                             </p>
                         </div>
-                        <div className="flex items-center gap-1">
+                        {/* O país é o primeiro filtro que o cliente aplica, então
+                            a bandeira é o sinal que ele procura no card — em
+                            16px ela virava enfeite. `shrink-0` porque o título
+                            ao lado tem duas linhas e empurrava a bandeira. */}
+                        <div className="flex shrink-0 items-center gap-1.5">
                             {list.countries.slice(0, 3).map((code) => (
-                                <FlagIcon
-                                    key={code}
-                                    code={code}
-                                    size="sm"
-                                    className="shadow-sm"
-                                />
+                                <FlagIcon key={code} code={code} size="lg" />
                             ))}
                             {list.countries.length > 3 && (
                                 <span className="text-xs text-muted-foreground ml-1">
