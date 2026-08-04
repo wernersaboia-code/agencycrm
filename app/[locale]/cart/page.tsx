@@ -18,7 +18,6 @@ import {
     ShieldCheck,
     ShoppingBag,
     Trash2,
-    Users,
 } from "lucide-react"
 
 export default function CartPage() {
@@ -27,7 +26,6 @@ export default function CartPage() {
     const tCheckout = useTranslations("checkout")
     const format = useFormatter()
     const locale = useLocale()
-    const totalLeads = items.reduce((sum, item) => sum + item.totalLeads * item.quantity, 0)
 
     if (items.length === 0) {
         return (
@@ -64,7 +62,7 @@ export default function CartPage() {
                             </Link>
                             <h1 className="text-3xl font-bold text-foreground">{t("pageTitle")}</h1>
                             <p className="mt-2 text-muted-foreground">
-                                {t("pageSubtitle", { count: itemCount, leads: format.number(totalLeads) })}
+                                {t("pageSubtitle", { count: itemCount })}
                             </p>
                         </div>
 
@@ -97,10 +95,6 @@ export default function CartPage() {
                                                     {item.name}
                                                 </Link>
                                                 <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-                                                    <span className="flex items-center gap-1">
-                                                        <Users className="h-4 w-4" aria-hidden="true" />
-                                                        {t("leads", { count: format.number(item.totalLeads) })}
-                                                    </span>
                                                     <span className="flex items-center gap-1">
                                                         <FileDown className="h-4 w-4" aria-hidden="true" />
                                                         {t("formats")}
@@ -165,10 +159,6 @@ export default function CartPage() {
                             <Separator />
 
                             <div className="space-y-2">
-                                <div className="flex justify-between text-sm text-muted-foreground">
-                                    <span>{t("totalLeads")}</span>
-                                    <span>{format.number(totalLeads)}</span>
-                                </div>
                                 <div className="flex items-center justify-between text-xl font-bold">
                                     <span className="text-foreground">{t("total")}</span>
                                     <span className="text-brand">{formatCurrency(total, currency, locale)}</span>

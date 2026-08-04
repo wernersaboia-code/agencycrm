@@ -66,10 +66,9 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
         redirect(getPathname({ href: "/catalog", locale }))
     }
 
-    const totalLeads = purchase.items.reduce(
-        (sum: number, item: PurchaseItemWithList) => sum + item.list.totalLeads,
-        0
-    )
+    // Conta estudos, não leads: é o PDF que a compra libera, e o número de
+    // leads não é informado em lugar nenhum do funil.
+    const totalStudies = purchase.items.length
 
     return (
         <div className="min-h-screen bg-background px-4 py-10">
@@ -97,7 +96,7 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
                             </div>
                             <div className="text-left sm:text-right">
                                 <span className="text-sm text-muted-foreground">{t("successLeadsReleased")}</span>
-                                <div className="font-semibold text-card-foreground">{format.number(totalLeads)}</div>
+                                <div className="font-semibold text-card-foreground">{format.number(totalStudies)}</div>
                             </div>
                         </div>
 
@@ -107,9 +106,6 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
                                     <div className="min-w-0">
                                         <div className="truncate font-medium text-card-foreground">
                                             {item.list.name}
-                                        </div>
-                                        <div className="text-xs text-muted-foreground">
-                                            {format.number(item.list.totalLeads)} leads
                                         </div>
                                     </div>
                                     <span className="shrink-0 font-medium text-card-foreground">

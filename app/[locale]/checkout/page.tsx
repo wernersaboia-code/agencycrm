@@ -18,7 +18,6 @@ import {
     Lock,
     Shield,
     ShieldCheck,
-    Users,
 } from "lucide-react"
 
 export default function CheckoutPage() {
@@ -43,7 +42,6 @@ export default function CheckoutPage() {
         return null
     }
 
-    const totalLeads = items.reduce((sum, item) => sum + item.totalLeads * item.quantity, 0)
     const checkoutItems = items.map((item) => ({
         listId: item.id,
         quantity: item.quantity,
@@ -64,7 +62,7 @@ export default function CheckoutPage() {
                         <div>
                             <h1 className="text-3xl font-bold text-foreground">{t("title")}</h1>
                             <p className="mt-2 text-muted-foreground">
-                                {t("subtitle", { count: format.number(totalLeads) })}
+                                {t("subtitle")}
                             </p>
                         </div>
 
@@ -143,10 +141,6 @@ export default function CheckoutPage() {
                                             <h3 className="line-clamp-2 text-sm font-medium text-foreground">
                                                 {item.name}
                                             </h3>
-                                            <div className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
-                                                <Users className="h-3 w-3" aria-hidden="true" />
-                                                {format.number(item.totalLeads)} leads
-                                            </div>
                                             <div className="mt-1 font-semibold text-brand">
                                                 {formatCurrency(item.price, item.currency, locale)}
                                             </div>
@@ -158,10 +152,6 @@ export default function CheckoutPage() {
                             <Separator />
 
                             <div className="space-y-2">
-                                <div className="flex justify-between text-sm text-muted-foreground">
-                                    <span>{t("totalLeads")}</span>
-                                    <span>{format.number(totalLeads)}</span>
-                                </div>
                                 <div className="flex items-center justify-between text-xl font-bold">
                                     <span className="text-foreground">{t("total")}</span>
                                     <span className="text-brand">{formatCurrency(total, currency, locale)}</span>

@@ -30,7 +30,6 @@ interface PurchaseItem {
         id?: string
         name: string
         slug: string
-        totalLeads: number
         }
     price: number
 }
@@ -153,9 +152,6 @@ export function PublicPurchaseCard({ purchase }: PublicPurchaseCardProps) {
                                     <div className="min-w-0 flex-1">
                                         <div className="font-medium text-foreground">
                                             {item.list.name}
-                                        </div>
-                                        <div className="text-sm text-muted-foreground">
-                                            {item.list.totalLeads.toLocaleString()} leads
                                         </div>
                                     </div>
                                 </div>

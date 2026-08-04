@@ -31,9 +31,31 @@ interface ListsFilterBarProps {
 
 export function ListsFilterBar({ countries, industries, shown, total }: ListsFilterBarProps) {
     const t = useTranslations("admin.lists")
+    // Os rótulos das facetas são os mesmos do catálogo público — o painel não
+    // tem por que chamar a Alemanha de "DE" se o cliente a vê como "Alemanha".
+    const tFacetas = useTranslations("catalog")
     const router = useRouter()
     const searchParams = useSearchParams()
     const [isPending, startTransition] = useTransition()
+
+    /**
+     * Rótulo traduzido, com queda para o código cru.
+     *
+     * O formulário de lista aceita países em campo de texto livre, então o
+     * banco pode conter um código fora do vocabulário. `t()` LANÇA quando a
+     * chave não existe: sem esta guarda, um "XX" digitado por engano derrubaria
+     * a página inteira de listas em vez de aparecer como uma opção esquisita.
+     */
+    const rotulo = (grupo: "countries" | "industries", id: string) => {
+        const chave = `${grupo}.${id}`
+        return tFacetas.has(chave) ? tFacetas(chave) : id
+    }
+
+    // Ordenar pelo rótulo, não pelo código: numa lista de nomes, "Alemanha"
+    // vem antes de "Áustria" — ordenar por DE/AT deixaria o painel em ordem
+    // que só faz sentido para quem pensa em ISO.
+    const ordenarPorRotulo = (grupo: "countries" | "industries", ids: string[]) =>
+        [...ids].sort((a, b) => rotulo(grupo, a).localeCompare(rotulo(grupo, b)))
 
     const q = searchParams.get("q") ?? ""
     const country = searchParams.get("country") ?? ""
@@ -99,8 +121,10 @@ export function ListsFilterBar({ countries, industries, shown, total }: ListsFil
                     </SelectTrigger>
                     <SelectContent>
                         <SelectItem value={TODOS}>{t("filtersAllCountries")}</SelectItem>
-                        {countries.map((code) => (
-                            <SelectItem key={code} value={code}>{code}</SelectItem>
+                        {ordenarPorRotulo("countries", countries).map((code) => (
+                            <SelectItem key={code} value={code}>
+                                {rotulo("countries", code)}
+                            </SelectItem>
                         ))}
                     </SelectContent>
                 </Select>
@@ -114,8 +138,10 @@ export function ListsFilterBar({ countries, industries, shown, total }: ListsFil
                     </SelectTrigger>
                     <SelectContent>
                         <SelectItem value={TODOS}>{t("filtersAllIndustries")}</SelectItem>
-                        {industries.map((id) => (
-                            <SelectItem key={id} value={id}>{id}</SelectItem>
+                        {ordenarPorRotulo("industries", industries).map((id) => (
+                            <SelectItem key={id} value={id}>
+                                {rotulo("industries", id)}
+                            </SelectItem>
                         ))}
                     </SelectContent>
                 </Select>

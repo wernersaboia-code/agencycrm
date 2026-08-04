@@ -4,7 +4,7 @@
 import { useCart, CartItem as CartItemType } from "@/contexts/cart-context"
 import { formatCurrency } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Trash2, Building2, Users } from "lucide-react"
+import { Trash2, Building2 } from "lucide-react"
 import { Link } from "@/lib/i18n/navigation"
 import { useTranslations } from "next-intl"
 
@@ -31,10 +31,6 @@ export function CartItem({ item }: CartItemProps) {
                 >
                     {item.name}
                 </Link>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Users className="h-3.5 w-3.5" />
-                    <span>{t("leads", { count: item.totalLeads })}</span>
-                </div>
                 <div className="mt-2 font-bold text-brand">
                     {formatCurrency(item.price, item.currency)}
                 </div>

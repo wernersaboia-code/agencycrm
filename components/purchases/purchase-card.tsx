@@ -142,9 +142,6 @@ export function PurchaseCard({ purchase }: PurchaseCardProps) {
                                         <div className="font-medium text-gray-800">
                                             {item.list.name}
                                         </div>
-                                        <div className="text-sm text-gray-500">
-                                            {item.list.totalLeads.toLocaleString()} leads
-                                        </div>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-3">
