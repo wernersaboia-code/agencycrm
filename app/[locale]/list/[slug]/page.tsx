@@ -159,9 +159,6 @@ export default async function ListPage({ params }: ListPageProps) {
                                         {t("featured")}
                                     </Badge>
                                 )}
-                                <Badge variant="outline" className="border-brand-accent text-brand-accent-strong">
-                                    {tCatalog(`categories.${list.category}`)}
-                                </Badge>
                                 <span className="inline-flex items-center gap-1 rounded-md bg-primary/10 px-2 py-1 text-xs font-medium text-primary">
                                     <BadgeCheck className="h-3.5 w-3.5" aria-hidden="true" />
                                     {t("readyBadge")}

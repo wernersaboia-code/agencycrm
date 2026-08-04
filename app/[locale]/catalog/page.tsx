@@ -36,7 +36,6 @@ type CatalogSearchParams = {
     countries?: string
     industries?: string
     languages?: string
-    category?: string
     search?: string
     page?: string
 }
@@ -51,7 +50,6 @@ function buildPageHref(params: CatalogSearchParams, page: number) {
     if (params.countries) nextParams.set("countries", params.countries)
     if (params.industries) nextParams.set("industries", params.industries)
     if (params.languages) nextParams.set("languages", params.languages)
-    if (params.category) nextParams.set("category", params.category)
     if (params.search) nextParams.set("search", params.search)
     nextParams.set("page", page.toString())
 
@@ -65,7 +63,6 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
     const countries = params.countries?.split(",").filter(Boolean) || []
     const industries = params.industries?.split(",").filter(Boolean) || []
     const languages = params.languages?.split(",").filter(Boolean) || []
-    const category = params.category || undefined
     const search = params.search || ""
     const requestedPage = Number.parseInt(params.page || "1", 10)
     const page = Number.isFinite(requestedPage) && requestedPage > 0 ? requestedPage : 1
@@ -74,13 +71,12 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
         countries,
         industries,
         languages,
-        category,
         search,
         page,
     })
     const visibleCountryTotal = new Set(lists.flatMap((list) => list.countries)).size
     const activeFilterCount =
-        countries.length + industries.length + languages.length + (category ? 1 : 0) + (search ? 1 : 0)
+        countries.length + industries.length + languages.length + (search ? 1 : 0)
 
     return (
         <div className="min-h-screen bg-muted/40">
@@ -137,11 +133,9 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
                         selectedCountries={countries}
                         selectedIndustries={industries}
                         selectedLanguages={languages}
-                        selectedCategory={category}
                         countryCounts={filterCounts.countryCounts}
                         industryCounts={filterCounts.industryCounts}
                         languageCounts={filterCounts.languageCounts}
-                        categoryCounts={filterCounts.categoryCounts}
                         activeFilterCount={activeFilterCount}
                     />
                 </Suspense>
@@ -246,7 +240,6 @@ async function getCatalogData(params: {
     countries: string[]
     industries: string[]
     languages: string[]
-    category?: string
     search: string
     page: number
 }) {
@@ -270,7 +263,6 @@ async function getCatalogData(params: {
             filterCounts: {
                 countryCounts: {},
                 industryCounts: {},
-                categoryCounts: {},
                 languageCounts: {},
             },
             failed: true,

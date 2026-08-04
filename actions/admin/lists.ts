@@ -20,7 +20,6 @@ interface CreateListData {
     description?: string
     introduction?: string
     language?: string
-    category: string
     countries: string[]
     industries: string[]
     // A lista não tem mais UMA moeda: tem um preço por moeda oferecida.
@@ -40,7 +39,6 @@ const listDataSchema = z.object({
     description: z.string().trim().max(5000).optional(),
     introduction: z.string().trim().max(10000).optional(),
     language: z.enum(["pt", "en", "de", "fr", "es", "it", "nl"]).optional(),
-    category: z.string().trim().min(1).max(80),
     countries: z.array(z.string().trim().min(2).max(3)).min(1).max(100),
     industries: z.array(z.string().trim().min(1).max(80)).max(100),
     // EUR é a moeda de referência e o fallback da vitrine; BRL é a moeda da
@@ -67,7 +65,6 @@ interface SerializedList {
     language: string | null
     studyPdfUrl: string | null
     studyPdfName: string | null
-    category: string
     countries: string[]
     industries: string[]
     totalLeads: number
@@ -140,7 +137,6 @@ async function criarLista(data: CreateListData): Promise<SerializedList> {
             description: validated.description || null,
             introduction: validated.introduction || null,
             language: validated.language || null,
-            category: validated.category,
             countries: validated.countries,
             industries: validated.industries,
             price: validated.prices.EUR,
@@ -200,7 +196,6 @@ async function atualizarLista(id: string, data: CreateListData): Promise<Seriali
             description: validated.description || null,
             introduction: validated.introduction || null,
             language: validated.language || null,
-            category: validated.category,
             countries: validated.countries,
             industries: validated.industries,
             // price/currency não são gravados aqui: o espelho em EUR sai de

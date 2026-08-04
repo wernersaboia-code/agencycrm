@@ -143,7 +143,7 @@ export function PurchaseCard({ purchase }: PurchaseCardProps) {
                                             {item.list.name}
                                         </div>
                                         <div className="text-sm text-gray-500">
-                                            {item.list.totalLeads.toLocaleString()} leads • {item.list.category}
+                                            {item.list.totalLeads.toLocaleString()} leads
                                         </div>
                                     </div>
                                 </div>

@@ -147,7 +147,7 @@ export default async function MarketplaceListsPage() {
                     <TableHeader>
                         <TableRow>
                             <TableHead>{t("colName")}</TableHead>
-                            <TableHead>{t("colCategory")}</TableHead>
+                            <TableHead>{t("colIndustries")}</TableHead>
                             <TableHead>{t("colCountries")}</TableHead>
                             <TableHead className="text-center">{t("colLeads")}</TableHead>
                             <TableHead className="text-center">{t("colSales")}</TableHead>
@@ -181,7 +181,11 @@ export default async function MarketplaceListsPage() {
                                         </div>
                                     </TableCell>
                                     <TableCell>
-                                        <Badge variant="outline">{list.category}</Badge>
+                                        <div className="flex flex-wrap gap-1">
+                                            {list.industries.map((id) => (
+                                                <Badge key={id} variant="outline">{id}</Badge>
+                                            ))}
+                                        </div>
                                     </TableCell>
                                     <TableCell>
                                         <span className="text-sm">

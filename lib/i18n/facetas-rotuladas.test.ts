@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest"
 import { readFileSync } from "node:fs"
 import { join } from "node:path"
-import { CATEGORY_IDS, COUNTRY_CODES, INDUSTRY_IDS } from "@/lib/constants/catalog-facets"
+import { COUNTRY_CODES, INDUSTRY_IDS } from "@/lib/constants/catalog-facets"
 
 const pt = JSON.parse(
     readFileSync(join(__dirname, "..", "..", "messages", "pt.json"), "utf8")
@@ -15,7 +15,6 @@ const pt = JSON.parse(
  */
 describe("todo id de faceta tem rótulo em pt", () => {
     const grupos: Array<[string, readonly string[]]> = [
-        ["categories", CATEGORY_IDS],
         ["industries", INDUSTRY_IDS],
         ["countries", COUNTRY_CODES],
     ]

@@ -23,7 +23,6 @@ export interface MarketplaceListCardData {
     name: string
     slug: string
     description: string | null
-    category: string
     countries: string[]
     industries: string[]
     language: string | null

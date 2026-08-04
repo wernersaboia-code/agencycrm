@@ -584,8 +584,10 @@ model LeadList {
   slug        String  @unique
   description String? @db.Text
 
-  // Categorização
-  category   String
+  // Categorização. A busca do catálogo tem duas dimensões e só duas:
+  // país e setor. A coluna `category` (importers/exporters/…) foi removida —
+  // uma mesma lista de país mistura importadores, distribuidores e
+  // atacadistas, então nenhum valor único a descrevia com honestidade.
   countries  String[]
   industries String[]
 
@@ -622,7 +624,6 @@ model LeadList {
   // preencher com updatedAt/createdAt seria inventar um sinal de frescor.
   dataReviewedAt DateTime?
 
-  @@index([category])
   @@index([isActive, isFeatured])
   @@map("lead_lists")
 }

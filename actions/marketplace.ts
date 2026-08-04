@@ -10,7 +10,6 @@ interface GetListsParams {
     countries?: string[]
     industries?: string[]
     languages?: string[]
-    category?: string // ← ADICIONAR
     search?: string
     page?: number
     limit?: number
@@ -21,7 +20,6 @@ export async function getMarketplaceLists(params: GetListsParams = {}) {
         countries = [],
         industries = [],
         languages = [],
-        category, // ← ADICIONAR
         search = "",
         page = 1,
         limit = 12,
@@ -51,11 +49,6 @@ export async function getMarketplaceLists(params: GetListsParams = {}) {
     // `language` é coluna escalar, não array: casa por inclusão, não por hasSome.
     if (languages.length > 0) {
         where.language = { in: languages }
-    }
-
-    // Filtro de categoria ← ADICIONAR
-    if (category) {
-        where.category = category
     }
 
     // Busca por nome ou descrição
@@ -108,7 +101,6 @@ export async function getFilterCounts() {
         select: {
             countries: true,
             industries: true,
-            category: true, // ← ADICIONAR
             language: true,
         },
     })
@@ -116,7 +108,6 @@ export async function getFilterCounts() {
     // Contar ocorrências de países
     const countryCounts: Record<string, number> = {}
     const industryCounts: Record<string, number> = {}
-    const categoryCounts: Record<string, number> = {} // ← ADICIONAR
     const languageCounts: Record<string, number> = {}
 
     lists.forEach((list) => {
@@ -126,14 +117,10 @@ export async function getFilterCounts() {
         list.industries.forEach((industry) => {
             industryCounts[industry] = (industryCounts[industry] || 0) + 1
         })
-        // ← ADICIONAR
-        if (list.category) {
-            categoryCounts[list.category] = (categoryCounts[list.category] || 0) + 1
-        }
         if (list.language) {
             languageCounts[list.language] = (languageCounts[list.language] || 0) + 1
         }
     })
 
-    return { countryCounts, industryCounts, categoryCounts, languageCounts }
+    return { countryCounts, industryCounts, languageCounts }
 }

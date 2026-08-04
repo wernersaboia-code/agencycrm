@@ -10,47 +10,51 @@
  * encontrasse.
  *
  * Os rótulos NÃO moram aqui: ficam em `messages/<locale>.json`, sob
- * `catalog.categories.*`, `catalog.industries.*` e `catalog.countries.*`. Id
- * novo aqui exige o rótulo nos sete idiomas — o teste de paridade em
+ * `catalog.industries.*` e `catalog.countries.*`. Id novo aqui exige o rótulo
+ * nos sete idiomas — o teste de paridade em
  * `lib/i18n/messages-integridade.test.ts` cobra isso.
  *
- * `foodservice` foi avaliado e deixado de fora: no comércio internacional ele
- * se sobrepõe demais a HORECA, e faceta que o cliente não sabe escolher é pior
- * que faceta a menos. Revisar quando o catálogo tiver volume que justifique.
+ * A busca tem duas dimensões e só duas: PAÍS e SETOR.
+ *
+ * A faceta "categoria" (importadores/exportadores/fabricantes…) foi removida:
+ * uma mesma lista de país mistura importadores, distribuidores e atacadistas
+ * no mesmo arquivo, então nenhum valor único descrevia a lista com honestidade.
+ * Faceta que o cliente não consegue escolher direito é pior que faceta nenhuma.
  */
 
-export const CATEGORY_IDS = [
-    "importers",
-    "exporters",
-    "manufacturers",
-    "distributors",
-    "retailers",
-    "wholesalers",
-] as const
-
+/**
+ * Setores. Um por linha de estudo, exatamente como aparece no título dos
+ * estudos de entrada de mercado — "Exotic Fruits Market", "FMCG Market",
+ * "HoReCa & Foodservice Market".
+ *
+ * Sem hierarquia e sem subdivisão: FMCG é FMCG, sem separar alimentar de não
+ * alimentar, porque numa lista de país os dois vêm no mesmo arquivo. O
+ * vocabulário antigo tinha catorze setores genéricos (tech, fashion,
+ * automotive…) que nenhum estudo jamais usou.
+ */
 export const INDUSTRY_IDS = [
-    "fmcg_food",
-    "fmcg_nonfood",
+    "exotic_fruits",
+    "fmcg",
     "horeca",
-    "tech",
-    "fashion",
-    "automotive",
-    "health",
-    "construction",
-    "retail",
-    "industrial",
-    "agriculture",
-    "electronics",
-    "chemicals",
-    "machinery",
 ] as const
 
+/**
+ * Países com estudo publicado, mais os que já estavam rotulados nos sete
+ * idiomas e podem receber estudo sem custo de tradução.
+ *
+ * Reino Unido é `GB` (ISO 3166-1), não `UK`.
+ */
 export const COUNTRY_CODES = [
-    "DE", "FR", "IT", "ES", "NL", "BE", "PL", "SE",
-    "AT", "CH", "PT", "GB", "US", "CN", "JP", "BR",
+    // Europa
+    "AT", "BE", "CH", "CZ", "DE", "DK", "ES", "FI", "FR", "GB",
+    "HR", "IE", "IT", "LU", "NL", "NO", "PL", "PT", "SE", "SI",
+    "SK", "TR",
+    // Américas
+    "AR", "BR", "CO", "EC", "US", "UY", "VE",
+    // Ásia
+    "CN", "JP",
 ] as const
 
-export type CategoryId = (typeof CATEGORY_IDS)[number]
 export type IndustryId = (typeof INDUSTRY_IDS)[number]
 export type CountryCode = (typeof COUNTRY_CODES)[number]
 

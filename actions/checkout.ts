@@ -32,7 +32,6 @@ export interface UserPurchase {
             name: string
             slug: string
             totalLeads: number
-            category: string
         }
         price: number
     }[]
@@ -207,8 +206,7 @@ export async function getUserPurchases() {
                     id: item.list.id,
                     name: item.list.name,
                     slug: item.list.slug,
-                    totalLeads: item.list.totalLeads,
-                    category: item.list.category
+                    totalLeads: item.list.totalLeads
                 },
                 price: Number(item.price)
             }))

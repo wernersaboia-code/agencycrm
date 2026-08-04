@@ -46,7 +46,7 @@ import { createList, updateList, uploadLeadsToList, markListReviewed } from "@/a
 import { MarketplaceImportWizard } from "@/components/admin/marketplace-import-wizard"
 import type { MarketplaceLeadData } from "@/lib/constants/marketplace-csv.constants"
 import { LIST_LANGUAGES } from "@/lib/constants/list-languages"
-import { CATEGORY_IDS, INDUSTRY_IDS } from "@/lib/constants/catalog-facets"
+import { INDUSTRY_IDS } from "@/lib/constants/catalog-facets"
 import { FlagIcon } from "@/components/ui/flag-icon"
 import { canPublishList } from "@/lib/marketplace/list-publishing"
 
@@ -63,7 +63,6 @@ interface SerializedLeadList {
     language: string | null
     studyPdfUrl: string | null
     studyPdfName: string | null
-    category: string
     countries: string[]
     industries: string[]
     totalLeads: number
@@ -109,7 +108,6 @@ export function ListForm({ list }: ListFormProps) {
         description: z.string().optional(),
         introduction: z.string().optional(),
         language: z.string().optional(),
-        category: z.string().min(1, t("validationCategory")),
         countries: z.string().min(1, t("validationCountry")),
         industries: z.string().optional(),
         // Um campo por moeda. EUR e BRL são obrigatórios: EUR é a referência
@@ -155,7 +153,6 @@ export function ListForm({ list }: ListFormProps) {
             description: list?.description || "",
             introduction: list?.introduction || "",
             language: list?.language || "",
-            category: list?.category || "",
             countries: list?.countries.join(", ") || "",
             industries: list?.industries.join(", ") || "",
             price: list ? String(list.prices?.EUR ?? list.price) : "",
@@ -357,38 +354,35 @@ export function ListForm({ list }: ListFormProps) {
             .filter((s): s is string => typeof s === "string" && s.length > 0)
 
         if (sectorsFromLeads.length > 0 && selectedIndustries.length === 0) {
-            // Mapear setores do CSV para IDs de indústrias (simplificado)
+            // Mapear a coluna "Sector" do CSV para os três setores do catálogo.
+            //
+            // A sugestão é um atalho, não a verdade: o admin confere e ajusta
+            // nos checkboxes. Setor que não casa com nenhum dos três não vira
+            // palpite — é melhor deixar em branco do que marcar FMCG numa
+            // lista de HoReCa e o estudo aparecer no filtro errado.
             const mappedIndustries: string[] = []
 
             sectorsFromLeads.forEach((sector) => {
                 const lowerSector = sector.toLowerCase()
                 let industryId: string | null = null
 
-                // Tentar mapear para IDs conhecidos
-                if (lowerSector.includes("food") || lowerSector.includes("aliment")) {
-                    industryId = "fmcg_food"
-                } else if (lowerSector.includes("tech")) {
-                    industryId = "tech"
-                } else if (lowerSector.includes("fashion") || lowerSector.includes("moda")) {
-                    industryId = "fashion"
-                } else if (lowerSector.includes("auto")) {
-                    industryId = "automotive"
-                } else if (lowerSector.includes("health") || lowerSector.includes("saúde")) {
-                    industryId = "health"
-                } else if (lowerSector.includes("construc")) {
-                    industryId = "construction"
-                } else if (lowerSector.includes("retail") || lowerSector.includes("varejo")) {
-                    industryId = "retail"
-                } else if (lowerSector.includes("industr")) {
-                    industryId = "industrial"
-                } else if (lowerSector.includes("agric")) {
-                    industryId = "agriculture"
-                } else if (lowerSector.includes("electr")) {
-                    industryId = "electronics"
-                } else if (lowerSector.includes("chem") || lowerSector.includes("quim")) {
-                    industryId = "chemicals"
-                } else if (lowerSector.includes("mach") || lowerSector.includes("máquin")) {
-                    industryId = "machinery"
+                if (
+                    lowerSector.includes("horeca") ||
+                    lowerSector.includes("foodservice") ||
+                    lowerSector.includes("food service") ||
+                    lowerSector.includes("hotel") ||
+                    lowerSector.includes("catering") ||
+                    lowerSector.includes("restaur")
+                ) {
+                    industryId = "horeca"
+                } else if (
+                    lowerSector.includes("exotic") ||
+                    lowerSector.includes("exótic") ||
+                    lowerSector.includes("exotisch")
+                ) {
+                    industryId = "exotic_fruits"
+                } else if (lowerSector.includes("fmcg")) {
+                    industryId = "fmcg"
                 }
 
                 if (industryId && !mappedIndustries.includes(industryId)) {
@@ -548,30 +542,6 @@ export function ListForm({ list }: ListFormProps) {
                         </div>
 
                         <div className="grid gap-4 md:grid-cols-2">
-                            <div className="space-y-2">
-                                <Label htmlFor="category">{t("categoryLabel")}</Label>
-                                <Select
-                                    value={form.watch("category")}
-                                    onValueChange={(value) => form.setValue("category", value, { shouldDirty: true })}
-                                >
-                                    <SelectTrigger>
-                                        <SelectValue placeholder={t("categoryPlaceholder")} />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {CATEGORY_IDS.map((categoryId) => (
-                                            <SelectItem key={categoryId} value={categoryId}>
-                                                {tFacetas(`categories.${categoryId}`)}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                                {form.formState.errors.category && (
-                                    <p className="text-sm text-destructive">
-                                        {form.formState.errors.category.message}
-                                    </p>
-                                )}
-                            </div>
-
                             <div className="space-y-2">
                                 <Label htmlFor="countries">
                                     {t("countriesLabel")}
