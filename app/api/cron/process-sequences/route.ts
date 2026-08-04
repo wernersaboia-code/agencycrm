@@ -341,11 +341,6 @@ export async function GET(request: Request) {
                         to: lead.email,
                         subject: personalizedSubject,
                         html: personalizedBody,
-                        tags: [
-                            { name: "campaign_id", value: campaign.id },
-                            { name: "lead_id", value: lead.id },
-                            { name: "step_id", value: currentStep.id },
-                        ],
                         emailSendId: emailSend.id,
                     },
                     smtpConfig
@@ -357,8 +352,7 @@ export async function GET(request: Request) {
                         where: { id: emailSend.id },
                         data: {
                             status: "SENT",
-                            sentAt: now,
-                            resendId: result.id,
+                            sentAt: now,
                             messageId: result.messageId
                                 ? normalizeMessageId(result.messageId)
                                 : null,

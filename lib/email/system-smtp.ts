@@ -9,10 +9,9 @@ import { SMTP_PROVIDERS } from "@/lib/constants/smtp.constants"
  * aviso de pergunta no FAQ. Não confundir com o SMTP por workspace, que é
  * credencial do cliente e vive criptografada no banco.
  *
- * Devolve `null` quando não há credencial nenhuma — quem chama passa isso ao
- * `sendEmail`, que então cai no Resend. Devolver um objeto vazio faria o
- * nodemailer tentar conectar em `undefined` e falhar com um erro obscuro em vez
- * de usar o fallback.
+ * Devolve `null` quando não há credencial nenhuma — o `sendEmail` trata isso
+ * devolvendo erro, sem enviar. Devolver um objeto vazio faria o nodemailer
+ * tentar conectar em `undefined` e falhar com um erro obscuro bem mais tarde.
  */
 export function getSystemSmtpConfig(): SmtpConfig | null {
     if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {

@@ -60,7 +60,6 @@ const privacyEs: LegalDocument = {
                 { kind: "lista", itens: [
                     "Supabase — base de datos, autenticación y almacenamiento de archivos.",
                     "Stripe — procesamiento de pagos.",
-                    "Resend — envío de correos transaccionales y de campaña.",
                     "Vercel — alojamiento de la aplicación y medición de rendimiento.",
                     "Zoho — buzón de la dirección de contacto.",
                 ] },

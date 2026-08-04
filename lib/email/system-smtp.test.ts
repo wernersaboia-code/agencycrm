@@ -65,8 +65,8 @@ describe("getSystemSmtpConfig", () => {
     })
 
     it("devolve null quando não há credencial nenhuma", () => {
-        // null faz o sendEmail cair no Resend; um objeto com campos vazios
-        // faria o nodemailer tentar conectar em undefined.
+        // null faz o sendEmail devolver erro sem enviar; um objeto com campos
+        // vazios faria o nodemailer tentar conectar em undefined.
         expect(getSystemSmtpConfig()).toBeNull()
     })
 

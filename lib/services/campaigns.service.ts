@@ -189,10 +189,6 @@ export async function sendSingleCampaign(
                 to: lead.email,
                 subject: personalizedSubject,
                 html: personalizedBody,
-                tags: [
-                    { name: "campaign_id", value: campaign.id },
-                    { name: "lead_id", value: lead.id },
-                ],
                 emailSendId: emailSend.id,
             },
             smtpConfig
@@ -209,8 +205,7 @@ export async function sendSingleCampaign(
                 where: { id: emailSend.id },
                 data: {
                     status: "SENT",
-                    sentAt: now,
-                    resendId: sendResult.id,
+                    sentAt: now,
                     messageId: sendResult.messageId
                         ? normalizeMessageId(sendResult.messageId)
                         : null,
@@ -416,11 +411,6 @@ export async function sendSequenceFirstStep(
                 to: lead.email,
                 subject: personalizedSubject,
                 html: personalizedBody,
-                tags: [
-                    { name: "campaign_id", value: campaign.id },
-                    { name: "lead_id", value: lead.id },
-                    { name: "step_id", value: firstStep.id },
-                ],
                 emailSendId,
             },
             smtpConfig
@@ -437,8 +427,7 @@ export async function sendSequenceFirstStep(
                 where: { id: emailSendId },
                 data: {
                     status: "SENT",
-                    sentAt: now,
-                    resendId: sendResult.id,
+                    sentAt: now,
                     messageId: sendResult.messageId
                         ? normalizeMessageId(sendResult.messageId)
                         : null,

@@ -71,10 +71,10 @@
 - Depends on: Auth (requireAdmin), Workspace, Marketplace
 
 ### Módulo: Email
-- Responsibility: Envio de email (SMTP + Resend fallback), template variable replacement, HTML rendering
+- Responsibility: Envio de email (SMTP), template variable replacement, HTML rendering
 - Owns: lib/email.ts, lib/email/purchase.ts, lib/email/templates/, lib/secrets.ts
 - Does not own: Templates do CRM (apenas consome subject/body)
-- Depends on: Nodemailer, Resend, Prisma (Workspace SMTP config encrypted)
+- Depends on: Nodemailer, Prisma (Workspace SMTP config encrypted)
 
 ### Módulo: UI
 - Responsibility: Componentes primitivos shadcn/ui, tema (next-themes), design tokens (Tailwind v4)
@@ -101,9 +101,9 @@
 - Failure mode: PayPal indisponível → checkout quebrado. Ordem criada mas não capturada → reembolso automático em 72h (PayPal).
 - Retry/idempotency: PayPal request_id para idempotency. PRECISA de transação Prisma ao criar registro de compra.
 
-### SMTP (Nodemailer) + Resend
+### SMTP (Nodemailer)
 - Purpose: Envio de emails de campanha e transacionais (compra)
-- Failure mode: SMTP falha → fallback para Resend. Ambos falham → email perdido (sem fila).
+- Failure mode: SMTP falha → email perdido (sem fila, sem fallback).
 - Retry/idempotency: Nenhum. Campanhas não têm retry automático.
 
 ### Supabase Storage
@@ -145,7 +145,6 @@
 - Vercel: Pro ($20/mês) — function execution time é o principal risco de custo (campanhas longas)
 - Supabase: Pro ($25/mês) — database size e bandwidth
 - PayPal: 2.9% + $0.30 por transação
-- Resend: Free tier (100 emails/dia), depois $20/mês (5k emails)
 
 ### Observability
 - Apenas console.log/console.error (211+ instâncias)

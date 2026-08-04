@@ -13,7 +13,7 @@
 - **Public surfaces:** Marketplace (home, catalog, list detail, checkout, cart), Auth (sign-in, sign-up), Legal (terms, privacy — advertised but missing)
 - **Critical user flows:** Sign-up → onboarding → lead import → campaign creation → email send → purchase → download
 - **Sensitive data:** Lead PII (name, email, phone, company), PayPal payment data, email tracking metrics, SMTP credentials (encrypted), workspace configs
-- **Third-party services:** Supabase (auth + DB), PayPal (payments), Resend (email), Vercel (hosting + analytics)
+- **Third-party services:** Supabase (auth + DB), PayPal (payments), SMTP (email), Vercel (hosting + analytics)
 
 ---
 

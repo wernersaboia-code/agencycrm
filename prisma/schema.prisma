@@ -156,7 +156,6 @@ model User {
   timezone String     @default("America/Sao_Paulo")
 
   // Configurações AgencyCRM
-  resendApiKey      String? // API key do Resend (criptografada)
   activeWorkspaceId String? // Workspace ativo no momento
 
   createdAt   DateTime  @default(now())
@@ -496,8 +495,7 @@ model EmailSend {
   step       CampaignStep? @relation(fields: [stepId], references: [id], onDelete: SetNull)
   stepNumber Int?
 
-  status   EmailSendStatus @default(PENDING)
-  resendId String?
+  status EmailSendStatus @default(PENDING)
 
   // Rastreamento
   openedAt     DateTime?

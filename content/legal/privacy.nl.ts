@@ -60,7 +60,6 @@ const privacyNl: LegalDocument = {
                 { kind: "lista", itens: [
                     "Supabase — database, authenticatie en bestandsopslag.",
                     "Stripe — betalingsverwerking.",
-                    "Resend — verzending van transactionele en campagne-e-mails.",
                     "Vercel — hosting van de applicatie en prestatiemeting.",
                     "Zoho — mailbox van het contactadres.",
                 ] },

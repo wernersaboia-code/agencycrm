@@ -5,7 +5,7 @@ import { sendSequenceFirstStep } from "./campaigns.service"
 // sendEmail nunca deve tocar rede em teste unitário: mockamos o módulo
 // inteiro e verificamos apenas com quais destinatários ele foi chamado.
 vi.mock("@/lib/email", () => ({
-    sendEmail: vi.fn().mockResolvedValue({ success: true, id: "resend-1" }),
+    sendEmail: vi.fn().mockResolvedValue({ success: true, id: "smtp-1" }),
     replaceEmailVariables: (template: string) => template,
 }))
 
@@ -139,7 +139,6 @@ describe("sendSequenceFirstStep", () => {
             where: { id: "send-ok" },
             data: expect.objectContaining({
                 status: "SENT",
-                resendId: "resend-1",
                 messageId: null,
             }),
         })

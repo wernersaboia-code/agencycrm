@@ -6,7 +6,6 @@ import {
     buildUnsubscribeUrl,
     buildListUnsubscribeHeaders,
 } from "@/lib/email/list-unsubscribe"
-import { Resend } from "resend"
 import nodemailer from "nodemailer"
 import type SMTPTransport from "nodemailer/lib/smtp-transport"
 import { SMTP_PROVIDERS, type SmtpProvider } from "./constants/smtp.constants"
@@ -33,9 +32,7 @@ export interface SendEmailParams {
     to: string
     subject: string
     html: string
-    from?: string
     replyTo?: string
-    tags?: { name: string; value: string }[]
     emailSendId?: string
     headers?: Record<string, string>
 }
@@ -47,14 +44,6 @@ export interface SendEmailResult {
     messageId?: string
     error?: string
 }
-
-// ============================================================
-// CLIENTE RESEND (fallback)
-// ============================================================
-
-const resend = process.env.RESEND_API_KEY
-    ? new Resend(process.env.RESEND_API_KEY)
-    : null
 
 // ============================================================
 // FUNÇÕES
@@ -147,51 +136,10 @@ export async function sendEmailSmtp(
 }
 
 /**
- * Envia email via Resend (fallback)
- */
-export async function sendEmailResend(
-    params: SendEmailParams
-): Promise<SendEmailResult> {
-    try {
-        if (!resend) {
-            console.warn("⚠️ RESEND_API_KEY não configurada e SMTP não disponível")
-            return { success: false, error: "Nenhum método de envio configurado" }
-        }
-
-        const fromAddress = params.from || "Easy Prospect <onboarding@resend.dev>"
-
-        console.log(`📧 Enviando email via Resend para: ${params.to}`)
-        console.log(`📧 De: ${fromAddress}`)
-        console.log(`📧 Assunto: ${params.subject}`)
-
-        const { data, error } = await resend.emails.send({
-            from: fromAddress,
-            to: params.to,
-            subject: params.subject,
-            html: params.html,
-            replyTo: params.replyTo,
-            tags: params.tags,
-            headers: params.headers,
-        })
-
-        if (error) {
-            console.error("❌ Erro ao enviar email:", error)
-            return { success: false, error: error.message }
-        }
-
-        console.log(`✅ Email enviado com sucesso! ID: ${data?.id}`)
-        return { success: true, id: data?.id }
-    } catch (error) {
-        console.error("❌ Erro ao enviar email:", error)
-        return {
-            success: false,
-            error: error instanceof Error ? error.message : "Erro desconhecido",
-        }
-    }
-}
-
-/**
- * Função principal - decide se usa SMTP ou Resend
+ * Função principal de envio. SMTP é o único transporte: e-mails de campanha
+ * usam o SMTP do workspace, e-mails do próprio Easy Prospect usam o SMTP do
+ * sistema (ver `getSystemSmtpConfig`). Sem credencial, não há envio — o erro é
+ * devolvido para quem chamou decidir o que fazer.
  */
 export async function sendEmail(
     params: SendEmailParams,
@@ -228,13 +176,12 @@ export async function sendEmail(
             : params.headers,
     }
 
-    // Se tem configuração SMTP válida, usa SMTP
-    if (smtpConfig?.user && smtpConfig?.pass) {
-        return sendEmailSmtp(smtpConfig, paramsFinal)
+    if (!smtpConfig?.user || !smtpConfig?.pass) {
+        console.warn("⚠️ Nenhuma configuração SMTP disponível — e-mail não enviado")
+        return { success: false, error: "Nenhum método de envio configurado" }
     }
 
-    // Senão, usa Resend como fallback
-    return sendEmailResend(paramsFinal)
+    return sendEmailSmtp(smtpConfig, paramsFinal)
 }
 
 function appendUnsubscribeFooter(html: string, unsubscribeUrl: string): string {
