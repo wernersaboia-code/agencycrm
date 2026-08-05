@@ -25,7 +25,18 @@ export function FreeSampleForm({ locale }: { locale: LandingLocale }) {
         e.preventDefault()
         setEstado("enviando")
 
-        const r = await requestFreeSample({ email, consent, locale, website })
+        let r
+        try {
+            r = await requestFreeSample({ email, consent, locale, website })
+        } catch {
+            // Qualquer exceção inesperada da action (rede caindo, etc.) não
+            // pode deixar o botão travado em "enviando" para sempre sem
+            // mensagem nenhuma — trata como erro genérico, igual às outras
+            // falhas.
+            setEstado("erro")
+            setMensagemErro(t("errorGeneric"))
+            return
+        }
 
         if (!r.success) {
             setEstado("erro")

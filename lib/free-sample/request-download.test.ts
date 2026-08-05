@@ -9,11 +9,13 @@ const prismaMock = vi.hoisted(() => ({
 
 const sendEmailMock = vi.hoisted(() => vi.fn().mockResolvedValue({ success: true }))
 const signedUrlMock = vi.hoisted(() => vi.fn().mockResolvedValue("https://storage/assinada"))
+const getPublicAppUrlMock = vi.hoisted(() => vi.fn().mockReturnValue("https://easyprospect.example"))
 
 vi.mock("@/lib/prisma", () => ({ prisma: prismaMock }))
 vi.mock("@/lib/email", () => ({ sendEmail: sendEmailMock }))
 vi.mock("@/lib/email/system-smtp", () => ({ getSystemSmtpConfig: vi.fn().mockReturnValue({}) }))
 vi.mock("@/lib/supabase/free-sample", () => ({ createFreeSampleSignedUrl: signedUrlMock }))
+vi.mock("@/lib/env", () => ({ getPublicAppUrl: getPublicAppUrlMock }))
 vi.mock("next/headers", () => ({
     headers: vi.fn().mockResolvedValue(new Headers({ "x-forwarded-for": "203.0.113.1" })),
 }))
@@ -48,6 +50,7 @@ beforeEach(() => {
     prismaMock.freeSampleDownload.create.mockResolvedValue({})
     signedUrlMock.mockResolvedValue("https://storage/assinada")
     sendEmailMock.mockResolvedValue({ success: true })
+    getPublicAppUrlMock.mockReturnValue("https://easyprospect.example")
 })
 
 describe("requestFreeSample", () => {
@@ -113,6 +116,22 @@ describe("requestFreeSample", () => {
 
         expect(r).toEqual({ success: true, downloadUrl: "https://storage/assinada" })
         expect(prismaMock.freeSampleDownload.create).toHaveBeenCalledOnce()
+    })
+
+    // ACHADO 1: getPublicAppUrl() lança em produção se NEXT_PUBLIC_APP_URL
+    // faltar, e ela roda DEPOIS de o pedido já estar gravado e a downloadUrl
+    // já pronta. Sem o try/catch envolvendo o trecho do e-mail, essa exceção
+    // subiria pela action e o visitante perderia um download que já existia.
+    it("entrega o download mesmo quando montar o link do e-mail lança (getPublicAppUrl sem NEXT_PUBLIC_APP_URL)", async () => {
+        getPublicAppUrlMock.mockImplementation(() => {
+            throw new Error("NEXT_PUBLIC_APP_URL nao configurada")
+        })
+
+        const r = await requestFreeSample(valido)
+
+        expect(r).toEqual({ success: true, downloadUrl: "https://storage/assinada" })
+        expect(prismaMock.freeSampleDownload.create).toHaveBeenCalledOnce()
+        expect(sendEmailMock).not.toHaveBeenCalled()
     })
 
     it("grava o consentimento e o idioma junto do e-mail", async () => {

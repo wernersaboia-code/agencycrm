@@ -94,33 +94,55 @@ export async function requestFreeSample(input: unknown): Promise<RequestFreeSamp
         console.error("Erro ao gerar URL assinada da amostra:", error)
     }
 
-    // getPublicAppUrl() e não process.env.NEXT_PUBLIC_APP_URL direto: sem a
-    // variável configurada, o link viraria relativo dentro do e-mail — morto
-    // fora do navegador que o abriu.
-    const linkPorEmail = `${getPublicAppUrl()}/free-sample/${token}`
-    const tEmail = await getTranslations({ locale: data.locale, namespace: "landing.freeSample" })
-    const resultadoEmail = await sendEmail(
-        {
-            to: data.email,
-            subject: tEmail("emailSubject"),
-            html: `
-                <p>${tEmail("emailIntro")}</p>
-                <p><a href="${linkPorEmail}">${tEmail("emailLink")}</a>.</p>
-                <p>${tEmail("emailExpiry")}</p>
-            `,
-        },
-        getSystemSmtpConfig()
-    )
-    if (!resultadoEmail.success) {
-        // O envio de e-mail é o risco nº 1 assumido pela spec desta feature:
-        // sem isto a falha morria calada no console de uma função serverless
-        // que ninguém acompanha. Sentry.captureException reporta de verdade.
-        console.error("Falha ao enviar a cópia da amostra por e-mail:", resultadoEmail.error)
-        Sentry.captureException(
-            new Error("Falha ao enviar a cópia da amostra por e-mail", {
-                cause: resultadoEmail.error,
-            })
+    // Tudo relacionado ao e-mail (montar a URL base, montar o link, traduzir e
+    // enviar) fica dentro deste try/catch. O e-mail é cópia do download que já
+    // está pronto acima; nada aqui pode custar a resposta ao visitante. Em
+    // particular, getPublicAppUrl() LANÇA em produção se NEXT_PUBLIC_APP_URL
+    // faltar — sem este try/catch essa exceção subiria pela action DEPOIS de
+    // o pedido já estar gravado e a downloadUrl já pronta, e o cliente (que
+    // faz `await requestFreeSample` sem tratamento) travaria em "enviando"
+    // para sempre, sem nunca ver a URL que já existia.
+    try {
+        // getPublicAppUrl() e não process.env.NEXT_PUBLIC_APP_URL direto: sem a
+        // variável configurada, o link viraria relativo dentro do e-mail — morto
+        // fora do navegador que o abriu.
+        const linkPorEmail = `${getPublicAppUrl()}/free-sample/${token}`
+        const tEmail = await getTranslations({ locale: data.locale, namespace: "landing.freeSample" })
+        const resultadoEmail = await sendEmail(
+            {
+                to: data.email,
+                subject: tEmail("emailSubject"),
+                html: `
+                    <p>${tEmail("emailIntro")}</p>
+                    <p><a href="${linkPorEmail}">${tEmail("emailLink")}</a>.</p>
+                    <p>${tEmail("emailExpiry")}</p>
+                `,
+            },
+            getSystemSmtpConfig()
         )
+        if (!resultadoEmail.success) {
+            // O envio de e-mail é o risco nº 1 assumido pela spec desta feature:
+            // sem isto a falha morria calada no console de uma função serverless
+            // que ninguém acompanha. Sentry.captureException reporta de verdade.
+            //
+            // O que NÃO sobe ao Sentry: a mensagem crua do provedor SMTP
+            // (resultadoEmail.error). Erros de bounce costumam ecoar o
+            // destinatário (ex.: "550 ... <fulano@exemplo.com>"), e o e-mail do
+            // visitante foi coletado com finalidade única — mandar o arquivo —
+            // não para ser espalhado a um terceiro (Sentry). O detalhe fica só
+            // no console.error local, que vive no log do próprio servidor.
+            console.error("Falha ao enviar a cópia da amostra por e-mail:", resultadoEmail.error)
+            Sentry.captureException(new Error("Falha ao enviar a cópia da amostra por e-mail"), {
+                extra: { locale: data.locale, etapa: "envio-email" },
+            })
+        }
+    } catch (error) {
+        // Qualquer exceção neste bloco (ex.: getPublicAppUrl() sem
+        // NEXT_PUBLIC_APP_URL em produção) não pode custar o download que já
+        // está pronto. Registra e segue — a action sempre chega ao return
+        // abaixo.
+        console.error("Falha ao preparar/enviar o e-mail da amostra:", error)
+        Sentry.captureException(error instanceof Error ? error : new Error("Falha ao preparar/enviar o e-mail da amostra"))
     }
 
     return { success: true, downloadUrl }
