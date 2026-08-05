@@ -9,7 +9,6 @@ interface PurchaseConfirmationTemplateData {
     currency: string
     items: Array<{
         name: string
-        leadsCount: number
         price: number
     }>
     accessUrl: string
@@ -37,8 +36,7 @@ export function generatePurchaseConfirmationEmail(
             (item) => `
     <tr>
       <td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">
-        <strong style="color: #111827;">${item.name}</strong><br>
-        <span style="color: #6b7280; font-size: 13px;">${item.leadsCount} leads</span>
+        <strong style="color: #111827;">${item.name}</strong>
       </td>
       <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: right;">
         <strong style="color: #111827;">

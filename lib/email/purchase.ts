@@ -121,9 +121,12 @@ export async function sendPurchaseConfirmationEmail({
             purchaseDate: purchase.createdAt,
             total: Number(purchase.total),
             currency: purchase.currency,
+            // Sem leadsCount: as listas ativas têm totalLeads = 0 desde que o
+            // produto virou o estudo em PDF, e o e-mail anunciava "0 leads" ao
+            // comprador que acabou de pagar. Saiu do funil em 48e8b4c; o
+            // e-mail tinha ficado de fora daquela limpeza.
             items: purchase.items.map((item) => ({
                 name: item.list.name,
-                leadsCount: item.leadsCount,
                 price: Number(item.price),
             })),
             accessUrl,
