@@ -414,11 +414,10 @@ git commit -m "feat(amostra): token de download com validade de sete dias"
 
 Este módulo é I/O puro contra o Supabase; não leva teste unitário, pelo mesmo motivo que `lib/supabase/list-studies.ts` não tem.
 
-- [ ] **Passo 1: Criar o bucket no Supabase**
+- [ ] **Passo 1: Conferir o bucket (JÁ CRIADO)**
 
-No painel do Supabase → Storage → New bucket:
-- Name: `free-sample`
-- Public bucket: **desmarcado** (privado; o acesso é só por URL assinada)
+O bucket `free-sample` já foi criado como **privado**, antes da execução começar.
+Nada a fazer — apenas não presumir que ele é público: todo acesso é por URL assinada.
 
 - [ ] **Passo 2: Escrever o módulo**
 
@@ -501,14 +500,113 @@ git commit -m "feat(amostra): bucket privado do PDF, com URL assinada curta"
 ### Task 5: Server action da captura
 
 **Arquivos:**
+- Criar: `lib/http/client-ip.ts`
+- Criar (teste): `lib/http/client-ip.test.ts`
+- Modificar: `lib/faq/submit-question.ts` (apagar a função local, importar do módulo novo)
 - Criar: `lib/free-sample/request-download.ts`
 - Criar (teste): `lib/free-sample/request-download.test.ts`
 
 **Interfaces:**
 - Consome: `freeSampleRequestSchema` (Task 2); `gerarToken`, `calcularExpiracao` (Task 3); `createFreeSampleSignedUrl` (Task 4); `sendEmail` de `@/lib/email`; `getSystemSmtpConfig` de `@/lib/email/system-smtp`; `rateLimit` de `@/lib/rate-limit`.
+- Produz também: `getClientIpFromHeaders(h: Headers): string` em `@/lib/http/client-ip`, agora compartilhado com `lib/faq/submit-question.ts`.
 - Produz: `requestFreeSample(input: unknown): Promise<RequestFreeSampleResult>` onde `RequestFreeSampleResult = { success: true; downloadUrl?: string } | { success: false; error: "invalid" | "rate_limited" | "unavailable" | "unknown" }`.
 
-- [ ] **Passo 1: Escrever o teste que falha**
+- [ ] **Passo 1: Extrair o leitor de IP para módulo compartilhado**
+
+`getClientIpFromHeaders` hoje é uma função privada dentro de
+`lib/faq/submit-question.ts`. Esta task seria o segundo consumidor, e copiá-la
+faria com que uma futura mudança no jeito de ler o IP (proxy novo, header novo)
+precisasse ser feita em dois lugares — e um deles seria esquecido.
+
+Criar `lib/http/client-ip.ts`:
+
+```ts
+// lib/http/client-ip.ts
+
+/**
+ * IP do cliente a partir dos headers da requisição.
+ *
+ * `x-forwarded-for` pode trazer uma cadeia de proxies (`cliente, proxy1,
+ * proxy2`); o primeiro item é o cliente original. Usado como identificador de
+ * rate limit, então o fallback "anonymous" agrupa todo mundo sem IP no mesmo
+ * balde — deliberado: quem esconde o IP não ganha um balde exclusivo.
+ */
+export function getClientIpFromHeaders(h: Headers): string {
+    const forwarded = h.get("x-forwarded-for")
+    if (forwarded) {
+        return forwarded.split(",")[0].trim()
+    }
+    return h.get("x-real-ip") || "anonymous"
+}
+```
+
+Criar `lib/http/client-ip.test.ts`:
+
+```ts
+import { describe, it, expect } from "vitest"
+import { getClientIpFromHeaders } from "./client-ip"
+
+describe("getClientIpFromHeaders", () => {
+    it("lê x-forwarded-for", () => {
+        expect(getClientIpFromHeaders(new Headers({ "x-forwarded-for": "203.0.113.1" })))
+            .toBe("203.0.113.1")
+    })
+
+    // A cadeia de proxies vem em ordem: o cliente original é o primeiro.
+    // Pegar o último devolveria o IP do nosso próprio proxy, e o rate limit
+    // passaria a contar o mundo inteiro num balde só.
+    it("pega o primeiro da cadeia de proxies", () => {
+        expect(getClientIpFromHeaders(new Headers({ "x-forwarded-for": "203.0.113.1, 70.41.3.18, 150.172.238.178" })))
+            .toBe("203.0.113.1")
+    })
+
+    it("apara espaço em volta", () => {
+        expect(getClientIpFromHeaders(new Headers({ "x-forwarded-for": "  203.0.113.1  , 70.41.3.18" })))
+            .toBe("203.0.113.1")
+    })
+
+    it("cai para x-real-ip", () => {
+        expect(getClientIpFromHeaders(new Headers({ "x-real-ip": "198.51.100.7" })))
+            .toBe("198.51.100.7")
+    })
+
+    it("prefere x-forwarded-for quando os dois vêm", () => {
+        expect(getClientIpFromHeaders(new Headers({
+            "x-forwarded-for": "203.0.113.1",
+            "x-real-ip": "198.51.100.7",
+        }))).toBe("203.0.113.1")
+    })
+
+    it("devolve anonymous sem header nenhum", () => {
+        expect(getClientIpFromHeaders(new Headers())).toBe("anonymous")
+    })
+})
+```
+
+Em `lib/faq/submit-question.ts`: **apagar** a função local `getClientIpFromHeaders`
+(as 7 linhas, logo depois do bloco de constantes de rate limit) e acrescentar o import:
+
+```ts
+import { getClientIpFromHeaders } from "@/lib/http/client-ip"
+```
+
+- [ ] **Passo 2: Provar que a extração não mudou o comportamento do FAQ**
+
+```bash
+npx vitest run lib/http/client-ip.test.ts lib/faq/submit-question.test.ts
+```
+
+Esperado: PASS nos dois arquivos. Os testes do FAQ são pré-existentes e **não podem ser
+alterados** — é isso que prova que a extração preservou o comportamento.
+
+- [ ] **Passo 3: Commit da extração**
+
+```bash
+git add lib/http/client-ip.ts lib/http/client-ip.test.ts lib/faq/submit-question.ts
+git commit -m "refactor(http): extrai o leitor de IP do cliente para módulo próprio"
+```
+
+- [ ] **Passo 4: Escrever o teste que falha**
 
 Criar `lib/free-sample/request-download.test.ts`:
 
@@ -616,7 +714,7 @@ describe("requestFreeSample", () => {
 })
 ```
 
-- [ ] **Passo 2: Rodar e ver falhar**
+- [ ] **Passo 5: Rodar e ver falhar**
 
 ```bash
 npx vitest run lib/free-sample/request-download.test.ts
@@ -624,7 +722,7 @@ npx vitest run lib/free-sample/request-download.test.ts
 
 Esperado: FAIL — módulo `./request-download` não encontrado.
 
-- [ ] **Passo 3: Escrever a action**
+- [ ] **Passo 6: Escrever a action**
 
 Criar `lib/free-sample/request-download.ts`:
 
@@ -638,6 +736,7 @@ import { sendEmail } from "@/lib/email"
 import { getSystemSmtpConfig } from "@/lib/email/system-smtp"
 import { createFreeSampleSignedUrl } from "@/lib/supabase/free-sample"
 import { rateLimit } from "@/lib/rate-limit"
+import { getClientIpFromHeaders } from "@/lib/http/client-ip"
 import { freeSampleRequestSchema } from "@/lib/validations/free-sample"
 import { gerarToken, calcularExpiracao } from "./token"
 
@@ -652,12 +751,6 @@ const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000
 // Backstop persistido (cobre múltiplas instâncias serverless): 5 por hora por IP.
 const DB_BACKSTOP_MAX = 5
 const DB_BACKSTOP_WINDOW_MS = 60 * 60 * 1000
-
-function getClientIpFromHeaders(h: Headers): string {
-    const forwarded = h.get("x-forwarded-for")
-    if (forwarded) return forwarded.split(",")[0].trim()
-    return h.get("x-real-ip") || "anonymous"
-}
 
 export async function requestFreeSample(input: unknown): Promise<RequestFreeSampleResult> {
     const parsed = freeSampleRequestSchema.safeParse(input)
@@ -748,7 +841,7 @@ export async function requestFreeSample(input: unknown): Promise<RequestFreeSamp
 }
 ```
 
-- [ ] **Passo 4: Rodar e ver passar**
+- [ ] **Passo 7: Rodar e ver passar**
 
 ```bash
 npx vitest run lib/free-sample/request-download.test.ts
@@ -756,7 +849,7 @@ npx vitest run lib/free-sample/request-download.test.ts
 
 Esperado: PASS, 7 testes.
 
-- [ ] **Passo 5: Commit**
+- [ ] **Passo 8: Commit**
 
 ```bash
 git add lib/free-sample/request-download.ts lib/free-sample/request-download.test.ts
