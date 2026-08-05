@@ -346,4 +346,99 @@ describe("fulfillPurchase", () => {
         expect(outcome).toEqual({ status: "amount_mismatch", purchaseId: "purchase-1" })
         expect(db.purchase.updateMany).not.toHaveBeenCalled()
     })
+
+    it("paddle: localiza a compra pelo próprio purchase.id", async () => {
+        // Igual ao Mercado Pago: quem amarra a transação ao pedido é o
+        // custom_data, que carrega o nosso id.
+        const db = createMockDb()
+        db.purchase.findUnique.mockResolvedValue(pendingPurchaseDe("paddle", { currency: "EUR", total: "45.00" }))
+        db.purchase.updateMany.mockResolvedValue({ count: 1 })
+
+        const outcome = await fulfillPurchase(db as unknown as PrismaClient, {
+            provider: "paddle",
+            providerOrderId: "purchase-1",
+            capturedAmount: { value: "45.00", currency: "EUR" },
+            payer: { email: "comprador@teste.com" },
+            providerPaymentId: "txn_1",
+        })
+
+        expect(db.purchase.findUnique).toHaveBeenCalledWith(
+            expect.objectContaining({ where: { id: "purchase-1" } })
+        )
+        expect(outcome.status).toBe("fulfilled")
+    })
+
+    it("paddle: grava paddleTransactionId e nenhum campo dos outros provedores", async () => {
+        const db = createMockDb()
+        db.purchase.findUnique.mockResolvedValue(pendingPurchaseDe("paddle", { currency: "EUR", total: "45.00" }))
+        db.purchase.updateMany.mockResolvedValue({ count: 1 })
+
+        await fulfillPurchase(db as unknown as PrismaClient, {
+            provider: "paddle",
+            providerOrderId: "purchase-1",
+            capturedAmount: { value: "45.00", currency: "EUR" },
+            providerPaymentId: "txn_1",
+        })
+
+        const [updateArgs] = db.purchase.updateMany.mock.calls[0]
+        expect(updateArgs.data).toMatchObject({
+            status: "paid",
+            paddleTransactionId: "txn_1",
+        })
+        expect(updateArgs.data).not.toHaveProperty("mercadoPagoPaymentId")
+        expect(updateArgs.data).not.toHaveProperty("stripePaymentIntentId")
+    })
+
+    it("paddle: failed é terminal, ao contrário do Mercado Pago", async () => {
+        // No Mercado Pago a mesma preferência sobrevive a uma recusa. No
+        // Paddle o comprador retenta dentro do overlay, na MESMA transação,
+        // então `failed` só é gravado em evento definitivo.
+        const db = createMockDb()
+        db.purchase.findUnique.mockResolvedValue(
+            pendingPurchaseDe("paddle", { status: "failed", currency: "EUR", total: "45.00" })
+        )
+
+        const outcome = await fulfillPurchase(db as unknown as PrismaClient, {
+            provider: "paddle",
+            providerOrderId: "purchase-1",
+            capturedAmount: { value: "45.00", currency: "EUR" },
+        })
+
+        expect(outcome).toEqual({ status: "already_fulfilled", purchaseId: "purchase-1" })
+        expect(db.purchase.updateMany).not.toHaveBeenCalled()
+    })
+
+    it("paddle: quem perde a corrida não reenvia e-mail", async () => {
+        // confirm-transaction e webhook chegam quase juntos. A leitura acima
+        // vê `pending` nos dois, e é o updateMany condicional que decide: o
+        // segundo encontra count 0.
+        const db = createMockDb()
+        db.purchase.findUnique.mockResolvedValue(pendingPurchaseDe("paddle", { currency: "EUR", total: "45.00" }))
+        db.purchase.updateMany.mockResolvedValue({ count: 0 })
+
+        const outcome = await fulfillPurchase(db as unknown as PrismaClient, {
+            provider: "paddle",
+            providerOrderId: "purchase-1",
+            capturedAmount: { value: "45.00", currency: "EUR" },
+            providerPaymentId: "txn_1",
+        })
+
+        expect(outcome).toEqual({ status: "already_fulfilled", purchaseId: "purchase-1" })
+    })
+
+    it("paddle: pagamento não efetiva compra de outro provedor", async () => {
+        // A busca do Paddle é por chave primária e acharia compra de qualquer
+        // provedor — a guarda de provider é a única linha que impede isso.
+        const db = createMockDb()
+        db.purchase.findUnique.mockResolvedValue(pendingPurchaseMp())
+
+        const outcome = await fulfillPurchase(db as unknown as PrismaClient, {
+            provider: "paddle",
+            providerOrderId: "purchase-1",
+            capturedAmount: { value: "289.00", currency: "BRL" },
+        })
+
+        expect(outcome).toEqual({ status: "not_found" })
+        expect(db.purchase.updateMany).not.toHaveBeenCalled()
+    })
 })

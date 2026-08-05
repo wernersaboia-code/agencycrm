@@ -477,6 +477,7 @@ enum PaymentProvider {
   paypal
   stripe
   mercadopago
+  paddle
 }
 
 // ==================== EMAIL SEND ====================
@@ -724,6 +725,7 @@ model Purchase {
   stripePaymentIntentId   String?
   mercadoPagoPreferenceId String?         @unique
   mercadoPagoPaymentId    String?
+  paddleTransactionId     String?         @unique
   status                  PurchaseStatus  @default(pending)
 
   // Valores

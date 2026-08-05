@@ -30,7 +30,7 @@ export type PayerInfo = {
     name?: string | null
 }
 
-export type PaymentProviderInput = "paypal" | "stripe" | "mercadopago"
+export type PaymentProviderInput = "paypal" | "stripe" | "mercadopago" | "paddle"
 
 export type FulfillOutcome =
     | { status: "fulfilled"; purchaseId: string; accessUrl: string }
@@ -55,8 +55,9 @@ export function amountMatches(
 
 /**
  * Efetiva uma compra de forma idempotente, a partir do identificador que
- * localiza o pedido: order do PayPal, session do Stripe ou — no Mercado Pago —
- * o nosso próprio purchase.id, que viaja como `external_reference`.
+ * localiza o pedido: order do PayPal, session do Stripe ou — no Mercado Pago
+ * e no Paddle — o nosso próprio purchase.id, que viaja como
+ * `external_reference` (Mercado Pago) ou `custom_data` (Paddle).
  *
  * - Se a compra não existe: `not_found`.
  * - Se já está paga (ou em estado terminal): `already_fulfilled` (no-op).
@@ -85,17 +86,20 @@ const BUSCA_POR_PROVEDOR: Record<
     paypal: (id) => ({ paypalOrderId: id }),
     stripe: (id) => ({ stripeSessionId: id }),
     mercadopago: (id) => ({ id }),
+    // Mesma cláusula do Mercado Pago: o custom_data da transação carrega o
+    // nosso purchase.id.
+    paddle: (id) => ({ id }),
 }
 
 export async function fulfillPurchase(
     db: PrismaClient,
     params: {
         provider: PaymentProviderInput
-        /** paypalOrderId (PayPal), stripeSessionId (Stripe) ou purchase.id (Mercado Pago). */
+        /** paypalOrderId (PayPal), stripeSessionId (Stripe) ou purchase.id (Mercado Pago e Paddle). */
         providerOrderId: string
         capturedAmount: CapturedAmount | null
         payer?: PayerInfo
-        /** paymentIntentId (Stripe) ou id do pagamento (Mercado Pago) — gravado na efetivação. */
+        /** paymentIntentId (Stripe), id do pagamento (Mercado Pago) ou txn_... (Paddle) — gravado na efetivação. */
         providerPaymentId?: string | null
     }
 ): Promise<FulfillOutcome> {
@@ -131,7 +135,9 @@ export async function fulfillPurchase(
     // recusado seguido de Pix aprovado é fluxo normal, e tratar isso como
     // terminal cobrava o dinheiro sem entregar a lista.
     // Nos outros provedores `failed` continua terminal — lá ele só é gravado
-    // em evento realmente definitivo (sessão expirada, no Stripe).
+    // em evento realmente definitivo (sessão expirada, no Stripe; no Paddle, o
+    // comprador retenta dentro do mesmo overlay e da mesma transação, então
+    // não há "recusa recuperável" para resgatar aqui).
     const RESGATAVEIS = provider === "mercadopago" ? ["pending", "failed"] : ["pending"]
 
     // `paid` e `refunded` são terminais em todos os provedores: reefetivar
@@ -164,6 +170,9 @@ export async function fulfillPurchase(
                 : {}),
             ...(provider === "mercadopago" && providerPaymentId
                 ? { mercadoPagoPaymentId: providerPaymentId }
+                : {}),
+            ...(provider === "paddle" && providerPaymentId
+                ? { paddleTransactionId: providerPaymentId }
                 : {}),
             ...(payer?.email ? { buyerEmail: payer.email } : {}),
             ...(payer?.name ? { buyerName: payer.name } : {}),
