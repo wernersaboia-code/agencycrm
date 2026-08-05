@@ -205,6 +205,21 @@
                 "Quali argomenti di vendita sono più promettenti al primo contatto"
             ]
         },
+        "freeSample": {
+            "eyebrow": "Campione gratuito",
+            "title": "Guarda uno studio prima di acquistare",
+            "intro": "Scarica un estratto reale di uno dei nostri studi di ingresso nel mercato e verifica formato, profondità e tipo di informazioni.",
+            "fileNote": "Campione in PDF, download immediato.",
+            "emailLabel": "La tua email",
+            "emailPlaceholder": "tua@email.com",
+            "cta": "Scarica il campione",
+            "consent": "Accetto di ricevere il campione via email. Non inviamo newsletter.",
+            "consentLink": "Informativa sulla privacy",
+            "successTitle": "Fatto: il download è iniziato.",
+            "successBody": "Abbiamo inviato una copia del link anche alla tua email.",
+            "errorRateLimited": "Troppe richieste da questo indirizzo. Riprova tra poco.",
+            "errorGeneric": "Non è stato possibile completare ora. Riprova tra un momento."
+        },
         "daten": {
             "eyebrow": "Qualità dei dati",
             "title": "Dati rivisti periodicamente.",

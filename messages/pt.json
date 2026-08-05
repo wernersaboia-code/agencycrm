@@ -205,6 +205,21 @@
                 "Quais argumentos de venda são mais promissores no primeiro contato"
             ]
         },
+        "freeSample": {
+            "eyebrow": "Amostra gratuita",
+            "title": "Veja um estudo antes de comprar",
+            "intro": "Baixe um trecho real de um dos nossos estudos de entrada em mercado e confira o formato, a profundidade e o tipo de informação que você recebe.",
+            "fileNote": "Amostra em PDF, download imediato.",
+            "emailLabel": "Seu e-mail",
+            "emailPlaceholder": "seu@email.com",
+            "cta": "Baixar amostra",
+            "consent": "Concordo em receber a amostra por e-mail. Não enviamos newsletter.",
+            "consentLink": "Política de Privacidade",
+            "successTitle": "Pronto — o download começou.",
+            "successBody": "Mandamos uma cópia do link para o seu e-mail também.",
+            "errorRateLimited": "Muitos pedidos deste endereço. Tente novamente daqui a pouco.",
+            "errorGeneric": "Não foi possível concluir agora. Tente novamente em instantes."
+        },
         "daten": {
             "eyebrow": "Qualidade dos dados",
             "title": "Dados revisados periodicamente.",

@@ -205,6 +205,21 @@
                 "Welche Verkaufsargumente bei der Erstansprache besonders erfolgversprechend sind"
             ]
         },
+        "freeSample": {
+            "eyebrow": "Kostenlose Leseprobe",
+            "title": "Sehen Sie eine Studie vor dem Kauf",
+            "intro": "Laden Sie einen echten Auszug aus einer unserer Markteintrittsstudien herunter und prüfen Sie Format, Tiefe und Art der Informationen.",
+            "fileNote": "PDF-Leseprobe, sofortiger Download.",
+            "emailLabel": "Ihre E-Mail",
+            "emailPlaceholder": "ihre@email.de",
+            "cta": "Leseprobe herunterladen",
+            "consent": "Ich stimme zu, die Leseprobe per E-Mail zu erhalten. Wir versenden keinen Newsletter.",
+            "consentLink": "Datenschutzerklärung",
+            "successTitle": "Fertig — der Download läuft.",
+            "successBody": "Eine Kopie des Links haben wir Ihnen zusätzlich per E-Mail geschickt.",
+            "errorRateLimited": "Zu viele Anfragen von dieser Adresse. Bitte versuchen Sie es später erneut.",
+            "errorGeneric": "Es hat gerade nicht geklappt. Bitte versuchen Sie es gleich erneut."
+        },
         "daten": {
             "eyebrow": "Datenqualität",
             "title": "Regelmäßig überprüfte Daten.",

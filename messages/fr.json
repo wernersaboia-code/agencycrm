@@ -205,6 +205,21 @@
                 "Quels arguments de vente sont les plus prometteurs lors du premier contact"
             ]
         },
+        "freeSample": {
+            "eyebrow": "Échantillon gratuit",
+            "title": "Consultez une étude avant d'acheter",
+            "intro": "Téléchargez un extrait réel de l'une de nos études d'entrée sur le marché et vérifiez le format, la profondeur et le type d'informations fournies.",
+            "fileNote": "Échantillon en PDF, téléchargement immédiat.",
+            "emailLabel": "Votre e-mail",
+            "emailPlaceholder": "vous@email.com",
+            "cta": "Télécharger l'échantillon",
+            "consent": "J'accepte de recevoir l'échantillon par e-mail. Nous n'envoyons pas de newsletter.",
+            "consentLink": "Politique de confidentialité",
+            "successTitle": "C'est fait — le téléchargement a démarré.",
+            "successBody": "Nous avons aussi envoyé une copie du lien à votre e-mail.",
+            "errorRateLimited": "Trop de demandes depuis cette adresse. Réessayez dans quelques instants.",
+            "errorGeneric": "Impossible de terminer pour l'instant. Réessayez dans un instant."
+        },
         "daten": {
             "eyebrow": "Qualité des données",
             "title": "Données revues périodiquement.",

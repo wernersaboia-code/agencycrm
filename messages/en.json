@@ -205,6 +205,21 @@
                 "Which sales arguments are most promising on first contact"
             ]
         },
+        "freeSample": {
+            "eyebrow": "Free sample",
+            "title": "See a study before you buy",
+            "intro": "Download a real excerpt from one of our market entry studies and check the format, the depth and the kind of information you get.",
+            "fileNote": "PDF sample, immediate download.",
+            "emailLabel": "Your email",
+            "emailPlaceholder": "you@email.com",
+            "cta": "Download sample",
+            "consent": "I agree to receive the sample by email. We do not send a newsletter.",
+            "consentLink": "Privacy Policy",
+            "successTitle": "Done — your download has started.",
+            "successBody": "We also sent a copy of the link to your email.",
+            "errorRateLimited": "Too many requests from this address. Please try again shortly.",
+            "errorGeneric": "We could not finish right now. Please try again in a moment."
+        },
         "daten": {
             "eyebrow": "Data quality",
             "title": "Data reviewed periodically.",
