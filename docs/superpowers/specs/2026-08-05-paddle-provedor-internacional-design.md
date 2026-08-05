@@ -249,9 +249,16 @@ Isso é deliberadamente menos ambicioso que o webhook do Mercado Pago, onde
 dentro do mesmo overlay: tratar uma tentativa recusada como pedido morto recriaria
 exatamente o bug corrigido em `64c82d7` — recusa encerra a tentativa, não o pedido.
 
-Erro de processamento responde 500 para o Paddle reentregar. Falha permanente
-(transação inexistente, 404) responde 200 e descarta, pela mesma razão registrada
-no webhook do Mercado Pago em `fed5c05`.
+Erro de processamento responde 500 para o Paddle reentregar.
+
+Diferente do Mercado Pago, o webhook do Paddle **não consulta a API**: a notificação
+já traz o corpo completo, com `custom_data`, `grand_total` e `currency_code`. Não há
+o caso de "transação inexistente" que obrigou o tratamento de 404 em `fed5c05` — a
+falha permanente equivalente aqui é notificação sem `purchaseId` em `custom_data`,
+que responde 200 e é descartada com log.
+
+O 404 existe apenas em `confirm-transaction`, que consulta por conta própria, e lá é
+devolvido ao cliente.
 
 ## Páginas legais
 
@@ -277,7 +284,8 @@ do código**, porque a aprovação do Paddle depende delas estarem no ar.
 | Rate limit / excesso de pendentes | 429 |
 | Falha ao criar a transação | 500, compra marcada `failed` |
 | Webhook sem secret ou assinatura inválida | 401, sem processar |
-| Webhook de transação inexistente (404) | 200, evento descartado |
+| Webhook sem `purchaseId` em `custom_data` | 200, evento descartado com log |
+| `confirm-transaction` com transação inexistente | 404 |
 | Erro ao processar webhook | 500, para reentrega |
 | Valor divergente | compra **não** é efetivada (`amount_mismatch`) |
 
