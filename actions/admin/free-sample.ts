@@ -1,7 +1,7 @@
 // actions/admin/free-sample.ts
 "use server"
 
-import { revalidateTag } from "next/cache"
+import { updateTag } from "next/cache"
 import { prisma } from "@/lib/prisma"
 import { requireAdmin } from "@/lib/auth"
 import { recordAudit } from "@/lib/audit"
@@ -15,16 +15,27 @@ import { TAG_AMOSTRA } from "@/lib/free-sample/amostra-ativa"
 export async function toggleFreeSample(id: string, isActive: boolean) {
     const admin = await requireAdmin()
 
+    // As duas escritas precisam ser atômicas: sem transação, duas chamadas
+    // quase simultâneas de ativação podem intercalar (desliga todas de uma,
+    // liga a da outra, liga a desta) e deixar DUAS linhas com isActive: true —
+    // reabrindo o problema que este comentário do topo diz que a função evita.
     if (isActive) {
-        await prisma.freeSample.updateMany({ where: { isActive: true }, data: { isActive: false } })
+        await prisma.$transaction([
+            prisma.freeSample.updateMany({ where: { isActive: true }, data: { isActive: false } }),
+            prisma.freeSample.update({ where: { id }, data: { isActive } }),
+        ])
+    } else {
+        await prisma.freeSample.update({ where: { id }, data: { isActive } })
     }
-    await prisma.freeSample.update({ where: { id }, data: { isActive } })
 
-    // Sem isto a home continuaria servindo o estado antigo do cache até a tag
-    // vencer — o interruptor pareceria não funcionar. Segundo argumento "max"
-    // porque esta versão do Next tornou obrigatório declarar o perfil de
-    // cache (sem ele, `revalidateTag` funciona mas emite aviso de depreciação).
-    revalidateTag(TAG_AMOSTRA, "max")
+    // O admin liga o interruptor e espera ver o efeito na home na hora: precisa
+    // ser invalidação IMEDIATA, não stale-while-revalidate. `revalidateTag(tag,
+    // "max")` marca a entrada como stale mas ainda serve o conteúdo ANTIGO na
+    // primeira visita seguinte (doc do Next: node_modules/next/dist/docs/01-app/
+    // 03-api-reference/04-functions/revalidateTag.md) — o interruptor pareceria
+    // não funcionar. Como isto roda dentro de uma Server Action, a própria doc
+    // recomenda `updateTag`, que expira a tag na hora (read-your-own-writes).
+    updateTag(TAG_AMOSTRA)
 
     await recordAudit({
         actorId: admin.id,
@@ -43,7 +54,9 @@ export async function deleteFreeSample(id: string) {
 
     await prisma.freeSample.delete({ where: { id } })
     await removeFreeSample(amostra.filePath)
-    revalidateTag(TAG_AMOSTRA, "max")
+    // Mesmo motivo do toggle: invalidação precisa ser imediata, e esta função
+    // também é uma Server Action, então `updateTag` é o jeito certo.
+    updateTag(TAG_AMOSTRA)
 
     await recordAudit({
         actorId: admin.id,

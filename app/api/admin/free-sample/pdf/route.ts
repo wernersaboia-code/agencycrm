@@ -33,7 +33,14 @@ export async function POST(request: NextRequest) {
             data: { filePath: path, fileName: file.name, isActive: false },
         })
 
-        revalidateTag(TAG_AMOSTRA, "max")
+        // O admin sobe o PDF e espera o efeito na home na hora — precisa ser
+        // invalidação IMEDIATA. `revalidateTag(tag, "max")` marca a tag como
+        // stale mas ainda serve o conteúdo ANTIGO na primeira visita seguinte
+        // (doc do Next: node_modules/next/dist/docs/01-app/03-api-reference/
+        // 04-functions/revalidateTag.md). `updateTag` daria expiração imediata,
+        // mas só funciona em Server Actions — isto é um Route Handler, então a
+        // própria doc indica `revalidateTag(tag, { expire: 0 })` para esse caso.
+        revalidateTag(TAG_AMOSTRA, { expire: 0 })
         return NextResponse.json({ id: amostra.id })
     } catch (error) {
         console.error("Erro ao subir a amostra:", error)
