@@ -520,6 +520,8 @@
         "payWithCard": "Pagar com cartão",
         "payWithMercadoPago": "Pagar com Mercado Pago",
         "brlChargeNotice": "A cobrança é feita em reais: {amount}. Se seu cartão for de outro país, o banco emissor faz a conversão.",
+        "payWithPaddle": "Pagar com cartão",
+        "paddleTaxNotice": "O preço já inclui os impostos aplicáveis. A cobrança aparece no extrato em nome do Paddle.",
         "stripeConfirming": "Confirmando seu pagamento...",
         "stripeConfirmFailed": "Não conseguimos confirmar o pagamento agora. Se o valor foi debitado, sua compra aparecerá em Minhas compras assim que o Stripe confirmar.",
         "mpConfirming": "Confirmando seu pagamento...",

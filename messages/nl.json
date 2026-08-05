@@ -520,6 +520,8 @@
         "payWithCard": "Betalen met kaart",
         "payWithMercadoPago": "Betalen met Mercado Pago",
         "brlChargeNotice": "Er wordt afgerekend in Braziliaanse real: {amount}. Als je kaart uit een ander land komt, verzorgt je bank de omrekening.",
+        "payWithPaddle": "Betaal met kaart",
+        "paddleTaxNotice": "De prijs is inclusief toepasselijke belastingen. De afschrijving verschijnt op uw afschrift onder de naam Paddle.",
         "stripeConfirming": "Je betaling wordt bevestigd...",
         "stripeConfirmFailed": "We konden je betaling nu niet bevestigen. Als het bedrag is afgeschreven, verschijnt je aankoop in Mijn aankopen zodra Stripe bevestigt.",
         "mpConfirming": "Je betaling wordt bevestigd...",

@@ -6,7 +6,9 @@ import { useFormatter, useLocale, useTranslations } from "next-intl"
 import { Link, useRouter } from "@/lib/i18n/navigation"
 import { useCart } from "@/contexts/cart-context"
 import { MercadoPagoButton } from "@/components/checkout/mercadopago-button"
-import { getOptionalPublicMercadoPagoPublicKey } from "@/lib/env"
+import { PaddleButton } from "@/components/checkout/paddle-button"
+import { getOptionalPublicMercadoPagoPublicKey, getOptionalPublicPaddleClientToken } from "@/lib/env"
+import { providerForCurrency } from "@/lib/checkout/currency-guard"
 import { formatCurrency } from "@/lib/utils"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
@@ -28,9 +30,15 @@ export default function CheckoutPage() {
     const locale = useLocale()
 
     // Stripe e PayPal saíram da tela — a conta do primeiro está com pendências
-    // e a do segundo foi cancelada. As rotas dos dois continuam no código, e
-    // religar qualquer um volta a ser questão de variável de ambiente.
-    const hasAnyPaymentProvider = Boolean(getOptionalPublicMercadoPagoPublicKey())
+    // e a do segundo foi cancelada. As rotas dos dois continuam no código.
+    //
+    // A moeda decide o provedor: o Mercado Pago exige CPF ou CNPJ do pagador,
+    // então só atende quem tem documento brasileiro; o Paddle atende o resto.
+    const provedor = providerForCurrency(currency)
+    const hasAnyPaymentProvider =
+        provedor === "mercadopago"
+            ? Boolean(getOptionalPublicMercadoPagoPublicKey())
+            : Boolean(getOptionalPublicPaddleClientToken())
 
     useEffect(() => {
         if (items.length === 0) {
@@ -95,7 +103,11 @@ export default function CheckoutPage() {
                             </div>
 
                             {hasAnyPaymentProvider ? (
-                                <MercadoPagoButton items={checkoutItems} currency={currency} />
+                                provedor === "mercadopago" ? (
+                                    <MercadoPagoButton items={checkoutItems} currency={currency} />
+                                ) : (
+                                    <PaddleButton items={checkoutItems} currency={currency} />
+                                )
                             ) : (
                                 <div
                                     role="alert"

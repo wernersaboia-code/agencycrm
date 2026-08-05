@@ -520,6 +520,8 @@
         "payWithCard": "Pagar con tarjeta",
         "payWithMercadoPago": "Pagar con Mercado Pago",
         "brlChargeNotice": "El cobro se realiza en reales brasileños: {amount}. Si tu tarjeta es de otro país, tu banco hace la conversión.",
+        "payWithPaddle": "Pagar con tarjeta",
+        "paddleTaxNotice": "El precio incluye los impuestos aplicables. El cargo aparece en el extracto a nombre de Paddle.",
         "stripeConfirming": "Confirmando tu pago...",
         "stripeConfirmFailed": "No pudimos confirmar el pago ahora. Si el importe fue cobrado, tu compra aparecerá en Mis compras en cuanto Stripe lo confirme.",
         "mpConfirming": "Confirmando tu pago...",

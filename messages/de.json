@@ -520,6 +520,8 @@
         "payWithCard": "Mit Karte zahlen",
         "payWithMercadoPago": "Mit Mercado Pago bezahlen",
         "brlChargeNotice": "Die Abbuchung erfolgt in brasilianischen Real: {amount}. Bei einer Karte aus einem anderen Land übernimmt Ihre Bank die Umrechnung.",
+        "payWithPaddle": "Mit Karte bezahlen",
+        "paddleTaxNotice": "Der Preis enthält die anfallenden Steuern. Die Abbuchung erscheint auf Ihrem Kontoauszug unter dem Namen Paddle.",
         "stripeConfirming": "Ihre Zahlung wird bestätigt...",
         "stripeConfirmFailed": "Wir konnten Ihre Zahlung gerade nicht bestätigen. Wenn der Betrag abgebucht wurde, erscheint Ihr Kauf unter Meine Käufe, sobald Stripe ihn bestätigt.",
         "mpConfirming": "Zahlung wird bestätigt...",

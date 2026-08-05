@@ -38,8 +38,11 @@ const nextConfig: NextConfig = {
 
         const securityHeaders = [
             {
+                // O Paddle.js carrega de cdn.paddle.com e o overlay abre em iframe.
+                // Sem essas três liberações o botão não faz nada, e o único sinal é um
+                // erro no console — falha cara de diagnosticar depois.
                 key: 'Content-Security-Policy',
-                value: `default-src 'self'; script-src ${scriptSrc}; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://*.supabase.co https://api.paypal.com https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://*.ingest.de.sentry.io; frame-src 'self' https://www.paypal.com https://www.sandbox.paypal.com; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'`,
+                value: `default-src 'self'; script-src ${scriptSrc} https://cdn.paddle.com https://sandbox-cdn.paddle.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://*.supabase.co https://api.paypal.com https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://*.ingest.de.sentry.io https://*.paddle.com; frame-src 'self' https://www.paypal.com https://www.sandbox.paypal.com https://*.paddle.com; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'`,
             },
             {
                 key: 'Referrer-Policy',
