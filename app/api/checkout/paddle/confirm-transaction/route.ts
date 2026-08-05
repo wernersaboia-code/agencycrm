@@ -82,7 +82,10 @@ export async function POST(request: NextRequest) {
             provider: "paddle",
             providerOrderId: transaction.purchaseId,
             capturedAmount,
-            payer: { email: transaction.customerEmail },
+            // Sem `payer`: o e-mail do comprador já está em Purchase.buyerEmail
+            // desde a criação da compra. Buscá-lo no Paddle exigiria a
+            // permissão `customer:read` na chave — permissão a mais para um
+            // dado que já temos.
             providerPaymentId: transaction.id,
         })
 

@@ -155,7 +155,7 @@ describe("getTransaction", () => {
     })
 
     it("devolve a transação normalizada, com o purchaseId vindo de custom_data", async () => {
-        const fetchMock = responderCom(
+        responderCom(
             200,
             JSON.stringify({
                 data: {
@@ -164,7 +164,6 @@ describe("getTransaction", () => {
                     currency_code: "EUR",
                     custom_data: { purchaseId: "compra-1" },
                     details: { totals: { grand_total: "4500" } },
-                    customer: { email: "comprador@teste.com" },
                 },
             })
         )
@@ -175,16 +174,22 @@ describe("getTransaction", () => {
             grandTotal: "4500",
             currencyCode: "EUR",
             purchaseId: "compra-1",
-            customerEmail: "comprador@teste.com",
         })
-
-        // Sem include=customer a API nem manda o objeto customer — o email
-        // viria sempre null.
-        const [url] = fetchMock.mock.calls[0] as [string]
-        expect(url).toContain("?include=customer")
     })
 
-    it("não estoura quando custom_data e customer vêm ausentes", async () => {
+    it("não pede include=customer — evita exigir permissão que a chave não tem", async () => {
+        // A chave é criada com o mínimo de permissões. `include=customer`
+        // exigiria `customer:read` e devolve 403 sem ela — foi o que deixou a
+        // primeira compra de teste pendente, com o pagamento já feito.
+        responderCom(200, JSON.stringify({ data: { id: "txn_3", status: "completed" } }))
+
+        await getTransaction("txn_3")
+
+        const [url] = (globalThis.fetch as unknown as { mock: { calls: [string][] } }).mock.calls[0]
+        expect(url).not.toContain("include=")
+    })
+
+    it("não estoura quando custom_data vem ausente", async () => {
         responderCom(
             200,
             JSON.stringify({
@@ -194,7 +199,6 @@ describe("getTransaction", () => {
 
         await expect(getTransaction("txn_2")).resolves.toMatchObject({
             purchaseId: null,
-            customerEmail: null,
             grandTotal: null,
         })
     })

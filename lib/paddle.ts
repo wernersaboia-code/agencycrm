@@ -117,7 +117,6 @@ export type PaddleTransaction = {
     grandTotal: string | null
     currencyCode: string | null
     purchaseId: string | null
-    customerEmail: string | null
 }
 
 async function paddleFetch(path: string, init?: RequestInit): Promise<unknown> {
@@ -202,17 +201,22 @@ export async function createTransaction(
  * a fonte, em vez de contra o que o cliente afirmou.
  */
 export async function getTransaction(transactionId: string): Promise<PaddleTransaction> {
-    // A resposta padrão só traz customer_id. O objeto `customer` expandido
-    // (com e-mail) só vem pedindo `include=customer` — sem isso, customerEmail
-    // seria sempre null.
-    const payload = (await paddleFetch(`/transactions/${transactionId}?include=customer`)) as {
+    // Sem `include=customer` de propósito. Expandir o cliente exigiria a
+    // permissão `customer:read` na API key, e a chave é criada com o mínimo —
+    // pedir mais permissão para ler um dado que não usamos aumenta o estrago
+    // de um vazamento sem ganho nenhum.
+    //
+    // Não usamos porque não precisamos: `Purchase.buyerEmail` já é gravado na
+    // criação da compra, a partir da conta autenticada. Ler o e-mail do Paddle
+    // seria redundante — e foi o que derrubou a primeira compra de teste, com
+    // 403 nesta chamada e a compra ficando pendente.
+    const payload = (await paddleFetch(`/transactions/${transactionId}`)) as {
         data?: {
             id?: string
             status?: string
             currency_code?: string
             custom_data?: { purchaseId?: string }
             details?: { totals?: { grand_total?: string } }
-            customer?: { email?: string }
         }
     }
 
@@ -224,6 +228,5 @@ export async function getTransaction(transactionId: string): Promise<PaddleTrans
         grandTotal: data.details?.totals?.grand_total ?? null,
         currencyCode: data.currency_code ?? null,
         purchaseId: data.custom_data?.purchaseId ?? null,
-        customerEmail: data.customer?.email ?? null,
     }
 }
