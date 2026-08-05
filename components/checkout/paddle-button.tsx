@@ -12,6 +12,14 @@ import { Button } from "@/components/ui/button"
 import { getOptionalPublicPaddleClientToken, getPublicPaddleEnv } from "@/lib/env"
 import { useCart } from "@/contexts/cart-context"
 
+/**
+ * O Paddle.js é global (`window.Paddle`), então o controle de "já carregado" e
+ * "já inicializado" também precisa viver fora do componente. Um `useRef` morre
+ * com a instância, e a remontagem seguinte reinjetaria o script.
+ */
+const PADDLE_SCRIPT_ID = "paddle-js"
+let paddleInicializado = false
+
 interface PaddleButtonProps {
     items: Array<{ listId: string; quantity: number }>
     /** Moeda do carrinho. O Paddle cobra nela — diferente do Mercado Pago. */
@@ -44,18 +52,21 @@ export function PaddleButton({ items, currency }: PaddleButtonProps) {
     const [isLoading, setIsLoading] = useState(false)
     const [scriptPronto, setScriptPronto] = useState(false)
     const clientToken = getOptionalPublicPaddleClientToken()
-    const inicializado = useRef(false)
     // O purchaseId da transação aberta, para a navegação de sucesso levá-lo.
     const purchaseIdRef = useRef<string | null>(null)
 
     useEffect(() => {
-        if (!clientToken || inicializado.current) return
+        if (!clientToken) return
 
         function inicializar() {
-            if (!window.Paddle || inicializado.current) return
-            inicializado.current = true
+            if (!window.Paddle) return
 
-            window.Paddle.Environment.set(getPublicPaddleEnv())
+            // Uma vez só por carga da página. Environment ANTES de Initialize:
+            // é ele que decide se o overlay abre em sandbox-buy.paddle.com ou
+            // em buy.paddle.com — perder essa chamada manda o comprador para o
+            // ambiente errado sem nenhum erro visível.
+            if (!paddleInicializado) {
+                window.Paddle.Environment.set(getPublicPaddleEnv())
             window.Paddle.Initialize({
                 token: clientToken,
                 eventCallback: (event) => {
@@ -112,7 +123,10 @@ export function PaddleButton({ items, currency }: PaddleButtonProps) {
                             setIsLoading(false)
                         })
                 },
-            })
+                })
+                paddleInicializado = true
+            }
+
             setScriptPronto(true)
         }
 
@@ -121,12 +135,28 @@ export function PaddleButton({ items, currency }: PaddleButtonProps) {
             return
         }
 
+        // O guard é o ID no DOM, não um ref do componente. Um ref não impede a
+        // SEGUNDA injeção numa remontagem: o script novo carrega, substitui o
+        // window.Paddle já inicializado por um cru, e o guard de inicialização
+        // então impede reinicializar — Paddle sem token e sem ambiente. Foi o
+        // que aconteceu no primeiro teste em sandbox, e o overlay abriu
+        // apontando para o domínio de produção.
+        const existente = document.getElementById(PADDLE_SCRIPT_ID)
+
+        if (existente) {
+            existente.addEventListener("load", inicializar)
+            return () => existente.removeEventListener("load", inicializar)
+        }
+
         const script = document.createElement("script")
+        script.id = PADDLE_SCRIPT_ID
         script.src = "https://cdn.paddle.com/paddle/v2/paddle.js"
         script.async = true
-        script.onload = inicializar
+        script.addEventListener("load", inicializar)
         script.onerror = () => console.error("Paddle.js não carregou — conferir o CSP")
         document.body.appendChild(script)
+
+        return () => script.removeEventListener("load", inicializar)
         // clearCart e t ficam de fora de propósito: o efeito só deve rodar de
         // novo quando o token ou o router mudarem — o guard `inicializado`
         // já impede reinicializar o Paddle.js, e incluir funções que mudam de
