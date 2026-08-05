@@ -205,6 +205,25 @@
                 "Quais argumentos de venda são mais promissores no primeiro contato"
             ]
         },
+        "freeSample": {
+            "eyebrow": "Amostra gratuita",
+            "title": "Veja um estudo antes de comprar",
+            "intro": "Baixe um trecho real de um dos nossos estudos de entrada em mercado e confira o formato, a profundidade e o tipo de informação que você recebe.",
+            "fileNote": "Amostra em PDF, download imediato.",
+            "emailLabel": "Seu e-mail",
+            "emailPlaceholder": "seu@email.com",
+            "cta": "Baixar amostra",
+            "consent": "Concordo em receber a amostra por e-mail. Não enviamos newsletter.",
+            "consentLink": "Política de Privacidade",
+            "successTitle": "Pronto — o download começou.",
+            "successBody": "Mandamos uma cópia do link para o seu e-mail também.",
+            "errorRateLimited": "Muitos pedidos deste endereço. Tente novamente daqui a pouco.",
+            "errorGeneric": "Não foi possível concluir agora. Tente novamente em instantes.",
+            "emailSubject": "Sua amostra do Easy Prospect",
+            "emailIntro": "Obrigado pelo interesse.",
+            "emailLink": "Baixe a amostra aqui",
+            "emailExpiry": "O link vale por sete dias."
+        },
         "daten": {
             "eyebrow": "Qualidade dos dados",
             "title": "Dados revisados periodicamente.",
@@ -617,6 +636,7 @@
             "blog": "Blog",
             "support": "Suporte",
             "analytics": "Relatórios",
+            "freeSample": "Amostra gratuita",
             "settings": "Configurações",
             "logout": "Sair",
             "logoutSuccess": "Logout realizado com sucesso!"
@@ -1069,6 +1089,25 @@
             "badgePending": "Pendente",
             "badgeFailed": "Falhou",
             "badgeRefunded": "Reembolsado"
+        },
+        "freeSample": {
+            "title": "Amostra gratuita",
+            "subtitle": "O PDF oferecido na home. Sem amostra ativa, a seção não aparece no site.",
+            "uploadLabel": "Enviar PDF",
+            "uploading": "Enviando…",
+            "uploadOk": "Amostra enviada. Ative-a quando quiser publicá-la.",
+            "uploadFailed": "Falha no envio do PDF.",
+            "uploadHint": "A amostra nova entra desligada. Ative-a quando quiser publicá-la.",
+            "colFile": "Arquivo",
+            "colUploaded": "Enviado em",
+            "colActive": "Ativa",
+            "empty": "Nenhuma amostra enviada ainda.",
+            "downloadsTitle": "Quem baixou",
+            "downloadsEmpty": "Ninguém baixou ainda.",
+            "colEmail": "E-mail",
+            "colLocale": "Idioma",
+            "colDate": "Data",
+            "exportCsv": "Exportar CSV"
         },
         "blog": {
             "title": "Blog",

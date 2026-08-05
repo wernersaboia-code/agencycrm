@@ -4,6 +4,7 @@ import { sendEmail } from "@/lib/email"
 import { getSystemSmtpConfig } from "@/lib/email/system-smtp"
 import { rateLimit } from "@/lib/rate-limit"
 import { faqContactSchema } from "@/lib/validations/faq"
+import { getClientIpFromHeaders } from "@/lib/http/client-ip"
 
 export interface SubmitFaqResult {
     success: boolean
@@ -17,14 +18,6 @@ const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000
 // Backstop persistido (cobre múltiplas instâncias serverless): 5 envios por hora por IP.
 const DB_BACKSTOP_MAX = 5
 const DB_BACKSTOP_WINDOW_MS = 60 * 60 * 1000
-
-function getClientIpFromHeaders(h: Headers): string {
-    const forwarded = h.get("x-forwarded-for")
-    if (forwarded) {
-        return forwarded.split(",")[0].trim()
-    }
-    return h.get("x-real-ip") || "anonymous"
-}
 
 function escapeHtml(value: string): string {
     return value

@@ -205,6 +205,25 @@
                 "Which sales arguments are most promising on first contact"
             ]
         },
+        "freeSample": {
+            "eyebrow": "Free sample",
+            "title": "See a study before you buy",
+            "intro": "Download a real excerpt from one of our market entry studies and check the format, the depth and the kind of information you get.",
+            "fileNote": "PDF sample, immediate download.",
+            "emailLabel": "Your email",
+            "emailPlaceholder": "you@email.com",
+            "cta": "Download sample",
+            "consent": "I agree to receive the sample by email. We do not send a newsletter.",
+            "consentLink": "Privacy Policy",
+            "successTitle": "Done — your download has started.",
+            "successBody": "We also sent a copy of the link to your email.",
+            "errorRateLimited": "Too many requests from this address. Please try again shortly.",
+            "errorGeneric": "We could not finish right now. Please try again in a moment.",
+            "emailSubject": "Your Easy Prospect sample",
+            "emailIntro": "Thank you for your interest.",
+            "emailLink": "Download the sample here",
+            "emailExpiry": "The link is valid for seven days."
+        },
         "daten": {
             "eyebrow": "Data quality",
             "title": "Data reviewed periodically.",
@@ -617,6 +636,7 @@
             "blog": "Blog",
             "support": "Support",
             "analytics": "Reports",
+            "freeSample": "Free sample",
             "settings": "Settings",
             "logout": "Sign out",
             "logoutSuccess": "Logged out successfully!"
@@ -1069,6 +1089,25 @@
             "badgePending": "Pending",
             "badgeFailed": "Failed",
             "badgeRefunded": "Refunded"
+        },
+        "freeSample": {
+            "title": "Free sample",
+            "subtitle": "The PDF offered on the home page. With no active sample, the section does not appear on the site.",
+            "uploadLabel": "Upload PDF",
+            "uploading": "Uploading…",
+            "uploadOk": "Sample uploaded. Activate it when you want it published.",
+            "uploadFailed": "PDF upload failed.",
+            "uploadHint": "A new sample starts disabled. Activate it when you want it published.",
+            "colFile": "File",
+            "colUploaded": "Uploaded",
+            "colActive": "Active",
+            "empty": "No sample uploaded yet.",
+            "downloadsTitle": "Who downloaded",
+            "downloadsEmpty": "Nobody has downloaded yet.",
+            "colEmail": "Email",
+            "colLocale": "Language",
+            "colDate": "Date",
+            "exportCsv": "Export CSV"
         },
         "blog": {
             "title": "Blog",

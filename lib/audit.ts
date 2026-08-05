@@ -14,6 +14,10 @@ export type AuditAction =
     | "list.prices.seed"
     | "marketplace_lead.deleted"
     | "workspace.exported"
+    | "freeSample.activated"
+    | "freeSample.deactivated"
+    | "freeSample.deleted"
+    | "freeSampleDownload.deleted"
 
 export interface AuditInput {
     actorId: string

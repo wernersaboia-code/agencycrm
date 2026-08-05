@@ -1,5 +1,29 @@
 # Amostra gratuita na home — plano de implementação
 
+> **ESTE PLANO É O ARTEFATO PRÉ-EXECUÇÃO. O CÓDIGO DIVERGIU DELE — e para melhor.**
+>
+> A execução (branch `feat/amostra-gratuita`) achou defeitos no próprio plano.
+> Quem reexecutar este documento ao pé da letra REINTRODUZ os problemas abaixo.
+> A fonte da verdade é o código; este arquivo fica pelo registro do raciocínio.
+>
+> Divergências que importam:
+>
+> 1. **Task 5** — o bloco de código abaixo consulta o banco (`freeSample.findFirst`)
+>    ANTES do rate limit. Está errado: toda requisição válida consultava o banco sem
+>    throttle. A ordem correta, no código, é schema → honeypot → IP → limiter → banco.
+> 2. **Task 7** — `prisma.freeSample.findFirst` sem tratamento de erro DERRUBA A HOME
+>    enquanto a migração não foi aplicada, que é exatamente a janela do deploy. O código
+>    tolera `P2021` (tabela ausente) e relança o resto.
+> 3. **Task 8** — `revalidateTag(tag, "max")` NÃO invalida na hora (é
+>    stale-while-revalidate). O código usa `updateTag(tag)` em Server Action e
+>    `revalidateTag(tag, { expire: 0 })` em Route Handler.
+> 4. **Task 8** — `updateMany` + `update` no interruptor precisam de `prisma.$transaction`,
+>    senão dois cliques simultâneos deixam duas amostras ativas.
+> 5. **`proxy.ts`** — o plano nunca mencionou. Sem `/free-sample` nas duas listas
+>    (`marketplaceRoutes` e `nonLocaleSegmentPrefixes`), a rota do link do e-mail é
+>    inalcançável: visitante anônimo é mandado ao login. Nenhuma task tocava esse arquivo,
+>    então nenhuma revisão por task podia ver — só a revisão final da branch pegou.
+
 > **Para agentes:** SUB-SKILL OBRIGATÓRIA: use `superpowers:subagent-driven-development` (recomendado) ou `superpowers:executing-plans` para executar tarefa a tarefa. Os passos usam checkbox (`- [ ]`) para acompanhamento.
 
 **Objetivo:** Deixar o visitante baixar um PDF de amostra na home em troca do e-mail, com a seção só existindo quando houver arquivo ativo no super-admin.
@@ -17,6 +41,25 @@
 - **IA nunca como argumento de venda** em texto voltado ao cliente.
 - **Sem número sem base:** não afirmar quantidade de contatos da amostra em texto nenhum.
 - Comentários e mensagens de commit **em português**, seguindo o repo: explicam o *porquê*, não o *o quê*.
+
+### Fatos do ambiente (medidos em execuções anteriores — não reinvestigar)
+
+- Node v24.18.0. Antes de qualquer `npm`/`npx`: `export PATH="/c/Program Files/nodejs:$PATH"`.
+- **Linha de base da suíte: 64 arquivos, 591 testes passando** (medido em 744465f).
+- **`npm run lint` com exit 0 é INATINGÍVEL**: 2378 erros e 112.585 avisos pré-existentes,
+  quase todos de builds antigos em `.claude/worktrees`. Critério: `npx eslint <arquivos tocados>`.
+- Vitest: `include` é `**/*.test.ts` (não `.tsx`), ambiente node, **não carrega `.env`** e
+  **nenhum teste toca o banco**. Não existe teste de componente React neste repositório.
+- Dev server **só pelo preview** (`.claude/launch.json`, porta 3001), nunca por Bash.
+  `npm run build` exige o dev server PARADO (EPERM no query engine do Prisma).
+- **Nunca `git add <diretório>`** — já arrastou arquivo não rastreado do Werner para um commit.
+  Sempre listar caminhos de arquivo.
+
+### Regra de processo (decidida pelo Werner)
+
+**Comando bloqueado é PARADA e escalação, nunca tentativa por outro caminho.** Trocar de
+shell (Bash → PowerShell) para driblar uma negativa anula o mecanismo que existe para
+consultar o Werner. Comando bloqueado: reportar BLOCKED e parar.
 
 ---
 
@@ -135,7 +178,7 @@ Esperado: sem saída de erro. Se `tsc` reclamar de `prisma.freeSample` inexisten
 - [ ] **Passo 4: Commit**
 
 ```bash
-git add prisma/schema.prisma prisma/migrations/20260805100000_amostra_gratuita
+git add prisma/schema.prisma prisma/migrations/20260805100000_amostra_gratuita/migration.sql
 git commit -m "feat(amostra): modelos FreeSample e FreeSampleDownload"
 ```
 
@@ -390,16 +433,17 @@ git commit -m "feat(amostra): token de download com validade de sete dias"
 - Criar: `lib/supabase/free-sample.ts`
 
 **Interfaces:**
-- Consome: `createAdminClient` de `@/lib/supabase/admin`; `validatePdfFile` de `@/lib/supabase/list-studies`.
+- Consome: `createAdminClient` de `@/lib/supabase/admin`. **NÃO consome `validatePdfFile`** —
+  a validação de tipo e tamanho é do CHAMADOR (a rota de upload da Task 8), não desta camada.
+  Este módulo sobe o que lhe derem.
 - Produz: `FREE_SAMPLE_BUCKET = "free-sample"`, `uploadFreeSample(file: File): Promise<{ path: string }>`, `removeFreeSample(path: string): Promise<void>`, `createFreeSampleSignedUrl(path: string, expiresInSeconds?: number): Promise<string>`.
 
 Este módulo é I/O puro contra o Supabase; não leva teste unitário, pelo mesmo motivo que `lib/supabase/list-studies.ts` não tem.
 
-- [ ] **Passo 1: Criar o bucket no Supabase**
+- [ ] **Passo 1: Conferir o bucket (JÁ CRIADO)**
 
-No painel do Supabase → Storage → New bucket:
-- Name: `free-sample`
-- Public bucket: **desmarcado** (privado; o acesso é só por URL assinada)
+O bucket `free-sample` já foi criado como **privado**, antes da execução começar.
+Nada a fazer — apenas não presumir que ele é público: todo acesso é por URL assinada.
 
 - [ ] **Passo 2: Escrever o módulo**
 
@@ -482,14 +526,113 @@ git commit -m "feat(amostra): bucket privado do PDF, com URL assinada curta"
 ### Task 5: Server action da captura
 
 **Arquivos:**
+- Criar: `lib/http/client-ip.ts`
+- Criar (teste): `lib/http/client-ip.test.ts`
+- Modificar: `lib/faq/submit-question.ts` (apagar a função local, importar do módulo novo)
 - Criar: `lib/free-sample/request-download.ts`
 - Criar (teste): `lib/free-sample/request-download.test.ts`
 
 **Interfaces:**
 - Consome: `freeSampleRequestSchema` (Task 2); `gerarToken`, `calcularExpiracao` (Task 3); `createFreeSampleSignedUrl` (Task 4); `sendEmail` de `@/lib/email`; `getSystemSmtpConfig` de `@/lib/email/system-smtp`; `rateLimit` de `@/lib/rate-limit`.
+- Produz também: `getClientIpFromHeaders(h: Headers): string` em `@/lib/http/client-ip`, agora compartilhado com `lib/faq/submit-question.ts`.
 - Produz: `requestFreeSample(input: unknown): Promise<RequestFreeSampleResult>` onde `RequestFreeSampleResult = { success: true; downloadUrl?: string } | { success: false; error: "invalid" | "rate_limited" | "unavailable" | "unknown" }`.
 
-- [ ] **Passo 1: Escrever o teste que falha**
+- [ ] **Passo 1: Extrair o leitor de IP para módulo compartilhado**
+
+`getClientIpFromHeaders` hoje é uma função privada dentro de
+`lib/faq/submit-question.ts`. Esta task seria o segundo consumidor, e copiá-la
+faria com que uma futura mudança no jeito de ler o IP (proxy novo, header novo)
+precisasse ser feita em dois lugares — e um deles seria esquecido.
+
+Criar `lib/http/client-ip.ts`:
+
+```ts
+// lib/http/client-ip.ts
+
+/**
+ * IP do cliente a partir dos headers da requisição.
+ *
+ * `x-forwarded-for` pode trazer uma cadeia de proxies (`cliente, proxy1,
+ * proxy2`); o primeiro item é o cliente original. Usado como identificador de
+ * rate limit, então o fallback "anonymous" agrupa todo mundo sem IP no mesmo
+ * balde — deliberado: quem esconde o IP não ganha um balde exclusivo.
+ */
+export function getClientIpFromHeaders(h: Headers): string {
+    const forwarded = h.get("x-forwarded-for")
+    if (forwarded) {
+        return forwarded.split(",")[0].trim()
+    }
+    return h.get("x-real-ip") || "anonymous"
+}
+```
+
+Criar `lib/http/client-ip.test.ts`:
+
+```ts
+import { describe, it, expect } from "vitest"
+import { getClientIpFromHeaders } from "./client-ip"
+
+describe("getClientIpFromHeaders", () => {
+    it("lê x-forwarded-for", () => {
+        expect(getClientIpFromHeaders(new Headers({ "x-forwarded-for": "203.0.113.1" })))
+            .toBe("203.0.113.1")
+    })
+
+    // A cadeia de proxies vem em ordem: o cliente original é o primeiro.
+    // Pegar o último devolveria o IP do nosso próprio proxy, e o rate limit
+    // passaria a contar o mundo inteiro num balde só.
+    it("pega o primeiro da cadeia de proxies", () => {
+        expect(getClientIpFromHeaders(new Headers({ "x-forwarded-for": "203.0.113.1, 70.41.3.18, 150.172.238.178" })))
+            .toBe("203.0.113.1")
+    })
+
+    it("apara espaço em volta", () => {
+        expect(getClientIpFromHeaders(new Headers({ "x-forwarded-for": "  203.0.113.1  , 70.41.3.18" })))
+            .toBe("203.0.113.1")
+    })
+
+    it("cai para x-real-ip", () => {
+        expect(getClientIpFromHeaders(new Headers({ "x-real-ip": "198.51.100.7" })))
+            .toBe("198.51.100.7")
+    })
+
+    it("prefere x-forwarded-for quando os dois vêm", () => {
+        expect(getClientIpFromHeaders(new Headers({
+            "x-forwarded-for": "203.0.113.1",
+            "x-real-ip": "198.51.100.7",
+        }))).toBe("203.0.113.1")
+    })
+
+    it("devolve anonymous sem header nenhum", () => {
+        expect(getClientIpFromHeaders(new Headers())).toBe("anonymous")
+    })
+})
+```
+
+Em `lib/faq/submit-question.ts`: **apagar** a função local `getClientIpFromHeaders`
+(as 7 linhas, logo depois do bloco de constantes de rate limit) e acrescentar o import:
+
+```ts
+import { getClientIpFromHeaders } from "@/lib/http/client-ip"
+```
+
+- [ ] **Passo 2: Provar que a extração não mudou o comportamento do FAQ**
+
+```bash
+npx vitest run lib/http/client-ip.test.ts lib/faq/submit-question.test.ts
+```
+
+Esperado: PASS nos dois arquivos. Os testes do FAQ são pré-existentes e **não podem ser
+alterados** — é isso que prova que a extração preservou o comportamento.
+
+- [ ] **Passo 3: Commit da extração**
+
+```bash
+git add lib/http/client-ip.ts lib/http/client-ip.test.ts lib/faq/submit-question.ts
+git commit -m "refactor(http): extrai o leitor de IP do cliente para módulo próprio"
+```
+
+- [ ] **Passo 4: Escrever o teste que falha**
 
 Criar `lib/free-sample/request-download.test.ts`:
 
@@ -597,7 +740,7 @@ describe("requestFreeSample", () => {
 })
 ```
 
-- [ ] **Passo 2: Rodar e ver falhar**
+- [ ] **Passo 5: Rodar e ver falhar**
 
 ```bash
 npx vitest run lib/free-sample/request-download.test.ts
@@ -605,7 +748,7 @@ npx vitest run lib/free-sample/request-download.test.ts
 
 Esperado: FAIL — módulo `./request-download` não encontrado.
 
-- [ ] **Passo 3: Escrever a action**
+- [ ] **Passo 6: Escrever a action**
 
 Criar `lib/free-sample/request-download.ts`:
 
@@ -619,6 +762,7 @@ import { sendEmail } from "@/lib/email"
 import { getSystemSmtpConfig } from "@/lib/email/system-smtp"
 import { createFreeSampleSignedUrl } from "@/lib/supabase/free-sample"
 import { rateLimit } from "@/lib/rate-limit"
+import { getClientIpFromHeaders } from "@/lib/http/client-ip"
 import { freeSampleRequestSchema } from "@/lib/validations/free-sample"
 import { gerarToken, calcularExpiracao } from "./token"
 
@@ -633,12 +777,6 @@ const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000
 // Backstop persistido (cobre múltiplas instâncias serverless): 5 por hora por IP.
 const DB_BACKSTOP_MAX = 5
 const DB_BACKSTOP_WINDOW_MS = 60 * 60 * 1000
-
-function getClientIpFromHeaders(h: Headers): string {
-    const forwarded = h.get("x-forwarded-for")
-    if (forwarded) return forwarded.split(",")[0].trim()
-    return h.get("x-real-ip") || "anonymous"
-}
 
 export async function requestFreeSample(input: unknown): Promise<RequestFreeSampleResult> {
     const parsed = freeSampleRequestSchema.safeParse(input)
@@ -729,7 +867,7 @@ export async function requestFreeSample(input: unknown): Promise<RequestFreeSamp
 }
 ```
 
-- [ ] **Passo 4: Rodar e ver passar**
+- [ ] **Passo 7: Rodar e ver passar**
 
 ```bash
 npx vitest run lib/free-sample/request-download.test.ts
@@ -737,7 +875,7 @@ npx vitest run lib/free-sample/request-download.test.ts
 
 Esperado: PASS, 7 testes.
 
-- [ ] **Passo 5: Commit**
+- [ ] **Passo 8: Commit**
 
 ```bash
 git add lib/free-sample/request-download.ts lib/free-sample/request-download.test.ts
@@ -1095,9 +1233,9 @@ Esperado: `tsc` sem saída; todos os testes passando, incluindo `lib/i18n/messag
 
 - [ ] **Passo 7: Conferir que a home NÃO mudou**
 
-```bash
-npx next dev -p 3001
-```
+Subir o dev server **pelo preview** (`.claude/launch.json`, configuração `dev`, porta 3001) —
+nunca por `npx next dev` no Bash, que deixa o processo órfão e faz `npm run build` falhar
+depois com EPERM no query engine do Prisma.
 
 Abrir `http://localhost:3001/pt` e confirmar que **nenhuma seção nova aparece** — não há `FreeSample` ativo no banco, então `getAmostraAtiva()` devolve `null`. Esta é a garantia de que a feature pode ser publicada antes de o arquivo existir.
 
@@ -1671,15 +1809,19 @@ Acrescentar `admin.freeSample` em `messages/pt.json`, `en.json` e `de.json`:
 - [ ] **Passo 9: Rodar tudo**
 
 ```bash
-npx tsc --noEmit && npx vitest run && npm run lint
+npx tsc --noEmit && npx vitest run && npx eslint actions/admin/free-sample.ts components/admin/free-sample-manager.tsx "app/(app)/super-admin/marketplace/free-sample/page.tsx" app/api/admin/free-sample/pdf/route.ts
 ```
 
-Esperado: `tsc` sem saída; testes verdes; no lint, nenhum apontamento **nos arquivos criados** (o repo tem ruído pré-existente vindo de `.claude/worktrees` — filtrar com `| grep -v worktrees`).
+Esperado: `tsc` sem saída; testes verdes; `eslint` sem nenhum apontamento.
+
+> **`npm run lint` com exit 0 é inatingível neste repositório** — foram medidos 2378 erros
+> e 112.585 avisos pré-existentes, quase todos de builds antigos em `.claude/worktrees`.
+> O critério é `npx eslint` nos arquivos tocados, e não a suíte inteira.
 
 - [ ] **Passo 10: Commit**
 
 ```bash
-git add actions/admin/free-sample.ts actions/admin/free-sample.test.ts "app/(app)/super-admin/marketplace/free-sample" app/api/admin/free-sample components/admin/free-sample-manager.tsx components/admin/admin-sidebar.tsx messages/pt.json messages/en.json messages/de.json
+git add actions/admin/free-sample.ts actions/admin/free-sample.test.ts "app/(app)/super-admin/marketplace/free-sample/page.tsx" app/api/admin/free-sample/pdf/route.ts components/admin/free-sample-manager.tsx components/admin/admin-sidebar.tsx messages/pt.json messages/en.json messages/de.json
 git commit -m "feat(amostra): painel do super-admin com upload, interruptor e exportação"
 ```
 
@@ -1717,7 +1859,7 @@ Antes de dizer que acabou:
 
 - [ ] `npx tsc --noEmit` sem saída
 - [ ] `npx vitest run` todo verde, incluindo `messages-integridade`
-- [ ] `npm run lint | grep -v worktrees` sem apontamento nos arquivos novos
+- [ ] `npx eslint <arquivos tocados>` sem apontamento (NÃO `npm run lint`, que tem 2378 erros pré-existentes)
 - [ ] Home sem a seção enquanto não houver amostra ativa — **este é o requisito que o Werner pediu explicitamente**
 - [ ] Com amostra ativa: formulário aparece, download começa ao enviar, linha gravada em `free_sample_downloads`
 - [ ] Com o SMTP quebrado de propósito (`SMTP_HOST` inválido): o download **ainda** funciona e o erro aparece no log

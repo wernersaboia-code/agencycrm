@@ -205,6 +205,25 @@
                 "Welche Verkaufsargumente bei der Erstansprache besonders erfolgversprechend sind"
             ]
         },
+        "freeSample": {
+            "eyebrow": "Kostenlose Leseprobe",
+            "title": "Sehen Sie eine Studie vor dem Kauf",
+            "intro": "Laden Sie einen echten Auszug aus einer unserer Markteintrittsstudien herunter und prüfen Sie Format, Tiefe und Art der Informationen.",
+            "fileNote": "PDF-Leseprobe, sofortiger Download.",
+            "emailLabel": "Ihre E-Mail",
+            "emailPlaceholder": "ihre@email.de",
+            "cta": "Leseprobe herunterladen",
+            "consent": "Ich stimme zu, die Leseprobe per E-Mail zu erhalten. Wir versenden keinen Newsletter.",
+            "consentLink": "Datenschutzerklärung",
+            "successTitle": "Fertig — der Download läuft.",
+            "successBody": "Eine Kopie des Links haben wir Ihnen zusätzlich per E-Mail geschickt.",
+            "errorRateLimited": "Zu viele Anfragen von dieser Adresse. Bitte versuchen Sie es später erneut.",
+            "errorGeneric": "Es hat gerade nicht geklappt. Bitte versuchen Sie es gleich erneut.",
+            "emailSubject": "Ihre Leseprobe von Easy Prospect",
+            "emailIntro": "Vielen Dank für Ihr Interesse.",
+            "emailLink": "Leseprobe hier herunterladen",
+            "emailExpiry": "Der Link ist sieben Tage gültig."
+        },
         "daten": {
             "eyebrow": "Datenqualität",
             "title": "Regelmäßig überprüfte Daten.",
@@ -617,6 +636,7 @@
             "blog": "Blog",
             "support": "Support",
             "analytics": "Berichte",
+            "freeSample": "Kostenlose Leseprobe",
             "settings": "Einstellungen",
             "logout": "Abmelden",
             "logoutSuccess": "Erfolgreich abgemeldet!"
@@ -1069,6 +1089,25 @@
             "badgePending": "Ausstehend",
             "badgeFailed": "Fehlgeschlagen",
             "badgeRefunded": "Erstattet"
+        },
+        "freeSample": {
+            "title": "Kostenlose Leseprobe",
+            "subtitle": "Das auf der Startseite angebotene PDF. Ohne aktive Leseprobe erscheint der Abschnitt nicht auf der Website.",
+            "uploadLabel": "PDF hochladen",
+            "uploading": "Wird hochgeladen…",
+            "uploadOk": "Leseprobe hochgeladen. Aktivieren Sie sie zum Veröffentlichen.",
+            "uploadFailed": "PDF-Upload fehlgeschlagen.",
+            "uploadHint": "Eine neue Leseprobe startet deaktiviert. Aktivieren Sie sie, wenn sie veröffentlicht werden soll.",
+            "colFile": "Datei",
+            "colUploaded": "Hochgeladen",
+            "colActive": "Aktiv",
+            "empty": "Noch keine Leseprobe hochgeladen.",
+            "downloadsTitle": "Wer heruntergeladen hat",
+            "downloadsEmpty": "Noch niemand hat heruntergeladen.",
+            "colEmail": "E-Mail",
+            "colLocale": "Sprache",
+            "colDate": "Datum",
+            "exportCsv": "CSV exportieren"
         },
         "blog": {
             "title": "Blog",

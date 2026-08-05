@@ -1,0 +1,147 @@
+import { describe, it, expect, vi, beforeEach } from "vitest"
+
+// Banco, storage e e-mail são I/O e ficam fora do teste unitário. O que
+// interessa aqui é a DECISÃO tomada antes deles.
+const prismaMock = vi.hoisted(() => ({
+    freeSample: { findFirst: vi.fn() },
+    freeSampleDownload: { count: vi.fn(), create: vi.fn() },
+}))
+
+const sendEmailMock = vi.hoisted(() => vi.fn().mockResolvedValue({ success: true }))
+const signedUrlMock = vi.hoisted(() => vi.fn().mockResolvedValue("https://storage/assinada"))
+const getPublicAppUrlMock = vi.hoisted(() => vi.fn().mockReturnValue("https://easyprospect.example"))
+
+vi.mock("@/lib/prisma", () => ({ prisma: prismaMock }))
+vi.mock("@/lib/email", () => ({ sendEmail: sendEmailMock }))
+vi.mock("@/lib/email/system-smtp", () => ({ getSystemSmtpConfig: vi.fn().mockReturnValue({}) }))
+vi.mock("@/lib/supabase/free-sample", () => ({ createFreeSampleSignedUrl: signedUrlMock }))
+vi.mock("@/lib/env", () => ({ getPublicAppUrl: getPublicAppUrlMock }))
+vi.mock("next/headers", () => ({
+    headers: vi.fn().mockResolvedValue(new Headers({ "x-forwarded-for": "203.0.113.1" })),
+}))
+// `getTranslations` real puxa a build react-server do next-intl, que o
+// ambiente do Vitest não resolve (cai na build react-client e estoura
+// "not supported in Client Components"). O texto do e-mail em si é coberto
+// pela integridade das mensagens (lib/i18n/messages-integridade.test.ts);
+// aqui só interessa que a action funcione com QUALQUER locale.
+vi.mock("next-intl/server", () => ({
+    getTranslations: async () => (key: string) => key,
+}))
+// O limiter em memória é real (não mockado) e vive no escopo do módulo: sem
+// isolar, sua cache persiste entre os `it()` deste arquivo (mesmo IP falso em
+// todos), e testes que chegam até ele se acumulam até estourar o próprio
+// limite — travando um teste que não tem nada a ver com rate limit. Por isso
+// mocká-lo, com `check` acessível via vi.hoisted para poder trocar o
+// comportamento por teste (ex.: mockRejectedValueOnce cobrindo o estouro).
+const limiterCheckMock = vi.hoisted(() => vi.fn().mockResolvedValue(undefined))
+vi.mock("@/lib/rate-limit", () => ({
+    rateLimit: () => ({ check: limiterCheckMock }),
+}))
+
+import { requestFreeSample } from "./request-download"
+
+const valido = { email: "werner@example.com", consent: true as const, locale: "pt" as const }
+const amostraAtiva = { id: "s1", filePath: "sample-1.pdf", fileName: "amostra.pdf" }
+
+beforeEach(() => {
+    vi.clearAllMocks()
+    prismaMock.freeSample.findFirst.mockResolvedValue(amostraAtiva)
+    prismaMock.freeSampleDownload.count.mockResolvedValue(0)
+    prismaMock.freeSampleDownload.create.mockResolvedValue({})
+    signedUrlMock.mockResolvedValue("https://storage/assinada")
+    sendEmailMock.mockResolvedValue({ success: true })
+    getPublicAppUrlMock.mockReturnValue("https://easyprospect.example")
+})
+
+describe("requestFreeSample", () => {
+    it("grava o pedido e devolve a URL de download", async () => {
+        const r = await requestFreeSample(valido)
+
+        expect(r).toEqual({ success: true, downloadUrl: "https://storage/assinada" })
+        expect(prismaMock.freeSampleDownload.create).toHaveBeenCalledOnce()
+    })
+
+    it("recusa e-mail inválido sem tocar no banco", async () => {
+        const r = await requestFreeSample({ ...valido, email: "xx" })
+
+        expect(r).toEqual({ success: false, error: "invalid" })
+        expect(prismaMock.freeSampleDownload.create).not.toHaveBeenCalled()
+    })
+
+    // Honeypot: responder sucesso sem efeito algum, para não dar sinal ao bot.
+    it("finge sucesso e não grava quando o honeypot vem preenchido", async () => {
+        const r = await requestFreeSample({ ...valido, website: "http://spam.example" })
+
+        expect(r).toEqual({ success: true })
+        expect(prismaMock.freeSampleDownload.create).not.toHaveBeenCalled()
+    })
+
+    // Sem arquivo ativo a seção nem deveria estar na tela; se chegou aqui é
+    // formulário de página aberta antes de o admin desligar.
+    it("responde unavailable quando não há amostra ativa", async () => {
+        prismaMock.freeSample.findFirst.mockResolvedValue(null)
+
+        const r = await requestFreeSample(valido)
+
+        expect(r).toEqual({ success: false, error: "unavailable" })
+        expect(prismaMock.freeSampleDownload.create).not.toHaveBeenCalled()
+    })
+
+    it("bloqueia quando o limiter em memória estoura a janela", async () => {
+        limiterCheckMock.mockRejectedValueOnce(new Error("rate limit exceeded"))
+
+        const r = await requestFreeSample(valido)
+
+        expect(r).toEqual({ success: false, error: "rate_limited" })
+        expect(prismaMock.freeSampleDownload.create).not.toHaveBeenCalled()
+    })
+
+    it("bloqueia quando o mesmo IP passou do limite persistido", async () => {
+        prismaMock.freeSampleDownload.count.mockResolvedValue(5)
+
+        const r = await requestFreeSample(valido)
+
+        expect(r).toEqual({ success: false, error: "rate_limited" })
+        expect(prismaMock.freeSampleDownload.create).not.toHaveBeenCalled()
+    })
+
+    // ESTE É O PONTO DA FEATURE: o envio de e-mail é frágil (o .env autentica
+    // no Gmail enquanto o contato@ é Zoho). Se o download dependesse dele, a
+    // falha seria silenciosa — o visitante deixaria o contato e não receberia
+    // nada.
+    it("entrega o download mesmo quando o e-mail falha", async () => {
+        sendEmailMock.mockResolvedValue({ success: false, error: "SMTP recusou" })
+
+        const r = await requestFreeSample(valido)
+
+        expect(r).toEqual({ success: true, downloadUrl: "https://storage/assinada" })
+        expect(prismaMock.freeSampleDownload.create).toHaveBeenCalledOnce()
+    })
+
+    // ACHADO 1: getPublicAppUrl() lança em produção se NEXT_PUBLIC_APP_URL
+    // faltar, e ela roda DEPOIS de o pedido já estar gravado e a downloadUrl
+    // já pronta. Sem o try/catch envolvendo o trecho do e-mail, essa exceção
+    // subiria pela action e o visitante perderia um download que já existia.
+    it("entrega o download mesmo quando montar o link do e-mail lança (getPublicAppUrl sem NEXT_PUBLIC_APP_URL)", async () => {
+        getPublicAppUrlMock.mockImplementation(() => {
+            throw new Error("NEXT_PUBLIC_APP_URL nao configurada")
+        })
+
+        const r = await requestFreeSample(valido)
+
+        expect(r).toEqual({ success: true, downloadUrl: "https://storage/assinada" })
+        expect(prismaMock.freeSampleDownload.create).toHaveBeenCalledOnce()
+        expect(sendEmailMock).not.toHaveBeenCalled()
+    })
+
+    it("grava o consentimento e o idioma junto do e-mail", async () => {
+        await requestFreeSample({ ...valido, locale: "de" })
+
+        const gravado = prismaMock.freeSampleDownload.create.mock.calls[0][0].data
+        expect(gravado.email).toBe("werner@example.com")
+        expect(gravado.consent).toBe(true)
+        expect(gravado.locale).toBe("de")
+        expect(gravado.token).toEqual(expect.any(String))
+        expect(gravado.tokenExpiresAt).toBeInstanceOf(Date)
+    })
+})

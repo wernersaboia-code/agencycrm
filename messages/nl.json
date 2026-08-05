@@ -205,6 +205,25 @@
                 "Welke verkoopargumenten het meest kansrijk zijn bij het eerste contact"
             ]
         },
+        "freeSample": {
+            "eyebrow": "Gratis voorbeeld",
+            "title": "Bekijk een studie voordat u koopt",
+            "intro": "Download een echt fragment uit een van onze marktentreestudies en bekijk het formaat, de diepgang en het soort informatie dat u krijgt.",
+            "fileNote": "Voorbeeld in pdf, direct downloaden.",
+            "emailLabel": "Uw e-mail",
+            "emailPlaceholder": "uw@email.com",
+            "cta": "Voorbeeld downloaden",
+            "consent": "Ik ga ermee akkoord het voorbeeld per e-mail te ontvangen. We sturen geen nieuwsbrief.",
+            "consentLink": "Privacybeleid",
+            "successTitle": "Klaar — de download is gestart.",
+            "successBody": "We hebben ook een kopie van de link naar uw e-mail gestuurd.",
+            "errorRateLimited": "Te veel aanvragen van dit adres. Probeer het straks opnieuw.",
+            "errorGeneric": "Het is nu niet gelukt. Probeer het zo opnieuw.",
+            "emailSubject": "Uw Easy Prospect-voorbeeld",
+            "emailIntro": "Bedankt voor uw interesse.",
+            "emailLink": "Download het voorbeeld hier",
+            "emailExpiry": "De link is zeven dagen geldig."
+        },
         "daten": {
             "eyebrow": "Datakwaliteit",
             "title": "Periodiek herziene gegevens.",
