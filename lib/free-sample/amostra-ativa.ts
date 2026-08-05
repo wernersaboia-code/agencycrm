@@ -2,6 +2,20 @@
 import { unstable_cache } from "next/cache"
 import { prisma } from "@/lib/prisma"
 
+/**
+ * Verifica se o erro é o P2021 do Prisma ("a tabela não existe"), sem
+ * depender de importar `PrismaClientKnownRequestError` (o formato do erro
+ * muda entre versões do Prisma) — checagem defensiva pela forma do objeto.
+ */
+function isTabelaAusente(error: unknown): boolean {
+    return (
+        typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        (error as { code?: unknown }).code === "P2021"
+    )
+}
+
 /** Tag revalidada quando o admin liga, desliga ou troca o arquivo. */
 export const TAG_AMOSTRA = "free-sample"
 
@@ -20,14 +34,31 @@ export const getAmostraAtiva = unstable_cache(
                 select: { id: true },
             })
         } catch (error) {
-            // A migração desta feature pode não ter sido aplicada ainda no banco
-            // (aplicação fica para a Task 9 / deploy) — `free_samples` pode nem
-            // existir. Sem este catch, a query rejeitada derruba a Suspense
-            // boundary inteira da home (todas as seções ficam presas no
-            // esqueleto de carregamento), o oposto do "publicado invisível"
-            // que é o requisito desta feature.
-            console.error("Erro ao consultar a amostra ativa:", error)
-            return null
+            // Só toleramos o erro "tabela não existe" (P2021): é o estado
+            // esperado enquanto a migração desta feature não foi aplicada no
+            // banco (aplicação fica para a Task 9 / deploy). Nesse caso a
+            // home tem que ficar "publicada invisível" — retornar `null` em
+            // vez de derrubar a Suspense boundary inteira.
+            //
+            // Qualquer outro erro (timeout, credencial inválida, banco fora
+            // do ar) é relançado de propósito. Este resultado fica em cache
+            // sem `revalidate` por tempo — só sai daqui quando alguém chamar
+            // `revalidateTag(TAG_AMOSTRA)`. Se engolíssemos um erro
+            // transitório e gravássemos `null`, a seção sumiria da home PARA
+            // SEMPRE, mesmo depois de o banco voltar, e ninguém saberia que
+            // precisa revalidar a tag. Relançar deixa a home cair e mostrar
+            // app/[locale]/error.tsx, que já captura a exceção no Sentry
+            // (via onRequestError, em instrumentation.ts) — falha visível e
+            // reportada é preferível a falha invisível e permanente.
+            if (isTabelaAusente(error)) {
+                console.error(
+                    "Amostra ativa: tabela free_samples ainda não existe (migração pendente):",
+                    error
+                )
+                return null
+            }
+
+            throw error
         }
     },
     ["free-sample-ativa"],
