@@ -813,6 +813,52 @@ model FaqSubmission {
   @@map("faq_submissions")
 }
 
+// ==================== AMOSTRA GRATUITA ====================
+
+/**
+ * O PDF de amostra oferecido na home. Uma linha ativa por vez.
+ *
+ * Sem linha ativa a seção da home não renderiza — é o interruptor da feature,
+ * no lugar de uma variável de ambiente, para ligar e desligar sem deploy.
+ *
+ * Os textos da seção NÃO moram aqui: ficam em `messages/<locale>.json` sob
+ * `landing.freeSample.*`, como o resto do site.
+ */
+model FreeSample {
+  id        String   @id @default(cuid())
+  filePath  String
+  fileName  String
+  isActive  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("free_samples")
+}
+
+/**
+ * Quem pediu a amostra. Mesma forma do FaqSubmission, inclusive o índice
+ * [ip, createdAt] de que o backstop de rate limit depende.
+ *
+ * `consent` é a finalidade única (receber o arquivo). Não é aceite de
+ * marketing: nada é disparado automaticamente para esta tabela.
+ */
+model FreeSampleDownload {
+  id             String   @id @default(cuid())
+  email          String
+  consent        Boolean
+  locale         String
+  token          String   @unique
+  tokenExpiresAt DateTime
+  ip             String?
+  userAgent      String?
+  createdAt      DateTime @default(now())
+
+  @@index([email])
+  @@index([ip, createdAt])
+  @@index([token])
+  @@map("free_sample_downloads")
+}
+
 // ==================== BLOG ====================
 
 enum BlogPostStatus {
