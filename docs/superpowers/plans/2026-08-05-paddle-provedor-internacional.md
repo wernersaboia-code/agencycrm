@@ -1559,6 +1559,7 @@ Criar `components/checkout/paddle-button.tsx`:
 import { useEffect, useRef, useState } from "react"
 // eslint-disable-next-line no-restricted-imports -- usado só para /sign-in, fora do segmento de locale
 import { useRouter as usePlainRouter } from "next/navigation"
+import { useRouter } from "@/lib/i18n/navigation"
 import { useLocale, useTranslations } from "next-intl"
 import { CreditCard, Loader2 } from "lucide-react"
 import { toast } from "sonner"
@@ -1571,7 +1572,7 @@ interface PaddleButtonProps {
     currency: string
 }
 
-type CreateTransactionResponse = { transactionId?: string; error?: string }
+type CreateTransactionResponse = { transactionId?: string; purchaseId?: string; error?: string }
 
 // O Paddle.js se instala em window.Paddle. Tipagem mínima: só o que usamos.
 type PaddleGlobal = {
@@ -1589,11 +1590,16 @@ declare global {
 export function PaddleButton({ items, currency }: PaddleButtonProps) {
     const t = useTranslations("checkout")
     const locale = useLocale()
+    // Localizado para a navegação interna; o plain só para /sign-in, que fica
+    // fora do segmento de locale. Mesma divisão de mercadopago-return.
+    const router = useRouter()
     const plainRouter = usePlainRouter()
     const [isLoading, setIsLoading] = useState(false)
     const [scriptPronto, setScriptPronto] = useState(false)
     const clientToken = getOptionalPublicPaddleClientToken()
     const inicializado = useRef(false)
+    // O purchaseId da transação aberta, para a navegação de sucesso levá-lo.
+    const purchaseIdRef = useRef<string | null>(null)
 
     useEffect(() => {
         if (!clientToken || inicializado.current) return
@@ -1621,7 +1627,14 @@ export function PaddleButton({ items, currency }: PaddleButtonProps) {
                     })
                         .catch((error) => console.error("confirm-transaction error:", error))
                         .finally(() => {
-                            plainRouter.push(`/${locale}/checkout/success`)
+                            // Router localizado: ele acrescenta o idioma. Montar
+                            // `/${locale}/...` à mão duplicaria o prefixo.
+                            const purchaseId = purchaseIdRef.current
+                            router.push(
+                                purchaseId
+                                    ? `/checkout/success?purchaseId=${purchaseId}`
+                                    : "/checkout/success"
+                            )
                         })
                 },
             })
@@ -1639,7 +1652,7 @@ export function PaddleButton({ items, currency }: PaddleButtonProps) {
         script.onload = inicializar
         script.onerror = () => console.error("Paddle.js não carregou — conferir o CSP")
         document.body.appendChild(script)
-    }, [clientToken, locale, plainRouter])
+    }, [clientToken, router])
 
     if (!clientToken) {
         // Provedor desconfigurado some da tela; o aviso de "nenhum provedor" é
@@ -1671,6 +1684,7 @@ export function PaddleButton({ items, currency }: PaddleButtonProps) {
                 return
             }
 
+            purchaseIdRef.current = data.purchaseId ?? null
             window.Paddle?.Checkout.open({ transactionId: data.transactionId })
             // O overlay assume a tela; o loading sai para o botão não ficar
             // travado se o comprador fechar o overlay sem pagar.
