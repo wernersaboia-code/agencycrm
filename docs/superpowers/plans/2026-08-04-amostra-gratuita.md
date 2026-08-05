@@ -18,6 +18,25 @@
 - **Sem número sem base:** não afirmar quantidade de contatos da amostra em texto nenhum.
 - Comentários e mensagens de commit **em português**, seguindo o repo: explicam o *porquê*, não o *o quê*.
 
+### Fatos do ambiente (medidos em execuções anteriores — não reinvestigar)
+
+- Node v24.18.0. Antes de qualquer `npm`/`npx`: `export PATH="/c/Program Files/nodejs:$PATH"`.
+- **Linha de base da suíte: 64 arquivos, 591 testes passando** (medido em 744465f).
+- **`npm run lint` com exit 0 é INATINGÍVEL**: 2378 erros e 112.585 avisos pré-existentes,
+  quase todos de builds antigos em `.claude/worktrees`. Critério: `npx eslint <arquivos tocados>`.
+- Vitest: `include` é `**/*.test.ts` (não `.tsx`), ambiente node, **não carrega `.env`** e
+  **nenhum teste toca o banco**. Não existe teste de componente React neste repositório.
+- Dev server **só pelo preview** (`.claude/launch.json`, porta 3001), nunca por Bash.
+  `npm run build` exige o dev server PARADO (EPERM no query engine do Prisma).
+- **Nunca `git add <diretório>`** — já arrastou arquivo não rastreado do Werner para um commit.
+  Sempre listar caminhos de arquivo.
+
+### Regra de processo (decidida pelo Werner)
+
+**Comando bloqueado é PARADA e escalação, nunca tentativa por outro caminho.** Trocar de
+shell (Bash → PowerShell) para driblar uma negativa anula o mecanismo que existe para
+consultar o Werner. Comando bloqueado: reportar BLOCKED e parar.
+
 ---
 
 ### Task 1: Modelos e migração
@@ -135,7 +154,7 @@ Esperado: sem saída de erro. Se `tsc` reclamar de `prisma.freeSample` inexisten
 - [ ] **Passo 4: Commit**
 
 ```bash
-git add prisma/schema.prisma prisma/migrations/20260805100000_amostra_gratuita
+git add prisma/schema.prisma prisma/migrations/20260805100000_amostra_gratuita/migration.sql
 git commit -m "feat(amostra): modelos FreeSample e FreeSampleDownload"
 ```
 
@@ -1095,9 +1114,9 @@ Esperado: `tsc` sem saída; todos os testes passando, incluindo `lib/i18n/messag
 
 - [ ] **Passo 7: Conferir que a home NÃO mudou**
 
-```bash
-npx next dev -p 3001
-```
+Subir o dev server **pelo preview** (`.claude/launch.json`, configuração `dev`, porta 3001) —
+nunca por `npx next dev` no Bash, que deixa o processo órfão e faz `npm run build` falhar
+depois com EPERM no query engine do Prisma.
 
 Abrir `http://localhost:3001/pt` e confirmar que **nenhuma seção nova aparece** — não há `FreeSample` ativo no banco, então `getAmostraAtiva()` devolve `null`. Esta é a garantia de que a feature pode ser publicada antes de o arquivo existir.
 
@@ -1671,15 +1690,19 @@ Acrescentar `admin.freeSample` em `messages/pt.json`, `en.json` e `de.json`:
 - [ ] **Passo 9: Rodar tudo**
 
 ```bash
-npx tsc --noEmit && npx vitest run && npm run lint
+npx tsc --noEmit && npx vitest run && npx eslint actions/admin/free-sample.ts components/admin/free-sample-manager.tsx "app/(app)/super-admin/marketplace/free-sample/page.tsx" app/api/admin/free-sample/pdf/route.ts
 ```
 
-Esperado: `tsc` sem saída; testes verdes; no lint, nenhum apontamento **nos arquivos criados** (o repo tem ruído pré-existente vindo de `.claude/worktrees` — filtrar com `| grep -v worktrees`).
+Esperado: `tsc` sem saída; testes verdes; `eslint` sem nenhum apontamento.
+
+> **`npm run lint` com exit 0 é inatingível neste repositório** — foram medidos 2378 erros
+> e 112.585 avisos pré-existentes, quase todos de builds antigos em `.claude/worktrees`.
+> O critério é `npx eslint` nos arquivos tocados, e não a suíte inteira.
 
 - [ ] **Passo 10: Commit**
 
 ```bash
-git add actions/admin/free-sample.ts actions/admin/free-sample.test.ts "app/(app)/super-admin/marketplace/free-sample" app/api/admin/free-sample components/admin/free-sample-manager.tsx components/admin/admin-sidebar.tsx messages/pt.json messages/en.json messages/de.json
+git add actions/admin/free-sample.ts actions/admin/free-sample.test.ts "app/(app)/super-admin/marketplace/free-sample/page.tsx" app/api/admin/free-sample/pdf/route.ts components/admin/free-sample-manager.tsx components/admin/admin-sidebar.tsx messages/pt.json messages/en.json messages/de.json
 git commit -m "feat(amostra): painel do super-admin com upload, interruptor e exportação"
 ```
 
@@ -1717,7 +1740,7 @@ Antes de dizer que acabou:
 
 - [ ] `npx tsc --noEmit` sem saída
 - [ ] `npx vitest run` todo verde, incluindo `messages-integridade`
-- [ ] `npm run lint | grep -v worktrees` sem apontamento nos arquivos novos
+- [ ] `npx eslint <arquivos tocados>` sem apontamento (NÃO `npm run lint`, que tem 2378 erros pré-existentes)
 - [ ] Home sem a seção enquanto não houver amostra ativa — **este é o requisito que o Werner pediu explicitamente**
 - [ ] Com amostra ativa: formulário aparece, download começa ao enviar, linha gravada em `free_sample_downloads`
 - [ ] Com o SMTP quebrado de propósito (`SMTP_HOST` inválido): o download **ainda** funciona e o erro aparece no log
