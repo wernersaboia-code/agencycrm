@@ -2,7 +2,7 @@ import type { LegalDocument } from "./types"
 
 const termsEn: LegalDocument = {
     title: "Terms of Use",
-    lastUpdated: "2026-07-29",
+    lastUpdated: "2026-08-05",
     sections: [
         {
             id: "aceitacao",
@@ -43,7 +43,8 @@ const termsEn: LegalDocument = {
             id: "pagamentos",
             heading: "5. Payments and refunds",
             blocks: [
-                { kind: "paragrafo", texto: "Purchases in the catalogue are processed through Stripe. Refunds are assessed case by case and may be requested within 7 days of the purchase, provided the file has not been downloaded." },
+                { kind: "paragrafo", texto: "Purchases in Brazilian reais are processed by Mercado Pago. Purchases in euros or US dollars are processed by Paddle, which acts as Merchant of Record for the transaction and is responsible for collecting applicable taxes, including EU VAT. In those cases the charge appears on your statement under Paddle's name." },
+                { kind: "paragrafo", texto: "Refunds may be requested within 14 days of purchase, provided the file has not been downloaded. Write to contato@easyprospect.com.br. Purchases processed by Paddle are refunded by Paddle, following our authorisation." },
             ],
         },
         {

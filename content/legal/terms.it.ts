@@ -2,7 +2,7 @@ import type { LegalDocument } from "./types"
 
 const termsIt: LegalDocument = {
     title: "Condizioni d'uso",
-    lastUpdated: "2026-07-29",
+    lastUpdated: "2026-08-05",
     sections: [
         {
             id: "aceitacao",
@@ -43,7 +43,8 @@ const termsIt: LegalDocument = {
             id: "pagamentos",
             heading: "5. Pagamenti e rimborsi",
             blocks: [
-                { kind: "paragrafo", texto: "Gli acquisti nel catalogo sono elaborati tramite Stripe. I rimborsi sono valutati caso per caso e possono essere richiesti entro 7 giorni dall'acquisto, a condizione che il file non sia stato scaricato." },
+                { kind: "paragrafo", texto: "Gli acquisti in real brasiliani sono elaborati da Mercado Pago. Gli acquisti in euro o dollari statunitensi sono elaborati da Paddle, che agisce come venditore registrato (Merchant of Record) della transazione ed è responsabile della riscossione delle imposte applicabili, inclusa l'IVA nell'Unione Europea. In questi casi l'addebito compare sull'estratto conto a nome di Paddle." },
+                { kind: "paragrafo", texto: "I rimborsi possono essere richiesti entro 14 giorni dall'acquisto, a condizione che il file non sia stato scaricato. Scrivere a contato@easyprospect.com.br. Gli acquisti elaborati da Paddle sono rimborsati da Paddle, previa nostra autorizzazione." },
             ],
         },
         {

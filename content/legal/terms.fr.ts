@@ -2,7 +2,7 @@ import type { LegalDocument } from "./types"
 
 const termsFr: LegalDocument = {
     title: "Conditions d'utilisation",
-    lastUpdated: "2026-07-29",
+    lastUpdated: "2026-08-05",
     sections: [
         {
             id: "aceitacao",
@@ -43,7 +43,8 @@ const termsFr: LegalDocument = {
             id: "pagamentos",
             heading: "5. Paiements et remboursements",
             blocks: [
-                { kind: "paragrafo", texto: "Les achats du catalogue sont traités par Stripe. Les remboursements sont examinés au cas par cas et peuvent être demandés dans un délai de 7 jours après l'achat, à condition que le fichier n'ait pas été téléchargé." },
+                { kind: "paragrafo", texto: "Les achats en réals brésiliens sont traités par Mercado Pago. Les achats en euros ou en dollars américains sont traités par Paddle, qui agit en tant que vendeur enregistré (Merchant of Record) de la transaction et est responsable de la collecte des taxes applicables, y compris la TVA dans l'Union européenne. Dans ces cas, le débit apparaît sur votre relevé au nom de Paddle." },
+                { kind: "paragrafo", texto: "Les remboursements peuvent être demandés dans les 14 jours suivant l'achat, à condition que le fichier n'ait pas été téléchargé. Écrivez à contato@easyprospect.com.br. Les achats traités par Paddle sont remboursés par Paddle, après notre autorisation." },
             ],
         },
         {

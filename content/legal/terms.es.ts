@@ -2,7 +2,7 @@ import type { LegalDocument } from "./types"
 
 const termsEs: LegalDocument = {
     title: "Términos de Uso",
-    lastUpdated: "2026-07-29",
+    lastUpdated: "2026-08-05",
     sections: [
         {
             id: "aceitacao",
@@ -43,7 +43,8 @@ const termsEs: LegalDocument = {
             id: "pagamentos",
             heading: "5. Pagos y reembolsos",
             blocks: [
-                { kind: "paragrafo", texto: "Las compras del catálogo se procesan a través de Stripe. Los reembolsos se evalúan caso por caso y pueden solicitarse en un plazo de 7 días desde la compra, siempre que el archivo no se haya descargado." },
+                { kind: "paragrafo", texto: "Las compras en reales brasileños son procesadas por Mercado Pago. Las compras en euros o dólares estadounidenses son procesadas por Paddle, que actúa como vendedor registrado (Merchant of Record) de la transacción y es responsable de recaudar los impuestos aplicables, incluido el IVA en la Unión Europea. En esos casos, el cargo aparece en el extracto a nombre de Paddle." },
+                { kind: "paragrafo", texto: "Los reembolsos pueden solicitarse dentro de los 14 días posteriores a la compra, siempre que el archivo no haya sido descargado. Escriba a contato@easyprospect.com.br. Las compras procesadas por Paddle son reembolsadas por Paddle, tras nuestra autorización." },
             ],
         },
         {

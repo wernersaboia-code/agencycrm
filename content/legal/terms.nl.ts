@@ -2,7 +2,7 @@ import type { LegalDocument } from "./types"
 
 const termsNl: LegalDocument = {
     title: "Gebruiksvoorwaarden",
-    lastUpdated: "2026-07-29",
+    lastUpdated: "2026-08-05",
     sections: [
         {
             id: "aceitacao",
@@ -43,7 +43,8 @@ const termsNl: LegalDocument = {
             id: "pagamentos",
             heading: "5. Betalingen en terugbetalingen",
             blocks: [
-                { kind: "paragrafo", texto: "Aankopen in de catalogus worden verwerkt via Stripe. Terugbetalingen worden per geval beoordeeld en kunnen worden aangevraagd binnen 7 dagen na de aankoop, op voorwaarde dat het bestand niet is gedownload." },
+                { kind: "paragrafo", texto: "Aankopen in Braziliaanse real worden verwerkt door Mercado Pago. Aankopen in euro of Amerikaanse dollar worden verwerkt door Paddle, dat optreedt als Merchant of Record van de transactie en verantwoordelijk is voor het innen van de toepasselijke belastingen, waaronder de btw in de Europese Unie. In die gevallen verschijnt de afschrijving op uw afschrift onder de naam Paddle." },
+                { kind: "paragrafo", texto: "Terugbetalingen kunnen binnen 14 dagen na aankoop worden aangevraagd, mits het bestand niet is gedownload. Schrijf naar contato@easyprospect.com.br. Aankopen die door Paddle zijn verwerkt, worden door Paddle terugbetaald, na onze goedkeuring." },
             ],
         },
         {

@@ -2,7 +2,7 @@ import type { LegalDocument } from "./types"
 
 const privacyIt: LegalDocument = {
     title: "Informativa sulla privacy",
-    lastUpdated: "2026-07-29",
+    lastUpdated: "2026-08-05",
     sections: [
         {
             id: "responsavel",
@@ -20,7 +20,7 @@ const privacyIt: LegalDocument = {
                 { kind: "lista", itens: [
                     "Dati dell'account: nome, e-mail e avatar, forniti da te in fase di registrazione e gestiti da Supabase Auth.",
                     "Dati di acquisto: articoli acquistati, importo, valuta e cronologia dei download.",
-                    "Dati di pagamento: identificativi della transazione su Stripe. Non riceviamo né conserviamo numeri di carta.",
+                    "Dati di pagamento: identificativi della transazione su Mercado Pago o Paddle, a seconda della valuta dell'acquisto. Non riceviamo né conserviamo numeri di carta.",
                     "Dati di utilizzo del sito: pagine visitate ed eventi di navigazione, solo quando accetti i cookie di misurazione.",
                     "Dati inseriti da te nel CRM: contatti, aziende e registrazioni di attività che importi o crei.",
                     "Dati di contatto professionale di terzi: le aziende e le persone di contatto che compongono gli elenchi del catalogo. Vedi la sezione dedicata più avanti.",
@@ -59,7 +59,8 @@ const privacyIt: LegalDocument = {
                 { kind: "paragrafo", texto: "Ci avvaliamo di fornitori per operazioni specifiche, ciascuno con accesso solo a quanto necessario:" },
                 { kind: "lista", itens: [
                     "Supabase — database, autenticazione e archiviazione dei file.",
-                    "Stripe — elaborazione dei pagamenti.",
+                    "Mercado Pago — elaborazione dei pagamenti in real brasiliani.",
+                    "Paddle — elaborazione dei pagamenti in euro e dollari statunitensi, in qualità di Merchant of Record.",
                     "Vercel — hosting dell'applicazione e misurazione delle prestazioni.",
                     "Zoho — casella dell'indirizzo di contatto.",
                 ] },

@@ -2,7 +2,7 @@ import type { LegalDocument } from "./types"
 
 const privacyFr: LegalDocument = {
     title: "Politique de confidentialité",
-    lastUpdated: "2026-07-29",
+    lastUpdated: "2026-08-05",
     sections: [
         {
             id: "responsavel",
@@ -20,7 +20,7 @@ const privacyFr: LegalDocument = {
                 { kind: "lista", itens: [
                     "Données de compte : nom, adresse e-mail et avatar, fournis par vous lors de l'inscription et gérés par Supabase Auth.",
                     "Données d'achat : articles acquis, montant, devise et historique de téléchargement.",
-                    "Données de paiement : identifiants de la transaction chez Stripe. Nous ne recevons ni ne conservons de numéros de carte.",
+                    "Données de paiement : identifiants de transaction chez Mercado Pago ou Paddle, selon la devise de l'achat. Nous ne recevons ni ne stockons de numéros de carte.",
                     "Données d'utilisation du site : pages consultées et événements de navigation, uniquement lorsque vous acceptez les cookies de mesure.",
                     "Données que vous saisissez dans le CRM : contacts, entreprises et enregistrements d'activité que vous importez ou créez.",
                     "Données de contact professionnel de tiers : les entreprises et les personnes de contact qui composent les listes du catalogue. Voir la section dédiée ci-dessous.",
@@ -59,7 +59,8 @@ const privacyFr: LegalDocument = {
                 { kind: "paragrafo", texto: "Nous faisons appel à des prestataires pour des opérations précises, chacun n'ayant accès qu'à ce qui est nécessaire :" },
                 { kind: "lista", itens: [
                     "Supabase — base de données, authentification et stockage de fichiers.",
-                    "Stripe — traitement des paiements.",
+                    "Mercado Pago — traitement des paiements en réals brésiliens.",
+                    "Paddle — traitement des paiements en euros et en dollars américains, en qualité de Merchant of Record.",
                     "Vercel — hébergement de l'application et mesure de performance.",
                     "Zoho — boîte de l'adresse de contact.",
                 ] },

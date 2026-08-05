@@ -2,7 +2,7 @@ import type { LegalDocument } from "./types"
 
 const privacyDe: LegalDocument = {
     title: "Datenschutzerklärung",
-    lastUpdated: "2026-07-29",
+    lastUpdated: "2026-08-05",
     sections: [
         {
             id: "responsavel",
@@ -20,7 +20,7 @@ const privacyDe: LegalDocument = {
                 { kind: "lista", itens: [
                     "Kontodaten: Name, E-Mail-Adresse und Avatar, die Sie bei der Registrierung angeben und die über Supabase Auth verwaltet werden.",
                     "Kaufdaten: erworbene Artikel, Betrag, Währung und Download-Verlauf.",
-                    "Zahlungsdaten: Transaktionskennungen bei Stripe. Wir erhalten und speichern keine Kartennummern.",
+                    "Zahlungsdaten: Transaktionskennungen bei Mercado Pago oder Paddle, je nach Kaufwährung. Wir erhalten und speichern keine Kartennummern.",
                     "Nutzungsdaten der Website: aufgerufene Seiten und Navigationsereignisse, nur wenn Sie die Messcookies akzeptieren.",
                     "Von Ihnen im CRM eingegebene Daten: Kontakte, Unternehmen und Aktivitätseinträge, die Sie importieren oder anlegen.",
                     "Berufliche Kontaktdaten Dritter: die Unternehmen und Ansprechpersonen, aus denen die Listen des Katalogs bestehen. Siehe den eigenen Abschnitt weiter unten.",
@@ -59,7 +59,8 @@ const privacyDe: LegalDocument = {
                 { kind: "paragrafo", texto: "Wir setzen Dienstleister für einzelne Aufgaben ein, jeder mit Zugang nur zu dem, was dafür nötig ist:" },
                 { kind: "lista", itens: [
                     "Supabase — Datenbank, Authentifizierung und Dateispeicherung.",
-                    "Stripe — Zahlungsabwicklung.",
+                    "Mercado Pago — Zahlungsabwicklung in brasilianischen Real.",
+                    "Paddle — Zahlungsabwicklung in Euro und US-Dollar, als Merchant of Record.",
                     "Vercel — Hosting der Anwendung und Leistungsmessung.",
                     "Zoho — Postfach der Kontaktadresse.",
                 ] },

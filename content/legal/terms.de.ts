@@ -2,7 +2,7 @@ import type { LegalDocument } from "./types"
 
 const termsDe: LegalDocument = {
     title: "Nutzungsbedingungen",
-    lastUpdated: "2026-07-29",
+    lastUpdated: "2026-08-05",
     sections: [
         {
             id: "aceitacao",
@@ -43,7 +43,8 @@ const termsDe: LegalDocument = {
             id: "pagamentos",
             heading: "5. Zahlungen und Erstattungen",
             blocks: [
-                { kind: "paragrafo", texto: "Käufe im Katalog werden über Stripe abgewickelt. Erstattungen werden im Einzelfall geprüft und können innerhalb von 7 Tagen nach dem Kauf beantragt werden, sofern die Datei nicht heruntergeladen wurde." },
+                { kind: "paragrafo", texto: "Käufe in brasilianischen Real werden über Mercado Pago abgewickelt. Käufe in Euro oder US-Dollar werden über Paddle abgewickelt, das als Merchant of Record der Transaktion auftritt und für die Abführung der anfallenden Steuern einschließlich der EU-Mehrwertsteuer verantwortlich ist. In diesen Fällen erscheint die Abbuchung auf Ihrem Kontoauszug unter dem Namen Paddle." },
+                { kind: "paragrafo", texto: "Rückerstattungen können innerhalb von 14 Tagen nach dem Kauf beantragt werden, sofern die Datei nicht heruntergeladen wurde. Schreiben Sie an contato@easyprospect.com.br. Über Paddle abgewickelte Käufe werden nach unserer Freigabe von Paddle erstattet." },
             ],
         },
         {
