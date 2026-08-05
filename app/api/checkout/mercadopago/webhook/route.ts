@@ -18,6 +18,7 @@ import {
     getPayment,
     fromMercadoPagoAmount,
     verifyMercadoPagoSignature,
+    MercadoPagoApiError,
 } from "@/lib/mercadopago"
 import { getMercadoPagoWebhookSecret } from "@/lib/server-env"
 
@@ -122,6 +123,17 @@ export async function POST(request: NextRequest) {
 
         return NextResponse.json({ received: true })
     } catch (error) {
+        // Pagamento que a API não encontra é falha PERMANENTE: pedir reentrega
+        // só repete o mesmo 404 por horas, e o ruído encobre falha de verdade.
+        // Acontece com o simulador do painel (id fictício) e com notificação
+        // dirigida a outra conta.
+        if (error instanceof MercadoPagoApiError && error.status === 404) {
+            console.warn(
+                `[Mercado Pago Webhook] Pagamento ${dataId} não existe nesta conta — evento descartado`
+            )
+            return NextResponse.json({ received: true })
+        }
+
         console.error("[Mercado Pago Webhook] Erro ao processar evento:", error)
         // 500 faz o Mercado Pago reentregar mais tarde.
         return NextResponse.json({ error: "Processing error" }, { status: 500 })

@@ -1,9 +1,11 @@
-import { describe, it, expect } from "vitest"
+import { describe, it, expect, vi, afterEach } from "vitest"
 import { createHmac } from "node:crypto"
 import {
     toMercadoPagoAmount,
     fromMercadoPagoAmount,
     verifyMercadoPagoSignature,
+    MercadoPagoApiError,
+    getPayment,
 } from "./mercadopago"
 
 describe("toMercadoPagoAmount", () => {
@@ -160,5 +162,79 @@ describe("verifyMercadoPagoSignature", () => {
                 secret: SECRET,
             })
         ).toBe(false)
+    })
+})
+
+describe("MercadoPagoApiError", () => {
+    it("carrega o status HTTP, para o chamador distinguir permanente de transitório", () => {
+        const erro = new MercadoPagoApiError(404, "/v1/payments/123456", '{"error":"not_found"}')
+
+        expect(erro).toBeInstanceOf(Error)
+        expect(erro.status).toBe(404)
+        expect(erro.message).toContain("404")
+        expect(erro.message).toContain("/v1/payments/123456")
+        // O corpo continua na mensagem: é ele que diz a causa no log.
+        expect(erro.message).toContain("not_found")
+    })
+})
+
+describe("getPayment", () => {
+    afterEach(() => {
+        vi.unstubAllGlobals()
+        vi.unstubAllEnvs()
+    })
+
+    function responderCom(status: number, body: string) {
+        vi.stubEnv("MERCADOPAGO_ACCESS_TOKEN", "token-de-teste")
+        vi.stubGlobal(
+            "fetch",
+            vi.fn().mockResolvedValue({
+                ok: status >= 200 && status < 300,
+                status,
+                text: async () => body,
+                json: async () => JSON.parse(body),
+            })
+        )
+    }
+
+    it("lança MercadoPagoApiError com status 404 quando o pagamento não existe", async () => {
+        // É o caso do simulador do painel, que manda o id fictício 123456 — e
+        // também o de qualquer notificação de outra conta.
+        responderCom(404, '{"message":"Payment not found","error":"not_found"}')
+
+        await expect(getPayment("123456")).rejects.toMatchObject({
+            name: "MercadoPagoApiError",
+            status: 404,
+        })
+    })
+
+    it("preserva o status em falhas transitórias, que merecem reentrega", async () => {
+        responderCom(503, '{"message":"Service Unavailable"}')
+
+        await expect(getPayment("123456")).rejects.toMatchObject({ status: 503 })
+    })
+
+    it("devolve o pagamento normalizado quando a chamada dá certo", async () => {
+        responderCom(
+            200,
+            JSON.stringify({
+                id: 987654,
+                status: "approved",
+                transaction_amount: 289.9,
+                currency_id: "BRL",
+                external_reference: "compra-1",
+                payer: { email: "comprador@teste.com", first_name: "Ana", last_name: "Silva" },
+            })
+        )
+
+        await expect(getPayment("987654")).resolves.toEqual({
+            id: "987654",
+            status: "approved",
+            transactionAmount: 289.9,
+            currencyId: "BRL",
+            externalReference: "compra-1",
+            payerEmail: "comprador@teste.com",
+            payerName: "Ana Silva",
+        })
     })
 })
