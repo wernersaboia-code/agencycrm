@@ -5,6 +5,8 @@ const publicEnv = {
     NEXT_PUBLIC_PAYPAL_CLIENT_ID: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID,
     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
     NEXT_PUBLIC_MERCADOPAGO_PUBLIC_KEY: process.env.NEXT_PUBLIC_MERCADOPAGO_PUBLIC_KEY,
+    NEXT_PUBLIC_PADDLE_CLIENT_TOKEN: process.env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN,
+    NEXT_PUBLIC_PADDLE_ENV: process.env.NEXT_PUBLIC_PADDLE_ENV,
 } as const
 
 type PublicEnvName = keyof typeof publicEnv
@@ -64,6 +66,19 @@ export function getOptionalPublicStripePublishableKey() {
  */
 export function getOptionalPublicMercadoPagoPublicKey() {
     return publicEnv.NEXT_PUBLIC_MERCADOPAGO_PUBLIC_KEY || ""
+}
+
+/** Sinal público de "Paddle habilitado" para a UI, espelhando o padrão dos outros provedores. */
+export function getOptionalPublicPaddleClientToken() {
+    return publicEnv.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN || ""
+}
+
+/**
+ * Ambiente do Paddle. O padrão é `sandbox`: cobrar de verdade tem que ser
+ * decisão explícita, nunca o efeito de uma variável esquecida.
+ */
+export function getPublicPaddleEnv(): "sandbox" | "production" {
+    return publicEnv.NEXT_PUBLIC_PADDLE_ENV === "production" ? "production" : "sandbox"
 }
 
 export function getServiceSupabaseConfig() {

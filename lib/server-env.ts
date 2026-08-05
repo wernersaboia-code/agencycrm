@@ -45,3 +45,17 @@ export function getMercadoPagoServerConfig() {
 export function getMercadoPagoWebhookSecret(): string {
     return getRequiredServerEnv("MERCADOPAGO_WEBHOOK_SECRET")
 }
+
+export function getPaddleServerConfig() {
+    return {
+        apiKey: getRequiredServerEnv("PADDLE_API_KEY"),
+    }
+}
+
+/**
+ * Getter próprio, mesmo motivo do Stripe e do Mercado Pago: a rota de criação
+ * de transação não pode falhar por causa de uma variável que só o webhook usa.
+ */
+export function getPaddleWebhookSecret(): string {
+    return getRequiredServerEnv("PADDLE_WEBHOOK_SECRET")
+}
