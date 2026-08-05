@@ -1,5 +1,29 @@
 # Amostra gratuita na home — plano de implementação
 
+> **ESTE PLANO É O ARTEFATO PRÉ-EXECUÇÃO. O CÓDIGO DIVERGIU DELE — e para melhor.**
+>
+> A execução (branch `feat/amostra-gratuita`) achou defeitos no próprio plano.
+> Quem reexecutar este documento ao pé da letra REINTRODUZ os problemas abaixo.
+> A fonte da verdade é o código; este arquivo fica pelo registro do raciocínio.
+>
+> Divergências que importam:
+>
+> 1. **Task 5** — o bloco de código abaixo consulta o banco (`freeSample.findFirst`)
+>    ANTES do rate limit. Está errado: toda requisição válida consultava o banco sem
+>    throttle. A ordem correta, no código, é schema → honeypot → IP → limiter → banco.
+> 2. **Task 7** — `prisma.freeSample.findFirst` sem tratamento de erro DERRUBA A HOME
+>    enquanto a migração não foi aplicada, que é exatamente a janela do deploy. O código
+>    tolera `P2021` (tabela ausente) e relança o resto.
+> 3. **Task 8** — `revalidateTag(tag, "max")` NÃO invalida na hora (é
+>    stale-while-revalidate). O código usa `updateTag(tag)` em Server Action e
+>    `revalidateTag(tag, { expire: 0 })` em Route Handler.
+> 4. **Task 8** — `updateMany` + `update` no interruptor precisam de `prisma.$transaction`,
+>    senão dois cliques simultâneos deixam duas amostras ativas.
+> 5. **`proxy.ts`** — o plano nunca mencionou. Sem `/free-sample` nas duas listas
+>    (`marketplaceRoutes` e `nonLocaleSegmentPrefixes`), a rota do link do e-mail é
+>    inalcançável: visitante anônimo é mandado ao login. Nenhuma task tocava esse arquivo,
+>    então nenhuma revisão por task podia ver — só a revisão final da branch pegou.
+
 > **Para agentes:** SUB-SKILL OBRIGATÓRIA: use `superpowers:subagent-driven-development` (recomendado) ou `superpowers:executing-plans` para executar tarefa a tarefa. Os passos usam checkbox (`- [ ]`) para acompanhamento.
 
 **Objetivo:** Deixar o visitante baixar um PDF de amostra na home em troca do e-mail, com a seção só existindo quando houver arquivo ativo no super-admin.
@@ -409,7 +433,9 @@ git commit -m "feat(amostra): token de download com validade de sete dias"
 - Criar: `lib/supabase/free-sample.ts`
 
 **Interfaces:**
-- Consome: `createAdminClient` de `@/lib/supabase/admin`; `validatePdfFile` de `@/lib/supabase/list-studies`.
+- Consome: `createAdminClient` de `@/lib/supabase/admin`. **NÃO consome `validatePdfFile`** —
+  a validação de tipo e tamanho é do CHAMADOR (a rota de upload da Task 8), não desta camada.
+  Este módulo sobe o que lhe derem.
 - Produz: `FREE_SAMPLE_BUCKET = "free-sample"`, `uploadFreeSample(file: File): Promise<{ path: string }>`, `removeFreeSample(path: string): Promise<void>`, `createFreeSampleSignedUrl(path: string, expiresInSeconds?: number): Promise<string>`.
 
 Este módulo é I/O puro contra o Supabase; não leva teste unitário, pelo mesmo motivo que `lib/supabase/list-studies.ts` não tem.
