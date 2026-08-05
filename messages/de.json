@@ -632,6 +632,7 @@
             "blog": "Blog",
             "support": "Support",
             "analytics": "Berichte",
+            "freeSample": "Kostenlose Leseprobe",
             "settings": "Einstellungen",
             "logout": "Abmelden",
             "logoutSuccess": "Erfolgreich abgemeldet!"
@@ -1084,6 +1085,25 @@
             "badgePending": "Ausstehend",
             "badgeFailed": "Fehlgeschlagen",
             "badgeRefunded": "Erstattet"
+        },
+        "freeSample": {
+            "title": "Kostenlose Leseprobe",
+            "subtitle": "Das auf der Startseite angebotene PDF. Ohne aktive Leseprobe erscheint der Abschnitt nicht auf der Website.",
+            "uploadLabel": "PDF hochladen",
+            "uploading": "Wird hochgeladen…",
+            "uploadOk": "Leseprobe hochgeladen. Aktivieren Sie sie zum Veröffentlichen.",
+            "uploadFailed": "PDF-Upload fehlgeschlagen.",
+            "uploadHint": "Eine neue Leseprobe startet deaktiviert. Aktivieren Sie sie, wenn sie veröffentlicht werden soll.",
+            "colFile": "Datei",
+            "colUploaded": "Hochgeladen",
+            "colActive": "Aktiv",
+            "empty": "Noch keine Leseprobe hochgeladen.",
+            "downloadsTitle": "Wer heruntergeladen hat",
+            "downloadsEmpty": "Noch niemand hat heruntergeladen.",
+            "colEmail": "E-Mail",
+            "colLocale": "Sprache",
+            "colDate": "Datum",
+            "exportCsv": "CSV exportieren"
         },
         "blog": {
             "title": "Blog",

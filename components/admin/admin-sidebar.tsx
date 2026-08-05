@@ -16,6 +16,7 @@ import {
     LifeBuoy,
     BarChart3,
     FileText,
+    FileDown,
     ScrollText,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -75,6 +76,7 @@ export function AdminSidebar() {
     const secondaryItems: MenuItem[] = [
         { titleKey: "support", href: "/super-admin/support", icon: LifeBuoy },
         { titleKey: "analytics", href: "/super-admin/analytics", icon: BarChart3 },
+        { titleKey: "freeSample", href: "/super-admin/marketplace/free-sample", icon: FileDown },
         { titleKey: "settings", href: "/super-admin/settings", icon: Settings },
     ]
 

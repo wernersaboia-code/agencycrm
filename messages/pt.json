@@ -632,6 +632,7 @@
             "blog": "Blog",
             "support": "Suporte",
             "analytics": "Relatórios",
+            "freeSample": "Amostra gratuita",
             "settings": "Configurações",
             "logout": "Sair",
             "logoutSuccess": "Logout realizado com sucesso!"
@@ -1084,6 +1085,25 @@
             "badgePending": "Pendente",
             "badgeFailed": "Falhou",
             "badgeRefunded": "Reembolsado"
+        },
+        "freeSample": {
+            "title": "Amostra gratuita",
+            "subtitle": "O PDF oferecido na home. Sem amostra ativa, a seção não aparece no site.",
+            "uploadLabel": "Enviar PDF",
+            "uploading": "Enviando…",
+            "uploadOk": "Amostra enviada. Ative-a quando quiser publicá-la.",
+            "uploadFailed": "Falha no envio do PDF.",
+            "uploadHint": "A amostra nova entra desligada. Ative-a quando quiser publicá-la.",
+            "colFile": "Arquivo",
+            "colUploaded": "Enviado em",
+            "colActive": "Ativa",
+            "empty": "Nenhuma amostra enviada ainda.",
+            "downloadsTitle": "Quem baixou",
+            "downloadsEmpty": "Ninguém baixou ainda.",
+            "colEmail": "E-mail",
+            "colLocale": "Idioma",
+            "colDate": "Data",
+            "exportCsv": "Exportar CSV"
         },
         "blog": {
             "title": "Blog",
