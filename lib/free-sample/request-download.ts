@@ -35,21 +35,23 @@ export async function requestFreeSample(input: unknown): Promise<RequestFreeSamp
         return { success: true }
     }
 
+    const requestHeaders = await headers()
+    const ip = getClientIpFromHeaders(requestHeaders)
+    const userAgent = requestHeaders.get("user-agent")?.slice(0, 500) ?? null
+
+    // Throttle em memória é barato e roda ANTES da consulta ao banco: assim
+    // um ataque com muitos IPs não gera uma query por requisição sem limite.
+    try {
+        await limiter.check(ip, RATE_LIMIT_MAX, RATE_LIMIT_WINDOW_MS)
+    } catch {
+        return { success: false, error: "rate_limited" }
+    }
+
     const amostra = await prisma.freeSample.findFirst({ where: { isActive: true } })
     if (!amostra) {
         // A seção só renderiza com amostra ativa, então chegar aqui significa
         // formulário de página aberta antes de o admin desligar.
         return { success: false, error: "unavailable" }
-    }
-
-    const requestHeaders = await headers()
-    const ip = getClientIpFromHeaders(requestHeaders)
-    const userAgent = requestHeaders.get("user-agent")?.slice(0, 500) ?? null
-
-    try {
-        await limiter.check(ip, RATE_LIMIT_MAX, RATE_LIMIT_WINDOW_MS)
-    } catch {
-        return { success: false, error: "rate_limited" }
     }
 
     const token = gerarToken()

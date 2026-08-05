@@ -20,11 +20,12 @@ vi.mock("next/headers", () => ({
 // O limiter em memória é real (não mockado) e vive no escopo do módulo: sem
 // isolar, sua cache persiste entre os `it()` deste arquivo (mesmo IP falso em
 // todos), e testes que chegam até ele se acumulam até estourar o próprio
-// limite — travando um teste que não tem nada a ver com rate limit. Nenhum
-// dos casos abaixo testa o limiter em memória (o "rate_limited" cobre o
-// backstop persistido no banco), então mocká-lo para sempre liberar é seguro.
+// limite — travando um teste que não tem nada a ver com rate limit. Por isso
+// mocká-lo, com `check` acessível via vi.hoisted para poder trocar o
+// comportamento por teste (ex.: mockRejectedValueOnce cobrindo o estouro).
+const limiterCheckMock = vi.hoisted(() => vi.fn().mockResolvedValue(undefined))
 vi.mock("@/lib/rate-limit", () => ({
-    rateLimit: () => ({ check: vi.fn().mockResolvedValue(undefined) }),
+    rateLimit: () => ({ check: limiterCheckMock }),
 }))
 
 import { requestFreeSample } from "./request-download"
@@ -72,6 +73,15 @@ describe("requestFreeSample", () => {
         const r = await requestFreeSample(valido)
 
         expect(r).toEqual({ success: false, error: "unavailable" })
+        expect(prismaMock.freeSampleDownload.create).not.toHaveBeenCalled()
+    })
+
+    it("bloqueia quando o limiter em memória estoura a janela", async () => {
+        limiterCheckMock.mockRejectedValueOnce(new Error("rate limit exceeded"))
+
+        const r = await requestFreeSample(valido)
+
+        expect(r).toEqual({ success: false, error: "rate_limited" })
         expect(prismaMock.freeSampleDownload.create).not.toHaveBeenCalled()
     })
 
