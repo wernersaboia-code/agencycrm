@@ -109,6 +109,25 @@ export type MercadoPagoPayment = {
     payerName: string | null
 }
 
+/**
+ * Erro de uma chamada à API do Mercado Pago, com o status HTTP preservado.
+ *
+ * O status é o que separa falha permanente de transitória, e essa distinção
+ * decide se o webhook pede reentrega ou não. Sem ele, o chamador teria que ler
+ * o número de dentro da mensagem — o tipo de acoplamento que quebra calado no
+ * dia em que o texto mudar.
+ */
+export class MercadoPagoApiError extends Error {
+    constructor(
+        readonly status: number,
+        readonly path: string,
+        readonly body: string
+    ) {
+        super(`Mercado Pago ${status} em ${path}: ${body}`)
+        this.name = "MercadoPagoApiError"
+    }
+}
+
 async function mercadoPagoFetch(path: string, init?: RequestInit): Promise<unknown> {
     const { accessToken } = getMercadoPagoServerConfig()
 
@@ -125,7 +144,7 @@ async function mercadoPagoFetch(path: string, init?: RequestInit): Promise<unkno
         // O corpo do erro traz a causa (moeda inválida, item sem preço). Sem
         // ele, todo problema de integração vira "500" sem pista.
         const body = await response.text()
-        throw new Error(`Mercado Pago ${response.status} em ${path}: ${body}`)
+        throw new MercadoPagoApiError(response.status, path, body)
     }
 
     return response.json()
