@@ -218,7 +218,11 @@
             "successTitle": "Done — your download has started.",
             "successBody": "We also sent a copy of the link to your email.",
             "errorRateLimited": "Too many requests from this address. Please try again shortly.",
-            "errorGeneric": "We could not finish right now. Please try again in a moment."
+            "errorGeneric": "We could not finish right now. Please try again in a moment.",
+            "emailSubject": "Your Easy Prospect sample",
+            "emailIntro": "Thank you for your interest.",
+            "emailLink": "Download the sample here",
+            "emailExpiry": "The link is valid for seven days."
         },
         "daten": {
             "eyebrow": "Data quality",

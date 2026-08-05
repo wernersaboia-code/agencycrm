@@ -1,4 +1,5 @@
 // lib/free-sample/amostra-ativa.ts
+import * as Sentry from "@sentry/nextjs"
 import { unstable_cache } from "next/cache"
 import { prisma } from "@/lib/prisma"
 
@@ -51,9 +52,17 @@ export const getAmostraAtiva = unstable_cache(
             // (via onRequestError, em instrumentation.ts) — falha visível e
             // reportada é preferível a falha invisível e permanente.
             if (isTabelaAusente(error)) {
+                // Aviso, não erro: é o estado esperado até a migração rodar.
+                // console.error sozinho não chega ao Sentry — este projeto
+                // não tem consoleLoggingIntegration (ver sentry.server.config.ts)
+                // — por isso o captureMessage explícito abaixo.
                 console.error(
                     "Amostra ativa: tabela free_samples ainda não existe (migração pendente):",
                     error
+                )
+                Sentry.captureMessage(
+                    "Amostra ativa: tabela free_samples ainda não existe (migração pendente)",
+                    "warning"
                 )
                 return null
             }

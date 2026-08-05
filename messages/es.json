@@ -218,7 +218,11 @@
             "successTitle": "Listo: la descarga ha comenzado.",
             "successBody": "También enviamos una copia del enlace a su correo.",
             "errorRateLimited": "Demasiadas solicitudes desde esta dirección. Inténtelo de nuevo en unos minutos.",
-            "errorGeneric": "No se pudo completar ahora. Inténtelo de nuevo en un momento."
+            "errorGeneric": "No se pudo completar ahora. Inténtelo de nuevo en un momento.",
+            "emailSubject": "Su muestra de Easy Prospect",
+            "emailIntro": "Gracias por su interés.",
+            "emailLink": "Descargue la muestra aquí",
+            "emailExpiry": "El enlace es válido durante siete días."
         },
         "daten": {
             "eyebrow": "Calidad de los datos",

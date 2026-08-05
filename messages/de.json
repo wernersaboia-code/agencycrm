@@ -218,7 +218,11 @@
             "successTitle": "Fertig — der Download läuft.",
             "successBody": "Eine Kopie des Links haben wir Ihnen zusätzlich per E-Mail geschickt.",
             "errorRateLimited": "Zu viele Anfragen von dieser Adresse. Bitte versuchen Sie es später erneut.",
-            "errorGeneric": "Es hat gerade nicht geklappt. Bitte versuchen Sie es gleich erneut."
+            "errorGeneric": "Es hat gerade nicht geklappt. Bitte versuchen Sie es gleich erneut.",
+            "emailSubject": "Ihre Leseprobe von Easy Prospect",
+            "emailIntro": "Vielen Dank für Ihr Interesse.",
+            "emailLink": "Leseprobe hier herunterladen",
+            "emailExpiry": "Der Link ist sieben Tage gültig."
         },
         "daten": {
             "eyebrow": "Datenqualität",

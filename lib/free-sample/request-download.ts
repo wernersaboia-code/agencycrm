@@ -1,7 +1,9 @@
 // lib/free-sample/request-download.ts
 "use server"
 
+import * as Sentry from "@sentry/nextjs"
 import { headers } from "next/headers"
+import { getTranslations } from "next-intl/server"
 import { prisma } from "@/lib/prisma"
 import { sendEmail } from "@/lib/email"
 import { getSystemSmtpConfig } from "@/lib/email/system-smtp"
@@ -9,6 +11,7 @@ import { createFreeSampleSignedUrl } from "@/lib/supabase/free-sample"
 import { rateLimit } from "@/lib/rate-limit"
 import { getClientIpFromHeaders } from "@/lib/http/client-ip"
 import { freeSampleRequestSchema } from "@/lib/validations/free-sample"
+import { getPublicAppUrl } from "@/lib/env"
 import { gerarToken, calcularExpiracao } from "./token"
 
 export type RequestFreeSampleResult =
@@ -91,23 +94,33 @@ export async function requestFreeSample(input: unknown): Promise<RequestFreeSamp
         console.error("Erro ao gerar URL assinada da amostra:", error)
     }
 
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? ""
-    const linkPorEmail = `${baseUrl}/free-sample/${token}`
+    // getPublicAppUrl() e não process.env.NEXT_PUBLIC_APP_URL direto: sem a
+    // variável configurada, o link viraria relativo dentro do e-mail — morto
+    // fora do navegador que o abriu.
+    const linkPorEmail = `${getPublicAppUrl()}/free-sample/${token}`
+    const tEmail = await getTranslations({ locale: data.locale, namespace: "landing.freeSample" })
     const resultadoEmail = await sendEmail(
         {
             to: data.email,
-            subject: "Sua amostra do Easy Prospect",
+            subject: tEmail("emailSubject"),
             html: `
-                <p>Obrigado pelo interesse.</p>
-                <p><a href="${linkPorEmail}">Baixe a amostra aqui</a>.</p>
-                <p>O link vale por sete dias.</p>
+                <p>${tEmail("emailIntro")}</p>
+                <p><a href="${linkPorEmail}">${tEmail("emailLink")}</a>.</p>
+                <p>${tEmail("emailExpiry")}</p>
             `,
         },
         getSystemSmtpConfig()
     )
     if (!resultadoEmail.success) {
-        // Vai para o Sentry pelo console.error, em vez de morrer calada.
+        // O envio de e-mail é o risco nº 1 assumido pela spec desta feature:
+        // sem isto a falha morria calada no console de uma função serverless
+        // que ninguém acompanha. Sentry.captureException reporta de verdade.
         console.error("Falha ao enviar a cópia da amostra por e-mail:", resultadoEmail.error)
+        Sentry.captureException(
+            new Error("Falha ao enviar a cópia da amostra por e-mail", {
+                cause: resultadoEmail.error,
+            })
+        )
     }
 
     return { success: true, downloadUrl }

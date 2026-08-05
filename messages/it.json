@@ -218,7 +218,11 @@
             "successTitle": "Fatto: il download è iniziato.",
             "successBody": "Abbiamo inviato una copia del link anche alla tua email.",
             "errorRateLimited": "Troppe richieste da questo indirizzo. Riprova tra poco.",
-            "errorGeneric": "Non è stato possibile completare ora. Riprova tra un momento."
+            "errorGeneric": "Non è stato possibile completare ora. Riprova tra un momento.",
+            "emailSubject": "Il tuo campione Easy Prospect",
+            "emailIntro": "Grazie per l'interesse.",
+            "emailLink": "Scarica qui il campione",
+            "emailExpiry": "Il link è valido per sette giorni."
         },
         "daten": {
             "eyebrow": "Qualità dei dati",

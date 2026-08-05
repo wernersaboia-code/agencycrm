@@ -218,7 +218,11 @@
             "successTitle": "C'est fait — le téléchargement a démarré.",
             "successBody": "Nous avons aussi envoyé une copie du lien à votre e-mail.",
             "errorRateLimited": "Trop de demandes depuis cette adresse. Réessayez dans quelques instants.",
-            "errorGeneric": "Impossible de terminer pour l'instant. Réessayez dans un instant."
+            "errorGeneric": "Impossible de terminer pour l'instant. Réessayez dans un instant.",
+            "emailSubject": "Votre échantillon Easy Prospect",
+            "emailIntro": "Merci de votre intérêt.",
+            "emailLink": "Téléchargez l'échantillon ici",
+            "emailExpiry": "Le lien est valable sept jours."
         },
         "daten": {
             "eyebrow": "Qualité des données",

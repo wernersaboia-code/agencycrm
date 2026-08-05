@@ -107,6 +107,7 @@ export async function proxy(request: NextRequest) {
         "/blog",
         "/privacy",
         "/terms",
+        "/free-sample",
     ]
 
     const isMarketplaceRoute = matchesRoute(pathForMatching, marketplaceRoutes)
@@ -140,6 +141,10 @@ export async function proxy(request: NextRequest) {
         // página vive em app/blog-preview (fora de [locale]). Sem esta linha o
         // middleware de idioma reescreve para /pt/blog-preview/… e a rota some.
         "/blog-preview",
+        // Link da amostra grátis, enviado por e-mail: não tem versão por
+        // idioma e o prefixo de locale quebraria o link que a pessoa já
+        // recebeu na caixa de entrada — mesmo motivo de /auth acima.
+        "/free-sample",
         // app/(crm) — grupo de rota, sem prefixo na URL, mas fora de [locale]
         "/dashboard",
         "/calls",

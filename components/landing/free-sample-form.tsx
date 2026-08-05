@@ -33,11 +33,19 @@ export function FreeSampleForm({ locale }: { locale: LandingLocale }) {
             return
         }
 
-        setEstado("ok")
-        // O download começa aqui, e não depende de o e-mail sair.
-        if (r.downloadUrl) {
-            window.location.href = r.downloadUrl
+        // Sem downloadUrl não há o que abrir: mostrar "o download começou"
+        // aqui seria mentira para quem está olhando a tela. O pedido já foi
+        // gravado (a action grava antes de tentar assinar a URL) e a cópia
+        // por e-mail ainda pode salvar a pessoa, mas para quem está aqui, na
+        // hora, é uma falha mesmo — trata como erro genérico.
+        if (!r.downloadUrl) {
+            setEstado("erro")
+            setMensagemErro(t("errorGeneric"))
+            return
         }
+
+        setEstado("ok")
+        window.location.href = r.downloadUrl
     }
 
     if (estado === "ok") {

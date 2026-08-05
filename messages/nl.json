@@ -218,7 +218,11 @@
             "successTitle": "Klaar — de download is gestart.",
             "successBody": "We hebben ook een kopie van de link naar uw e-mail gestuurd.",
             "errorRateLimited": "Te veel aanvragen van dit adres. Probeer het straks opnieuw.",
-            "errorGeneric": "Het is nu niet gelukt. Probeer het zo opnieuw."
+            "errorGeneric": "Het is nu niet gelukt. Probeer het zo opnieuw.",
+            "emailSubject": "Uw Easy Prospect-voorbeeld",
+            "emailIntro": "Bedankt voor uw interesse.",
+            "emailLink": "Download het voorbeeld hier",
+            "emailExpiry": "De link is zeven dagen geldig."
         },
         "daten": {
             "eyebrow": "Datakwaliteit",

@@ -17,6 +17,14 @@ vi.mock("@/lib/supabase/free-sample", () => ({ createFreeSampleSignedUrl: signed
 vi.mock("next/headers", () => ({
     headers: vi.fn().mockResolvedValue(new Headers({ "x-forwarded-for": "203.0.113.1" })),
 }))
+// `getTranslations` real puxa a build react-server do next-intl, que o
+// ambiente do Vitest não resolve (cai na build react-client e estoura
+// "not supported in Client Components"). O texto do e-mail em si é coberto
+// pela integridade das mensagens (lib/i18n/messages-integridade.test.ts);
+// aqui só interessa que a action funcione com QUALQUER locale.
+vi.mock("next-intl/server", () => ({
+    getTranslations: async () => (key: string) => key,
+}))
 // O limiter em memória é real (não mockado) e vive no escopo do módulo: sem
 // isolar, sua cache persiste entre os `it()` deste arquivo (mesmo IP falso em
 // todos), e testes que chegam até ele se acumulam até estourar o próprio
