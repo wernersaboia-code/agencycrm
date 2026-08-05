@@ -8,6 +8,7 @@
 //
 // A verificação é obrigatória e fail-closed.
 import { NextRequest, NextResponse } from "next/server"
+import * as Sentry from "@sentry/nextjs"
 import { prisma } from "@/lib/prisma"
 import { fulfillPurchase, type CapturedAmount } from "@/lib/checkout/fulfillment"
 import { mapPaddleEvent } from "@/lib/checkout/paddle-status"
@@ -23,7 +24,9 @@ type WebhookBody = {
         currency_code?: string
         custom_data?: { purchaseId?: string }
         details?: { totals?: { grand_total?: string } }
-        customer?: { email?: string }
+        // O payload da notificação NÃO expande o cliente — traz só
+        // customer_id. Não declarar `customer` aqui evita prometer um campo
+        // que nunca chega.
     }
 }
 
@@ -84,13 +87,31 @@ export async function POST(request: NextRequest) {
             provider: "paddle",
             providerOrderId: purchaseId,
             capturedAmount,
-            payer: { email: body.data?.customer?.email ?? null },
+            // O buyerEmail já foi gravado na criação da compra, a partir do
+            // usuário autenticado — e o payload da notificação não expande o
+            // cliente, então não há e-mail para ler aqui.
+            payer: { email: null },
             providerPaymentId: body.data?.id ?? null,
         })
 
         console.log(
             `[Paddle Webhook] transacao=${body.data?.id} compra=${purchaseId} outcome=${outcome.status}`
         )
+
+        if (outcome.status === "amount_mismatch") {
+            // Esta é a falha que produz compra paga sem download liberado, e
+            // ela é invisível sem alerta: o comprador foi cobrado, mas a
+            // compra não vira `paid`, e nada mais no fluxo aponta o problema.
+            Sentry.captureMessage("[Paddle Webhook] amount_mismatch", {
+                level: "error",
+                extra: {
+                    purchaseId,
+                    transactionId: body.data?.id ?? null,
+                    grandTotal: grandTotal ?? null,
+                    currencyCode: currencyCode ?? null,
+                },
+            })
+        }
 
         return NextResponse.json({ received: true })
     } catch (error) {

@@ -6,6 +6,7 @@ import {
     verifyPaddleSignature,
     PaddleApiError,
     getTransaction,
+    createTransaction,
 } from "./paddle"
 
 describe("toPaddleAmount", () => {
@@ -134,15 +135,14 @@ describe("getTransaction", () => {
 
     function responderCom(status: number, body: string) {
         vi.stubEnv("PADDLE_API_KEY", "chave-de-teste")
-        vi.stubGlobal(
-            "fetch",
-            vi.fn().mockResolvedValue({
-                ok: status >= 200 && status < 300,
-                status,
-                text: async () => body,
-                json: async () => JSON.parse(body),
-            })
-        )
+        const fetchMock = vi.fn().mockResolvedValue({
+            ok: status >= 200 && status < 300,
+            status,
+            text: async () => body,
+            json: async () => JSON.parse(body),
+        })
+        vi.stubGlobal("fetch", fetchMock)
+        return fetchMock
     }
 
     it("lança PaddleApiError com status 404 quando a transação não existe", async () => {
@@ -155,7 +155,7 @@ describe("getTransaction", () => {
     })
 
     it("devolve a transação normalizada, com o purchaseId vindo de custom_data", async () => {
-        responderCom(
+        const fetchMock = responderCom(
             200,
             JSON.stringify({
                 data: {
@@ -177,6 +177,11 @@ describe("getTransaction", () => {
             purchaseId: "compra-1",
             customerEmail: "comprador@teste.com",
         })
+
+        // Sem include=customer a API nem manda o objeto customer — o email
+        // viria sempre null.
+        const [url] = fetchMock.mock.calls[0] as [string]
+        expect(url).toContain("?include=customer")
     })
 
     it("não estoura quando custom_data e customer vêm ausentes", async () => {
@@ -192,5 +197,46 @@ describe("getTransaction", () => {
             customerEmail: null,
             grandTotal: null,
         })
+    })
+})
+
+describe("createTransaction", () => {
+    afterEach(() => {
+        vi.unstubAllGlobals()
+        vi.unstubAllEnvs()
+    })
+
+    it("monta o corpo com tax_mode internal, valor em unidade mínima e sem campo customer", async () => {
+        vi.stubEnv("PADDLE_API_KEY", "chave-de-teste")
+        const fetchMock = vi.fn().mockResolvedValue({
+            ok: true,
+            status: 200,
+            text: async () => "",
+            json: async () => ({ data: { id: "txn_novo" } }),
+        })
+        vi.stubGlobal("fetch", fetchMock)
+
+        await createTransaction({
+            items: [
+                { name: "Lista A", description: "Lista A", quantity: 1, unitPrice: 45 },
+                { name: "Lista B", description: "Lista B", quantity: 2, unitPrice: 12.5 },
+            ],
+            currencyCode: "EUR",
+            purchaseId: "compra-1",
+        })
+
+        const [, init] = fetchMock.mock.calls[0] as [string, RequestInit]
+        const body = JSON.parse(init.body as string)
+
+        expect(body.custom_data).toEqual({ purchaseId: "compra-1" })
+        expect(body.customer).toBeUndefined()
+
+        for (const item of body.items) {
+            expect(item.price.tax_mode).toBe("internal")
+            expect(item.price.unit_price.currency_code).toBe("EUR")
+        }
+
+        expect(body.items[0].price.unit_price.amount).toBe("4500")
+        expect(body.items[1].price.unit_price.amount).toBe("1250")
     })
 })

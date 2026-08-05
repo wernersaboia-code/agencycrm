@@ -522,6 +522,7 @@
         "brlChargeNotice": "Le paiement est effectué en réals brésiliens : {amount}. Si votre carte vient d'un autre pays, votre banque effectue la conversion.",
         "payWithPaddle": "Payer par carte",
         "paddleTaxNotice": "Le prix inclut les taxes applicables. Le débit apparaît sur votre relevé au nom de Paddle.",
+        "paddleConfirming": "Nous confirmons votre paiement. Vous recevrez une confirmation par e-mail sous peu.",
         "stripeConfirming": "Confirmation de votre paiement...",
         "stripeConfirmFailed": "Nous n'avons pas pu confirmer votre paiement pour le moment. Si le montant a été débité, votre achat apparaîtra dans Mes achats dès que Stripe le confirmera.",
         "mpConfirming": "Confirmation de votre paiement...",

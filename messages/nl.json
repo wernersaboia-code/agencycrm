@@ -522,6 +522,7 @@
         "brlChargeNotice": "Er wordt afgerekend in Braziliaanse real: {amount}. Als je kaart uit een ander land komt, verzorgt je bank de omrekening.",
         "payWithPaddle": "Betaal met kaart",
         "paddleTaxNotice": "De prijs is inclusief toepasselijke belastingen. De afschrijving verschijnt op uw afschrift onder de naam Paddle.",
+        "paddleConfirming": "We bevestigen uw betaling. U ontvangt binnenkort een bevestiging per e-mail.",
         "stripeConfirming": "Je betaling wordt bevestigd...",
         "stripeConfirmFailed": "We konden je betaling nu niet bevestigen. Als het bedrag is afgeschreven, verschijnt je aankoop in Mijn aankopen zodra Stripe bevestigt.",
         "mpConfirming": "Je betaling wordt bevestigd...",

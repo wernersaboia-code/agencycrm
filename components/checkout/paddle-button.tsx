@@ -10,6 +10,7 @@ import { CreditCard, Loader2 } from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { getOptionalPublicPaddleClientToken, getPublicPaddleEnv } from "@/lib/env"
+import { useCart } from "@/contexts/cart-context"
 
 interface PaddleButtonProps {
     items: Array<{ listId: string; quantity: number }>
@@ -39,6 +40,7 @@ export function PaddleButton({ items, currency }: PaddleButtonProps) {
     // fora do segmento de locale. Mesma divisão de mercadopago-return.
     const router = useRouter()
     const plainRouter = usePlainRouter()
+    const { clearCart } = useCart()
     const [isLoading, setIsLoading] = useState(false)
     const [scriptPronto, setScriptPronto] = useState(false)
     const clientToken = getOptionalPublicPaddleClientToken()
@@ -62,24 +64,52 @@ export function PaddleButton({ items, currency }: PaddleButtonProps) {
                     const transactionId = event.data?.transaction_id
                     if (!transactionId) return
 
-                    // Caminho rápido. Se falhar, o webhook efetiva de qualquer
-                    // forma — por isso o erro não vira toast: assustaria o
-                    // comprador por causa de uma compra que vai se resolver.
+                    // Caminho rápido. O webhook efetiva de qualquer forma —
+                    // mas a navegação para a tela de sucesso só pode acontecer
+                    // quando ESTA chamada confirma "fulfilled": em qualquer
+                    // outro caso (404, 503, pending, amount_mismatch) a compra
+                    // pode não estar paga ainda, e mandar o comprador para a
+                    // tela de sucesso o levaria a "Minhas compras" com um
+                    // download que devolve 404 — dinheiro cobrado, tela
+                    // dizendo que deu certo.
                     fetch("/api/checkout/paddle/confirm-transaction", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ transactionId }),
                     })
-                        .catch((error) => console.error("confirm-transaction error:", error))
-                        .finally(() => {
-                            // Router localizado: ele acrescenta o idioma. Montar
-                            // `/${locale}/...` à mão duplicaria o prefixo.
-                            const purchaseId = purchaseIdRef.current
-                            router.push(
-                                purchaseId
-                                    ? `/checkout/success?purchaseId=${purchaseId}`
-                                    : "/checkout/success"
-                            )
+                        .then(async (response) => {
+                            const data = (await response.json()) as {
+                                status?: string
+                                purchaseId?: string
+                            }
+
+                            if (
+                                response.ok &&
+                                (data.status === "fulfilled" || data.status === "already_fulfilled")
+                            ) {
+                                clearCart()
+                                // Router localizado: ele acrescenta o idioma.
+                                // Montar `/${locale}/...` à mão duplicaria o
+                                // prefixo.
+                                const purchaseId = purchaseIdRef.current ?? data.purchaseId
+                                router.push(
+                                    purchaseId
+                                        ? `/checkout/success?purchaseId=${purchaseId}`
+                                        : "/checkout/success"
+                                )
+                                return
+                            }
+
+                            // Não é erro assustador: o webhook resolve a
+                            // compra de qualquer forma, só ainda não resolveu
+                            // a tempo desta chamada.
+                            toast.info(t("paddleConfirming"))
+                            setIsLoading(false)
+                        })
+                        .catch((error) => {
+                            console.error("confirm-transaction error:", error)
+                            toast.info(t("paddleConfirming"))
+                            setIsLoading(false)
                         })
                 },
             })
@@ -97,6 +127,11 @@ export function PaddleButton({ items, currency }: PaddleButtonProps) {
         script.onload = inicializar
         script.onerror = () => console.error("Paddle.js não carregou — conferir o CSP")
         document.body.appendChild(script)
+        // clearCart e t ficam de fora de propósito: o efeito só deve rodar de
+        // novo quando o token ou o router mudarem — o guard `inicializado`
+        // já impede reinicializar o Paddle.js, e incluir funções que mudam de
+        // referência a cada render reabriria essa corrida.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [clientToken, router])
 
     if (!clientToken) {

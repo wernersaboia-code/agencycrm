@@ -11,6 +11,7 @@
 // total é lido da API do Paddle.
 import { NextRequest, NextResponse } from "next/server"
 import { z } from "zod"
+import * as Sentry from "@sentry/nextjs"
 import { prisma } from "@/lib/prisma"
 import { getAuthenticatedActiveDbUser } from "@/lib/auth"
 import { getClientIp, checkPersistentRateLimit } from "@/lib/rate-limit"
@@ -84,6 +85,22 @@ export async function POST(request: NextRequest) {
             payer: { email: transaction.customerEmail },
             providerPaymentId: transaction.id,
         })
+
+        if (outcome.status === "amount_mismatch") {
+            // Mesmo alerta do webhook: é a falha que produz compra paga sem
+            // download liberado, e ela é invisível sem isso. Os dois
+            // caminhos podem disparar o mesmo alerta para a mesma compra —
+            // aceitável, é sinal, não ruído.
+            Sentry.captureMessage("[Paddle Confirm] amount_mismatch", {
+                level: "error",
+                extra: {
+                    purchaseId: transaction.purchaseId,
+                    transactionId: transaction.id,
+                    grandTotal: transaction.grandTotal,
+                    currencyCode: transaction.currencyCode,
+                },
+            })
+        }
 
         return NextResponse.json({ status: outcome.status, purchaseId: transaction.purchaseId })
     } catch (error) {

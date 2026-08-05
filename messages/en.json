@@ -522,6 +522,7 @@
         "brlChargeNotice": "You will be charged in Brazilian reais: {amount}. If your card is from another country, your bank handles the conversion.",
         "payWithPaddle": "Pay by card",
         "paddleTaxNotice": "Price includes applicable taxes. The charge appears on your statement under Paddle's name.",
+        "paddleConfirming": "We're confirming your payment. You'll receive confirmation by email shortly.",
         "stripeConfirming": "Confirming your payment...",
         "stripeConfirmFailed": "We couldn't confirm your payment right now. If the amount was charged, your purchase will appear in My purchases as soon as Stripe confirms it.",
         "mpConfirming": "Confirming your payment...",

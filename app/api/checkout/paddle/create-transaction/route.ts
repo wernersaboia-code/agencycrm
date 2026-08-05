@@ -139,7 +139,6 @@ export async function POST(request: NextRequest) {
                 })),
                 currencyCode: currency,
                 purchaseId: purchase.id,
-                customerEmail: user.email,
             })
         } catch (error) {
             // Compra criada sem transação é pedido órfão: ela ocuparia o

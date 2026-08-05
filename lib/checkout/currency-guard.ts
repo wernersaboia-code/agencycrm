@@ -2,9 +2,11 @@
 //
 // Qual provedor atende cada moeda.
 //
-// Existe como módulo próprio porque a regra vale em três lugares — a tela do
-// checkout, a rota do Paddle e a rota do Mercado Pago — e uma cópia divergente
-// significaria mandar o comprador para um provedor que não consegue cobrá-lo.
+// Existe como módulo próprio porque a regra vale em dois lugares — a tela do
+// checkout e a rota do Paddle — e uma cópia divergente significaria mandar o
+// comprador para um provedor que não consegue cobrá-lo. A rota do Mercado
+// Pago (create-preference) não consulta esta função: ela força "BRL" e
+// segue, porque é o único provedor que cobra nessa moeda.
 
 export type ProvedorDeCobranca = "mercadopago" | "paddle"
 

@@ -109,7 +109,6 @@ export type CreateTransactionInput = {
     currencyCode: string
     /** Nosso purchase.id — é ele que amarra a transação ao pedido. */
     purchaseId: string
-    customerEmail: string
 }
 
 export type PaddleTransaction = {
@@ -178,7 +177,11 @@ export async function createTransaction(
         currency_code: input.currencyCode,
         collection_mode: "automatic",
         custom_data: { purchaseId: input.purchaseId },
-        customer: { email: input.customerEmail },
+        // Sem campo `customer` de propósito: o POST /transactions só aceita
+        // customer_id, address_id e business_id no corpo. Um objeto `customer`
+        // inline com e-mail é recusado pela API — a primeira compra real
+        // devolveria erro e a rota, 500. O e-mail do comprador já está
+        // gravado em Purchase.buyerEmail desde a criação da compra.
     }
 
     const data = (await paddleFetch("/transactions", {
@@ -199,7 +202,10 @@ export async function createTransaction(
  * a fonte, em vez de contra o que o cliente afirmou.
  */
 export async function getTransaction(transactionId: string): Promise<PaddleTransaction> {
-    const payload = (await paddleFetch(`/transactions/${transactionId}`)) as {
+    // A resposta padrão só traz customer_id. O objeto `customer` expandido
+    // (com e-mail) só vem pedindo `include=customer` — sem isso, customerEmail
+    // seria sempre null.
+    const payload = (await paddleFetch(`/transactions/${transactionId}?include=customer`)) as {
         data?: {
             id?: string
             status?: string

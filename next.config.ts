@@ -61,8 +61,15 @@ const nextConfig: NextConfig = {
                 value: 'DENY',
             },
             {
+                // payment=() desabilitaria a Payment Request API para o
+                // documento E para todo iframe filho — e é por dentro de um
+                // iframe do Paddle que Apple Pay e Google Pay funcionam no
+                // overlay. Liberar só para self e paddle.com mantém as
+                // carteiras digitais de pé sem abrir a API para qualquer
+                // origem. camera, microphone, geolocation e usb continuam
+                // fechados: nada no fluxo de checkout precisa deles.
                 key: 'Permissions-Policy',
-                value: 'camera=(), microphone=(), geolocation=(), payment=(), usb=()',
+                value: 'camera=(), microphone=(), geolocation=(), payment=(self "https://*.paddle.com"), usb=()',
             },
         ]
 

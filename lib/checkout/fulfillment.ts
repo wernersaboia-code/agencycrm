@@ -1,17 +1,20 @@
 // lib/checkout/fulfillment.ts
 //
 // Lógica compartilhada de "fulfillment" de uma compra do marketplace, válida
-// para os três provedores de pagamento (PayPal, Stripe e Mercado Pago).
-// É chamada por caminhos que podem correr em paralelo:
+// para os quatro provedores de pagamento (PayPal, Stripe, Mercado Pago e
+// Paddle). É chamada por caminhos que podem correr em paralelo:
 //   1. /api/checkout/capture-order                (PayPal, frontend após o pagamento)
 //   2. /api/checkout/webhook                      (PayPal, PAYMENT.CAPTURE.COMPLETED)
 //   3. /api/checkout/stripe/confirm-session       (Stripe, frontend ao voltar)
 //   4. /api/checkout/stripe/webhook               (Stripe, checkout.session.completed)
 //   5. /api/checkout/mercadopago/confirm-payment  (Mercado Pago, frontend ao voltar)
 //   6. /api/checkout/mercadopago/webhook          (Mercado Pago, notificação de pagamento)
+//   7. /api/checkout/paddle/confirm-transaction   (Paddle, overlay ao concluir)
+//   8. /api/checkout/paddle/webhook               (Paddle, transaction.completed)
 //
-// Hoje só o Mercado Pago está visível no checkout; os outros dois continuam
-// aqui inteiros para religar por variável de ambiente.
+// Hoje o Mercado Pago (BRL) e o Paddle (demais moedas) estão visíveis no
+// checkout; PayPal e Stripe continuam aqui inteiros para religar por
+// variável de ambiente.
 //
 // A transição pending -> paid é feita com um updateMany condicional, de modo
 // que apenas UM dos caminhos efetive a compra e dispare o e-mail de
@@ -122,9 +125,10 @@ export async function fulfillPurchase(
     }
 
     // As buscas de PayPal e Stripe já são exclusivas do provedor pela própria
-    // coluna. A do Mercado Pago é por chave primária e acharia qualquer compra
-    // — esta é a única linha que impede um pagamento de um provedor efetivar o
-    // pedido de outro.
+    // coluna. As do Mercado Pago e do Paddle são por chave primária (o
+    // purchase.id viaja como external_reference ou custom_data) e achariam
+    // qualquer compra, de qualquer provedor — esta é a única linha que impede
+    // um pagamento de um provedor efetivar o pedido de outro.
     if (purchase.provider !== provider) {
         return { status: "not_found" }
     }
