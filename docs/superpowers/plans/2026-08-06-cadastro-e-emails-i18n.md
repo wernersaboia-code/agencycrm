@@ -181,8 +181,15 @@ Abrir o `migration.sql` gerado e **acrescentar ao final** a linha que normaliza 
 ```sql
 -- As linhas antigas guardam "pt-BR", que nao e um locale do projeto. Sem esta
 -- linha elas continuariam dependendo do fallback para funcionar.
-UPDATE "User" SET "language" = 'pt' WHERE "language" = 'pt-BR';
+UPDATE "users" SET "language" = 'pt' WHERE "language" = 'pt-BR';
 ```
+
+> **Atenção ao nome da tabela.** O model Prisma se chama `User`, mas o `@@map("users")` no
+> schema faz a tabela real ser `public.users`. SQL escrito à mão com `"User"` falha com
+> `relation "User" does not exist`. Confira o mesmo no que o Prisma gerar.
+>
+> Estado do banco conferido antes desta task: **4 usuários, todos com `pt-BR`** — é o que
+> esta linha converte.
 
 Depois:
 
