@@ -1485,5 +1485,45 @@
     },
     "a11y": {
         "skipToContent": "Pular para o conteúdo"
+    },
+    "emails": {
+        "common": {
+            "tagline": "Easy Prospect — listas qualificadas para comércio internacional",
+            "support": "Dúvidas? Responda este e-mail ou fale com o suporte."
+        },
+        "signup": {
+            "subject": "Confirme seu e-mail — Easy Prospect",
+            "heading": "Confirme seu e-mail",
+            "greeting": "Olá {nome},",
+            "intro": "Falta um passo para sua conta ficar pronta. Clique no botão abaixo para confirmar este endereço de e-mail.",
+            "button": "Confirmar meu e-mail",
+            "expires": "Este link vale por 24 horas.",
+            "ignore": "Se você não criou esta conta, ignore esta mensagem."
+        },
+        "accountExists": {
+            "subject": "Você já tem uma conta — Easy Prospect",
+            "heading": "Você já tem uma conta",
+            "greeting": "Olá,",
+            "intro": "Alguém tentou criar uma conta com este e-mail, e ele já está cadastrado. Nenhuma conta nova foi criada.",
+            "button": "Entrar na minha conta",
+            "resetHint": "Se você esqueceu a senha, use a opção de recuperação na tela de entrada.",
+            "ignore": "Se não foi você, pode ignorar esta mensagem com segurança."
+        },
+        "purchase": {
+            "subject": "Sua compra foi confirmada — pedido #{pedido}",
+            "heading": "Compra confirmada",
+            "greeting": "Olá {nome},",
+            "intro": "Seu pagamento foi confirmado e suas listas estão prontas para download.",
+            "orderLabel": "Pedido",
+            "dateLabel": "Data",
+            "totalLabel": "Total",
+            "itemsTitle": "Itens comprados",
+            "accessIntro": "Clique no botão abaixo para acessar sua área de compras e baixar as listas:",
+            "accessButton": "Acessar minhas compras",
+            "linkNote": "Este link é pessoal e vale por 24 horas.",
+            "catalogTitle": "Amplie o alcance da sua campanha",
+            "catalogText": "Explore listas de outros mercados e setores para alcançar mais parceiros comerciais.",
+            "catalogButton": "Ver catálogo"
+        }
     }
 }

@@ -602,5 +602,45 @@
     },
     "a11y": {
         "skipToContent": "Aller au contenu"
+    },
+    "emails": {
+        "common": {
+            "tagline": "Easy Prospect — des listes qualifiées pour le commerce international",
+            "support": "Une question ? Répondez à cet e-mail ou contactez le support."
+        },
+        "signup": {
+            "subject": "Confirmez votre adresse e-mail — Easy Prospect",
+            "heading": "Confirmez votre adresse e-mail",
+            "greeting": "Bonjour {nome},",
+            "intro": "Il ne reste qu'une étape avant que votre compte soit prêt. Cliquez sur le bouton ci-dessous pour confirmer cette adresse e-mail.",
+            "button": "Confirmer mon adresse e-mail",
+            "expires": "Ce lien est valable 24 heures.",
+            "ignore": "Si vous n'avez pas créé ce compte, ignorez ce message."
+        },
+        "accountExists": {
+            "subject": "Vous avez déjà un compte — Easy Prospect",
+            "heading": "Vous avez déjà un compte",
+            "greeting": "Bonjour,",
+            "intro": "Quelqu'un a tenté de créer un compte avec cette adresse e-mail, et elle est déjà enregistrée. Aucun nouveau compte n'a été créé.",
+            "button": "Me connecter à mon compte",
+            "resetHint": "Si vous avez oublié votre mot de passe, utilisez l'option de récupération sur la page de connexion.",
+            "ignore": "Si ce n'était pas vous, vous pouvez ignorer ce message en toute sécurité."
+        },
+        "purchase": {
+            "subject": "Votre achat est confirmé — commande #{pedido}",
+            "heading": "Achat confirmé",
+            "greeting": "Bonjour {nome},",
+            "intro": "Votre paiement a été confirmé et vos listes sont prêtes à être téléchargées.",
+            "orderLabel": "Commande",
+            "dateLabel": "Date",
+            "totalLabel": "Total",
+            "itemsTitle": "Articles achetés",
+            "accessIntro": "Cliquez sur le bouton ci-dessous pour ouvrir votre espace d'achats et télécharger les listes :",
+            "accessButton": "Accéder à mes achats",
+            "linkNote": "Ce lien est personnel et valable 24 heures.",
+            "catalogTitle": "Élargissez la portée de votre campagne",
+            "catalogText": "Explorez des listes d'autres marchés et secteurs pour atteindre davantage de partenaires commerciaux.",
+            "catalogButton": "Voir le catalogue"
+        }
     }
 }

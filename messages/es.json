@@ -602,5 +602,45 @@
     },
     "a11y": {
         "skipToContent": "Saltar al contenido"
+    },
+    "emails": {
+        "common": {
+            "tagline": "Easy Prospect — listas cualificadas para el comercio internacional",
+            "support": "¿Dudas? Responda a este correo o escriba al soporte."
+        },
+        "signup": {
+            "subject": "Confirme su correo electrónico — Easy Prospect",
+            "heading": "Confirme su correo electrónico",
+            "greeting": "Hola {nome}:",
+            "intro": "Falta un paso para que su cuenta esté lista. Haga clic en el botón de abajo para confirmar esta dirección de correo.",
+            "button": "Confirmar mi correo",
+            "expires": "Este enlace es válido durante 24 horas.",
+            "ignore": "Si usted no creó esta cuenta, ignore este mensaje."
+        },
+        "accountExists": {
+            "subject": "Ya tiene una cuenta — Easy Prospect",
+            "heading": "Ya tiene una cuenta",
+            "greeting": "Hola:",
+            "intro": "Alguien intentó crear una cuenta con este correo, y ya está registrado. No se creó ninguna cuenta nueva.",
+            "button": "Entrar en mi cuenta",
+            "resetHint": "Si olvidó su contraseña, use la opción de recuperación en la pantalla de acceso.",
+            "ignore": "Si no fue usted, puede ignorar este mensaje con tranquilidad."
+        },
+        "purchase": {
+            "subject": "Su compra está confirmada — pedido #{pedido}",
+            "heading": "Compra confirmada",
+            "greeting": "Hola {nome}:",
+            "intro": "Su pago se ha confirmado y sus listas están listas para descargar.",
+            "orderLabel": "Pedido",
+            "dateLabel": "Fecha",
+            "totalLabel": "Total",
+            "itemsTitle": "Artículos comprados",
+            "accessIntro": "Haga clic en el botón de abajo para abrir su área de compras y descargar las listas:",
+            "accessButton": "Ir a mis compras",
+            "linkNote": "Este enlace es personal y válido durante 24 horas.",
+            "catalogTitle": "Amplíe el alcance de su campaña",
+            "catalogText": "Explore listas de otros mercados y sectores para llegar a más socios comerciales.",
+            "catalogButton": "Ver el catálogo"
+        }
     }
 }

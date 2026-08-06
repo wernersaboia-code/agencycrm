@@ -1485,5 +1485,45 @@
     },
     "a11y": {
         "skipToContent": "Zum Inhalt springen"
+    },
+    "emails": {
+        "common": {
+            "tagline": "Easy Prospect — qualifizierte Listen für den internationalen Handel",
+            "support": "Fragen? Antworten Sie auf diese E-Mail oder wenden Sie sich an den Support."
+        },
+        "signup": {
+            "subject": "Bestätigen Sie Ihre E-Mail-Adresse — Easy Prospect",
+            "heading": "Bestätigen Sie Ihre E-Mail-Adresse",
+            "greeting": "Hallo {nome},",
+            "intro": "Nur noch ein Schritt, bis Ihr Konto bereit ist. Klicken Sie auf die Schaltfläche unten, um diese E-Mail-Adresse zu bestätigen.",
+            "button": "E-Mail-Adresse bestätigen",
+            "expires": "Dieser Link ist 24 Stunden gültig.",
+            "ignore": "Wenn Sie dieses Konto nicht erstellt haben, ignorieren Sie diese Nachricht bitte."
+        },
+        "accountExists": {
+            "subject": "Sie haben bereits ein Konto — Easy Prospect",
+            "heading": "Sie haben bereits ein Konto",
+            "greeting": "Hallo,",
+            "intro": "Jemand hat versucht, mit dieser E-Mail-Adresse ein Konto zu erstellen; sie ist bereits registriert. Es wurde kein neues Konto angelegt.",
+            "button": "Bei meinem Konto anmelden",
+            "resetHint": "Falls Sie Ihr Passwort vergessen haben, nutzen Sie die Wiederherstellung auf der Anmeldeseite.",
+            "ignore": "Falls Sie das nicht waren, können Sie diese Nachricht bedenkenlos ignorieren."
+        },
+        "purchase": {
+            "subject": "Ihr Kauf ist bestätigt — Bestellung #{pedido}",
+            "heading": "Kauf bestätigt",
+            "greeting": "Hallo {nome},",
+            "intro": "Ihre Zahlung wurde bestätigt und Ihre Listen stehen zum Download bereit.",
+            "orderLabel": "Bestellung",
+            "dateLabel": "Datum",
+            "totalLabel": "Gesamt",
+            "itemsTitle": "Gekaufte Artikel",
+            "accessIntro": "Klicken Sie auf die Schaltfläche unten, um Ihren Kaufbereich zu öffnen und die Listen herunterzuladen:",
+            "accessButton": "Zu meinen Käufen",
+            "linkNote": "Dieser Link ist persönlich und 24 Stunden gültig.",
+            "catalogTitle": "Erweitern Sie die Reichweite Ihrer Kampagne",
+            "catalogText": "Entdecken Sie Listen aus anderen Märkten und Branchen, um mehr Handelspartner zu erreichen.",
+            "catalogButton": "Katalog ansehen"
+        }
     }
 }

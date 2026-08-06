@@ -602,5 +602,45 @@
     },
     "a11y": {
         "skipToContent": "Ga naar de inhoud"
+    },
+    "emails": {
+        "common": {
+            "tagline": "Easy Prospect — gekwalificeerde lijsten voor internationale handel",
+            "support": "Vragen? Beantwoord deze e-mail of neem contact op met de klantenservice."
+        },
+        "signup": {
+            "subject": "Bevestig uw e-mailadres — Easy Prospect",
+            "heading": "Bevestig uw e-mailadres",
+            "greeting": "Hallo {nome},",
+            "intro": "Nog één stap en uw account is klaar. Klik op de knop hieronder om dit e-mailadres te bevestigen.",
+            "button": "Mijn e-mailadres bevestigen",
+            "expires": "Deze link is 24 uur geldig.",
+            "ignore": "Hebt u dit account niet aangemaakt, negeer dan dit bericht."
+        },
+        "accountExists": {
+            "subject": "U hebt al een account — Easy Prospect",
+            "heading": "U hebt al een account",
+            "greeting": "Hallo,",
+            "intro": "Iemand probeerde een account aan te maken met dit e-mailadres; het is al geregistreerd. Er is geen nieuw account aangemaakt.",
+            "button": "Inloggen op mijn account",
+            "resetHint": "Bent u uw wachtwoord vergeten, gebruik dan de hersteloptie op het inlogscherm.",
+            "ignore": "Was u dit niet, dan kunt u dit bericht gerust negeren."
+        },
+        "purchase": {
+            "subject": "Uw aankoop is bevestigd — bestelling #{pedido}",
+            "heading": "Aankoop bevestigd",
+            "greeting": "Hallo {nome},",
+            "intro": "Uw betaling is bevestigd en uw lijsten staan klaar om te downloaden.",
+            "orderLabel": "Bestelling",
+            "dateLabel": "Datum",
+            "totalLabel": "Totaal",
+            "itemsTitle": "Gekochte artikelen",
+            "accessIntro": "Klik op de knop hieronder om uw aankopenoverzicht te openen en de lijsten te downloaden:",
+            "accessButton": "Naar mijn aankopen",
+            "linkNote": "Deze link is persoonlijk en 24 uur geldig.",
+            "catalogTitle": "Vergroot het bereik van uw campagne",
+            "catalogText": "Ontdek lijsten uit andere markten en sectoren om meer handelspartners te bereiken.",
+            "catalogButton": "Bekijk de catalogus"
+        }
     }
 }

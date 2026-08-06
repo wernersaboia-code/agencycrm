@@ -602,5 +602,45 @@
     },
     "a11y": {
         "skipToContent": "Vai al contenuto"
+    },
+    "emails": {
+        "common": {
+            "tagline": "Easy Prospect — liste qualificate per il commercio internazionale",
+            "support": "Domande? Risponda a questa e-mail o contatti l'assistenza."
+        },
+        "signup": {
+            "subject": "Confermi il suo indirizzo e-mail — Easy Prospect",
+            "heading": "Confermi il suo indirizzo e-mail",
+            "greeting": "Buongiorno {nome},",
+            "intro": "Manca un passaggio perché il suo account sia pronto. Clicchi sul pulsante qui sotto per confermare questo indirizzo e-mail.",
+            "button": "Conferma il mio indirizzo",
+            "expires": "Questo link è valido per 24 ore.",
+            "ignore": "Se non ha creato questo account, ignori questo messaggio."
+        },
+        "accountExists": {
+            "subject": "Ha già un account — Easy Prospect",
+            "heading": "Ha già un account",
+            "greeting": "Buongiorno,",
+            "intro": "Qualcuno ha provato a creare un account con questo indirizzo e-mail, che risulta già registrato. Nessun nuovo account è stato creato.",
+            "button": "Accedi al mio account",
+            "resetHint": "Se ha dimenticato la password, usi l'opzione di recupero nella schermata di accesso.",
+            "ignore": "Se non è stato lei, può ignorare tranquillamente questo messaggio."
+        },
+        "purchase": {
+            "subject": "Il suo acquisto è confermato — ordine #{pedido}",
+            "heading": "Acquisto confermato",
+            "greeting": "Buongiorno {nome},",
+            "intro": "Il suo pagamento è stato confermato e le sue liste sono pronte per il download.",
+            "orderLabel": "Ordine",
+            "dateLabel": "Data",
+            "totalLabel": "Totale",
+            "itemsTitle": "Articoli acquistati",
+            "accessIntro": "Clicchi sul pulsante qui sotto per aprire l'area acquisti e scaricare le liste:",
+            "accessButton": "Vai ai miei acquisti",
+            "linkNote": "Questo link è personale e valido per 24 ore.",
+            "catalogTitle": "Ampli la portata della sua campagna",
+            "catalogText": "Esplori liste di altri mercati e settori per raggiungere più partner commerciali.",
+            "catalogButton": "Vedi il catalogo"
+        }
     }
 }

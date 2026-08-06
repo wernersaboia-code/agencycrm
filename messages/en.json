@@ -1485,5 +1485,45 @@
     },
     "a11y": {
         "skipToContent": "Skip to content"
+    },
+    "emails": {
+        "common": {
+            "tagline": "Easy Prospect — qualified lists for international trade",
+            "support": "Questions? Reply to this email or contact support."
+        },
+        "signup": {
+            "subject": "Confirm your email — Easy Prospect",
+            "heading": "Confirm your email",
+            "greeting": "Hello {nome},",
+            "intro": "One step left before your account is ready. Click the button below to confirm this email address.",
+            "button": "Confirm my email",
+            "expires": "This link is valid for 24 hours.",
+            "ignore": "If you did not create this account, please ignore this message."
+        },
+        "accountExists": {
+            "subject": "You already have an account — Easy Prospect",
+            "heading": "You already have an account",
+            "greeting": "Hello,",
+            "intro": "Someone tried to create an account with this email address, and it is already registered. No new account was created.",
+            "button": "Sign in to my account",
+            "resetHint": "If you forgot your password, use the recovery option on the sign-in screen.",
+            "ignore": "If this was not you, you can safely ignore this message."
+        },
+        "purchase": {
+            "subject": "Your purchase is confirmed — order #{pedido}",
+            "heading": "Purchase confirmed",
+            "greeting": "Hello {nome},",
+            "intro": "Your payment has been confirmed and your lists are ready to download.",
+            "orderLabel": "Order",
+            "dateLabel": "Date",
+            "totalLabel": "Total",
+            "itemsTitle": "Items purchased",
+            "accessIntro": "Click the button below to open your purchases area and download the lists:",
+            "accessButton": "Go to my purchases",
+            "linkNote": "This link is personal and valid for 24 hours.",
+            "catalogTitle": "Widen your campaign's reach",
+            "catalogText": "Explore lists from other markets and sectors to reach more trading partners.",
+            "catalogButton": "Browse the catalogue"
+        }
     }
 }
