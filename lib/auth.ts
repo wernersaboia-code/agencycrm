@@ -4,6 +4,24 @@ import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
 import type { UserRole, UserStatus } from '@prisma/client'
 
+/**
+ * O usuário local nasce no primeiro acesso, e "ler depois criar" tem uma
+ * janela de corrida: o link de confirmação do e-mail abre a aplicação e
+ * várias requisições chegam juntas. A primeira insere; as demais batem no
+ * índice único e recebem P2002.
+ *
+ * Isso derrubava a página com "Erro crítico" no PRIMEIRO acesso de cada
+ * cliente novo — quem recarregava passava, porque aí a linha já existia.
+ * Tratar o P2002 como "outro alguém acabou de criar" e reler é o conserto.
+ */
+function isUniqueViolation(error: unknown): boolean {
+    return (
+        typeof error === "object" &&
+        error !== null &&
+        (error as { code?: string }).code === "P2002"
+    )
+}
+
 // ============================================================
 // TIPOS
 // ============================================================
@@ -54,21 +72,25 @@ export async function getAuthenticatedUser(): Promise<AuthenticatedUser | null> 
 
         // Se não existe, cria (primeiro login)
         if (!user) {
-            user = await prisma.user.create({
-                data: {
-                    id: supabaseUser.id,
-                    email: supabaseUser.email,
-                    name: supabaseUser.user_metadata?.name ??
-                        supabaseUser.user_metadata?.full_name ??
-                        supabaseUser.email.split('@')[0],
-                },
-                select: {
-                    id: true,
-                    email: true,
-                    name: true,
-                    status: true,
-                }
-            })
+            const select = { id: true, email: true, name: true, status: true }
+            const data = {
+                id: supabaseUser.id,
+                email: supabaseUser.email,
+                name: supabaseUser.user_metadata?.name ??
+                    supabaseUser.user_metadata?.full_name ??
+                    supabaseUser.email.split('@')[0],
+            }
+
+            try {
+                user = await prisma.user.create({ data, select })
+            } catch (error) {
+                if (!isUniqueViolation(error)) throw error
+                user = await prisma.user.findUnique({ where: { id: supabaseUser.id }, select })
+            }
+        }
+
+        if (!user) {
+            return null
         }
 
         if (user.status !== 'ACTIVE') {
@@ -91,38 +113,35 @@ export async function getAuthenticatedDbUser(): Promise<AuthenticatedDbUser | nu
         return null
     }
 
-    let user = await prisma.user.findUnique({
-        where: { id: supabaseUser.id },
-        select: {
-            id: true,
-            email: true,
-            name: true,
-            role: true,
-            status: true,
-            language: true,
-            activeWorkspaceId: true,
-        }
-    })
+    const select = {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        status: true,
+        language: true,
+        activeWorkspaceId: true,
+    }
+
+    let user = await prisma.user.findUnique({ where: { id: supabaseUser.id }, select })
 
     if (!user) {
-        user = await prisma.user.create({
-            data: {
-                id: supabaseUser.id,
-                email: supabaseUser.email,
-                name: supabaseUser.user_metadata?.name ??
-                    supabaseUser.user_metadata?.full_name ??
-                    supabaseUser.email.split('@')[0],
-            },
-            select: {
-                id: true,
-                email: true,
-                name: true,
-                role: true,
-                status: true,
-                language: true,
-                activeWorkspaceId: true,
-            }
-        })
+        const data = {
+            id: supabaseUser.id,
+            email: supabaseUser.email,
+            name: supabaseUser.user_metadata?.name ??
+                supabaseUser.user_metadata?.full_name ??
+                supabaseUser.email.split('@')[0],
+        }
+
+        try {
+            user = await prisma.user.create({ data, select })
+        } catch (error) {
+            // Era esta a linha sem proteção: o P2002 subia até derrubar o
+            // render com "Erro crítico" no primeiro acesso do cliente novo.
+            if (!isUniqueViolation(error)) throw error
+            user = await prisma.user.findUnique({ where: { id: supabaseUser.id }, select })
+        }
     }
 
     return user
