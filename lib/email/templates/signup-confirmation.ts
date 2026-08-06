@@ -8,7 +8,7 @@
 
 import type { Locale } from "@/lib/i18n/locales"
 import { loadEmailBlock, loadEmailCommon, interpolate } from "@/lib/email/i18n"
-import { renderEmailLayout, renderEmailButton } from "./layout"
+import { renderEmailLayout, renderEmailButton, escapeHtml } from "./layout"
 
 export async function generateSignupConfirmationEmail(
     data: { userName: string; confirmUrl: string },
@@ -19,7 +19,7 @@ export async function generateSignupConfirmationEmail(
 
     const bodyHtml = `
               <p style="color: #111827; font-size: 16px; line-height: 24px; margin: 0 0 24px;">
-                ${interpolate(t.greeting, { nome: data.userName })}<br><br>
+                ${interpolate(t.greeting, { nome: escapeHtml(data.userName) })}<br><br>
                 ${t.intro}
               </p>
 

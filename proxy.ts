@@ -264,12 +264,18 @@ export async function proxy(request: NextRequest) {
     // ============================================
     // CALLBACK DE CONFIRMAÇÃO DE E-MAIL
     // ============================================
-    // Precisa passar direto, sem nenhuma das duas regras de auth:
+    // Duas rotas, mesmo motivo: precisam passar direto, sem nenhuma das duas
+    // regras de auth.
+    // - /auth/callback troca o `code` do fluxo PKCE, usado pelos e-mails que
+    //   ainda saem do template do Supabase;
+    // - /auth/confirm troca o `token_hash` do generateLink, usado pelo nosso
+    //   e-mail de confirmação de cadastro.
+    // Em ambas:
     // - quem chega SEM sessão não pode ser mandado ao login, porque é esta
-    //   rota que cria a sessão a partir do código do e-mail;
+    //   rota que cria a sessão a partir do código ou token do e-mail;
     // - quem chega COM sessão não pode ser mandado para /my-purchases, senão
-    //   a troca do código nunca roda e a conta fica sem confirmar.
-    if (pathForMatching === "/auth/callback") {
+    //   a troca nunca roda e a conta fica sem confirmar.
+    if (pathForMatching === "/auth/callback" || pathForMatching === "/auth/confirm") {
         return supabaseResponse
     }
 

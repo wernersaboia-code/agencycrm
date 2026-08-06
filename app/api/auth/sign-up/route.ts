@@ -78,10 +78,14 @@ export async function POST(request: NextRequest) {
                         // E-mail ja cadastrado nao e falha: e o outro caminho
                         // previsto, e quem decide o que fazer com ele e
                         // registrarUsuario. O Supabase sinaliza por codigo ou
-                        // por 422, dependendo da versao.
+                        // por mensagem, dependendo da versao. NAO usar so
+                        // error.status === 422: o GoTrue devolve 422 tambem
+                        // para weak_password (entre outros), e uma senha que
+                        // passa na nossa regra mas falha na do painel viraria
+                        // "ja existe" — a pessoa veria sucesso, ganharia o
+                        // e-mail errado, e a conta nunca seria criada.
                         const jaExiste =
                             error.code === "email_exists" ||
-                            error.status === 422 ||
                             /already registered|already exists/i.test(error.message)
 
                         if (jaExiste) {

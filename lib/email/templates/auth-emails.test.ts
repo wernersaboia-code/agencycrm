@@ -45,6 +45,20 @@ describe("generateSignupConfirmationEmail", () => {
         expect(subject).not.toMatch(/\{\w+\}/)
         expect(html).not.toMatch(/\{\w+\}/)
     })
+
+    it("escapa o nome no HTML, porque quem preenche nao e o destinatario", async () => {
+        // O nome vem do cadastro, que e anonimo: quem se cadastra escolhe o
+        // nome, mas o e-mail de confirmacao vai para o dono do endereco
+        // digitado. Sem escape, um <a href=...> no nome vira link de phishing
+        // saindo com a marca e o SMTP do Easy Prospect.
+        const { html } = await generateSignupConfirmationEmail(
+            { userName: '<a href="https://evil.example">clique</a>', confirmUrl: CONFIRM_URL },
+            "pt"
+        )
+
+        expect(html).not.toContain('<a href="https://evil.example">')
+        expect(html).toContain("&lt;a href=&quot;https://evil.example&quot;&gt;")
+    })
 })
 
 describe("generateAccountExistsEmail", () => {

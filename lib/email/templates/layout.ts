@@ -8,6 +8,23 @@
 
 import { getPublicAppUrl } from "@/lib/env"
 
+// Escapa dado de usuario antes de entrar no HTML do e-mail. Quem preenche
+// nome no cadastro nao e o destinatario: e-mail de confirmacao e de conta
+// existente vao para o dono do endereco digitado, entao um <a href=...> no
+// nome viraria phishing hospedado no nosso remetente. So aplica em dado, nunca
+// no HTML do template nem nos textos de messages/*.json.
+// A ordem importa: "&" tem que ser o primeiro, senao a troca dos outros
+// caracteres criaria entidades (ex.: "<" -> "&lt;") que um "&" escapado depois
+// corromperia de volta.
+export function escapeHtml(valor: string): string {
+    return valor
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;")
+}
+
 export interface EmailLayoutParams {
     /** Titulo grande no cabecalho colorido. */
     heading: string

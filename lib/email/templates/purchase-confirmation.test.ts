@@ -67,4 +67,21 @@ describe("generatePurchaseConfirmationEmail", () => {
         expect(subject).not.toMatch(/\{\w+\}/)
         expect(html).not.toMatch(/\{\w+\}/)
     })
+
+    it("escapa nome e item no HTML, porque quem preenche o nome no cadastro pode nao ser o destinatario", async () => {
+        // A Purchase carrega o nome de quem se cadastrou, nao necessariamente
+        // de quem esta lendo o e-mail nesta caixa de entrada. Sem escape, um
+        // <a href=...> no nome ou no item sairia clicavel, com a marca e o
+        // SMTP do Easy Prospect por tras.
+        const dadosComHtml = {
+            ...DADOS,
+            userName: '<a href="https://evil.example">clique</a>',
+            items: [{ name: '<img src=x onerror=alert(1)>', price: 5 }],
+        }
+        const { html } = await generatePurchaseConfirmationEmail(dadosComHtml, "pt")
+
+        expect(html).not.toContain('<a href="https://evil.example">')
+        expect(html).not.toContain("<img src=x onerror=alert(1)>")
+        expect(html).toContain("&lt;a href=&quot;https://evil.example&quot;&gt;")
+    })
 })

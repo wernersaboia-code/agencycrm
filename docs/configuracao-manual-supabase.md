@@ -14,6 +14,15 @@ de projeto ou restauração de backup.
 traduzida; esta terceira é a que continua valendo se alguém chamar a API do Supabase por
 fora do nosso cadastro.
 
+## Authentication → Emails → Email OTP Expiration
+
+- **86400** (segundos, 24 horas)
+
+O texto `emails.signup.expires`, nos 7 idiomas, promete que o link de confirmação de
+cadastro vale 24 horas. Essa promessa não é garantida pelo código: quem controla o prazo
+real do `token_hash` é este campo do painel, e o default do Supabase é 1 hora. Sem ajustar
+aqui, o e-mail mente.
+
 ## Authentication → URL Configuration
 
 A **Site URL** precisa ser o domínio com `www`, que é o canônico. O apex responde 308, e um
