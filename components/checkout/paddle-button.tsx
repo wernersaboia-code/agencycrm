@@ -82,6 +82,14 @@ export function PaddleButton({ items, currency }: PaddleButtonProps) {
                     const transactionId = event.data?.transaction_id
                     if (!transactionId) return
 
+                    // Esvazia o carrinho AQUI, antes de qualquer ida ao nosso
+                    // servidor: neste ponto o Paddle já capturou o pagamento, e
+                    // o carrinho deixou de ser válido independentemente do que
+                    // a confirmação responda. Quando isso ficava depois do
+                    // fetch, quem fechasse a aba voltava ao site com o mesmo
+                    // item no carrinho, convidado a comprar de novo.
+                    clearCart()
+
                     // Caminho rápido. O webhook efetiva de qualquer forma —
                     // mas a navegação para a tela de sucesso só pode acontecer
                     // quando ESTA chamada confirma "fulfilled": em qualquer
@@ -105,10 +113,10 @@ export function PaddleButton({ items, currency }: PaddleButtonProps) {
                                 response.ok &&
                                 (data.status === "fulfilled" || data.status === "already_fulfilled")
                             ) {
-                                clearCart()
                                 // Router localizado: ele acrescenta o idioma.
                                 // Montar `/${locale}/...` à mão duplicaria o
-                                // prefixo.
+                                // prefixo. (O carrinho já foi esvaziado no
+                                // checkout.completed, acima.)
                                 const purchaseId = purchaseIdRef.current ?? data.purchaseId
                                 router.push(
                                     purchaseId
