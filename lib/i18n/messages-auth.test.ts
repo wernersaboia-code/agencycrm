@@ -13,6 +13,9 @@ const REQUIRED_PATHS = [
     "signUp.mktTitle",
     "signUp.benefitsTitle",
     "signUp.step3",
+    "signUp.pwdShort",
+    "signUp.pwdNoLetter",
+    "signUp.pwdNoDigit",
 ]
 
 function get(obj: unknown, path: string): unknown {

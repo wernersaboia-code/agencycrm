@@ -1,10 +1,10 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { toast } from "sonner"
-import { Loader2, ShoppingBag, Building2, CheckCircle, Mail } from "lucide-react"
+import { Loader2, ShoppingBag, CheckCircle, Mail } from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
 
 import { Button } from "@/components/ui/button"
@@ -18,53 +18,65 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
-import { createClient } from "@/lib/supabase/client"
 import { DEFAULT_LOCALE, type Locale } from "@/lib/i18n/locales"
+import { PASSWORD_MIN_LENGTH, validarSenha, type PasswordProblem } from "@/lib/auth/password-policy"
+
+// A variante "CRM" saiu daqui: o CRM foi desabilitado para uso externo, e a
+// tela de login ja tinha fechado essa porta (area `crm` com visivel: false).
+// Todo cadastro e do marketplace.
+
+const MENSAGEM_DE_SENHA: Record<PasswordProblem, string> = {
+    curta: "signUp.pwdShort",
+    semLetra: "signUp.pwdNoLetter",
+    semNumero: "signUp.pwdNoDigit",
+}
 
 export function SignUpForm() {
     const router = useRouter()
-    const searchParams = useSearchParams()
     const t = useTranslations("auth")
     const locale = useLocale() as Locale
     const [isLoading, setIsLoading] = useState(false)
     const [name, setName] = useState("")
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const [erroDeSenha, setErroDeSenha] = useState<PasswordProblem | null>(null)
     const [isSuccess, setIsSuccess] = useState(false)
 
-    const from = searchParams.get("from")
-    const isMarketplace = from === "marketplace"
-
     // Preserva o idioma ao pular entre sign-up e sign-in.
-    const langSuffix = locale !== DEFAULT_LOCALE ? `lang=${locale}` : ""
-    const signInHref = `/sign-in${[isMarketplace ? "from=marketplace" : "", langSuffix]
-        .filter(Boolean)
-        .reduce((acc, part, i) => (i === 0 ? `?${part}` : `${acc}&${part}`), "")}`
-    const signUpMarketplaceHref = `/sign-up?from=marketplace${langSuffix ? `&${langSuffix}` : ""}`
+    const langSuffix = locale !== DEFAULT_LOCALE ? `?lang=${locale}` : ""
+    const signInHref = `/sign-in${langSuffix}`
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault()
+
+        // A mesma regra roda na rota. Aqui ela existe para a pessoa ler o
+        // motivo no idioma dela antes de enviar — o erro do servidor volta
+        // como codigo, nao como frase.
+        const problema = validarSenha(password)
+        if (problema) {
+            setErroDeSenha(problema)
+            return
+        }
+
+        setErroDeSenha(null)
         setIsLoading(true)
 
         try {
-            const supabase = createClient()
-
-            const { error } = await supabase.auth.signUp({
-                email,
-                password,
-                options: {
-                    data: {
-                        name,
-                        source: isMarketplace ? "marketplace" : "crm",
-                    },
-                    emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(
-                        isMarketplace ? "/my-purchases" : "/dashboard"
-                    )}`,
-                },
+            const resposta = await fetch("/api/auth/sign-up", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name, email, password, locale }),
             })
 
-            if (error) {
-                toast.error(error.message)
+            if (!resposta.ok) {
+                const corpo = await resposta.json().catch(() => ({}))
+
+                if (corpo.error === "senha_fraca" && corpo.problema) {
+                    setErroDeSenha(corpo.problema as PasswordProblem)
+                    return
+                }
+
+                toast.error(t("signUp.error"))
                 return
             }
 
@@ -100,7 +112,7 @@ export function SignUpForm() {
                         <h3 className="mb-2 font-medium text-foreground">{t("signUp.nextStepsTitle")}</h3>
                         <ol className="space-y-2 text-sm text-muted-foreground">
                             <li>{t("signUp.step1")}</li>
-                            <li>{isMarketplace ? t("signUp.step2Mkt") : t("signUp.step2Crm")}</li>
+                            <li>{t("signUp.step2Mkt")}</li>
                             <li>{t("signUp.step3")}</li>
                         </ol>
                     </div>
@@ -108,10 +120,10 @@ export function SignUpForm() {
 
                 <CardFooter className="flex flex-col space-y-4">
                     <Button
-                        className={`w-full ${isMarketplace ? "bg-[#4a2c5a] hover:bg-[#5d3a70]" : ""}`}
-                        onClick={() => router.push(isMarketplace ? "/catalog" : "/dashboard")}
+                        className="w-full bg-[#4a2c5a] hover:bg-[#5d3a70]"
+                        onClick={() => router.push("/catalog")}
                     >
-                        {isMarketplace ? t("signUp.ctaMkt") : t("signUp.ctaCrm")}
+                        {t("signUp.ctaMkt")}
                     </Button>
 
                     <p className="text-xs text-gray-500 text-center">{t("signUp.spamHint")}</p>
@@ -124,22 +136,12 @@ export function SignUpForm() {
         <Card className="w-full max-w-md mx-auto">
             <CardHeader className="space-y-1 text-center">
                 <div className="flex justify-center mb-4">
-                    {isMarketplace ? (
-                        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#4a2c5a] to-[#5d3a70] flex items-center justify-center">
-                            <ShoppingBag className="h-8 w-8 text-white" />
-                        </div>
-                    ) : (
-                        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
-                            <Building2 className="h-8 w-8 text-white" />
-                        </div>
-                    )}
+                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#4a2c5a] to-[#5d3a70] flex items-center justify-center">
+                        <ShoppingBag className="h-8 w-8 text-white" />
+                    </div>
                 </div>
-                <CardTitle className="text-2xl font-bold">
-                    {isMarketplace ? t("signUp.mktTitle") : t("signUp.crmTitle")}
-                </CardTitle>
-                <CardDescription>
-                    {isMarketplace ? t("signUp.mktSubtitle") : t("signUp.crmSubtitle")}
-                </CardDescription>
+                <CardTitle className="text-2xl font-bold">{t("signUp.mktTitle")}</CardTitle>
+                <CardDescription>{t("signUp.mktSubtitle")}</CardDescription>
             </CardHeader>
             <form onSubmit={handleSubmit}>
                 <CardContent className="space-y-4">
@@ -174,32 +176,40 @@ export function SignUpForm() {
                             type="password"
                             placeholder={t("signUp.passwordPlaceholder")}
                             value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+                            onChange={(e) => {
+                                setPassword(e.target.value)
+                                setErroDeSenha(null)
+                            }}
                             required
-                            minLength={6}
+                            minLength={PASSWORD_MIN_LENGTH}
+                            aria-invalid={erroDeSenha !== null}
+                            aria-describedby={erroDeSenha ? "erro-senha" : undefined}
                             disabled={isLoading}
                         />
+                        {erroDeSenha && (
+                            <p id="erro-senha" className="text-sm text-destructive">
+                                {t(MENSAGEM_DE_SENHA[erroDeSenha])}
+                            </p>
+                        )}
                     </div>
 
-                    {isMarketplace && (
-                        <div className="bg-gradient-to-r from-[#4a2c5a]/5 to-[#2ec4b6]/5 rounded-lg p-4 border border-[#2ec4b6]/20">
-                            <h3 className="mb-2 font-medium text-foreground">{t("signUp.benefitsTitle")}</h3>
-                            <ul className="space-y-1 text-sm text-muted-foreground">
-                                <li>✓ {t("signUp.benefit1")}</li>
-                                <li>✓ {t("signUp.benefit2")}</li>
-                                <li>✓ {t("signUp.benefit3")}</li>
-                            </ul>
-                        </div>
-                    )}
+                    <div className="bg-gradient-to-r from-[#4a2c5a]/5 to-[#2ec4b6]/5 rounded-lg p-4 border border-[#2ec4b6]/20">
+                        <h3 className="mb-2 font-medium text-foreground">{t("signUp.benefitsTitle")}</h3>
+                        <ul className="space-y-1 text-sm text-muted-foreground">
+                            <li>✓ {t("signUp.benefit1")}</li>
+                            <li>✓ {t("signUp.benefit2")}</li>
+                            <li>✓ {t("signUp.benefit3")}</li>
+                        </ul>
+                    </div>
                 </CardContent>
                 <CardFooter className="flex flex-col space-y-4">
                     <Button
                         type="submit"
-                        className={`w-full ${isMarketplace ? "bg-[#4a2c5a] hover:bg-[#5d3a70]" : ""}`}
+                        className="w-full bg-[#4a2c5a] hover:bg-[#5d3a70]"
                         disabled={isLoading}
                     >
                         {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                        {isMarketplace ? t("signUp.submitMkt") : t("signUp.submitCrm")}
+                        {t("signUp.submitMkt")}
                     </Button>
 
                     <p className="text-sm text-muted-foreground text-center">
@@ -208,14 +218,6 @@ export function SignUpForm() {
                             {t("signUp.enter")}
                         </Link>
                     </p>
-
-                    {!isMarketplace && (
-                        <div className="text-center">
-                            <Link href={signUpMarketplaceHref} className="text-sm text-[#2ec4b6] hover:underline">
-                                {t("signUp.createForPurchases")}
-                            </Link>
-                        </div>
-                    )}
                 </CardFooter>
             </form>
         </Card>
