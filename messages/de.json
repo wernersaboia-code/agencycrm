@@ -578,7 +578,8 @@
         "guidanceReadText": "Die Studie erklärt, was Importeure erwarten und wie die erste Kontaktaufnahme gelingt. Wer das vorher liest, verbrennt kein gutes Unternehmen an einer übereilten Ansprache.",
         "guidanceRequestTitle": "Brauchen Sie einen weiteren Markt?",
         "guidanceRequestText": "Unser Portfolio wächst mit der Nachfrage. Sagen Sie uns, welche Branche und welches Land Sie brauchen.",
-        "guidanceRequestLink": "Studie anfragen"
+        "guidanceRequestLink": "Studie anfragen",
+        "accountLabel": "Käufe des Kontos {email}"
     },
     "about": {
         "meta": {

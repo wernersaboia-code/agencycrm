@@ -578,7 +578,8 @@
         "guidanceReadText": "The study covers what importers expect and how to make first contact. Reading it first keeps you from burning a good company on a rushed approach.",
         "guidanceRequestTitle": "Need another market?",
         "guidanceRequestText": "Our portfolio grows with demand. Tell us which industry and which country you need.",
-        "guidanceRequestLink": "Request a study"
+        "guidanceRequestLink": "Request a study",
+        "accountLabel": "Purchases for the account {email}"
     },
     "about": {
         "meta": {

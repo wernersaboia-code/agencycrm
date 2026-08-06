@@ -20,7 +20,7 @@ import type { UserPurchase } from "@/actions/checkout"
 import { PublicPurchaseCard } from "@/components/marketplace/public-purchase-card"
 import { MyPurchasesEmptyState } from "@/components/marketplace/my-purchases-empty-state"
 import { validatePurchaseAccessToken } from "@/lib/auth/magic-link"
-import { getAuthenticatedUserId } from "@/lib/auth"
+import { getAuthenticatedActiveDbUser } from "@/lib/auth"
 import { formatCurrency } from "@/lib/utils"
 import { getFormatter, getLocale, getTranslations } from "next-intl/server"
 import type { Metadata } from "next"
@@ -73,24 +73,26 @@ async function PurchasesContent({ searchParams }: PageProps) {
         )
     }
 
-    const userId = await getAuthenticatedUserId()
+    const user = await getAuthenticatedActiveDbUser()
 
-    if (!userId) {
+    if (!user) {
         const locale = await getLocale()
         redirect(`/sign-in?redirect=/my-purchases&lang=${locale}`)
     }
 
     const purchases = await getUserPurchases()
 
-    return <PurchasesDashboard purchases={purchases} />
+    return <PurchasesDashboard purchases={purchases} accountEmail={user.email} />
 }
 
 async function PurchasesDashboard({
     purchases,
     tokenNotice,
+    accountEmail,
 }: {
     purchases: UserPurchase[]
     tokenNotice?: string
+    accountEmail?: string
 }) {
     const stats = getPurchaseStats(purchases)
     const t = await getTranslations("purchases")
@@ -116,6 +118,15 @@ async function PurchasesDashboard({
                             </div>
                             <h1 className="text-3xl font-bold text-foreground">{t("title")}</h1>
                             <p className="mt-2 max-w-2xl text-muted-foreground">{t("subtitle")}</p>
+                            {accountEmail && (
+                                // Quem tem mais de uma conta precisa saber em
+                                // qual delas está — as compras ficam na conta
+                                // que pagou, e sem isso a pessoa procura o
+                                // download no lugar errado.
+                                <p className="mt-2 text-sm text-muted-foreground">
+                                    {t("accountLabel", { email: accountEmail })}
+                                </p>
+                            )}
                             {tokenNotice && (
                                 <p className="mt-2 inline-flex items-center gap-2 text-sm text-amber-700 dark:text-amber-400">
                                     <KeyRound className="h-4 w-4" aria-hidden="true" />

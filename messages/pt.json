@@ -578,7 +578,8 @@
         "guidanceReadText": "O estudo traz o que os importadores esperam e como fazer o primeiro contato. Ler antes evita queimar uma boa empresa numa abordagem apressada.",
         "guidanceRequestTitle": "Precisa de outro mercado?",
         "guidanceRequestText": "O portfólio cresce conforme a demanda. Diga qual setor e qual país você precisa.",
-        "guidanceRequestLink": "Pedir um estudo"
+        "guidanceRequestLink": "Pedir um estudo",
+        "accountLabel": "Compras da conta {email}"
     },
     "about": {
         "meta": {

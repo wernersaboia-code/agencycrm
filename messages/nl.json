@@ -578,7 +578,8 @@
         "guidanceReadText": "De studie legt uit wat importeurs verwachten en hoe u het eerste contact aanpakt. Dat vooraf lezen voorkomt dat u een goed bedrijf verspeelt met een overhaaste benadering.",
         "guidanceRequestTitle": "Een andere markt nodig?",
         "guidanceRequestText": "Ons portfolio groeit mee met de vraag. Laat ons weten welke branche en welk land u nodig hebt.",
-        "guidanceRequestLink": "Een studie aanvragen"
+        "guidanceRequestLink": "Een studie aanvragen",
+        "accountLabel": "Aankopen van het account {email}"
     },
     "about": {
         "meta": {

@@ -578,7 +578,8 @@
         "guidanceReadText": "L’étude explique ce qu’attendent les importateurs et comment réussir la prise de contact. La lire d’abord évite de gâcher une bonne entreprise avec une approche précipitée.",
         "guidanceRequestTitle": "Besoin d’un autre marché ?",
         "guidanceRequestText": "Notre portefeuille s’élargit selon la demande. Dites-nous quel secteur et quel pays vous intéressent.",
-        "guidanceRequestLink": "Demander une étude"
+        "guidanceRequestLink": "Demander une étude",
+        "accountLabel": "Achats du compte {email}"
     },
     "about": {
         "meta": {
