@@ -152,7 +152,7 @@ model User {
   avatar   String?
   role     UserRole   @default(USER)
   status   UserStatus @default(ACTIVE)
-  language String     @default("pt-BR")
+  language String     @default("pt")
   timezone String     @default("America/Sao_Paulo")
 
   // Configurações AgencyCRM

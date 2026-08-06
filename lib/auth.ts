@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
 import type { UserRole, UserStatus } from '@prisma/client'
+import { localeFromUserLanguage } from '@/lib/i18n/user-locale'
 
 /**
  * O usuário local nasce no primeiro acesso, e "ler depois criar" tem uma
@@ -132,6 +133,10 @@ export async function getAuthenticatedDbUser(): Promise<AuthenticatedDbUser | nu
             name: supabaseUser.user_metadata?.name ??
                 supabaseUser.user_metadata?.full_name ??
                 supabaseUser.email.split('@')[0],
+            // O idioma escolhido no cadastro viaja no metadata do Supabase e
+            // e copiado aqui, no primeiro acesso confirmado. Criar a linha
+            // antes disso seria criar usuario para e-mail nao confirmado.
+            language: localeFromUserLanguage(supabaseUser.user_metadata?.locale),
         }
 
         try {
