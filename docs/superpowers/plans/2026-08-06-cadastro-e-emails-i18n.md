@@ -238,13 +238,19 @@ Expected: zero problema novo.
 
 - [ ] **Step 9: Commit**
 
+O caminho da migration só existe depois de rodar o Prisma (o timestamp é gerado), então descubra o caminho exato antes:
+
 ```bash
-git add lib/i18n/user-locale.ts lib/i18n/user-locale.test.ts lib/auth.ts prisma/schema.prisma
-git add prisma/migrations/
-git commit -m "feat(i18n): idioma do usuario passa a valer em User.language"
+git status --short
 ```
 
-> Exceção consciente ao "nunca `git add <diretório>`": o diretório da migration é novo e criado por esta task inteira. Confira com `git status --short` antes que nada de fora dele entrou.
+Localize a linha do `migration.sql` novo e use **o caminho exato** no `git add` — sem `git add <diretório>`, que é regra da casa porque o Werner edita em paralelo:
+
+```bash
+git add lib/i18n/user-locale.ts lib/i18n/user-locale.test.ts lib/auth.ts prisma/schema.prisma
+git add prisma/migrations/<timestamp>_normalize_user_language/migration.sql
+git commit -m "feat(i18n): idioma do usuario passa a valer em User.language"
+```
 
 ---
 
@@ -1826,6 +1832,8 @@ A fiação: a rota que recebe o formulário e a que consome o link do e-mail.
 **Files:**
 - Create: `app/api/auth/sign-up/route.ts`
 - Create: `app/(app)/auth/confirm/route.ts`
+
+> **Sem teste próprio, por decisão registrada.** As rotas são fiação: validam o corpo, montam as dependências e delegam. Toda a regra que merece teste está em `lib/auth/sign-up.ts` (Task 7), com as dependências injetadas. Testar a rota exigiria mockar o cliente admin do Supabase e o `next/server` — muito encanamento para pouca garantia, e diferente do que o projeto já faz nas rotas de checkout.
 
 **Interfaces:**
 - Consumes: `registrarUsuario`, `SignUpDeps` (Task 7); `createAdminClient`; `getSystemSmtpConfig`; `sendEmail`; `checkPersistentRateLimit`, `getClientIp`; `getPublicAppUrl`; `isLocale`, `DEFAULT_LOCALE`.
