@@ -166,6 +166,12 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({
             transactionId: transaction.id,
             purchaseId: purchase.id,
+            // Devolvido para o overlay pré-preencher o campo de e-mail. Sem
+            // isso, o Paddle só conhece o que o comprador digitar ali — e o
+            // recibo do vendedor registrado sai para um endereço que pode não
+            // ser o da conta, deixando a compra sem rastro no painel dele.
+            // Não é vazamento: é o e-mail da própria pessoa autenticada.
+            customerEmail: user.email,
         })
     } catch (error) {
         console.error("Error creating Paddle transaction:", error)

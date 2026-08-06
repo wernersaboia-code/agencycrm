@@ -26,13 +26,20 @@ interface PaddleButtonProps {
     currency: string
 }
 
-type CreateTransactionResponse = { transactionId?: string; purchaseId?: string; error?: string }
+type CreateTransactionResponse = {
+    transactionId?: string
+    purchaseId?: string
+    customerEmail?: string
+    error?: string
+}
 
 // O Paddle.js se instala em window.Paddle. Tipagem mínima: só o que usamos.
 type PaddleGlobal = {
     Environment: { set: (env: string) => void }
     Initialize: (options: { token: string; eventCallback?: (event: { name: string; data?: { transaction_id?: string } }) => void }) => void
-    Checkout: { open: (options: { transactionId: string }) => void }
+    Checkout: {
+        open: (options: { transactionId: string; customer?: { email: string } }) => void
+    }
 }
 
 declare global {
@@ -195,7 +202,16 @@ export function PaddleButton({ items, currency }: PaddleButtonProps) {
             }
 
             purchaseIdRef.current = data.purchaseId ?? null
-            window.Paddle?.Checkout.open({ transactionId: data.transactionId })
+
+            // Pré-preenche o e-mail da conta autenticada. O comprador ainda
+            // pode trocar no overlay, mas o padrão passa a ser a conta que
+            // fez a compra — sem isso, o recibo do Paddle sai para o que ele
+            // digitar, e a transação fica sem vínculo com o cliente no painel
+            // dele, o que atrapalha suporte e reembolso.
+            window.Paddle?.Checkout.open({
+                transactionId: data.transactionId,
+                ...(data.customerEmail ? { customer: { email: data.customerEmail } } : {}),
+            })
             // O overlay assume a tela; o loading sai para o botão não ficar
             // travado se o comprador fechar o overlay sem pagar.
             setIsLoading(false)
