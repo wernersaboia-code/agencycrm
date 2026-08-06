@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma"
 import { SMTP_PROVIDERS } from "@/lib/constants/smtp.constants"
 import { getSystemSmtpConfig } from "./system-smtp"
 import { decryptSecret } from "@/lib/secrets"
+import { localeFromUserLanguage } from "@/lib/i18n/user-locale"
 
 interface SendPurchaseConfirmationParams {
     userId: string
@@ -33,6 +34,7 @@ export async function sendPurchaseConfirmationEmail({
                     select: {
                         email: true,
                         name: true,
+                        language: true,
                     },
                 },
                 items: {
@@ -115,19 +117,24 @@ export async function sendPurchaseConfirmationEmail({
         console.log("  From:", `${smtpConfig.senderName} <${smtpConfig.senderEmail}>`)
 
         // Gerar HTML do email
-        const { subject, html } = generatePurchaseConfirmationEmail({
+        // O idioma sai da conta do comprador, nao da requisicao: o webhook do
+        // provedor chega sem sessao e sem cabecalho de idioma.
+        const { subject, html } = await generatePurchaseConfirmationEmail({
             userName: purchase.user.name || purchase.user.email.split("@")[0],
             purchaseId: purchase.id,
             purchaseDate: purchase.createdAt,
             total: Number(purchase.total),
             currency: purchase.currency,
+            // Sem leadsCount: as listas ativas têm totalLeads = 0 desde que o
+            // produto virou o estudo em PDF, e o e-mail anunciava "0 leads" ao
+            // comprador que acabou de pagar. Saiu do funil em 48e8b4c; o
+            // e-mail tinha ficado de fora daquela limpeza.
             items: purchase.items.map((item) => ({
                 name: item.list.name,
-                leadsCount: item.leadsCount,
                 price: Number(item.price),
             })),
             accessUrl,
-        })
+        }, localeFromUserLanguage(purchase.user.language))
 
         console.log("📧 Enviando email...")
         console.log("  To:", purchase.user.email)
