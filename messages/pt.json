@@ -1338,7 +1338,16 @@
                 "createWithLeads": "Criar lista com {count} leads",
                 "createList": "Criar lista",
                 "cancel": "Cancelar",
-                "newList": "Nova lista"
+                "newList": "Nova lista",
+                "personalContactsTitle": "Contato pessoal encontrado no estudo",
+                "personalContactsDesc": "{count, plural, one {# ocorrência} other {# ocorrências}} de contato pessoal neste PDF. Publicar e-mail nominal ou telefone direto expõe o comprador e faz o site ser enquadrado como marketing direto. Confira antes de seguir.",
+                "personalContactsKind": {
+                    "email_pessoal": "E-mail pessoal",
+                    "telefone_direto": "Telefone direto",
+                    "pessoa_nomeada": "Pessoa nomeada"
+                },
+                "personalContactsCancel": "Cancelar envio",
+                "personalContactsProceed": "Publicar mesmo assim"
             },
             "importWizard": {
                 "prepareTitle": "Preparar Leads para \"{name}\"",

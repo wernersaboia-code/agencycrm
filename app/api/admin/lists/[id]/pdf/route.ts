@@ -8,13 +8,14 @@ import {
     removeListPdfByPath,
     validatePdfFile,
 } from "@/lib/supabase/list-studies"
+import { encontrarContatosPessoaisNoPdf } from "@/lib/marketplace/pdf-contatos"
 
 export async function POST(
     request: NextRequest,
     { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        await requireAdmin()
+        const admin = await requireAdmin()
         const { id } = await params
 
         const list = await prisma.leadList.findUnique({ where: { id }, select: { id: true, studyPdfUrl: true } })
@@ -33,7 +34,38 @@ export async function POST(
             return NextResponse.json({ error: check.error }, { status: 400 })
         }
 
+        // Contato pessoal dentro do estudo é o que fez o Paddle enquadrar o
+        // site como marketing direto, e é o que expõe o comprador ao §7 da UWG
+        // alemã. O bloqueio não é definitivo — o detector erra para menos e
+        // para mais —, mas obrigar uma confirmação explícita impede que um PDF
+        // volte a subir com e-mail nominal só porque ninguém reparou.
+        const bytes = new Uint8Array(await file.arrayBuffer())
+        const achados = await encontrarContatosPessoaisNoPdf(bytes)
+        const confirmado = formData.get("confirmarContatosPessoais") === "true"
+
+        if (achados.length > 0 && !confirmado) {
+            return NextResponse.json(
+                { error: "contatos_pessoais", achados: achados.slice(0, 40) },
+                { status: 422 }
+            )
+        }
+
         const { url } = await uploadListPdf(file, id)
+
+        if (achados.length > 0) {
+            await recordAudit({
+                actorId: admin.id,
+                actorEmail: admin.email,
+                action: "list.pdf.personal_contacts_confirmed",
+                targetType: "list",
+                targetId: id,
+                metadata: {
+                    file: file.name,
+                    total: achados.length,
+                    achados: achados.slice(0, 40),
+                },
+            })
+        }
 
         await prisma.leadList.update({
             where: { id },

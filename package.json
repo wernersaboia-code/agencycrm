@@ -75,6 +75,7 @@
     "sonner": "^2.0.7",
     "stripe": "^22.3.2",
     "tailwind-merge": "^3.5.0",
+    "unpdf": "^1.8.1",
     "write-excel-file": "^4.0.5",
     "zod": "^4.4.3"
   },

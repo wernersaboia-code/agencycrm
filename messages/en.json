@@ -1338,7 +1338,16 @@
                 "createWithLeads": "Create list with {count} leads",
                 "createList": "Create list",
                 "cancel": "Cancel",
-                "newList": "New list"
+                "newList": "New list",
+                "personalContactsTitle": "Personal contact found in the study",
+                "personalContactsDesc": "{count, plural, one {# occurrence} other {# occurrences}} of personal contact data in this PDF. Publishing a named person's e-mail address or direct line exposes the buyer and gets the site classified as direct marketing. Check before proceeding.",
+                "personalContactsKind": {
+                    "email_pessoal": "Personal e-mail",
+                    "telefone_direto": "Direct line",
+                    "pessoa_nomeada": "Named person"
+                },
+                "personalContactsCancel": "Cancel upload",
+                "personalContactsProceed": "Publish anyway"
             },
             "importWizard": {
                 "prepareTitle": "Prepare Leads for \"{name}\"",

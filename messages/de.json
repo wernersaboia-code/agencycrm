@@ -1338,7 +1338,16 @@
                 "createWithLeads": "Liste mit {count} Leads erstellen",
                 "createList": "Liste erstellen",
                 "cancel": "Abbrechen",
-                "newList": "Neue Liste"
+                "newList": "Neue Liste",
+                "personalContactsTitle": "Persönliche Kontaktdaten in der Studie gefunden",
+                "personalContactsDesc": "{count, plural, one {# Fund} other {# Funde}} persönlicher Kontaktdaten in dieser PDF. Namentliche E-Mail-Adressen oder Durchwahlen zu veröffentlichen setzt den Käufer einem Risiko aus und lässt die Website als Direktmarketing einstufen. Bitte vor dem Fortfahren prüfen.",
+                "personalContactsKind": {
+                    "email_pessoal": "Persönliche E-Mail",
+                    "telefone_direto": "Durchwahl",
+                    "pessoa_nomeada": "Namentlich genannte Person"
+                },
+                "personalContactsCancel": "Upload abbrechen",
+                "personalContactsProceed": "Trotzdem veröffentlichen"
             },
             "importWizard": {
                 "prepareTitle": "Leads für \"{name}\" vorbereiten",

@@ -42,6 +42,18 @@ import {
     CardTitle,
 } from "@/components/ui/card"
 
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
+
+import type { Achado as AchadoContato } from "@/lib/marketplace/contatos-pessoais"
 import { createList, updateList, uploadLeadsToList, markListReviewed } from "@/actions/admin/lists"
 import { MarketplaceImportWizard } from "@/components/admin/marketplace-import-wizard"
 import type { MarketplaceLeadData } from "@/lib/constants/marketplace-csv.constants"
@@ -136,6 +148,10 @@ export function ListForm({ list }: ListFormProps) {
     const [dataReviewedAt, setDataReviewedAt] = useState<string | null>(list?.dataReviewedAt ?? null)
     const [isMarkingReviewed, setIsMarkingReviewed] = useState(false)
 
+    const [contatosPendentes, setContatosPendentes] = useState<{
+        achados: AchadoContato[]
+        resolver: (seguir: boolean) => void
+    } | null>(null)
     const [pdfFile, setPdfFile] = useState<File | null>(null)
     const [pdfName, setPdfName] = useState<string | null>(list?.studyPdfName ?? null)
 
@@ -206,12 +222,30 @@ export function ListForm({ list }: ListFormProps) {
         setIsLoading(true)
         setUploadProgress(0)
 
-        const uploadPdf = async (listId: string): Promise<boolean> => {
+        const uploadPdf = async (listId: string, confirmado = false): Promise<boolean> => {
             if (!pdfFile) return true
             try {
                 const body = new FormData()
                 body.append("file", pdfFile)
+                if (confirmado) {
+                    body.append("confirmarContatosPessoais", "true")
+                }
                 const res = await fetch(`/api/admin/lists/${listId}/pdf`, { method: "POST", body })
+
+                // 422 = o estudo traz contato pessoal. Não é erro de upload: é
+                // decisão editorial, e por isso ela é pedida em vez de suposta.
+                if (res.status === 422) {
+                    const { achados } = (await res.json()) as { achados: AchadoContato[] }
+                    const seguir = await new Promise<boolean>((resolve) => {
+                        setContatosPendentes({ achados, resolver: resolve })
+                    })
+                    setContatosPendentes(null)
+                    if (!seguir) {
+                        return false
+                    }
+                    return uploadPdf(listId, true)
+                }
+
                 return res.ok
             } catch (error) {
                 console.error("Erro ao enviar PDF:", error)
@@ -945,6 +979,43 @@ export function ListForm({ list }: ListFormProps) {
                 onSuccess={handleImportSuccess}
                 onLeadsPrepared={handleLeadsPrepared}
             />
+
+            {/*
+                O detector erra nos dois sentidos, então ele não decide sozinho:
+                mostra o que achou, com a linha de origem, e devolve a escolha
+                para quem publica. Seguir mesmo assim fica no log de auditoria.
+            */}
+            <AlertDialog open={contatosPendentes !== null}>
+                <AlertDialogContent className="max-w-2xl">
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>{t("personalContactsTitle")}</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            {t("personalContactsDesc", { count: contatosPendentes?.achados.length ?? 0 })}
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+
+                    <ul className="max-h-72 space-y-2 overflow-y-auto rounded-md border p-3 text-sm">
+                        {contatosPendentes?.achados.map((achado, index) => (
+                            <li key={`${achado.tipo}-${achado.valor}-${index}`} className="space-y-1">
+                                <div className="flex items-center gap-2">
+                                    <Badge variant="outline">{t(`personalContactsKind.${achado.tipo}`)}</Badge>
+                                    <span className="font-medium break-all">{achado.valor}</span>
+                                </div>
+                                <p className="text-xs text-muted-foreground break-all">{achado.contexto}</p>
+                            </li>
+                        ))}
+                    </ul>
+
+                    <AlertDialogFooter>
+                        <AlertDialogCancel onClick={() => contatosPendentes?.resolver(false)}>
+                            {t("personalContactsCancel")}
+                        </AlertDialogCancel>
+                        <AlertDialogAction onClick={() => contatosPendentes?.resolver(true)}>
+                            {t("personalContactsProceed")}
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </>
     )
 }
