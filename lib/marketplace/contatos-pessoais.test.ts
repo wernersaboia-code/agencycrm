@@ -20,6 +20,10 @@ describe("emailEhPessoal", () => {
         "cristobal.valenzuela@jaguartfc.nl",
         "ave.roomets@hellin.eu",
         "helge_tamm@trofi.de",
+        // inicial.sobrenome: no catálogo inteiro, os quatro nesta forma são pessoas
+        "t.vana@fany.cz",
+        "m.suer@arasco.de",
+        "u.susol@bdgroup.eu",
     ]
     for (const email of pessoais) {
         it(`acusa ${email}`, () => {
@@ -37,6 +41,11 @@ describe("emailEhPessoal", () => {
         "calvet.distribution@orange.fr",
         "firstname.lastname@company.com",
         "order.ee@hellin.eu",
+        // siglas curtas: 7 das 8 no catálogo são função ou iniciais da firma
+        "sac@rioquality.com.br",
+        "ba@borgandaquilina.com.mt",
+        "mwp@musgrave.ie",
+        "ltt@ltt.ee",
     ]
     for (const email of funcionais) {
         it(`não acusa ${email}`, () => {
@@ -95,6 +104,40 @@ describe("encontrarContatosPessoais", () => {
             "Decision contacts Central purchasing mailbox for supplier offers: famobrapurchasers@famobra.com"
         )
         expect(achados).toEqual([])
+    })
+
+    /**
+     * Estas linhas passaram batido na primeira versão e só apareceram quando o
+     * PDF editado foi reconferido: julgado isolado, `u.susol@` é inicial mais
+     * sobrenome e `kd@` é sigla — nenhum dos dois distinguível de caixa de
+     * setor. Na linha, o nome está ao lado e não há dúvida.
+     */
+    it.each([
+        ["Decision contacts Urszula Susoł, Director of Purchasing Department — u.susol@bdgroup.eu, +48 608 309 549", "u.susol@bdgroup.eu"],
+        ["Decision contacts Kasper G. Drachmann, Purchasing Director — kd@geiafood.se, +45 96 34 15 85", "kd@geiafood.se"],
+        ["Decision contacts Peter Bräuner, CEO — pb@brauner-fmcg.com", "pb@brauner-fmcg.com"],
+        ["Kristian W. Iversen, COO — kwi@brauner-fmcg.com", "kwi@brauner-fmcg.com"],
+        ["Decision contacts Zbigniew Wodziński, Import/Export — z.wodzinski@compassfmcg.com, +48 512 829 842", "z.wodzinski@compassfmcg.com"],
+    ])("acusa e-mail na linha que nomeia a pessoa: %s", (linha, endereco) => {
+        const achados = encontrarContatosPessoais(linha)
+        expect(achados.some((a) => a.tipo === "email_pessoal" && a.valor === endereco)).toBe(true)
+    })
+
+    it("acusa o telefone da pessoa mesmo sem a etiqueta 'direct line'", () => {
+        const achados = encontrarContatosPessoais(
+            "Decision contacts Zbigniew Wodziński, Import/Export — z.wodzinski@compassfmcg.com, +48 512 829 842"
+        )
+        expect(achados.some((a) => a.tipo === "telefone_direto")).toBe(true)
+    })
+
+    it("não confunde caixa da empresa com pessoa por causa do sobrenome no domínio", () => {
+        expect(encontrarContatosPessoais("Contact dangaard@dangaard.com")).toEqual([])
+    })
+
+    it("não acusa telefone geral numa linha sem pessoa", () => {
+        expect(
+            encontrarContatosPessoais("Contact info@calgros.de Tel. +49 461 999 89 00")
+        ).toEqual([])
     })
 
     it("não acusa página de análise sem diretório", () => {

@@ -65,13 +65,43 @@ const ROTULO_DIRETO = /direct line|direct dial|direct phone|durchwahl|linha dire
 const CARGO = String.raw`Managing Director|Gesch(?:ä|ae)ftsf(?:ü|ue)hrer|CEO|Owner|Inhaber|Purchasing Director|Director of Purchasing|Head of Purchasing|Einkaufsleiter|Purchasing|Contact person|Ansprechpartner`
 
 /**
+ * Propriedade Unicode em vez de faixa A-Z: o catálogo tem nomes poloneses,
+ * tchecos, húngaros e turcos. Com `[A-ZÀ-Þ][a-zß-ÿ]+`, "Urszula Susoł" casava
+ * só até "Suso" e a linha inteira escapava da detecção — foi assim que
+ * `u.susol@bdgroup.eu` sobreviveu à primeira edição dos PDFs.
+ * `\p{Ll}` no segundo bloco evita casar cabeçalho em caixa alta.
+ */
+const NOME = String.raw`\p{Lu}\p{Ll}+(?:\s+\p{Lu}\.)?\s+\p{Lu}[\p{L}'’-]+`
+
+/**
  * Cargo seguido de nome próprio. Exige duas palavras capitalizadas para não
  * confundir "Managing Director" solto com pessoa nomeada.
  */
-const PESSOA_NOMEADA = new RegExp(
-    String.raw`(?:${CARGO})\s*:?\s+([A-ZÀ-Þ][a-zß-ÿ]+(?:\s+[A-ZÀ-Þ]\.)?\s+[A-ZÀ-Þ][A-Za-zß-ÿ'’-]+)`,
-    "g"
-)
+const PESSOA_NOMEADA = new RegExp(String.raw`(?:${CARGO})\s*:?\s+(${NOME})`, "gu")
+
+/**
+ * A forma INVERTIDA: "Urszula Susoł, Director of Purchasing — u.susol@…".
+ *
+ * É por causa dela que a atribuição por linha existe. Julgar o endereço
+ * isolado deixava passar `u.susol@`, `kd@geiafood.se` e `pb@brauner-fmcg.com`
+ * — inicial mais sobrenome e iniciais puras, indistinguíveis de caixa de setor
+ * fora de contexto. Na linha, não há dúvida: o nome está ao lado.
+ */
+const CARGO_LIVRE = String.raw`Director|Manager|CEO|COO|CFO|CTO|Head\s+of|Purchasing|Sourcing|Import|Export|Gesch(?:ä|ae)ftsf(?:ü|ue)hrer|Owner|Inhaber|Prokurist|Einkauf`
+const PESSOA_ATRIBUIDA = new RegExp(String.raw`(${NOME})\s*,\s*[^,—–\n]{0,40}(?:${CARGO_LIVRE})`, "gu")
+
+/**
+ * Cópias sem o flag `g` só para o teste booleano. Chamar `.test()` na instância
+ * global avança o `lastIndex` dela, e o `matchAll` seguinte então começa depois
+ * do match e não acha nada — a pessoa nomeada sumia do resultado.
+ */
+const NOMEADA_TESTE = new RegExp(PESSOA_NOMEADA.source, "u")
+const ATRIBUIDA_TESTE = new RegExp(PESSOA_ATRIBUIDA.source, "u")
+
+/** A linha nomeia alguém — logo, o que estiver nela é o canal daquela pessoa. */
+function linhaNomeiaPessoa(linha: string): boolean {
+    return NOMEADA_TESTE.test(linha) || ATRIBUIDA_TESTE.test(linha)
+}
 
 function dominioBase(email: string): string {
     const dominio = email.split("@")[1]?.toLowerCase() ?? ""
@@ -84,9 +114,12 @@ function dominioBase(email: string): string {
  * dois blocos alfabéticos separados por ponto ou sublinhado, nenhum deles
  * palavra de função e nenhum deles o próprio nome do domínio.
  *
- * Deliberadamente NÃO tenta adivinhar por iniciais (pb@, kd@): sem contexto
- * elas são indistinguíveis de caixa de setor, e chutar aqui gera o ruído que
- * faz o aviso ser ignorado.
+ * Deliberadamente NÃO tenta adivinhar por sigla curta (pb@, kd@, ba@): a
+ * varredura do catálogo achou oito, e sete eram função ou iniciais da empresa
+ * — sac@ é atendimento ao consumidor, ba@borgandaquilina são as iniciais dos
+ * sócios no nome da firma. Quando a sigla É de uma pessoa, quem pega é a
+ * atribuição por linha, que tem o nome ao lado. Chutar aqui geraria o ruído
+ * que faz o aviso ser ignorado.
  */
 export function emailEhPessoal(email: string): boolean {
     const local = email.split("@")[0]?.toLowerCase() ?? ""
@@ -98,12 +131,21 @@ export function emailEhPessoal(email: string): boolean {
     if (blocos.length < 2) {
         return false
     }
+
+    const base = dominioBase(email)
+    const funcional = (bloco: string) => CAIXAS_FUNCIONAIS.has(bloco) || bloco === base
+
+    // inicial.sobrenome — t.vana@, m.suer@, u.susol@. No catálogo, os quatro
+    // endereços nesta forma são pessoas, uma delas nomeada na linha de cima.
+    if (blocos.length === 2 && /^[a-zà-ÿ]$/.test(blocos[0]) && /^[a-zà-ÿ]{3,}$/.test(blocos[1])) {
+        return !funcional(blocos[1])
+    }
+
     if (!blocos.every((bloco) => /^[a-zà-ÿ]{2,}$/.test(bloco))) {
         return false
     }
 
-    const base = dominioBase(email)
-    return !blocos.some((bloco) => CAIXAS_FUNCIONAIS.has(bloco) || bloco === base)
+    return !blocos.some(funcional)
 }
 
 /** Só é telefone direto se houver telefone: o rótulo sozinho aparece em prosa. */
@@ -121,8 +163,10 @@ export function encontrarContatosPessoais(texto: string): Achado[] {
             continue
         }
 
+        const nomeada = linhaNomeiaPessoa(linha)
+
         for (const email of linha.match(EMAIL) ?? []) {
-            if (emailEhPessoal(email)) {
+            if (nomeada || emailEhPessoal(email)) {
                 const chave = `email:${email.toLowerCase()}`
                 if (!vistos.has(chave)) {
                     vistos.add(chave)
@@ -131,7 +175,9 @@ export function encontrarContatosPessoais(texto: string): Achado[] {
             }
         }
 
-        if (temTelefoneDireto(linha)) {
+        // Telefone numa linha que nomeia alguém é o número daquela pessoa,
+        // mesmo sem a etiqueta "direct line".
+        if (temTelefoneDireto(linha) || (nomeada && TELEFONE.test(linha))) {
             const chave = `tel:${linha}`
             if (!vistos.has(chave)) {
                 vistos.add(chave)
