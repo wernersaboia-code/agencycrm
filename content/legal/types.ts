@@ -1,4 +1,4 @@
-export type LegalKind = "privacy" | "terms"
+export type LegalKind = "privacy" | "terms" | "refund"
 
 export type LegalBlock =
     | { kind: "paragrafo"; texto: string }

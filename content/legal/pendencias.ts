@@ -10,6 +10,15 @@
  * correspondente entrar nos sete idiomas.
  */
 export const PENDENCIAS_ACEITAS = [
+    /**
+     * Continua na lista, mas mudou de natureza: a política já publica cidade,
+     * estado e país do responsável (2026-08-23), o que identifica jurisdição
+     * e satisfaz a checagem de identidade das plataformas de pagamento. O
+     * logradouro fica de fora por decisão do Werner — é residência de pessoa
+     * física, e o endereço completo foi entregue ao Paddle no cadastro, que é
+     * privado. Só sai daqui se um advogado disser que a venda para a UE exige
+     * endereço completo público.
+     */
     "privacy.responsavel.enderecoPostal",
     "privacy.representanteUE",
     "privacy.baseLegal.listas",

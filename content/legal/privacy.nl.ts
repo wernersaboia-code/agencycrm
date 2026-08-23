@@ -8,7 +8,7 @@ const privacyNl: LegalDocument = {
             id: "responsavel",
             heading: "1. Wie is verantwoordelijk",
             blocks: [
-                { kind: "paragrafo", texto: "Easy Prospect wordt geëxploiteerd door Werner Wild Saboia Carvalho Marinho, natuurlijke persoon, die beslist over de verwerking van de in deze verklaring beschreven gegevens." },
+                { kind: "paragrafo", texto: "Easy Prospect wordt geëxploiteerd door Werner Wild Saboia Carvalho Marinho, natuurlijke persoon gevestigd te Fortaleza, Ceará, Brazilië, die beslist over de verwerking van de in deze verklaring beschreven gegevens." },
                 { kind: "paragrafo", texto: "Voor elke kwestie over persoonsgegevens, waaronder het uitoefenen van de hieronder beschreven rechten, schrijft u naar contato@easyprospect.com.br." },
             ],
         },

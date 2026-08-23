@@ -43,7 +43,7 @@ const termsDe: LegalDocument = {
             id: "pagamentos",
             heading: "5. Zahlungen und Erstattungen",
             blocks: [
-                { kind: "paragrafo", texto: "Käufe im Katalog werden über Stripe abgewickelt. Erstattungen werden im Einzelfall geprüft und können innerhalb von 7 Tagen nach dem Kauf beantragt werden, sofern die Datei nicht heruntergeladen wurde." },
+                { kind: "paragrafo", texto: "Käufe im Katalog werden über einen zertifizierten Zahlungsdienstleister abgewickelt. Erstattungen erfolgen innerhalb von 14 Tagen nach dem Kauf vollständig und bedingungslos, gemäß der Erstattungsrichtlinie." },
             ],
         },
         {

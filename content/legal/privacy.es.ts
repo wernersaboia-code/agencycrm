@@ -8,7 +8,7 @@ const privacyEs: LegalDocument = {
             id: "responsavel",
             heading: "1. Quién es el responsable",
             blocks: [
-                { kind: "paragrafo", texto: "Easy Prospect es operado por Werner Wild Saboia Carvalho Marinho, persona física, responsable de las decisiones sobre el tratamiento de los datos descritos en esta política." },
+                { kind: "paragrafo", texto: "Easy Prospect es operado por Werner Wild Saboia Carvalho Marinho, persona física, con domicilio en Fortaleza, Ceará, Brasil, responsable de las decisiones sobre el tratamiento de los datos descritos en esta política." },
                 { kind: "paragrafo", texto: "Para cualquier asunto relativo a datos personales, incluido el ejercicio de los derechos descritos más abajo, escriba a contato@easyprospect.com.br." },
             ],
         },

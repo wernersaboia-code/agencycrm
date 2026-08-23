@@ -43,7 +43,7 @@ const termsNl: LegalDocument = {
             id: "pagamentos",
             heading: "5. Betalingen en terugbetalingen",
             blocks: [
-                { kind: "paragrafo", texto: "Aankopen in de catalogus worden verwerkt via Stripe. Terugbetalingen worden per geval beoordeeld en kunnen worden aangevraagd binnen 7 dagen na de aankoop, op voorwaarde dat het bestand niet is gedownload." },
+                { kind: "paragrafo", texto: "Aankopen in de catalogus worden verwerkt via een gecertificeerde betaaldienstverlener. Terugbetaling is volledig en onvoorwaardelijk binnen 14 dagen na de aankoop, conform het Restitutiebeleid." },
             ],
         },
         {

@@ -107,6 +107,7 @@ export async function proxy(request: NextRequest) {
         "/blog",
         "/privacy",
         "/terms",
+        "/refund",
         "/free-sample",
     ]
 

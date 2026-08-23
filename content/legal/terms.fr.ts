@@ -43,7 +43,7 @@ const termsFr: LegalDocument = {
             id: "pagamentos",
             heading: "5. Paiements et remboursements",
             blocks: [
-                { kind: "paragrafo", texto: "Les achats du catalogue sont traités par Stripe. Les remboursements sont examinés au cas par cas et peuvent être demandés dans un délai de 7 jours après l'achat, à condition que le fichier n'ait pas été téléchargé." },
+                { kind: "paragrafo", texto: "Les achats du catalogue sont traités par un prestataire de paiement certifié. Le remboursement est intégral et inconditionnel dans un délai de 14 jours après l'achat, conformément à la Politique de remboursement." },
             ],
         },
         {

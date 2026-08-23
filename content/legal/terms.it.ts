@@ -43,7 +43,7 @@ const termsIt: LegalDocument = {
             id: "pagamentos",
             heading: "5. Pagamenti e rimborsi",
             blocks: [
-                { kind: "paragrafo", texto: "Gli acquisti nel catalogo sono elaborati tramite Stripe. I rimborsi sono valutati caso per caso e possono essere richiesti entro 7 giorni dall'acquisto, a condizione che il file non sia stato scaricato." },
+                { kind: "paragrafo", texto: "Gli acquisti nel catalogo sono elaborati tramite un fornitore di pagamento certificato. Il rimborso è integrale e incondizionato entro 14 giorni dall'acquisto, secondo la Politica di rimborso." },
             ],
         },
         {

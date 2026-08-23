@@ -43,7 +43,7 @@ const termsEn: LegalDocument = {
             id: "pagamentos",
             heading: "5. Payments and refunds",
             blocks: [
-                { kind: "paragrafo", texto: "Purchases in the catalogue are processed through Stripe. Refunds are assessed case by case and may be requested within 7 days of the purchase, provided the file has not been downloaded." },
+                { kind: "paragrafo", texto: "Purchases in the catalogue are processed through a certified payment provider. Refunds are full and unconditional within 14 days of the purchase, under the terms of the Refund Policy." },
             ],
         },
         {

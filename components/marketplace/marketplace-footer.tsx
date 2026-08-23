@@ -51,6 +51,7 @@ export async function MarketplaceFooter({ locale = "pt" }: { locale?: Locale }) 
                         <ul className="space-y-2 text-sm text-muted-foreground">
                             <li><LocaleLink href="/terms" className="hover:text-foreground">{t("terms")}</LocaleLink></li>
                             <li><LocaleLink href="/privacy" className="hover:text-foreground">{t("privacy")}</LocaleLink></li>
+                            <li><LocaleLink href="/refund" className="hover:text-foreground">{t("refund")}</LocaleLink></li>
                             <li><LocaleLink href="/faq" className="hover:text-foreground">{t("contact")}</LocaleLink></li>
                         </ul>
                     </div>

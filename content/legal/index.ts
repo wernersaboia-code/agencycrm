@@ -10,6 +10,14 @@ import privacyFr from "./privacy.fr"
 import privacyIt from "./privacy.it"
 import privacyNl from "./privacy.nl"
 
+import refundPt from "./refund.pt"
+import refundDe from "./refund.de"
+import refundEn from "./refund.en"
+import refundEs from "./refund.es"
+import refundFr from "./refund.fr"
+import refundIt from "./refund.it"
+import refundNl from "./refund.nl"
+
 import termsPt from "./terms.pt"
 import termsDe from "./terms.de"
 import termsEn from "./terms.en"
@@ -26,6 +34,10 @@ const DOCUMENTOS: Record<LegalKind, Partial<Record<Locale, LegalDocument>>> = {
     terms: {
         pt: termsPt, de: termsDe, en: termsEn, es: termsEs,
         fr: termsFr, it: termsIt, nl: termsNl,
+    },
+    refund: {
+        pt: refundPt, de: refundDe, en: refundEn, es: refundEs,
+        fr: refundFr, it: refundIt, nl: refundNl,
     },
 }
 

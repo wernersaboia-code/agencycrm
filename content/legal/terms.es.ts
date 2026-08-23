@@ -43,7 +43,7 @@ const termsEs: LegalDocument = {
             id: "pagamentos",
             heading: "5. Pagos y reembolsos",
             blocks: [
-                { kind: "paragrafo", texto: "Las compras del catálogo se procesan a través de Stripe. Los reembolsos se evalúan caso por caso y pueden solicitarse en un plazo de 7 días desde la compra, siempre que el archivo no se haya descargado." },
+                { kind: "paragrafo", texto: "Las compras del catálogo se procesan a través de un proveedor de pago certificado. El reembolso es íntegro e incondicional en un plazo de 14 días desde la compra, conforme a la Política de Reembolso." },
             ],
         },
         {
