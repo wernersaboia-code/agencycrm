@@ -23,7 +23,7 @@ const privacyEs: LegalDocument = {
                     "Datos de pago: identificadores de la transacción en el proveedor de pago. No recibimos ni almacenamos números de tarjeta.",
                     "Datos de uso del sitio: páginas visitadas y eventos de navegación, solo cuando usted acepta las cookies de medición.",
                     "Datos introducidos por usted en el CRM: contactos, empresas y registros de actividad que importa o crea.",
-                    "Datos de contacto profesional de terceros: las empresas y personas de contacto que componen las listas del catálogo. Véase la sección específica más abajo.",
+                    "Datos de contacto profesional de terceros: las empresas y personas de contacto que componen los estudios del catálogo. Véase la sección específica más abajo.",
                 ] },
             ],
         },

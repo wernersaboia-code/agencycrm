@@ -23,7 +23,7 @@ const privacyFr: LegalDocument = {
                     "Données de paiement : identifiants de la transaction chez le prestataire de paiement. Nous ne recevons ni ne conservons de numéros de carte.",
                     "Données d'utilisation du site : pages consultées et événements de navigation, uniquement lorsque vous acceptez les cookies de mesure.",
                     "Données que vous saisissez dans le CRM : contacts, entreprises et enregistrements d'activité que vous importez ou créez.",
-                    "Données de contact professionnel de tiers : les entreprises et les personnes de contact qui composent les listes du catalogue. Voir la section dédiée ci-dessous.",
+                    "Données de contact professionnel de tiers : les entreprises et les personnes de contact qui composent les études du catalogue. Voir la section dédiée ci-dessous.",
                 ] },
             ],
         },

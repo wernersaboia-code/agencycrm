@@ -23,7 +23,7 @@ const privacyDe: LegalDocument = {
                     "Zahlungsdaten: Transaktionskennungen beim Zahlungsdienstleister. Wir erhalten und speichern keine Kartennummern.",
                     "Nutzungsdaten der Website: aufgerufene Seiten und Navigationsereignisse, nur wenn Sie die Messcookies akzeptieren.",
                     "Von Ihnen im CRM eingegebene Daten: Kontakte, Unternehmen und Aktivitätseinträge, die Sie importieren oder anlegen.",
-                    "Berufliche Kontaktdaten Dritter: die Unternehmen und Ansprechpersonen, aus denen die Listen des Katalogs bestehen. Siehe den eigenen Abschnitt weiter unten.",
+                    "Berufliche Kontaktdaten Dritter: die Unternehmen und Ansprechpersonen, aus denen die Studien des Katalogs bestehen. Siehe den eigenen Abschnitt weiter unten.",
                 ] },
             ],
         },

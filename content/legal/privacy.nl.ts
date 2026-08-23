@@ -23,7 +23,7 @@ const privacyNl: LegalDocument = {
                     "Betaalgegevens: transactiekenmerken bij de betaaldienstverlener. Wij ontvangen en bewaren geen kaartnummers.",
                     "Gebruiksgegevens van de site: bezochte pagina's en navigatiegebeurtenissen, alleen wanneer u de meetcookies accepteert.",
                     "Gegevens die u in het CRM invoert: contacten, bedrijven en activiteitenregistraties die u importeert of aanmaakt.",
-                    "Zakelijke contactgegevens van derden: de bedrijven en contactpersonen waaruit de lijsten in de catalogus bestaan. Zie de aparte sectie hieronder.",
+                    "Zakelijke contactgegevens van derden: de bedrijven en contactpersonen waaruit de studies in de catalogus bestaan. Zie de aparte sectie hieronder.",
                 ] },
             ],
         },

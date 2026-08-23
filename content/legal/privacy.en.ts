@@ -23,7 +23,7 @@ const privacyEn: LegalDocument = {
                     "Payment data: transaction identifiers at the payment provider. We neither receive nor store card numbers.",
                     "Site usage data: pages visited and navigation events, only when you accept the measurement cookies.",
                     "Data you enter in the CRM: contacts, companies and activity records that you import or create.",
-                    "Third-party professional contact data: the companies and contact people that make up the catalogue lists. See the dedicated section below.",
+                    "Third-party professional contact data: the companies and contact people that make up the catalogue studies. See the dedicated section below.",
                 ] },
             ],
         },

@@ -23,7 +23,7 @@ const privacyPt: LegalDocument = {
                     "Dados de pagamento: identificadores da transação no provedor de pagamento. Não recebemos nem armazenamos números de cartão.",
                     "Dados de uso do site: páginas acessadas e eventos de navegação, apenas quando você aceita os cookies de medição.",
                     "Dados inseridos por você no CRM: contatos, empresas e registros de atividade que você importa ou cadastra.",
-                    "Dados de contato profissional de terceiros: as empresas e pessoas de contato que compõem as listas do catálogo. Ver a seção específica abaixo.",
+                    "Dados de contato profissional de terceiros: as empresas e pessoas de contato que compõem os estudos do catálogo. Ver a seção específica abaixo.",
                 ] },
             ],
         },
