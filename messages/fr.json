@@ -117,17 +117,17 @@
         "hero": {
             "badge": "Études d'entrée sur le marché pour exportateurs",
             "title": "Comprenez le marché avant d'y exporter.",
-            "subtitle": "Chaque étude réunit l'analyse du marché, les conditions d'accès et un répertoire commenté d'importateurs et de distributeurs du secteur.",
+            "subtitle": "Chaque étude réunit l'analyse du marché, les conditions d'accès et les profils des entreprises du secteur.",
             "ctaPrimary": "Explorer le catalogue",
             "ctaSecondary": "Comment ça marche",
-            "trust1": "Analyse et répertoire dans un seul PDF",
+            "trust1": "Analyse et profils dans un seul PDF",
             "trust2": "Sources publiques vérifiées",
             "trust3": "Mise à jour régulière"
         },
         "intro": {
             "lede": "Nos études d'entrée sur le marché s'adressent aux fabricants, producteurs et propriétaires de marques qui veulent comprendre un marché étranger avant d'y investir.",
             "p1": "Choisissez par pays, secteur ou région linguistique et recevez une étude couvrant le panorama du marché, la structure des canaux, les exigences réglementaires et les catégories aux meilleures perspectives.",
-            "p2": "Chaque étude se termine par un répertoire commenté d'importateurs et de distributeurs du secteur : le profil commercial de chaque entreprise, les canaux qu'elle dessert et le type de fournisseur qu'elle recherche."
+            "p2": "Chaque étude se termine par les profils des entreprises du secteur : le positionnement commercial de chacune, les canaux qu'elle dessert et le type de fournisseur qu'elle recherche."
         },
         "zielmaerkte": {
             "eyebrow": "Marchés cibles",
@@ -165,7 +165,7 @@
         "einkaufsprofile": {
             "eyebrow": "Profils d'achat",
             "title": "Tous les importateurs ne se valent pas.",
-            "intro": "Les répertoires de nos études distinguent plusieurs profils d'achat :",
+            "intro": "Nos études distinguent plusieurs profils d'achat :",
             "close": "Vous concentrez ainsi vos activités commerciales exactement sur les partenaires adaptés à votre produit.",
             "cards": [
                 {
@@ -188,7 +188,7 @@
         },
         "lieferumfang": {
             "eyebrow": "Ce qui est inclus",
-            "title": "Plus qu'un répertoire d'adresses.",
+            "title": "Plus que des adresses d'entreprises.",
             "reportTitle": "Rapport de marché actualisé inclus",
             "reportBody": "Chaque étude comprend une analyse de marché actualisée, avec des informations précieuses sur le secteur et les opportunités de vente sur le marché cible.",
             "listIntro": "Vous recevez également des conseils pratiques sur les sujets suivants :",
@@ -225,12 +225,12 @@
         "daten": {
             "eyebrow": "Qualité des données",
             "title": "Données revues périodiquement.",
-            "body": "Les études sont réalisées par notre propre équipe, et chaque entreprise du répertoire est vérifiée dans des sources publiques — site institutionnel, présence numérique et registres disponibles — avant d'entrer au catalogue. Le catalogue est révisé périodiquement : lorsqu'une étude ne reflète plus le marché qu'elle décrit, elle est retirée de la vente."
+            "body": "Les études sont réalisées par notre propre équipe, et chaque entreprise profilée est vérifiée dans des sources publiques — site institutionnel, présence numérique et registres disponibles — avant d'entrer au catalogue. Le catalogue est révisé périodiquement : lorsqu'une étude ne reflète plus le marché qu'elle décrit, elle est retirée de la vente."
         },
         "vorteil": {
             "eyebrow": "Votre avantage",
             "title": "Gagnez du temps et développez votre succès commercial.",
-            "body": "Au lieu de rechercher pendant des semaines ou des mois comment fonctionne un marché et qui y opère, vous recevez l'analyse prête à l'emploi et un répertoire commenté de partenaires commerciaux potentiels. Vous pouvez ainsi vous concentrer sur l'essentiel : bâtir avec succès votre commerce international."
+            "body": "Au lieu de rechercher pendant des semaines ou des mois comment fonctionne un marché et qui y opère, vous recevez l'analyse prête à l'emploi et les profils de partenaires commerciaux potentiels. Vous pouvez ainsi vous concentrer sur l'essentiel : bâtir avec succès votre commerce international."
         },
         "howItWorks": {
             "eyebrow": "Comment ça marche",
@@ -262,7 +262,7 @@
         },
         "meta": {
             "title": "Études d'entrée sur le marché",
-            "description": "Études d'entrée sur le marché par pays et secteur : analyse, canaux de distribution, exigences réglementaires et répertoire d'importateurs."
+            "description": "Études d'entrée sur le marché par pays et secteur : analyse, canaux de distribution, exigences réglementaires et profils d'importateurs."
         }
     },
     "faq": {
@@ -275,10 +275,10 @@
         "items": [
             {
                 "question": "D’où proviennent les données des études d’entrée sur le marché et comment sont-elles vérifiées ?",
-                "answer": "Nos études d’entrée sur le marché et nos répertoires d’importateurs reposent sur une méthodologie de recherche que nous avons développée nous-mêmes. Pour chaque étude, de nombreuses sources d’information accessibles au public sont analysées de manière systématique. Les technologies d’IA modernes assistent la recherche, la structuration et l’analyse des données. Tous les résultats sont ensuite vérifiés manuellement et évalués quant à leur plausibilité, leur actualité et leur pertinence pratique.\nToutes les informations proviennent exclusivement de sources accessibles au public : sites web d’entreprises, annuaires sectoriels, chambres de commerce, fédérations professionnelles, catalogues de salons et autres sources librement disponibles.\nComme les entreprises modifient continuellement leurs interlocuteurs, leurs structures et leurs axes d’activité, certaines coordonnées peuvent évoluer avec le temps. C’est pourquoi nos études sont réexaminées à intervalles réguliers et mises à jour si nécessaire."
+                "answer": "Nos études d’entrée sur le marché et nos profils d’entreprises reposent sur une méthodologie de recherche que nous avons développée nous-mêmes. Pour chaque étude, de nombreuses sources d’information accessibles au public sont analysées de manière systématique. Les technologies d’IA modernes assistent la recherche, la structuration et l’analyse des données. Tous les résultats sont ensuite vérifiés manuellement et évalués quant à leur plausibilité, leur actualité et leur pertinence pratique.\nToutes les informations proviennent exclusivement de sources accessibles au public : sites web d’entreprises, annuaires sectoriels, chambres de commerce, fédérations professionnelles, catalogues de salons et autres sources librement disponibles.\nComme les entreprises modifient continuellement leurs interlocuteurs, leurs structures et leurs axes d’activité, certaines coordonnées peuvent évoluer avec le temps. C’est pourquoi nos études sont réexaminées à intervalles réguliers et mises à jour si nécessaire."
             },
             {
-                "question": "Les études d’entrée sur le marché et les répertoires d’importateurs sont-ils à jour ?",
+                "question": "Les études d’entrée sur le marché et les profils d’entreprises sont-ils à jour ?",
                 "answer": "Les marchés internationaux évoluent en permanence. C’est pourquoi nous réexaminons et mettons à jour à intervalles réguliers nos études d’entrée sur le marché ainsi que les listes d’importateurs et de distributeurs potentiellement pertinents qu’elles contiennent. Vous disposez ainsi d’informations aussi actuelles et exploitables que possible pour votre planification à l’export. La date de réalisation figure sur la page de couverture de chaque étude."
             },
             {
@@ -287,7 +287,7 @@
             },
             {
                 "question": "Que recevez-vous exactement avec chaque étude d’entrée sur le marché ?",
-                "answer": "Vous recevez une analyse de marché compacte réunissant les informations essentielles à une entrée réussie, ainsi qu’un répertoire soigneusement documenté d’importateurs et de distributeurs potentiels. Contrairement aux études de marché bien plus volumineuses d’autres prestataires, les nôtres contiennent exactement les informations dont un fournisseur a réellement besoin pour s’implanter sur de nouveaux marchés étrangers.\nChaque étude d’entrée sur le marché comprend :\n— Panorama du marché et situation du secteur\n— Potentiel du marché et évolutions actuelles\n— Canaux de vente et de distribution pertinents\n— Importateurs et distributeurs potentiels\n— Conseils pour aborder le marché avec succès\n— Recommandations pour la prise de contact initiale\n— Informations sur les exigences posées aux fournisseurs potentiels\nGrâce à ces informations condensées, vous économisez souvent plusieurs jours, voire plusieurs semaines, de recherches et pouvez vous concentrer directement sur la construction de nouvelles relations commerciales."
+                "answer": "Vous recevez une analyse de marché compacte réunissant les informations essentielles à une entrée réussie, ainsi qu’des profils soigneusement documentés d’importateurs et de distributeurs potentiels. Contrairement aux études de marché bien plus volumineuses d’autres prestataires, les nôtres contiennent exactement les informations dont un fournisseur a réellement besoin pour s’implanter sur de nouveaux marchés étrangers.\nChaque étude d’entrée sur le marché comprend :\n— Panorama du marché et situation du secteur\n— Potentiel du marché et évolutions actuelles\n— Canaux de vente et de distribution pertinents\n— Importateurs et distributeurs potentiels\n— Conseils pour aborder le marché avec succès\n— Recommandations pour la prise de contact initiale\n— Informations sur les exigences posées aux fournisseurs potentiels\nGrâce à ces informations condensées, vous économisez souvent plusieurs jours, voire plusieurs semaines, de recherches et pouvez vous concentrer directement sur la construction de nouvelles relations commerciales."
             },
             {
                 "question": "Comment fonctionne le paiement ?",
@@ -385,7 +385,7 @@
         "verifiedEmails": "Sources publiques vérifiées",
         "updatedAt": "Mise à jour le {date}",
         "seeDetails": "Voir les détails",
-        "defaultDescription": "Étude d'entrée sur le marché avec analyse du secteur et répertoire d'importateurs.",
+        "defaultDescription": "Étude d'entrée sur le marché avec analyse du secteur et profils d'importateurs.",
         "searchLabel": "Rechercher des études dans le catalogue",
         "filtersTitle": "Filtres",
         "filtersSubtitle": "Affinez le catalogue par profil d'étude.",
@@ -457,8 +457,8 @@
         "fieldReviewedAt": "Données revues le",
         "fieldUpdatedAt": "Fiche mise à jour le",
         "notInformed": "Non renseigné",
-        "previewTitle": "Entreprises du répertoire",
-        "previewSubtitle": "Un échantillon de {count} entreprises du répertoire qui clôt l'étude.",
+        "previewTitle": "Qui opère sur ce marché",
+        "previewSubtitle": "Un échantillon de {count} entreprises profilées dans l'étude.",
         "previewColCompany": "Entreprise",
         "previewColCountry": "Pays",
         "previewColSector": "Secteur",
@@ -468,7 +468,7 @@
         "includedEmail": "Canaux de vente et de distribution",
         "includedPhone": "Conditions d'accès et exigences réglementaires",
         "includedLocation": "Catégories aux meilleures perspectives",
-        "includedIndustry": "Répertoire commenté d'importateurs et de distributeurs",
+        "includedIndustry": "Profils d'importateurs et de distributeurs",
         "includedFormats": "Étude complète en PDF",
         "oneOffNote": "Achat unique, sans abonnement. L'étude reste disponible dans Mes achats.",
         "benefitSecure": "Paiement sécurisé par carte",
@@ -477,7 +477,7 @@
         "buyNow": "Acheter maintenant",
         "signInToBuy": "Se connecter et acheter",
         "notFound": "Étude introuvable",
-        "metaFallbackDescription": "Étude d'entrée sur le marché avec analyse du secteur et répertoire d'importateurs et de distributeurs."
+        "metaFallbackDescription": "Étude d'entrée sur le marché avec analyse du secteur et profils d'importateurs et de distributeurs."
     },
     "checkout": {
         "stepCart": "Panier",
@@ -560,7 +560,7 @@
         "emptyCta": "Explorer le catalogue",
         "browseMoreLists": "Voir d’autres études",
         "statStudies": "Études de marché",
-        "guidanceReadTitle": "Commencez par l'analyse, pas par le répertoire",
+        "guidanceReadTitle": "Commencez par l'analyse, pas par les profils",
         "guidanceReadText": "L’étude explique ce qu’attendent les importateurs et comment réussir la prise de contact. La lire d’abord évite de gâcher une bonne entreprise avec une approche précipitée.",
         "guidanceRequestTitle": "Besoin d’un autre marché ?",
         "guidanceRequestText": "Notre portefeuille s’élargit selon la demande. Dites-nous quel secteur et quel pays vous intéressent.",

@@ -117,17 +117,17 @@
         "hero": {
             "badge": "Estudios de entrada en mercado para exportadores",
             "title": "Entienda el mercado antes de exportar a él.",
-            "subtitle": "Cada estudio reúne el análisis del mercado, los requisitos de acceso y un directorio comentado de importadores y distribuidores del sector.",
+            "subtitle": "Cada estudio reúne el análisis del mercado, los requisitos de acceso y los perfiles de las empresas del sector.",
             "ctaPrimary": "Explorar catálogo",
             "ctaSecondary": "Cómo funciona",
-            "trust1": "Análisis y directorio en un mismo PDF",
+            "trust1": "Análisis y perfiles en un mismo PDF",
             "trust2": "Fuentes públicas verificadas",
             "trust3": "Actualización periódica"
         },
         "intro": {
             "lede": "Nuestros estudios de entrada en mercado están hechos para fabricantes, productores y titulares de marca que quieren entender un mercado extranjero antes de invertir en él.",
             "p1": "Elija por país, sector o región lingüística y reciba un estudio con el panorama del mercado, la estructura de canales, los requisitos regulatorios y las categorías con mayor potencial.",
-            "p2": "Cada estudio se cierra con un directorio comentado de importadores y distribuidores del sector: el perfil comercial de cada empresa, los canales que atiende y el tipo de proveedor que busca."
+            "p2": "Cada estudio se cierra con los perfiles de las empresas del sector: el posicionamiento comercial de cada una, los canales que atiende y el tipo de proveedor que busca."
         },
         "zielmaerkte": {
             "eyebrow": "Mercados objetivo",
@@ -165,7 +165,7 @@
         "einkaufsprofile": {
             "eyebrow": "Perfiles de compra",
             "title": "No todos los importadores son iguales.",
-            "intro": "Los directorios de nuestros estudios diferencian varios perfiles de compra:",
+            "intro": "Nuestros estudios diferencian varios perfiles de compra:",
             "close": "Así concentra sus actividades comerciales exactamente en los socios adecuados para su producto.",
             "cards": [
                 {
@@ -188,7 +188,7 @@
         },
         "lieferumfang": {
             "eyebrow": "Qué incluye",
-            "title": "Más que un directorio de direcciones.",
+            "title": "Más que direcciones de empresas.",
             "reportTitle": "Informe de mercado actualizado incluido",
             "reportBody": "Cada estudio incluye un análisis de mercado actualizado, con información valiosa sobre el sector y las oportunidades de venta en el mercado objetivo.",
             "listIntro": "También recibe orientación práctica sobre los siguientes temas:",
@@ -225,12 +225,12 @@
         "daten": {
             "eyebrow": "Calidad de los datos",
             "title": "Datos revisados periódicamente.",
-            "body": "Los estudios los elabora nuestra propia operación, y cada empresa del directorio se verifica en fuentes públicas — sitio institucional, presencia digital y registros disponibles — antes de entrar en el catálogo. El catálogo se revisa periódicamente: cuando un estudio deja de reflejar el mercado que describe, se retira de la venta."
+            "body": "Los estudios los elabora nuestra propia operación, y cada empresa perfilada se verifica en fuentes públicas — sitio institucional, presencia digital y registros disponibles — antes de entrar en el catálogo. El catálogo se revisa periódicamente: cuando un estudio deja de reflejar el mercado que describe, se retira de la venta."
         },
         "vorteil": {
             "eyebrow": "Su ventaja",
             "title": "Ahorre tiempo y aumente su éxito comercial.",
-            "body": "En lugar de investigar durante semanas o meses cómo funciona un mercado y quién opera en él, recibe el análisis listo y un directorio comentado de posibles socios comerciales. Así puede concentrarse en lo esencial: construir con éxito su comercio internacional."
+            "body": "En lugar de investigar durante semanas o meses cómo funciona un mercado y quién opera en él, recibe el análisis listo y los perfiles de posibles socios comerciales. Así puede concentrarse en lo esencial: construir con éxito su comercio internacional."
         },
         "howItWorks": {
             "eyebrow": "Cómo funciona",
@@ -262,7 +262,7 @@
         },
         "meta": {
             "title": "Estudios de entrada en mercado",
-            "description": "Estudios de entrada en mercado por país y sector: análisis, canales de distribución, requisitos regulatorios y directorio de importadores."
+            "description": "Estudios de entrada en mercado por país y sector: análisis, canales de distribución, requisitos regulatorios y perfiles de importadores."
         }
     },
     "faq": {
@@ -275,10 +275,10 @@
         "items": [
             {
                 "question": "¿De dónde proceden los datos de los estudios de entrada en el mercado y cómo se verifican?",
-                "answer": "Nuestros estudios de entrada en el mercado y directorios de importadores se basan en una metodología de investigación propia. Para cada estudio evaluamos sistemáticamente numerosas fuentes de información de acceso público. Las tecnologías modernas de IA apoyan la búsqueda, la estructuración y el análisis de los datos. Después, todos los resultados se revisan manualmente y se valoran en cuanto a plausibilidad, actualidad y relevancia práctica.\nToda la información procede exclusivamente de fuentes de acceso público: sitios web de empresas, directorios sectoriales, cámaras de comercio, asociaciones, catálogos de ferias y otras fuentes libremente disponibles.\nComo las empresas ajustan continuamente sus personas de contacto, estructuras organizativas y focos de negocio, algunos datos de contacto pueden cambiar con el tiempo. Por eso revisamos nuestros estudios periódicamente y los actualizamos cuando es necesario."
+                "answer": "Nuestros estudios de entrada en el mercado y perfiles de empresas se basan en una metodología de investigación propia. Para cada estudio evaluamos sistemáticamente numerosas fuentes de información de acceso público. Las tecnologías modernas de IA apoyan la búsqueda, la estructuración y el análisis de los datos. Después, todos los resultados se revisan manualmente y se valoran en cuanto a plausibilidad, actualidad y relevancia práctica.\nToda la información procede exclusivamente de fuentes de acceso público: sitios web de empresas, directorios sectoriales, cámaras de comercio, asociaciones, catálogos de ferias y otras fuentes libremente disponibles.\nComo las empresas ajustan continuamente sus personas de contacto, estructuras organizativas y focos de negocio, algunos datos de contacto pueden cambiar con el tiempo. Por eso revisamos nuestros estudios periódicamente y los actualizamos cuando es necesario."
             },
             {
-                "question": "¿Qué grado de actualización tienen los estudios de entrada en el mercado y los directorios de importadores?",
+                "question": "¿Qué grado de actualización tienen los estudios de entrada en el mercado y los perfiles de empresas?",
                 "answer": "Los mercados internacionales evolucionan constantemente. Por eso revisamos y actualizamos periódicamente nuestros estudios de entrada en el mercado y las listas de importadores y distribuidores potencialmente relevantes que contienen. Así dispones de información lo más actual y práctica posible para tu planificación de exportación. La fecha de elaboración aparece en la portada de cada estudio."
             },
             {
@@ -287,7 +287,7 @@
             },
             {
                 "question": "¿Qué recibes exactamente con cada estudio de entrada en el mercado?",
-                "answer": "Recibes un análisis de mercado compacto con la información más importante para una entrada exitosa, junto con un directorio cuidadosamente investigado de importadores y distribuidores potenciales. A diferencia de los estudios de mercado mucho más extensos de otros proveedores, los nuestros reúnen exactamente la información que un proveedor necesita de verdad para asentarse en nuevos mercados exteriores.\nCada estudio de entrada en el mercado incluye:\n— Panorama del mercado y situación del sector\n— Potencial de mercado y evolución actual\n— Canales de venta y distribución relevantes\n— Importadores y distribuidores potenciales\n— Indicaciones para trabajar el mercado con éxito\n— Recomendaciones para el primer contacto\n— Información sobre los requisitos exigidos a los proveedores potenciales\nGracias a esta información condensada, ahorras muchos días —a veces semanas— de investigación propia y puedes concentrarte directamente en construir nuevas relaciones comerciales."
+                "answer": "Recibes un análisis de mercado compacto con la información más importante para una entrada exitosa, junto con perfiles cuidadosamente investigados de importadores y distribuidores potenciales. A diferencia de los estudios de mercado mucho más extensos de otros proveedores, los nuestros reúnen exactamente la información que un proveedor necesita de verdad para asentarse en nuevos mercados exteriores.\nCada estudio de entrada en el mercado incluye:\n— Panorama del mercado y situación del sector\n— Potencial de mercado y evolución actual\n— Canales de venta y distribución relevantes\n— Importadores y distribuidores potenciales\n— Indicaciones para trabajar el mercado con éxito\n— Recomendaciones para el primer contacto\n— Información sobre los requisitos exigidos a los proveedores potenciales\nGracias a esta información condensada, ahorras muchos días —a veces semanas— de investigación propia y puedes concentrarte directamente en construir nuevas relaciones comerciales."
             },
             {
                 "question": "¿Cómo funciona el pago?",
@@ -385,7 +385,7 @@
         "verifiedEmails": "Fuentes públicas verificadas",
         "updatedAt": "Actualizada el {date}",
         "seeDetails": "Ver detalles",
-        "defaultDescription": "Estudio de entrada en mercado con análisis del sector y directorio de importadores.",
+        "defaultDescription": "Estudio de entrada en mercado con análisis del sector y perfiles de importadores.",
         "searchLabel": "Buscar estudios en el catálogo",
         "filtersTitle": "Filtros",
         "filtersSubtitle": "Refine el catálogo por perfil del estudio.",
@@ -457,8 +457,8 @@
         "fieldReviewedAt": "Datos revisados el",
         "fieldUpdatedAt": "Registro actualizado el",
         "notInformed": "No informado",
-        "previewTitle": "Empresas del directorio",
-        "previewSubtitle": "Una muestra de {count} empresas del directorio que cierra el estudio.",
+        "previewTitle": "Quién opera en este mercado",
+        "previewSubtitle": "Una muestra de {count} empresas perfiladas en el estudio.",
         "previewColCompany": "Empresa",
         "previewColCountry": "País",
         "previewColSector": "Sector",
@@ -468,7 +468,7 @@
         "includedEmail": "Canales de venta y distribución",
         "includedPhone": "Requisitos de acceso y exigencias regulatorias",
         "includedLocation": "Categorías con mayor potencial",
-        "includedIndustry": "Directorio comentado de importadores y distribuidores",
+        "includedIndustry": "Perfiles de importadores y distribuidores",
         "includedFormats": "Estudio completo en PDF",
         "oneOffNote": "Compra única, sin suscripción. El estudio queda disponible en Mis compras.",
         "benefitSecure": "Pago seguro con tarjeta",
@@ -477,7 +477,7 @@
         "buyNow": "Comprar ahora",
         "signInToBuy": "Iniciar sesión y comprar",
         "notFound": "Estudio no encontrado",
-        "metaFallbackDescription": "Estudio de entrada en mercado con análisis del sector y directorio de importadores y distribuidores."
+        "metaFallbackDescription": "Estudio de entrada en mercado con análisis del sector y perfiles de importadores y distribuidores."
     },
     "checkout": {
         "stepCart": "Carrito",
@@ -560,7 +560,7 @@
         "emptyCta": "Explorar catálogo",
         "browseMoreLists": "Ver más estudios",
         "statStudies": "Estudios de mercado",
-        "guidanceReadTitle": "Empiece por el análisis, no por el directorio",
+        "guidanceReadTitle": "Empiece por el análisis, no por los perfiles",
         "guidanceReadText": "El estudio explica qué esperan los importadores y cómo hacer el primer contacto. Leerlo antes evita quemar una buena empresa con un acercamiento apresurado.",
         "guidanceRequestTitle": "¿Necesitas otro mercado?",
         "guidanceRequestText": "Nuestro portfolio crece con la demanda. Dinos qué sector y qué país necesitas.",
@@ -569,7 +569,7 @@
     "about": {
         "meta": {
             "title": "Por qué Easy Prospect — cómo se hacen los estudios",
-            "description": "Estudios de entrada en mercado y directorios de importadores y distribuidores: de dónde vienen los datos, cómo se comprueba cada empresa, qué incluye cada estudio y qué no prometemos."
+            "description": "Estudios de entrada en mercado y perfiles de importadores y distribuidores: de dónde vienen los datos, cómo se comprueba cada empresa, qué incluye cada estudio y qué no prometemos."
         },
         "cta": {
             "faq": "Ver preguntas frecuentes",

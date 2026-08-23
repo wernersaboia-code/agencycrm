@@ -117,17 +117,17 @@
         "hero": {
             "badge": "Market entry studies for exporters",
             "title": "Understand the market before you export to it.",
-            "subtitle": "Each study brings together the market analysis, the access requirements and an annotated directory of importers and distributors in the sector.",
+            "subtitle": "Each study brings together the market analysis, the access requirements and the profiles of the companies in the sector.",
             "ctaPrimary": "Browse catalog",
             "ctaSecondary": "How it works",
-            "trust1": "Analysis and directory in one PDF",
+            "trust1": "Analysis and profiles in one PDF",
             "trust2": "Public sources checked",
             "trust3": "Regularly updated"
         },
         "intro": {
             "lede": "Our market entry studies are written for manufacturers, producers and brand owners who want to understand a foreign market before investing in it.",
             "p1": "Choose by country, sector or language region and receive a study covering the market overview, the channel structure, the regulatory requirements and the categories with the strongest prospects.",
-            "p2": "Each study closes with an annotated directory of importers and distributors in the sector: the commercial profile of each company, the channels it serves and the kind of supplier it is looking for."
+            "p2": "Each study closes with the profiles of the companies in the sector: the commercial positioning of each one, the channels it serves and the kind of supplier it is looking for."
         },
         "zielmaerkte": {
             "eyebrow": "Target markets",
@@ -165,7 +165,7 @@
         "einkaufsprofile": {
             "eyebrow": "Buying profiles",
             "title": "Not every importer is the same.",
-            "intro": "The directories in our studies distinguish several buying profiles:",
+            "intro": "Our studies distinguish several buying profiles:",
             "close": "This lets you focus your sales activities exactly on the trading partners suited to your product.",
             "cards": [
                 {
@@ -188,7 +188,7 @@
         },
         "lieferumfang": {
             "eyebrow": "What's included",
-            "title": "More than a directory of addresses.",
+            "title": "More than company addresses.",
             "reportTitle": "Up-to-date market report included",
             "reportBody": "Each study carries an up-to-date market analysis, with valuable information about the sector and the sales opportunities in the target market.",
             "listIntro": "You also get practical guidance on the following topics:",
@@ -225,12 +225,12 @@
         "daten": {
             "eyebrow": "Data quality",
             "title": "Data reviewed periodically.",
-            "body": "The studies are produced by our own operation, and every company in the directory is checked against public sources — corporate website, digital presence and available registers — before it enters the catalogue. The catalogue is reviewed periodically: when a study no longer reflects the market it describes, it is withdrawn from sale."
+            "body": "The studies are produced by our own operation, and every company profiled is checked against public sources — corporate website, digital presence and available registers — before it enters the catalogue. The catalogue is reviewed periodically: when a study no longer reflects the market it describes, it is withdrawn from sale."
         },
         "vorteil": {
             "eyebrow": "Your advantage",
             "title": "Save time and increase your sales success.",
-            "body": "Instead of spending weeks or months researching how a market works and who operates in it, you receive the analysis ready to use, together with an annotated directory of potential trading partners. That lets you concentrate on what matters — building your international trade successfully."
+            "body": "Instead of spending weeks or months researching how a market works and who operates in it, you receive the analysis ready to use, together with profiles of potential trading partners. That lets you concentrate on what matters — building your international trade successfully."
         },
         "howItWorks": {
             "eyebrow": "How it works",
@@ -262,7 +262,7 @@
         },
         "meta": {
             "title": "Market entry studies",
-            "description": "Market entry studies by country and sector: market analysis, distribution channels, regulatory requirements and a directory of importers. For exporters."
+            "description": "Market entry studies by country and sector: market analysis, distribution channels, regulatory requirements and profiles of importers. For exporters."
         }
     },
     "faq": {
@@ -275,10 +275,10 @@
         "items": [
             {
                 "question": "Where does the data for the market entry studies come from, and how is it verified?",
-                "answer": "Our market entry studies and importer directories are based on a research methodology we developed ourselves. For each study, a wide range of publicly accessible information sources is evaluated systematically. Modern AI technologies support the research, structuring and analysis of the data. All results are then reviewed manually and assessed for plausibility, currency and practical relevance.\nAll information comes exclusively from publicly accessible sources: company websites, industry directories, chambers of commerce, trade associations, trade fair catalogues and other freely available sources.\nBecause companies continually adjust their contact people, organisational structures and business focus, individual contact details can change over time. That is why our studies are reviewed at regular intervals and updated where necessary."
+                "answer": "Our market entry studies are based on a research methodology we developed ourselves. For each study, a wide range of publicly accessible information sources is evaluated systematically. Modern AI technologies support the research, structuring and analysis of the data. All results are then reviewed manually and assessed for plausibility, currency and practical relevance.\nAll information comes exclusively from publicly accessible sources: company websites, industry directories, chambers of commerce, trade associations, trade fair catalogues and other freely available sources.\nBecause companies continually adjust their contact people, organisational structures and business focus, individual contact details can change over time. That is why our studies are reviewed at regular intervals and updated where necessary."
             },
             {
-                "question": "How up to date are the market entry studies and importer directories?",
+                "question": "How up to date are the market entry studies and company profiles?",
                 "answer": "International markets evolve constantly. That is why we review and update our market entry studies — and the lists of potentially relevant importers and distributors they contain — at regular intervals. This ensures that the information available for your export planning is as current and practically relevant as possible. The date the study was produced is shown on the cover page of each market entry study."
             },
             {
@@ -287,7 +287,7 @@
             },
             {
                 "question": "What exactly do you receive with each market entry study?",
-                "answer": "You receive a compact market analysis with the key information for a successful market entry, together with a carefully researched directory of potential importers and distributors. Unlike the far more extensive market studies offered by other providers, our market entry studies contain exactly the information suppliers actually need to gain a foothold in new foreign markets.\nEach market entry study includes:\n— Market overview and industry situation\n— Market potential and current developments\n— Relevant sales and distribution channels\n— Potential importers and distributors\n— Guidance on approaching the market successfully\n— Recommendations for making first contact\n— Information on the requirements placed on potential suppliers\nBecause the market information is condensed, you often save many days or even weeks of your own research and can focus directly on building new business relationships."
+                "answer": "You receive a compact market analysis with the key information for a successful market entry, together with carefully researched profiles of potential importers and distributors. Unlike the far more extensive market studies offered by other providers, our market entry studies contain exactly the information suppliers actually need to gain a foothold in new foreign markets.\nEach market entry study includes:\n— Market overview and industry situation\n— Market potential and current developments\n— Relevant sales and distribution channels\n— Potential importers and distributors\n— Guidance on approaching the market successfully\n— Recommendations for making first contact\n— Information on the requirements placed on potential suppliers\nBecause the market information is condensed, you often save many days or even weeks of your own research and can focus directly on building new business relationships."
             },
             {
                 "question": "How does payment work?",
@@ -385,7 +385,7 @@
         "verifiedEmails": "Public sources checked",
         "updatedAt": "Updated on {date}",
         "seeDetails": "View details",
-        "defaultDescription": "Market entry study with sector analysis and a directory of importers.",
+        "defaultDescription": "Market entry study with sector analysis and profiles of importers.",
         "searchLabel": "Search studies in the catalogue",
         "filtersTitle": "Filters",
         "filtersSubtitle": "Narrow the catalogue by study profile.",
@@ -457,8 +457,8 @@
         "fieldReviewedAt": "Data reviewed on",
         "fieldUpdatedAt": "Record updated on",
         "notInformed": "Not provided",
-        "previewTitle": "Companies in the directory",
-        "previewSubtitle": "A sample of {count} companies from the directory that closes the study.",
+        "previewTitle": "Who operates in this market",
+        "previewSubtitle": "A sample of {count} companies profiled in the study.",
         "previewColCompany": "Company",
         "previewColCountry": "Country",
         "previewColSector": "Sector",
@@ -468,7 +468,7 @@
         "includedEmail": "Sales and distribution channels",
         "includedPhone": "Market access and regulatory requirements",
         "includedLocation": "Product categories with the strongest prospects",
-        "includedIndustry": "Annotated directory of importers and distributors",
+        "includedIndustry": "Profiles of importers and distributors",
         "includedFormats": "Complete study as a PDF",
         "oneOffNote": "One-off purchase, no subscription. The study stays available under My purchases.",
         "benefitSecure": "Secure card payment",
@@ -477,7 +477,7 @@
         "buyNow": "Buy now",
         "signInToBuy": "Sign in and buy",
         "notFound": "Study not found",
-        "metaFallbackDescription": "Market entry study with sector analysis and a directory of importers and distributors."
+        "metaFallbackDescription": "Market entry study with sector analysis and profiles of importers and distributors."
     },
     "checkout": {
         "stepCart": "Cart",
@@ -560,7 +560,7 @@
         "emptyCta": "Browse catalog",
         "browseMoreLists": "See more studies",
         "statStudies": "Market entry studies",
-        "guidanceReadTitle": "Start with the analysis, not the directory",
+        "guidanceReadTitle": "Start with the analysis, not the profiles",
         "guidanceReadText": "The study covers what importers expect and how to make first contact. Reading it first keeps you from burning a good company on a rushed approach.",
         "guidanceRequestTitle": "Need another market?",
         "guidanceRequestText": "Our portfolio grows with demand. Tell us which industry and which country you need.",
@@ -569,7 +569,7 @@
     "about": {
         "meta": {
             "title": "Why Easy Prospect — how the studies are made",
-            "description": "Market entry studies and importer and distributor directories: where the data comes from, how each company is checked, what every study contains and what we do not promise."
+            "description": "Market entry studies with importer and distributor profiles: where the data comes from, how each company is checked, what every study contains and what we do not promise."
         },
         "cta": {
             "faq": "Read the FAQ",

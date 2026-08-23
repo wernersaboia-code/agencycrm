@@ -117,17 +117,17 @@
         "hero": {
             "badge": "Markttoetredingsstudies voor exporteurs",
             "title": "Begrijp de markt voordat u ernaartoe exporteert.",
-            "subtitle": "Elke studie combineert de marktanalyse, de toegangseisen en een becommentarieerde gids van importeurs en distributeurs in de sector.",
+            "subtitle": "Elke studie combineert de marktanalyse, de toegangseisen en de profielen van de bedrijven in de sector.",
             "ctaPrimary": "Catalogus verkennen",
             "ctaSecondary": "Hoe het werkt",
-            "trust1": "Analyse en gids in één PDF",
+            "trust1": "Analyse en profielen in één PDF",
             "trust2": "Openbare bronnen gecontroleerd",
             "trust3": "Regelmatig bijgewerkt"
         },
         "intro": {
             "lede": "Onze markttoetredingsstudies zijn gemaakt voor fabrikanten, producenten en merkeigenaren die een buitenlandse markt willen begrijpen voordat zij erin investeren.",
             "p1": "Kies op land, sector of taalgebied en ontvang een studie met het marktoverzicht, de kanaalstructuur, de regelgevende eisen en de categorieën met de beste vooruitzichten.",
-            "p2": "Elke studie sluit af met een becommentarieerde gids van importeurs en distributeurs in de sector: het commerciële profiel van elk bedrijf, de kanalen die het bedient en het type leverancier dat het zoekt."
+            "p2": "Elke studie sluit af met de profielen van de bedrijven in de sector: de commerciële positionering van elk bedrijf, de kanalen die het bedient en het type leverancier dat het zoekt."
         },
         "zielmaerkte": {
             "eyebrow": "Doelmarkten",
@@ -165,7 +165,7 @@
         "einkaufsprofile": {
             "eyebrow": "Inkoopprofielen",
             "title": "Niet alle importeurs zijn gelijk.",
-            "intro": "De gidsen in onze studies onderscheiden verschillende inkoopprofielen:",
+            "intro": "Onze studies onderscheiden verschillende inkoopprofielen:",
             "close": "Zo richt u uw commerciële activiteiten precies op de partners die bij uw product passen.",
             "cards": [
                 {
@@ -188,7 +188,7 @@
         },
         "lieferumfang": {
             "eyebrow": "Wat is inbegrepen",
-            "title": "Meer dan een adressengids.",
+            "title": "Meer dan bedrijfsadressen.",
             "reportTitle": "Actueel marktrapport inbegrepen",
             "reportBody": "Elke studie bevat een actuele marktanalyse, met waardevolle informatie over de sector en de verkoopkansen in de doelmarkt.",
             "listIntro": "U ontvangt ook praktische tips over de volgende onderwerpen:",
@@ -225,12 +225,12 @@
         "daten": {
             "eyebrow": "Datakwaliteit",
             "title": "Periodiek herziene gegevens.",
-            "body": "De studies worden door onze eigen organisatie opgesteld en elk bedrijf in de gids wordt getoetst aan openbare bronnen — bedrijfswebsite, digitale aanwezigheid en beschikbare registers — voordat het in de catalogus komt. De catalogus wordt periodiek herzien: wanneer een studie de beschreven markt niet meer weergeeft, wordt zij uit de verkoop gehaald."
+            "body": "De studies worden door onze eigen organisatie opgesteld en elk geprofileerd bedrijf wordt getoetst aan openbare bronnen — bedrijfswebsite, digitale aanwezigheid en beschikbare registers — voordat het in de catalogus komt. De catalogus wordt periodiek herzien: wanneer een studie de beschreven markt niet meer weergeeft, wordt zij uit de verkoop gehaald."
         },
         "vorteil": {
             "eyebrow": "Uw voordeel",
             "title": "Bespaar tijd en laat uw commercieel succes groeien.",
-            "body": "In plaats van weken of maanden te onderzoeken hoe een markt werkt en wie erin actief is, ontvangt u de analyse kant-en-klaar, samen met een becommentarieerde gids van mogelijke handelspartners. Zo kunt u zich richten op de kern — het succesvol opbouwen van uw internationale handel."
+            "body": "In plaats van weken of maanden te onderzoeken hoe een markt werkt en wie erin actief is, ontvangt u de analyse kant-en-klaar, samen met de profielen van mogelijke handelspartners. Zo kunt u zich richten op de kern — het succesvol opbouwen van uw internationale handel."
         },
         "howItWorks": {
             "eyebrow": "Hoe het werkt",
@@ -262,7 +262,7 @@
         },
         "meta": {
             "title": "Markttoetredingsstudies",
-            "description": "Markttoetredingsstudies per land en sector: marktanalyse, distributiekanalen, regelgevende eisen en een gids van importeurs. Voor exporteurs."
+            "description": "Markttoetredingsstudies per land en sector: marktanalyse, distributiekanalen, regelgevende eisen en profielen van importeurs. Voor exporteurs."
         }
     },
     "faq": {
@@ -385,7 +385,7 @@
         "verifiedEmails": "Openbare bronnen gecontroleerd",
         "updatedAt": "Bijgewerkt op {date}",
         "seeDetails": "Details bekijken",
-        "defaultDescription": "Markttoetredingsstudie met sectoranalyse en een gids van importeurs.",
+        "defaultDescription": "Markttoetredingsstudie met sectoranalyse en profielen van importeurs.",
         "searchLabel": "Zoek studies in de catalogus",
         "filtersTitle": "Filters",
         "filtersSubtitle": "Verfijn de catalogus op studieprofiel.",
@@ -457,8 +457,8 @@
         "fieldReviewedAt": "Gegevens gecontroleerd op",
         "fieldUpdatedAt": "Record bijgewerkt op",
         "notInformed": "Niet opgegeven",
-        "previewTitle": "Bedrijven in de gids",
-        "previewSubtitle": "Een selectie van {count} bedrijven uit de gids aan het eind van de studie.",
+        "previewTitle": "Wie actief is in deze markt",
+        "previewSubtitle": "Een selectie van {count} in de studie geprofileerde bedrijven.",
         "previewColCompany": "Bedrijf",
         "previewColCountry": "Land",
         "previewColSector": "Sector",
@@ -468,7 +468,7 @@
         "includedEmail": "Verkoop- en distributiekanalen",
         "includedPhone": "Markttoegang en regelgevende eisen",
         "includedLocation": "Productgroepen met de beste vooruitzichten",
-        "includedIndustry": "Becommentarieerde gids van importeurs en distributeurs",
+        "includedIndustry": "Profielen van importeurs en distributeurs",
         "includedFormats": "Volledige studie als PDF",
         "oneOffNote": "Eenmalige aankoop, geen abonnement. De studie blijft beschikbaar onder Mijn aankopen.",
         "benefitSecure": "Veilig betalen met kaart",
@@ -477,7 +477,7 @@
         "buyNow": "Nu kopen",
         "signInToBuy": "Inloggen en kopen",
         "notFound": "Studie niet gevonden",
-        "metaFallbackDescription": "Markttoetredingsstudie met sectoranalyse en een gids van importeurs en distributeurs."
+        "metaFallbackDescription": "Markttoetredingsstudie met sectoranalyse en profielen van importeurs en distributeurs."
     },
     "checkout": {
         "stepCart": "Winkelwagen",
@@ -560,7 +560,7 @@
         "emptyCta": "Catalogus verkennen",
         "browseMoreLists": "Meer studies bekijken",
         "statStudies": "Marktentreestudies",
-        "guidanceReadTitle": "Begin met de analyse, niet met de gids",
+        "guidanceReadTitle": "Begin met de analyse, niet met de profielen",
         "guidanceReadText": "De studie legt uit wat importeurs verwachten en hoe u het eerste contact aanpakt. Dat vooraf lezen voorkomt dat u een goed bedrijf verspeelt met een overhaaste benadering.",
         "guidanceRequestTitle": "Een andere markt nodig?",
         "guidanceRequestText": "Ons portfolio groeit mee met de vraag. Laat ons weten welke branche en welk land u nodig hebt.",
@@ -569,7 +569,7 @@
     "about": {
         "meta": {
             "title": "Waarom Easy Prospect — hoe de studies tot stand komen",
-            "description": "Markttoetredingsstudies en gidsen van importeurs en distributeurs: waar de gegevens vandaan komen, hoe elk bedrijf wordt gecontroleerd, wat elke studie bevat en wat we niet beloven."
+            "description": "Markttoetredingsstudies en profielen van importeurs en distributeurs: waar de gegevens vandaan komen, hoe elk bedrijf wordt gecontroleerd, wat elke studie bevat en wat we niet beloven."
         },
         "cta": {
             "faq": "Naar de FAQ",

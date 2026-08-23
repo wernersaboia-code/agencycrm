@@ -117,17 +117,17 @@
         "hero": {
             "badge": "Markteintrittsstudien für Exporteure",
             "title": "Verstehen Sie den Markt, bevor Sie ihn beliefern.",
-            "subtitle": "Jede Studie verbindet die Marktanalyse, die Zugangsanforderungen und ein kommentiertes Verzeichnis von Importeuren und Distributoren der Branche.",
+            "subtitle": "Jede Studie verbindet die Marktanalyse, die Zugangsanforderungen und die Profile der Unternehmen der Branche.",
             "ctaPrimary": "Katalog entdecken",
             "ctaSecondary": "So funktioniert's",
-            "trust1": "Analyse und Verzeichnis in einem PDF",
+            "trust1": "Analyse und Profile in einem PDF",
             "trust2": "Öffentliche Quellen geprüft",
             "trust3": "Regelmäßig aktualisiert"
         },
         "intro": {
             "lede": "Unsere Markteintrittsstudien richten sich an Hersteller, Erzeuger und Markeninhaber, die einen ausländischen Markt verstehen wollen, bevor sie in ihn investieren.",
             "p1": "Wählen Sie nach Land, Branche oder Sprachraum und erhalten Sie eine Studie mit Marktüberblick, Kanalstruktur, regulatorischen Anforderungen und den Produktgruppen mit den besten Aussichten.",
-            "p2": "Jede Studie schließt mit einem kommentierten Verzeichnis von Importeuren und Distributoren der Branche: dem Geschäftsprofil jedes Unternehmens, den bedienten Kanälen und der Art von Lieferant, die gesucht wird."
+            "p2": "Jede Studie schließt mit den Profilen der Unternehmen der Branche: der geschäftlichen Positionierung jedes einzelnen, den bedienten Kanälen und der Art von Lieferant, die gesucht wird."
         },
         "zielmaerkte": {
             "eyebrow": "Zielmärkte",
@@ -165,7 +165,7 @@
         "einkaufsprofile": {
             "eyebrow": "Einkaufsprofile",
             "title": "Importeur ist nicht gleich Importeur.",
-            "intro": "Die Verzeichnisse unserer Studien unterscheiden mehrere Einkaufsprofile:",
+            "intro": "Unsere Studien unterscheiden mehrere Einkaufsprofile:",
             "close": "Dadurch können Sie Ihre Vertriebsaktivitäten exakt auf die für Ihr Produkt geeigneten Geschäftspartner konzentrieren.",
             "cards": [
                 {
@@ -188,7 +188,7 @@
         },
         "lieferumfang": {
             "eyebrow": "Im Lieferumfang",
-            "title": "Mehr als ein Adressverzeichnis.",
+            "title": "Mehr als Unternehmensadressen.",
             "reportTitle": "Aktueller Marktbericht inklusive",
             "reportBody": "Jede Studie enthält eine aktuelle Marktanalyse mit wertvollen Informationen über die Branche und die Absatzchancen im Zielmarkt.",
             "listIntro": "Außerdem erhalten Sie praxisorientierte Hinweise zu folgenden Themen:",
@@ -225,12 +225,12 @@
         "daten": {
             "eyebrow": "Datenqualität",
             "title": "Regelmäßig überprüfte Daten.",
-            "body": "Die Studien werden von uns selbst erstellt, und jedes Unternehmen im Verzeichnis wird vor Aufnahme in den Katalog anhand öffentlicher Quellen geprüft — Unternehmenswebsite, digitale Präsenz und verfügbare Register. Der Katalog wird regelmäßig überprüft: Wenn eine Studie den beschriebenen Markt nicht mehr abbildet, wird sie aus dem Verkauf genommen."
+            "body": "Die Studien werden von uns selbst erstellt, und jedes profilierte Unternehmen wird vor Aufnahme in den Katalog anhand öffentlicher Quellen geprüft — Unternehmenswebsite, digitale Präsenz und verfügbare Register. Der Katalog wird regelmäßig überprüft: Wenn eine Studie den beschriebenen Markt nicht mehr abbildet, wird sie aus dem Verkauf genommen."
         },
         "vorteil": {
             "eyebrow": "Ihr Vorteil",
             "title": "Sparen Sie Zeit und steigern Sie Ihren Vertriebserfolg.",
-            "body": "Statt wochen- oder monatelang zu recherchieren, wie ein Markt funktioniert und wer dort tätig ist, erhalten Sie die fertige Analyse und ein kommentiertes Verzeichnis möglicher Handelspartner. So können Sie sich auf das Wesentliche konzentrieren — den erfolgreichen Aufbau Ihres internationalen Handels."
+            "body": "Statt wochen- oder monatelang zu recherchieren, wie ein Markt funktioniert und wer dort tätig ist, erhalten Sie die fertige Analyse und Profile möglicher Handelspartner. So können Sie sich auf das Wesentliche konzentrieren — den erfolgreichen Aufbau Ihres internationalen Handels."
         },
         "howItWorks": {
             "eyebrow": "So funktioniert's",
@@ -262,7 +262,7 @@
         },
         "meta": {
             "title": "Markteintrittsstudien",
-            "description": "Markteintrittsstudien nach Land und Branche: Marktanalyse, Vertriebskanäle, regulatorische Anforderungen und Verzeichnis von Importeuren. Für Exporteure."
+            "description": "Markteintrittsstudien nach Land und Branche: Marktanalyse, Vertriebskanäle, regulatorische Anforderungen und Profile von Importeuren. Für Exporteure."
         }
     },
     "faq": {
@@ -275,10 +275,10 @@
         "items": [
             {
                 "question": "Woher stammen die Daten für die Markteintrittsstudien und wie werden sie verifiziert?",
-                "answer": "Unsere Markteintrittsstudien und Importeursverzeichnisse basieren auf einer eigens entwickelten Recherchemethodik. Hierfür werden zahlreiche öffentlich zugängliche Informationsquellen systematisch ausgewertet. Moderne KI-Technologien unterstützen die Recherche, Strukturierung und Analyse der Daten. Anschließend werden sämtliche Ergebnisse manuell überprüft und hinsichtlich ihrer Plausibilität, Aktualität und praktischen Relevanz bewertet.\nAlle Informationen stammen ausschließlich aus öffentlich zugänglichen Quellen, beispielsweise von Unternehmenswebsites, Branchenverzeichnissen, Handelskammern, Verbänden, Messekatalogen und weiteren frei verfügbaren Informationsquellen.\nDa Unternehmen ihre Ansprechpartner, Organisationsstrukturen oder Geschäftsschwerpunkte laufend anpassen, können sich einzelne Kontaktdaten im Laufe der Zeit ändern. Deshalb werden unsere Studien regelmäßig überprüft und gegebenenfalls aktualisiert."
+                "answer": "Unsere Markteintrittsstudien und Unternehmensprofile basieren auf einer eigens entwickelten Recherchemethodik. Hierfür werden zahlreiche öffentlich zugängliche Informationsquellen systematisch ausgewertet. Moderne KI-Technologien unterstützen die Recherche, Strukturierung und Analyse der Daten. Anschließend werden sämtliche Ergebnisse manuell überprüft und hinsichtlich ihrer Plausibilität, Aktualität und praktischen Relevanz bewertet.\nAlle Informationen stammen ausschließlich aus öffentlich zugänglichen Quellen, beispielsweise von Unternehmenswebsites, Branchenverzeichnissen, Handelskammern, Verbänden, Messekatalogen und weiteren frei verfügbaren Informationsquellen.\nDa Unternehmen ihre Ansprechpartner, Organisationsstrukturen oder Geschäftsschwerpunkte laufend anpassen, können sich einzelne Kontaktdaten im Laufe der Zeit ändern. Deshalb werden unsere Studien regelmäßig überprüft und gegebenenfalls aktualisiert."
             },
             {
-                "question": "Wie aktuell sind die Markteintrittsstudien und Importeursverzeichnisse?",
+                "question": "Wie aktuell sind die Markteintrittsstudien und Unternehmensprofile?",
                 "answer": "Internationale Märkte entwickeln sich ständig weiter. Deshalb überprüfen und aktualisieren wir unsere Markteintrittsstudien und die darin enthaltenen Listen potenziell relevanter Importeure und Distributoren in regelmäßigen Abständen. So stellen wir sicher, dass Ihnen möglichst aktuelle und praxisrelevante Informationen für Ihre Exportplanung zur Verfügung stehen. Das Datum der Erstellung können Sie dem Titelblatt der jeweiligen Markteintrittsstudie entnehmen."
             },
             {
@@ -287,7 +287,7 @@
             },
             {
                 "question": "Was genau erhalten Sie mit jeder Markteintrittsstudie?",
-                "answer": "Sie erhalten eine kompakte Marktanalyse mit den wichtigsten Informationen für Ihren erfolgreichen Markteintritt sowie ein sorgfältig recherchiertes Verzeichnis potenzieller Importeure und Distributoren. Im Gegensatz zu weit umfangreicheren Marktstudien anderer Anbieter umfassen unsere Markteintrittsstudien genau die Informationen, die Lieferanten tatsächlich brauchen, um in neuen Auslandsmärkten erfolgreich Fuß zu fassen.\nJede Markteintrittsstudie umfasst:\n— Marktübersicht und Branchensituation\n— Marktpotenzial und aktuelle Entwicklungen\n— Relevante Vertriebs- und Distributionskanäle\n— Potenzielle Importeure und Distributoren\n— Hinweise zur erfolgreichen Marktbearbeitung\n— Empfehlungen für die erste Kontaktaufnahme\n— Informationen über Anforderungen an potenzielle Lieferanten\nAufgrund unserer komprimierten Marktinformationen sparen Sie oft viele Tage oder sogar Wochen eigener Recherche und können sich mit klarem Fokus direkt auf den Aufbau neuer Geschäftsbeziehungen konzentrieren."
+                "answer": "Sie erhalten eine kompakte Marktanalyse mit den wichtigsten Informationen für Ihren erfolgreichen Markteintritt sowie sorgfältig recherchierte Profile potenzieller Importeure und Distributoren. Im Gegensatz zu weit umfangreicheren Marktstudien anderer Anbieter umfassen unsere Markteintrittsstudien genau die Informationen, die Lieferanten tatsächlich brauchen, um in neuen Auslandsmärkten erfolgreich Fuß zu fassen.\nJede Markteintrittsstudie umfasst:\n— Marktübersicht und Branchensituation\n— Marktpotenzial und aktuelle Entwicklungen\n— Relevante Vertriebs- und Distributionskanäle\n— Potenzielle Importeure und Distributoren\n— Hinweise zur erfolgreichen Marktbearbeitung\n— Empfehlungen für die erste Kontaktaufnahme\n— Informationen über Anforderungen an potenzielle Lieferanten\nAufgrund unserer komprimierten Marktinformationen sparen Sie oft viele Tage oder sogar Wochen eigener Recherche und können sich mit klarem Fokus direkt auf den Aufbau neuer Geschäftsbeziehungen konzentrieren."
             },
             {
                 "question": "Wie funktioniert die Bezahlung?",
@@ -385,7 +385,7 @@
         "verifiedEmails": "Öffentliche Quellen geprüft",
         "updatedAt": "Aktualisiert am {date}",
         "seeDetails": "Details ansehen",
-        "defaultDescription": "Markteintrittsstudie mit Branchenanalyse und Verzeichnis von Importeuren.",
+        "defaultDescription": "Markteintrittsstudie mit Branchenanalyse und Profile von Importeuren.",
         "searchLabel": "Studien im Katalog suchen",
         "filtersTitle": "Filter",
         "filtersSubtitle": "Grenzen Sie den Katalog nach Studienprofil ein.",
@@ -457,8 +457,8 @@
         "fieldReviewedAt": "Daten überprüft am",
         "fieldUpdatedAt": "Eintrag aktualisiert am",
         "notInformed": "Keine Angabe",
-        "previewTitle": "Unternehmen im Verzeichnis",
-        "previewSubtitle": "Eine Auswahl von {count} Unternehmen aus dem Verzeichnis am Ende der Studie.",
+        "previewTitle": "Wer in diesem Markt tätig ist",
+        "previewSubtitle": "Eine Auswahl von {count} in der Studie profilierten Unternehmen.",
         "previewColCompany": "Unternehmen",
         "previewColCountry": "Land",
         "previewColSector": "Branche",
@@ -468,7 +468,7 @@
         "includedEmail": "Vertriebs- und Distributionskanäle",
         "includedPhone": "Marktzugang und regulatorische Anforderungen",
         "includedLocation": "Produktgruppen mit den besten Aussichten",
-        "includedIndustry": "Kommentiertes Verzeichnis von Importeuren und Distributoren",
+        "includedIndustry": "Profile von Importeuren und Distributoren",
         "includedFormats": "Vollständige Studie als PDF",
         "oneOffNote": "Einmalkauf, kein Abonnement. Die Studie bleibt unter Meine Käufe verfügbar.",
         "benefitSecure": "Sichere Zahlung per Karte",
@@ -477,7 +477,7 @@
         "buyNow": "Jetzt kaufen",
         "signInToBuy": "Anmelden und kaufen",
         "notFound": "Studie nicht gefunden",
-        "metaFallbackDescription": "Markteintrittsstudie mit Branchenanalyse und Verzeichnis von Importeuren und Distributoren."
+        "metaFallbackDescription": "Markteintrittsstudie mit Branchenanalyse und Profile von Importeuren und Distributoren."
     },
     "checkout": {
         "stepCart": "Warenkorb",
@@ -560,7 +560,7 @@
         "emptyCta": "Katalog durchstöbern",
         "browseMoreLists": "Weitere Studien ansehen",
         "statStudies": "Markteintrittsstudien",
-        "guidanceReadTitle": "Beginnen Sie mit der Analyse, nicht mit dem Verzeichnis",
+        "guidanceReadTitle": "Beginnen Sie mit der Analyse, nicht mit den Profilen",
         "guidanceReadText": "Die Studie erklärt, was Importeure erwarten und wie die erste Kontaktaufnahme gelingt. Wer das vorher liest, verbrennt kein gutes Unternehmen an einer übereilten Ansprache.",
         "guidanceRequestTitle": "Brauchen Sie einen weiteren Markt?",
         "guidanceRequestText": "Unser Portfolio wächst mit der Nachfrage. Sagen Sie uns, welche Branche und welches Land Sie brauchen.",
@@ -569,7 +569,7 @@
     "about": {
         "meta": {
             "title": "Warum Easy Prospect — wie die Studien entstehen",
-            "description": "Markteintrittsstudien und Importeurs- und Distributorenverzeichnisse: woher die Daten stammen, wie jedes Unternehmen geprüft wird, was in jeder Studie steht und was wir nicht versprechen."
+            "description": "Markteintrittsstudien und Importeurs- und Distributorenprofile: woher die Daten stammen, wie jedes Unternehmen geprüft wird, was in jeder Studie steht und was wir nicht versprechen."
         },
         "cta": {
             "faq": "Zum FAQ",

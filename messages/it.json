@@ -117,17 +117,17 @@
         "hero": {
             "badge": "Studi di ingresso nel mercato per esportatori",
             "title": "Capisca il mercato prima di esportarvi.",
-            "subtitle": "Ogni studio riunisce l'analisi del mercato, i requisiti di accesso e una rubrica commentata di importatori e distributori del settore.",
+            "subtitle": "Ogni studio riunisce l'analisi del mercato, i requisiti di accesso e i profili delle aziende del settore.",
             "ctaPrimary": "Esplora il catalogo",
             "ctaSecondary": "Come funziona",
-            "trust1": "Analisi e rubrica in un unico PDF",
+            "trust1": "Analisi e profili in un unico PDF",
             "trust2": "Fonti pubbliche verificate",
             "trust3": "Aggiornamento regolare"
         },
         "intro": {
             "lede": "I nostri studi di ingresso nel mercato sono pensati per produttori, fabbricanti e titolari di marchio che vogliono capire un mercato estero prima di investirvi.",
             "p1": "Scelga per paese, settore o regione linguistica e riceva uno studio con il panorama del mercato, la struttura dei canali, i requisiti normativi e le categorie con le migliori prospettive.",
-            "p2": "Ogni studio si chiude con una rubrica commentata di importatori e distributori del settore: il profilo commerciale di ogni azienda, i canali che serve e il tipo di fornitore che cerca."
+            "p2": "Ogni studio si chiude con i profili delle aziende del settore: il posizionamento commerciale di ciascuna, i canali che serve e il tipo di fornitore che cerca."
         },
         "zielmaerkte": {
             "eyebrow": "Mercati target",
@@ -188,7 +188,7 @@
         },
         "lieferumfang": {
             "eyebrow": "Cosa è incluso",
-            "title": "Più di una rubrica di indirizzi.",
+            "title": "Più di semplici indirizzi aziendali.",
             "reportTitle": "Rapporto di mercato aggiornato incluso",
             "reportBody": "Ogni studio contiene un'analisi di mercato aggiornata, con informazioni preziose sul settore e sulle opportunità di vendita nel mercato di riferimento.",
             "listIntro": "Ricevi inoltre consigli pratici sui seguenti argomenti:",
@@ -225,12 +225,12 @@
         "daten": {
             "eyebrow": "Qualità dei dati",
             "title": "Dati rivisti periodicamente.",
-            "body": "Gli studi sono elaborati dalla nostra struttura e ogni azienda della rubrica viene verificata su fonti pubbliche — sito istituzionale, presenza digitale e registri disponibili — prima di entrare nel catalogo. Il catalogo viene rivisto periodicamente: quando uno studio non rispecchia più il mercato che descrive, esce dalla vendita."
+            "body": "Gli studi sono elaborati dalla nostra struttura e ogni azienda profilata viene verificata su fonti pubbliche — sito istituzionale, presenza digitale e registri disponibili — prima di entrare nel catalogo. Il catalogo viene rivisto periodicamente: quando uno studio non rispecchia più il mercato che descrive, esce dalla vendita."
         },
         "vorteil": {
             "eyebrow": "Il tuo vantaggio",
             "title": "Risparmia tempo e fai crescere il tuo successo commerciale.",
-            "body": "Invece di ricercare per settimane o mesi come funziona un mercato e chi vi opera, riceve l'analisi già pronta e una rubrica commentata di potenziali partner commerciali. Così può concentrarsi sull'essenziale: costruire con successo il suo commercio internazionale."
+            "body": "Invece di ricercare per settimane o mesi come funziona un mercato e chi vi opera, riceve l'analisi già pronta e i profili di potenziali partner commerciali. Così può concentrarsi sull'essenziale: costruire con successo il suo commercio internazionale."
         },
         "howItWorks": {
             "eyebrow": "Come funziona",
@@ -262,7 +262,7 @@
         },
         "meta": {
             "title": "Studi di ingresso nel mercato",
-            "description": "Studi di ingresso nel mercato per paese e settore: analisi, canali di distribuzione, requisiti normativi e rubrica di importatori."
+            "description": "Studi di ingresso nel mercato per paese e settore: analisi, canali di distribuzione, requisiti normativi e profili di importatori."
         }
     },
     "faq": {
@@ -385,7 +385,7 @@
         "verifiedEmails": "Fonti pubbliche verificate",
         "updatedAt": "Aggiornato il {date}",
         "seeDetails": "Vedi dettagli",
-        "defaultDescription": "Studio di ingresso nel mercato con analisi del settore e rubrica di importatori.",
+        "defaultDescription": "Studio di ingresso nel mercato con analisi del settore e profili di importatori.",
         "searchLabel": "Cerca studi nel catalogo",
         "filtersTitle": "Filtri",
         "filtersSubtitle": "Affini il catalogo per profilo dello studio.",
@@ -457,8 +457,8 @@
         "fieldReviewedAt": "Dati revisionati il",
         "fieldUpdatedAt": "Scheda aggiornata il",
         "notInformed": "Non specificato",
-        "previewTitle": "Aziende nella rubrica",
-        "previewSubtitle": "Un campione di {count} aziende dalla rubrica che chiude lo studio.",
+        "previewTitle": "Chi opera in questo mercato",
+        "previewSubtitle": "Un campione di {count} aziende profilate nello studio.",
         "previewColCompany": "Azienda",
         "previewColCountry": "Paese",
         "previewColSector": "Settore",
@@ -468,7 +468,7 @@
         "includedEmail": "Canali di vendita e distribuzione",
         "includedPhone": "Requisiti di accesso ed esigenze normative",
         "includedLocation": "Categorie con le migliori prospettive",
-        "includedIndustry": "Rubrica commentata di importatori e distributori",
+        "includedIndustry": "Profili di importatori e distributori",
         "includedFormats": "Studio completo in PDF",
         "oneOffNote": "Acquisto singolo, senza abbonamento. Lo studio resta disponibile in I miei acquisti.",
         "benefitSecure": "Pagamento sicuro tramite carta",
@@ -477,7 +477,7 @@
         "buyNow": "Acquista ora",
         "signInToBuy": "Accedi e acquista",
         "notFound": "Studio non trovato",
-        "metaFallbackDescription": "Studio di ingresso nel mercato con analisi del settore e rubrica di importatori e distributori."
+        "metaFallbackDescription": "Studio di ingresso nel mercato con analisi del settore e profili di importatori e distributori."
     },
     "checkout": {
         "stepCart": "Carrello",
@@ -560,7 +560,7 @@
         "emptyCta": "Esplora il catalogo",
         "browseMoreLists": "Vedi altri studi",
         "statStudies": "Studi di mercato",
-        "guidanceReadTitle": "Inizi dall'analisi, non dalla rubrica",
+        "guidanceReadTitle": "Inizi dall'analisi, non dai profili",
         "guidanceReadText": "Lo studio spiega che cosa si aspettano gli importatori e come impostare il primo contatto. Leggerlo prima evita di bruciare una buona azienda con un approccio affrettato.",
         "guidanceRequestTitle": "Ti serve un altro mercato?",
         "guidanceRequestText": "Il nostro portfolio cresce con la domanda. Dicci quale settore e quale paese ti servono.",
@@ -569,7 +569,7 @@
     "about": {
         "meta": {
             "title": "Perché Easy Prospect — come nascono gli studi",
-            "description": "Studi di ingresso nel mercato e directory di importatori e distributori: da dove vengono i dati, come viene verificata ogni azienda, cosa contiene ogni studio e cosa non promettiamo."
+            "description": "Studi di ingresso nel mercato con profili di importatori e distributori: da dove vengono i dati, come viene verificata ogni azienda, cosa contiene ogni studio e cosa non promettiamo."
         },
         "cta": {
             "faq": "Vedi le FAQ",
