@@ -5,6 +5,14 @@ import { alternatesFor } from "@/lib/i18n/alternates"
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || "https://www.easyprospect.com.br"
 
+// O sitemap é pré-renderizado no build. Sem isto, tirar uma lista do ar deixa a
+// URL dela no sitemap até o próximo deploy — foi o que aconteceu em 23.08.2026
+// com duas listas de teste, que continuaram sendo oferecidas ao buscador horas
+// depois de desativadas. Uma hora é curto o bastante para não sobreviver a uma
+// mudança de catálogo e longo o bastante para o arquivo não ser reconstruído a
+// cada visita de robô.
+export const revalidate = 3600
+
 // Rotas estáticas do funil: uma entrada por idioma publicado, com hreflang
 // de mão dupla via alternatesFor. `/blog` entra aqui (não mais no bloco
 // dinâmico abaixo) para não duplicar a URL do índice do blog.
