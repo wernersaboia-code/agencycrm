@@ -20,7 +20,7 @@ const privacyPt: LegalDocument = {
                 { kind: "lista", itens: [
                     "Dados de conta: nome, e-mail e avatar, fornecidos por você no cadastro e gerenciados pelo Supabase Auth.",
                     "Dados de compra: itens adquiridos, valor, moeda e histórico de download.",
-                    "Dados de pagamento: identificadores da transação no Stripe. Não recebemos nem armazenamos números de cartão.",
+                    "Dados de pagamento: identificadores da transação no provedor de pagamento. Não recebemos nem armazenamos números de cartão.",
                     "Dados de uso do site: páginas acessadas e eventos de navegação, apenas quando você aceita os cookies de medição.",
                     "Dados inseridos por você no CRM: contatos, empresas e registros de atividade que você importa ou cadastra.",
                     "Dados de contato profissional de terceiros: as empresas e pessoas de contato que compõem as listas do catálogo. Ver a seção específica abaixo.",
@@ -59,7 +59,7 @@ const privacyPt: LegalDocument = {
                 { kind: "paragrafo", texto: "Utilizamos prestadores de serviço para operações específicas, cada um com acesso apenas ao necessário:" },
                 { kind: "lista", itens: [
                     "Supabase — banco de dados, autenticação e armazenamento de arquivos.",
-                    "Stripe — processamento de pagamentos.",
+                    "Mercado Pago — processamento de pagamentos.",
                     "Vercel — hospedagem da aplicação e medição de desempenho.",
                     "Zoho — caixa do endereço de contato.",
                 ] },

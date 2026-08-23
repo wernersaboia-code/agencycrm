@@ -36,6 +36,8 @@ export async function generateMetadata({
         return {}
     }
 
+    const tMeta = await getTranslations({ locale, namespace: "landing.meta" })
+
     return {
         // Vinham do layout único que existia acima deste. Como agora ESTE é o
         // root layout do funil, precisam ser declarados aqui: sem
@@ -43,23 +45,28 @@ export async function generateMetadata({
         // no compartilhamento.
         metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://www.easyprospect.com.br"),
         manifest: "/manifest.json",
-        keywords: ["leads", "comércio exterior", "prospecção", "B2B", "importadores", "distribuidores", "marketplace", "importação", "exportação"],
+        // Título, descrição e cartões saem das mensagens do idioma. Antes eram
+        // três cópias de uma string em português — "Easy Prospect - Leads
+        // Qualificados de Comércio Exterior" — servida também ao visitante
+        // alemão e holandês, com `keywords` listando "leads" e "prospecção".
+        // Era a identidade legível por máquina do site inteiro contradizendo a
+        // vitrine, e o que um classificador de risco lê primeiro.
         title: {
-            absolute: "Easy Prospect - Leads Qualificados de Comércio Exterior",
+            absolute: `${tMeta("title")} | Easy Prospect`,
             template: "%s | Easy Prospect",
         },
-        description: "Encontre compradores e fornecedores internacionais com dados verificados e prontos para prospecção.",
+        description: tMeta("description"),
         openGraph: {
             type: "website",
             siteName: "Easy Prospect",
-            title: "Easy Prospect - Leads Qualificados de Comércio Exterior",
-            description: "Encontre compradores e fornecedores internacionais com dados verificados e prontos para prospecção.",
+            title: `${tMeta("title")} | Easy Prospect`,
+            description: tMeta("description"),
             images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
         },
         twitter: {
             card: "summary_large_image",
-            title: "Easy Prospect - Leads Qualificados de Comércio Exterior",
-            description: "Encontre compradores e fornecedores internacionais com dados verificados.",
+            title: `${tMeta("title")} | Easy Prospect`,
+            description: tMeta("description"),
             images: ["/opengraph-image"],
         },
         robots: robotsForLocale(locale),

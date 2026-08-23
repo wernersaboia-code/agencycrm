@@ -20,7 +20,7 @@ const privacyEn: LegalDocument = {
                 { kind: "lista", itens: [
                     "Account data: name, email and avatar, provided by you at sign-up and managed by Supabase Auth.",
                     "Purchase data: items bought, amount, currency and download history.",
-                    "Payment data: transaction identifiers at Stripe. We neither receive nor store card numbers.",
+                    "Payment data: transaction identifiers at the payment provider. We neither receive nor store card numbers.",
                     "Site usage data: pages visited and navigation events, only when you accept the measurement cookies.",
                     "Data you enter in the CRM: contacts, companies and activity records that you import or create.",
                     "Third-party professional contact data: the companies and contact people that make up the catalogue lists. See the dedicated section below.",
@@ -59,7 +59,7 @@ const privacyEn: LegalDocument = {
                 { kind: "paragrafo", texto: "We use service providers for specific operations, each with access only to what is necessary:" },
                 { kind: "lista", itens: [
                     "Supabase — database, authentication and file storage.",
-                    "Stripe — payment processing.",
+                    "Mercado Pago — payment processing.",
                     "Vercel — application hosting and performance measurement.",
                     "Zoho — mailbox for the contact address.",
                 ] },
