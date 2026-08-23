@@ -27,7 +27,6 @@ import {
     Download,
     FileText,
     Globe,
-    MailCheck,
     Shield,
     Target,
     Users,
@@ -244,10 +243,10 @@ export default async function ListPage({ params }: ListPageProps) {
                         <h2 className="mb-4 text-lg font-semibold text-foreground">{t("includedTitle")}</h2>
                         <div className="grid gap-3 sm:grid-cols-2">
                             <IncludedItem icon={Building2} text={t("includedCompany")} />
-                            <IncludedItem icon={MailCheck} text={t("includedEmail")} />
-                            <IncludedItem icon={Users} text={t("includedPhone")} />
-                            <IncludedItem icon={Globe} text={t("includedLocation")} />
-                            <IncludedItem icon={Target} text={t("includedIndustry")} />
+                            <IncludedItem icon={Globe} text={t("includedEmail")} />
+                            <IncludedItem icon={Shield} text={t("includedPhone")} />
+                            <IncludedItem icon={Target} text={t("includedLocation")} />
+                            <IncludedItem icon={Users} text={t("includedIndustry")} />
                             <IncludedItem icon={FileText} text={t("includedFormats")} />
                         </div>
                     </section>

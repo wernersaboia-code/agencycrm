@@ -27,7 +27,7 @@
                 "purchases": {
                     "title": "Mis compras",
                     "shortTitle": "Ver compras",
-                    "description": "Listas compradas, pedidos y descargas de archivos.",
+                    "description": "Estudios comprados, pedidos y descargas de archivos.",
                     "button": "Entrar en Mis compras"
                 },
                 "admin": {
@@ -62,7 +62,7 @@
             "success": "¡Cuenta creada correctamente!",
             "error": "Error al crear la cuenta",
             "benefitsTitle": "Beneficios",
-            "benefit1": "Acceso de por vida a las listas compradas",
+            "benefit1": "Acceso vitalicio a los estudios comprados",
             "benefit2": "Descargas ilimitadas del estudio en PDF que compraste",
             "benefit3": "Historial de pedidos y recibos en tu cuenta",
             "successTitle": "¡Cuenta creada correctamente! 🎉",
@@ -114,25 +114,25 @@
     },
     "landing": {
         "hero": {
-            "badge": "Marketplace de socios comerciales B2B verificados",
-            "title": "Listas calificadas de importadores y distribuidores para su comercio internacional.",
-            "subtitle": "Encuentre exactamente los socios comerciales que se ajustan a su producto y a su estrategia de exportación.",
+            "badge": "Estudios de entrada en mercado para exportadores",
+            "title": "Entienda el mercado antes de exportar a él.",
+            "subtitle": "Cada estudio reúne el análisis del mercado, los requisitos de acceso y un directorio comentado de importadores y distribuidores del sector.",
             "ctaPrimary": "Explorar catálogo",
             "ctaSecondary": "Cómo funciona",
-            "trust1": "Listo para usar de inmediato",
-            "trust2": "Empresas comprobadas",
+            "trust1": "Análisis y directorio en un mismo PDF",
+            "trust2": "Fuentes públicas verificadas",
             "trust3": "Actualización periódica"
         },
         "intro": {
-            "lede": "Nuestras listas calificadas de importadores y distribuidores están hechas para fabricantes, productores y titulares de marca que buscan nuevos socios comerciales en el extranjero.",
-            "p1": "Seleccione por país, sector, región lingüística o perfil de compra y reciba bases de datos listas para usar, actualizadas periódicamente.",
-            "p2": "Nuestras listas reúnen empresas contrastadas con fuentes públicas — su sitio web, su presencia digital y los registros disponibles — dentro del sector y el mercado que cada lista se propone cubrir. Cada lista incluye un estudio de mercado en PDF, para que evalúe el perfil de las empresas antes de iniciar el contacto."
+            "lede": "Nuestros estudios de entrada en mercado están hechos para fabricantes, productores y titulares de marca que quieren entender un mercado extranjero antes de invertir en él.",
+            "p1": "Elija por país, sector o región lingüística y reciba un estudio con el panorama del mercado, la estructura de canales, los requisitos regulatorios y las categorías con mayor potencial.",
+            "p2": "Cada estudio se cierra con un directorio comentado de importadores y distribuidores del sector: el perfil comercial de cada empresa, los canales que atiende y el tipo de proveedor que busca."
         },
         "zielmaerkte": {
             "eyebrow": "Mercados objetivo",
             "title": "Selección precisa según sus mercados objetivo.",
-            "intro": "Reciba listas para países individuales o regiones lingüísticas completas, por ejemplo:",
-            "note": "Además, hay listas específicas por sector para diversas industrias y grupos de productos. Paso a paso, ampliamos nuestra oferta con listas calificadas para mercados de todo el mundo.",
+            "intro": "Encontrará estudios para países individuales o para regiones lingüísticas completas, por ejemplo:",
+            "note": "Además, hay estudios específicos por sector para diversas industrias y grupos de productos. Paso a paso, ampliamos nuestra oferta con estudios para mercados de todo el mundo.",
             "regions": [
                 {
                     "flag": "DE",
@@ -164,7 +164,7 @@
         "einkaufsprofile": {
             "eyebrow": "Perfiles de compra",
             "title": "No todos los importadores son iguales.",
-            "intro": "Nuestras bases de datos distinguen varios perfiles de compra:",
+            "intro": "Los directorios de nuestros estudios diferencian varios perfiles de compra:",
             "close": "Así concentra sus actividades comerciales exactamente en los socios adecuados para su producto.",
             "cards": [
                 {
@@ -187,9 +187,9 @@
         },
         "lieferumfang": {
             "eyebrow": "Qué incluye",
-            "title": "Más que listas de direcciones.",
+            "title": "Más que un directorio de direcciones.",
             "reportTitle": "Informe de mercado actualizado incluido",
-            "reportBody": "Cada lista incluye un informe de mercado actualizado, con información valiosa sobre el sector y las oportunidades de venta en el mercado objetivo.",
+            "reportBody": "Cada estudio incluye un análisis de mercado actualizado, con información valiosa sobre el sector y las oportunidades de venta en el mercado objetivo.",
             "listIntro": "También recibe orientación práctica sobre los siguientes temas:",
             "close": "Así aumenta las posibilidades de éxito de su campaña de exportación desde el primer contacto.",
             "items": [
@@ -224,24 +224,24 @@
         "daten": {
             "eyebrow": "Calidad de los datos",
             "title": "Datos revisados periódicamente.",
-            "body": "Las listas las compila nuestra operación, y cada empresa se contrasta con fuentes públicas — su sitio web, su presencia digital y los registros disponibles — antes de entrar en el catálogo. El catálogo se revisa periódicamente: cuando una lista deja de reflejar el mercado que describe, la retiramos de la venta."
+            "body": "Los estudios los elabora nuestra propia operación, y cada empresa del directorio se verifica en fuentes públicas — sitio institucional, presencia digital y registros disponibles — antes de entrar en el catálogo. El catálogo se revisa periódicamente: cuando un estudio deja de reflejar el mercado que describe, se retira de la venta."
         },
         "vorteil": {
             "eyebrow": "Su ventaja",
             "title": "Ahorre tiempo y aumente su éxito comercial.",
-            "body": "En lugar de pasar semanas o meses investigando importadores y distribuidores adecuados, recibe de inmediato una selección calificada de potenciales socios comerciales que se ajustan a su producto y a su mercado objetivo. Así puede concentrarse en lo esencial: construir con éxito su comercio internacional."
+            "body": "En lugar de investigar durante semanas o meses cómo funciona un mercado y quién opera en él, recibe el análisis listo y un directorio comentado de posibles socios comerciales. Así puede concentrarse en lo esencial: construir con éxito su comercio internacional."
         },
         "howItWorks": {
             "eyebrow": "Cómo funciona",
-            "title": "De la búsqueda al archivo listo en tres pasos.",
+            "title": "Del catálogo al estudio en tres pasos.",
             "steps": [
                 {
                     "title": "Filtre",
-                    "body": "Explore por países, regiones lingüísticas, sectores y perfiles de compra, y encuentre las listas compatibles con su campaña."
+                    "body": "Navegue por países, regiones lingüísticas y sectores y encuentre el estudio de su mercado objetivo."
                 },
                 {
                     "title": "Compre",
-                    "body": "Revise la cobertura, el precio y los detalles del estudio antes de finalizar el pedido con un pago seguro."
+                    "body": "Revise la cobertura, el contenido y el precio del estudio antes de finalizar el pedido en un checkout seguro."
                 },
                 {
                     "title": "Descargue",
@@ -256,20 +256,20 @@
         },
         "cta": {
             "title": "¿Listo para construir su comercio internacional?",
-            "body": "Explore el catálogo y encuentre importadores y distribuidores calificados que se ajusten a su producto y mercado objetivo.",
+            "body": "Explore el catálogo y encuentre el estudio del mercado que quiere entender.",
             "button": "Explorar catálogo"
         },
         "meta": {
-            "title": "Listas de importadores y distribuidores",
-            "description": "Listas de importadores y distribuidores por país, sector y perfil de compra, con empresas verificadas en fuentes públicas. Para exportadores."
+            "title": "Estudios de entrada en mercado",
+            "description": "Estudios de entrada en mercado por país y sector: análisis, canales de distribución, requisitos regulatorios y directorio de importadores."
         }
     },
     "faq": {
         "page": {
             "title": "Preguntas frecuentes",
-            "subtitle": "Respuestas a las principales dudas sobre nuestras listas de importadores y distribuidores.",
+            "subtitle": "Respuestas a las principales dudas sobre nuestros estudios de entrada en mercado.",
             "metaTitle": "Preguntas frecuentes",
-            "metaDescription": "Respuestas a preguntas frecuentes sobre nuestras listas de importadores y distribuidores: calidad de los datos, formatos, pago y más."
+            "metaDescription": "Respuestas a preguntas frecuentes sobre nuestros estudios de entrada en mercado: metodología, actualización, formatos, pago y más."
         },
         "items": [
             {
@@ -290,15 +290,15 @@
             },
             {
                 "question": "¿Cómo funciona el pago?",
-                "answer": "El pago se realiza con tarjeta en el checkout del sitio, procesado por Stripe. En cuanto se confirma el pago, la compra aparece en Mis compras y se habilita la descarga."
+                "answer": "El pago se realiza con tarjeta en el checkout del sitio, procesado por un proveedor de pago certificado. En cuanto se confirma el pago, la compra aparece en Mis compras y se habilita la descarga."
             },
             {
-                "question": "¿Para qué países y sectores hay listas disponibles?",
+                "question": "¿Para qué países y sectores hay estudios disponibles?",
                 "answer": "Nuestro portfolio de estudios de entrada en el mercado se amplía constantemente. Nuestro objetivo es cubrir una gran variedad de sectores y países relevantes. Si necesitas un estudio para un sector concreto en un país concreto, escríbenos a través del formulario de contacto y haremos lo posible por incorporarlo al portfolio lo antes posible."
             },
             {
                 "question": "¿Cómo se gestiona la protección de datos (LGPD/GDPR)?",
-                "answer": "Las listas reúnen datos de contacto profesional recogidos de fuentes públicas: nombre de la empresa, país, sector, sitio web, correos y teléfonos institucionales — y, en algunas listas, también el nombre y el cargo de una persona de contacto. En la compra te pedimos tu nombre, correo e identificación fiscal, que usamos para procesar el pago y habilitar la descarga. Cualquier persona o empresa puede pedir la corrección o la eliminación de sus datos de nuestras listas: usa el formulario de contacto más abajo, en esta misma página. La política completa está en nuestra Política de Privacidad, en /privacy."
+                "answer": "Los estudios reúnen datos de contacto profesional recogidos de fuentes públicas: nombre de la empresa, país, sector, sitio web, correos y teléfonos institucionales — y, en algunos estudios, también el nombre y el cargo de una persona de contacto. En la compra te pedimos tu nombre, correo e identificación fiscal, que usamos para procesar el pago y habilitar la descarga. Cualquier persona o empresa puede pedir la corrección o la eliminación de sus datos de nuestros estudios: usa el formulario de contacto más abajo, en esta misma página. La política completa está en nuestra Política de Privacidad, en /privacy."
             }
         ],
         "form": {
@@ -328,7 +328,7 @@
         "title": "Su carrito",
         "items": "{count, plural, one {# artículo} other {# artículos}}",
         "empty": "Su carrito está vacío",
-        "emptyHint": "Agregue listas de leads para comenzar",
+        "emptyHint": "Añada un estudio para empezar",
         "seeCatalog": "Ver catálogo",
         "subtotal": "Subtotal",
         "review": "Revisar carrito",
@@ -339,64 +339,62 @@
         "openCartWithItems": "Abrir carrito, {count, plural, one {# artículo} other {# artículos}}",
         "removeItem": "Quitar \"{name}\" del carrito",
         "pageTitle": "Revisar carrito",
-        "pageSubtitle": "{count, plural, one {# lista seleccionada} other {# listas seleccionadas}}.",
+        "pageSubtitle": "{count, plural, one {# estudio seleccionado} other {# estudios seleccionados}}.",
         "summaryTitle": "Resumen del pedido",
         "summarySubtitle": "Revise los artículos antes de proceder al pago.",
         "total": "Total",
         "checkout": "Finalizar compra",
         "clear": "Vaciar carrito",
-        "emptyDesc": "Elija una lista en el catálogo para revisar precio, cobertura y formato antes de finalizar la compra.",
+        "emptyDesc": "Elija un estudio del catálogo para revisar precio, cobertura y formato antes de finalizar la compra.",
         "formats": "PDF",
         "remove": "Quitar",
-        "trustPayment": "Pago procesado por Stripe",
+        "trustPayment": "Pago procesado de forma segura",
         "trustSaved": "Pedido guardado en su cuenta",
         "trustDownload": "Descarga habilitada tras la confirmación",
         "trustReview": "Revise el pedido antes de pagar",
-        "currencyFellBack": "Una de las listas del carrito no tiene precio en esa moneda. El carrito volvió a euros.",
-        "itemUnavailable": "Una lista salió del catálogo y se eliminó de su carrito."
+        "currencyFellBack": "Uno de los estudios del carrito no tiene precio en esa moneda. El carrito volvió al euro.",
+        "itemUnavailable": "Un estudio salió del catálogo y se eliminó de su carrito."
     },
     "catalog": {
-        "metaTitle": "Catálogo de listas",
-        "badge": "Bases listas para prospección B2B",
-        "heroTitle": "Encuentre la lista adecuada antes de invertir tiempo en prospección manual",
-        "heroSubtitle": "Filtre por mercado, sector y categoría para comprar solo los datos que tienen sentido para su campaña.",
+        "metaTitle": "Catálogo de estudios",
+        "badge": "Estudios de entrada en mercado",
+        "heroTitle": "Elija el estudio del mercado que quiere entender",
+        "heroSubtitle": "Filtre por país, sector e idioma para encontrar el estudio que cubre su mercado objetivo.",
         "quickSearch": "Búsqueda rápida",
-        "searchPlaceholder": "Buscar por nombre, país, sector o descripción",
+        "searchPlaceholder": "Buscar por mercado, país, sector o descripción",
         "searchButton": "Buscar",
         "trustCompareTitle": "Compare",
-        "trustCompareDesc": "Vea volumen, países y sectores antes de decidir.",
+        "trustCompareDesc": "Vea el mercado, los países y los sectores cubiertos antes de decidir.",
         "trustBuyTitle": "Compre con seguridad",
         "trustBuyDesc": "Pago con tarjeta y pedido registrado en su cuenta.",
         "trustDownloadTitle": "Descargue al instante",
         "trustDownloadDesc": "Accede al PDF del estudio en cuanto se confirme el pago.",
-        "availableLists": "Listas disponibles",
+        "availableLists": "Estudios disponibles",
         "results": "{count, plural, one {# resultado} other {# resultados}} para los criterios actuales",
         "pageOf": "Página {page} de {pages}",
-        "statListsFound": "Listas encontradas",
-        "statLeadsOnPage": "Leads en esta página",
+        "statListsFound": "Estudios encontrados",
         "statActiveFilters": "Filtros activos",
         "statCurrentPage": "Página actual",
         "statCountriesOnPage": "Países en esta página",
-        "emptyTitle": "Ninguna lista coincide con los filtros actuales",
-        "emptyDesc": "Quite algunos filtros o busque un mercado más amplio para encontrar listas disponibles.",
+        "emptyTitle": "Ningún estudio coincide con los filtros actuales",
+        "emptyDesc": "Elimine algunos filtros o busque un mercado más amplio para encontrar estudios disponibles.",
         "clearFilters": "Limpiar filtros",
         "featured": "Destacado",
         "companies": "{count} empresas",
-        "verifiedEmails": "Contactos comprobados en fuentes públicas",
+        "verifiedEmails": "Fuentes públicas verificadas",
         "updatedAt": "Actualizada el {date}",
         "seeDetails": "Ver detalles",
-        "perLead": "{price} por lead",
-        "defaultDescription": "Base lista para prospección con empresas calificadas.",
-        "searchLabel": "Buscar listas en el catálogo",
+        "defaultDescription": "Estudio de entrada en mercado con análisis del sector y directorio de importadores.",
+        "searchLabel": "Buscar estudios en el catálogo",
         "filtersTitle": "Filtros",
-        "filtersSubtitle": "Refine el catálogo por perfil de lista.",
+        "filtersSubtitle": "Refine el catálogo por perfil del estudio.",
         "filtersOpen": "Filtros",
         "filtersActive": "{count, plural, one {# filtro activo} other {# filtros activos}}",
         "filterCountries": "Países",
         "filterIndustries": "Sectores",
-        "filterLanguages": "Idioma de la lista",
+        "filterLanguages": "Idioma del estudio",
         "loadErrorTitle": "No se pudo cargar el catálogo",
-        "loadErrorDesc": "Hubo un error al buscar las listas. Inténtelo de nuevo en unos instantes.",
+        "loadErrorDesc": "Hubo un fallo al buscar los estudios. Inténtelo de nuevo en unos instantes.",
         "loadErrorRetry": "Intentar de nuevo",
         "previousPage": "Página anterior",
         "nextPage": "Página siguiente",
@@ -444,48 +442,41 @@
         "back": "Volver al catálogo",
         "breadcrumbCatalog": "Catálogo",
         "featured": "Destacado",
-        "readyBadge": "Datos listos para descargar",
-        "quickLeads": "Leads",
-        "quickPricePerLead": "Precio/lead",
+        "readyBadge": "Estudio de entrada en mercado",
         "quickCountries": "Países",
         "quickLanguage": "Idioma",
         "quickReviewed": "Datos revisados",
         "introductionTitle": "Introducción",
-        "coverageTitle": "Cobertura de la lista",
-        "coverageSubtitle": "Use estas señales para validar si la base se ajusta a su campaña.",
+        "coverageTitle": "Qué cubre este estudio",
+        "coverageSubtitle": "Consulte el mercado, los sectores y la fecha de revisión antes de comprar.",
         "fieldName": "Nombre",
         "fieldCountries": "Países",
         "fieldLanguage": "Idioma",
-        "fieldTotalLeads": "Total de leads",
         "fieldIndustries": "Sectores",
-        "fieldPricePerLead": "Precio por lead",
         "fieldReviewedAt": "Datos revisados el",
         "fieldUpdatedAt": "Registro actualizado el",
         "notInformed": "No informado",
-        "previewTitle": "Vista previa de los datos",
-        "previewSubtitle": "Muestra de {count} registros para verificar estructura y calidad antes de comprar.",
+        "previewTitle": "Empresas del directorio",
+        "previewSubtitle": "Una muestra de {count} empresas del directorio que cierra el estudio.",
         "previewColCompany": "Empresa",
         "previewColCountry": "País",
         "previewColSector": "Sector",
-        "previewColEmail": "Correo",
-        "previewUnavailable": "Muestra no disponible para esta lista.",
+        "previewUnavailable": "Muestra no disponible para este estudio.",
         "includedTitle": "Qué incluye",
-        "includedCompany": "Nombre de la empresa",
-        "includedEmail": "Correo comercial comprobado en fuentes públicas",
-        "includedPhone": "Teléfono y contacto cuando esté disponible",
-        "includedLocation": "País, ciudad y sitio web",
-        "includedIndustry": "Sector de actividad",
-        "includedFormats": "Estudio en PDF",
-        "perLead": "{price} por lead",
-        "leadsIncluded": "{count} leads incluidos",
-        "oneOffNote": "Compra única, sin suscripción. El acceso queda disponible en el área Mis compras.",
+        "includedCompany": "Panorama del mercado y estructura del sector",
+        "includedEmail": "Canales de venta y distribución",
+        "includedPhone": "Requisitos de acceso y exigencias regulatorias",
+        "includedLocation": "Categorías con mayor potencial",
+        "includedIndustry": "Directorio comentado de importadores y distribuidores",
+        "includedFormats": "Estudio completo en PDF",
+        "oneOffNote": "Compra única, sin suscripción. El estudio queda disponible en Mis compras.",
         "benefitSecure": "Pago seguro con tarjeta",
         "benefitImmediate": "Descarga inmediata tras la confirmación",
         "benefitRecorded": "Registro de la compra en su cuenta",
         "buyNow": "Comprar ahora",
         "signInToBuy": "Iniciar sesión y comprar",
-        "notFound": "Lista no encontrada",
-        "metaFallbackDescription": "Estudio de mercado con importadores y distribuidores calificados."
+        "notFound": "Estudio no encontrado",
+        "metaFallbackDescription": "Estudio de entrada en mercado con análisis del sector y directorio de importadores y distribuidores."
     },
     "checkout": {
         "stepCart": "Carrito",
@@ -506,7 +497,7 @@
         "trustImmediateTitle": "Inmediato",
         "trustImmediateText": "Descarga habilitada tras la aprobación.",
         "summaryTitle": "Resumen",
-        "summaryItems": "{count, plural, one {# lista} other {# listas}} en el pedido",
+        "summaryItems": "{count, plural, one {# estudio} other {# estudios}} en el pedido",
         "total": "Total",
         "sessionExpiredPay": "Su sesión ha expirado. Inicie sesión de nuevo para completar la compra.",
         "sessionExpiredOrder": "Su sesión ha expirado. Inicie sesión de nuevo para ver el pedido.",
@@ -525,7 +516,7 @@
         "successMetaTitle": "Compra confirmada",
         "successMetaDescription": "Su compra se confirmó correctamente",
         "successTitle": "Compra confirmada",
-        "successSubtitle": "Su pedido fue aprobado y las listas ya están disponibles para descargar.",
+        "successSubtitle": "Su pedido fue aprobado y los estudios ya están disponibles para descargar.",
         "successOrder": "Pedido",
         "successLeadsReleased": "Estudios liberados",
         "successTotalPaid": "Total pagado",
@@ -568,7 +559,7 @@
         "emptyCta": "Explorar catálogo",
         "browseMoreLists": "Ver más estudios",
         "statStudies": "Estudios de mercado",
-        "guidanceReadTitle": "Empieza por el informe, no por la lista",
+        "guidanceReadTitle": "Empiece por el análisis, no por el directorio",
         "guidanceReadText": "El estudio explica qué esperan los importadores y cómo hacer el primer contacto. Leerlo antes evita quemar una buena empresa con un acercamiento apresurado.",
         "guidanceRequestTitle": "¿Necesitas otro mercado?",
         "guidanceRequestText": "Nuestro portfolio crece con la demanda. Dinos qué sector y qué país necesitas.",
@@ -602,7 +593,7 @@
     },
     "emails": {
         "common": {
-            "tagline": "Easy Prospect — listas cualificadas para el comercio internacional",
+            "tagline": "Easy Prospect — estudios de entrada en mercado para comercio internacional",
             "support": "¿Dudas? Responda a este correo o escriba al soporte."
         },
         "signup": {
@@ -627,16 +618,16 @@
             "subject": "Su compra está confirmada — pedido #{pedido}",
             "heading": "Compra confirmada",
             "greeting": "Hola {nome}:",
-            "intro": "Su pago se ha confirmado y sus listas están listas para descargar.",
+            "intro": "Su pago fue confirmado y sus estudios están listos para descargar.",
             "orderLabel": "Pedido",
             "dateLabel": "Fecha",
             "totalLabel": "Total",
             "itemsTitle": "Artículos comprados",
-            "accessIntro": "Haga clic en el botón de abajo para abrir su área de compras y descargar las listas:",
+            "accessIntro": "Haga clic en el botón de abajo para acceder a su área de compras y descargar los estudios:",
             "accessButton": "Ir a mis compras",
             "linkNote": "Este enlace es personal y válido durante 24 horas.",
             "catalogTitle": "Amplíe el alcance de su campaña",
-            "catalogText": "Explore listas de otros mercados y sectores para llegar a más socios comerciales.",
+            "catalogText": "Explore estudios de otros mercados y sectores para alcanzar más socios comerciales.",
             "catalogButton": "Ver el catálogo"
         }
     }

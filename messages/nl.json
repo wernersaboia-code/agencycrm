@@ -27,7 +27,7 @@
                 "purchases": {
                     "title": "Mijn aankopen",
                     "shortTitle": "Aankopen bekijken",
-                    "description": "Gekochte lijsten, bestellingen en bestand-downloads.",
+                    "description": "Gekochte studies, bestellingen en bestandsdownloads.",
                     "button": "Naar Mijn aankopen"
                 },
                 "admin": {
@@ -62,7 +62,7 @@
             "success": "Account succesvol aangemaakt!",
             "error": "Fout bij het aanmaken van het account",
             "benefitsTitle": "Voordelen",
-            "benefit1": "Levenslange toegang tot gekochte lijsten",
+            "benefit1": "Levenslange toegang tot gekochte studies",
             "benefit2": "Onbeperkt downloaden van de gekochte pdf-studie",
             "benefit3": "Bestelgeschiedenis en bonnen in uw account",
             "successTitle": "Account succesvol aangemaakt! 🎉",
@@ -114,25 +114,25 @@
     },
     "landing": {
         "hero": {
-            "badge": "Marketplace voor geverifieerde B2B-handelspartners",
-            "title": "Gekwalificeerde lijsten van importeurs en distributeurs voor uw internationale handel.",
-            "subtitle": "Vind precies de handelspartners die passen bij uw product en exportstrategie.",
+            "badge": "Markttoetredingsstudies voor exporteurs",
+            "title": "Begrijp de markt voordat u ernaartoe exporteert.",
+            "subtitle": "Elke studie combineert de marktanalyse, de toegangseisen en een becommentarieerde gids van importeurs en distributeurs in de sector.",
             "ctaPrimary": "Catalogus verkennen",
             "ctaSecondary": "Hoe het werkt",
-            "trust1": "Direct klaar voor gebruik",
-            "trust2": "Gecontroleerde bedrijven",
+            "trust1": "Analyse en gids in één PDF",
+            "trust2": "Openbare bronnen gecontroleerd",
             "trust3": "Regelmatig bijgewerkt"
         },
         "intro": {
-            "lede": "Onze gekwalificeerde lijsten van importeurs en distributeurs zijn ontwikkeld voor fabrikanten, producenten en merkeigenaren die op zoek zijn naar nieuwe handelspartners in het buitenland.",
-            "p1": "Selecteer op land, sector, taalgebied of inkoopprofiel en ontvang direct bruikbare databases die periodiek worden bijgewerkt.",
-            "p2": "Onze lijsten bevatten bedrijven die zijn getoetst aan openbare bronnen — bedrijfswebsite, digitale aanwezigheid en beschikbare registraties — binnen de sector en markt die elke lijst wil bestrijken. Bij elke lijst hoort een marktstudie in pdf, zodat u het profiel van de bedrijven kunt beoordelen voordat u contact opneemt."
+            "lede": "Onze markttoetredingsstudies zijn gemaakt voor fabrikanten, producenten en merkeigenaren die een buitenlandse markt willen begrijpen voordat zij erin investeren.",
+            "p1": "Kies op land, sector of taalgebied en ontvang een studie met het marktoverzicht, de kanaalstructuur, de regelgevende eisen en de categorieën met de beste vooruitzichten.",
+            "p2": "Elke studie sluit af met een becommentarieerde gids van importeurs en distributeurs in de sector: het commerciële profiel van elk bedrijf, de kanalen die het bedient en het type leverancier dat het zoekt."
         },
         "zielmaerkte": {
             "eyebrow": "Doelmarkten",
             "title": "Een nauwkeurige selectie op basis van uw doelmarkten.",
-            "intro": "U ontvangt lijsten voor afzonderlijke landen of hele taalgebieden, bijvoorbeeld:",
-            "note": "We bieden ook sectorspecifieke lijsten aan voor tal van industrieën en productgroepen. Stap voor stap breiden we ons aanbod uit met gekwalificeerde lijsten voor markten over de hele wereld.",
+            "intro": "U vindt studies voor afzonderlijke landen of voor hele taalgebieden, bijvoorbeeld:",
+            "note": "Daarnaast zijn er sectorspecifieke studies voor uiteenlopende industrieën en productgroepen. Stap voor stap breiden wij ons aanbod uit met studies voor markten wereldwijd.",
             "regions": [
                 {
                     "flag": "DE",
@@ -164,7 +164,7 @@
         "einkaufsprofile": {
             "eyebrow": "Inkoopprofielen",
             "title": "Niet alle importeurs zijn gelijk.",
-            "intro": "Onze databases onderscheiden verschillende inkoopprofielen:",
+            "intro": "De gidsen in onze studies onderscheiden verschillende inkoopprofielen:",
             "close": "Zo richt u uw commerciële activiteiten precies op de partners die bij uw product passen.",
             "cards": [
                 {
@@ -187,9 +187,9 @@
         },
         "lieferumfang": {
             "eyebrow": "Wat is inbegrepen",
-            "title": "Meer dan alleen adreslijsten.",
+            "title": "Meer dan een adressengids.",
             "reportTitle": "Actueel marktrapport inbegrepen",
-            "reportBody": "Elke lijst bevat een actueel marktrapport met waardevolle informatie over de sector en verkoopkansen in de doelmarkt.",
+            "reportBody": "Elke studie bevat een actuele marktanalyse, met waardevolle informatie over de sector en de verkoopkansen in de doelmarkt.",
             "listIntro": "U ontvangt ook praktische tips over de volgende onderwerpen:",
             "close": "Zo vergroot u vanaf het eerste contact de slagingskans van uw exportcampagne.",
             "items": [
@@ -224,24 +224,24 @@
         "daten": {
             "eyebrow": "Datakwaliteit",
             "title": "Periodiek herziene gegevens.",
-            "body": "De lijsten worden samengesteld door onze organisatie, en elk bedrijf wordt getoetst aan openbare bronnen — bedrijfswebsite, digitale aanwezigheid en beschikbare registraties — voordat het in de catalogus wordt opgenomen. De catalogus wordt periodiek herzien: zodra een lijst de markt die ze beschrijft niet meer weerspiegelt, halen we ze uit de verkoop."
+            "body": "De studies worden door onze eigen organisatie opgesteld en elk bedrijf in de gids wordt getoetst aan openbare bronnen — bedrijfswebsite, digitale aanwezigheid en beschikbare registers — voordat het in de catalogus komt. De catalogus wordt periodiek herzien: wanneer een studie de beschreven markt niet meer weergeeft, wordt zij uit de verkoop gehaald."
         },
         "vorteil": {
             "eyebrow": "Uw voordeel",
             "title": "Bespaar tijd en laat uw commercieel succes groeien.",
-            "body": "In plaats van weken of maanden te besteden aan het zoeken naar geschikte importeurs en distributeurs, ontvangt u direct een gekwalificeerde selectie van potentiële handelspartners die aansluiten bij uw product en doelmarkt. Zo kunt u zich concentreren op wat echt telt: het succesvol opbouwen van uw internationale handel."
+            "body": "In plaats van weken of maanden te onderzoeken hoe een markt werkt en wie erin actief is, ontvangt u de analyse kant-en-klaar, samen met een becommentarieerde gids van mogelijke handelspartners. Zo kunt u zich richten op de kern — het succesvol opbouwen van uw internationale handel."
         },
         "howItWorks": {
             "eyebrow": "Hoe het werkt",
-            "title": "Van zoekopdracht naar kant-en-klaar bestand in drie stappen.",
+            "title": "Van catalogus naar studie in drie stappen.",
             "steps": [
                 {
                     "title": "Filter",
-                    "body": "Blader op land, taalgebied, sector en inkoopprofiel om de lijsten te vinden die passen bij uw campagne."
+                    "body": "Blader door landen, taalgebieden en sectoren en vind de studie voor uw doelmarkt."
                 },
                 {
                     "title": "Koop",
-                    "body": "Controleer de dekking, de prijs en de details van de studie voordat u uw bestelling afrondt via een veilige betaling."
+                    "body": "Controleer de dekking, de inhoud en de prijs van de studie voordat u de bestelling afrondt in een beveiligde checkout."
                 },
                 {
                     "title": "Download",
@@ -256,20 +256,20 @@
         },
         "cta": {
             "title": "Klaar om uw internationale handel te laten groeien?",
-            "body": "Verken de catalogus en vind gekwalificeerde importeurs en distributeurs die aansluiten bij uw product en doelmarkt.",
+            "body": "Blader door de catalogus en vind de studie voor de markt die u wilt begrijpen.",
             "button": "Catalogus verkennen"
         },
         "meta": {
-            "title": "Lijsten van importeurs en distributeurs",
-            "description": "Lijsten van importeurs en distributeurs per land, sector en inkoopprofiel, met bedrijven gecontroleerd via openbare bronnen. Voor exporteurs."
+            "title": "Markttoetredingsstudies",
+            "description": "Markttoetredingsstudies per land en sector: marktanalyse, distributiekanalen, regelgevende eisen en een gids van importeurs. Voor exporteurs."
         }
     },
     "faq": {
         "page": {
             "title": "Veelgestelde vragen",
-            "subtitle": "Antwoorden op de belangrijkste vragen over onze lijsten van importeurs en distributeurs.",
+            "subtitle": "Antwoorden op de belangrijkste vragen over onze markttoetredingsstudies.",
             "metaTitle": "FAQ",
-            "metaDescription": "Antwoorden op veelgestelde vragen over onze lijsten van importeurs en distributeurs: datakwaliteit, formaten, betaling en meer."
+            "metaDescription": "Antwoorden op veelgestelde vragen over onze markttoetredingsstudies: methodiek, actualisering, formaten, betaling en meer."
         },
         "items": [
             {
@@ -290,15 +290,15 @@
             },
             {
                 "question": "Hoe werkt de betaling?",
-                "answer": "Betalen gaat via creditcard in de checkout van de site, verwerkt door Stripe. Zodra de betaling is bevestigd, verschijnt de aankoop onder Mijn aankopen en wordt de download vrijgegeven."
+                "answer": "Betalen gaat via creditcard in de checkout van de site, verwerkt door een gecertificeerde betaaldienstverlener. Zodra de betaling is bevestigd, verschijnt de aankoop onder Mijn aankopen en wordt de download vrijgegeven."
             },
             {
-                "question": "Voor welke landen en branches zijn er lijsten beschikbaar?",
+                "question": "Voor welke landen en sectoren zijn studies beschikbaar?",
                 "answer": "Ons portfolio aan marktentreestudies wordt voortdurend uitgebreid. Ons doel is een groot aantal relevante branches en landen te dekken. Hebt u een marktentreestudie nodig voor een bepaalde branche in een bepaald land? Laat het ons weten via het contactformulier — wij doen ons best de studie zo snel mogelijk aan ons portfolio toe te voegen."
             },
             {
                 "question": "Hoe zit het met gegevensbescherming (AVG/LGPD)?",
-                "answer": "De lijsten bevatten zakelijke contactgegevens uit openbare bronnen: bedrijfsnaam, land, sector, website, algemene e-mailadressen en telefoonnummers — en in sommige lijsten ook de naam en functie van een contactpersoon. Bij een aankoop vragen we uw naam, e-mailadres en fiscaal nummer, die we gebruiken om de betaling te verwerken en de download vrij te geven. Iedere persoon of onderneming kan vragen om correctie of verwijdering van de eigen gegevens uit onze lijsten: gebruik daarvoor het contactformulier verderop op deze pagina. Het volledige beleid staat in ons Privacybeleid, op /privacy."
+                "answer": "De studies bevatten zakelijke contactgegevens uit openbare bronnen: bedrijfsnaam, land, sector, website, algemene e-mailadressen en telefoonnummers — en in sommige studies ook de naam en functie van een contactpersoon. Bij een aankoop vragen we uw naam, e-mailadres en fiscaal nummer, die we gebruiken om de betaling te verwerken en de download vrij te geven. Iedere persoon of onderneming kan vragen om correctie of verwijdering van de eigen gegevens uit onze studies: gebruik daarvoor het contactformulier verderop op deze pagina. Het volledige beleid staat in ons Privacybeleid, op /privacy."
             }
         ],
         "form": {
@@ -328,7 +328,7 @@
         "title": "Uw winkelwagen",
         "items": "{count, plural, one {# item} other {# items}}",
         "empty": "Uw winkelwagen is leeg",
-        "emptyHint": "Voeg leadlijsten toe om te beginnen",
+        "emptyHint": "Voeg een studie toe om te beginnen",
         "seeCatalog": "Catalogus bekijken",
         "subtotal": "Subtotaal",
         "review": "Winkelwagen controleren",
@@ -339,64 +339,62 @@
         "openCartWithItems": "Winkelwagen openen, {count, plural, one {# item} other {# items}}",
         "removeItem": "\"{name}\" uit winkelwagen verwijderen",
         "pageTitle": "Winkelwagen controleren",
-        "pageSubtitle": "{count, plural, one {# geselecteerde lijst} other {# geselecteerde lijsten}}.",
+        "pageSubtitle": "{count, plural, one {# studie geselecteerd} other {# studies geselecteerd}}.",
         "summaryTitle": "Besteloverzicht",
         "summarySubtitle": "Controleer de items voordat u verdergaat naar de betaling.",
         "total": "Totaal",
         "checkout": "Aankoop afronden",
         "clear": "Winkelwagen leegmaken",
-        "emptyDesc": "Kies een lijst uit de catalogus om prijs, dekking en formaat te controleren voordat u de aankoop afrondt.",
+        "emptyDesc": "Kies een studie uit de catalogus om prijs, dekking en formaat te bekijken voordat u afrekent.",
         "formats": "PDF",
         "remove": "Verwijderen",
-        "trustPayment": "Betaling verwerkt door Stripe",
+        "trustPayment": "Betaling veilig verwerkt",
         "trustSaved": "Bestelling opgeslagen in uw account",
         "trustDownload": "Download beschikbaar na bevestiging",
         "trustReview": "U controleert de bestelling voordat u betaalt",
-        "currencyFellBack": "Een van de lijsten in uw winkelwagen heeft geen prijs in die valuta. De winkelwagen staat weer in euro's.",
-        "itemUnavailable": "Een lijst is uit de catalogus gehaald en uit uw winkelwagen verwijderd."
+        "currencyFellBack": "Een van de studies in uw winkelwagen heeft geen prijs in die valuta. De winkelwagen staat weer op euro.",
+        "itemUnavailable": "Een studie is uit de catalogus gehaald en is uit uw winkelwagen verwijderd."
     },
     "catalog": {
-        "metaTitle": "Catalogus met lijsten",
-        "badge": "Kant-en-klare databases voor B2B-prospectie",
-        "heroTitle": "Vind de juiste lijst voordat u tijd verliest aan handmatige prospectie",
-        "heroSubtitle": "Filter op markt, sector en categorie om alleen relevante gegevens voor uw campagne te kopen.",
+        "metaTitle": "Catalogus van studies",
+        "badge": "Markttoetredingsstudies",
+        "heroTitle": "Kies de studie voor de markt die u wilt begrijpen",
+        "heroSubtitle": "Filter op land, sector en taal om de studie te vinden die uw doelmarkt behandelt.",
         "quickSearch": "Snel zoeken",
-        "searchPlaceholder": "Zoek op naam, land, sector of omschrijving",
+        "searchPlaceholder": "Zoek op markt, land, sector of omschrijving",
         "searchButton": "Zoeken",
         "trustCompareTitle": "Vergelijk",
-        "trustCompareDesc": "Bekijk volume, landen en sectoren voordat u beslist.",
+        "trustCompareDesc": "Bekijk de markt, landen en behandelde sectoren voordat u beslist.",
         "trustBuyTitle": "Veilig kopen",
         "trustBuyDesc": "Betaling met kaart en bestelling opgeslagen in uw account.",
         "trustDownloadTitle": "Direct downloaden",
         "trustDownloadDesc": "Ontvang de studie-PDF zodra de betaling is bevestigd.",
-        "availableLists": "Beschikbare lijsten",
+        "availableLists": "Beschikbare studies",
         "results": "{count, plural, one {# resultaat} other {# resultaten}} voor de huidige criteria",
         "pageOf": "Pagina {page} van {pages}",
-        "statListsFound": "Gevonden lijsten",
-        "statLeadsOnPage": "Leads op deze pagina",
+        "statListsFound": "Gevonden studies",
         "statActiveFilters": "Actieve filters",
         "statCurrentPage": "Huidige pagina",
         "statCountriesOnPage": "Landen op deze pagina",
-        "emptyTitle": "Geen enkele lijst voldoet aan de huidige filters",
-        "emptyDesc": "Verwijder enkele filters of zoek in een bredere markt om beschikbare lijsten te vinden.",
+        "emptyTitle": "Geen studie komt overeen met de huidige filters",
+        "emptyDesc": "Verwijder enkele filters of zoek naar een bredere markt om beschikbare studies te vinden.",
         "clearFilters": "Filters wissen",
         "featured": "Uitgelicht",
         "companies": "{count} bedrijven",
-        "verifiedEmails": "Contacten gecontroleerd in openbare bronnen",
+        "verifiedEmails": "Openbare bronnen gecontroleerd",
         "updatedAt": "Bijgewerkt op {date}",
         "seeDetails": "Details bekijken",
-        "perLead": "{price} per lead",
-        "defaultDescription": "Kant-en-klare database voor prospectie met gekwalificeerde bedrijven.",
-        "searchLabel": "Zoek lijsten in de catalogus",
+        "defaultDescription": "Markttoetredingsstudie met sectoranalyse en een gids van importeurs.",
+        "searchLabel": "Zoek studies in de catalogus",
         "filtersTitle": "Filters",
-        "filtersSubtitle": "Verfijn de catalogus op basis van het lijstprofiel.",
+        "filtersSubtitle": "Verfijn de catalogus op studieprofiel.",
         "filtersOpen": "Filters",
         "filtersActive": "{count, plural, one {# actief filter} other {# actieve filters}}",
         "filterCountries": "Landen",
         "filterIndustries": "Sectoren",
-        "filterLanguages": "Taal van de lijst",
-        "loadErrorTitle": "Catalogus kan niet worden geladen",
-        "loadErrorDesc": "Er is een fout opgetreden bij het ophalen van de lijsten. Probeer het over een moment opnieuw.",
+        "filterLanguages": "Taal van de studie",
+        "loadErrorTitle": "De catalogus kon niet worden geladen",
+        "loadErrorDesc": "Er ging iets mis bij het ophalen van de studies. Probeer het zo dadelijk opnieuw.",
         "loadErrorRetry": "Opnieuw proberen",
         "previousPage": "Vorige pagina",
         "nextPage": "Volgende pagina",
@@ -444,48 +442,41 @@
         "back": "Terug naar catalogus",
         "breadcrumbCatalog": "Catalogus",
         "featured": "Uitgelicht",
-        "readyBadge": "Gegevens klaar om te downloaden",
-        "quickLeads": "Leads",
-        "quickPricePerLead": "Prijs/lead",
+        "readyBadge": "Markttoetredingsstudie",
         "quickCountries": "Landen",
         "quickLanguage": "Taal",
         "quickReviewed": "Gegevens gecontroleerd",
         "introductionTitle": "Inleiding",
-        "coverageTitle": "Dekking van de lijst",
-        "coverageSubtitle": "Gebruik deze indicatoren om te controleren of de database past bij uw campagne.",
+        "coverageTitle": "Wat deze studie behandelt",
+        "coverageSubtitle": "Bekijk de markt, de sectoren en de herzieningsdatum voordat u koopt.",
         "fieldName": "Naam",
         "fieldCountries": "Landen",
         "fieldLanguage": "Taal",
-        "fieldTotalLeads": "Totaal aantal leads",
         "fieldIndustries": "Sectoren",
-        "fieldPricePerLead": "Prijs per lead",
         "fieldReviewedAt": "Gegevens gecontroleerd op",
         "fieldUpdatedAt": "Record bijgewerkt op",
         "notInformed": "Niet opgegeven",
-        "previewTitle": "Voorbeeld van de gegevens",
-        "previewSubtitle": "Steekproef van {count} records om structuur en kwaliteit te controleren voor aankoop.",
+        "previewTitle": "Bedrijven in de gids",
+        "previewSubtitle": "Een selectie van {count} bedrijven uit de gids aan het eind van de studie.",
         "previewColCompany": "Bedrijf",
         "previewColCountry": "Land",
         "previewColSector": "Sector",
-        "previewColEmail": "E-mail",
-        "previewUnavailable": "Geen steekproef beschikbaar voor deze lijst.",
+        "previewUnavailable": "Geen voorbeeld beschikbaar voor deze studie.",
         "includedTitle": "Wat is inbegrepen",
-        "includedCompany": "Bedrijfsnaam",
-        "includedEmail": "Zakelijk e-mailadres gecontroleerd in openbare bronnen",
-        "includedPhone": "Telefoon en contactpersoon indien beschikbaar",
-        "includedLocation": "Land, stad en website",
-        "includedIndustry": "Bedrijfssector",
-        "includedFormats": "Studie in pdf",
-        "perLead": "{price} per lead",
-        "leadsIncluded": "{count} leads inbegrepen",
-        "oneOffNote": "Eenmalige aankoop, zonder abonnement. Toegang blijft beschikbaar in Mijn aankopen.",
+        "includedCompany": "Marktoverzicht en structuur van de sector",
+        "includedEmail": "Verkoop- en distributiekanalen",
+        "includedPhone": "Markttoegang en regelgevende eisen",
+        "includedLocation": "Productgroepen met de beste vooruitzichten",
+        "includedIndustry": "Becommentarieerde gids van importeurs en distributeurs",
+        "includedFormats": "Volledige studie als PDF",
+        "oneOffNote": "Eenmalige aankoop, geen abonnement. De studie blijft beschikbaar onder Mijn aankopen.",
         "benefitSecure": "Veilig betalen met kaart",
         "benefitImmediate": "Direct downloaden na bevestiging",
         "benefitRecorded": "Aankoop geregistreerd in uw account",
         "buyNow": "Nu kopen",
         "signInToBuy": "Inloggen en kopen",
-        "notFound": "Lijst niet gevonden",
-        "metaFallbackDescription": "Marktstudie met gekwalificeerde importeurs en distributeurs."
+        "notFound": "Studie niet gevonden",
+        "metaFallbackDescription": "Markttoetredingsstudie met sectoranalyse en een gids van importeurs en distributeurs."
     },
     "checkout": {
         "stepCart": "Winkelwagen",
@@ -506,7 +497,7 @@
         "trustImmediateTitle": "Direct",
         "trustImmediateText": "Download ontgrendeld na goedkeuring.",
         "summaryTitle": "Overzicht",
-        "summaryItems": "{count, plural, one {# lijst} other {# lijsten}} in de bestelling",
+        "summaryItems": "{count, plural, one {# studie} other {# studies}} in de bestelling",
         "total": "Totaal",
         "sessionExpiredPay": "Uw sessie is verlopen. Log opnieuw in om de aankoop af te ronden.",
         "sessionExpiredOrder": "Uw sessie is verlopen. Log opnieuw in om de bestelling te bekijken.",
@@ -525,7 +516,7 @@
         "successMetaTitle": "Aankoop bevestigd",
         "successMetaDescription": "Uw aankoop is succesvol bevestigd",
         "successTitle": "Aankoop bevestigd",
-        "successSubtitle": "Uw bestelling is goedgekeurd en de lijsten zijn nu beschikbaar om te downloaden.",
+        "successSubtitle": "Uw bestelling is goedgekeurd en de studies staan klaar om te downloaden.",
         "successOrder": "Bestelling",
         "successLeadsReleased": "Ontgrendelde studies",
         "successTotalPaid": "Totaal betaald",
@@ -568,7 +559,7 @@
         "emptyCta": "Catalogus verkennen",
         "browseMoreLists": "Meer studies bekijken",
         "statStudies": "Marktentreestudies",
-        "guidanceReadTitle": "Begin bij het rapport, niet bij de lijst",
+        "guidanceReadTitle": "Begin met de analyse, niet met de gids",
         "guidanceReadText": "De studie legt uit wat importeurs verwachten en hoe u het eerste contact aanpakt. Dat vooraf lezen voorkomt dat u een goed bedrijf verspeelt met een overhaaste benadering.",
         "guidanceRequestTitle": "Een andere markt nodig?",
         "guidanceRequestText": "Ons portfolio groeit mee met de vraag. Laat ons weten welke branche en welk land u nodig hebt.",
@@ -602,7 +593,7 @@
     },
     "emails": {
         "common": {
-            "tagline": "Easy Prospect — gekwalificeerde lijsten voor internationale handel",
+            "tagline": "Easy Prospect — markttoetredingsstudies voor internationale handel",
             "support": "Vragen? Beantwoord deze e-mail of neem contact op met de klantenservice."
         },
         "signup": {
@@ -627,16 +618,16 @@
             "subject": "Uw aankoop is bevestigd — bestelling #{pedido}",
             "heading": "Aankoop bevestigd",
             "greeting": "Hallo {nome},",
-            "intro": "Uw betaling is bevestigd en uw lijsten staan klaar om te downloaden.",
+            "intro": "Uw betaling is bevestigd en uw studies staan klaar om te downloaden.",
             "orderLabel": "Bestelling",
             "dateLabel": "Datum",
             "totalLabel": "Totaal",
             "itemsTitle": "Gekochte artikelen",
-            "accessIntro": "Klik op de knop hieronder om uw aankopenoverzicht te openen en de lijsten te downloaden:",
+            "accessIntro": "Klik op de knop hieronder om naar uw aankopen te gaan en de studies te downloaden:",
             "accessButton": "Naar mijn aankopen",
             "linkNote": "Deze link is persoonlijk en 24 uur geldig.",
             "catalogTitle": "Vergroot het bereik van uw campagne",
-            "catalogText": "Ontdek lijsten uit andere markten en sectoren om meer handelspartners te bereiken.",
+            "catalogText": "Ontdek studies voor andere markten en sectoren om meer handelspartners te bereiken.",
             "catalogButton": "Bekijk de catalogus"
         }
     }

@@ -27,7 +27,7 @@
                 "purchases": {
                     "title": "My purchases",
                     "shortTitle": "View purchases",
-                    "description": "Purchased lists, orders and file downloads.",
+                    "description": "Studies purchased, orders and file downloads.",
                     "button": "Go to My purchases"
                 },
                 "admin": {
@@ -62,7 +62,7 @@
             "success": "Account created successfully!",
             "error": "Error creating account",
             "benefitsTitle": "Benefits",
-            "benefit1": "Lifetime access to purchased lists",
+            "benefit1": "Lifetime access to the studies you buy",
             "benefit2": "Unlimited downloads of the PDF study you bought",
             "benefit3": "Order history and receipts in your account",
             "successTitle": "Account created successfully! 🎉",
@@ -114,25 +114,25 @@
     },
     "landing": {
         "hero": {
-            "badge": "Marketplace of verified B2B trading partners",
-            "title": "Qualified importer and distributor lists for your international trade.",
-            "subtitle": "Find exactly the trading partners that fit your product and your export strategy.",
+            "badge": "Market entry studies for exporters",
+            "title": "Understand the market before you export to it.",
+            "subtitle": "Each study brings together the market analysis, the access requirements and an annotated directory of importers and distributors in the sector.",
             "ctaPrimary": "Browse catalog",
             "ctaSecondary": "How it works",
-            "trust1": "Ready for immediate use",
-            "trust2": "Companies checked",
+            "trust1": "Analysis and directory in one PDF",
+            "trust2": "Public sources checked",
             "trust3": "Regularly updated"
         },
         "intro": {
-            "lede": "Our qualified importer and distributor lists are built for manufacturers, producers, and brand owners looking for new trading partners abroad.",
-            "p1": "Select by country, industry, language region, or buying profile and receive ready-to-use databases, updated periodically.",
-            "p2": "Our lists bring together companies checked against public sources — their website, digital presence and available public records — within the industry and market each list sets out to cover. Every list comes with a PDF market study, so you can assess the companies' profile before reaching out."
+            "lede": "Our market entry studies are written for manufacturers, producers and brand owners who want to understand a foreign market before investing in it.",
+            "p1": "Choose by country, sector or language region and receive a study covering the market overview, the channel structure, the regulatory requirements and the categories with the strongest prospects.",
+            "p2": "Each study closes with an annotated directory of importers and distributors in the sector: the commercial profile of each company, the channels it serves and the kind of supplier it is looking for."
         },
         "zielmaerkte": {
             "eyebrow": "Target markets",
             "title": "Precise selection by your target markets.",
-            "intro": "You get lists for individual countries or entire language regions, for example:",
-            "note": "We also offer industry-specific lists for a range of sectors and product groups. Step by step, we're expanding our offering with qualified lists for markets around the world.",
+            "intro": "You will find studies for individual countries or for entire language regions, for example:",
+            "note": "There are also sector-specific studies for a range of industries and product groups. Step by step, we are expanding our offering with studies for markets worldwide.",
             "regions": [
                 {
                     "flag": "DE",
@@ -164,7 +164,7 @@
         "einkaufsprofile": {
             "eyebrow": "Buying profiles",
             "title": "Not every importer is the same.",
-            "intro": "Our databases distinguish between several buying profiles:",
+            "intro": "The directories in our studies distinguish several buying profiles:",
             "close": "This lets you focus your sales activities exactly on the trading partners suited to your product.",
             "cards": [
                 {
@@ -187,9 +187,9 @@
         },
         "lieferumfang": {
             "eyebrow": "What's included",
-            "title": "More than address lists.",
+            "title": "More than a directory of addresses.",
             "reportTitle": "Up-to-date market report included",
-            "reportBody": "Every list includes an up-to-date market report with valuable information on the industry and sales opportunities in the target market.",
+            "reportBody": "Each study carries an up-to-date market analysis, with valuable information about the sector and the sales opportunities in the target market.",
             "listIntro": "You also get practical guidance on the following topics:",
             "close": "This increases your export campaign's chances of success right from the first contact.",
             "items": [
@@ -224,24 +224,24 @@
         "daten": {
             "eyebrow": "Data quality",
             "title": "Data reviewed periodically.",
-            "body": "Lists are compiled by our operation, and each company is checked against public sources — its website, its digital presence and available public records — before it enters the catalogue. The catalogue is reviewed periodically: when a list no longer reflects the market it describes, we take it off sale."
+            "body": "The studies are produced by our own operation, and every company in the directory is checked against public sources — corporate website, digital presence and available registers — before it enters the catalogue. The catalogue is reviewed periodically: when a study no longer reflects the market it describes, it is withdrawn from sale."
         },
         "vorteil": {
             "eyebrow": "Your advantage",
             "title": "Save time and increase your sales success.",
-            "body": "Instead of spending weeks or months researching suitable importers and distributors, you immediately receive a qualified selection of potential trading partners that fit your product and your target market. This lets you focus on what matters — successfully building your international trade."
+            "body": "Instead of spending weeks or months researching how a market works and who operates in it, you receive the analysis ready to use, together with an annotated directory of potential trading partners. That lets you concentrate on what matters — building your international trade successfully."
         },
         "howItWorks": {
             "eyebrow": "How it works",
-            "title": "From search to ready-to-use file in three steps.",
+            "title": "From catalogue to study in three steps.",
             "steps": [
                 {
                     "title": "Filter",
-                    "body": "Browse by countries, language regions, industries, and buying profiles to find lists that fit your campaign."
+                    "body": "Browse countries, language regions and sectors to find the study for your target market."
                 },
                 {
                     "title": "Buy",
-                    "body": "Review the coverage, price, and study details before completing your order with secure checkout."
+                    "body": "Review the coverage, the contents and the price of the study before completing your order in a secure checkout."
                 },
                 {
                     "title": "Download",
@@ -256,20 +256,20 @@
         },
         "cta": {
             "title": "Ready to build your international trade?",
-            "body": "Browse the catalog and find qualified importers and distributors that fit your product and target market.",
+            "body": "Browse the catalogue and find the study for the market you want to understand.",
             "button": "Browse catalog"
         },
         "meta": {
-            "title": "Importer and distributor lists",
-            "description": "Importer and distributor lists by country, sector and buying profile, with companies checked against public sources. For exporters."
+            "title": "Market entry studies",
+            "description": "Market entry studies by country and sector: market analysis, distribution channels, regulatory requirements and a directory of importers. For exporters."
         }
     },
     "faq": {
         "page": {
             "title": "Frequently asked questions",
-            "subtitle": "Answers to the most common questions about our importer and distributor lists.",
+            "subtitle": "Answers to the most common questions about our market entry studies.",
             "metaTitle": "FAQ",
-            "metaDescription": "Answers to frequently asked questions about our importer and distributor lists: data quality, formats, payment, and more."
+            "metaDescription": "Answers to frequently asked questions about our market entry studies: methodology, updates, formats, payment and more."
         },
         "items": [
             {
@@ -290,15 +290,15 @@
             },
             {
                 "question": "How does payment work?",
-                "answer": "Payment is handled by credit card in the site checkout, processed by Stripe. As soon as the payment is confirmed, the purchase appears under My purchases and the download is unlocked."
+                "answer": "Payment is handled by credit card in the site checkout, processed by a certified payment provider. As soon as the payment is confirmed, the purchase appears under My purchases and the download is unlocked."
             },
             {
-                "question": "Which countries and industries are lists available for?",
+                "question": "Which countries and sectors are studies available for?",
                 "answer": "Our portfolio of market entry studies is expanding continuously. Our goal is to cover a wide range of relevant industries and countries. If you need a market entry study for a particular industry in a particular country, let us know via our contact form — we will do our best to add that study to our portfolio as soon as possible."
             },
             {
                 "question": "What about data protection (LGPD/GDPR)?",
-                "answer": "The lists hold business contact data collected from publicly available sources: company name, country, industry, website, general e-mail addresses and phone numbers — and, in some lists, the name and role of a contact person as well. When you buy, we ask for your name, e-mail and tax id, used to process the payment and release the download. Any person or company can ask us to correct or remove their data from our lists: use the contact form further down this same page. The full policy is in our Privacy Policy, at /privacy."
+                "answer": "The studies hold business contact data collected from publicly available sources: company name, country, industry, website, general e-mail addresses and phone numbers — and, in some studies, the name and role of a contact person as well. When you buy, we ask for your name, e-mail and tax id, used to process the payment and release the download. Any person or company can ask us to correct or remove their data from our studies: use the contact form further down this same page. The full policy is in our Privacy Policy, at /privacy."
             }
         ],
         "form": {
@@ -328,7 +328,7 @@
         "title": "Your cart",
         "items": "{count, plural, one {# item} other {# items}}",
         "empty": "Your cart is empty",
-        "emptyHint": "Add lead lists to get started",
+        "emptyHint": "Add a study to get started",
         "seeCatalog": "View catalog",
         "subtotal": "Subtotal",
         "review": "Review cart",
@@ -339,64 +339,62 @@
         "openCartWithItems": "Open cart, {count, plural, one {# item} other {# items}}",
         "removeItem": "Remove \"{name}\" from cart",
         "pageTitle": "Review cart",
-        "pageSubtitle": "{count, plural, one {# selected list} other {# selected lists}}.",
+        "pageSubtitle": "{count, plural, one {# study selected} other {# studies selected}}.",
         "summaryTitle": "Order summary",
         "summarySubtitle": "Check the items before proceeding to payment.",
         "total": "Total",
         "checkout": "Checkout",
         "clear": "Clear cart",
-        "emptyDesc": "Choose a list in the catalog to review price, coverage, and format before completing your purchase.",
+        "emptyDesc": "Pick a study from the catalogue to review price, coverage and format before you check out.",
         "formats": "PDF",
         "remove": "Remove",
-        "trustPayment": "Payment processed by Stripe",
+        "trustPayment": "Payment processed securely",
         "trustSaved": "Order saved to your account",
         "trustDownload": "Download unlocked after confirmation",
         "trustReview": "Review your order before you pay",
-        "currencyFellBack": "One of the lists in your cart has no price in that currency. The cart switched back to euros.",
-        "itemUnavailable": "A list was removed from the catalog and taken out of your cart."
+        "currencyFellBack": "One of the studies in your cart has no price in that currency. The cart went back to euro.",
+        "itemUnavailable": "A study left the catalogue and was removed from your cart."
     },
     "catalog": {
-        "metaTitle": "List Catalog",
-        "badge": "Ready-to-use B2B prospecting databases",
-        "heroTitle": "Find the right list before spending time on manual prospecting",
-        "heroSubtitle": "Filter by market, industry, and category to buy only the data that fits your campaign.",
+        "metaTitle": "Catalogue of studies",
+        "badge": "Market entry studies",
+        "heroTitle": "Choose the study for the market you want to understand",
+        "heroSubtitle": "Filter by country, sector and language to find the study covering your target market.",
         "quickSearch": "Quick search",
-        "searchPlaceholder": "Search by name, country, industry, or description",
+        "searchPlaceholder": "Search by market, country, sector or description",
         "searchButton": "Search",
         "trustCompareTitle": "Compare",
-        "trustCompareDesc": "See volume, countries, and industries before deciding.",
+        "trustCompareDesc": "See the market, countries and sectors covered before you decide.",
         "trustBuyTitle": "Buy securely",
         "trustBuyDesc": "Card checkout, with your order recorded to your account.",
         "trustDownloadTitle": "Download instantly",
         "trustDownloadDesc": "Get the study PDF as soon as payment is confirmed.",
-        "availableLists": "Available lists",
+        "availableLists": "Studies available",
         "results": "{count, plural, one {# result} other {# results}} for the current filters",
         "pageOf": "Page {page} of {pages}",
-        "statListsFound": "Lists found",
-        "statLeadsOnPage": "Leads on this page",
+        "statListsFound": "Studies found",
         "statActiveFilters": "Active filters",
         "statCurrentPage": "Current page",
         "statCountriesOnPage": "Countries on this page",
-        "emptyTitle": "No lists match the current filters",
-        "emptyDesc": "Remove some filters or search for a broader market to find available lists.",
+        "emptyTitle": "No study matches the current filters",
+        "emptyDesc": "Remove some filters or search for a broader market to find available studies.",
         "clearFilters": "Clear filters",
         "featured": "Featured",
         "companies": "{count} companies",
-        "verifiedEmails": "Contacts checked against public sources",
+        "verifiedEmails": "Public sources checked",
         "updatedAt": "Updated on {date}",
         "seeDetails": "View details",
-        "perLead": "{price} per lead",
-        "defaultDescription": "Ready-to-use database with qualified companies.",
-        "searchLabel": "Search lists in the catalog",
+        "defaultDescription": "Market entry study with sector analysis and a directory of importers.",
+        "searchLabel": "Search studies in the catalogue",
         "filtersTitle": "Filters",
-        "filtersSubtitle": "Refine the catalog by list profile.",
+        "filtersSubtitle": "Narrow the catalogue by study profile.",
         "filtersOpen": "Filters",
         "filtersActive": "{count, plural, one {# active filter} other {# active filters}}",
         "filterCountries": "Countries",
         "filterIndustries": "Industries",
-        "filterLanguages": "List language",
-        "loadErrorTitle": "Couldn't load the catalog",
-        "loadErrorDesc": "There was a failure fetching the lists. Please try again in a moment.",
+        "filterLanguages": "Study language",
+        "loadErrorTitle": "The catalogue could not be loaded",
+        "loadErrorDesc": "Something went wrong while fetching the studies. Please try again in a moment.",
         "loadErrorRetry": "Try again",
         "previousPage": "Previous page",
         "nextPage": "Next page",
@@ -444,48 +442,41 @@
         "back": "Back to catalog",
         "breadcrumbCatalog": "Catalog",
         "featured": "Featured",
-        "readyBadge": "Data ready for download",
-        "quickLeads": "Leads",
-        "quickPricePerLead": "Price/lead",
+        "readyBadge": "Market entry study",
         "quickCountries": "Countries",
         "quickLanguage": "Language",
         "quickReviewed": "Data reviewed",
         "introductionTitle": "Introduction",
-        "coverageTitle": "List coverage",
-        "coverageSubtitle": "Use these signals to check whether this database fits your campaign.",
+        "coverageTitle": "What this study covers",
+        "coverageSubtitle": "Check the market, the sectors and the revision date before you buy.",
         "fieldName": "Name",
         "fieldCountries": "Countries",
         "fieldLanguage": "Language",
-        "fieldTotalLeads": "Total leads",
         "fieldIndustries": "Industries",
-        "fieldPricePerLead": "Price per lead",
         "fieldReviewedAt": "Data reviewed on",
         "fieldUpdatedAt": "Record updated on",
         "notInformed": "Not provided",
-        "previewTitle": "Data preview",
-        "previewSubtitle": "Sample of {count} records to check structure and quality before buying.",
+        "previewTitle": "Companies in the directory",
+        "previewSubtitle": "A sample of {count} companies from the directory that closes the study.",
         "previewColCompany": "Company",
         "previewColCountry": "Country",
         "previewColSector": "Sector",
-        "previewColEmail": "Email",
-        "previewUnavailable": "No sample available for this list.",
+        "previewUnavailable": "No sample available for this study.",
         "includedTitle": "What's included",
-        "includedCompany": "Company name",
-        "includedEmail": "Business email checked against public sources",
-        "includedPhone": "Phone and contact where available",
-        "includedLocation": "Country, city, and website",
-        "includedIndustry": "Industry",
-        "includedFormats": "PDF study",
-        "perLead": "{price} per lead",
-        "leadsIncluded": "{count} leads included",
-        "oneOffNote": "One-off purchase, no subscription. Access remains available in your My Purchases area.",
+        "includedCompany": "Market overview and sector structure",
+        "includedEmail": "Sales and distribution channels",
+        "includedPhone": "Market access and regulatory requirements",
+        "includedLocation": "Product categories with the strongest prospects",
+        "includedIndustry": "Annotated directory of importers and distributors",
+        "includedFormats": "Complete study as a PDF",
+        "oneOffNote": "One-off purchase, no subscription. The study stays available under My purchases.",
         "benefitSecure": "Secure card payment",
         "benefitImmediate": "Instant download after confirmation",
         "benefitRecorded": "Purchase recorded to your account",
         "buyNow": "Buy now",
         "signInToBuy": "Sign in and buy",
-        "notFound": "List not found",
-        "metaFallbackDescription": "Market study covering qualified importers and distributors."
+        "notFound": "Study not found",
+        "metaFallbackDescription": "Market entry study with sector analysis and a directory of importers and distributors."
     },
     "checkout": {
         "stepCart": "Cart",
@@ -506,7 +497,7 @@
         "trustImmediateTitle": "Instant",
         "trustImmediateText": "Download unlocked after approval.",
         "summaryTitle": "Summary",
-        "summaryItems": "{count, plural, one {# list} other {# lists}} in the order",
+        "summaryItems": "{count, plural, one {# study} other {# studies}} in the order",
         "total": "Total",
         "sessionExpiredPay": "Your session has expired. Sign in again to complete the purchase.",
         "sessionExpiredOrder": "Your session has expired. Sign in again to view the order.",
@@ -525,7 +516,7 @@
         "successMetaTitle": "Purchase confirmed",
         "successMetaDescription": "Your purchase has been confirmed successfully",
         "successTitle": "Purchase confirmed",
-        "successSubtitle": "Your order has been approved and the lists are now available for download.",
+        "successSubtitle": "Your order was approved and the studies are ready to download.",
         "successOrder": "Order",
         "successLeadsReleased": "Studies released",
         "successTotalPaid": "Total paid",
@@ -568,7 +559,7 @@
         "emptyCta": "Browse catalog",
         "browseMoreLists": "See more studies",
         "statStudies": "Market entry studies",
-        "guidanceReadTitle": "Start with the report, not the list",
+        "guidanceReadTitle": "Start with the analysis, not the directory",
         "guidanceReadText": "The study covers what importers expect and how to make first contact. Reading it first keeps you from burning a good company on a rushed approach.",
         "guidanceRequestTitle": "Need another market?",
         "guidanceRequestText": "Our portfolio grows with demand. Tell us which industry and which country you need.",
@@ -1485,7 +1476,7 @@
     },
     "emails": {
         "common": {
-            "tagline": "Easy Prospect — qualified lists for international trade",
+            "tagline": "Easy Prospect — market entry studies for international trade",
             "support": "Questions? Reply to this email or contact support."
         },
         "signup": {
@@ -1510,16 +1501,16 @@
             "subject": "Your purchase is confirmed — order #{pedido}",
             "heading": "Purchase confirmed",
             "greeting": "Hello {nome},",
-            "intro": "Your payment has been confirmed and your lists are ready to download.",
+            "intro": "Your payment is confirmed and your studies are ready to download.",
             "orderLabel": "Order",
             "dateLabel": "Date",
             "totalLabel": "Total",
             "itemsTitle": "Items purchased",
-            "accessIntro": "Click the button below to open your purchases area and download the lists:",
+            "accessIntro": "Click the button below to open your purchases area and download the studies:",
             "accessButton": "Go to my purchases",
             "linkNote": "This link is personal and valid for 24 hours.",
             "catalogTitle": "Widen your campaign's reach",
-            "catalogText": "Explore lists from other markets and sectors to reach more trading partners.",
+            "catalogText": "Browse studies for other markets and sectors to reach more trading partners.",
             "catalogButton": "Browse the catalogue"
         }
     }

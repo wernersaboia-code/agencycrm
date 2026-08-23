@@ -18,12 +18,16 @@ interface ListPreviewProps {
  * Formato gravado por generatePreviewData (actions/admin/lists.ts): os nomes de
  * campo têm de casar exatamente com o que é persistido em LeadList.previewData,
  * senão a tabela renderiza colunas vazias.
+ *
+ * `email` continua sendo gravado no previewData, mas NÃO é lido aqui de
+ * propósito. A amostra existe para mostrar QUE empresas o diretório cobre, não
+ * para entregar contato antes da compra — anunciar e-mail na vitrine é o que
+ * fazia a página ser lida como venda de base de contatos.
  */
 interface PreviewRow {
     companyName: string
     country: string
     sector: string
-    email: string
 }
 
 export function toRows(previewData: unknown): PreviewRow[] {
@@ -35,7 +39,6 @@ export function toRows(previewData: unknown): PreviewRow[] {
             companyName: typeof item.companyName === "string" ? item.companyName : "",
             country: typeof item.country === "string" ? item.country : "",
             sector: typeof item.sector === "string" ? item.sector : "",
-            email: typeof item.email === "string" ? item.email : "",
         }))
         .filter((row) => row.companyName.trim() !== "")
 }
@@ -60,7 +63,6 @@ export async function ListPreview({ previewData, locale }: ListPreviewProps) {
                         <TableHead>{t("previewColCompany")}</TableHead>
                         <TableHead>{t("previewColCountry")}</TableHead>
                         <TableHead>{t("previewColSector")}</TableHead>
-                        <TableHead>{t("previewColEmail")}</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -69,7 +71,6 @@ export async function ListPreview({ previewData, locale }: ListPreviewProps) {
                             <TableCell className="font-medium">{item.companyName}</TableCell>
                             <TableCell>{item.country}</TableCell>
                             <TableCell>{item.sector}</TableCell>
-                            <TableCell className="font-mono text-sm">{item.email}</TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
