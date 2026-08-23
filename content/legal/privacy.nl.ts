@@ -75,11 +75,11 @@ const privacyNl: LegalDocument = {
         },
         {
             id: "listas",
-            heading: "7. Contactgegevens in de lijsten van de catalogus",
+            heading: "7. Contactgegevens in de studies van de catalogus",
             blocks: [
-                { kind: "paragrafo", texto: "De lijsten die in de catalogus worden verkocht bundelen zakelijke contactgegevens van bedrijven: bedrijfsnaam, land, sector, website, algemene e-mailadressen en telefoonnummers. In sommige lijsten staan ook de naam en de functie van een contactpersoon." },
+                { kind: "paragrafo", texto: "De studies die in de catalogus worden verkocht bundelen zakelijke contactgegevens van bedrijven: bedrijfsnaam, land, sector, website, algemene e-mailadressen en telefoonnummers. Sommige studies noemen ook de naam en de functie van verantwoordelijken, zoals opgenomen in openbare handelsregisters — zonder persoonlijk e-mailadres en zonder doorkiesnummer." },
                 { kind: "paragrafo", texto: "Deze gegevens komen uit openbare bronnen — bedrijfswebsites, handelsregisters en andere openbaar toegankelijke informatie — en worden niet bij de betrokkene zelf verzameld." },
-                { kind: "paragrafo", texto: "Hebt u gegevens over uzelf in een van onze lijsten aangetroffen en wilt u die inzien, laten corrigeren, bezwaar maken tegen de verwerking of om verwijdering vragen, schrijf dan naar contato@easyprospect.com.br. Zulke verzoeken worden afgehandeld." },
+                { kind: "paragrafo", texto: "Hebt u gegevens over uzelf in een van onze studies aangetroffen en wilt u die inzien, laten corrigeren, bezwaar maken tegen de verwerking of om verwijdering vragen, schrijf dan naar contato@easyprospect.com.br. Zulke verzoeken worden afgehandeld." },
             ],
         },
         {

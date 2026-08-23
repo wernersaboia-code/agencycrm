@@ -75,11 +75,11 @@ const privacyIt: LegalDocument = {
         },
         {
             id: "listas",
-            heading: "7. Dati di contatto negli elenchi del catalogo",
+            heading: "7. Dati di contatto negli studi del catalogo",
             blocks: [
-                { kind: "paragrafo", texto: "Gli elenchi venduti nel catalogo raccolgono dati di contatto professionale di aziende: ragione sociale, paese, settore, sito web, e-mail e numeri di telefono istituzionali. In alcuni elenchi compaiono anche il nome e il ruolo di una persona di contatto." },
+                { kind: "paragrafo", texto: "Gli studi venduti nel catalogo raccolgono dati di contatto professionale di aziende: ragione sociale, paese, settore, sito web, e-mail e numeri di telefono istituzionali. Alcuni studi citano anche il nome e il ruolo dei responsabili, così come risultano dai registri delle imprese pubblici — senza e-mail personale e senza numero diretto." },
                 { kind: "paragrafo", texto: "Questi dati provengono da fonti pubbliche — siti istituzionali, registri delle imprese e altre informazioni di pubblico accesso — e non sono raccolti presso la persona stessa." },
-                { kind: "paragrafo", texto: "Se hai trovato dati che ti riguardano in uno dei nostri elenchi e vuoi accedervi, farli rettificare, opporti al trattamento o chiederne la cancellazione, scrivi a contato@easyprospect.com.br. Le richieste di questo tipo vengono evase." },
+                { kind: "paragrafo", texto: "Se hai trovato dati che ti riguardano in uno dei nostri studi e vuoi accedervi, farli rettificare, opporti al trattamento o chiederne la cancellazione, scrivi a contato@easyprospect.com.br. Le richieste di questo tipo vengono evase." },
             ],
         },
         {

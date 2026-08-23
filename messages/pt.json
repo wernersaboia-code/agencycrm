@@ -299,7 +299,7 @@
             },
             {
                 "question": "Como fica a proteção de dados (LGPD/GDPR)?",
-                "answer": "Os estudos reúnem dados de contato profissional coletados em fontes públicas: nome da empresa, país, setor, site, e-mails e telefones institucionais — e, em alguns estudos, também o nome e o cargo de uma pessoa de contato. Na compra, pedimos o seu nome, e-mail e documento fiscal (CPF/CNPJ), usados para processar o pagamento e liberar o download. Qualquer pessoa ou empresa pode pedir a correção ou a remoção dos seus dados dos nossos estudos: use o formulário de contato logo abaixo, nesta mesma página. A política completa está na nossa Política de Privacidade, em /privacy."
+                "answer": "Os estudos reúnem dados de contato profissional coletados em fontes públicas: nome da empresa, país, setor, site, e-mails e telefones institucionais — e, em alguns estudos, também o nome e o cargo de responsáveis, conforme registros comerciais públicos, sem e-mail pessoal nem telefone direto. Na compra, pedimos o seu nome, e-mail e documento fiscal (CPF/CNPJ), usados para processar o pagamento e liberar o download. Qualquer pessoa ou empresa pode pedir a correção ou a remoção dos seus dados dos nossos estudos: use o formulário de contato logo abaixo, nesta mesma página. A política completa está na nossa Política de Privacidade, em /privacy."
             }
         ],
         "form": {

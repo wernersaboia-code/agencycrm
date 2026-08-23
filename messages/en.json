@@ -299,7 +299,7 @@
             },
             {
                 "question": "What about data protection (LGPD/GDPR)?",
-                "answer": "The studies hold business contact data collected from publicly available sources: company name, country, industry, website, general e-mail addresses and phone numbers — and, in some studies, the name and role of a contact person as well. When you buy, we ask for your name, e-mail and tax id, used to process the payment and release the download. Any person or company can ask us to correct or remove their data from our studies: use the contact form further down this same page. The full policy is in our Privacy Policy, at /privacy."
+                "answer": "The studies hold business contact data collected from publicly available sources: company name, country, industry, website, general e-mail addresses and phone numbers — and, in some studies, the name and role of the person in charge as recorded in public business registers, with no personal email address or direct phone line as well. When you buy, we ask for your name, e-mail and tax id, used to process the payment and release the download. Any person or company can ask us to correct or remove their data from our studies: use the contact form further down this same page. The full policy is in our Privacy Policy, at /privacy."
             }
         ],
         "form": {

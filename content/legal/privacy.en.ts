@@ -75,11 +75,11 @@ const privacyEn: LegalDocument = {
         },
         {
             id: "listas",
-            heading: "7. Contact data in the catalogue lists",
+            heading: "7. Contact data in the catalogue studies",
             blocks: [
-                { kind: "paragrafo", texto: "The lists sold in the catalogue bring together professional contact data of companies: company name, country, sector, website, institutional emails and phone numbers. Some lists also include the name and job title of a contact person." },
+                { kind: "paragrafo", texto: "The studies sold in the catalogue bring together professional contact data of companies: company name, country, sector, website, institutional emails and phone numbers. Some studies also name the person in charge and their job title, as recorded in public business registers — with no personal email address and no direct phone line." },
                 { kind: "paragrafo", texto: "This data is obtained from public sources — company websites, business registers and other publicly accessible information — and is not collected from the person themselves." },
-                { kind: "paragrafo", texto: "If you have found data about yourself in one of our lists and want to access it, correct it, object to the processing or request its removal, write to contato@easyprospect.com.br. Requests of this kind are acted on." },
+                { kind: "paragrafo", texto: "If you have found data about yourself in one of our studies and want to access it, correct it, object to the processing or request its removal, write to contato@easyprospect.com.br. Requests of this kind are acted on." },
             ],
         },
         {

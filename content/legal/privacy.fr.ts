@@ -75,11 +75,11 @@ const privacyFr: LegalDocument = {
         },
         {
             id: "listas",
-            heading: "7. Données de contact dans les listes du catalogue",
+            heading: "7. Données de contact dans les études du catalogue",
             blocks: [
-                { kind: "paragrafo", texto: "Les listes vendues dans le catalogue rassemblent des données de contact professionnel d'entreprises : raison sociale, pays, secteur, site web, adresses e-mail et numéros de téléphone institutionnels. Certaines listes comportent aussi le nom et la fonction d'une personne de contact." },
+                { kind: "paragrafo", texto: "Les études vendues dans le catalogue rassemblent des données de contact professionnel d'entreprises : raison sociale, pays, secteur, site web, adresses e-mail et numéros de téléphone institutionnels. Certaines études mentionnent aussi le nom et la fonction de responsables, tels qu'ils figurent dans les registres d'entreprises publics — sans adresse e-mail personnelle ni ligne directe." },
                 { kind: "paragrafo", texto: "Ces données proviennent de sources publiques — sites institutionnels, registres d'entreprises et autres informations accessibles au public — et ne sont pas collectées auprès de la personne elle-même." },
-                { kind: "paragrafo", texto: "Si vous avez repéré des données vous concernant dans l'une de nos listes et souhaitez y accéder, les faire rectifier, vous opposer au traitement ou en demander l'effacement, écrivez à contato@easyprospect.com.br. Les demandes de ce type sont traitées." },
+                { kind: "paragrafo", texto: "Si vous avez repéré des données vous concernant dans l'une de nos études et souhaitez y accéder, les faire rectifier, vous opposer au traitement ou en demander l'effacement, écrivez à contato@easyprospect.com.br. Les demandes de ce type sont traitées." },
             ],
         },
         {

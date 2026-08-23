@@ -75,11 +75,11 @@ const privacyEs: LegalDocument = {
         },
         {
             id: "listas",
-            heading: "7. Datos de contacto en las listas del catálogo",
+            heading: "7. Datos de contacto en los estudios del catálogo",
             blocks: [
-                { kind: "paragrafo", texto: "Las listas vendidas en el catálogo reúnen datos de contacto profesional de empresas: nombre de la empresa, país, sector, sitio web, correos y teléfonos institucionales. En algunas listas figura además el nombre y el cargo de una persona de contacto." },
+                { kind: "paragrafo", texto: "Los estudios vendidos en el catálogo reúnen datos de contacto profesional de empresas: nombre de la empresa, país, sector, sitio web, correos y teléfonos institucionales. Algunos estudios citan además el nombre y el cargo de responsables, tal como constan en registros mercantiles públicos — sin correo personal y sin teléfono directo." },
                 { kind: "paragrafo", texto: "Estos datos se obtienen de fuentes públicas — sitios web corporativos, registros mercantiles y otra información de acceso público — y no se recogen de la propia persona." },
-                { kind: "paragrafo", texto: "Si ha identificado datos suyos en una de nuestras listas y quiere acceder a ellos, rectificarlos, oponerse al tratamiento o solicitar su supresión, escriba a contato@easyprospect.com.br. Las solicitudes de este tipo se atienden." },
+                { kind: "paragrafo", texto: "Si ha identificado datos suyos en uno de nuestros estudios y quiere acceder a ellos, rectificarlos, oponerse al tratamiento o solicitar su supresión, escriba a contato@easyprospect.com.br. Las solicitudes de este tipo se atienden." },
             ],
         },
         {
