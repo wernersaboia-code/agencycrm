@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import { amountMatches, fulfillPurchase } from "./fulfillment"
+import { sendPurchaseConfirmationEmail } from "@/lib/email/purchase"
 import type { PrismaClient } from "@prisma/client"
 
 // O fulfillment dispara e-mail e gera magic link depois de efetivar — os dois
@@ -345,5 +346,55 @@ describe("fulfillPurchase", () => {
 
         expect(outcome).toEqual({ status: "amount_mismatch", purchaseId: "purchase-1" })
         expect(db.purchase.updateMany).not.toHaveBeenCalled()
+    })
+})
+
+describe("disparo do e-mail de confirmação", () => {
+    // O e-mail carrega o link do download: se ele não sai, o comprador pagou e
+    // não recebeu nada. O agendamento pós-resposta (`after`) mexe exatamente
+    // neste ponto, e até agora nenhum teste cobria o disparo.
+    beforeEach(() => {
+        vi.mocked(sendPurchaseConfirmationEmail).mockClear()
+    })
+
+    it("efetivação dispara o e-mail exatamente uma vez", async () => {
+        const db = createMockDb()
+        db.purchase.findUnique.mockResolvedValue(pendingPurchaseDe("stripe", { currency: "EUR", total: "45.00" }))
+        db.purchase.updateMany.mockResolvedValue({ count: 1 })
+
+        await fulfillPurchase(db as unknown as PrismaClient, {
+            provider: "stripe",
+            providerOrderId: "purchase-1",
+            capturedAmount: { value: "45.00", currency: "EUR" },
+        })
+
+        expect(sendPurchaseConfirmationEmail).toHaveBeenCalledTimes(1)
+    })
+
+    it("quem perde a corrida NÃO dispara o e-mail", async () => {
+        const db = createMockDb()
+        db.purchase.findUnique.mockResolvedValue(pendingPurchaseDe("stripe", { currency: "EUR", total: "45.00" }))
+        db.purchase.updateMany.mockResolvedValue({ count: 0 })
+
+        await fulfillPurchase(db as unknown as PrismaClient, {
+            provider: "stripe",
+            providerOrderId: "purchase-1",
+            capturedAmount: { value: "45.00", currency: "EUR" },
+        })
+
+        expect(sendPurchaseConfirmationEmail).not.toHaveBeenCalled()
+    })
+
+    it("valor divergente NÃO dispara o e-mail", async () => {
+        const db = createMockDb()
+        db.purchase.findUnique.mockResolvedValue(pendingPurchaseDe("stripe", { currency: "EUR", total: "45.00" }))
+
+        await fulfillPurchase(db as unknown as PrismaClient, {
+            provider: "stripe",
+            providerOrderId: "purchase-1",
+            capturedAmount: { value: "53.55", currency: "EUR" },
+        })
+
+        expect(sendPurchaseConfirmationEmail).not.toHaveBeenCalled()
     })
 })

@@ -20,7 +20,29 @@
 import { prisma } from "@/lib/prisma"
 import type { PrismaClient } from "@prisma/client"
 import { generatePurchaseAccessToken, generateMagicLinkUrl } from "@/lib/auth/magic-link"
+import { after } from "next/server"
 import { sendPurchaseConfirmationEmail } from "@/lib/email/purchase"
+
+/**
+ * Agenda trabalho para depois da resposta, sem deixá-lo morrer no caminho.
+ *
+ * O envio do e-mail não pode segurar a resposta ao provedor: Paddle e Mercado
+ * Pago reentregam a notificação se demorarmos. Mas disparar e esquecer não
+ * funciona em serverless — a função é congelada assim que responde, e a
+ * conversa SMTP morre no meio. Foi o que aconteceu no preview em 06.08.2026:
+ * dois envios começaram e nenhum registrou conclusão.
+ *
+ * `after` diz à plataforma para manter a função viva até a tarefa terminar.
+ * Fora de um escopo de requisição — nos testes — ele lança; aí o disparo
+ * simples basta, porque não há função para congelar.
+ */
+function agendarPosResposta(tarefa: () => Promise<unknown>): void {
+    try {
+        after(tarefa)
+    } catch {
+        void tarefa()
+    }
+}
 
 export type CapturedAmount = { value: string; currency: string }
 
@@ -178,15 +200,17 @@ export async function fulfillPurchase(
     const accessToken = await generatePurchaseAccessToken(purchase.userId, purchase.id, 24)
     const accessUrl = generateMagicLinkUrl(accessToken)
 
-    // Assíncrono — não bloqueia a resposta ao provedor/cliente.
-    sendPurchaseConfirmationEmail({
-        userId: purchase.userId,
-        purchaseId: purchase.id,
-        accessToken,
-        accessUrl,
-    }).catch((error) => {
-        console.error("[Fulfillment] Erro ao enviar e-mail de confirmação:", error)
-    })
+    // Pós-resposta, não bloqueante: o provedor reentrega se demorarmos.
+    agendarPosResposta(() =>
+        sendPurchaseConfirmationEmail({
+            userId: purchase.userId,
+            purchaseId: purchase.id,
+            accessToken,
+            accessUrl,
+        }).catch((error) => {
+            console.error("[Fulfillment] Erro ao enviar e-mail de confirmação:", error)
+        })
+    )
 
     return { status: "fulfilled", purchaseId: purchase.id, accessUrl }
 }
