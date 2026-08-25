@@ -115,13 +115,13 @@
     },
     "landing": {
         "hero": {
-            "badge": "Market entry studies for exporters",
-            "title": "Understand the market before you export to it.",
-            "subtitle": "Each study brings together the market analysis, the access requirements and the profiles of the companies in the sector.",
+            "badge": "Marketplace of verified B2B trading partners",
+            "title": "Qualified importer and distributor lists for your international trade.",
+            "subtitle": "Find exactly the trading partners that fit your product and your export strategy.",
             "ctaPrimary": "Browse catalog",
             "ctaSecondary": "How it works",
-            "trust1": "Analysis and profiles in one PDF",
-            "trust2": "Public sources checked",
+            "trust1": "Ready for immediate use",
+            "trust2": "Companies checked",
             "trust3": "Regularly updated"
         },
         "intro": {

@@ -115,13 +115,13 @@
     },
     "landing": {
         "hero": {
-            "badge": "Études d'entrée sur le marché pour exportateurs",
-            "title": "Comprenez le marché avant d'y exporter.",
-            "subtitle": "Chaque étude réunit l'analyse du marché, les conditions d'accès et les profils des entreprises du secteur.",
+            "badge": "Marketplace de partenaires commerciaux B2B vérifiés",
+            "title": "Listes qualifiées d'importateurs et de distributeurs pour votre commerce international.",
+            "subtitle": "Trouvez exactement les partenaires commerciaux qui correspondent à votre produit et à votre stratégie d'exportation.",
             "ctaPrimary": "Explorer le catalogue",
             "ctaSecondary": "Comment ça marche",
-            "trust1": "Analyse et profils dans un seul PDF",
-            "trust2": "Sources publiques vérifiées",
+            "trust1": "Prêt à l'emploi immédiat",
+            "trust2": "Entreprises contrôlées",
             "trust3": "Mise à jour régulière"
         },
         "intro": {

@@ -115,13 +115,13 @@
     },
     "landing": {
         "hero": {
-            "badge": "Markttoetredingsstudies voor exporteurs",
-            "title": "Begrijp de markt voordat u ernaartoe exporteert.",
-            "subtitle": "Elke studie combineert de marktanalyse, de toegangseisen en de profielen van de bedrijven in de sector.",
+            "badge": "Marketplace voor geverifieerde B2B-handelspartners",
+            "title": "Gekwalificeerde lijsten van importeurs en distributeurs voor uw internationale handel.",
+            "subtitle": "Vind precies de handelspartners die passen bij uw product en exportstrategie.",
             "ctaPrimary": "Catalogus verkennen",
             "ctaSecondary": "Hoe het werkt",
-            "trust1": "Analyse en profielen in één PDF",
-            "trust2": "Openbare bronnen gecontroleerd",
+            "trust1": "Direct klaar voor gebruik",
+            "trust2": "Gecontroleerde bedrijven",
             "trust3": "Regelmatig bijgewerkt"
         },
         "intro": {
