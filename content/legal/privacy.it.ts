@@ -60,6 +60,7 @@ const privacyIt: LegalDocument = {
                 { kind: "lista", itens: [
                     "Supabase — database, autenticazione e archiviazione dei file.",
                     "Mercado Pago — elaborazione dei pagamenti.",
+                    "Stripe — elaborazione dei pagamenti.",
                     "Vercel — hosting dell'applicazione e misurazione delle prestazioni.",
                     "Zoho — casella dell'indirizzo di contatto.",
                 ] },
