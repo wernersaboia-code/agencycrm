@@ -477,6 +477,12 @@ enum PaymentProvider {
   paypal
   stripe
   mercadopago
+  // Somente leitura. O Paddle saiu do código, mas 7 compras de teste de
+  // agosto/2026 ficaram no banco com este valor. Sem ele aqui, qualquer
+  // `purchase.findMany()` estoura com "Value 'paddle' not found in enum" —
+  // foi o que quebrou a área de vendas do super-admin. Só sai daqui se essas
+  // linhas forem removidas do banco antes.
+  paddle
 }
 
 // ==================== EMAIL SEND ====================
@@ -724,6 +730,11 @@ model Purchase {
   stripePaymentIntentId   String?
   mercadoPagoPreferenceId String?         @unique
   mercadoPagoPaymentId    String?
+  // Legado do Paddle: 7 compras de teste de agosto/2026 continuam no banco, e
+  // a coluna existe lá. Declarada aqui só para o schema descrever o banco de
+  // verdade — nada escreve neste campo, e `PaymentProviderInput` em
+  // lib/checkout/fulfillment.ts não aceita "paddle".
+  paddleTransactionId     String?         @unique
   status                  PurchaseStatus  @default(pending)
 
   // Valores
