@@ -1,0 +1,5 @@
+# Migrations do Prisma precisam de LF. O checksum gravado em _prisma_migrations
+# e do conteudo do arquivo: se um checkout no Windows converter para CRLF e isso
+# for commitado, `prisma migrate deploy` falha no build da Vercel acusando
+# "migration file has been modified" — e o site nao publica.
+prisma/migrations/**/*.sql text eol=lf
