@@ -1,13 +1,27 @@
-# Pendências para reaplicar ao Paddle
+# Estado do produto e pendências
 
-Atualizado em 2026-08-23. **Publicado em produção** no commit `ac17b27`.
+Atualizado em 2026-08-25. Nasceu como "pendências para reaplicar ao Paddle" e foi
+renomeado quando o Paddle saiu de cena — o conteúdo nunca foi sobre o Paddle, e sim
+sobre o estado da vitrine, o que falta e as armadilhas já pagas.
 
 ## Em uma frase
 
 O Paddle reprovou `easyprospect.com.br` enquadrando o site em *Direct Marketing
-Services* e *Mass Marketing Products*. O produto foi reposicionado — de venda de
-base de contatos para estudo de entrada em mercado — e **o site novo está no ar**
-desde 2026-08-23, então a pré-consulta ao Paddle já pode ser feita.
+Services* e *Mass Marketing Products*. O produto foi reposicionado — de venda de base
+de contatos para estudo de entrada em mercado — e o site novo está no ar desde
+2026-08-23. **O caminho internacional foi resolvido por outra via:** em 2026-08-25 o
+Stripe entrou no ar ao lado do Mercado Pago, e como ele não é Merchant of Record, o
+enquadramento que barrou o Paddle não se aplica.
+
+## Pagamento hoje
+
+Dois provedores no checkout, e quem escolhe é o comprador:
+
+- **Mercado Pago** — cobra em BRL, exige CPF na tela dele. Doméstico na prática.
+- **Stripe** — cobra na moeda do carrinho, sem exigir CPF. É a via internacional.
+
+PayPal segue desligado (conta cancelada). Paddle foi removido do código.
+Variáveis e webhooks em [`variaveis-de-ambiente.md`](variaveis-de-ambiente.md).
 
 ## O deploy (feito em 2026-08-23)
 
@@ -57,23 +71,25 @@ Registro completo: https://claude.ai/code/artifact/cf798535-ddeb-4e1e-8d23-e56e9
 
 ### Werner
 1. ~~**Merge e deploy da branch**~~ — feito em 2026-08-23, commit `ac17b27`.
-2. **E-mail de pré-consulta ao Paddle** — responder ao e-mail da reprovação descrevendo
-   as mudanças e perguntar se a oferta revisada se enquadra na AUP, antes de aplicar
-   formalmente. Evita acumular uma segunda recusa no domínio.
-3. **E-mail do Cross Border do Mercado Pago** (`crm_regionales@mercadopago.com`) —
-   nunca foi pedido. É a única via internacional que não depende de Merchant of Record,
-   e hoje o Paddle é ponto único de falha.
-4. **Estudo da Estônia** — editado, nunca publicado no catálogo.
-5. **Capa dos PDFs** — ainda diz "A guide and importer directory for international
+2. ~~**E-mail de pré-consulta ao Paddle**~~ — **abandonado em 2026-08-25.** O Stripe
+   resolveu o mesmo problema sem depender de aprovação de Merchant of Record.
+3. ~~**E-mail do Cross Border do Mercado Pago**~~ — **deixou de ser necessário** pelo
+   mesmo motivo. Continua sendo a saída se um dia o Stripe cair: pedir liberação em
+   `crm_regionales@mercadopago.com`, com o parâmetro `counter_currency`.
+4. **Conferir o botão do Stripe no checkout** — as chaves foram cadastradas na Vercel
+   em 2026-08-25 e o deploy passou, mas a verificação exige login e não foi feita.
+   Basta abrir `/checkout` logado, ou o painel Super admin → Configurações.
+5. **Estudo da Estônia** — editado, nunca publicado no catálogo.
+6. **Capa dos PDFs** — ainda diz "A guide and importer directory for international
    suppliers", desalinhada do vocabulário novo do site. Vale alinhar nos próximos
    estudos; os 51 existentes podem ser ajustados em lote pela mesma técnica de edição.
 
 ### Advogado
-6. **`terms.foroLei`** — os Termos não declaram foro nem lei aplicável.
-7. **`privacy.baseLegal.listas`** — a §3 declara base legal para conta, compra, registros
+7. **`terms.foroLei`** — os Termos não declaram foro nem lei aplicável.
+8. **`privacy.baseLegal.listas`** — a §3 declara base legal para conta, compra, registros
    e analytics, mas **nenhuma para os nomes e cargos dentro dos estudos**, que a §7 agora
    declara existirem. Seria legítimo interesse com teste de balanceamento.
-8. **`privacy.representanteUE`** — representante na UE (GDPR Art. 27) para controlador
+9. **`privacy.representanteUE`** — representante na UE (GDPR Art. 27) para controlador
    fora da UE que oferece serviços a titulares na UE.
 
 Os três estão rastreados em [`content/legal/pendencias.ts`](../content/legal/pendencias.ts).
@@ -82,9 +98,13 @@ Os três estão rastreados em [`content/legal/pendencias.ts`](../content/legal/p
 
 1. ~~Merge + deploy~~ — feito
 2. ~~Conferir o site no ar~~ — feito
-3. **Próximo passo:** e-mail de pré-consulta ao Paddle **e** e-mail do Cross Border do MP
-   (em paralelo)
-4. Aplicação nova no Paddle só depois da resposta
+3. ~~Frente internacional~~ — resolvida pelo Stripe em 2026-08-25, sem Paddle e sem
+   Cross Border
+4. **Próximo passo:** confirmar o botão do Stripe no checkout (item 4 acima) e fazer
+   uma compra de teste ponta a ponta — pagamento, webhook, e-mail de confirmação com
+   o link, download. É o único trecho que nenhuma verificação automática cobre.
+5. Depois disso, as pendências jurídicas (7 a 9) são o que separa a loja de vender
+   para a UE com segurança.
 
 ## Onde as coisas moram
 
