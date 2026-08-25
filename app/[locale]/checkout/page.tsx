@@ -6,7 +6,8 @@ import { useFormatter, useLocale, useTranslations } from "next-intl"
 import { Link, useRouter } from "@/lib/i18n/navigation"
 import { useCart } from "@/contexts/cart-context"
 import { MercadoPagoButton } from "@/components/checkout/mercadopago-button"
-import { getOptionalPublicMercadoPagoPublicKey } from "@/lib/env"
+import { StripeCheckoutButton } from "@/components/checkout/stripe-checkout-button"
+import { getOptionalPublicMercadoPagoPublicKey, getOptionalPublicStripePublishableKey } from "@/lib/env"
 import { formatCurrency } from "@/lib/utils"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
@@ -27,10 +28,11 @@ export default function CheckoutPage() {
     const format = useFormatter()
     const locale = useLocale()
 
-    // Stripe e PayPal saíram da tela — a conta do primeiro está com pendências
-    // e a do segundo foi cancelada. As rotas dos dois continuam no código, e
-    // religar qualquer um volta a ser questão de variável de ambiente.
-    const hasAnyPaymentProvider = Boolean(getOptionalPublicMercadoPagoPublicKey())
+    // PayPal segue fora da tela — a conta foi cancelada. A rota continua no
+    // código, e religar volta a ser questão de variável de ambiente.
+    const hasAnyPaymentProvider = Boolean(
+        getOptionalPublicMercadoPagoPublicKey() || getOptionalPublicStripePublishableKey()
+    )
 
     useEffect(() => {
         if (items.length === 0) {
@@ -95,7 +97,10 @@ export default function CheckoutPage() {
                             </div>
 
                             {hasAnyPaymentProvider ? (
-                                <MercadoPagoButton items={checkoutItems} currency={currency} />
+                                <div className="space-y-3">
+                                    <MercadoPagoButton items={checkoutItems} currency={currency} />
+                                    <StripeCheckoutButton items={checkoutItems} currency={currency} />
+                                </div>
                             ) : (
                                 <div
                                     role="alert"
