@@ -47,6 +47,10 @@ const CAIXAS_FUNCIONAIS = new Set([
     "informacoes", "communication", "direction", "obchod", "nabava", "uprava",
     "narocila", "prodaja", "komercijala", "sac", "comex", "webmaster",
     "servicioalcliente", "serviciocliente", "kundenservice", "customerservice",
+    // dos estudos novos: customer.services@ (Reino Unido), myorders.pta@ e
+    // myorders.jhb@ (África do Sul, sufixo de cidade), bev.div@ (Indonésia,
+    // divisão de bebidas) — nenhum é pessoa, todos casavam por ter dois blocos
+    "customer", "services", "myorders", "bev", "div", "division",
     "asiakaspalvelu", "kayttotavara", "uvozni", "program", "shop", "webshop",
     "b2b", "market", "horeca", "food", "company", "firma", "logistik",
     "logistics", "finance", "hr", "jobs", "karriere", "vendas", "acquisti",
@@ -87,20 +91,52 @@ const PESSOA_NOMEADA = new RegExp(String.raw`(?:${CARGO})\s*:?\s+(${NOME})`, "gu
  * — inicial mais sobrenome e iniciais puras, indistinguíveis de caixa de setor
  * fora de contexto. Na linha, não há dúvida: o nome está ao lado.
  */
-const CARGO_LIVRE = String.raw`Director|Manager|CEO|COO|CFO|CTO|Head\s+of|Purchasing|Sourcing|Import|Export|Gesch(?:ä|ae)ftsf(?:ü|ue)hrer|Owner|Inhaber|Prokurist|Einkauf`
-const PESSOA_ATRIBUIDA = new RegExp(String.raw`(${NOME})\s*,\s*[^,—–\n]{0,40}(?:${CARGO_LIVRE})`, "gu")
+const CARGO_LIVRE = String.raw`Director|Manager|CEO|COO|CFO|CTO|Head\s+of|Purchasing|Sourcing|Import|Export|Gesch(?:ä|ae)ftsf(?:ü|ue)hrer|Owner|Inhaber|Prokurist|Einkauf|Board\s+member|Vorstand`
 
 /**
- * Cópias sem o flag `g` só para o teste booleano. Chamar `.test()` na instância
+ * Vírgula OU travessão entre nome e cargo. O estudo da Estônia lista os
+ * contatos como "• Katriin Kull — Purchasing Manager: katriin@horecaservice.ee"
+ * e, exigindo vírgula, quatro caixas de primeiro nome escapavam inteiras: um
+ * bloco só no local part nunca é julgado pessoal fora de contexto, e sem a
+ * atribuição não havia contexto. O hífen só conta cercado de espaço, senão
+ * "Balt-Hellin" e "Arbo-Karl" viram separador.
+ */
+const SEPARA_CARGO = String.raw`(?:\s*,\s*|\s+[—–-]\s+)`
+const PESSOA_ATRIBUIDA = new RegExp(String.raw`(${NOME})${SEPARA_CARGO}[^,—–\n]{0,40}(?:${CARGO_LIVRE})`, "gu")
+
+/**
+ * Cópia sem o flag `g` só para o teste booleano. Chamar `.test()` na instância
  * global avança o `lastIndex` dela, e o `matchAll` seguinte então começa depois
  * do match e não acha nada — a pessoa nomeada sumia do resultado.
  */
 const NOMEADA_TESTE = new RegExp(PESSOA_NOMEADA.source, "u")
-const ATRIBUIDA_TESTE = new RegExp(PESSOA_ATRIBUIDA.source, "u")
+
+/**
+ * Duas maiúsculas seguidas também formam nome de instituição, e aí o cargo
+ * solto vira falso positivo. Veio de um caso real do estudo da Espanha:
+ * "• European Commission — Import controls of food and feed; Reg. (EU)
+ * 2017/625" casava a atribuição por causa de "Import", e o número do
+ * regulamento ainda passava pelo padrão de telefone.
+ */
+const INSTITUICAO =
+    /^(?:Commission|Union|Ministry|Institute|Association|Federation|Chamber|Council|Agency|Authority|Office|Committee|Parliament|Government|Department|Bureau|Board)$/i
+
+function ehInstituicao(nome: string): boolean {
+    return INSTITUICAO.test(nome.split(/\s+/).pop() ?? "")
+}
 
 /** A linha nomeia alguém — logo, o que estiver nela é o canal daquela pessoa. */
 function linhaNomeiaPessoa(linha: string): boolean {
-    return NOMEADA_TESTE.test(linha) || ATRIBUIDA_TESTE.test(linha)
+    if (NOMEADA_TESTE.test(linha)) {
+        return true
+    }
+    // `matchAll` clona a expressão, então não mexe no `lastIndex` da global.
+    for (const encontro of linha.matchAll(PESSOA_ATRIBUIDA)) {
+        if (!ehInstituicao(encontro[1].trim())) {
+            return true
+        }
+    }
+    return false
 }
 
 function dominioBase(email: string): string {

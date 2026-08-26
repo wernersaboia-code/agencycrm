@@ -20,6 +20,8 @@ describe("emailEhPessoal", () => {
         "cristobal.valenzuela@jaguartfc.nl",
         "ave.roomets@hellin.eu",
         "helge_tamm@trofi.de",
+        "manon.baud@relais-vert.com",
+        "julien.cussinet@ekibio.fr",
         // inicial.sobrenome: no catálogo inteiro, os quatro nesta forma são pessoas
         "t.vana@fany.cz",
         "m.suer@arasco.de",
@@ -42,6 +44,11 @@ describe("emailEhPessoal", () => {
         "firstname.lastname@company.com",
         "order.ee@hellin.eu",
         // siglas curtas: 7 das 8 no catálogo são função ou iniciais da firma
+        // falsos positivos dos estudos novos (UK, África do Sul, Indonésia)
+        "customer.services@mvsports.com",
+        "myorders.pta@vassco.co.za",
+        "myorders.jhb@vassco.co.za",
+        "bev.div@lotusfood.online",
         "sac@rioquality.com.br",
         "ba@borgandaquilina.com.mt",
         "mwp@musgrave.ie",
@@ -121,6 +128,37 @@ describe("encontrarContatosPessoais", () => {
     ])("acusa e-mail na linha que nomeia a pessoa: %s", (linha, endereco) => {
         const achados = encontrarContatosPessoais(linha)
         expect(achados.some((a) => a.tipo === "email_pessoal" && a.valor === endereco)).toBe(true)
+    })
+
+    /**
+     * O estudo da Estônia lista os contatos com travessão no lugar da vírgula
+     * ("Katriin Kull — Purchasing Manager"). Com a atribuição exigindo vírgula,
+     * quatro caixas nominais de primeiro nome escapavam inteiras: local part de
+     * um bloco só nunca é julgado pessoal fora de contexto, e sem a atribuição
+     * não havia contexto nenhum.
+     */
+    it.each([
+        ["• Katriin Kull — Purchasing Manager (ostujuht): katriin@horecaservice.ee", "katriin@horecaservice.ee"],
+        ["• Arbo-Karl Bramanis — Sales Director: arbo@horecaservice.ee", "arbo@horecaservice.ee"],
+        ["• Raul Vaet — Board member: raul@horecaservice.ee", "raul@horecaservice.ee"],
+        ["• Reimo Leol — Board member: reimo@horecaservice.ee", "reimo@horecaservice.ee"],
+    ])("acusa caixa de primeiro nome quando o travessão separa nome e cargo: %s", (linha, endereco) => {
+        const achados = encontrarContatosPessoais(linha)
+        expect(achados.some((a) => a.tipo === "email_pessoal" && a.valor === endereco)).toBe(true)
+    })
+
+    it("não toma instituição por pessoa nem número de regulamento por telefone", () => {
+        expect(
+            encontrarContatosPessoais(
+                "• European Commission — Import controls of food and feed; Reg. (EU) 2017/625 (food.ec.europa.eu)"
+            )
+        ).toEqual([])
+    })
+
+    it("não toma nome de empresa por pessoa por causa do travessão", () => {
+        expect(
+            encontrarContatosPessoais("Horeca Service OÜ — Dedicated HoReCa / foodservice wholesaler")
+        ).toEqual([])
     })
 
     it("acusa o telefone da pessoa mesmo sem a etiqueta 'direct line'", () => {
