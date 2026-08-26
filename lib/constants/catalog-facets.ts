@@ -31,11 +31,23 @@
  * alimentar, porque numa lista de país os dois vêm no mesmo arquivo. O
  * vocabulário antigo tinha catorze setores genéricos (tech, fashion,
  * automotive…) que nenhum estudo jamais usou.
+ *
+ * `snacks_bars` cobre o estudo "Fruit Bars and Cereal Bars" — barra de fruta e
+ * de cereal saem juntas no mesmo arquivo, e o rótulo curto ainda aceita um
+ * estudo de snack salgado depois. Não foi para dentro de `fmcg`: quem filtra
+ * FMCG procura diretório amplo de país, e misturar uma categoria só na mesma
+ * faceta troca granularidade por volume.
+ *
+ * Não existe `baby_products` ainda, e a ausência é deliberada: só entra quando
+ * houver estudo de artigos infantis publicado, porque faceta sem lista por trás
+ * é promessa de catálogo que não existe.
  */
 export const INDUSTRY_IDS = [
     "exotic_fruits",
     "fmcg",
     "horeca",
+    "snacks_bars",
+    "toys",
 ] as const
 
 /**

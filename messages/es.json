@@ -436,7 +436,9 @@
         "industries": {
             "exotic_fruits": "Frutas Exóticas",
             "fmcg": "FMCG",
-            "horeca": "HoReCa & Foodservice"
+            "horeca": "HoReCa & Foodservice",
+            "snacks_bars": "Barritas y Snacks",
+            "toys": "Juguetes"
         }
     },
     "listing": {

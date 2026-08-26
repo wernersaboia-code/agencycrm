@@ -436,7 +436,9 @@
         "industries": {
             "exotic_fruits": "Exotisch Fruit",
             "fmcg": "FMCG",
-            "horeca": "HoReCa & Foodservice"
+            "horeca": "HoReCa & Foodservice",
+            "snacks_bars": "Repen & Snacks",
+            "toys": "Speelgoed"
         }
     },
     "listing": {
