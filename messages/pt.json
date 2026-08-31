@@ -201,7 +201,22 @@
                 "Quais informações e documentos os importadores esperam antes de uma parceria",
                 "Como abordar potenciais distribuidores de forma profissional",
                 "Quais argumentos de venda são mais promissores no primeiro contato"
-            ]
+            ],
+            "sample": {
+                "title": "Como o estudo é por dentro",
+                "note": "Quatro páginas do estudo do mercado HoReCa alemão. Os estudos são redigidos em inglês e, nesta amostra, os dados de contato do diretório aparecem borrados.",
+                "captions": {
+                    "cover": "Capa e edição",
+                    "contents": "Índice: 9 seções, 24 páginas",
+                    "data": "Números do mercado",
+                    "directory": "Diretório de importadores e atacadistas"
+                }
+            }
+        },
+        "featured": {
+            "eyebrow": "Estudos em destaque",
+            "title": "Comece por estes",
+            "intro": "Uma seleção dos estudos de entrada em mercado disponíveis hoje. O catálogo completo tem mais países e setores."
         },
         "freeSample": {
             "eyebrow": "Amostra gratuita",

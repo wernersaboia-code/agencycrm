@@ -1,6 +1,7 @@
 import { CheckCircle2, FileText } from "lucide-react"
 import { getTranslations } from "next-intl/server"
 import { Section, SectionHeading } from "./section"
+import { StudySampleImages } from "./study-sample-images"
 import type { LandingLocale } from "./types"
 
 export async function DeliverablesSection({ locale }: { locale: LandingLocale }) {
@@ -31,6 +32,8 @@ export async function DeliverablesSection({ locale }: { locale: LandingLocale })
             </ul>
 
             <p className="mt-6 leading-7 text-muted-foreground">{t("close")}</p>
+
+            <StudySampleImages locale={locale} />
         </Section>
     )
 }

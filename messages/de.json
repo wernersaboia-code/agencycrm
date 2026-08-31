@@ -201,7 +201,22 @@
                 "Welche Informationen und Unterlagen Importeure vor einer Zusammenarbeit erwarten",
                 "Wie Sie potenzielle Distributoren professionell ansprechen",
                 "Welche Verkaufsargumente bei der Erstansprache besonders erfolgversprechend sind"
-            ]
+            ],
+            "sample": {
+                "title": "Wie die Studie von innen aussieht",
+                "note": "Vier Seiten aus der Studie zum deutschen HoReCa-Markt. Die Studien sind auf Englisch verfasst, und in dieser Leseprobe sind die Kontaktdaten im Verzeichnis unkenntlich gemacht.",
+                "captions": {
+                    "cover": "Titelseite und Ausgabe",
+                    "contents": "Inhalt: 9 Kapitel, 24 Seiten",
+                    "data": "Marktzahlen",
+                    "directory": "Verzeichnis der Importeure und Großhändler"
+                }
+            }
+        },
+        "featured": {
+            "eyebrow": "Ausgewählte Studien",
+            "title": "Beginnen Sie hier",
+            "intro": "Eine Auswahl der derzeit verfügbaren Markteintrittsstudien. Der vollständige Katalog umfasst weitere Länder und Branchen."
         },
         "freeSample": {
             "eyebrow": "Kostenlose Leseprobe",

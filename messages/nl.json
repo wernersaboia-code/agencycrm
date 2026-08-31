@@ -201,7 +201,22 @@
                 "Welke informatie en documenten importeurs verwachten vóór een samenwerking",
                 "Hoe u potentiële distributeurs professioneel benadert",
                 "Welke verkoopargumenten het meest kansrijk zijn bij het eerste contact"
-            ]
+            ],
+            "sample": {
+                "title": "Hoe de studie er vanbinnen uitziet",
+                "note": "Vier pagina's uit de studie over de Duitse HoReCa-markt. De studies zijn in het Engels geschreven en in dit voorbeeld zijn de contactgegevens in de lijst onleesbaar gemaakt.",
+                "captions": {
+                    "cover": "Omslag en editie",
+                    "contents": "Inhoud: 9 secties, 24 pagina's",
+                    "data": "Marktcijfers",
+                    "directory": "Lijst van importeurs en groothandels"
+                }
+            }
+        },
+        "featured": {
+            "eyebrow": "Uitgelichte studies",
+            "title": "Begin hiermee",
+            "intro": "Een selectie van de markttoetredingsstudies die vandaag beschikbaar zijn. De volledige catalogus bevat meer landen en sectoren."
         },
         "freeSample": {
             "eyebrow": "Gratis voorbeeld",
