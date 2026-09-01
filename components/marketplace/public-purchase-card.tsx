@@ -1,10 +1,10 @@
 "use client"
 
 import { useState } from "react"
-import { useFormatter } from "next-intl"
+import { useFormatter, useTranslations } from "next-intl"
 import { formatCurrency } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Calendar, CheckCircle, ChevronDown, Database, Download } from "lucide-react"
+import { Calendar, CheckCircle, ChevronDown, Database, Download, FileText } from "lucide-react"
 import { toast } from "sonner"
 
 /**
@@ -43,12 +43,19 @@ interface PublicPurchaseCardProps {
         createdAt: string
         items: PurchaseItem[]
     }
+    /**
+     * Se o comprovante de compra está disponível. Decidido no servidor
+     * (`vendedorEstaConfigurado`): sem vendedor identificável não há botão, e
+     * a rota `/api/purchases/[id]/receipt` também nega.
+     */
+    mostrarComprovante?: boolean
 }
 
-export function PublicPurchaseCard({ purchase }: PublicPurchaseCardProps) {
+export function PublicPurchaseCard({ purchase, mostrarComprovante = false }: PublicPurchaseCardProps) {
     const [expanded, setExpanded] = useState(false)
     const [downloading, setDownloading] = useState<string | null>(null)
     const format = useFormatter()
+    const t = useTranslations("purchases")
 
     const statusColors: Record<string, string> = {
         paid: "bg-indigo-100 text-indigo-700",
@@ -177,8 +184,8 @@ export function PublicPurchaseCard({ purchase }: PublicPurchaseCardProps) {
                         ))}
                     </div>
 
-                    {purchase.items.length > 1 && (
-                        <div className="mt-4">
+                    <div className="mt-4 flex flex-wrap gap-3">
+                        {purchase.items.length > 1 && (
                             <Button
                                 className="bg-brand hover:bg-brand-hover"
                                 onClick={() => handleDownloadAll()}
@@ -187,8 +194,22 @@ export function PublicPurchaseCard({ purchase }: PublicPurchaseCardProps) {
                                 <Download className={`h-4 w-4 ${downloading === "all" ? "animate-spin" : ""}`} />
                                 Baixar tudo (PDF)
                             </Button>
-                        </div>
-                    )}
+                        )}
+
+                        {/* Só para compra paga: comprovante de pedido pendente
+                            seria documento de um pagamento que não aconteceu.
+                            É link, e não fetch como os outros downloads, porque
+                            a rota já devolve o PDF com Content-Disposition —
+                            não há blob para montar no cliente. */}
+                        {purchase.status === "paid" && mostrarComprovante && (
+                            <Button asChild variant="outline">
+                                <a href={`/api/purchases/${purchase.id}/receipt`}>
+                                    <FileText className="h-4 w-4" />
+                                    {t("receiptButton")}
+                                </a>
+                            </Button>
+                        )}
+                    </div>
                 </div>
             )}
         </div>

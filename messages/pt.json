@@ -575,6 +575,7 @@
         "emptyDescription": "Explore o catálogo, escolha o estudo do mercado que você quer atacar e volte aqui para baixar o arquivo.",
         "emptyCta": "Explorar catálogo",
         "browseMoreLists": "Ver mais estudos",
+        "receiptButton": "Baixar comprovante",
         "statStudies": "Estudos de mercado",
         "guidanceReadTitle": "Comece pela análise, não pelos perfis",
         "guidanceReadText": "O estudo traz o que os importadores esperam e como fazer o primeiro contato. Ler antes evita queimar uma boa empresa numa abordagem apressada.",
@@ -865,6 +866,7 @@
             "cronProtected": "Cron protegido por segredo",
             "paypalReady": "PayPal pronto para checkout",
             "stripeReady": "Stripe pronto para checkout",
+            "receiptReady": "Comprovante de compra pronto",
             "adminLinks": "Links administrativos",
             "manageUsers": "Gerenciar usuários",
             "manageWorkspaces": "Gerenciar workspaces",
@@ -891,7 +893,9 @@
                 "NEXT_PUBLIC_APP_URL": "URL pública usada em callbacks, links e redirecionamentos.",
                 "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY": "Chave pública do Stripe usada no frontend do checkout.",
                 "STRIPE_SECRET_KEY": "Chave secreta do Stripe usada no servidor para criar sessões de checkout.",
-                "STRIPE_WEBHOOK_SECRET": "Segredo usado para verificar a assinatura dos webhooks do Stripe."
+                "STRIPE_WEBHOOK_SECRET": "Segredo usado para verificar a assinatura dos webhooks do Stripe.",
+                "SELLER_NAME": "Razão social que aparece como vendedor no comprovante de compra.",
+                "SELLER_ADDRESS": "Endereço do vendedor no comprovante. Sem nome e endereço, o comprovante não é gerado."
             }
         },
         "analytics": {
@@ -1522,6 +1526,20 @@
             "button": "Entrar na minha conta",
             "resetHint": "Se você esqueceu a senha, use a opção de recuperação na tela de entrada.",
             "ignore": "Se não foi você, pode ignorar esta mensagem com segurança."
+        },
+        "receipt": {
+            "title": "Comprovante de compra",
+            "numberLabel": "Comprovante nº",
+            "dateLabel": "Data do pagamento",
+            "sellerLabel": "Vendedor",
+            "buyerLabel": "Comprador",
+            "paymentLabel": "Forma de pagamento",
+            "itemsLabel": "Descrição",
+            "priceLabel": "Valor",
+            "totalLabel": "Total pago",
+            "notFiscal": "Este documento é um comprovante de compra e não constitui documento fiscal.",
+            "fileName": "comprovante",
+            "attachmentNote": "O comprovante desta compra está anexado a este e-mail, em PDF."
         },
         "purchase": {
             "subject": "Sua compra foi confirmada — pedido #{pedido}",

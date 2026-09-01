@@ -139,6 +139,24 @@ Isso vale para o e-mail transacional (confirmação de compra). O cold mail de c
 workspace usa credenciais próprias, guardadas criptografadas no banco e configuradas pela
 UI em Configurações → E-mail, nunca por variável de ambiente.
 
+### Vendedor no comprovante de compra
+
+O comprovante de compra em PDF (anexado à confirmação e baixável em Minhas Compras)
+identifica quem vendeu por estas variáveis. Sem `SELLER_NAME` **e** `SELLER_ADDRESS`,
+o comprovante não é gerado: o botão some, o e-mail não anexa nada e a rota
+`/api/purchases/[id]/receipt` responde 404. Estado visível em Super admin →
+Configurações.
+
+| variável | o que é |
+|---|---|
+| `SELLER_NAME` | Razão social exibida como vendedor. Sem ela, cairia em "Easy Prospect" |
+| `SELLER_ADDRESS` | Endereço do vendedor. É o mínimo para o documento servir à contabilidade do comprador |
+| `SELLER_TAX_ID` | Opcional. CNPJ/registro fiscal, se houver |
+| `SELLER_EMAIL` | Opcional. Sem ela, cai para `SMTP_FROM_EMAIL` e depois `SMTP_USER` |
+
+O comprovante **não é nota fiscal** e o próprio PDF diz isso; nenhum imposto é
+calculado a partir dessas variáveis.
+
 ## Aplicação
 
 | variável | o que é |

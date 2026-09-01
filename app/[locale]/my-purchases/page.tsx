@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button"
 import { getUserPurchases } from "@/actions/checkout"
 import type { UserPurchase } from "@/actions/checkout"
 import { PublicPurchaseCard } from "@/components/marketplace/public-purchase-card"
+import { vendedorEstaConfigurado } from "@/lib/checkout/vendedor"
 import { MyPurchasesEmptyState } from "@/components/marketplace/my-purchases-empty-state"
 import { validatePurchaseAccessToken } from "@/lib/auth/magic-link"
 import { getAuthenticatedUserId } from "@/lib/auth"
@@ -96,6 +97,9 @@ async function PurchasesDashboard({
     const t = await getTranslations("purchases")
     const format = await getFormatter()
     const locale = await getLocale()
+    // Botão de comprovante só existe quando o vendedor está identificável; a
+    // decisão é do servidor porque `SELLER_*` não é `NEXT_PUBLIC_`.
+    const mostrarComprovante = vendedorEstaConfigurado()
 
     return (
         <div className="min-h-screen bg-muted/40">
@@ -171,7 +175,11 @@ async function PurchasesDashboard({
                     <div className="grid gap-6 lg:grid-cols-[1fr_320px] lg:items-start">
                         <div className="space-y-4">
                             {purchases.map((purchase) => (
-                                <PublicPurchaseCard key={purchase.id} purchase={purchase} />
+                                <PublicPurchaseCard
+                                    key={purchase.id}
+                                    purchase={purchase}
+                                    mostrarComprovante={mostrarComprovante}
+                                />
                             ))}
                         </div>
 

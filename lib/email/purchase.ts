@@ -8,6 +8,8 @@ import { SMTP_PROVIDERS } from "@/lib/constants/smtp.constants"
 import { getSystemSmtpConfig } from "./system-smtp"
 import { decryptSecret } from "@/lib/secrets"
 import { localeFromUserLanguage } from "@/lib/i18n/user-locale"
+import { gerarComprovantePdf } from "@/lib/checkout/comprovante-pdf"
+import { vendedorEstaConfigurado } from "@/lib/checkout/vendedor"
 
 interface SendPurchaseConfirmationParams {
     userId: string
@@ -116,6 +118,30 @@ export async function sendPurchaseConfirmationEmail({
         console.log("  User:", smtpConfig.user)
         console.log("  From:", `${smtpConfig.senderName} <${smtpConfig.senderEmail}>`)
 
+        const locale = localeFromUserLanguage(purchase.user.language)
+
+        // O comprovante vai anexado, mas NUNCA segura a confirmação: se a
+        // geração falhar, o comprador ainda recebe o e-mail com o link de
+        // acesso, e o documento continua disponível em Minhas Compras. Trocar
+        // o acesso ao produto por um anexo seria o pior negócio possível.
+        //
+        // Sem `SELLER_NAME` + `SELLER_ADDRESS` o comprovante sai sem vendedor
+        // identificável, e um documento assim vale menos que documento nenhum:
+        // nesse caso não anexa e não anuncia anexo.
+        let comprovante: { filename: string; content: Buffer; contentType: string } | null = null
+        if (vendedorEstaConfigurado()) {
+            try {
+                const gerado = await gerarComprovantePdf(purchase, locale)
+                comprovante = {
+                    filename: gerado.nomeArquivo,
+                    content: gerado.conteudo,
+                    contentType: "application/pdf",
+                }
+            } catch (erro) {
+                console.error("⚠️ Comprovante não pôde ser gerado; enviando confirmação sem anexo:", erro)
+            }
+        }
+
         // Gerar HTML do email
         // O idioma sai da conta do comprador, nao da requisicao: o webhook do
         // provedor chega sem sessao e sem cabecalho de idioma.
@@ -134,11 +160,15 @@ export async function sendPurchaseConfirmationEmail({
                 price: Number(item.price),
             })),
             accessUrl,
-        }, localeFromUserLanguage(purchase.user.language))
+            // O e-mail só anuncia o anexo quando ele existe de verdade.
+            comComprovante: comprovante !== null,
+        }, locale)
+
 
         console.log("📧 Enviando email...")
         console.log("  To:", purchase.user.email)
         console.log("  Subject:", subject)
+        console.log("  Comprovante:", comprovante ? comprovante.filename : "não anexado")
 
         // Enviar email
         const result = await sendEmail(
@@ -146,6 +176,7 @@ export async function sendPurchaseConfirmationEmail({
                 to: purchase.user.email,
                 subject,
                 html,
+                attachments: comprovante ? [comprovante] : undefined,
             },
             smtpConfig
         )

@@ -138,6 +138,22 @@ function getConfigStatuses(t: Traduzir, common: Traduzir): ConfigStatus[] {
             critical: false,
             value: maskSecret(process.env.STRIPE_WEBHOOK_SECRET, common),
         },
+        {
+            key: "SELLER_NAME",
+            label: "Vendedor — razão social",
+            description: t("vars.SELLER_NAME"),
+            configured: Boolean(process.env.SELLER_NAME?.trim()),
+            critical: false,
+            value: process.env.SELLER_NAME?.trim() || undefined,
+        },
+        {
+            key: "SELLER_ADDRESS",
+            label: "Vendedor — endereço",
+            description: t("vars.SELLER_ADDRESS"),
+            configured: Boolean(process.env.SELLER_ADDRESS?.trim()),
+            critical: false,
+            value: process.env.SELLER_ADDRESS?.trim() || undefined,
+        },
     ]
 }
 
@@ -249,6 +265,7 @@ export default async function SuperAdminSettingsPage() {
                             <ChecklistItem checked={Boolean(process.env.CRON_SECRET)} text={t("cronProtected")} />
                             <ChecklistItem checked={isPaypalReady(configs)} text={t("paypalReady")} />
                             <ChecklistItem checked={isStripeReady(configs)} text={t("stripeReady")} />
+                            <ChecklistItem checked={isReceiptReady(configs)} text={t("receiptReady")} />
                         </CardContent>
                     </Card>
 
@@ -290,6 +307,16 @@ function isStripeReady(configs: ConfigStatus[]) {
     return configs.some((item) => item.key === "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY" && item.configured)
         && configs.some((item) => item.key === "STRIPE_SECRET_KEY" && item.configured)
         && configs.some((item) => item.key === "STRIPE_WEBHOOK_SECRET" && item.configured)
+}
+
+/**
+ * O comprovante de compra só é gerado e oferecido quando há vendedor
+ * identificável — nome e endereço. Mesma regra de `vendedorEstaConfigurado`,
+ * lida aqui pela lista para reaproveitar o estado já montado.
+ */
+function isReceiptReady(configs: ConfigStatus[]) {
+    return configs.some((item) => item.key === "SELLER_NAME" && item.configured)
+        && configs.some((item) => item.key === "SELLER_ADDRESS" && item.configured)
 }
 
 function maskSecret(value: string | undefined, common: Traduzir) {

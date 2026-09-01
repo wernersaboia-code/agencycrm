@@ -575,6 +575,7 @@
         "emptyDescription": "Explora el catálogo, elige el estudio del mercado en el que quieres entrar y vuelve aquí para descargar el archivo.",
         "emptyCta": "Explorar catálogo",
         "browseMoreLists": "Ver más estudios",
+        "receiptButton": "Descargar comprobante",
         "statStudies": "Estudios de mercado",
         "guidanceReadTitle": "Empiece por el análisis, no por los perfiles",
         "guidanceReadText": "El estudio explica qué esperan los importadores y cómo hacer el primer contacto. Leerlo antes evita quemar una buena empresa con un acercamiento apresurado.",
@@ -630,6 +631,20 @@
             "button": "Entrar en mi cuenta",
             "resetHint": "Si olvidó su contraseña, use la opción de recuperación en la pantalla de acceso.",
             "ignore": "Si no fue usted, puede ignorar este mensaje con tranquilidad."
+        },
+        "receipt": {
+            "title": "Comprobante de compra",
+            "numberLabel": "Comprobante n.º",
+            "dateLabel": "Fecha de pago",
+            "sellerLabel": "Vendedor",
+            "buyerLabel": "Comprador",
+            "paymentLabel": "Forma de pago",
+            "itemsLabel": "Descripción",
+            "priceLabel": "Importe",
+            "totalLabel": "Total pagado",
+            "notFiscal": "Este documento es un comprobante de compra y no constituye documento fiscal.",
+            "fileName": "comprobante",
+            "attachmentNote": "El comprobante de esta compra está adjunto a este correo en PDF."
         },
         "purchase": {
             "subject": "Su compra está confirmada — pedido #{pedido}",

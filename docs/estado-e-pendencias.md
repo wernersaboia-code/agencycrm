@@ -61,6 +61,7 @@ runtime nas duas horas seguintes.
 | `ac17b27` | §2 da privacidade ainda dizia "listas do catálogo" nos 7 idiomas, contradizendo a §7 |
 | `5f45a21` | Vitrine da home ganha 4 páginas reais do estudo HoReCa em "O que está incluído" (diretório com contato borrado no pixel, via `scripts/gerar-imagens-estudo.py`) e a seção "Estudos em destaque" com os `isFeatured` do catálogo. Sem destaque marcado, a seção some |
 | `c6d3d83` | Tira a contagem "9 seções, 24 páginas" da legenda do índice (nem todo estudo tem o mesmo número); "Estudos em destaque" vira o título da seção |
+| _(comprovante)_ | Comprovante de compra em PDF nos 7 idiomas: baixável em Minhas Compras e anexado à confirmação. **Dormente** até `SELLER_NAME` + `SELLER_ADDRESS` entrarem na Vercel — sem isso, `vendedorEstaConfigurado()` é falso, o botão some, o e-mail não anexa e a rota responde 404. Estado visível em Super admin → Configurações |
 
 **Fora do git, já em produção:** os 49 estudos no ar foram reeditados (59 contatos
 pessoais removidos, 26 nomes de registro público mantidos) e verificados por
@@ -85,13 +86,17 @@ Registro completo: https://claude.ai/code/artifact/cf798535-ddeb-4e1e-8d23-e56e9
 6. **Capa dos PDFs** — ainda diz "A guide and importer directory for international
    suppliers", desalinhada do vocabulário novo do site. Vale alinhar nos próximos
    estudos; os 51 existentes podem ser ajustados em lote pela mesma técnica de edição.
+7. **`SELLER_NAME` + `SELLER_ADDRESS` na Vercel** — o comprovante de compra está no
+   código mas dormente até essas duas entrarem (com redeploy). Opcionais: `SELLER_TAX_ID`,
+   `SELLER_EMAIL`. Detalhe em [`variaveis-de-ambiente.md`](variaveis-de-ambiente.md) →
+   "Vendedor no comprovante de compra". Estado em Super admin → Configurações.
 
 ### Advogado
-7. **`terms.foroLei`** — os Termos não declaram foro nem lei aplicável.
-8. **`privacy.baseLegal.listas`** — a §3 declara base legal para conta, compra, registros
+8. **`terms.foroLei`** — os Termos não declaram foro nem lei aplicável.
+9. **`privacy.baseLegal.listas`** — a §3 declara base legal para conta, compra, registros
    e analytics, mas **nenhuma para os nomes e cargos dentro dos estudos**, que a §7 agora
    declara existirem. Seria legítimo interesse com teste de balanceamento.
-9. **`privacy.representanteUE`** — representante na UE (GDPR Art. 27) para controlador
+10. **`privacy.representanteUE`** — representante na UE (GDPR Art. 27) para controlador
    fora da UE que oferece serviços a titulares na UE.
 
 Os três estão rastreados em [`content/legal/pendencias.ts`](../content/legal/pendencias.ts).
@@ -118,7 +123,7 @@ Os três estão rastreados em [`content/legal/pendencias.ts`](../content/legal/p
 4. **Próximo passo:** confirmar o botão do Stripe no checkout (item 4 acima) e fazer
    uma compra de teste ponta a ponta — pagamento, webhook, e-mail de confirmação com
    o link, download. É o único trecho que nenhuma verificação automática cobre.
-5. Depois disso, as pendências jurídicas (7 a 9) são o que separa a loja de vender
+5. Depois disso, as pendências jurídicas (8 a 10) são o que separa a loja de vender
    para a UE com segurança.
 
 ## Onde as coisas moram

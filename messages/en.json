@@ -575,6 +575,7 @@
         "emptyDescription": "Browse the catalogue, pick the study for the market you want to enter, and come back here to download the file.",
         "emptyCta": "Browse catalog",
         "browseMoreLists": "See more studies",
+        "receiptButton": "Download receipt",
         "statStudies": "Market entry studies",
         "guidanceReadTitle": "Start with the analysis, not the profiles",
         "guidanceReadText": "The study covers what importers expect and how to make first contact. Reading it first keeps you from burning a good company on a rushed approach.",
@@ -865,6 +866,7 @@
             "cronProtected": "Cron protected by secret",
             "paypalReady": "PayPal ready for checkout",
             "stripeReady": "Stripe ready for checkout",
+            "receiptReady": "Purchase receipt ready",
             "adminLinks": "Administrative links",
             "manageUsers": "Manage users",
             "manageWorkspaces": "Manage workspaces",
@@ -891,7 +893,9 @@
                 "NEXT_PUBLIC_APP_URL": "Public URL used in callbacks, links and redirects.",
                 "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY": "Stripe public key used in the checkout frontend.",
                 "STRIPE_SECRET_KEY": "Stripe secret key used on the server to create checkout sessions.",
-                "STRIPE_WEBHOOK_SECRET": "Secret used to verify the signature of Stripe webhooks."
+                "STRIPE_WEBHOOK_SECRET": "Secret used to verify the signature of Stripe webhooks.",
+                "SELLER_NAME": "Company name shown as the seller on the purchase receipt.",
+                "SELLER_ADDRESS": "Seller address on the receipt. Without a name and address, no receipt is generated."
             }
         },
         "analytics": {
@@ -1522,6 +1526,20 @@
             "button": "Sign in to my account",
             "resetHint": "If you forgot your password, use the recovery option on the sign-in screen.",
             "ignore": "If this was not you, you can safely ignore this message."
+        },
+        "receipt": {
+            "title": "Purchase receipt",
+            "numberLabel": "Receipt no.",
+            "dateLabel": "Payment date",
+            "sellerLabel": "Seller",
+            "buyerLabel": "Buyer",
+            "paymentLabel": "Payment method",
+            "itemsLabel": "Description",
+            "priceLabel": "Amount",
+            "totalLabel": "Total paid",
+            "notFiscal": "This document is a purchase receipt and is not a tax document.",
+            "fileName": "receipt",
+            "attachmentNote": "The receipt for this purchase is attached to this e-mail as a PDF."
         },
         "purchase": {
             "subject": "Your purchase is confirmed — order #{pedido}",

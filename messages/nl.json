@@ -575,6 +575,7 @@
         "emptyDescription": "Bekijk de catalogus, kies de studie voor de markt die u wilt betreden en kom hier terug om het bestand te downloaden.",
         "emptyCta": "Catalogus verkennen",
         "browseMoreLists": "Meer studies bekijken",
+        "receiptButton": "Bewijs downloaden",
         "statStudies": "Marktentreestudies",
         "guidanceReadTitle": "Begin met de analyse, niet met de profielen",
         "guidanceReadText": "De studie legt uit wat importeurs verwachten en hoe u het eerste contact aanpakt. Dat vooraf lezen voorkomt dat u een goed bedrijf verspeelt met een overhaaste benadering.",
@@ -630,6 +631,20 @@
             "button": "Inloggen op mijn account",
             "resetHint": "Bent u uw wachtwoord vergeten, gebruik dan de hersteloptie op het inlogscherm.",
             "ignore": "Was u dit niet, dan kunt u dit bericht gerust negeren."
+        },
+        "receipt": {
+            "title": "Aankoopbewijs",
+            "numberLabel": "Bewijs nr.",
+            "dateLabel": "Betaaldatum",
+            "sellerLabel": "Verkoper",
+            "buyerLabel": "Koper",
+            "paymentLabel": "Betaalwijze",
+            "itemsLabel": "Omschrijving",
+            "priceLabel": "Bedrag",
+            "totalLabel": "Totaal betaald",
+            "notFiscal": "Dit document is een aankoopbewijs en geen fiscaal document.",
+            "fileName": "aankoopbewijs",
+            "attachmentNote": "Het bewijs van deze aankoop is als pdf bij deze e-mail gevoegd."
         },
         "purchase": {
             "subject": "Uw aankoop is bevestigd — bestelling #{pedido}",

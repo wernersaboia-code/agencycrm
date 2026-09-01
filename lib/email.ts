@@ -35,6 +35,12 @@ export interface SendEmailParams {
     replyTo?: string
     emailSendId?: string
     headers?: Record<string, string>
+    /**
+     * Anexos, no formato do nodemailer. Existe para o comprovante de compra ir
+     * junto da confirmação — o comprador que quer organizar as contas não
+     * deveria precisar voltar ao site para pegar o documento do que já pagou.
+     */
+    attachments?: Array<{ filename: string; content: Buffer; contentType?: string }>
 }
 
 export interface SendEmailResult {
@@ -122,6 +128,7 @@ export async function sendEmailSmtp(
             html: params.html,
             replyTo: params.replyTo || fromEmail,
             headers: params.headers,
+            attachments: params.attachments,
         })
 
         console.log(`✅ Email enviado com sucesso! ID: ${info.messageId}`)

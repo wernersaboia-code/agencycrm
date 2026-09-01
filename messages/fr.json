@@ -575,6 +575,7 @@
         "emptyDescription": "Parcourez le catalogue, choisissez l’étude du marché que vous visez et revenez ici pour télécharger le fichier.",
         "emptyCta": "Explorer le catalogue",
         "browseMoreLists": "Voir d’autres études",
+        "receiptButton": "Télécharger le reçu",
         "statStudies": "Études de marché",
         "guidanceReadTitle": "Commencez par l'analyse, pas par les profils",
         "guidanceReadText": "L’étude explique ce qu’attendent les importateurs et comment réussir la prise de contact. La lire d’abord évite de gâcher une bonne entreprise avec une approche précipitée.",
@@ -630,6 +631,20 @@
             "button": "Me connecter à mon compte",
             "resetHint": "Si vous avez oublié votre mot de passe, utilisez l'option de récupération sur la page de connexion.",
             "ignore": "Si ce n'était pas vous, vous pouvez ignorer ce message en toute sécurité."
+        },
+        "receipt": {
+            "title": "Reçu d'achat",
+            "numberLabel": "Reçu n°",
+            "dateLabel": "Date de paiement",
+            "sellerLabel": "Vendeur",
+            "buyerLabel": "Acheteur",
+            "paymentLabel": "Moyen de paiement",
+            "itemsLabel": "Description",
+            "priceLabel": "Montant",
+            "totalLabel": "Total payé",
+            "notFiscal": "Ce document est un reçu d'achat et ne constitue pas un document fiscal.",
+            "fileName": "recu",
+            "attachmentNote": "Le reçu de cet achat est joint à cet e-mail au format PDF."
         },
         "purchase": {
             "subject": "Votre achat est confirmé — commande #{pedido}",

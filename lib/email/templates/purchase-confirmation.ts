@@ -23,6 +23,8 @@ interface PurchaseConfirmationTemplateData {
         price: number
     }>
     accessUrl: string
+    /** Se o comprovante em PDF foi anexado a este e-mail. */
+    comComprovante?: boolean
 }
 
 export async function generatePurchaseConfirmationEmail(
@@ -32,6 +34,7 @@ export async function generatePurchaseConfirmationEmail(
     const appUrl = getPublicAppUrl()
     const t = await loadEmailBlock(locale, "purchase")
     const comum = await loadEmailCommon(locale)
+    const comprovante = await loadEmailBlock(locale, "receipt")
 
     // htmlLangFor devolve a tag BCP 47 ("de" -> "de-DE"), que e o que o Intl
     // exige: "de" sozinho nao define separador decimal nem formato de data.
@@ -104,6 +107,7 @@ export async function generatePurchaseConfirmationEmail(
                 <p style="color: #374151; font-size: 15px; margin: 0 0 20px;">${t.accessIntro}</p>
                 ${renderEmailButton(data.accessUrl, t.accessButton)}
                 <p style="color: #6b7280; font-size: 13px; margin: 16px 0 0;">🔒 ${t.linkNote}</p>
+                ${data.comComprovante ? `<p style="color: #6b7280; font-size: 13px; margin: 8px 0 0;">📎 ${comprovante.attachmentNote}</p>` : ""}
               </div>
 
               <div style="background: linear-gradient(135deg, #003048 0%, #0C4160 100%); border-radius: 8px; padding: 24px; text-align: center; margin-top: 24px;">

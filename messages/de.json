@@ -575,6 +575,7 @@
         "emptyDescription": "Sehen Sie sich den Katalog an, wählen Sie die Studie für den Markt aus, den Sie erschließen wollen, und kommen Sie hierher zurück, um die Datei herunterzuladen.",
         "emptyCta": "Katalog durchstöbern",
         "browseMoreLists": "Weitere Studien ansehen",
+        "receiptButton": "Beleg herunterladen",
         "statStudies": "Markteintrittsstudien",
         "guidanceReadTitle": "Beginnen Sie mit der Analyse, nicht mit den Profilen",
         "guidanceReadText": "Die Studie erklärt, was Importeure erwarten und wie die erste Kontaktaufnahme gelingt. Wer das vorher liest, verbrennt kein gutes Unternehmen an einer übereilten Ansprache.",
@@ -865,6 +866,7 @@
             "cronProtected": "Cron durch Secret geschützt",
             "paypalReady": "PayPal bereit für Checkout",
             "stripeReady": "Stripe bereit für Checkout",
+            "receiptReady": "Kaufbeleg bereit",
             "adminLinks": "Administrative Links",
             "manageUsers": "Benutzer verwalten",
             "manageWorkspaces": "Workspaces verwalten",
@@ -891,7 +893,9 @@
                 "NEXT_PUBLIC_APP_URL": "Öffentliche URL für Callbacks, Links und Weiterleitungen.",
                 "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY": "Öffentlicher Stripe-Schlüssel für das Frontend des Checkouts.",
                 "STRIPE_SECRET_KEY": "Geheimer Stripe-Schlüssel, den der Server zum Erstellen von Checkout-Sitzungen verwendet.",
-                "STRIPE_WEBHOOK_SECRET": "Geheimnis zur Überprüfung der Signatur der Stripe-Webhooks."
+                "STRIPE_WEBHOOK_SECRET": "Geheimnis zur Überprüfung der Signatur der Stripe-Webhooks.",
+                "SELLER_NAME": "Firmenname, der auf dem Kaufbeleg als Verkäufer erscheint.",
+                "SELLER_ADDRESS": "Adresse des Verkäufers auf dem Kaufbeleg. Ohne Name und Adresse wird kein Beleg erstellt."
             }
         },
         "analytics": {
@@ -1522,6 +1526,20 @@
             "button": "Bei meinem Konto anmelden",
             "resetHint": "Falls Sie Ihr Passwort vergessen haben, nutzen Sie die Wiederherstellung auf der Anmeldeseite.",
             "ignore": "Falls Sie das nicht waren, können Sie diese Nachricht bedenkenlos ignorieren."
+        },
+        "receipt": {
+            "title": "Kaufbeleg",
+            "numberLabel": "Beleg-Nr.",
+            "dateLabel": "Zahlungsdatum",
+            "sellerLabel": "Verkäufer",
+            "buyerLabel": "Käufer",
+            "paymentLabel": "Zahlungsart",
+            "itemsLabel": "Beschreibung",
+            "priceLabel": "Betrag",
+            "totalLabel": "Gezahlter Gesamtbetrag",
+            "notFiscal": "Dieses Dokument ist ein Kaufbeleg und keine Rechnung im steuerlichen Sinne.",
+            "fileName": "kaufbeleg",
+            "attachmentNote": "Der Beleg zu diesem Kauf ist dieser E-Mail als PDF beigefügt."
         },
         "purchase": {
             "subject": "Ihr Kauf ist bestätigt — Bestellung #{pedido}",

@@ -575,6 +575,7 @@
         "emptyDescription": "Esplora il catalogo, scegli lo studio del mercato in cui vuoi entrare e torna qui per scaricare il file.",
         "emptyCta": "Esplora il catalogo",
         "browseMoreLists": "Vedi altri studi",
+        "receiptButton": "Scarica la ricevuta",
         "statStudies": "Studi di mercato",
         "guidanceReadTitle": "Inizi dall'analisi, non dai profili",
         "guidanceReadText": "Lo studio spiega che cosa si aspettano gli importatori e come impostare il primo contatto. Leggerlo prima evita di bruciare una buona azienda con un approccio affrettato.",
@@ -630,6 +631,20 @@
             "button": "Accedi al mio account",
             "resetHint": "Se ha dimenticato la password, usi l'opzione di recupero nella schermata di accesso.",
             "ignore": "Se non è stato lei, può ignorare tranquillamente questo messaggio."
+        },
+        "receipt": {
+            "title": "Ricevuta di acquisto",
+            "numberLabel": "Ricevuta n.",
+            "dateLabel": "Data del pagamento",
+            "sellerLabel": "Venditore",
+            "buyerLabel": "Acquirente",
+            "paymentLabel": "Metodo di pagamento",
+            "itemsLabel": "Descrizione",
+            "priceLabel": "Importo",
+            "totalLabel": "Totale pagato",
+            "notFiscal": "Questo documento è una ricevuta di acquisto e non costituisce documento fiscale.",
+            "fileName": "ricevuta",
+            "attachmentNote": "La ricevuta di questo acquisto è allegata a questa e-mail in PDF."
         },
         "purchase": {
             "subject": "Il suo acquisto è confermato — ordine #{pedido}",

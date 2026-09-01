@@ -15,7 +15,11 @@ import type { Locale } from "@/lib/i18n/locales"
 
 export type EmailBlock = Record<string, string>
 
-export type EmailBlockName = "signup" | "accountExists" | "purchase"
+// `receipt` não é e-mail: são os rótulos do PDF do comprovante. Mora aqui
+// porque é gerado no mesmo contexto sem React — webhook de pagamento e rota de
+// download não têm provider do next-intl — e assim usa a mesma fonte de
+// tradução que o resto, em vez de uma tabela paralela.
+export type EmailBlockName = "signup" | "accountExists" | "purchase" | "receipt"
 
 /** Troca {chave} pelo valor. Placeholder sem valor fica visivel, em vez de virar "undefined". */
 export function interpolate(template: string, vars: Record<string, string>): string {
