@@ -1,6 +1,6 @@
 # Estado do produto e pendências
 
-Atualizado em 2026-08-25. Nasceu como "pendências para reaplicar ao Paddle" e foi
+Atualizado em 2026-08-31. Nasceu como "pendências para reaplicar ao Paddle" e foi
 renomeado quando o Paddle saiu de cena — o conteúdo nunca foi sobre o Paddle, e sim
 sobre o estado da vitrine, o que falta e as armadilhas já pagas.
 
@@ -59,6 +59,8 @@ runtime nas duas horas seguintes.
 | `af13557` | Tira "Leads Qualificados" do `<title>`/OG/Twitter, remove `keywords`, tira Stripe da privacidade |
 | `85b37df` | "Perfis das empresas" no lugar de "diretório de importadores" |
 | `ac17b27` | §2 da privacidade ainda dizia "listas do catálogo" nos 7 idiomas, contradizendo a §7 |
+| `5f45a21` | Vitrine da home ganha 4 páginas reais do estudo HoReCa em "O que está incluído" (diretório com contato borrado no pixel, via `scripts/gerar-imagens-estudo.py`) e a seção "Estudos em destaque" com os `isFeatured` do catálogo. Sem destaque marcado, a seção some |
+| `c6d3d83` | Tira a contagem "9 seções, 24 páginas" da legenda do índice (nem todo estudo tem o mesmo número); "Estudos em destaque" vira o título da seção |
 
 **Fora do git, já em produção:** os 49 estudos no ar foram reeditados (59 contatos
 pessoais removidos, 26 nomes de registro público mantidos) e verificados por
@@ -93,6 +95,19 @@ Registro completo: https://claude.ai/code/artifact/cf798535-ddeb-4e1e-8d23-e56e9
    fora da UE que oferece serviços a titulares na UE.
 
 Os três estão rastreados em [`content/legal/pendencias.ts`](../content/legal/pendencias.ts).
+
+## Bugs conhecidos — não urgentes
+
+- **Aviso de `<script>` do `next-themes` ao trocar de idioma.** Console:
+  *"Encountered a script tag while rendering React component"*, apontando para
+  `components/providers/theme-provider.tsx`. O `next-themes@0.4.6` (já é a última)
+  injeta um `<script>` anti-flash na árvore React; o React 19 loga esse aviso toda
+  vez que o provider re-renderiza no cliente, e a troca de idioma do next-intl é
+  navegação client-side que re-renderiza o layout. É só aviso — tema e página
+  seguem funcionando, o script já rodou no SSR. Não tem a ver com a vitrine
+  (`5f45a21`/`c6d3d83` não tocam layout, providers nem navegação i18n). Conserto é
+  seu commit próprio: mover o script anti-flash para o `<head>` do layout raiz à
+  mão, ou esperar o `next-themes` publicar correção para React 19.
 
 ## Sequência recomendada
 
