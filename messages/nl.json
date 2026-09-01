@@ -207,15 +207,14 @@
                 "note": "Vier pagina's uit de studie over de Duitse HoReCa-markt. De studies zijn in het Engels geschreven en in dit voorbeeld zijn de contactgegevens in de lijst onleesbaar gemaakt.",
                 "captions": {
                     "cover": "Omslag en editie",
-                    "contents": "Inhoud: 9 secties, 24 pagina's",
+                    "contents": "Inhoudsopgave",
                     "data": "Marktcijfers",
                     "directory": "Lijst van importeurs en groothandels"
                 }
             }
         },
         "featured": {
-            "eyebrow": "Uitgelichte studies",
-            "title": "Begin hiermee",
+            "title": "Uitgelichte studies",
             "intro": "Een selectie van de markttoetredingsstudies die vandaag beschikbaar zijn. De volledige catalogus bevat meer landen en sectoren."
         },
         "freeSample": {

@@ -207,15 +207,14 @@
                 "note": "Quatre pages de l'étude du marché HoReCa allemand. Les études sont rédigées en anglais et, dans cet aperçu, les coordonnées du répertoire sont floutées.",
                 "captions": {
                     "cover": "Couverture et édition",
-                    "contents": "Sommaire : 9 sections, 24 pages",
+                    "contents": "Sommaire",
                     "data": "Chiffres du marché",
                     "directory": "Répertoire d'importateurs et de grossistes"
                 }
             }
         },
         "featured": {
-            "eyebrow": "Études en vedette",
-            "title": "Commencez par celles-ci",
+            "title": "Études en vedette",
             "intro": "Une sélection des études d'entrée sur le marché disponibles aujourd'hui. Le catalogue complet couvre d'autres pays et secteurs."
         },
         "freeSample": {

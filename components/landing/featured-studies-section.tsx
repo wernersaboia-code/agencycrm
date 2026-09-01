@@ -25,7 +25,7 @@ export async function FeaturedStudiesSection({ locale }: { locale: LandingLocale
 
     return (
         <Section tone="default">
-            <SectionHeading eyebrow={t("eyebrow")} title={t("title")} intro={t("intro")} />
+            <SectionHeading title={t("title")} intro={t("intro")} />
 
             <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 {listas.map((lista) => (

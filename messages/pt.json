@@ -207,15 +207,14 @@
                 "note": "Quatro páginas do estudo do mercado HoReCa alemão. Os estudos são redigidos em inglês e, nesta amostra, os dados de contato do diretório aparecem borrados.",
                 "captions": {
                     "cover": "Capa e edição",
-                    "contents": "Índice: 9 seções, 24 páginas",
+                    "contents": "Índice",
                     "data": "Números do mercado",
                     "directory": "Diretório de importadores e atacadistas"
                 }
             }
         },
         "featured": {
-            "eyebrow": "Estudos em destaque",
-            "title": "Comece por estes",
+            "title": "Estudos em destaque",
             "intro": "Uma seleção dos estudos de entrada em mercado disponíveis hoje. O catálogo completo tem mais países e setores."
         },
         "freeSample": {

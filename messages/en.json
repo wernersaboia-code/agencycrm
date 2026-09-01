@@ -207,15 +207,14 @@
                 "note": "Four pages from the German HoReCa study. The studies are written in English, and in this sample the directory's contact details are blurred.",
                 "captions": {
                     "cover": "Cover and edition",
-                    "contents": "Contents: 9 sections, 24 pages",
+                    "contents": "Contents",
                     "data": "Market figures",
                     "directory": "Directory of importers and wholesalers"
                 }
             }
         },
         "featured": {
-            "eyebrow": "Featured studies",
-            "title": "Start with these",
+            "title": "Featured studies",
             "intro": "A selection of the market entry studies available today. The full catalogue covers more countries and sectors."
         },
         "freeSample": {

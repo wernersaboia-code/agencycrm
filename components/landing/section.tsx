@@ -45,6 +45,9 @@ export function Section({
 
 /**
  * Par sobrancelha + título, repetido em sete seções da landing.
+ *
+ * `eyebrow` é opcional: uma seção cujo título já é a própria etiqueta ("Estudos
+ * em destaque") não ganha nada repetindo a ideia numa sobrancelha acima.
  */
 export function SectionHeading({
     eyebrow,
@@ -52,17 +55,21 @@ export function SectionHeading({
     intro,
     centered = false,
 }: {
-    eyebrow: string
+    eyebrow?: string
     title: string
     intro?: string
     centered?: boolean
 }) {
     return (
         <div className={cn(centered && "mx-auto max-w-2xl text-center")}>
-            <p className="text-sm font-semibold uppercase tracking-wider text-brand-accent-strong">
-                {eyebrow}
-            </p>
-            <h2 className="mt-2 text-3xl font-bold text-foreground md:text-4xl">{title}</h2>
+            {eyebrow && (
+                <p className="text-sm font-semibold uppercase tracking-wider text-brand-accent-strong">
+                    {eyebrow}
+                </p>
+            )}
+            <h2 className={cn("text-3xl font-bold text-foreground md:text-4xl", eyebrow && "mt-2")}>
+                {title}
+            </h2>
             {intro && <p className="mt-4 leading-7 text-muted-foreground">{intro}</p>}
         </div>
     )
