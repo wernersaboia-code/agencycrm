@@ -14,6 +14,14 @@
  * nos sete idiomas — o teste de paridade em
  * `lib/i18n/messages-integridade.test.ts` cobra isso.
  *
+ * O vocabulário tem de acompanhar o catálogo, nos dois sentidos. Faceta sem
+ * lista por trás é promessa de catálogo que não existe — disso `visibleFacets`
+ * dá conta sozinho, escondendo a contagem zero. O sentido contrário não tem
+ * rede: id que falta aqui nunca vira opção de filtro, por mais estudos que
+ * tenha, porque o filtro percorre este arquivo e nunca o banco. Foi assim que
+ * dezenove países com estudo publicado ficaram invisíveis no catálogo. Estudo
+ * de país ou setor novo entra aqui no mesmo passo em que é publicado.
+ *
  * A busca tem duas dimensões e só duas: PAÍS e SETOR.
  *
  * A faceta "categoria" (importadores/exportadores/fabricantes…) foi removida:
@@ -58,13 +66,20 @@ export const INDUSTRY_IDS = [
  */
 export const COUNTRY_CODES = [
     // Europa
-    "AT", "BE", "CH", "CZ", "DE", "DK", "ES", "FI", "FR", "GB",
-    "HR", "IE", "IT", "LU", "NL", "NO", "PL", "PT", "SE", "SI",
-    "SK", "TR",
+    "AT", "BE", "BG", "CH", "CZ", "DE", "DK", "EE", "ES", "FI",
+    "FR", "GB", "GR", "HR", "HU", "IE", "IT", "LT", "LU", "LV",
+    "MT", "NL", "NO", "PL", "PT", "RO", "SE", "SI", "SK", "TR",
     // Américas
-    "AR", "BR", "CO", "EC", "US", "UY", "VE",
+    "AR", "BO", "BR", "CA", "CO", "EC", "PE", "PY", "US", "UY",
+    "VE",
     // Ásia
-    "CN", "JP",
+    "CN", "ID", "IN", "JP", "KR",
+    // Oriente Médio
+    "AE", "KW", "OM", "QA",
+    // África
+    "EG", "NG", "ZA",
+    // Oceania
+    "AU",
 ] as const
 
 export type IndustryId = (typeof INDUSTRY_IDS)[number]
