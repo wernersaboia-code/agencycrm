@@ -41,7 +41,13 @@ export async function MarketplaceFooter({ locale = "pt" }: { locale?: Locale }) 
                     <div>
                         <h4 className="mb-4 font-semibold">{t("accountTitle")}</h4>
                         <ul className="space-y-2 text-sm text-muted-foreground">
-                            <li><LocaleLink href="/my-purchases" className="hover:text-foreground">{t("myPurchases")}</LocaleLink></li>
+                            {/* "Minhas compras" fica só no menu do header (visível
+                                depois do login). Aqui, num rodapé servido em toda
+                                página pública, o link era um /my-purchases fixo que
+                                o Googlebot seguia e batia no 307 para /sign-in —
+                                sete URLs de "Página com redirecionamento" no GSC
+                                (contando a variante /de/). Quem está deslogado não
+                                tem o que ver nessa página de qualquer forma. */}
                             <li><Link href={`/sign-in?lang=${locale}`} className="hover:text-foreground">{t("login")}</Link></li>
                         </ul>
                     </div>

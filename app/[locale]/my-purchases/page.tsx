@@ -33,6 +33,12 @@ export async function generateMetadata(): Promise<Metadata> {
     return {
         title: t("metaTitle"),
         description: t("metaDescription"),
+        // Página de conta: nada aqui deve entrar em busca. Para o visitante sem
+        // sessão ela já redireciona para /sign-in (o que o Google reporta como
+        // "Página com redirecionamento"); com o token de e-mail ela responde
+        // 200 e sem este noindex cairia no índice. O robots.ts também bloqueia
+        // /my-purchases e /*/my-purchases.
+        robots: { index: false, follow: false },
     }
 }
 
