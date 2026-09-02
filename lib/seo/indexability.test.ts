@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest"
-import { isPublishedLocale, robotsForLocale } from "./indexability"
+import { isPublishedLocale, robotsForLocale, ROBOTS_NAO_ENCONTRADO } from "./indexability"
 
 describe("isPublishedLocale", () => {
     it("aceita os locales com tradução própria", () => {
@@ -21,5 +21,11 @@ describe("robotsForLocale", () => {
 
     it("libera indexação de locale publicado", () => {
         expect(robotsForLocale("pt")).toEqual({ index: true, follow: true })
+    })
+})
+
+describe("ROBOTS_NAO_ENCONTRADO", () => {
+    it("bloqueia indexação mas segue os links de volta ao catálogo", () => {
+        expect(ROBOTS_NAO_ENCONTRADO).toEqual({ index: false, follow: true })
     })
 })

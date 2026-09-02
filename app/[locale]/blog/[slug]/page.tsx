@@ -6,6 +6,7 @@ import { getPostBySlug } from "@/lib/blog/queries"
 import { LanguageSwitcher } from "@/components/blog/language-switcher"
 import { JsonLd } from "@/components/seo/json-ld"
 import { buildBlogPostingSchema } from "@/lib/seo/schema"
+import { ROBOTS_NAO_ENCONTRADO } from "@/lib/seo/indexability"
 import { PostArticle } from "@/components/blog/post-article"
 
 export async function generateMetadata({
@@ -14,9 +15,10 @@ export async function generateMetadata({
     params: Promise<{ locale: string; slug: string }>
 }): Promise<Metadata> {
     const { locale, slug } = await params
-    if (!isBlogLocale(locale)) return {}
+    // Os dois ramos abaixo terminam em notFound() no componente da página.
+    if (!isBlogLocale(locale)) return { robots: ROBOTS_NAO_ENCONTRADO }
     const data = await getPostBySlug(locale, slug)
-    if (!data) return {}
+    if (!data) return { robots: ROBOTS_NAO_ENCONTRADO }
     const og = data.translation.ogImageUrl ?? data.post.coverImageUrl ?? undefined
     return {
         title: data.translation.title,

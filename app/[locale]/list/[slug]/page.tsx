@@ -14,6 +14,7 @@ import { FlagIcon } from "@/components/ui/flag-icon"
 import { JsonLd } from "@/components/seo/json-ld"
 import { buildProductSchema, buildBreadcrumbSchema, buildListBreadcrumbTrail } from "@/lib/seo/schema"
 import { canonicalDefaultLocale } from "@/lib/i18n/alternates"
+import { ROBOTS_NAO_ENCONTRADO } from "@/lib/seo/indexability"
 import { getActiveCurrency } from "@/lib/currency/server"
 import { pickPrice } from "@/lib/marketplace/list-prices"
 import type { Currency } from "@/lib/currency"
@@ -49,7 +50,7 @@ export async function generateMetadata({ params }: ListPageProps) {
     const [list, t] = await Promise.all([getList(slug), getTranslations("listing")])
 
     if (!list) {
-        return { title: t("notFound") }
+        return { title: t("notFound"), robots: ROBOTS_NAO_ENCONTRADO }
     }
 
     return {
