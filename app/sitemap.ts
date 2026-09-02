@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next"
 import { getPathname } from "@/lib/i18n/navigation"
-import { PUBLISHED_LOCALES, type Locale } from "@/lib/i18n/locales"
+import { DEFAULT_LOCALE, PUBLISHED_LOCALES, type Locale } from "@/lib/i18n/locales"
 import { alternatesFor } from "@/lib/i18n/alternates"
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || "https://www.easyprospect.com.br"
@@ -53,21 +53,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             take: 1000,
         })
 
-        // Uma entrada por idioma publicado, com hreflang de mão dupla — mesmo
-        // padrão das rotas estáticas acima. A lista em si não tem tradução
-        // própria no banco (o conteúdo vem em um único idioma), mas a URL
-        // precisa do prefixo de locale para bater com o canonical/hreflang
-        // que a página gera via alternatesFor.
-        const listRoutes = lists.flatMap((list) => {
-            const languages = alternatesFor(`/list/${list.slug}`).languages
-            return PUBLISHED_LOCALES.map((locale) => ({
-                url: `${BASE_URL}${getPathname({ href: `/list/${list.slug}`, locale })}`,
-                lastModified: list.updatedAt,
-                changeFrequency: "weekly" as const,
-                priority: 0.7,
-                alternates: { languages },
-            }))
-        })
+        // Uma única entrada por lista, na URL do locale padrão (sem prefixo).
+        // Diferente das rotas estáticas acima: a lista não tem tradução
+        // própria no banco — nome, descrição, tabela de amostra e leads vêm
+        // num idioma só, e as versões com prefixo (/de/list, /fr/list…) só
+        // traduzem a interface em volta. Submeter as 7 com hreflang recíproco
+        // fazia o Google ver quase-duplicatas por lista e deixá-las paradas
+        // em "Detectada, mas não indexada". As variantes com prefixo seguem
+        // respondendo 200 para quem navega, mas apontam canonical para esta
+        // URL (ver generateMetadata em app/[locale]/list/[slug]/page.tsx).
+        const listRoutes = lists.map((list) => ({
+            url: `${BASE_URL}${getPathname({ href: `/list/${list.slug}`, locale: DEFAULT_LOCALE })}`,
+            lastModified: list.updatedAt,
+            changeFrequency: "weekly" as const,
+            priority: 0.7,
+        }))
 
         const now = new Date()
         const blogPosts = await prisma.blogPost.findMany({

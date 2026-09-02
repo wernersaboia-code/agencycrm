@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { alternatesFor } from "./alternates"
+import { alternatesFor, canonicalDefaultLocale } from "./alternates"
 import { PUBLISHED_LOCALES } from "./locales"
 
 describe("alternatesFor", () => {
@@ -30,5 +30,14 @@ describe("alternatesFor", () => {
         const { languages } = alternatesFor("/")
         expect(languages["de-DE"]).toMatch(/\/de$/)
         expect(languages["de-DE"]).not.toMatch(/\/\/$/)
+    })
+})
+
+describe("canonicalDefaultLocale", () => {
+    it("aponta sempre para a URL sem prefixo, sem hreflang", () => {
+        const result = canonicalDefaultLocale("/list/leads-alemanha")
+        expect(result.canonical).toMatch(/\/list\/leads-alemanha$/)
+        expect(result.canonical).not.toMatch(/\/(de|es|fr|it|nl|en)\//)
+        expect(result).not.toHaveProperty("languages")
     })
 })

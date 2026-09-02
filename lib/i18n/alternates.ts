@@ -26,3 +26,20 @@ export function alternatesFor(path: string, current: Locale = DEFAULT_LOCALE) {
 
     return { canonical: `${BASE_URL}${getPathname({ href: path, locale: current })}`, languages }
 }
+
+/**
+ * Canonical único, sem hreflang, sempre na URL do locale padrão.
+ *
+ * Para páginas roteáveis em todos os locales mas com um só idioma de
+ * conteúdo — hoje as listas do marketplace: nome, descrição, tabela de
+ * amostra e leads vêm do banco num idioma só; as versões com prefixo
+ * (/de/list, /fr/list…) traduzem apenas a interface em volta. Anunciá-las
+ * com hreflang recíproco fazia o Google ver 7 quase-duplicatas por lista e
+ * empilhá-las em "Detectada, mas não indexada". Apontando todas as variantes
+ * para a mesma URL, o buscador consolida os sinais numa página só. Sem
+ * `languages` aqui de propósito: com o canonical cruzando para outra URL, o
+ * Google ignora o par hreflang de qualquer forma.
+ */
+export function canonicalDefaultLocale(path: string) {
+    return { canonical: `${BASE_URL}${getPathname({ href: path, locale: DEFAULT_LOCALE })}` }
+}

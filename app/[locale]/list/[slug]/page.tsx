@@ -13,8 +13,7 @@ import { getListLanguage } from "@/lib/constants/list-languages"
 import { FlagIcon } from "@/components/ui/flag-icon"
 import { JsonLd } from "@/components/seo/json-ld"
 import { buildProductSchema, buildBreadcrumbSchema, buildListBreadcrumbTrail } from "@/lib/seo/schema"
-import { alternatesFor } from "@/lib/i18n/alternates"
-import type { Locale } from "@/lib/i18n/locales"
+import { canonicalDefaultLocale } from "@/lib/i18n/alternates"
 import { getActiveCurrency } from "@/lib/currency/server"
 import { pickPrice } from "@/lib/marketplace/list-prices"
 import type { Currency } from "@/lib/currency"
@@ -46,7 +45,7 @@ async function getList(slug: string) {
 }
 
 export async function generateMetadata({ params }: ListPageProps) {
-    const { locale, slug } = await params
+    const { slug } = await params
     const [list, t] = await Promise.all([getList(slug), getTranslations("listing")])
 
     if (!list) {
@@ -56,7 +55,11 @@ export async function generateMetadata({ params }: ListPageProps) {
     return {
         title: list.name,
         description: list.description || t("metaFallbackDescription"),
-        alternates: alternatesFor(`/list/${slug}`, locale as Locale),
+        // Uma lista = uma página indexável. O conteúdo vem do banco num só
+        // idioma; /de/list, /fr/list… traduzem apenas a interface, então todas
+        // as variantes canonizam para a URL do locale padrão e o Google
+        // consolida os sinais numa URL só. Ver app/sitemap.ts.
+        alternates: canonicalDefaultLocale(`/list/${slug}`),
     }
 }
 
