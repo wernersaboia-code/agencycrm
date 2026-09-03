@@ -1,7 +1,7 @@
 // components/admin/leads-upload-modal.tsx
 "use client"
 
-import { useState, useCallback } from "react"
+import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { useTranslations } from "next-intl"
 import { toast } from "sonner"
@@ -108,7 +108,7 @@ export function LeadsUploadModal({ listId, listName, trigger }: LeadsUploadModal
     }
 
     // Handle file selection
-    const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFile = e.target.files?.[0]
         if (!selectedFile) return
 
@@ -167,7 +167,7 @@ export function LeadsUploadModal({ listId, listName, trigger }: LeadsUploadModal
                 setIsLoading(false)
             },
         })
-    }, [])
+    }
 
     // Handle upload
     const handleUpload = async () => {
