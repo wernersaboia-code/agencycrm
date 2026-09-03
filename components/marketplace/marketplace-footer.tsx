@@ -4,22 +4,23 @@ import Image from "next/image"
 import { getTranslations } from "next-intl/server"
 import { Link as LocaleLink } from "@/lib/i18n/navigation"
 import type { Locale } from "@/lib/i18n/locales"
-import { INDUSTRY_IDS, COUNTRY_CODES } from "@/lib/constants/catalog-facets"
+import { INDUSTRY_IDS } from "@/lib/constants/catalog-facets"
+import { validaCodigoDePais } from "@/lib/i18n/nome-de-pais"
 
 // A faceta de mercado do landing mostra os países como texto ("DE · AT · CH"),
 // às vezes com reticências e com códigos que ainda não estão no vocabulário
 // (MX, CL, IS…). Para o link do filtro só interessam os códigos que o catálogo
-// reconhece, então cruzamos com COUNTRY_CODES: país que entrar no vocabulário
-// passa a filtrar sozinho, e país que sair não gera parâmetro morto.
+// reconhece. País deixou de ser vocabulário curado — virou derivado do catálogo
+// e validado pelo padrão ISO (ver `lib/i18n/nome-de-pais.ts`) —, então o cruzamento
+// agora usa `validaCodigoDePais`: alias antigo (UK → GB), agrupamento (EU) e
+// lixo não geram parâmetro, e todo país real da região vira um filtro válido.
 type LandingRegion = { flag: string; title: string; countries: string }
-
-const CATALOG_COUNTRY_CODES = new Set<string>(COUNTRY_CODES)
 
 function regionCountryParam(countries: string): string {
     return countries
         .split(/[^A-Za-z]+/)
         .map((token) => token.toUpperCase())
-        .filter((token) => CATALOG_COUNTRY_CODES.has(token))
+        .filter((token) => validaCodigoDePais(token).ok)
         .join(",")
 }
 
