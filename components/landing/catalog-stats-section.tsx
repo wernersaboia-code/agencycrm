@@ -49,15 +49,20 @@ export async function CatalogStatsSection({ locale }: { locale: LandingLocale })
 
             <dl className="mx-auto mt-10 grid max-w-4xl grid-cols-2 gap-px overflow-hidden rounded-lg border border-border bg-border md:grid-cols-4">
                 {numeros.map((numero) => (
-                    <div key={numero.rotulo} className="bg-card p-6 text-center">
-                        <dt className="sr-only">{numero.rotulo}</dt>
-                        <dd>
-                            <span className="block text-3xl font-bold tabular-nums text-brand-accent-strong md:text-4xl">
-                                {numero.valor}
-                            </span>
-                            <span className="mt-2 block text-sm text-muted-foreground">
-                                {numero.rotulo}
-                            </span>
+                    // `flex-col-reverse` inverte só a ordem visual: no DOM o <dt>
+                    // (o termo, que é o rótulo) vem antes do <dd> (a descrição, que
+                    // é o número), como manda a semântica de lista de descrição, mas
+                    // na tela o número continua em cima e o rótulo embaixo. Sem essa
+                    // inversão, pôr o rótulo como <dt> de verdade jogaria o número
+                    // para baixo dele. O espaçamento do antigo `mt-2` virou `gap`,
+                    // porque margem sob `flex-col-reverse` se comporta ao contrário.
+                    <div
+                        key={numero.rotulo}
+                        className="flex flex-col-reverse gap-2 bg-card p-6 text-center"
+                    >
+                        <dt className="text-sm text-muted-foreground">{numero.rotulo}</dt>
+                        <dd className="text-3xl font-bold tabular-nums text-brand-accent-strong md:text-4xl">
+                            {numero.valor}
                         </dd>
                     </div>
                 ))}
