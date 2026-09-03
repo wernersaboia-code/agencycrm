@@ -288,7 +288,8 @@
         "blog": {
             "eyebrow": "Meer weten",
             "title": "Marktanalyses, sectorrapporten en exportkansen.",
-            "intro": "Op onze blog publiceren we regelmatig marktanalyses, sectorrapporten en informatie over exportkansen, handelstrends en verkoopmogelijkheden in verschillende landen en regio's. Zo blijft u altijd op de hoogte van de ontwikkelingen op de internationale markt."
+            "intro": "Op onze blog publiceren we regelmatig marktanalyses, sectorrapporten en informatie over exportkansen, handelstrends en verkoopmogelijkheden in verschillende landen en regio's. Zo blijft u altijd op de hoogte van de ontwikkelingen op de internationale markt.",
+            "readingTime": "{minutes} min lezen"
         },
         "cta": {
             "title": "Klaar om uw internationale handel te laten groeien?",

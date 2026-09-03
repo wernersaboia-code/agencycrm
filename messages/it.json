@@ -288,7 +288,8 @@
         "blog": {
             "eyebrow": "Scopri di più",
             "title": "Analisi di mercato, report settoriali e opportunità di esportazione.",
-            "intro": "Sul nostro blog pubblichiamo regolarmente analisi di mercato, report settoriali e informazioni su opportunità di esportazione, tendenze commerciali e possibilità di vendita in vari paesi e regioni. Resti così sempre aggiornato sull'evoluzione del mercato internazionale."
+            "intro": "Sul nostro blog pubblichiamo regolarmente analisi di mercato, report settoriali e informazioni su opportunità di esportazione, tendenze commerciali e possibilità di vendita in vari paesi e regioni. Resti così sempre aggiornato sull'evoluzione del mercato internazionale.",
+            "readingTime": "{minutes} min di lettura"
         },
         "cta": {
             "title": "Pronto a far crescere il tuo commercio internazionale?",

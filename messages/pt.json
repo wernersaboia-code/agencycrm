@@ -288,7 +288,8 @@
         "blog": {
             "eyebrow": "Mais informações",
             "title": "Análises de mercado, relatórios setoriais e oportunidades de exportação.",
-            "intro": "No nosso blog publicamos regularmente análises de mercado, relatórios setoriais e informações sobre oportunidades de exportação, tendências comerciais e possibilidades de venda em diversos países e regiões. Assim você fica sempre por dentro dos movimentos do mercado internacional."
+            "intro": "No nosso blog publicamos regularmente análises de mercado, relatórios setoriais e informações sobre oportunidades de exportação, tendências comerciais e possibilidades de venda em diversos países e regiões. Assim você fica sempre por dentro dos movimentos do mercado internacional.",
+            "readingTime": "{minutes} min de leitura"
         },
         "cta": {
             "title": "Pronto para construir o seu comércio internacional?",

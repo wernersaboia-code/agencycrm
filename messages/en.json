@@ -288,7 +288,8 @@
         "blog": {
             "eyebrow": "More insights",
             "title": "Market analyses, industry reports, and export opportunities.",
-            "intro": "On our blog we regularly publish market analyses, industry reports, and information on export opportunities, trade trends, and sales possibilities across various countries and regions. This keeps you up to date on international market developments."
+            "intro": "On our blog we regularly publish market analyses, industry reports, and information on export opportunities, trade trends, and sales possibilities across various countries and regions. This keeps you up to date on international market developments.",
+            "readingTime": "{minutes} min read"
         },
         "cta": {
             "title": "Ready to build your international trade?",

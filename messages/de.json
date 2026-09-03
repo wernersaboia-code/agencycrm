@@ -288,7 +288,8 @@
         "blog": {
             "eyebrow": "Weitere Informationen",
             "title": "Marktanalysen, Branchenberichte und Exportchancen.",
-            "intro": "In unserem Blog veröffentlichen wir regelmäßig aktuelle Marktanalysen, Branchenberichte sowie Informationen über Exportchancen, Vertriebstrends und Absatzmöglichkeiten in verschiedenen Ländern und Regionen. So bleiben Sie über internationale Marktentwicklungen stets auf dem neuesten Stand."
+            "intro": "In unserem Blog veröffentlichen wir regelmäßig aktuelle Marktanalysen, Branchenberichte sowie Informationen über Exportchancen, Vertriebstrends und Absatzmöglichkeiten in verschiedenen Ländern und Regionen. So bleiben Sie über internationale Marktentwicklungen stets auf dem neuesten Stand.",
+            "readingTime": "{minutes} Min. Lesezeit"
         },
         "cta": {
             "title": "Bereit, Ihren internationalen Vertrieb aufzubauen?",
