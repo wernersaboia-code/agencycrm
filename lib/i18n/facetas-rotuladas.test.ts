@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest"
 import { readFileSync } from "node:fs"
 import { join } from "node:path"
-import { COUNTRY_CODES, INDUSTRY_IDS } from "@/lib/constants/catalog-facets"
+import { INDUSTRY_IDS } from "@/lib/constants/catalog-facets"
 
 const pt = JSON.parse(
     readFileSync(join(__dirname, "..", "..", "messages", "pt.json"), "utf8")
@@ -14,9 +14,10 @@ const pt = JSON.parse(
  * "food" aparecendo no card em vez de "Alimentos & Bebidas".
  */
 describe("todo id de faceta tem rótulo em pt", () => {
+    // Só setor é vocabulário curado. País virou dado derivado do catálogo, com
+    // o nome vindo do ICU — não há mais lista de rótulos para conferir.
     const grupos: Array<[string, readonly string[]]> = [
         ["industries", INDUSTRY_IDS],
-        ["countries", COUNTRY_CODES],
     ]
 
     for (const [grupo, ids] of grupos) {

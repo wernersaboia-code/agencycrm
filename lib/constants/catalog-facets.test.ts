@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest"
-import { COUNTRY_CODES, INDUSTRY_IDS, secaoOfereceEscolha, visibleFacets } from "./catalog-facets"
+import { INDUSTRY_IDS, secaoOfereceEscolha, visibleFacets } from "./catalog-facets"
 
 describe("visibleFacets", () => {
     it("mostra só as facetas com lista publicada por trás", () => {
@@ -28,7 +28,6 @@ describe("visibleFacets", () => {
 describe("vocabulário controlado", () => {
     it("não tem id repetido", () => {
         expect(new Set(INDUSTRY_IDS).size).toBe(INDUSTRY_IDS.length)
-        expect(new Set(COUNTRY_CODES).size).toBe(COUNTRY_CODES.length)
     })
 
     it("tem rótulo em português para todo id", async () => {
@@ -36,9 +35,6 @@ describe("vocabulário controlado", () => {
 
         for (const id of INDUSTRY_IDS) {
             expect(messages.catalog.industries).toHaveProperty(id)
-        }
-        for (const code of COUNTRY_CODES) {
-            expect(messages.catalog.countries).toHaveProperty(code)
         }
     })
 
@@ -54,12 +50,6 @@ describe("vocabulário controlado", () => {
             "snacks_bars",
             "toys",
         ])
-    })
-
-    // O catálogo grava GB; "UK" não é código ISO 3166-1 e quebra a bandeira.
-    it("usa GB, não UK", () => {
-        expect(COUNTRY_CODES).toContain("GB")
-        expect(COUNTRY_CODES).not.toContain("UK")
     })
 })
 

@@ -42,4 +42,42 @@ describe("canPublishList", () => {
     it("aceita lista com PDF e data de revisão", () => {
         expect(canPublishList({ studyPdfUrl: "https://x/study.pdf", dataReviewedAt: REVIEWED }).ok).toBe(true)
     })
+
+    /**
+     * O filtro do catálogo lista os países que têm estudo, então um código que
+     * não é país nenhum vira uma opção morta na barra lateral — ou, pior, uma
+     * segunda opção para um país que já está lá (o `UK` ao lado do `GB`).
+     * Publicar assim entrega um estudo que a busca não encontra direito.
+     */
+    const PUBLICAVEL = { studyPdfUrl: "https://x/study.pdf", dataReviewedAt: REVIEWED }
+
+    it("aceita país de qualquer parte do mundo", () => {
+        expect(canPublishList({ ...PUBLICAVEL, countries: ["ZA", "VN", "KZ"] }).ok).toBe(true)
+    })
+
+    it("recusa publicar com código que não é país", () => {
+        const result = canPublishList({ ...PUBLICAVEL, countries: ["DE", "XX"] })
+        expect(result.ok).toBe(false)
+        if (!result.ok) expect(result.reason).toContain("XX")
+    })
+
+    it("recusa código obsoleto e diz qual usar", () => {
+        const result = canPublishList({ ...PUBLICAVEL, countries: ["UK"] })
+        expect(result.ok).toBe(false)
+        if (!result.ok) expect(result.reason).toContain("GB")
+    })
+
+    it("cobra o PDF antes do país quando faltam os dois", () => {
+        // Ordem deliberada: sem PDF a compra não entrega nada, o que é pior
+        // que um filtro incompleto.
+        const result = canPublishList({ studyPdfUrl: null, dataReviewedAt: REVIEWED, countries: ["XX"] })
+        expect(result.ok).toBe(false)
+        if (!result.ok) expect(result.reason).toMatch(/PDF/i)
+    })
+
+    it("não exige países para listas antigas que não os informam", () => {
+        // `countries` é opcional no gate: quem chama sem o campo continua
+        // sendo julgado só por PDF e revisão.
+        expect(canPublishList(PUBLICAVEL).ok).toBe(true)
+    })
 })

@@ -190,6 +190,9 @@ async function atualizarLista(id: string, data: CreateListData): Promise<Seriali
         const check = canPublishList({
             studyPdfUrl: current?.studyPdfUrl ?? null,
             dataReviewedAt: current?.dataReviewedAt ?? null,
+            // Os países que ESTÃO SENDO gravados, não os do banco: é a edição
+            // atual que precisa ser publicável.
+            countries: validated.countries,
         })
         if (!check.ok) {
             throw new Error(check.reason)

@@ -10,19 +10,20 @@
  * encontrasse.
  *
  * Os rótulos NÃO moram aqui: ficam em `messages/<locale>.json`, sob
- * `catalog.industries.*` e `catalog.countries.*`. Id novo aqui exige o rótulo
- * nos sete idiomas — o teste de paridade em
- * `lib/i18n/messages-integridade.test.ts` cobra isso.
+ * `catalog.industries.*`. Setor novo exige o rótulo nos sete idiomas — o teste
+ * de paridade em `lib/i18n/messages-integridade.test.ts` cobra isso.
  *
- * O vocabulário tem de acompanhar o catálogo, nos dois sentidos. Faceta sem
- * lista por trás é promessa de catálogo que não existe — disso `visibleFacets`
- * dá conta sozinho, escondendo a contagem zero. O sentido contrário não tem
- * rede: id que falta aqui nunca vira opção de filtro, por mais estudos que
- * tenha, porque o filtro percorre este arquivo e nunca o banco. Foi assim que
- * dezenove países com estudo publicado ficaram invisíveis no catálogo. Estudo
- * de país ou setor novo entra aqui no mesmo passo em que é publicado.
+ * A busca tem duas dimensões e só duas: PAÍS e SETOR — mas só SETOR mora aqui.
  *
- * A busca tem duas dimensões e só duas: PAÍS e SETOR.
+ * País saiu deste arquivo. Era uma lista curada à mão, e o filtro percorria a
+ * lista em vez do banco: país sem entrada aqui ficava publicado e invisível,
+ * o que chegou a acontecer com 23 deles de uma vez. Como país é padrão
+ * internacional e não vocabulário nosso, a faceta passou a ser derivada do
+ * próprio catálogo, com o nome vindo do ICU do runtime nos sete idiomas —
+ * ver `lib/marketplace/facetas-de-pais.ts` e `lib/i18n/nome-de-pais.ts`.
+ *
+ * Setor fica, e deve ficar: "HoReCa" e "FMCG" são linguagem do negócio, que
+ * nenhum runtime conhece. Aqui a curadoria é o ponto, não o custo.
  *
  * A faceta "categoria" (importadores/exportadores/fabricantes…) foi removida:
  * uma mesma lista de país mistura importadores, distribuidores e atacadistas
@@ -58,32 +59,7 @@ export const INDUSTRY_IDS = [
     "toys",
 ] as const
 
-/**
- * Países com estudo publicado, mais os que já estavam rotulados nos sete
- * idiomas e podem receber estudo sem custo de tradução.
- *
- * Reino Unido é `GB` (ISO 3166-1), não `UK`.
- */
-export const COUNTRY_CODES = [
-    // Europa
-    "AT", "BE", "BG", "CH", "CZ", "DE", "DK", "EE", "ES", "FI",
-    "FR", "GB", "GR", "HR", "HU", "IE", "IT", "LT", "LU", "LV",
-    "MT", "NL", "NO", "PL", "PT", "RO", "SE", "SI", "SK", "TR",
-    // Américas
-    "AR", "BO", "BR", "CA", "CO", "EC", "PE", "PY", "US", "UY",
-    "VE",
-    // Ásia
-    "CN", "ID", "IN", "JP", "KR",
-    // Oriente Médio
-    "AE", "KW", "OM", "QA",
-    // África
-    "EG", "NG", "ZA",
-    // Oceania
-    "AU",
-] as const
-
 export type IndustryId = (typeof INDUSTRY_IDS)[number]
-export type CountryCode = (typeof COUNTRY_CODES)[number]
 
 /**
  * Quais facetas o filtro público deve mostrar.
@@ -113,7 +89,9 @@ export function visibleFacets<T extends string>(
  * nenhum para ser desmarcado.
  */
 export function secaoOfereceEscolha(
-    visiveis: readonly string[],
+    // Só a quantidade importa: serve tanto para a lista de ids de setor quanto
+    // para as facetas de país, que já vêm como objeto com nome e contagem.
+    visiveis: readonly unknown[],
     selecionados: readonly string[]
 ): boolean {
     return visiveis.length > 1 || selecionados.length > 0
