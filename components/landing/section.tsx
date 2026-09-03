@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils"
 
 type SectionTone = "default" | "muted"
 type SectionWidth = "narrow" | "wide"
+type SectionSize = "default" | "lead"
 
 /**
  * Casca padrão das seções da landing: espaçamento, divisor e largura do
@@ -18,12 +19,14 @@ export function Section({
     id,
     tone = "default",
     width = "wide",
+    size = "default",
     className,
     children,
 }: {
     id?: string
     tone?: SectionTone
     width?: SectionWidth
+    size?: SectionSize
     className?: string
     children: React.ReactNode
 }) {
@@ -31,7 +34,11 @@ export function Section({
         <section
             id={id}
             className={cn(
-                "border-t border-border py-14 md:py-16",
+                "border-t border-border",
+                // O respiro subiu de py-14/16 para py-20/28. A home tinha doze
+                // seções no mesmo espaçamento e lia como um bloco contínuo: sem
+                // pausa, nada se destaca. `lead` abre assunto novo e ganha mais.
+                size === "lead" ? "py-24 md:py-32" : "py-20 md:py-28",
                 tone === "muted" ? "bg-muted/40" : "bg-background",
                 className
             )}
