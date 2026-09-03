@@ -1,7 +1,7 @@
 // actions/admin/lists.ts
 "use server"
 
-import { revalidatePath } from "next/cache"
+import { revalidatePath, updateTag } from "next/cache"
 import { prisma } from "@/lib/prisma"
 import { requireAdmin } from "@/lib/auth"
 import type { MarketplaceLeadData } from "@/lib/constants/marketplace-csv.constants"
@@ -13,6 +13,7 @@ import { checkAdminRateLimit } from "@/lib/rate-limit"
 import { DEFAULT_CURRENCY } from "@/lib/currency"
 import { writeListPrices } from "@/lib/marketplace/list-prices"
 import { describeListError, type ActionResult } from "@/lib/admin/action-errors"
+import { TAG_RESUMO_CATALOGO } from "@/lib/marketplace/resumo-catalogo"
 
 interface CreateListData {
     name: string
@@ -102,6 +103,13 @@ function revalidateListPaths(listSlug?: string) {
     if (listSlug) {
         revalidatePath(`/list/${listSlug}`)
     }
+
+    // A faixa de números da home lê de `unstable_cache` com tag. Sem esta
+    // linha ela congela no primeiro valor: o admin publica o estudo 62 e a
+    // home segue anunciando 61. `updateTag` (e não `revalidateTag`) porque
+    // isto roda dentro de Server Action e precisa de expiração imediata —
+    // motivo detalhado em actions/admin/free-sample.ts:32.
+    updateTag(TAG_RESUMO_CATALOGO)
 }
 
 /**
