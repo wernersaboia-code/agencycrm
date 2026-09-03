@@ -11,7 +11,7 @@ import { useCart } from "@/contexts/cart-context"
 import { getOptionalPublicPaypalClientId } from "@/lib/env"
 
 interface PayPalButtonsWrapperProps {
-    items: Array<{ listId: string; quantity: number }>
+    items: Array<{ listId: string }>
     /**
      * Moeda do carrinho. O SDK precisa carregar nela — com "EUR" fixo aqui, o
      * script abria em euro enquanto o pedido era montado noutra moeda.

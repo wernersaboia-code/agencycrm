@@ -21,7 +21,6 @@ import { SUPPORTED_CURRENCIES } from "@/lib/currency"
 export const checkoutRequestSchema = z.object({
     items: z.array(z.object({
         listId: z.string().min(1),
-        quantity: z.number().int().positive().max(99).default(1),
     })).min(1).max(50),
     currency: z.enum(SUPPORTED_CURRENCIES),
 })

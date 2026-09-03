@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button"
 import { getOptionalPublicStripePublishableKey } from "@/lib/env"
 
 interface StripeCheckoutButtonProps {
-    items: Array<{ listId: string; quantity: number }>
+    items: Array<{ listId: string }>
     /** Moeda do carrinho. O preço em si continua saindo do banco, na rota. */
     currency: string
 }

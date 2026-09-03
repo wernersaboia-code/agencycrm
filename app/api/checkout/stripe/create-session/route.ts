@@ -92,15 +92,13 @@ export async function POST(request: NextRequest) {
         // Calcular total (mesma regra do PayPal)
         let subtotal = 0
         const purchaseItems = lists.map((list) => {
-            const quantity = items.find((item) => item.listId === list.id)?.quantity ?? 1
             const unitPrice = prices.get(list.id)!.amount
-            subtotal += unitPrice * quantity
+            subtotal += unitPrice
 
             return {
                 listId: list.id,
                 name: list.name,
                 price: unitPrice,
-                quantity,
                 leadsCount: list.totalLeads,
             }
         })
@@ -110,7 +108,8 @@ export async function POST(request: NextRequest) {
         const session = await getStripe().checkout.sessions.create({
             mode: "payment",
             line_items: purchaseItems.map((item) => ({
-                quantity: item.quantity,
+                // Campo obrigatório do Stripe; cada lista é vendida uma vez.
+                quantity: 1,
                 price_data: {
                     // Stripe quer a moeda em minúsculas e o valor em centavos.
                     currency: currency.toLowerCase(),

@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest"
 import { checkoutRequestSchema } from "./request-schema"
 
 describe("checkoutRequestSchema", () => {
-    const valido = { items: [{ listId: "abc", quantity: 1 }], currency: "BRL" }
+    const valido = { items: [{ listId: "abc" }], currency: "BRL" }
 
     it("aceita item e moeda suportada", () => {
         const parsed = checkoutRequestSchema.safeParse(valido)
@@ -19,12 +19,12 @@ describe("checkoutRequestSchema", () => {
 
     it("descarta preço enviado pelo cliente — o valor cobrado sai do banco", () => {
         const parsed = checkoutRequestSchema.parse({
-            items: [{ listId: "abc", quantity: 1, price: 0.01 }],
+            items: [{ listId: "abc", price: 0.01 }],
             currency: "EUR",
             total: 0.01,
         })
 
-        expect(parsed.items[0]).toEqual({ listId: "abc", quantity: 1 })
+        expect(parsed.items[0]).toEqual({ listId: "abc" })
         expect(parsed).not.toHaveProperty("total")
     })
 

@@ -12,7 +12,7 @@ import { getOptionalPublicMercadoPagoPublicKey } from "@/lib/env"
 import { formatCurrency } from "@/lib/utils"
 
 interface MercadoPagoButtonProps {
-    items: Array<{ listId: string; quantity: number }>
+    items: Array<{ listId: string }>
     /** Moeda do carrinho. A cobrança é sempre em BRL — serve para decidir o aviso. */
     currency: string
 }

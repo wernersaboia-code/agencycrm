@@ -46,7 +46,6 @@ export default function CheckoutPage() {
 
     const checkoutItems = items.map((item) => ({
         listId: item.id,
-        quantity: item.quantity,
     }))
 
     return (

@@ -86,15 +86,13 @@ export async function POST(request: NextRequest) {
 
         let subtotal = 0
         const purchaseItems = lists.map((list) => {
-            const quantity = items.find((item) => item.listId === list.id)?.quantity ?? 1
             const unitPrice = prices.get(list.id)!.amount
-            subtotal += unitPrice * quantity
+            subtotal += unitPrice
 
             return {
                 listId: list.id,
                 name: list.name,
                 price: unitPrice,
-                quantity,
                 leadsCount: list.totalLeads,
             }
         })
@@ -128,7 +126,8 @@ export async function POST(request: NextRequest) {
                 items: purchaseItems.map((item) => ({
                     id: item.listId,
                     title: item.name,
-                    quantity: item.quantity,
+                    // Campo obrigatório do Mercado Pago; cada lista é vendida uma vez.
+                    quantity: 1,
                     unitPrice: item.price,
                 })),
                 payerEmail: user.email,

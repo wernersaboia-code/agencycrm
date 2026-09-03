@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
 
         let total = 0
         for (const item of items) {
-            total += prices.get(item.listId)!.amount * item.quantity
+            total += prices.get(item.listId)!.amount
         }
 
         return NextResponse.json({ total, currency: "BRL" })

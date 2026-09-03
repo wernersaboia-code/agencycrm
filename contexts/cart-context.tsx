@@ -14,14 +14,12 @@ export interface CartItem {
     price: number
     currency: string
     totalLeads: number
-    quantity: number
 }
 
 interface CartContextType {
     items: CartItem[]
-    addItem: (item: Omit<CartItem, "quantity">) => void
+    addItem: (item: CartItem) => void
     removeItem: (id: string) => void
-    updateQuantity: (id: string, quantity: number) => void
     clearCart: () => void
     total: number
     itemCount: number
@@ -80,7 +78,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
     // Aplica o resultado de resolveCartPrices ao que estiver no localStorage
     // NA HORA de escrever (não ao snapshot que disparou a consulta): entre o
-    // await e a escrita, quantidade/itens podem ter mudado. queriedIds marca
+    // await e a escrita, os itens podem ter mudado. queriedIds marca
     // quais itens fizeram parte desta consulta — um item fora dela não é
     // tocado, mesmo que também exista em `current`.
     const applyRepriced = (queriedIds: string[], result: RepricedCart) => {
@@ -145,7 +143,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         writeCartItems(updater(parseCartItems(getCartSnapshot())))
     }
 
-    const addItem = (item: Omit<CartItem, "quantity">) => {
+    const addItem = (item: CartItem) => {
         let wasAdded = false
 
         setCartItems((current) => {
@@ -161,7 +159,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
             toast.success(`"${item.name}" adicionado ao carrinho!`)
             wasAdded = true
 
-            return [...current, { ...item, quantity: 1 }]
+            return [...current, item]
         })
 
         // Abrir o drawer numa re-adição contradiz o toast "já está no carrinho":
@@ -184,26 +182,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
         })
     }
 
-    const updateQuantity = (id: string, quantity: number) => {
-        if (quantity < 1) {
-            removeItem(id)
-            return
-        }
-
-        setCartItems((current) =>
-            current.map((item) =>
-                item.id === id ? { ...item, quantity } : item
-            )
-        )
-    }
-
     const clearCart = () => {
         writeCartItems([])
         toast.success("Carrinho limpo")
     }
 
-    const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
-    const itemCount = items.reduce((sum, item) => sum + item.quantity, 0)
+    const total = items.reduce((sum, item) => sum + item.price, 0)
+    const itemCount = items.length
 
     const openCart = () => setIsOpen(true)
     const closeCart = () => setIsOpen(false)
@@ -215,7 +200,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
                 items,
                 addItem,
                 removeItem,
-                updateQuantity,
                 clearCart,
                 total,
                 itemCount,
