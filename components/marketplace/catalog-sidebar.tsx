@@ -4,16 +4,17 @@
 import { useId, useState, useTransition } from "react"
 import { useSearchParams } from "next/navigation"
 import { useRouter } from "@/lib/i18n/navigation"
-import { useTranslations } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 import { Check, ChevronDown } from "lucide-react"
 import { FlagIcon } from "@/components/ui/flag-icon"
 
 import {
-    COUNTRY_CODES,
     INDUSTRY_IDS,
     secaoOfereceEscolha,
     visibleFacets,
 } from "@/lib/constants/catalog-facets"
+import { excecoesDoIdioma } from "@/lib/i18n/nome-de-pais"
+import { facetasDePais } from "@/lib/marketplace/facetas-de-pais"
 import { LIST_LANGUAGES, LIST_LANGUAGE_CODES } from "@/lib/constants/list-languages"
 
 interface CatalogSidebarProps {
@@ -61,6 +62,7 @@ export function CatalogSidebar({
                                    hideHeading = false,
                                }: CatalogSidebarProps) {
     const t = useTranslations("catalog")
+    const locale = useLocale()
     const router = useRouter()
     const searchParams = useSearchParams()
     const [isPending, startTransition] = useTransition()
@@ -128,10 +130,13 @@ export function CatalogSidebar({
         selectedIndustries.length > 0 ||
         selectedLanguages.length > 0
 
-    // O vocabulário é maior do que a operação: só entram no filtro as facetas
-    // com lista publicada por trás (mais a que estiver selecionada). Uma seção
-    // sem nenhuma faceta visível não é renderizada.
-    const paises = visibleFacets(COUNTRY_CODES, countryCounts, selectedCountries)
+    // País não é vocabulário nosso: a faceta sai do próprio catálogo e o nome
+    // vem do ICU no idioma do visitante, então estudo de país novo aparece aqui
+    // sem precisar de commit.
+    const paises = facetasDePais(countryCounts, selectedCountries, locale, excecoesDoIdioma(locale))
+    // Setor CONTINUA vocabulário curado — "HoReCa", "FMCG" e "snacks_bars" são
+    // linguagem do negócio, não padrão internacional. Só entra no filtro o que
+    // tem estudo por trás (mais o que estiver selecionado).
     const setores = visibleFacets(INDUSTRY_IDS, industryCounts, selectedIndustries)
     const idiomas = visibleFacets(LIST_LANGUAGE_CODES, languageCounts, selectedLanguages)
 
@@ -170,11 +175,9 @@ export function CatalogSidebar({
 
                 <div id={`${panelId}-countries`} hidden={!countriesOpen}>
                     <div className="space-y-2">
-                        {paises.map((code) => {
-                            const count = countryCounts[code] || 0
+                        {paises.map(({ code, nome, count }) => {
                             const isDisabled = count === 0
                             const isChecked = selectedCountries.includes(code)
-                            const name = t(`countries.${code}`)
 
                             return (
                                 <label
@@ -192,7 +195,7 @@ export function CatalogSidebar({
                                     />
                                     <FilterCheckbox checked={isChecked} disabled={isDisabled} />
                                     <FlagIcon code={code} size="sm" decorative />
-                                    <span className="flex-1 text-sm text-muted-foreground">{name}</span>
+                                    <span className="flex-1 text-sm text-muted-foreground">{nome}</span>
                                     <span className="text-xs text-muted-foreground">({count})</span>
                                 </label>
                             )

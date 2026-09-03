@@ -59,6 +59,7 @@ import { MarketplaceImportWizard } from "@/components/admin/marketplace-import-w
 import type { MarketplaceLeadData } from "@/lib/constants/marketplace-csv.constants"
 import { LIST_LANGUAGES } from "@/lib/constants/list-languages"
 import { INDUSTRY_IDS } from "@/lib/constants/catalog-facets"
+import { paisesInvalidosDoCampo } from "@/lib/i18n/nome-de-pais"
 import { FlagIcon } from "@/components/ui/flag-icon"
 import { canPublishList } from "@/lib/marketplace/list-publishing"
 
@@ -465,6 +466,8 @@ export function ListForm({ list }: ListFormProps) {
     // ============================================
 
     const isEditing = !!list
+    const paisesRuins = paisesInvalidosDoCampo(form.watch("countries") ?? "")
+
     const hasPreparedLeads = preparedLeads.length > 0
 
     // Campo de número de leads, compartilhado pelos três estados do card de
@@ -596,6 +599,15 @@ export function ListForm({ list }: ListFormProps) {
                                 {form.formState.errors.countries && (
                                     <p className="text-sm text-destructive">
                                         {form.formState.errors.countries.message}
+                                    </p>
+                                )}
+                                {/* O campo é texto livre e vem auto-preenchido
+                                    do PDF: avisar aqui evita descobrir o erro
+                                    só ao tentar publicar. Quem barra de fato é
+                                    o gate do servidor (canPublishList). */}
+                                {paisesRuins.length > 0 && (
+                                    <p className="text-sm text-amber-600 dark:text-amber-500">
+                                        {t("countriesUnknown", { codes: paisesRuins.join(", ") })}
                                     </p>
                                 )}
                             </div>
