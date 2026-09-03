@@ -93,9 +93,7 @@ export function normalizaCodigoDePais(bruto: string): string {
  * Nome do país no idioma pedido.
  *
  * `excecoes` são os poucos rótulos em que o projeto discorda do ICU — "Holanda"
- * em vez de "Países Baixos", "República Tcheca" em vez de "Tchéquia". Ficam em
- * `catalog.countryOverrides` nos arquivos de mensagem, e só precisam existir
- * onde há discordância.
+ * em vez de "Países Baixos". Use `excecoesDoIdioma(locale)` para obtê-los.
  *
  * Código que o runtime não sabe traduzir volta como veio: uma faceta com nome
  * feio é muito melhor que uma tela quebrada.
@@ -109,22 +107,35 @@ export function nomeDePais(
     return excecoes[code] ?? tradutor(locale)?.of(code) ?? code
 }
 
+export interface PaisInvalido {
+    code: string
+    /** O código vivo, quando o recusado é um alias antigo (UK -> GB). */
+    atual?: string
+}
+
 /**
  * Os códigos ruins de um campo separado por vírgula, sem repetição.
  *
  * Feito para o campo de país do admin, que é texto livre e vem auto-preenchido
  * dos leads do PDF. Pedaço vazio não é erro: `"DE,"` é só alguém no meio da
  * digitação, e acusar isso faria o aviso piscar a cada vírgula.
+ *
+ * Devolve o substituto quando existe, porque este aviso é o primeiro que a
+ * pessoa vê — mandá-la descobrir sozinha o código do Reino Unido seria
+ * esconder o que já sabemos.
  */
-export function paisesInvalidosDoCampo(campo: string): string[] {
+export function paisesInvalidosDoCampo(campo: string): PaisInvalido[] {
     const vistos = new Set<string>()
-    const ruins: string[] = []
+    const ruins: PaisInvalido[] = []
 
     for (const pedaco of campo.split(",")) {
         const code = normalizaCodigoDePais(pedaco)
         if (!code || vistos.has(code)) continue
         vistos.add(code)
-        if (!validaCodigoDePais(code).ok) ruins.push(code)
+        if (validaCodigoDePais(code).ok) continue
+
+        const atual = CODIGO_OBSOLETO[code]
+        ruins.push(atual ? { code, atual } : { code })
     }
 
     return ruins

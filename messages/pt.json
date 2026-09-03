@@ -1275,6 +1275,7 @@
                 "countriesPlaceholder": "DE, AT, CH",
                 "countriesHint": "Separe por vírgula: DE, FR, IT",
                 "countriesUnknown": "Fora do padrão internacional: {codes}. O filtro do catálogo não mostra esses códigos — corrija antes de publicar.",
+                "countriesOutdated": "Códigos antigos: {codes}. Use o código à direita da seta — manter os dois criaria duas opções para o mesmo país no filtro.",
                 "autoFilled": "Auto-preenchido",
                 "industriesLabel": "Setores/Indústrias",
                 "industriesDesc": "Selecione um ou mais setores para esta lista",

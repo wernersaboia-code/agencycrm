@@ -467,6 +467,10 @@ export function ListForm({ list }: ListFormProps) {
 
     const isEditing = !!list
     const paisesRuins = paisesInvalidosDoCampo(form.watch("countries") ?? "")
+    // Quem tem substituto conhecido ganha a seta; o resto é código que não
+    // existe. Separado porque a orientação ao admin é diferente em cada caso.
+    const paisesObsoletos = paisesRuins.filter((p) => p.atual)
+    const paisesDesconhecidos = paisesRuins.filter((p) => !p.atual)
 
     const hasPreparedLeads = preparedLeads.length > 0
 
@@ -605,9 +609,20 @@ export function ListForm({ list }: ListFormProps) {
                                     do PDF: avisar aqui evita descobrir o erro
                                     só ao tentar publicar. Quem barra de fato é
                                     o gate do servidor (canPublishList). */}
-                                {paisesRuins.length > 0 && (
+                                {paisesObsoletos.length > 0 && (
                                     <p className="text-sm text-amber-600 dark:text-amber-500">
-                                        {t("countriesUnknown", { codes: paisesRuins.join(", ") })}
+                                        {t("countriesOutdated", {
+                                            codes: paisesObsoletos
+                                                .map((p) => `${p.code} → ${p.atual}`)
+                                                .join(", "),
+                                        })}
+                                    </p>
+                                )}
+                                {paisesDesconhecidos.length > 0 && (
+                                    <p className="text-sm text-amber-600 dark:text-amber-500">
+                                        {t("countriesUnknown", {
+                                            codes: paisesDesconhecidos.map((p) => p.code).join(", "),
+                                        })}
                                     </p>
                                 )}
                             </div>

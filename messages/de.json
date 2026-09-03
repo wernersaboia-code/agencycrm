@@ -1275,6 +1275,7 @@
                 "countriesPlaceholder": "DE, AT, CH",
                 "countriesHint": "Mit Komma trennen: DE, FR, IT",
                 "countriesUnknown": "Nicht im internationalen Standard: {codes}. Der Katalogfilter zeigt diese Codes nicht an — vor der Veröffentlichung korrigieren.",
+                "countriesOutdated": "Veraltete Codes: {codes}. Verwenden Sie den Code rechts vom Pfeil — beide zu behalten würde zwei Optionen für dasselbe Land im Filter erzeugen.",
                 "autoFilled": "Automatisch ausgefüllt",
                 "industriesLabel": "Branchen",
                 "industriesDesc": "Wählen Sie eine oder mehrere Branchen für diese Liste aus",

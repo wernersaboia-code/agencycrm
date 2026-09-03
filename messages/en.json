@@ -1275,6 +1275,7 @@
                 "countriesPlaceholder": "DE, AT, CH",
                 "countriesHint": "Separate by comma: DE, FR, IT",
                 "countriesUnknown": "Outside the international standard: {codes}. The catalog filter does not show these codes — fix before publishing.",
+                "countriesOutdated": "Outdated codes: {codes}. Use the code to the right of the arrow — keeping both would create two options for the same country in the filter.",
                 "autoFilled": "Auto-filled",
                 "industriesLabel": "Sectors/Industries",
                 "industriesDesc": "Select one or more sectors for this list",

@@ -100,7 +100,16 @@ describe("paisesInvalidosDoCampo", () => {
     })
 
     it("aponta os códigos ruins, já normalizados", () => {
-        expect(paisesInvalidosDoCampo("de, uk, XX")).toEqual(["UK", "XX"])
+        expect(paisesInvalidosDoCampo("de, XX")).toEqual([{ code: "XX" }])
+    })
+
+    it("diz qual é o código certo quando o antigo tem substituto", () => {
+        // O aviso do formulário é o que a pessoa vê primeiro; mandá-la procurar
+        // sozinha qual é o código do Reino Unido seria mesquinho.
+        expect(paisesInvalidosDoCampo("UK, SU")).toEqual([
+            { code: "UK", atual: "GB" },
+            { code: "SU", atual: "RU" },
+        ])
     })
 
     it("não reclama enquanto a vírgula está sendo digitada", () => {
@@ -111,7 +120,7 @@ describe("paisesInvalidosDoCampo", () => {
     })
 
     it("não repete o mesmo código ruim", () => {
-        expect(paisesInvalidosDoCampo("UK, uk, GB")).toEqual(["UK"])
+        expect(paisesInvalidosDoCampo("UK, uk, GB")).toEqual([{ code: "UK", atual: "GB" }])
     })
 })
 
