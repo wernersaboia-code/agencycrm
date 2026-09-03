@@ -1,5 +1,10 @@
 # Project Upgrade Plan
 
+> ⚠️ **Status: planejamento histórico.** O "estado atual" desta página (PayPal,
+> `proxy.ts` inativo, sanitizer regex, campanhas síncronas) não corresponde mais ao
+> código. O doc vivo é [`../estado-e-pendencias.md`](../estado-e-pendencias.md).
+> Revisto em 2026-09-03.
+
 ## Current State
 
 ### Stack

@@ -1,5 +1,11 @@
 # Architecture
 
+> ⚠️ **Status: documento histórico.** Descreve o produto na fase MVP/PayPal e está
+> **desatualizado**. O doc vivo é [`docs/estado-e-pendencias.md`](../estado-e-pendencias.md).
+> Hoje (2026-09-03): marketplace de estudos de entrada em mercado "Easy Prospect",
+> checkout **Stripe + Mercado Pago**, i18n em 7 idiomas, Supabase Auth + Prisma,
+> middleware ativo em `proxy.ts` (Next 16), deployed na Vercel.
+
 ## Context
 - Product: AgencyCRM — CRM SaaS + Lead Marketplace
 - Stage: MVP em produção (Vercel + Supabase)

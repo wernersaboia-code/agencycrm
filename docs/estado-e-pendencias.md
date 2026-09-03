@@ -1,8 +1,23 @@
 # Estado do produto e pendências
 
-Atualizado em 2026-08-31. Nasceu como "pendências para reaplicar ao Paddle" e foi
-renomeado quando o Paddle saiu de cena — o conteúdo nunca foi sobre o Paddle, e sim
-sobre o estado da vitrine, o que falta e as armadilhas já pagas.
+Atualizado em 2026-08-31; revisado em 2026-09-03. Nasceu como "pendências para
+reaplicar ao Paddle" e foi renomeado quando o Paddle saiu de cena — o conteúdo nunca
+foi sobre o Paddle, e sim sobre o estado da vitrine, o que falta e as armadilhas já
+pagas.
+
+> **Revisão de 2026-09-03 — o que mudou desde a última atualização:**
+> - O catálogo subiu de 49 para **61 estudos** (49 países, 5 setores) em 02/09.
+>   `docs/estado-e-pendencias.md` dizia 49, certo para 31/08, já superado.
+> - **Vitrine v3 da home está implementada**, mas na branch `worktree-home-vitrine-v3`
+>   (9 commits, ~`.claude/worktrees/home-vitrine-v3`), **ainda não mergeada** na `main`.
+>   Espec e plano em `docs/superpowers/{specs,plans}/2026-09-02-home-vitrine-v3*`.
+>   Os "blocos 06–09" (4 seções de produto) foram explicitamente **adiados**.
+> - Bug "19 países sem faceta" segue em outra branch (`claude/elastic-poitras-3a4395`,
+>   worktree `blissful-hofstadter-1ceb15`), fora da `main`.
+> - Baseline de lint: `tsc` 0 erros · build passa · **794 testes** (80 arquivos).
+>   `eslint .` tem ~51 warnings + erros herdados de `react-hooks/preserve-manual-memoization`
+>   — no `main` o arquivo `components/admin/leads-upload-modal.tsx` foi corrigido em 03/09
+>   (resta apenas a cópia dentro da worktree do `claude/elastic-poitras-3a4395`).
 
 ## Em uma frase
 

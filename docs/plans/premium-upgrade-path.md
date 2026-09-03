@@ -2,6 +2,11 @@
 
 > Complemento ao [Project Upgrade Plan](./project-upgrade-plan.md) focado em elevar o produto de MVP funcional para plataforma profissional/enterprise.
 
+> ⚠️ **Status: planejamento histórico.** O baseline deste plano (MVP, PayPal) está
+> superado — vários "quick wins" (sitemap, robots, OG, @vercel/analytics, ISR) já
+> existem. Doc vivo: [`../estado-e-pendencias.md`](../estado-e-pendencias.md).
+> Revisto em 2026-09-03.
+
 ---
 
 ## Bloqueadores de "Premium Feel" (3)

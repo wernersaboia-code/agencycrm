@@ -1,5 +1,10 @@
 # Project Kickoff
 
+> ⚠️ **Status: documento histórico.** Não reflete o estado atual do produto. O doc
+> vivo é [`docs/estado-e-pendencias.md`](./estado-e-pendencias.md). Desde esta versão o
+> checkout migrou para Stripe + Mercado Pago, o produto virou estudos de entrada em
+> mercado (em vez de base de contatos), e a i18n cobre 7 idiomas. Revisto em 2026-09-03.
+
 ## Product
 - Name: AgencyCRM
 - Type: SaaS CRM + Lead Marketplace

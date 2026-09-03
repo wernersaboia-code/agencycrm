@@ -1,5 +1,10 @@
 # Launch Readiness
 
+> ⚠️ **Status: documento histórico.** Muitos "blockers" listados aqui já foram
+> resolvidos (privacy/terms criados, cookie consent, unsubscribe, rate limiting,
+> Sentry, health check). O doc vivo é [`docs/estado-e-pendencias.md`](./estado-e-pendencias.md).
+> Revisto em 2026-09-03.
+
 ## Status
 - **Outcome:** ready-with-risks
 - **Target launch:** TBD
