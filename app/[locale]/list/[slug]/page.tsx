@@ -54,8 +54,11 @@ export async function generateMetadata({ params }: ListPageProps) {
     }
 
     return {
-        title: list.name,
-        description: list.description || t("metaFallbackDescription"),
+        // metaTitle/metaDescription são escritos no idioma do país do estudo e
+        // com o vocabulário que o comprador digita na busca; name/description
+        // vêm da capa do PDF, em inglês. Quando os primeiros existem, mandam.
+        title: list.metaTitle || list.name,
+        description: list.metaDescription || list.description || t("metaFallbackDescription"),
         // Uma lista = uma página indexável. O conteúdo vem do banco num só
         // idioma; /de/list, /fr/list… traduzem apenas a interface, então todas
         // as variantes canonizam para a URL do locale padrão e o Google

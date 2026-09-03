@@ -609,6 +609,20 @@ model LeadList {
   studyPdfUrl  String?
   studyPdfName String?
 
+  // Título e descrição do resultado de busca, no idioma do país do estudo.
+  //
+  // Existem separados de `name` e `description` porque servem a leitores
+  // diferentes. `name` e `description` vêm da capa do PDF, em inglês, e são o
+  // que o comprador lê depois de chegar; estes dois são o que ele lê no Google
+  // antes de decidir clicar, e por isso precisam do vocabulário que ele digita
+  // (importador, distribuidor, o setor e o país) na língua em que digita.
+  //
+  // Nullable de propósito: sem valor, generateMetadata cai em `name` e
+  // `description`, que é o comportamento anterior. Limites de SERP conferidos
+  // por lib/seo/meta-length.test.ts.
+  metaTitle       String?
+  metaDescription String?
+
   // Relacionamentos
   leads         MarketplaceLead[]
   purchaseItems PurchaseItem[]
