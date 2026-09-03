@@ -111,6 +111,8 @@
         "privacy": "Privacy",
         "refund": "Terugbetalingen",
         "contact": "Contact",
+        "sectorsTitle": "Sectoren",
+        "marketsTitle": "Markten",
         "copyright": "© {year} Easy Prospect. Alle rechten voorbehouden."
     },
     "landing": {
@@ -128,6 +130,14 @@
             "lede": "Onze markttoetredingsstudies zijn gemaakt voor fabrikanten, producenten en merkeigenaren die een buitenlandse markt willen begrijpen voordat zij erin investeren.",
             "p1": "Kies op land, sector of taalgebied en ontvang een studie met het marktoverzicht, de kanaalstructuur, de regelgevende eisen en de categorieën met de beste vooruitzichten.",
             "p2": "Elke studie sluit af met de profielen van de bedrijven in de sector: de commerciële positionering van elk bedrijf, de kanalen die het bedient en het type leverancier dat het zoekt."
+        },
+        "stats": {
+            "eyebrow": "De catalogus vandaag",
+            "title": "Zorgvuldig onderzoek in plaats van verwarrende adressenlijsten.",
+            "studies": "gepubliceerde studies",
+            "countries": "gedekte landen",
+            "sectors": "sectoren",
+            "reviewed": "gegevens gecontroleerd"
         },
         "zielmaerkte": {
             "eyebrow": "Doelmarkten",
@@ -241,6 +251,19 @@
             "title": "Periodiek herziene gegevens.",
             "body": "De studies worden door onze eigen organisatie opgesteld en elk geprofileerd bedrijf wordt getoetst aan openbare bronnen — bedrijfswebsite, digitale aanwezigheid en beschikbare registers — voordat het in de catalogus komt. De catalogus wordt periodiek herzien: wanneer een studie de beschreven markt niet meer weergeeft, wordt zij uit de verkoop gehaald."
         },
+        "method": {
+            "eyebrow": "Hoe wij werken",
+            "checksTitle": "Bedrijfsbeoordeling",
+            "checks": [
+                "of het bedrijf actief is in de relevante branche",
+                "of import- of distributieactiviteiten identificeerbaar zijn",
+                "of er een professionele bedrijfsuitstraling bestaat",
+                "of actuele contactgegevens beschikbaar zijn",
+                "of het bedrijf in het algemeen als potentiële distributiepartner in aanmerking kan komen"
+            ],
+            "limitsTitle": "Wat wij niet kunnen beloven",
+            "limitsBody": "Het succes van een exportproject hangt van vele factoren af. Daarom kunnen wij niet garanderen dat elk bedrijf zal reageren op een contactbenadering of dat er onmiddellijk een zakelijke relatie zal ontstaan. Wat wij u echter wel kunnen bieden, is een solide basis voor uw exportplanning en een aanzienlijke tijdsbesparing bij het identificeren van geschikte distributiepartners."
+        },
         "vorteil": {
             "eyebrow": "Uw voordeel",
             "title": "Bespaar tijd en laat uw commercieel succes groeien.",
@@ -267,7 +290,8 @@
         "blog": {
             "eyebrow": "Meer weten",
             "title": "Marktanalyses, sectorrapporten en exportkansen.",
-            "intro": "Op onze blog publiceren we regelmatig marktanalyses, sectorrapporten en informatie over exportkansen, handelstrends en verkoopmogelijkheden in verschillende landen en regio's. Zo blijft u altijd op de hoogte van de ontwikkelingen op de internationale markt."
+            "intro": "Op onze blog publiceren we regelmatig marktanalyses, sectorrapporten en informatie over exportkansen, handelstrends en verkoopmogelijkheden in verschillende landen en regio's. Zo blijft u altijd op de hoogte van de ontwikkelingen op de internationale markt.",
+            "readingTime": "{minutes} min lezen"
         },
         "cta": {
             "title": "Klaar om uw internationale handel te laten groeien?",

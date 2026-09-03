@@ -8,12 +8,14 @@ import { ogLocaleFor, type Locale } from "@/lib/i18n/locales"
 import { toLandingLocale } from "@/components/landing/types"
 import { HeroSection } from "@/components/landing/hero-section"
 import { IntroSection } from "@/components/landing/intro-section"
+import { CatalogStatsSection } from "@/components/landing/catalog-stats-section"
 import { TargetMarketsSection } from "@/components/landing/target-markets-section"
 import { BuyerProfilesSection } from "@/components/landing/buyer-profiles-section"
 import { DeliverablesSection } from "@/components/landing/deliverables-section"
 import { FeaturedStudiesSection } from "@/components/landing/featured-studies-section"
 import { FreeSampleSection } from "@/components/landing/free-sample-section"
 import { AdvantageSection, DataQualitySection } from "@/components/landing/text-sections"
+import { MethodSection } from "@/components/landing/method-section"
 import { HowItWorksSection } from "@/components/landing/how-it-works-section"
 import { BlogTeaserSection } from "@/components/landing/blog-teaser-section"
 import { FinalCtaSection } from "@/components/landing/final-cta-section"
@@ -71,6 +73,11 @@ export default async function EasyProspectHome({
             <Suspense fallback={<SectionFallback className="h-64" />}>
                 <IntroSection locale={locale} />
             </Suspense>
+            {/* Logo depois do intro: o visitante acabou de ler o que é um estudo,
+                e a pergunta seguinte é "quantos vocês têm?". */}
+            <Suspense fallback={<SectionFallback className="h-56" />}>
+                <CatalogStatsSection locale={locale} />
+            </Suspense>
             <Suspense fallback={<SectionFallback className="h-96" />}>
                 <TargetMarketsSection locale={locale} />
             </Suspense>
@@ -88,6 +95,11 @@ export default async function EasyProspectHome({
             </Suspense>
             <Suspense fallback={<SectionFallback className="h-48" />}>
                 <DataQualitySection locale={locale} />
+            </Suspense>
+            {/* Entre "os dados são revisados" e a promessa de vantagem: primeiro
+                o método (o que conferimos, o que não prometemos), depois o ganho. */}
+            <Suspense fallback={<SectionFallback className="h-80" />}>
+                <MethodSection locale={locale} />
             </Suspense>
             <Suspense fallback={<SectionFallback className="h-48" />}>
                 <AdvantageSection locale={locale} />

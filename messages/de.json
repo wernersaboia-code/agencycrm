@@ -111,6 +111,8 @@
         "privacy": "Datenschutz",
         "refund": "Erstattungen",
         "contact": "Kontakt",
+        "sectorsTitle": "Branchen",
+        "marketsTitle": "Märkte",
         "copyright": "© {year} Easy Prospect. Alle Rechte vorbehalten."
     },
     "landing": {
@@ -128,6 +130,14 @@
             "lede": "Unsere Markteintrittsstudien richten sich an Hersteller, Erzeuger und Markeninhaber, die einen ausländischen Markt verstehen wollen, bevor sie in ihn investieren.",
             "p1": "Wählen Sie nach Land, Branche oder Sprachraum und erhalten Sie eine Studie mit Marktüberblick, Kanalstruktur, regulatorischen Anforderungen und den Produktgruppen mit den besten Aussichten.",
             "p2": "Jede Studie schließt mit den Profilen der Unternehmen der Branche: der geschäftlichen Positionierung jedes einzelnen, den bedienten Kanälen und der Art von Lieferant, die gesucht wird."
+        },
+        "stats": {
+            "eyebrow": "Der Katalog heute",
+            "title": "Sorgfältige Recherche statt unübersichtlicher Adresslisten.",
+            "studies": "veröffentlichte Studien",
+            "countries": "abgedeckte Länder",
+            "sectors": "Branchen",
+            "reviewed": "Daten geprüft"
         },
         "zielmaerkte": {
             "eyebrow": "Zielmärkte",
@@ -241,6 +251,19 @@
             "title": "Regelmäßig überprüfte Daten.",
             "body": "Die Studien werden von uns selbst erstellt, und jedes profilierte Unternehmen wird vor Aufnahme in den Katalog anhand öffentlicher Quellen geprüft — Unternehmenswebsite, digitale Präsenz und verfügbare Register. Der Katalog wird regelmäßig überprüft: Wenn eine Studie den beschriebenen Markt nicht mehr abbildet, wird sie aus dem Verkauf genommen."
         },
+        "method": {
+            "eyebrow": "Wie wir arbeiten",
+            "checksTitle": "Prüfung der Unternehmen",
+            "checks": [
+                "ob das Unternehmen tatsächlich in der angegebenen Branche tätig ist",
+                "ob Import- oder Distributionsaktivitäten erkennbar sind",
+                "ob eine professionelle Unternehmenspräsenz besteht",
+                "ob aktuelle Kontaktdaten verfügbar sind",
+                "ob das Unternehmen grundsätzlich als potenzieller Vertriebspartner infrage kommt"
+            ],
+            "limitsTitle": "Was wir nicht versprechen können",
+            "limitsBody": "Exporterfolg lässt sich nicht garantieren. Ob aus einer Kontaktaufnahme eine langfristige Geschäftsbeziehung entsteht, hängt von zahlreichen Faktoren ab – unter anderem von der Wettbewerbsfähigkeit Ihres Produkts, der Nachfrage im Zielmarkt, Ihrer Preisgestaltung, Ihrer Lieferfähigkeit, Ihrer Vertriebsstrategie sowie den Einkaufsentscheidungen des jeweiligen Importeurs. Was wir Ihnen jedoch bieten können, ist eine fundierte Entscheidungsgrundlage und eine erhebliche Zeitersparnis bei der Suche nach geeigneten Vertriebspartnern."
+        },
         "vorteil": {
             "eyebrow": "Ihr Vorteil",
             "title": "Sparen Sie Zeit und steigern Sie Ihren Vertriebserfolg.",
@@ -267,7 +290,8 @@
         "blog": {
             "eyebrow": "Weitere Informationen",
             "title": "Marktanalysen, Branchenberichte und Exportchancen.",
-            "intro": "In unserem Blog veröffentlichen wir regelmäßig aktuelle Marktanalysen, Branchenberichte sowie Informationen über Exportchancen, Vertriebstrends und Absatzmöglichkeiten in verschiedenen Ländern und Regionen. So bleiben Sie über internationale Marktentwicklungen stets auf dem neuesten Stand."
+            "intro": "In unserem Blog veröffentlichen wir regelmäßig aktuelle Marktanalysen, Branchenberichte sowie Informationen über Exportchancen, Vertriebstrends und Absatzmöglichkeiten in verschiedenen Ländern und Regionen. So bleiben Sie über internationale Marktentwicklungen stets auf dem neuesten Stand.",
+            "readingTime": "{minutes} Min. Lesezeit"
         },
         "cta": {
             "title": "Bereit, Ihren internationalen Vertrieb aufzubauen?",

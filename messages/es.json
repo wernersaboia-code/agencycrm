@@ -111,6 +111,8 @@
         "privacy": "Privacidad",
         "refund": "Reembolsos",
         "contact": "Contacto",
+        "sectorsTitle": "Sectores",
+        "marketsTitle": "Mercados",
         "copyright": "© {year} Easy Prospect. Todos los derechos reservados."
     },
     "landing": {
@@ -128,6 +130,14 @@
             "lede": "Nuestros estudios de entrada en mercado están hechos para fabricantes, productores y titulares de marca que quieren entender un mercado extranjero antes de invertir en él.",
             "p1": "Elija por país, sector o región lingüística y reciba un estudio con el panorama del mercado, la estructura de canales, los requisitos regulatorios y las categorías con mayor potencial.",
             "p2": "Cada estudio se cierra con los perfiles de las empresas del sector: el posicionamiento comercial de cada una, los canales que atiende y el tipo de proveedor que busca."
+        },
+        "stats": {
+            "eyebrow": "El catálogo hoy",
+            "title": "Investigación cuidadosa en lugar de listas de direcciones confusas.",
+            "studies": "estudios publicados",
+            "countries": "países cubiertos",
+            "sectors": "sectores",
+            "reviewed": "datos revisados"
         },
         "zielmaerkte": {
             "eyebrow": "Mercados objetivo",
@@ -241,6 +251,19 @@
             "title": "Datos revisados periódicamente.",
             "body": "Los estudios los elabora nuestra propia operación, y cada empresa perfilada se verifica en fuentes públicas — sitio institucional, presencia digital y registros disponibles — antes de entrar en el catálogo. El catálogo se revisa periódicamente: cuando un estudio deja de reflejar el mercado que describe, se retira de la venta."
         },
+        "method": {
+            "eyebrow": "Cómo trabajamos",
+            "checksTitle": "Revisión de empresas",
+            "checks": [
+                "si la empresa opera en el sector relevante",
+                "si se pueden identificar actividades de importación o distribución",
+                "si existe una presencia profesional de la empresa",
+                "si hay datos de contacto actuales disponibles",
+                "si la empresa podría considerarse en general como un potencial socio de distribución"
+            ],
+            "limitsTitle": "Lo que no podemos prometer",
+            "limitsBody": "El éxito de un proyecto de exportación depende de muchos factores. Por lo tanto, no podemos garantizar que todas las empresas respondan a un contacto o que se establezca inmediatamente una relación comercial. Lo que sí podemos ofrecerle, sin embargo, es una base sólida para su planificación de exportación y un significativo ahorro de tiempo en la identificación de socios de distribución adecuados."
+        },
         "vorteil": {
             "eyebrow": "Su ventaja",
             "title": "Ahorre tiempo y aumente su éxito comercial.",
@@ -267,7 +290,8 @@
         "blog": {
             "eyebrow": "Más información",
             "title": "Análisis de mercado, informes sectoriales y oportunidades de exportación.",
-            "intro": "En nuestro blog publicamos regularmente análisis de mercado, informes sectoriales e información sobre oportunidades de exportación, tendencias comerciales y posibilidades de venta en diversos países y regiones. Así se mantiene siempre al día de los movimientos del mercado internacional."
+            "intro": "En nuestro blog publicamos regularmente análisis de mercado, informes sectoriales e información sobre oportunidades de exportación, tendencias comerciales y posibilidades de venta en diversos países y regiones. Así se mantiene siempre al día de los movimientos del mercado internacional.",
+            "readingTime": "{minutes} min de lectura"
         },
         "cta": {
             "title": "¿Listo para construir su comercio internacional?",

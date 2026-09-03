@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma"
 import type { BlogLocale } from "./locales"
+import { minutosDeLeitura } from "./tempo-leitura"
 
 export function publishedWhere(now: Date = new Date()) {
     return { status: "PUBLISHED" as const, publishedAt: { lte: now } }
@@ -117,6 +118,9 @@ export async function getLatestPostsForTeaser(locale: BlogLocale, limit = 3) {
         excerpt: p.translations[0]?.excerpt ?? "",
         coverImageUrl: p.coverImageUrl,
         categoryName: p.category?.translations[0]?.name ?? null,
+        // O cálculo mora aqui, e não no card: `contentHtml` é `@db.Text` e não
+        // pode atravessar a fronteira do componente só para virar um número.
+        minutosLeitura: minutosDeLeitura(p.translations[0]?.contentHtml ?? ""),
     }))
 }
 

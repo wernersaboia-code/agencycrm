@@ -23,7 +23,12 @@ export async function BlogTeaserSection({ locale }: { locale: LandingLocale }) {
                                 ? <img src={post.coverImageUrl} alt="" className="h-28 w-full object-cover" />
                                 : <div className="h-28 bg-gradient-to-br from-brand-accent/20 to-brand-accent/40" />}
                             <div className="p-5">
-                                {post.categoryName && <p className="text-xs font-semibold uppercase tracking-wider text-brand-accent-strong">{post.categoryName}</p>}
+                                {/* Categoria e tempo na mesma linha, no molde da referência ("Product · 7 min").
+                                    O tempo aparece mesmo sem categoria: post sem categoria ainda informa quanto custa ler. */}
+                                <p className="text-xs font-semibold uppercase tracking-wider text-brand-accent-strong">
+                                    {post.categoryName ? `${post.categoryName} · ` : ""}
+                                    {t("readingTime", { minutes: post.minutosLeitura })}
+                                </p>
                                 <h3 className="mt-2 font-semibold leading-snug text-foreground group-hover:text-brand-accent-strong">{post.title}</h3>
                                 <p className="mt-2 text-sm leading-6 text-muted-foreground">{post.excerpt}</p>
                             </div>

@@ -111,6 +111,8 @@
         "privacy": "Privacy",
         "refund": "Refunds",
         "contact": "Contact",
+        "sectorsTitle": "Sectors",
+        "marketsTitle": "Markets",
         "copyright": "© {year} Easy Prospect. All rights reserved."
     },
     "landing": {
@@ -128,6 +130,14 @@
             "lede": "Our market entry studies are written for manufacturers, producers and brand owners who want to understand a foreign market before investing in it.",
             "p1": "Choose by country, sector or language region and receive a study covering the market overview, the channel structure, the regulatory requirements and the categories with the strongest prospects.",
             "p2": "Each study closes with the profiles of the companies in the sector: the commercial positioning of each one, the channels it serves and the kind of supplier it is looking for."
+        },
+        "stats": {
+            "eyebrow": "The catalogue today",
+            "title": "Careful research instead of confusing address lists.",
+            "studies": "published studies",
+            "countries": "countries covered",
+            "sectors": "sectors",
+            "reviewed": "data reviewed"
         },
         "zielmaerkte": {
             "eyebrow": "Target markets",
@@ -241,6 +251,19 @@
             "title": "Data reviewed periodically.",
             "body": "The studies are produced by our own operation, and every company profiled is checked against public sources — corporate website, digital presence and available registers — before it enters the catalogue. The catalogue is reviewed periodically: when a study no longer reflects the market it describes, it is withdrawn from sale."
         },
+        "method": {
+            "eyebrow": "How we work",
+            "checksTitle": "Company Review",
+            "checks": [
+                "whether the company operates in the relevant industry",
+                "whether import or distribution activities are identifiable",
+                "whether a professional company presence exists",
+                "whether current contact details are available",
+                "whether the company could generally be considered as a potential distribution partner"
+            ],
+            "limitsTitle": "What We Cannot Promise",
+            "limitsBody": "The success of an export project depends on many factors. Therefore, we cannot guarantee that every company will respond to a contact approach or that a business relationship will immediately result. What we can offer you, however, is a solid foundation for your export planning and a significant time saving in identifying suitable distribution partners."
+        },
         "vorteil": {
             "eyebrow": "Your advantage",
             "title": "Save time and increase your sales success.",
@@ -267,7 +290,8 @@
         "blog": {
             "eyebrow": "More insights",
             "title": "Market analyses, industry reports, and export opportunities.",
-            "intro": "On our blog we regularly publish market analyses, industry reports, and information on export opportunities, trade trends, and sales possibilities across various countries and regions. This keeps you up to date on international market developments."
+            "intro": "On our blog we regularly publish market analyses, industry reports, and information on export opportunities, trade trends, and sales possibilities across various countries and regions. This keeps you up to date on international market developments.",
+            "readingTime": "{minutes} min read"
         },
         "cta": {
             "title": "Ready to build your international trade?",
