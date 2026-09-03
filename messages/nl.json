@@ -249,6 +249,19 @@
             "title": "Periodiek herziene gegevens.",
             "body": "De studies worden door onze eigen organisatie opgesteld en elk geprofileerd bedrijf wordt getoetst aan openbare bronnen — bedrijfswebsite, digitale aanwezigheid en beschikbare registers — voordat het in de catalogus komt. De catalogus wordt periodiek herzien: wanneer een studie de beschreven markt niet meer weergeeft, wordt zij uit de verkoop gehaald."
         },
+        "method": {
+            "eyebrow": "Hoe wij werken",
+            "checksTitle": "Bedrijfsbeoordeling",
+            "checks": [
+                "of het bedrijf actief is in de relevante branche",
+                "of import- of distributieactiviteiten identificeerbaar zijn",
+                "of er een professionele bedrijfsuitstraling bestaat",
+                "of actuele contactgegevens beschikbaar zijn",
+                "of het bedrijf in het algemeen als potentiële distributiepartner in aanmerking kan komen"
+            ],
+            "limitsTitle": "Wat wij niet kunnen beloven",
+            "limitsBody": "Het succes van een exportproject hangt van vele factoren af. Daarom kunnen wij niet garanderen dat elk bedrijf zal reageren op een contactbenadering of dat er onmiddellijk een zakelijke relatie zal ontstaan. Wat wij u echter wel kunnen bieden, is een solide basis voor uw exportplanning en een aanzienlijke tijdsbesparing bij het identificeren van geschikte distributiepartners."
+        },
         "vorteil": {
             "eyebrow": "Uw voordeel",
             "title": "Bespaar tijd en laat uw commercieel succes groeien.",

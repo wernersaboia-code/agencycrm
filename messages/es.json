@@ -249,6 +249,19 @@
             "title": "Datos revisados periódicamente.",
             "body": "Los estudios los elabora nuestra propia operación, y cada empresa perfilada se verifica en fuentes públicas — sitio institucional, presencia digital y registros disponibles — antes de entrar en el catálogo. El catálogo se revisa periódicamente: cuando un estudio deja de reflejar el mercado que describe, se retira de la venta."
         },
+        "method": {
+            "eyebrow": "Cómo trabajamos",
+            "checksTitle": "Revisión de empresas",
+            "checks": [
+                "si la empresa opera en el sector relevante",
+                "si se pueden identificar actividades de importación o distribución",
+                "si existe una presencia profesional de la empresa",
+                "si hay datos de contacto actuales disponibles",
+                "si la empresa podría considerarse en general como un potencial socio de distribución"
+            ],
+            "limitsTitle": "Lo que no podemos prometer",
+            "limitsBody": "El éxito de un proyecto de exportación depende de muchos factores. Por lo tanto, no podemos garantizar que todas las empresas respondan a un contacto o que se establezca inmediatamente una relación comercial. Lo que sí podemos ofrecerle, sin embargo, es una base sólida para su planificación de exportación y un significativo ahorro de tiempo en la identificación de socios de distribución adecuados."
+        },
         "vorteil": {
             "eyebrow": "Su ventaja",
             "title": "Ahorre tiempo y aumente su éxito comercial.",

@@ -15,6 +15,7 @@ import { DeliverablesSection } from "@/components/landing/deliverables-section"
 import { FeaturedStudiesSection } from "@/components/landing/featured-studies-section"
 import { FreeSampleSection } from "@/components/landing/free-sample-section"
 import { AdvantageSection, DataQualitySection } from "@/components/landing/text-sections"
+import { MethodSection } from "@/components/landing/method-section"
 import { HowItWorksSection } from "@/components/landing/how-it-works-section"
 import { BlogTeaserSection } from "@/components/landing/blog-teaser-section"
 import { FinalCtaSection } from "@/components/landing/final-cta-section"
@@ -94,6 +95,11 @@ export default async function EasyProspectHome({
             </Suspense>
             <Suspense fallback={<SectionFallback className="h-48" />}>
                 <DataQualitySection locale={locale} />
+            </Suspense>
+            {/* Entre "os dados são revisados" e a promessa de vantagem: primeiro
+                o método (o que conferimos, o que não prometemos), depois o ganho. */}
+            <Suspense fallback={<SectionFallback className="h-80" />}>
+                <MethodSection locale={locale} />
             </Suspense>
             <Suspense fallback={<SectionFallback className="h-48" />}>
                 <AdvantageSection locale={locale} />

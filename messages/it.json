@@ -249,6 +249,19 @@
             "title": "Dati rivisti periodicamente.",
             "body": "Gli studi sono elaborati dalla nostra struttura e ogni azienda profilata viene verificata su fonti pubbliche — sito istituzionale, presenza digitale e registri disponibili — prima di entrare nel catalogo. Il catalogo viene rivisto periodicamente: quando uno studio non rispecchia più il mercato che descrive, esce dalla vendita."
         },
+        "method": {
+            "eyebrow": "Come lavoriamo",
+            "checksTitle": "Revisione delle aziende",
+            "checks": [
+                "se l’azienda opera nel settore pertinente",
+                "se sono identificabili attività di importazione o distribuzione",
+                "se esiste una presenza aziendale professionale",
+                "se sono disponibili dati di contatto aggiornati",
+                "se l’azienda possa generalmente essere considerata come potenziale partner di distribuzione"
+            ],
+            "limitsTitle": "Cosa non possiamo promettere",
+            "limitsBody": "Il successo di un progetto di esportazione dipende da molti fattori. Pertanto, non possiamo garantire che ogni azienda risponderà a un approccio di contatto o che ne risulterà immediatamente una relazione commerciale. Ciò che possiamo offrirvi, tuttavia, è una solida base per la vostra pianificazione dell’esportazione e un notevole risparmio di tempo nell’identificazione di partner di distribuzione idonei."
+        },
         "vorteil": {
             "eyebrow": "Il tuo vantaggio",
             "title": "Risparmia tempo e fai crescere il tuo successo commerciale.",

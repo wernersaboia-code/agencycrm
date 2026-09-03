@@ -249,6 +249,19 @@
             "title": "Data reviewed periodically.",
             "body": "The studies are produced by our own operation, and every company profiled is checked against public sources — corporate website, digital presence and available registers — before it enters the catalogue. The catalogue is reviewed periodically: when a study no longer reflects the market it describes, it is withdrawn from sale."
         },
+        "method": {
+            "eyebrow": "How we work",
+            "checksTitle": "Company Review",
+            "checks": [
+                "whether the company operates in the relevant industry",
+                "whether import or distribution activities are identifiable",
+                "whether a professional company presence exists",
+                "whether current contact details are available",
+                "whether the company could generally be considered as a potential distribution partner"
+            ],
+            "limitsTitle": "What We Cannot Promise",
+            "limitsBody": "The success of an export project depends on many factors. Therefore, we cannot guarantee that every company will respond to a contact approach or that a business relationship will immediately result. What we can offer you, however, is a solid foundation for your export planning and a significant time saving in identifying suitable distribution partners."
+        },
         "vorteil": {
             "eyebrow": "Your advantage",
             "title": "Save time and increase your sales success.",

@@ -249,6 +249,19 @@
             "title": "Données revues périodiquement.",
             "body": "Les études sont réalisées par notre propre équipe, et chaque entreprise profilée est vérifiée dans des sources publiques — site institutionnel, présence numérique et registres disponibles — avant d'entrer au catalogue. Le catalogue est révisé périodiquement : lorsqu'une étude ne reflète plus le marché qu'elle décrit, elle est retirée de la vente."
         },
+        "method": {
+            "eyebrow": "Notre méthode",
+            "checksTitle": "Examen des entreprises",
+            "checks": [
+                "si l'entreprise opère dans le secteur concerné",
+                "si des activités d'importation ou de distribution sont identifiables",
+                "s'il existe une présence professionnelle de l'entreprise",
+                "si des coordonnées de contact actuelles sont disponibles",
+                "si l'entreprise peut généralement être considérée comme un partenaire de distribution potentiel"
+            ],
+            "limitsTitle": "Ce que nous ne pouvons pas promettre",
+            "limitsBody": "Le succès d'un projet d'exportation dépend de nombreux facteurs. Par conséquent, nous ne pouvons pas garantir que chaque entreprise répondra à une approche de contact ou qu'une relation commerciale en résultera immédiatement. Ce que nous pouvons cependant vous offrir, c'est une base solide pour votre planification d'exportation et un gain de temps significatif dans l'identification de partenaires de distribution adaptés."
+        },
         "vorteil": {
             "eyebrow": "Votre avantage",
             "title": "Gagnez du temps et développez votre succès commercial.",

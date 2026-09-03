@@ -249,6 +249,19 @@
             "title": "Dados revisados periodicamente.",
             "body": "Os estudos são elaborados pela nossa operação, e cada empresa perfilada é conferida em fontes públicas — site institucional, presença digital e registros disponíveis — antes de entrar no catálogo. O catálogo é revisado periodicamente: quando um estudo deixa de refletir o mercado que descreve, ele sai de venda."
         },
+        "method": {
+            "eyebrow": "Como trabalhamos",
+            "checksTitle": "Como cada empresa é conferida",
+            "checks": [
+                "se a empresa atua no respectivo setor",
+                "se existem atividades de importação ou distribuição",
+                "se possui presença profissional",
+                "se há dados de contato atualizados",
+                "se pode ser considerada um potencial parceiro comercial"
+            ],
+            "limitsTitle": "O que não podemos prometer",
+            "limitsBody": "O sucesso de um projeto de exportação depende de muitos fatores. Não podemos garantir resposta de todas as empresas nem o fechamento imediato de negócios. Podemos, porém, oferecer uma base sólida para seu planejamento e economizar um tempo considerável na identificação de parceiros comerciais."
+        },
         "vorteil": {
             "eyebrow": "Sua vantagem",
             "title": "Economize tempo e aumente seu sucesso comercial.",

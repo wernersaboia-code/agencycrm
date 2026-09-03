@@ -249,6 +249,19 @@
             "title": "Regelmäßig überprüfte Daten.",
             "body": "Die Studien werden von uns selbst erstellt, und jedes profilierte Unternehmen wird vor Aufnahme in den Katalog anhand öffentlicher Quellen geprüft — Unternehmenswebsite, digitale Präsenz und verfügbare Register. Der Katalog wird regelmäßig überprüft: Wenn eine Studie den beschriebenen Markt nicht mehr abbildet, wird sie aus dem Verkauf genommen."
         },
+        "method": {
+            "eyebrow": "Wie wir arbeiten",
+            "checksTitle": "Prüfung der Unternehmen",
+            "checks": [
+                "ob das Unternehmen tatsächlich in der angegebenen Branche tätig ist",
+                "ob Import- oder Distributionsaktivitäten erkennbar sind",
+                "ob eine professionelle Unternehmenspräsenz besteht",
+                "ob aktuelle Kontaktdaten verfügbar sind",
+                "ob das Unternehmen grundsätzlich als potenzieller Vertriebspartner infrage kommt"
+            ],
+            "limitsTitle": "Was wir nicht versprechen können",
+            "limitsBody": "Exporterfolg lässt sich nicht garantieren. Ob aus einer Kontaktaufnahme eine langfristige Geschäftsbeziehung entsteht, hängt von zahlreichen Faktoren ab – unter anderem von der Wettbewerbsfähigkeit Ihres Produkts, der Nachfrage im Zielmarkt, Ihrer Preisgestaltung, Ihrer Lieferfähigkeit, Ihrer Vertriebsstrategie sowie den Einkaufsentscheidungen des jeweiligen Importeurs. Was wir Ihnen jedoch bieten können, ist eine fundierte Entscheidungsgrundlage und eine erhebliche Zeitersparnis bei der Suche nach geeigneten Vertriebspartnern."
+        },
         "vorteil": {
             "eyebrow": "Ihr Vorteil",
             "title": "Sparen Sie Zeit und steigern Sie Ihren Vertriebserfolg.",
