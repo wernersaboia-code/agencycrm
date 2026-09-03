@@ -129,6 +129,14 @@
             "p1": "Kies op land, sector of taalgebied en ontvang een studie met het marktoverzicht, de kanaalstructuur, de regelgevende eisen en de categorieën met de beste vooruitzichten.",
             "p2": "Elke studie sluit af met de profielen van de bedrijven in de sector: de commerciële positionering van elk bedrijf, de kanalen die het bedient en het type leverancier dat het zoekt."
         },
+        "stats": {
+            "eyebrow": "De catalogus vandaag",
+            "title": "Zorgvuldig onderzoek in plaats van verwarrende adressenlijsten.",
+            "studies": "gepubliceerde studies",
+            "countries": "gedekte landen",
+            "sectors": "sectoren",
+            "reviewed": "gegevens gecontroleerd"
+        },
         "zielmaerkte": {
             "eyebrow": "Doelmarkten",
             "title": "Een nauwkeurige selectie op basis van uw doelmarkten.",

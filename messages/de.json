@@ -129,6 +129,14 @@
             "p1": "Wählen Sie nach Land, Branche oder Sprachraum und erhalten Sie eine Studie mit Marktüberblick, Kanalstruktur, regulatorischen Anforderungen und den Produktgruppen mit den besten Aussichten.",
             "p2": "Jede Studie schließt mit den Profilen der Unternehmen der Branche: der geschäftlichen Positionierung jedes einzelnen, den bedienten Kanälen und der Art von Lieferant, die gesucht wird."
         },
+        "stats": {
+            "eyebrow": "Der Katalog heute",
+            "title": "Sorgfältige Recherche statt unübersichtlicher Adresslisten.",
+            "studies": "veröffentlichte Studien",
+            "countries": "abgedeckte Länder",
+            "sectors": "Branchen",
+            "reviewed": "Daten geprüft"
+        },
         "zielmaerkte": {
             "eyebrow": "Zielmärkte",
             "title": "Präzise Auswahl nach Ihren Zielmärkten.",

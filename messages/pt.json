@@ -129,6 +129,14 @@
             "p1": "Escolha por país, setor ou região linguística e receba um estudo com o panorama do mercado, a estrutura de canais, os requisitos regulatórios e as categorias com maior potencial.",
             "p2": "Cada estudo se encerra com os perfis das empresas do setor: o posicionamento comercial de cada uma, os canais que ela atende e o tipo de fornecedor que ela procura."
         },
+        "stats": {
+            "eyebrow": "O catálogo hoje",
+            "title": "Pesquisa cuidadosa em vez de listas confusas.",
+            "studies": "estudos publicados",
+            "countries": "países cobertos",
+            "sectors": "setores",
+            "reviewed": "dados revisados"
+        },
         "zielmaerkte": {
             "eyebrow": "Mercados-alvo",
             "title": "Seleção precisa pelos seus mercados-alvo.",

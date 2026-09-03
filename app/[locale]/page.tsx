@@ -8,6 +8,7 @@ import { ogLocaleFor, type Locale } from "@/lib/i18n/locales"
 import { toLandingLocale } from "@/components/landing/types"
 import { HeroSection } from "@/components/landing/hero-section"
 import { IntroSection } from "@/components/landing/intro-section"
+import { CatalogStatsSection } from "@/components/landing/catalog-stats-section"
 import { TargetMarketsSection } from "@/components/landing/target-markets-section"
 import { BuyerProfilesSection } from "@/components/landing/buyer-profiles-section"
 import { DeliverablesSection } from "@/components/landing/deliverables-section"
@@ -70,6 +71,11 @@ export default async function EasyProspectHome({
             </Suspense>
             <Suspense fallback={<SectionFallback className="h-64" />}>
                 <IntroSection locale={locale} />
+            </Suspense>
+            {/* Logo depois do intro: o visitante acabou de ler o que é um estudo,
+                e a pergunta seguinte é "quantos vocês têm?". */}
+            <Suspense fallback={<SectionFallback className="h-56" />}>
+                <CatalogStatsSection locale={locale} />
             </Suspense>
             <Suspense fallback={<SectionFallback className="h-96" />}>
                 <TargetMarketsSection locale={locale} />

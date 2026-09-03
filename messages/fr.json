@@ -129,6 +129,14 @@
             "p1": "Choisissez par pays, secteur ou région linguistique et recevez une étude couvrant le panorama du marché, la structure des canaux, les exigences réglementaires et les catégories aux meilleures perspectives.",
             "p2": "Chaque étude se termine par les profils des entreprises du secteur : le positionnement commercial de chacune, les canaux qu'elle dessert et le type de fournisseur qu'elle recherche."
         },
+        "stats": {
+            "eyebrow": "Le catalogue aujourd'hui",
+            "title": "Une recherche soignée plutôt que des listes d'adresses confuses.",
+            "studies": "études publiées",
+            "countries": "pays couverts",
+            "sectors": "secteurs",
+            "reviewed": "données vérifiées"
+        },
         "zielmaerkte": {
             "eyebrow": "Marchés cibles",
             "title": "Une sélection précise selon vos marchés cibles.",

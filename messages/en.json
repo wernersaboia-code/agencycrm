@@ -129,6 +129,14 @@
             "p1": "Choose by country, sector or language region and receive a study covering the market overview, the channel structure, the regulatory requirements and the categories with the strongest prospects.",
             "p2": "Each study closes with the profiles of the companies in the sector: the commercial positioning of each one, the channels it serves and the kind of supplier it is looking for."
         },
+        "stats": {
+            "eyebrow": "The catalogue today",
+            "title": "Careful research instead of confusing address lists.",
+            "studies": "published studies",
+            "countries": "countries covered",
+            "sectors": "sectors",
+            "reviewed": "data reviewed"
+        },
         "zielmaerkte": {
             "eyebrow": "Target markets",
             "title": "Precise selection by your target markets.",
