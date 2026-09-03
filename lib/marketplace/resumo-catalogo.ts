@@ -9,7 +9,13 @@ export type ResumoCatalogo = {
     estudos: number
     paises: number
     setores: number
-    revisadoEm: Date | null
+    /**
+     * Data da revisão mais recente, como string ISO 8601 — NÃO um `Date`.
+     * `unstable_cache` serializa o retorno para JSON no Data Cache: num cache
+     * hit um `Date` voltaria como string mesmo assim, e o tipo estaria mentindo.
+     * A string é o contrato honesto; quem consome faz o parse.
+     */
+    revisadoEm: string | null
 }
 
 /**
@@ -43,6 +49,8 @@ export const getResumoCatalogo = unstable_cache(
 
         const paises = new Set<string>()
         const setores = new Set<string>()
+        // Comparação feita com `Date` de verdade enquanto varre as linhas; a
+        // conversão para string ISO acontece uma vez só, no retorno.
         let revisadoEm: Date | null = null
 
         for (const estudo of estudos) {
@@ -58,7 +66,7 @@ export const getResumoCatalogo = unstable_cache(
             estudos: estudos.length,
             paises: paises.size,
             setores: setores.size,
-            revisadoEm,
+            revisadoEm: revisadoEm ? revisadoEm.toISOString() : null,
         }
     },
     ["resumo-catalogo"],

@@ -54,7 +54,21 @@ describe("getResumoCatalogo", () => {
 
         const resumo = await getResumoCatalogo()
 
-        expect(resumo.revisadoEm).toEqual(new Date("2026-08-26"))
+        expect(resumo.revisadoEm).toBe(new Date("2026-08-26").toISOString())
+    })
+
+    it("converte a revisao para string ISO na fronteira, porque unstable_cache serializa para JSON", async () => {
+        // Sem esta conversao, um cache hit devolveria a data ja como string
+        // enquanto o tipo ainda prometia `Date` — e o formatador da home
+        // estouraria. O teste crava que a saida e string, com `Date` na entrada.
+        prismaMock.leadList.findMany.mockResolvedValue([
+            { countries: ["DE"], industries: [], dataReviewedAt: new Date("2026-07-01") },
+            { countries: ["IT"], industries: [], dataReviewedAt: new Date("2026-08-26") },
+        ])
+
+        const resumo = await getResumoCatalogo()
+
+        expect(typeof resumo.revisadoEm).toBe("string")
     })
 
     it("catalogo vazio devolve zeros e revisao nula, sem estourar", async () => {
