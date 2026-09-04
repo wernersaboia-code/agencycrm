@@ -9,9 +9,9 @@ describe("alternatesFor", () => {
         expect(languages["x-default"]).toMatch(/\/catalog$/)
     })
 
-    it("não anuncia locale roteável mas não publicado (ex.: ar)", () => {
+    it("anuncia o árabe como qualquer outro locale publicado", () => {
         const { languages } = alternatesFor("/catalog")
-        expect(languages["ar"]).toBeUndefined()
+        expect(languages["ar"]).toMatch(/\/ar\/catalog$/)
     })
 
     it("não prefixa o idioma padrão", () => {
@@ -25,6 +25,18 @@ describe("alternatesFor", () => {
         expect(alternatesFor("/catalog", "de").canonical).toMatch(/\/de\/catalog$/)
         expect(alternatesFor("/catalog", "pt").canonical).toMatch(/\/catalog$/)
     })
+
+    it("árabe canoniza para si mesmo agora que é publicado", () => {
+        expect(alternatesFor("/catalog", "ar").canonical).toMatch(/\/ar\/catalog$/)
+    })
+
+    // Até a fase 4 da expansão de idiomas, "ar" era o exemplo real de locale
+    // roteável mas não publicado, e o teste vivia aqui com ele. Hoje
+    // LOCALES === PUBLISHED_LOCALES — não sobra locale de verdade para
+    // exercitar esse ramo, e `current` é tipado para não aceitar valor fora
+    // de LOCALES. A guarda em alternatesFor (canonicalLocale) fica no código
+    // como defesa para o próximo idioma que entrar roteável antes de
+    // publicado — só volta a ter cobertura direta quando isso acontecer.
 
     it("trata a raiz sem barra dupla", () => {
         const { languages } = alternatesFor("/")

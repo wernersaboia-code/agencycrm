@@ -30,9 +30,10 @@ describe("localeFromUserLanguage", () => {
         expect(localeFromUserLanguage("klingon")).toBe("pt")
     })
 
-    it("cai no padrao quando o locale e roteavel mas nao publicado", () => {
-        // "ar" existe em LOCALES mas nao em PUBLISHED_LOCALES: nao ha
-        // traducao, e mandar e-mail com chave crua seria pior que portugues.
-        expect(localeFromUserLanguage("ar")).toBe("pt")
+    it("aceita o arabe agora que tem traducao propria", () => {
+        // Ate a fase 4 da expansao de idiomas, "ar" era roteavel mas nao
+        // publicado e caia aqui no padrao. Com messages/ar.json no ar, o
+        // locale resolve para si mesmo como qualquer outro publicado.
+        expect(localeFromUserLanguage("ar")).toBe("ar")
     })
 })

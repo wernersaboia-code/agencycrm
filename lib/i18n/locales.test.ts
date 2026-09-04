@@ -42,8 +42,9 @@ describe("locales", () => {
         expect(ogLocaleFor("en")).toBe("en_US")
     })
 
-    it("publica todos os locales roteáveis exceto o árabe", () => {
-        expect(PUBLISHED_LOCALES).toEqual(["pt", "de", "en", "es", "fr", "it", "nl"])
+    it("publica todos os locales roteáveis, árabe incluído desde a fase 4", () => {
+        expect(PUBLISHED_LOCALES).toEqual(["pt", "de", "en", "es", "fr", "ar", "it", "nl"])
+        expect(PUBLISHED_LOCALES).toEqual(LOCALES)
     })
 })
 
@@ -51,16 +52,20 @@ describe("resolveMessagesLocale", () => {
     it("serve o próprio locale quando ele é publicado", () => {
         expect(resolveMessagesLocale("de")).toBe("de")
         expect(resolveMessagesLocale("en")).toBe("en")
+        expect(resolveMessagesLocale("ar")).toBe("ar")
     })
 
     // O bug que esta função substitui: a ternária antiga em i18n/request.ts
     // só conhecia "de" — todo locale não-alemão, publicado ou não, caía em
     // pt. "en" ficaria preso nesse fallback para sempre, mesmo depois de
     // messages/en.json existir, até alguém lembrar de crescer a ternária.
-    // Depois de it/nl entrarem em PUBLISHED_LOCALES, só o árabe segue sem
-    // tradução própria entre os locales roteáveis.
+    //
+    // Hoje LOCALES === PUBLISHED_LOCALES (o árabe fechou a lista na fase 4),
+    // então o ramo de fallback só é exercitável passando uma lista de
+    // publicados customizada, como abaixo — cobre o comportamento sem
+    // depender de um locale real ficar para trás de propósito.
     it("cai no padrão quando o locale não tem tradução própria", () => {
-        expect(resolveMessagesLocale("ar")).toBe("pt")
+        expect(resolveMessagesLocale("fr", ["pt", "de"])).toBe("pt")
     })
 
     it("aceita lista de publicados e padrão customizados", () => {

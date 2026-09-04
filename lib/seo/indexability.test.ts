@@ -3,24 +3,27 @@ import { isPublishedLocale, robotsForLocale, ROBOTS_NAO_ENCONTRADO } from "./ind
 
 describe("isPublishedLocale", () => {
     it("aceita os locales com tradução própria", () => {
-        for (const locale of ["pt", "de", "en", "es", "fr", "it", "nl"]) {
+        for (const locale of ["pt", "de", "en", "es", "fr", "ar", "it", "nl"]) {
             expect(isPublishedLocale(locale)).toBe(true)
         }
     })
 
-    it("recusa locale roteável sem tradução e valor desconhecido", () => {
-        expect(isPublishedLocale("ar")).toBe(false)
+    it("recusa valor desconhecido", () => {
+        // Desde a fase 4 (messages/ar.json), LOCALES === PUBLISHED_LOCALES —
+        // não sobra locale roteável sem tradução para testar aqui. Só um
+        // valor que não é locale nenhum exercita o "false".
         expect(isPublishedLocale("xx")).toBe(false)
     })
 })
 
 describe("robotsForLocale", () => {
-    it("bloqueia indexação de locale não publicado, mas segue os links", () => {
-        expect(robotsForLocale("ar")).toEqual({ index: false, follow: true })
+    it("bloqueia indexação de locale desconhecido, mas segue os links", () => {
+        expect(robotsForLocale("xx")).toEqual({ index: false, follow: true })
     })
 
     it("libera indexação de locale publicado", () => {
         expect(robotsForLocale("pt")).toEqual({ index: true, follow: true })
+        expect(robotsForLocale("ar")).toEqual({ index: true, follow: true })
     })
 })
 

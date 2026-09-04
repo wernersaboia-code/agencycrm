@@ -24,7 +24,17 @@ export function alternatesFor(path: string, current: Locale = DEFAULT_LOCALE) {
     }
     languages["x-default"] = `${BASE_URL}${getPathname({ href: path, locale: DEFAULT_LOCALE })}`
 
-    return { canonical: `${BASE_URL}${getPathname({ href: path, locale: current })}`, languages }
+    // Defesa para um locale roteável (LOCALES) que ainda não tenha tradução
+    // própria (PUBLISHED_LOCALES) — situação do árabe até a fase 4 da
+    // expansão de idiomas, hoje sem exemplo real porque os dois conjuntos
+    // coincidem. Sem esta guarda, a página de um locale nesse estado
+    // autodeclara canonical para si mesma servindo o fallback para pt — uma
+    // duplicata órfã, sem hreflang ligando as duas, porque o loop acima só
+    // cobre PUBLISHED_LOCALES. Aponta para a versão publicada mais próxima
+    // em vez disso, e volta a valer no próximo idioma que entrar assim.
+    const canonicalLocale = PUBLISHED_LOCALES.includes(current) ? current : DEFAULT_LOCALE
+
+    return { canonical: `${BASE_URL}${getPathname({ href: path, locale: canonicalLocale })}`, languages }
 }
 
 /**

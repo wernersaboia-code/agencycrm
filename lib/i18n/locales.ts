@@ -6,14 +6,16 @@ export const DEFAULT_LOCALE: Locale = "pt"
 // Locales roteáveis (LOCALES) x locales publicados (PUBLISHED_LOCALES) são
 // conceitos diferentes. Todo locale em LOCALES responde 200 em suas rotas —
 // o next-intl e o middleware não distinguem entre eles. Mas nem todo locale
-// roteável tem tradução própria: hoje só pt e de têm arquivo em messages/,
-// os demais caem no fallback para pt (ver comentário em i18n/request.ts).
+// roteável tem tradução própria: hoje todos os 8 têm arquivo em messages/,
+// porém pt/de/en trazem o namespace `admin` inteiro (painel interno) e
+// es/fr/it/ar/nl trazem só os ~474 namespaces do funil — o namespace que
+// falta cai no fallback para pt (ver loadMessages, mergeMessages). Admin não
+// entra em ar de propósito, mesmo critério de es/fr/it/nl: é ferramenta
+// interna do time, nunca renderiza em RTL.
 // PUBLISHED_LOCALES é o subconjunto com conteúdo traduzido de verdade — só
 // esses devem ser anunciados ao Google via sitemap e hreflang (alternates),
 // para não submeter páginas em português como se fossem en-US, es-ES etc.
-// As fases 3 e 4 do projeto devem acrescentar locales aqui à medida que os
-// respectivos arquivos de messages/ forem criados.
-export const PUBLISHED_LOCALES: readonly Locale[] = ["pt", "de", "en", "es", "fr", "it", "nl"]
+export const PUBLISHED_LOCALES: readonly Locale[] = ["pt", "de", "en", "es", "fr", "ar", "it", "nl"]
 
 const RTL_LOCALES = new Set<Locale>(["ar"])
 

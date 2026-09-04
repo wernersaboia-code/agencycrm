@@ -3,6 +3,7 @@ import { Suspense } from "react"
 import { notFound } from "next/navigation"
 import { GeistSans } from "geist/font/sans"
 import { GeistMono } from "geist/font/mono"
+import { Noto_Sans_Arabic } from "next/font/google"
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { hasLocale, NextIntlClientProvider } from "next-intl"
@@ -19,6 +20,17 @@ import { MarketplaceFooter } from "@/components/marketplace/marketplace-footer"
 import { SyncLocaleCookie } from "@/components/marketplace/sync-locale-cookie"
 import { CartProvider } from "@/contexts/cart-context"
 import { CartDrawer } from "@/components/marketplace/cart-drawer"
+
+// Geist Sans não cobre grafemas árabes; sem isto, o navegador cai para a
+// fonte árabe padrão do sistema, que existe mas destoa do resto do visual.
+// Só a variável CSS entra no body — --font-sans (globals.css) lista as duas
+// fontes em cascata, então o navegador troca de fonte por glifo, não por
+// locale: um "Easy Prospect" no meio de uma frase em árabe continua em Geist.
+const notoSansArabic = Noto_Sans_Arabic({
+    subsets: ["arabic"],
+    variable: "--font-noto-arabic",
+    display: "swap",
+})
 
 export async function generateMetadata({
     params,
@@ -122,7 +134,7 @@ export default async function MarketplaceLayout({
             <link rel="preconnect" href="https://flagcdn.com" />
             <link rel="preconnect" href="https://api.paypal.com" />
         </head>
-        <body className={`${GeistSans.variable} ${GeistMono.variable} font-sans antialiased`}>
+        <body className={`${GeistSans.variable} ${GeistMono.variable} ${notoSansArabic.variable} font-sans antialiased`}>
         <JsonLd data={buildOrganizationSchema()} />
         <JsonLd data={buildWebSiteSchema()} />
         <a
