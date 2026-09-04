@@ -91,7 +91,7 @@ export default function CheckoutPage() {
                             </div>
 
                             <div className="mb-6 rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm text-blue-900 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-100">
-                                <Lock className="mr-2 inline h-4 w-4" aria-hidden="true" />
+                                <Lock className="me-2 inline h-4 w-4" aria-hidden="true" />
                                 {t("redirectNote")}
                             </div>
 

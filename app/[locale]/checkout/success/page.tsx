@@ -86,7 +86,7 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
                         {t("successSubtitle")}
                     </p>
 
-                    <div className="mb-8 rounded-lg border bg-muted/30 p-5 text-left">
+                    <div className="mb-8 rounded-lg border bg-muted/30 p-5 text-start">
                         <div className="mb-4 flex flex-col gap-3 border-b pb-4 sm:flex-row sm:items-center sm:justify-between">
                             <div>
                                 <span className="text-sm text-muted-foreground">{t("successOrder")}</span>
@@ -94,7 +94,7 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
                                     #{purchase.id.slice(0, 8)}
                                 </div>
                             </div>
-                            <div className="text-left sm:text-right">
+                            <div className="text-start sm:text-end">
                                 <span className="text-sm text-muted-foreground">{t("successLeadsReleased")}</span>
                                 <div className="font-semibold text-card-foreground">{format.number(totalStudies)}</div>
                             </div>
@@ -162,7 +162,7 @@ function NextStep({
     text: string
 }) {
     return (
-        <div className="rounded-lg border bg-card p-4 text-left">
+        <div className="rounded-lg border bg-card p-4 text-start">
             <Icon className="mb-3 h-5 w-5 text-primary" />
             <div className="font-semibold text-card-foreground">{title}</div>
             <p className="mt-1 text-sm text-muted-foreground">{text}</p>

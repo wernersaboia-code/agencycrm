@@ -113,7 +113,7 @@ export function MarketplaceHeader() {
                                     <DropdownMenuContent align="end" className="w-56">
                                         <DropdownMenuItem asChild>
                                             <LocaleLink href="/my-purchases" className="cursor-pointer">
-                                                <ShoppingBag className="h-4 w-4 mr-2" />
+                                                <ShoppingBag className="h-4 w-4 me-2" />
                                                 {t("myPurchases")}
                                             </LocaleLink>
                                         </DropdownMenuItem>
@@ -122,7 +122,7 @@ export function MarketplaceHeader() {
                                         {isAdmin && (
                                             <DropdownMenuItem asChild>
                                                 <Link href="/super-admin" className="cursor-pointer">
-                                                    <ShieldCheck className="h-4 w-4 mr-2" />
+                                                    <ShieldCheck className="h-4 w-4 me-2" />
                                                     {t("adminArea")}
                                                 </Link>
                                             </DropdownMenuItem>
@@ -132,7 +132,7 @@ export function MarketplaceHeader() {
                                             onClick={handleSignOut}
                                             className="cursor-pointer text-red-600"
                                         >
-                                            <LogOut className="h-4 w-4 mr-2" />
+                                            <LogOut className="h-4 w-4 me-2" />
                                             {t("signOut")}
                                         </DropdownMenuItem>
                                     </DropdownMenuContent>
@@ -199,7 +199,7 @@ export function MarketplaceHeader() {
                                         <hr />
                                         <button
                                             onClick={handleSignOut}
-                                            className="text-left text-lg font-medium text-red-600"
+                                            className="text-start text-lg font-medium text-red-600"
                                         >
                                             {t("signOut")}
                                         </button>

@@ -104,7 +104,7 @@ export function RichTextEditor({
                 class: cn(
                     "prose prose-sm max-w-none min-h-[200px] p-4 focus:outline-none",
                     "prose-p:my-2 prose-ul:my-2 prose-ol:my-2 prose-li:my-0",
-                    "[&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6",
+                    "[&_ul]:list-disc [&_ul]:ps-6 [&_ol]:list-decimal [&_ol]:ps-6",
                     "[&_span[data-template-variable]]:inline-flex [&_span[data-template-variable]]:rounded",
                     "[&_span[data-template-variable]]:bg-primary/10 [&_span[data-template-variable]]:px-1.5",
                     "[&_span[data-template-variable]]:py-0.5 [&_span[data-template-variable]]:text-primary"

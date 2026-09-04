@@ -208,7 +208,7 @@ export function SignUpForm() {
                         className="w-full bg-[#4a2c5a] hover:bg-[#5d3a70]"
                         disabled={isLoading}
                     >
-                        {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                        {isLoading && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
                         {t("signUp.submitMkt")}
                     </Button>
 

@@ -108,7 +108,7 @@ export function PublicPurchaseCard({ purchase, mostrarComprovante = false }: Pub
         <div className="overflow-hidden rounded-lg border border-border bg-card shadow-sm transition-shadow hover:shadow-md">
             <button
                 type="button"
-                className="w-full cursor-pointer p-5 text-left transition-colors hover:bg-muted/40"
+                className="w-full cursor-pointer p-5 text-start transition-colors hover:bg-muted/40"
                 onClick={() => setExpanded(!expanded)}
             >
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -136,7 +136,7 @@ export function PublicPurchaseCard({ purchase, mostrarComprovante = false }: Pub
                     </div>
 
                     <div className="flex items-center justify-between gap-4 sm:justify-end">
-                        <div className="text-left sm:text-right">
+                        <div className="text-start sm:text-end">
                             <div className="text-xl font-bold text-brand">
                                 {formatCurrency(purchase.total, purchase.currency)}
                             </div>
@@ -164,7 +164,7 @@ export function PublicPurchaseCard({ purchase, mostrarComprovante = false }: Pub
                                 </div>
 
                                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-                                    <span className="font-medium text-foreground sm:text-right">
+                                    <span className="font-medium text-foreground sm:text-end">
                                         {formatCurrency(item.price, purchase.currency)}
                                     </span>
                                     <Button

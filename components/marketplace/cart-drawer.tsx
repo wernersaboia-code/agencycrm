@@ -83,7 +83,7 @@ export function CartDrawer() {
                             >
                                 <Link href="/cart">
                                     {t("review")}
-                                    <ArrowRight className="h-5 w-5 ml-2" />
+                                    <ArrowRight className="h-5 w-5 ms-2" />
                                 </Link>
                             </Button>
                             <Button
@@ -98,7 +98,7 @@ export function CartDrawer() {
 
                         {/* Secure Badge */}
                         <p className="text-xs text-center text-muted-foreground">
-                            <ShieldCheck className="mr-1 inline h-3.5 w-3.5 text-indigo-600" />
+                            <ShieldCheck className="me-1 inline h-3.5 w-3.5 text-indigo-600" />
                             {t("securePayment")}
                         </p>
                     </div>

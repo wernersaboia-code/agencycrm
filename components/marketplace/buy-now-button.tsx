@@ -57,7 +57,7 @@ export function BuyNowButton({ list }: BuyNowButtonProps) {
             onClick={handleBuyNow}
             disabled={isLoading}
         >
-            <ShoppingCart className="h-5 w-5 mr-2" aria-hidden="true" />
+            <ShoppingCart className="h-5 w-5 me-2" aria-hidden="true" />
             {t("buyNow")}
         </Button>
     )

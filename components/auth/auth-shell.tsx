@@ -20,7 +20,7 @@ export function AuthShell({
     return (
         <NextIntlClientProvider locale={locale} messages={messages}>
             <div className="relative w-full">
-                <div className="absolute right-0 top-0">
+                <div className="absolute end-0 top-0">
                     <AuthLocaleSwitcher />
                 </div>
                 <div className="mb-8 flex justify-center">

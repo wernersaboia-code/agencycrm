@@ -164,7 +164,7 @@ export function CatalogSidebar({
                     onClick={() => setCountriesOpen(!countriesOpen)}
                     aria-expanded={countriesOpen}
                     aria-controls={`${panelId}-countries`}
-                    className="mb-3 flex w-full items-center justify-between text-left font-semibold text-foreground"
+                    className="mb-3 flex w-full items-center justify-between text-start font-semibold text-foreground"
                 >
                     <span>{t("filterCountries")}</span>
                     <ChevronDown
@@ -215,7 +215,7 @@ export function CatalogSidebar({
                     onClick={() => setIndustriesOpen(!industriesOpen)}
                     aria-expanded={industriesOpen}
                     aria-controls={`${panelId}-industries`}
-                    className="mb-3 flex w-full items-center justify-between text-left font-semibold text-foreground"
+                    className="mb-3 flex w-full items-center justify-between text-start font-semibold text-foreground"
                 >
                     <span>{t("filterIndustries")}</span>
                     <ChevronDown
@@ -267,7 +267,7 @@ export function CatalogSidebar({
                     onClick={() => setLanguagesOpen(!languagesOpen)}
                     aria-expanded={languagesOpen}
                     aria-controls={`${panelId}-languages`}
-                    className="mb-3 flex w-full items-center justify-between text-left font-semibold text-foreground"
+                    className="mb-3 flex w-full items-center justify-between text-start font-semibold text-foreground"
                 >
                     <span>{t("filterLanguages")}</span>
                     <ChevronDown

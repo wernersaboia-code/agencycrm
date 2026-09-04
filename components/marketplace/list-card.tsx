@@ -91,7 +91,7 @@ export function ListCard({ list }: ListCardProps) {
                                 <FlagIcon key={code} code={code} size="lg" />
                             ))}
                             {list.countries.length > 3 && (
-                                <span className="text-xs text-muted-foreground ml-1">
+                                <span className="text-xs text-muted-foreground ms-1">
                                     +{list.countries.length - 3}
                                 </span>
                             )}
@@ -144,7 +144,7 @@ export function ListCard({ list }: ListCardProps) {
                             className="flex items-center text-sm text-brand-accent-strong font-medium hover:translate-x-1 transition-transform"
                         >
                             {t("seeDetails")}
-                            <ArrowRight className="h-4 w-4 ml-1" />
+                            <ArrowRight className="h-4 w-4 ms-1" />
                         </Link>
                     </div>
 
@@ -155,7 +155,7 @@ export function ListCard({ list }: ListCardProps) {
                         size="sm"
                         className="w-full hover:bg-brand-accent hover:text-white hover:border-brand-accent transition-colors"
                     >
-                        <ShoppingCart className="h-4 w-4 mr-2" />
+                        <ShoppingCart className="h-4 w-4 me-2" />
                         {tCart("addToCart")}
                     </Button>
                 </div>

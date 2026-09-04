@@ -102,7 +102,7 @@ export default function CartPage() {
                                                 </div>
                                             </div>
 
-                                            <div className="text-left md:text-right">
+                                            <div className="text-start md:text-end">
                                                 <div className="text-2xl font-bold text-brand">
                                                     {formatCurrency(item.price, currency, locale)}
                                                 </div>

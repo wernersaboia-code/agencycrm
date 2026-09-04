@@ -53,7 +53,7 @@ export function CartBadge() {
                         animate={{ scale: 1 }}
                         exit={{ scale: 0 }}
                         aria-hidden="true"
-                        className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-indigo-600 text-white text-xs flex items-center justify-center font-semibold shadow-lg"
+                        className="absolute -top-1 -end-1 h-5 w-5 rounded-full bg-indigo-600 text-white text-xs flex items-center justify-center font-semibold shadow-lg"
                     >
                         {visibleCount > 9 ? "9+" : visibleCount}
                     </motion.span>

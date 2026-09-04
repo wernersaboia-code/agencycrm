@@ -51,7 +51,7 @@ export function CatalogSearch({ defaultValue = "", variant = "light" }: CatalogS
                 <Search
                     aria-hidden="true"
                     className={cn(
-                        "absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2",
+                        "absolute start-4 top-1/2 h-5 w-5 -translate-y-1/2",
                         isDark ? "text-white/70" : "text-muted-foreground"
                     )}
                 />
@@ -62,7 +62,7 @@ export function CatalogSearch({ defaultValue = "", variant = "light" }: CatalogS
                     onChange={(e) => setQuery(e.target.value)}
                     placeholder={t("searchPlaceholder")}
                     className={cn(
-                        "h-11 rounded-md pl-12",
+                        "h-11 rounded-md ps-12",
                         isDark
                             ? "border-white/20 bg-white/10 text-white placeholder:text-white/70 focus:bg-white/20 focus:border-white/40"
                             : "border-border bg-card text-foreground placeholder:text-muted-foreground"

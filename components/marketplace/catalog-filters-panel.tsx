@@ -37,7 +37,7 @@ export function CatalogFiltersPanel({ activeFilterCount, ...sidebarProps }: Cata
                             <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
                             {t("filtersOpen")}
                             {activeFilterCount > 0 && (
-                                <span className="ml-1 rounded-full bg-brand px-2 py-0.5 text-xs font-semibold text-brand-foreground">
+                                <span className="ms-1 rounded-full bg-brand px-2 py-0.5 text-xs font-semibold text-brand-foreground">
                                     {activeFilterCount}
                                 </span>
                             )}
