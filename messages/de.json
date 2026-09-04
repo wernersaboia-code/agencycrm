@@ -8,11 +8,11 @@
         "signIn": {
             "chooseHeading": "Wählen Sie Ihren Zugang",
             "mainAccess": "Hauptzugänge",
-            "chooseHelp": "Ihre Einkäufe stehen an erster Stelle – der Zugang für die meisten. Der Administrationsbereich ist denjenigen vorbehalten, die das System betreiben.",
+            "chooseHelp": "Ihre Käufe stehen ganz oben – das ist der Zugang für die meisten. Der Adminbereich ist denen vorbehalten, die das System betreiben.",
             "cardDescription": "Geben Sie E-Mail und Passwort ein, um auf diesen Bereich zuzugreifen.",
             "emailLabel": "E-Mail",
             "passwordLabel": "Passwort",
-            "emailPlaceholder": "ihre@email.com",
+            "emailPlaceholder": "ihre@email.de",
             "passwordPlaceholder": "********",
             "noAccount": "Noch kein Konto?",
             "createAccount": "Konto erstellen",
@@ -25,16 +25,16 @@
             "errGeneric": "Die Bestätigung konnte nicht abgeschlossen werden.",
             "areas": {
                 "purchases": {
-                    "title": "Meine Einkäufe",
-                    "shortTitle": "Einkäufe ansehen",
+                    "title": "Meine Käufe",
+                    "shortTitle": "Käufe ansehen",
                     "description": "Gekaufte Studien, Bestellungen und Datei-Downloads.",
-                    "button": "Zu Meine Einkäufe"
+                    "button": "Zu meinen Käufen"
                 },
                 "admin": {
-                    "title": "Administrationsbereich",
-                    "shortTitle": "Administrationsbereich",
+                    "title": "Adminbereich",
+                    "shortTitle": "Adminbereich",
                     "description": "Listen, Nutzer, Verkäufe und Einstellungen verwalten.",
-                    "button": "Zum Administrationsbereich"
+                    "button": "Zum Adminbereich"
                 },
                 "crm": {
                     "title": "CRM",
@@ -45,31 +45,31 @@
             }
         },
         "signUp": {
-            "mktTitle": "Konto erstellen - Easy Prospect",
-            "mktSubtitle": "Erstellen Sie Ihr Konto, um auf Ihre Einkäufe zuzugreifen",
+            "mktTitle": "Konto erstellen — Easy Prospect",
+            "mktSubtitle": "Erstellen Sie Ihr Konto, um auf Ihre Käufe zuzugreifen",
             "nameLabel": "Name",
             "namePlaceholder": "Ihr Name",
             "emailLabel": "E-Mail",
-            "emailPlaceholder": "ihre@email.com",
+            "emailPlaceholder": "ihre@email.de",
             "passwordLabel": "Passwort",
             "passwordPlaceholder": "••••••••",
-            "pwdShort": "Das Passwort benötigt mindestens 8 Zeichen.",
-            "pwdNoLetter": "Das Passwort benötigt mindestens einen Buchstaben.",
-            "pwdNoDigit": "Das Passwort benötigt mindestens eine Ziffer.",
+            "pwdShort": "Das Passwort muss mindestens 8 Zeichen haben.",
+            "pwdNoLetter": "Das Passwort muss mindestens einen Buchstaben enthalten.",
+            "pwdNoDigit": "Das Passwort muss mindestens eine Ziffer enthalten.",
             "submitMkt": "Konto erstellen und fortfahren",
             "haveAccount": "Sie haben bereits ein Konto?",
             "enter": "Anmelden",
             "success": "Konto erfolgreich erstellt!",
             "error": "Fehler beim Erstellen des Kontos",
             "benefitsTitle": "Vorteile",
-            "benefit1": "Lebenslanger Zugriff auf gekaufte Studien",
+            "benefit1": "Dauerhafter Zugriff auf gekaufte Studien",
             "benefit2": "Unbegrenzte Downloads der gekauften PDF-Studie",
             "benefit3": "Bestellhistorie und Belege in Ihrem Konto",
             "successTitle": "Konto erfolgreich erstellt! 🎉",
             "verifySent": "Wir haben eine Bestätigungs-E-Mail gesendet an:",
             "nextStepsTitle": "Nächste Schritte",
             "step1": "1. Öffnen Sie Ihre E-Mail und klicken Sie auf den Bestätigungslink.",
-            "step2Mkt": "2. Über den Link gelangen Sie direkt zu Ihren Einkäufen.",
+            "step2Mkt": "2. Über den Link gelangen Sie direkt zu Ihren Käufen.",
             "step3": "3. Verwenden Sie bei den nächsten Anmeldungen diese E-Mail und das gerade erstellte Passwort.",
             "ctaMkt": "Katalog entdecken",
             "spamHint": "Keine E-Mail erhalten? Prüfen Sie Ihren Spam-Ordner"
@@ -90,7 +90,7 @@
         "openMenu": "Menü öffnen",
         "language": "Sprache",
         "currency": "Währung",
-        "theme": "Design",
+        "theme": "Darstellung",
         "themeLight": "Hell",
         "themeDark": "Dunkel",
         "themeSystem": "System"
@@ -117,8 +117,8 @@
     },
     "landing": {
         "hero": {
-            "badge": "Marktplatz für verifizierte B2B-Vertriebspartner",
-            "title": "Qualifizierte Importeur- und Distributorenlisten für Ihren internationalen Vertrieb.",
+            "badge": "Unternehmen anhand öffentlicher Quellen geprüft",
+            "title": "Qualifizierte Importeurs- und Distributorenlisten für Ihren internationalen Vertrieb.",
             "subtitle": "Finden Sie genau die Vertriebspartner, die zu Ihrem Produkt und Ihrer Exportstrategie passen.",
             "ctaPrimary": "Katalog entdecken",
             "ctaSecondary": "So funktioniert's",
@@ -129,7 +129,7 @@
         "intro": {
             "lede": "Unsere Markteintrittsstudien richten sich an Hersteller, Erzeuger und Markeninhaber, die einen ausländischen Markt verstehen wollen, bevor sie in ihn investieren.",
             "p1": "Wählen Sie nach Land, Branche oder Sprachraum und erhalten Sie eine Studie mit Marktüberblick, Kanalstruktur, regulatorischen Anforderungen und den Produktgruppen mit den besten Aussichten.",
-            "p2": "Jede Studie schließt mit den Profilen der Unternehmen der Branche: der geschäftlichen Positionierung jedes einzelnen, den bedienten Kanälen und der Art von Lieferant, die gesucht wird."
+            "p2": "Jede Studie schließt mit den Profilen der Unternehmen der Branche: der geschäftlichen Positionierung jedes Einzelnen, den bedienten Kanälen und der Art von Lieferanten, die gesucht wird."
         },
         "stats": {
             "eyebrow": "Der Katalog heute",
@@ -137,7 +137,7 @@
             "studies": "veröffentlichte Studien",
             "countries": "abgedeckte Länder",
             "sectors": "Branchen",
-            "reviewed": "Daten geprüft"
+            "reviewed": "Datenstand"
         },
         "zielmaerkte": {
             "eyebrow": "Zielmärkte",
@@ -201,7 +201,7 @@
                 {
                     "eyebrow": "Überblick",
                     "title": "Marktüberblick",
-                    "description": "Größe und Struktur des Auslandsmarktes, direkt auf das gelesen, was für den Markteintritt zählt."
+                    "description": "Größe und Struktur des Auslandsmarktes, konzentriert auf das, was für den Markteintritt zählt."
                 },
                 {
                     "eyebrow": "Kanäle",
@@ -216,7 +216,7 @@
                 {
                     "eyebrow": "Profile",
                     "title": "Importeursprofile",
-                    "description": "Die Unternehmen der Branche: die Positionierung jedes Einzelnen, die bedienten Kanäle und die Art von Lieferant, die gesucht wird."
+                    "description": "Die Unternehmen der Branche: die Positionierung jedes Einzelnen, die bedienten Kanäle und die Art von Lieferanten, die gesucht wird."
                 }
             ]
         },
@@ -246,7 +246,7 @@
         "daten": {
             "eyebrow": "Datenqualität",
             "title": "Regelmäßig überprüfte Daten.",
-            "body": "Die Studien werden von uns selbst erstellt, und jedes profilierte Unternehmen wird vor Aufnahme in den Katalog anhand öffentlicher Quellen geprüft — Unternehmenswebsite, digitale Präsenz und verfügbare Register. Der Katalog wird regelmäßig überprüft: Wenn eine Studie den beschriebenen Markt nicht mehr abbildet, wird sie aus dem Verkauf genommen."
+            "body": "Die Studien werden von uns selbst erstellt, und jedes profilierte Unternehmen wird vor Aufnahme in den Katalog anhand öffentlicher Quellen geprüft — Unternehmenswebsite, digitale Präsenz sowie Branchenverzeichnisse, Kammern und Verbände. Der Katalog wird regelmäßig überprüft: Wenn eine Studie den beschriebenen Markt nicht mehr abbildet, wird sie aus dem Verkauf genommen."
         },
         "method": {
             "eyebrow": "Wie wir arbeiten",
@@ -265,11 +265,11 @@
                 "sources": [
                     "Unternehmenswebsite",
                     "Digitale Präsenz",
-                    "Öffentliche Register"
+                    "Branchenverzeichnisse"
                 ],
                 "loop": "Regelmäßige Überprüfung",
                 "note": "Wenn eine Studie den beschriebenen Markt nicht mehr abbildet, nehmen wir sie aus dem Verkauf.",
-                "alt": "Ablauf einer Studie: Marktrecherche, dann manuelle Prüfung jedes Unternehmens anhand von Unternehmenswebsite, digitaler Präsenz und öffentlichen Registern, danach die veröffentlichte Studie im Katalog. Eine regelmäßige Überprüfung führt die Studie zurück in die Prüfung."
+                "alt": "Ablauf einer Studie: Marktrecherche, dann manuelle Prüfung jedes Unternehmens anhand von Unternehmenswebsite, digitaler Präsenz sowie Branchenverzeichnissen, Kammern und Verbänden, danach die veröffentlichte Studie im Katalog. Eine regelmäßige Überprüfung führt die Studie zurück in die Prüfung."
             },
             "limitsTitle": "Was wir nicht versprechen können",
             "limitsBody": "Exporterfolg lässt sich nicht garantieren. Ob aus einer Kontaktaufnahme eine langfristige Geschäftsbeziehung entsteht, hängt von zahlreichen Faktoren ab – unter anderem von der Wettbewerbsfähigkeit Ihres Produkts, der Nachfrage im Zielmarkt, Ihrer Preisgestaltung, Ihrer Lieferfähigkeit, Ihrer Vertriebsstrategie sowie den Einkaufsentscheidungen des jeweiligen Importeurs. Was wir Ihnen jedoch bieten können, ist eine fundierte Entscheidungsgrundlage und eine erhebliche Zeitersparnis bei der Suche nach geeigneten Vertriebspartnern."
@@ -386,7 +386,7 @@
         "addToCart": "In den Warenkorb",
         "openCart": "Warenkorb öffnen",
         "openCartWithItems": "Warenkorb öffnen, {count, plural, one {# Artikel} other {# Artikel}}",
-        "removeItem": "\"{name}\" aus dem Warenkorb entfernen",
+        "removeItem": "„{name}“ aus dem Warenkorb entfernen",
         "pageTitle": "Warenkorb prüfen",
         "pageSubtitle": "{count, plural, one {# Studie ausgewählt} other {# Studien ausgewählt}}.",
         "summaryTitle": "Bestellübersicht",
@@ -434,7 +434,7 @@
         "verifiedEmails": "Öffentliche Quellen geprüft",
         "updatedAt": "Aktualisiert am {date}",
         "seeDetails": "Details ansehen",
-        "defaultDescription": "Markteintrittsstudie mit Branchenanalyse und Profile von Importeuren.",
+        "defaultDescription": "Markteintrittsstudie mit Branchenanalyse und Profilen von Importeuren.",
         "searchLabel": "Studien im Katalog suchen",
         "filtersTitle": "Filter",
         "filtersSubtitle": "Grenzen Sie den Katalog nach Studienprofil ein.",
@@ -495,7 +495,7 @@
         "buyNow": "Jetzt kaufen",
         "signInToBuy": "Anmelden und kaufen",
         "notFound": "Studie nicht gefunden",
-        "metaFallbackDescription": "Markteintrittsstudie mit Branchenanalyse und Profile von Importeuren und Distributoren."
+        "metaFallbackDescription": "Markteintrittsstudie mit Branchenanalyse und Profilen von Importeuren und Distributoren."
     },
     "checkout": {
         "stepCart": "Warenkorb",
@@ -1201,7 +1201,7 @@
                 "toastError": "Fehler beim Löschen der Liste",
                 "button": "Löschen",
                 "title": "Liste löschen?",
-                "description": "Möchten Sie die Liste \"{name}\" wirklich löschen?",
+                "description": "Möchten Sie die Liste „{name}“ wirklich löschen?",
                 "warning": "Diese Aktion kann nicht rückgängig gemacht werden. Alle Leads dieser Liste werden dauerhaft gelöscht.",
                 "cancel": "Abbrechen",
                 "deleting": "Wird gelöscht ...",
@@ -1249,7 +1249,7 @@
                 "toastSuccess": "{count} Leads erfolgreich importiert!",
                 "toastError": "Fehler beim Importieren der Leads",
                 "button": "Leads importieren",
-                "dialogTitle": "Leads in \"{name}\" importieren",
+                "dialogTitle": "Leads in „{name}“ importieren",
                 "dialogDesc": "Laden Sie eine CSV-Datei mit den Leads hoch, um sie der Liste hinzuzufügen.",
                 "dropzone": "Ziehen Sie eine CSV-Datei hierher oder klicken Sie zum Auswählen",
                 "processing": "Wird verarbeitet ...",
@@ -1374,8 +1374,8 @@
                 "personalContactsProceed": "Trotzdem veröffentlichen"
             },
             "importWizard": {
-                "prepareTitle": "Leads für \"{name}\" vorbereiten",
-                "importTitle": "Leads in \"{name}\" importieren",
+                "prepareTitle": "Leads für „{name}“ vorbereiten",
+                "importTitle": "Leads in „{name}“ importieren",
                 "prepareDesc": "Wählen und ordnen Sie die Daten der Datei zu. Die Leads werden importiert, sobald Sie die Liste erstellen.",
                 "importDesc": "Importieren Sie Leads aus einer CSV- oder Excel-Datei",
                 "stepUpload": "Upload",
@@ -1392,7 +1392,7 @@
                 "excel": "Excel",
                 "requiredFields": "Pflichtfelder",
                 "requiredFieldsDetail": "Country, Company Name (E-Mail ist optional)",
-                "incompleteNote": "Leads ohne E-Mail werden als \"unvollständig\" markiert",
+                "incompleteNote": "Leads ohne E-Mail werden als „unvollständig“ markiert",
                 "toastRowsFound": "{count} Zeilen gefunden!",
                 "toastUnsupported": "Format nicht unterstützt. Verwenden Sie CSV oder Excel (.xlsx)",
                 "toastEmpty": "Die Datei ist leer",
@@ -1432,7 +1432,7 @@
                 "colData": "Daten",
                 "colErrors": "Fehler",
                 "warningNoEmail": "{count} Leads ohne E-Mail",
-                "warningNoEmailDetail": "Sie werden als \"unvollständig\" importiert. Sie können die E-Mails später ergänzen.",
+                "warningNoEmailDetail": "Sie werden als „unvollständig“ importiert. Sie können die E-Mails später ergänzen.",
                 "errorInvalid": "{count} Zeilen mit Fehlern werden ignoriert",
                 "errorInvalidDetail": "Es fehlen Pflichtfelder (Country oder Company Name)",
                 "importing": "Leads werden importiert ...",
@@ -1469,7 +1469,7 @@
                 "toastError": "Fehler beim Übertragen des Unternehmens/Kontos",
                 "button": "Übertragen",
                 "title": "Unternehmen/Konto übertragen",
-                "description": "Übertragen Sie \"{name}\" an einen anderen Benutzer. Der neue Verantwortliche erhält vollen Zugriff.",
+                "description": "Übertragen Sie „{name}“ an einen anderen Benutzer. Der neue Verantwortliche erhält vollen Zugriff.",
                 "currentOwner": "Aktueller Verantwortlicher",
                 "newOwner": "Neuer Verantwortlicher",
                 "searchPlaceholder": "Nach Name oder E-Mail suchen ...",
@@ -1557,7 +1557,7 @@
             "accessIntro": "Klicken Sie auf die Schaltfläche unten, um Ihren Kaufbereich zu öffnen und die Studien herunterzuladen:",
             "accessButton": "Zu meinen Käufen",
             "linkNote": "Dieser Link ist persönlich und 24 Stunden gültig.",
-            "catalogTitle": "Erweitern Sie die Reichweite Ihrer Kampagne",
+            "catalogTitle": "Erreichen Sie weitere Märkte",
             "catalogText": "Entdecken Sie Studien zu weiteren Märkten und Branchen, um mehr Handelspartner zu erreichen.",
             "catalogButton": "Katalog ansehen"
         }

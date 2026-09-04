@@ -8,7 +8,12 @@
  * funciona bem. A diferença é que aqui o desenho não é decorativo — cada nó é
  * uma etapa que existe de verdade, e as três fontes são exatamente as que o
  * texto de qualidade de dados já nomeia (site institucional, presença digital,
- * registros disponíveis). Não é ícone em círculo.
+ * diretórios setoriais). Não é ícone em círculo.
+ *
+ * A terceira fonte já se chamou "registros públicos". Não voltar: o documento
+ * do sócio lista diretórios, câmaras, associações e catálogos de feira — nunca
+ * registro oficial. Em alemão "öffentliche Register" lê como Handelsregister, e
+ * afirmar isso sem consultar é o tipo de frase que a UWG pune.
  *
  * SVG inline em vez de imagem, e as cores em classes (`.fluxo-*` em
  * `globals.css`) em vez de atributos `fill`/`stroke`: assim o desenho acompanha

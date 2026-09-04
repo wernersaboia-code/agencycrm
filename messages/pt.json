@@ -62,7 +62,7 @@
             "success": "Conta criada com sucesso!",
             "error": "Erro ao criar conta",
             "benefitsTitle": "Benefícios",
-            "benefit1": "Acesso vitalício aos estudos comprados",
+            "benefit1": "Acesso permanente aos estudos comprados",
             "benefit2": "Downloads ilimitados do estudo em PDF que você comprou",
             "benefit3": "Histórico de pedidos e recibos na sua conta",
             "successTitle": "Conta criada com sucesso! 🎉",
@@ -117,7 +117,7 @@
     },
     "landing": {
         "hero": {
-            "badge": "Marketplace de parceiros comerciais B2B verificados",
+            "badge": "Empresas conferidas em fontes públicas",
             "title": "Listas qualificadas de importadores e distribuidores para o seu comércio internacional.",
             "subtitle": "Encontre exatamente os parceiros comerciais que combinam com o seu produto e a sua estratégia de exportação.",
             "ctaPrimary": "Explorar catálogo",
@@ -246,7 +246,7 @@
         "daten": {
             "eyebrow": "Qualidade dos dados",
             "title": "Dados revisados periodicamente.",
-            "body": "Os estudos são elaborados pela nossa operação, e cada empresa perfilada é conferida em fontes públicas — site institucional, presença digital e registros disponíveis — antes de entrar no catálogo. O catálogo é revisado periodicamente: quando um estudo deixa de refletir o mercado que descreve, ele sai de venda."
+            "body": "Os estudos são elaborados pela nossa operação, e cada empresa perfilada é conferida em fontes públicas — site institucional, presença digital e diretórios setoriais, câmaras e associações — antes de entrar no catálogo. O catálogo é revisado periodicamente: quando um estudo deixa de refletir o mercado que descreve, ele sai de venda."
         },
         "method": {
             "eyebrow": "Como trabalhamos",
@@ -265,11 +265,11 @@
                 "sources": [
                     "Site institucional",
                     "Presença digital",
-                    "Registros públicos"
+                    "Diretórios setoriais"
                 ],
                 "loop": "Revisão periódica",
                 "note": "Quando um estudo deixa de refletir o mercado que descreve, ele sai de venda.",
-                "alt": "Fluxo de um estudo: pesquisa de mercado, depois conferência humana de cada empresa em site institucional, presença digital e registros públicos, e então o estudo publicado no catálogo. Uma revisão periódica devolve o estudo à conferência."
+                "alt": "Fluxo de um estudo: pesquisa de mercado, depois conferência humana de cada empresa em site institucional, presença digital e diretórios setoriais, câmaras e associações, e então o estudo publicado no catálogo. Uma revisão periódica devolve o estudo à conferência."
             },
             "limitsTitle": "O que não podemos prometer",
             "limitsBody": "O sucesso de um projeto de exportação depende de muitos fatores. Não podemos garantir resposta de todas as empresas nem o fechamento imediato de negócios. Podemos, porém, oferecer uma base sólida para seu planejamento e economizar um tempo considerável na identificação de parceiros comerciais."
@@ -1557,7 +1557,7 @@
             "accessIntro": "Clique no botão abaixo para acessar sua área de compras e baixar os estudos:",
             "accessButton": "Acessar minhas compras",
             "linkNote": "Este link é pessoal e vale por 24 horas.",
-            "catalogTitle": "Amplie o alcance da sua campanha",
+            "catalogTitle": "Chegue a mais mercados",
             "catalogText": "Explore estudos de outros mercados e setores para alcançar mais parceiros comerciais.",
             "catalogButton": "Ver catálogo"
         }

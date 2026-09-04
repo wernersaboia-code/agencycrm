@@ -62,7 +62,7 @@
             "success": "Account created successfully!",
             "error": "Error creating account",
             "benefitsTitle": "Benefits",
-            "benefit1": "Lifetime access to the studies you buy",
+            "benefit1": "Permanent access to the studies you buy",
             "benefit2": "Unlimited downloads of the PDF study you bought",
             "benefit3": "Order history and receipts in your account",
             "successTitle": "Account created successfully! 🎉",
@@ -117,7 +117,7 @@
     },
     "landing": {
         "hero": {
-            "badge": "Marketplace of verified B2B trading partners",
+            "badge": "Companies checked against public sources",
             "title": "Qualified importer and distributor lists for your international trade.",
             "subtitle": "Find exactly the trading partners that fit your product and your export strategy.",
             "ctaPrimary": "Browse catalog",
@@ -246,7 +246,7 @@
         "daten": {
             "eyebrow": "Data quality",
             "title": "Data reviewed periodically.",
-            "body": "The studies are produced by our own operation, and every company profiled is checked against public sources — corporate website, digital presence and available registers — before it enters the catalogue. The catalogue is reviewed periodically: when a study no longer reflects the market it describes, it is withdrawn from sale."
+            "body": "The studies are produced by our own operation, and every company profiled is checked against public sources — corporate website, digital presence and trade directories, chambers and associations — before it enters the catalogue. The catalogue is reviewed periodically: when a study no longer reflects the market it describes, it is withdrawn from sale."
         },
         "method": {
             "eyebrow": "How we work",
@@ -265,11 +265,11 @@
                 "sources": [
                     "Company website",
                     "Digital presence",
-                    "Public records"
+                    "Trade directories"
                 ],
                 "loop": "Periodic review",
                 "note": "When a study no longer reflects the market it describes, it comes off sale.",
-                "alt": "How a study is made: market research, then human verification of each company against its company website, digital presence and public records, then the published study in the catalogue. A periodic review sends the study back through verification."
+                "alt": "How a study is made: market research, then human verification of each company against its company website, digital presence and trade directories, chambers and associations, then the published study in the catalogue. A periodic review sends the study back through verification."
             },
             "limitsTitle": "What We Cannot Promise",
             "limitsBody": "The success of an export project depends on many factors. Therefore, we cannot guarantee that every company will respond to a contact approach or that a business relationship will immediately result. What we can offer you, however, is a solid foundation for your export planning and a significant time saving in identifying suitable distribution partners."
@@ -1557,7 +1557,7 @@
             "accessIntro": "Click the button below to open your purchases area and download the studies:",
             "accessButton": "Go to my purchases",
             "linkNote": "This link is personal and valid for 24 hours.",
-            "catalogTitle": "Widen your campaign's reach",
+            "catalogTitle": "Reach more markets",
             "catalogText": "Browse studies for other markets and sectors to reach more trading partners.",
             "catalogButton": "Browse the catalogue"
         }

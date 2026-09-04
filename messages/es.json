@@ -62,7 +62,7 @@
             "success": "¡Cuenta creada correctamente!",
             "error": "Error al crear la cuenta",
             "benefitsTitle": "Beneficios",
-            "benefit1": "Acceso vitalicio a los estudios comprados",
+            "benefit1": "Acceso permanente a los estudios comprados",
             "benefit2": "Descargas ilimitadas del estudio en PDF que compraste",
             "benefit3": "Historial de pedidos y recibos en tu cuenta",
             "successTitle": "¡Cuenta creada correctamente! 🎉",
@@ -117,7 +117,7 @@
     },
     "landing": {
         "hero": {
-            "badge": "Marketplace de socios comerciales B2B verificados",
+            "badge": "Empresas verificadas en fuentes públicas",
             "title": "Listas calificadas de importadores y distribuidores para su comercio internacional.",
             "subtitle": "Encuentre exactamente los socios comerciales que se ajustan a su producto y a su estrategia de exportación.",
             "ctaPrimary": "Explorar catálogo",
@@ -246,7 +246,7 @@
         "daten": {
             "eyebrow": "Calidad de los datos",
             "title": "Datos revisados periódicamente.",
-            "body": "Los estudios los elabora nuestra propia operación, y cada empresa perfilada se verifica en fuentes públicas — sitio institucional, presencia digital y registros disponibles — antes de entrar en el catálogo. El catálogo se revisa periódicamente: cuando un estudio deja de reflejar el mercado que describe, se retira de la venta."
+            "body": "Los estudios los elabora nuestra propia operación, y cada empresa perfilada se verifica en fuentes públicas — sitio institucional, presencia digital y directorios sectoriales, cámaras y asociaciones — antes de entrar en el catálogo. El catálogo se revisa periódicamente: cuando un estudio deja de reflejar el mercado que describe, se retira de la venta."
         },
         "method": {
             "eyebrow": "Cómo trabajamos",
@@ -265,11 +265,11 @@
                 "sources": [
                     "Sitio web corporativo",
                     "Presencia digital",
-                    "Registros públicos"
+                    "Directorios sectoriales"
                 ],
                 "loop": "Revisión periódica",
                 "note": "Cuando un estudio deja de reflejar el mercado que describe, sale de la venta.",
-                "alt": "Flujo de un estudio: investigación de mercado, después verificación humana de cada empresa en su sitio web corporativo, su presencia digital y los registros públicos, y luego el estudio publicado en el catálogo. Una revisión periódica devuelve el estudio a la verificación."
+                "alt": "Flujo de un estudio: investigación de mercado, después verificación humana de cada empresa en su sitio web corporativo, su presencia digital y los directorios sectoriales, cámaras y asociaciones, y luego el estudio publicado en el catálogo. Una revisión periódica devuelve el estudio a la verificación."
             },
             "limitsTitle": "Lo que no podemos prometer",
             "limitsBody": "El éxito de un proyecto de exportación depende de muchos factores. Por lo tanto, no podemos garantizar que todas las empresas respondan a un contacto o que se establezca inmediatamente una relación comercial. Lo que sí podemos ofrecerle, sin embargo, es una base sólida para su planificación de exportación y un significativo ahorro de tiempo en la identificación de socios de distribución adecuados."
@@ -660,7 +660,7 @@
             "accessIntro": "Haga clic en el botón de abajo para acceder a su área de compras y descargar los estudios:",
             "accessButton": "Ir a mis compras",
             "linkNote": "Este enlace es personal y válido durante 24 horas.",
-            "catalogTitle": "Amplíe el alcance de su campaña",
+            "catalogTitle": "Llegue a más mercados",
             "catalogText": "Explore estudios de otros mercados y sectores para alcanzar más socios comerciales.",
             "catalogButton": "Ver el catálogo"
         }

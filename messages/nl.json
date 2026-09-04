@@ -62,7 +62,7 @@
             "success": "Account succesvol aangemaakt!",
             "error": "Fout bij het aanmaken van het account",
             "benefitsTitle": "Voordelen",
-            "benefit1": "Levenslange toegang tot gekochte studies",
+            "benefit1": "Permanente toegang tot gekochte studies",
             "benefit2": "Onbeperkt downloaden van de gekochte pdf-studie",
             "benefit3": "Bestelgeschiedenis en bonnen in uw account",
             "successTitle": "Account succesvol aangemaakt! 🎉",
@@ -117,7 +117,7 @@
     },
     "landing": {
         "hero": {
-            "badge": "Marketplace voor geverifieerde B2B-handelspartners",
+            "badge": "Bedrijven getoetst aan openbare bronnen",
             "title": "Gekwalificeerde lijsten van importeurs en distributeurs voor uw internationale handel.",
             "subtitle": "Vind precies de handelspartners die passen bij uw product en exportstrategie.",
             "ctaPrimary": "Catalogus verkennen",
@@ -246,7 +246,7 @@
         "daten": {
             "eyebrow": "Datakwaliteit",
             "title": "Periodiek herziene gegevens.",
-            "body": "De studies worden door onze eigen organisatie opgesteld en elk geprofileerd bedrijf wordt getoetst aan openbare bronnen — bedrijfswebsite, digitale aanwezigheid en beschikbare registers — voordat het in de catalogus komt. De catalogus wordt periodiek herzien: wanneer een studie de beschreven markt niet meer weergeeft, wordt zij uit de verkoop gehaald."
+            "body": "De studies worden door onze eigen organisatie opgesteld en elk geprofileerd bedrijf wordt getoetst aan openbare bronnen — bedrijfswebsite, digitale aanwezigheid en branchegidsen, kamers en verenigingen — voordat het in de catalogus komt. De catalogus wordt periodiek herzien: wanneer een studie de beschreven markt niet meer weergeeft, wordt zij uit de verkoop gehaald."
         },
         "method": {
             "eyebrow": "Hoe wij werken",
@@ -265,11 +265,11 @@
                 "sources": [
                     "Bedrijfswebsite",
                     "Digitale aanwezigheid",
-                    "Openbare registers"
+                    "Branchegidsen"
                 ],
                 "loop": "Periodieke herziening",
                 "note": "Wanneer een studie de markt die zij beschrijft niet meer weergeeft, halen we haar uit de verkoop.",
-                "alt": "Verloop van een studie: marktonderzoek, daarna menselijke controle van elk bedrijf aan de hand van de bedrijfswebsite, de digitale aanwezigheid en openbare registers, en vervolgens de gepubliceerde studie in de catalogus. Een periodieke herziening brengt de studie terug naar de controle."
+                "alt": "Verloop van een studie: marktonderzoek, daarna menselijke controle van elk bedrijf aan de hand van de bedrijfswebsite, de digitale aanwezigheid en branchegidsen, kamers en verenigingen, en vervolgens de gepubliceerde studie in de catalogus. Een periodieke herziening brengt de studie terug naar de controle."
             },
             "limitsTitle": "Wat wij niet kunnen beloven",
             "limitsBody": "Het succes van een exportproject hangt van vele factoren af. Daarom kunnen wij niet garanderen dat elk bedrijf zal reageren op een contactbenadering of dat er onmiddellijk een zakelijke relatie zal ontstaan. Wat wij u echter wel kunnen bieden, is een solide basis voor uw exportplanning en een aanzienlijke tijdsbesparing bij het identificeren van geschikte distributiepartners."
@@ -660,7 +660,7 @@
             "accessIntro": "Klik op de knop hieronder om naar uw aankopen te gaan en de studies te downloaden:",
             "accessButton": "Naar mijn aankopen",
             "linkNote": "Deze link is persoonlijk en 24 uur geldig.",
-            "catalogTitle": "Vergroot het bereik van uw campagne",
+            "catalogTitle": "Bereik meer markten",
             "catalogText": "Ontdek studies voor andere markten en sectoren om meer handelspartners te bereiken.",
             "catalogButton": "Bekijk de catalogus"
         }

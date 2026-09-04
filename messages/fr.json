@@ -62,7 +62,7 @@
             "success": "Compte créé avec succès !",
             "error": "Erreur lors de la création du compte",
             "benefitsTitle": "Avantages",
-            "benefit1": "Accès à vie aux études achetées",
+            "benefit1": "Accès permanent aux études achetées",
             "benefit2": "Téléchargements illimités de l'étude en PDF achetée",
             "benefit3": "Historique des commandes et reçus dans votre compte",
             "successTitle": "Compte créé avec succès ! 🎉",
@@ -117,7 +117,7 @@
     },
     "landing": {
         "hero": {
-            "badge": "Marketplace de partenaires commerciaux B2B vérifiés",
+            "badge": "Entreprises vérifiées sur des sources publiques",
             "title": "Listes qualifiées d'importateurs et de distributeurs pour votre commerce international.",
             "subtitle": "Trouvez exactement les partenaires commerciaux qui correspondent à votre produit et à votre stratégie d'exportation.",
             "ctaPrimary": "Explorer le catalogue",
@@ -246,7 +246,7 @@
         "daten": {
             "eyebrow": "Qualité des données",
             "title": "Données revues périodiquement.",
-            "body": "Les études sont réalisées par notre propre équipe, et chaque entreprise profilée est vérifiée dans des sources publiques — site institutionnel, présence numérique et registres disponibles — avant d'entrer au catalogue. Le catalogue est révisé périodiquement : lorsqu'une étude ne reflète plus le marché qu'elle décrit, elle est retirée de la vente."
+            "body": "Les études sont réalisées par notre propre équipe, et chaque entreprise profilée est vérifiée dans des sources publiques — site institutionnel, présence numérique et annuaires professionnels, chambres et fédérations — avant d'entrer au catalogue. Le catalogue est révisé périodiquement : lorsqu'une étude ne reflète plus le marché qu'elle décrit, elle est retirée de la vente."
         },
         "method": {
             "eyebrow": "Notre méthode",
@@ -265,11 +265,11 @@
                 "sources": [
                     "Site institutionnel",
                     "Présence numérique",
-                    "Registres publics"
+                    "Annuaires professionnels"
                 ],
                 "loop": "Revue périodique",
                 "note": "Lorsqu'une étude ne reflète plus le marché qu'elle décrit, elle est retirée de la vente.",
-                "alt": "Parcours d'une étude : étude de marché, puis vérification humaine de chaque entreprise à partir de son site institutionnel, de sa présence numérique et des registres publics, puis l'étude publiée au catalogue. Une revue périodique ramène l'étude à la vérification."
+                "alt": "Parcours d'une étude : étude de marché, puis vérification humaine de chaque entreprise à partir de son site institutionnel, de sa présence numérique et des annuaires professionnels, chambres et fédérations, puis l'étude publiée au catalogue. Une revue périodique ramène l'étude à la vérification."
             },
             "limitsTitle": "Ce que nous ne pouvons pas promettre",
             "limitsBody": "Le succès d'un projet d'exportation dépend de nombreux facteurs. Par conséquent, nous ne pouvons pas garantir que chaque entreprise répondra à une approche de contact ou qu'une relation commerciale en résultera immédiatement. Ce que nous pouvons cependant vous offrir, c'est une base solide pour votre planification d'exportation et un gain de temps significatif dans l'identification de partenaires de distribution adaptés."
@@ -660,7 +660,7 @@
             "accessIntro": "Cliquez sur le bouton ci-dessous pour accéder à votre espace achats et télécharger les études :",
             "accessButton": "Accéder à mes achats",
             "linkNote": "Ce lien est personnel et valable 24 heures.",
-            "catalogTitle": "Élargissez la portée de votre campagne",
+            "catalogTitle": "Atteignez de nouveaux marchés",
             "catalogText": "Découvrez des études sur d'autres marchés et secteurs pour atteindre plus de partenaires commerciaux.",
             "catalogButton": "Voir le catalogue"
         }
