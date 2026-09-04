@@ -2,12 +2,10 @@ import { notFound } from "next/navigation"
 import { Link } from "@/lib/i18n/navigation"
 import { Suspense } from "react"
 import type { ComponentType, ReactNode } from "react"
-import { getFormatter, getTranslations } from "next-intl/server"
+import { getFormatter, getTranslations, setRequestLocale } from "next-intl/server"
 import { prisma } from "@/lib/prisma"
 import { ListPreview, toRows } from "@/components/marketplace/list-preview"
-import { BuyNowButton } from "@/components/marketplace/buy-now-button"
-import { AddToCartButton } from "@/components/marketplace/add-to-cart-button"
-import { formatCurrency } from "@/lib/utils"
+import { ListPriceBox } from "@/components/marketplace/list-price-box"
 import { Badge } from "@/components/ui/badge"
 import { getListLanguage } from "@/lib/constants/list-languages"
 import { FlagIcon } from "@/components/ui/flag-icon"
@@ -15,22 +13,66 @@ import { JsonLd } from "@/components/seo/json-ld"
 import { buildProductSchema, buildBreadcrumbSchema, buildListBreadcrumbTrail } from "@/lib/seo/schema"
 import { canonicalDefaultLocale } from "@/lib/i18n/alternates"
 import { ROBOTS_NAO_ENCONTRADO } from "@/lib/seo/indexability"
-import { getActiveCurrency } from "@/lib/currency/server"
-import { pickPrice } from "@/lib/marketplace/list-prices"
-import type { Currency } from "@/lib/currency"
 import {
     ArrowLeft,
     BadgeCheck,
     Building2,
     Calendar,
-    CheckCircle,
-    Download,
     FileText,
     Globe,
     Shield,
     Target,
     Users,
 } from "lucide-react"
+
+/**
+ * A ficha do estudo é pré-renderizada e revalidada de hora em hora, em vez de
+ * montada a cada requisição. Antes ela era dinâmica sem precisar: o único
+ * pedaço que dependia da requisição era a moeda do cookie, que foi para o
+ * cliente (ListPriceBox).
+ *
+ * O que isso muda para a indexação: são 77 fichas, e cada visita do Googlebot
+ * custava um render de origem com duas consultas ao banco, sem nada em cache
+ * na CDN (`Cache-Control: private, no-store`). Página estática é servida da
+ * borda, e o rastreio deixa de competir com o tráfego real pelo mesmo custo.
+ *
+ * Uma hora pelo mesmo motivo de app/sitemap.ts: é curto o bastante para uma
+ * lista tirada do ar não sobreviver muito à decisão (em 23.08.2026 duas listas
+ * de teste continuaram sendo servidas horas depois de desativadas) e longo o
+ * bastante para o arquivo não ser reconstruído a cada visita de robô.
+ */
+export const revalidate = 3600
+
+/**
+ * Pré-renderiza as fichas de todos os estudos ativos.
+ *
+ * Sem isto o Next trata a rota como dinâmica por não conhecer nenhum slug no
+ * build — e `revalidate` sozinho não muda isso. A página era montada a cada
+ * requisição, com duas consultas ao banco e `Cache-Control: no-store`; cada
+ * visita do Googlebot a cada uma das 77 fichas pagava esse preço, para chegar
+ * sempre no mesmo HTML (robô não manda cookie de moeda).
+ *
+ * Devolve só `{ slug }`: o Next combina com os params do layout de `[locale]`,
+ * o que dá os 8 idiomas por estudo. Emitir apenas o locale padrão seria mais
+ * barato no build, mas o layout fixa `dynamicParams = false` — e isso vale
+ * para a subárvore, então par (idioma, slug) fora desta lista responderia 404
+ * em vez de renderizar sob demanda. Já custou uma regressão: com só o pt na
+ * lista, `/de/list/<slug>` parou de existir.
+ *
+ * Consequência a vigiar: estudo publicado depois do deploy só aparece no
+ * próximo build. É o mesmo compromisso que o `revalidate` do sitemap assume, e
+ * o admin publica em lote, não a cada minuto — mas se isso mudar, o caminho é
+ * revalidação sob demanda (revalidatePath) no fluxo de publicação.
+ */
+export async function generateStaticParams() {
+    const lists = await prisma.leadList.findMany({
+        where: { isActive: true },
+        select: { slug: true },
+        take: 1000,
+    })
+
+    return lists.map((list) => ({ slug: list.slug }))
+}
 
 interface ListPageProps {
     params: Promise<{ locale: string; slug: string }>
@@ -69,6 +111,11 @@ export async function generateMetadata({ params }: ListPageProps) {
 
 export default async function ListPage({ params }: ListPageProps) {
     const { locale, slug } = await params
+    // Sem isto, o next-intl resolve o idioma lendo o header da requisição e a
+    // rota volta a ser dinâmica — o layout já chama setRequestLocale, mas a
+    // chamada é por segmento renderizado, e `[slug]` não é conhecido no build.
+    setRequestLocale(locale)
+
     const [list, t, tCatalog, format] = await Promise.all([
         getList(slug),
         getTranslations("listing"),
@@ -80,16 +127,10 @@ export default async function ListPage({ params }: ListPageProps) {
         notFound()
     }
 
-    const currency = await getActiveCurrency()
     const priceRows = await prisma.leadListPrice.findMany({
         where: { listId: list.id },
         select: { currency: true, amount: true },
     })
-    // Lista sem nenhuma linha de preço cai na coluna antiga: a página nunca
-    // fica sem preço por causa de um cadastro incompleto.
-    const resolved = pickPrice(priceRows, currency)
-        ?? { amount: Number(list.price), currency: list.currency as Currency, isFallback: false }
-    const price = resolved.amount
     // Formatado no locale ativo: "fev. de 2026" para um leitor alemão é ruído.
     const dateFormat = { day: "2-digit", month: "short", year: "numeric" } as const
     const updatedAt = format.dateTime(new Date(list.updatedAt), dateFormat)
@@ -103,27 +144,20 @@ export default async function ListPage({ params }: ListPageProps) {
     // viram linha na tabela, então não podem contar para o "amostra de N".
     const previewCount = toRows(list.previewData).length
     const language = getListLanguage(list.language)
-    // Dois pares moeda+valor coexistem de propósito, cada um com seu consumidor:
-    // - `price`/`resolved.currency`: par resolvido na moeda ativa do visitante
-    //   (ou no euro do fallback). Alimenta a caixa de preço visível e o carrinho
-    //   (listForCart), espelhando como components/marketplace/list-card.tsx já
-    //   monta o carrinho a partir do catálogo. A Task 7 reprecifica no servidor.
-    // - `ofertas`: TODAS as moedas cadastradas, cada valor com o seu próprio
-    //   código. Só o JSON-LD usa este par — um crawler não manda cookie de
-    //   moeda, então o schema declara as ofertas que existem em vez de eleger
-    //   uma. NUNCA junte `price` com `list.currency`: são pares de fontes
-    //   diferentes e o resultado é um valor com o código de moeda errado.
-    const ofertas = priceRows.length > 0
-        ? priceRows.map((row) => ({ price: Number(row.amount), currency: row.currency }))
-        : [{ price: Number(list.price), currency: list.currency }]
-    const listForCart = {
-        id: list.id,
-        name: list.name,
-        slug: list.slug,
-        price,
-        currency: resolved.currency,
-        totalLeads: list.totalLeads,
-    }
+    // O servidor não escolhe mais UMA moeda — manda todas e quem elege é o
+    // cliente (ListPriceBox). Ler o cookie de moeda aqui tornava a ficha
+    // dinâmica, e são 77 delas: cada visita do Googlebot custava um render de
+    // origem sem nada em cache, para chegar sempre no euro (robô não manda
+    // cookie). O JSON-LD já operava assim, declarando as ofertas que existem
+    // em vez de eleger uma — agora a caixa de preço segue o mesmo princípio.
+    //
+    // NUNCA junte um valor com `list.currency`: são pares de fontes diferentes
+    // e o resultado é um número com o código de moeda errado.
+    const precos = priceRows.map((row) => ({ currency: row.currency, amount: Number(row.amount) }))
+    const precoLegado = { amount: Number(list.price), currency: list.currency }
+    const ofertas = precos.length > 0
+        ? precos.map((row) => ({ price: row.amount, currency: row.currency }))
+        : [{ price: precoLegado.amount, currency: precoLegado.currency }]
 
     return (
         <div className="min-h-screen bg-muted/40">
@@ -260,28 +294,16 @@ export default async function ListPage({ params }: ListPageProps) {
                 </div>
 
                 <aside className="lg:sticky lg:top-24">
-                    <div className="rounded-lg border bg-card p-6 shadow-sm">
-                        <div className="mb-6">
-                            <div className="text-4xl font-bold text-brand">
-                                {formatCurrency(price, resolved.currency, locale)}
-                            </div>
-                        </div>
-
-                        <div className="mb-6 rounded-lg border bg-muted/40 p-4 text-sm text-muted-foreground">
-                            <p>{t("oneOffNote")}</p>
-                        </div>
-
-                        <div className="space-y-3">
-                            <BuyNowButton list={listForCart} />
-                            <AddToCartButton list={listForCart} />
-                        </div>
-
-                        <div className="mt-6 space-y-3 border-t pt-5">
-                            <BenefitItem icon={Shield} text={t("benefitSecure")} />
-                            <BenefitItem icon={Download} text={t("benefitImmediate")} />
-                            <BenefitItem icon={CheckCircle} text={t("benefitRecorded")} />
-                        </div>
-                    </div>
+                    <ListPriceBox
+                        list={{
+                            id: list.id,
+                            name: list.name,
+                            slug: list.slug,
+                            totalLeads: list.totalLeads,
+                        }}
+                        precos={precos}
+                        precoLegado={precoLegado}
+                    />
                 </aside>
             </div>
         </div>
@@ -352,17 +374,3 @@ function IncludedItem({
     )
 }
 
-function BenefitItem({
-    icon: Icon,
-    text,
-}: {
-    icon: ComponentType<{ className?: string }>
-    text: string
-}) {
-    return (
-        <div className="flex items-start gap-2 text-sm text-muted-foreground">
-            <Icon className="mt-0.5 h-4 w-4 shrink-0 text-brand-accent-strong" />
-            {text}
-        </div>
-    )
-}

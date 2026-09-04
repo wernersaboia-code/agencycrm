@@ -1,12 +1,11 @@
 "use client"
 
-import { useSyncExternalStore } from "react"
 import { Coins } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { useRouter } from "@/lib/i18n/navigation"
 import { useCart } from "@/contexts/cart-context"
-import { DEFAULT_CURRENCY, SUPPORTED_CURRENCIES, type Currency } from "@/lib/currency"
-import { readCurrencyCookie, writeCurrencyCookie } from "@/lib/currency/client"
+import { SUPPORTED_CURRENCIES, type Currency } from "@/lib/currency"
+import { useActiveCurrency, writeCurrencyCookie } from "@/lib/currency/client"
 import { Button } from "@/components/ui/button"
 import {
     DropdownMenu,
@@ -21,26 +20,16 @@ const SYMBOLS: Record<Currency, string> = {
     USD: "US$",
 }
 
-// Sem listeners reais: nada além deste componente muda o cookie de moeda no
-// cliente, e a troca já dispara router.refresh() para os Server Components
-// relerem o cookie. subscribe é só o contrato que useSyncExternalStore exige.
-function subscribeToCurrency() {
-    return () => {}
-}
-
 export function CurrencySwitcher() {
     const router = useRouter()
     const t = useTranslations("nav")
     const { repriceTo } = useCart()
-    // O primeiro render é o do servidor, que não vê document.cookie. Ler via
-    // useSyncExternalStore evita a divergência de hidratação sem precisar de
-    // um setState dentro de useEffect: getServerSnapshot devolve o default
-    // (EUR) no servidor, e o cliente já monta com o valor real do cookie.
-    const current = useSyncExternalStore(subscribeToCurrency, readCurrencyCookie, () => DEFAULT_CURRENCY)
+    const current = useActiveCurrency()
 
     // Trocar de moeda NÃO troca de idioma: são cookies independentes e a rota
-    // continua a mesma. router.refresh() basta para os Server Components
-    // relerem o cookie e recalcularem os preços.
+    // continua a mesma. router.refresh() segue aqui pelas telas que ainda
+    // escolhem o preço no servidor (catálogo, carrinho); a ficha do estudo é
+    // estática e reage pela assinatura de useActiveCurrency.
     //
     // O cookie é gravado no cliente, não por Server Action: aba aberta durante
     // um deploy mandava um ID de ação que já não existia e o clique morria em
