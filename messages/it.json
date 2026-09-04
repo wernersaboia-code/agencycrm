@@ -141,60 +141,25 @@
         },
         "zielmaerkte": {
             "eyebrow": "Mercati target",
-            "title": "Una selezione precisa in base ai tuoi mercati target.",
-            "intro": "Trova studi per singoli paesi o per intere regioni linguistiche, per esempio:",
-            "note": "Inoltre esistono studi specifici per settore, per diverse industrie e gruppi di prodotti. Passo dopo passo ampliamo la nostra offerta con studi per mercati di tutto il mondo.",
-            "regions": [
-                {
-                    "flag": "DE",
-                    "title": "Paesi di lingua tedesca",
-                    "countries": "DE · AT · CH"
-                },
-                {
-                    "flag": "FR",
-                    "title": "Paesi di lingua francese",
-                    "countries": "FR · BE · CH · LU"
-                },
-                {
-                    "flag": "ES",
-                    "title": "Paesi di lingua spagnola",
-                    "countries": "ES · MX · AR · CL …"
-                },
-                {
-                    "flag": "PT",
-                    "title": "Paesi di lingua portoghese",
-                    "countries": "PT · BR · AO …"
-                },
-                {
-                    "flag": "SE",
-                    "title": "Paesi scandinavi",
-                    "countries": "SE · NO · DK · FI · IS"
-                }
-            ]
+            "title": "Fin dove arriva già il catalogo.",
+            "intro": "Oggi ci sono studi per {paises, plural, one {# paese} other {# paesi}} in {continentes, plural, one {# continente} other {# continenti}}. Clicca su un mercato per vedere cosa è disponibile.",
+            "continentCount": "{paises, plural, one {# paese} other {# paesi}}",
+            "emptyContinent": "in arrivo",
+            "continents": {
+                "europa": "Europa",
+                "asia": "Asia",
+                "americaDoNorte": "America del Nord",
+                "americaDoSul": "America del Sud",
+                "africa": "Africa",
+                "oceania": "Oceania"
+            },
+            "note": "Inoltre sono disponibili studi specifici per settore per diverse industrie e gruppi di prodotti. Passo dopo passo ampliamo la nostra offerta con studi per mercati di tutto il mondo."
         },
-        "einkaufsprofile": {
-            "eyebrow": "Profili d'acquisto",
-            "title": "Non tutti gli importatori sono uguali.",
-            "intro": "Le rubriche dei nostri studi distinguono diversi profili di acquisto:",
-            "close": "Concentri così le tue attività commerciali esattamente sui partner adatti al tuo prodotto.",
-            "cards": [
-                {
-                    "title": "Acquisto globale",
-                    "body": "Aziende alla ricerca di nuovi prodotti e fornitori in tutto il mondo."
-                },
-                {
-                    "title": "Focus UE",
-                    "body": "Importatori che acquistano esclusivamente all'interno dell'Unione Europea."
-                },
-                {
-                    "title": "Orientati al Mercosur",
-                    "body": "Aziende che importano preferibilmente dal Mercosur."
-                },
-                {
-                    "title": "Specialisti regionali",
-                    "body": "Specialisti con mercati di approvvigionamento chiaramente definiti."
-                }
-            ]
+        "setores": {
+            "eyebrow": "Settori",
+            "title": "Per quali industrie abbiamo già studi.",
+            "intro": "Ogni studio copre un settore in un mercato. Scegli il tuo per vedere cosa è già pubblicato.",
+            "close": "Nuovi settori entrano nel catalogo man mano che gli studi sono pronti."
         },
         "lieferumfang": {
             "eyebrow": "Cosa è incluso",
@@ -222,6 +187,38 @@
                     "directory": "Elenco di importatori e grossisti"
                 }
             }
+        },
+        "sectionLinks": {
+            "catalog": "Vedi il catalogo",
+            "allStudies": "Vedi tutti gli studi"
+        },
+        "showcase": {
+            "eyebrow": "Dentro ogni studio",
+            "title": "Uno studio, dal panorama ai profili.",
+            "intro": "Ogni studio di ingresso nel mercato consegna ciò che serve per decidere su basi solide — dalla dimensione del mercato ai profili delle aziende del settore.",
+            "viewFull": "Vedi la pagina intera",
+            "areas": [
+                {
+                    "eyebrow": "Panorama",
+                    "title": "Panoramica del mercato",
+                    "description": "La dimensione e la struttura del mercato estero, lette direttamente su ciò che conta per chi vi entra."
+                },
+                {
+                    "eyebrow": "Canali",
+                    "title": "Canali e requisiti",
+                    "description": "La struttura distributiva, i canali che il settore utilizza e i requisiti normativi per operare."
+                },
+                {
+                    "eyebrow": "Analisi",
+                    "title": "Categorie e potenziale",
+                    "description": "Le categorie con il maggior potenziale e gli indicatori che guidano le priorità."
+                },
+                {
+                    "eyebrow": "Profili",
+                    "title": "Profili di importatori",
+                    "description": "Le aziende del settore: il posizionamento di ciascuna, i canali che serve e il tipo di fornitore che cerca."
+                }
+            ]
         },
         "featured": {
             "title": "Studi in evidenza",
@@ -261,6 +258,19 @@
                 "se sono disponibili dati di contatto aggiornati",
                 "se l’azienda possa generalmente essere considerata come potenziale partner di distribuzione"
             ],
+            "flow": {
+                "step1": "Ricerca di mercato",
+                "step2": "Verifica umana",
+                "step3": "Studio pubblicato",
+                "sources": [
+                    "Sito aziendale",
+                    "Presenza digitale",
+                    "Registri pubblici"
+                ],
+                "loop": "Revisione periodica",
+                "note": "Quando uno studio non rispecchia più il mercato che descrive, esce dalla vendita.",
+                "alt": "Percorso di uno studio: ricerca di mercato, poi verifica umana di ogni azienda tramite sito aziendale, presenza digitale e registri pubblici, quindi lo studio pubblicato nel catalogo. Una revisione periodica riporta lo studio alla verifica."
+            },
             "limitsTitle": "Cosa non possiamo promettere",
             "limitsBody": "Il successo di un progetto di esportazione dipende da molti fattori. Pertanto, non possiamo garantire che ogni azienda risponderà a un approccio di contatto o che ne risulterà immediatamente una relazione commerciale. Ciò che possiamo offrirvi, tuttavia, è una solida base per la vostra pianificazione dell’esportazione e un notevole risparmio di tempo nell’identificazione di partner di distribuzione idonei."
         },

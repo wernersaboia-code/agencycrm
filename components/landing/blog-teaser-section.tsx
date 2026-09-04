@@ -15,13 +15,19 @@ export async function BlogTeaserSection({ locale }: { locale: LandingLocale }) {
             <SectionHeading eyebrow={t("eyebrow")} title={t("title")} intro={t("intro")} centered />
 
             {posts.length > 0 && (
-                <div className="mt-10 grid gap-4 md:grid-cols-3">
+                <div className="mt-12 grid gap-6 md:grid-cols-3">
                     {posts.map((post) => (
                         <Link key={post.postId} href={getPathname({ href: `/blog/${post.slug}`, locale })}
-                            className="group overflow-hidden rounded-lg border border-border bg-card shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+                            className="group overflow-hidden rounded-2xl border border-border bg-card shadow-vitrine transition hover:-translate-y-0.5 hover:shadow-vitrine-lg">
+                            {/* A imagem manda no card, como nos cards de News da
+                                referência. Os 112px de antes eram miniatura: ao
+                                lado de painéis com pilha de páginas e diagrama,
+                                o blog lia como rodapé da página em vez de seção.
+                                `aspect` em vez de altura fixa para o recorte ser
+                                o mesmo nas três colunas em qualquer largura. */}
                             {post.coverImageUrl
-                                ? <img src={post.coverImageUrl} alt="" className="h-28 w-full object-cover" />
-                                : <div className="h-28 bg-gradient-to-br from-brand-accent/20 to-brand-accent/40" />}
+                                ? <img src={post.coverImageUrl} alt="" className="aspect-[3/2] w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]" />
+                                : <div className="aspect-[3/2] bg-gradient-to-br from-brand-accent/20 to-brand-accent/40" />}
                             <div className="p-5">
                                 {/* Categoria e tempo na mesma linha, no molde da referência ("Product · 7 min").
                                     O tempo aparece mesmo sem categoria: post sem categoria ainda informa quanto custa ler. */}

@@ -141,60 +141,25 @@
         },
         "zielmaerkte": {
             "eyebrow": "Doelmarkten",
-            "title": "Een nauwkeurige selectie op basis van uw doelmarkten.",
-            "intro": "U vindt studies voor afzonderlijke landen of voor hele taalgebieden, bijvoorbeeld:",
-            "note": "Daarnaast zijn er sectorspecifieke studies voor uiteenlopende industrieën en productgroepen. Stap voor stap breiden wij ons aanbod uit met studies voor markten wereldwijd.",
-            "regions": [
-                {
-                    "flag": "DE",
-                    "title": "Duitstalige landen",
-                    "countries": "DE · AT · CH"
-                },
-                {
-                    "flag": "FR",
-                    "title": "Franstalige landen",
-                    "countries": "FR · BE · CH · LU"
-                },
-                {
-                    "flag": "ES",
-                    "title": "Spaanstalige landen",
-                    "countries": "ES · MX · AR · CL …"
-                },
-                {
-                    "flag": "PT",
-                    "title": "Portugeestalige landen",
-                    "countries": "PT · BR · AO …"
-                },
-                {
-                    "flag": "SE",
-                    "title": "Scandinavische landen",
-                    "countries": "SE · NO · DK · FI · IS"
-                }
-            ]
+            "title": "Waar de catalogus al reikt.",
+            "intro": "Er zijn nu studies voor {paises, plural, one {# land} other {# landen}} in {continentes, plural, one {# werelddeel} other {# werelddelen}}. Klik op een markt om te zien wat beschikbaar is.",
+            "continentCount": "{paises, plural, one {# land} other {# landen}}",
+            "emptyContinent": "binnenkort",
+            "continents": {
+                "europa": "Europa",
+                "asia": "Azië",
+                "americaDoNorte": "Noord-Amerika",
+                "americaDoSul": "Zuid-Amerika",
+                "africa": "Afrika",
+                "oceania": "Oceanië"
+            },
+            "note": "Daarnaast zijn er sectorspecifieke studies voor diverse industrieën en productgroepen. Stap voor stap breiden we ons aanbod uit met studies voor markten wereldwijd."
         },
-        "einkaufsprofile": {
-            "eyebrow": "Inkoopprofielen",
-            "title": "Niet alle importeurs zijn gelijk.",
-            "intro": "Onze studies onderscheiden verschillende inkoopprofielen:",
-            "close": "Zo richt u uw commerciële activiteiten precies op de partners die bij uw product passen.",
-            "cards": [
-                {
-                    "title": "Wereldwijde inkoop",
-                    "body": "Bedrijven die wereldwijd op zoek zijn naar nieuwe producten en leveranciers."
-                },
-                {
-                    "title": "EU-focus",
-                    "body": "Importeurs die uitsluitend binnen de Europese Unie inkopen."
-                },
-                {
-                    "title": "Mercosur-gericht",
-                    "body": "Bedrijven die bij voorkeur uit Mercosur importeren."
-                },
-                {
-                    "title": "Regionale specialisten",
-                    "body": "Specialisten met duidelijk afgebakende inkoopmarkten."
-                }
-            ]
+        "setores": {
+            "eyebrow": "Sectoren",
+            "title": "Voor welke branches we al studies hebben.",
+            "intro": "Elke studie behandelt één sector in één markt. Kies de uwe om te zien wat er al gepubliceerd is.",
+            "close": "Nieuwe sectoren komen in de catalogus zodra de studies klaar zijn."
         },
         "lieferumfang": {
             "eyebrow": "Wat is inbegrepen",
@@ -222,6 +187,38 @@
                     "directory": "Lijst van importeurs en groothandels"
                 }
             }
+        },
+        "sectionLinks": {
+            "catalog": "Bekijk de catalogus",
+            "allStudies": "Bekijk alle studies"
+        },
+        "showcase": {
+            "eyebrow": "In elke studie",
+            "title": "Eén studie, van marktoverzicht tot profielen.",
+            "intro": "Elke marktentreestudie levert wat u nodig hebt om onderbouwd te beslissen — van de omvang van de markt tot de profielen van de bedrijven in de sector.",
+            "viewFull": "Volledige pagina bekijken",
+            "areas": [
+                {
+                    "eyebrow": "Overzicht",
+                    "title": "Marktoverzicht",
+                    "description": "De omvang en de structuur van de buitenlandse markt, direct gelezen op wat telt bij een marktentree."
+                },
+                {
+                    "eyebrow": "Kanalen",
+                    "title": "Kanalen en vereisten",
+                    "description": "De distributiestructuur, de kanalen die de sector gebruikt en de regelgevende vereisten om te opereren."
+                },
+                {
+                    "eyebrow": "Analyse",
+                    "title": "Categorieën en potentieel",
+                    "description": "De categorieën met het grootste potentieel en de indicatoren die de prioriteit bepalen."
+                },
+                {
+                    "eyebrow": "Profielen",
+                    "title": "Importeursprofielen",
+                    "description": "De bedrijven in de sector: de positionering van elk, de kanalen die het bedient en het type leverancier dat het zoekt."
+                }
+            ]
         },
         "featured": {
             "title": "Uitgelichte studies",
@@ -261,6 +258,19 @@
                 "of actuele contactgegevens beschikbaar zijn",
                 "of het bedrijf in het algemeen als potentiële distributiepartner in aanmerking kan komen"
             ],
+            "flow": {
+                "step1": "Marktonderzoek",
+                "step2": "Menselijke controle",
+                "step3": "Gepubliceerde studie",
+                "sources": [
+                    "Bedrijfswebsite",
+                    "Digitale aanwezigheid",
+                    "Openbare registers"
+                ],
+                "loop": "Periodieke herziening",
+                "note": "Wanneer een studie de markt die zij beschrijft niet meer weergeeft, halen we haar uit de verkoop.",
+                "alt": "Verloop van een studie: marktonderzoek, daarna menselijke controle van elk bedrijf aan de hand van de bedrijfswebsite, de digitale aanwezigheid en openbare registers, en vervolgens de gepubliceerde studie in de catalogus. Een periodieke herziening brengt de studie terug naar de controle."
+            },
             "limitsTitle": "Wat wij niet kunnen beloven",
             "limitsBody": "Het succes van een exportproject hangt van vele factoren af. Daarom kunnen wij niet garanderen dat elk bedrijf zal reageren op een contactbenadering of dat er onmiddellijk een zakelijke relatie zal ontstaan. Wat wij u echter wel kunnen bieden, is een solide basis voor uw exportplanning en een aanzienlijke tijdsbesparing bij het identificeren van geschikte distributiepartners."
         },

@@ -15,7 +15,7 @@ export async function HowItWorksSection({ locale }: { locale: LandingLocale }) {
     // FadeInView renderiza um div; envolvê-lo na Section devolve a semântica de
     // <section> a esta parte da página sem perder a animação de entrada.
     return (
-        <Section id={locale === "de" ? "ablauf" : "como-funciona"} tone="muted">
+        <Section id={locale === "de" ? "ablauf" : "como-funciona"}>
             <FadeInView direction="up">
                 <SectionHeading eyebrow={t("eyebrow")} title={t("title")} centered />
 
@@ -24,8 +24,8 @@ export async function HowItWorksSection({ locale }: { locale: LandingLocale }) {
                         const Icon = STEP_ICONS[index % STEP_ICONS.length]
                         return (
                             <StaggerItem key={step.title}>
-                                <div className="h-full rounded-lg border border-border bg-card p-6 shadow-sm">
-                                    <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-md bg-brand-accent/15 text-brand-accent-strong">
+                                <div className="h-full rounded-2xl border border-border bg-card p-6 shadow-vitrine">
+                                    <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-xl bg-brand-accent/15 text-brand-accent-strong">
                                         <Icon className="h-5 w-5" />
                                     </div>
                                     <h3 className="text-xl font-semibold text-foreground">{step.title}</h3>

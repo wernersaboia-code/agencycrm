@@ -141,60 +141,25 @@
         },
         "zielmaerkte": {
             "eyebrow": "Target markets",
-            "title": "Precise selection by your target markets.",
-            "intro": "You will find studies for individual countries or for entire language regions, for example:",
-            "note": "There are also sector-specific studies for a range of industries and product groups. Step by step, we are expanding our offering with studies for markets worldwide.",
-            "regions": [
-                {
-                    "flag": "DE",
-                    "title": "German-speaking countries",
-                    "countries": "DE · AT · CH"
-                },
-                {
-                    "flag": "FR",
-                    "title": "French-speaking countries",
-                    "countries": "FR · BE · CH · LU"
-                },
-                {
-                    "flag": "ES",
-                    "title": "Spanish-speaking countries",
-                    "countries": "ES · MX · AR · CL …"
-                },
-                {
-                    "flag": "PT",
-                    "title": "Portuguese-speaking countries",
-                    "countries": "PT · BR · AO …"
-                },
-                {
-                    "flag": "SE",
-                    "title": "Scandinavian countries",
-                    "countries": "SE · NO · DK · FI · IS"
-                }
-            ]
+            "title": "Where the catalogue already reaches.",
+            "intro": "There are studies for {paises, plural, one {# country} other {# countries}} across {continentes, plural, one {# continent} other {# continents}}. Click a market to see what is available.",
+            "continentCount": "{paises, plural, one {# country} other {# countries}}",
+            "emptyContinent": "coming soon",
+            "continents": {
+                "europa": "Europe",
+                "asia": "Asia",
+                "americaDoNorte": "North America",
+                "americaDoSul": "South America",
+                "africa": "Africa",
+                "oceania": "Oceania"
+            },
+            "note": "There are also sector-specific studies for a range of industries and product groups. Step by step, we are expanding our offering with studies for markets worldwide."
         },
-        "einkaufsprofile": {
-            "eyebrow": "Buying profiles",
-            "title": "Not every importer is the same.",
-            "intro": "Our studies distinguish several buying profiles:",
-            "close": "This lets you focus your sales activities exactly on the trading partners suited to your product.",
-            "cards": [
-                {
-                    "title": "Global buyers",
-                    "body": "Companies looking for new products and suppliers worldwide."
-                },
-                {
-                    "title": "EU-focused",
-                    "body": "Importers that buy exclusively within the European Union."
-                },
-                {
-                    "title": "Mercosur-oriented",
-                    "body": "Companies that preferably import from Mercosur."
-                },
-                {
-                    "title": "Regional specialists",
-                    "body": "Specialists with clearly defined sourcing markets."
-                }
-            ]
+        "setores": {
+            "eyebrow": "Sectors",
+            "title": "Which industries we already have studies for.",
+            "intro": "Each study covers one sector in one market. Pick yours to see what is already published.",
+            "close": "New sectors join the catalogue as the studies are completed."
         },
         "lieferumfang": {
             "eyebrow": "What's included",
@@ -222,6 +187,38 @@
                     "directory": "Directory of importers and wholesalers"
                 }
             }
+        },
+        "sectionLinks": {
+            "catalog": "Browse the catalogue",
+            "allStudies": "See all studies"
+        },
+        "showcase": {
+            "eyebrow": "Inside every study",
+            "title": "One study, from the market overview to the profiles.",
+            "intro": "Every market-entry study delivers what you need to decide on solid ground — from the size of the market to the profiles of the companies in the sector.",
+            "viewFull": "View the full page",
+            "areas": [
+                {
+                    "eyebrow": "Overview",
+                    "title": "Market overview",
+                    "description": "The size and the shape of the foreign market, read directly against what matters for entering it."
+                },
+                {
+                    "eyebrow": "Channels",
+                    "title": "Channels and requirements",
+                    "description": "The distribution structure, the channels the sector uses and the regulatory requirements to operate."
+                },
+                {
+                    "eyebrow": "Analysis",
+                    "title": "Categories and potential",
+                    "description": "The categories with the most potential and the indicators that guide prioritisation."
+                },
+                {
+                    "eyebrow": "Profiles",
+                    "title": "Importer profiles",
+                    "description": "The companies in the sector: how each one is positioned, the channels it serves and the kind of supplier it looks for."
+                }
+            ]
         },
         "featured": {
             "title": "Featured studies",
@@ -261,6 +258,19 @@
                 "whether current contact details are available",
                 "whether the company could generally be considered as a potential distribution partner"
             ],
+            "flow": {
+                "step1": "Market research",
+                "step2": "Human verification",
+                "step3": "Published study",
+                "sources": [
+                    "Company website",
+                    "Digital presence",
+                    "Public records"
+                ],
+                "loop": "Periodic review",
+                "note": "When a study no longer reflects the market it describes, it comes off sale.",
+                "alt": "How a study is made: market research, then human verification of each company against its company website, digital presence and public records, then the published study in the catalogue. A periodic review sends the study back through verification."
+            },
             "limitsTitle": "What We Cannot Promise",
             "limitsBody": "The success of an export project depends on many factors. Therefore, we cannot guarantee that every company will respond to a contact approach or that a business relationship will immediately result. What we can offer you, however, is a solid foundation for your export planning and a significant time saving in identifying suitable distribution partners."
         },

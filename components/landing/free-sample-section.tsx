@@ -21,10 +21,10 @@ export async function FreeSampleSection({ locale }: { locale: LandingLocale }) {
     const t = await getTranslations({ locale, namespace: "landing.freeSample" })
 
     return (
-        <Section tone="default" width="narrow">
+        <Section width="narrow">
             <SectionHeading eyebrow={t("eyebrow")} title={t("title")} intro={t("intro")} />
 
-            <div className="mt-6 rounded-lg border border-border bg-muted/40 p-6">
+            <div className="mt-8 rounded-2xl border border-border bg-muted/40 p-6">
                 <p className="mb-4 flex items-center gap-2.5 text-sm font-medium text-foreground">
                     <FileDown className="h-5 w-5 text-brand-accent-strong" />
                     {t("fileNote")}

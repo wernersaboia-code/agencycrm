@@ -4,25 +4,24 @@ import Image from "next/image"
 import { getTranslations } from "next-intl/server"
 import { Link as LocaleLink } from "@/lib/i18n/navigation"
 import type { Locale } from "@/lib/i18n/locales"
-import { INDUSTRY_IDS } from "@/lib/constants/catalog-facets"
-import { validaCodigoDePais } from "@/lib/i18n/nome-de-pais"
+import { getMercadosDoCatalogo } from "@/lib/marketplace/mercados-catalogo"
 
-// A faceta de mercado do landing mostra os países como texto ("DE · AT · CH"),
-// às vezes com reticências e com códigos que ainda não estão no vocabulário
-// (MX, CL, IS…). Para o link do filtro só interessam os códigos que o catálogo
-// reconhece. País deixou de ser vocabulário curado — virou derivado do catálogo
-// e validado pelo padrão ISO (ver `lib/i18n/nome-de-pais.ts`) —, então o cruzamento
-// agora usa `validaCodigoDePais`: alias antigo (UK → GB), agrupamento (EU) e
-// lixo não geram parâmetro, e todo país real da região vira um filtro válido.
-type LandingRegion = { flag: string; title: string; countries: string }
-
-function regionCountryParam(countries: string): string {
-    return countries
-        .split(/[^A-Za-z]+/)
-        .map((token) => token.toUpperCase())
-        .filter((token) => validaCodigoDePais(token).ok)
-        .join(",")
-}
+// As colunas "Setores" e "Mercados" saem ambas de `getMercadosDoCatalogo()`,
+// a mesma fonte das seções correspondentes da home. Uma consulta e uma entrada
+// de cache servem o rodapé inteiro, que aparece em toda página pública.
+//
+// "Mercados" listava cinco regiões linguísticas cravadas em `messages/`
+// ("países de língua alemã", "escandinavos"). Eram do começo do projeto e já
+// não descreviam um catálogo com 62 países em seis continentes. Cada link
+// filtra pelos países REALMENTE cobertos do continente — nunca por todos os que
+// ele tem, o que encheria o catálogo de facetas selecionadas e zeradas.
+//
+// "Setores" percorria `INDUSTRY_IDS` inteiro, isto é, o VOCABULÁRIO e não o
+// catálogo. Enquanto todo id tivesse estudo dava no mesmo, mas o vocabulário
+// existe para ser maior que a operação: um setor cadastrado antes do estudo
+// ficar pronto virava link para um filtro vazio no rodapé de todas as páginas —
+// exatamente a "promessa de catálogo que não existe" que `catalog-facets.ts`
+// evita no filtro público e a home evita na seção de setores.
 
 export async function MarketplaceFooter({ locale = "pt" }: { locale?: Locale }) {
     const t = await getTranslations({ locale, namespace: "footer" })
@@ -30,7 +29,8 @@ export async function MarketplaceFooter({ locale = "pt" }: { locale?: Locale }) 
     // daqui em vez de duplicados no bloco `footer`.
     const tCatalog = await getTranslations({ locale, namespace: "catalog" })
     const tMarkets = await getTranslations({ locale, namespace: "landing.zielmaerkte" })
-    const regions = tMarkets.raw("regions") as LandingRegion[]
+    const mercados = await getMercadosDoCatalogo()
+    const continentesComEstudo = mercados.continentes.filter((c) => c.paises > 0)
 
     // O id da âncora ainda não tem tradução para todos os locales; a rota em
     // si (que carrega o prefixo de idioma) vem do wrapper de navegação.
@@ -86,38 +86,45 @@ export async function MarketplaceFooter({ locale = "pt" }: { locale?: Locale }) 
                         </ul>
                     </div>
 
-                    <div>
-                        <h4 className="mb-4 font-semibold">{t("sectorsTitle")}</h4>
-                        <ul className="space-y-2 text-sm text-muted-foreground">
-                            {/* Lista derivada de INDUSTRY_IDS, não escrita à mão: setor
-                                novo no vocabulário aparece aqui sozinho e setor removido
-                                não deixa link morto para uma faceta que o filtro não
-                                conhece mais. */}
-                            {INDUSTRY_IDS.map((id) => (
-                                <li key={id}>
-                                    <LocaleLink href={`/catalog?industries=${id}`} className="hover:text-foreground">
-                                        {tCatalog(`industries.${id}`)}
-                                    </LocaleLink>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
+                    {/* Coluna some inteira quando não há o que listar, título
+                        junto: com a lista vindo do catálogo, um cabeçalho
+                        "Setores" sobre o vazio seria pior que coluna nenhuma.
+                        Mesmo critério das seções da home que devolvem `null`. */}
+                    {mercados.setores.length > 0 && (
+                        <div>
+                            <h4 className="mb-4 font-semibold">{t("sectorsTitle")}</h4>
+                            <ul className="space-y-2 text-sm text-muted-foreground">
+                                {mercados.setores.map((setor) => (
+                                    <li key={setor.id}>
+                                        <LocaleLink
+                                            href={`/catalog?industries=${setor.id}`}
+                                            className="hover:text-foreground"
+                                        >
+                                            {tCatalog(`industries.${setor.id}`)}
+                                        </LocaleLink>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
 
-                    <div>
-                        <h4 className="mb-4 font-semibold">{t("marketsTitle")}</h4>
-                        <ul className="space-y-2 text-sm text-muted-foreground">
-                            {regions.map((region) => (
-                                <li key={region.flag}>
-                                    <LocaleLink
-                                        href={`/catalog?countries=${regionCountryParam(region.countries)}`}
-                                        className="hover:text-foreground"
-                                    >
-                                        {region.title}
-                                    </LocaleLink>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
+                    {continentesComEstudo.length > 0 && (
+                        <div>
+                            <h4 className="mb-4 font-semibold">{t("marketsTitle")}</h4>
+                            <ul className="space-y-2 text-sm text-muted-foreground">
+                                {continentesComEstudo.map((continente) => (
+                                    <li key={continente.continente}>
+                                        <LocaleLink
+                                            href={`/catalog?countries=${continente.codigos.join(",")}`}
+                                            className="hover:text-foreground"
+                                        >
+                                            {tMarkets(`continents.${continente.continente}`)}
+                                        </LocaleLink>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
                 </div>
 
                 <div className="mt-8 border-t pt-8 text-center text-sm text-muted-foreground">

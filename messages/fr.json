@@ -141,60 +141,25 @@
         },
         "zielmaerkte": {
             "eyebrow": "Marchés cibles",
-            "title": "Une sélection précise selon vos marchés cibles.",
-            "intro": "Vous trouverez des études pour des pays individuels ou pour des régions linguistiques entières, par exemple :",
-            "note": "Il existe également des études sectorielles pour diverses industries et groupes de produits. Pas à pas, nous élargissons notre offre avec des études pour des marchés du monde entier.",
-            "regions": [
-                {
-                    "flag": "DE",
-                    "title": "Pays germanophones",
-                    "countries": "DE · AT · CH"
-                },
-                {
-                    "flag": "FR",
-                    "title": "Pays francophones",
-                    "countries": "FR · BE · CH · LU"
-                },
-                {
-                    "flag": "ES",
-                    "title": "Pays hispanophones",
-                    "countries": "ES · MX · AR · CL …"
-                },
-                {
-                    "flag": "PT",
-                    "title": "Pays lusophones",
-                    "countries": "PT · BR · AO …"
-                },
-                {
-                    "flag": "SE",
-                    "title": "Pays scandinaves",
-                    "countries": "SE · NO · DK · FI · IS"
-                }
-            ]
+            "title": "Jusqu'où va déjà le catalogue.",
+            "intro": "Il existe aujourd'hui des études pour {paises, plural, one {# pays} other {# pays}} sur {continentes, plural, one {# continent} other {# continents}}. Cliquez sur un marché pour voir ce qui est disponible.",
+            "continentCount": "{paises, plural, one {# pays} other {# pays}}",
+            "emptyContinent": "bientôt",
+            "continents": {
+                "europa": "Europe",
+                "asia": "Asie",
+                "americaDoNorte": "Amérique du Nord",
+                "americaDoSul": "Amérique du Sud",
+                "africa": "Afrique",
+                "oceania": "Océanie"
+            },
+            "note": "Il existe en outre des études sectorielles pour diverses industries et groupes de produits. Étape par étape, nous élargissons notre offre avec des études pour des marchés du monde entier."
         },
-        "einkaufsprofile": {
-            "eyebrow": "Profils d'achat",
-            "title": "Tous les importateurs ne se valent pas.",
-            "intro": "Nos études distinguent plusieurs profils d'achat :",
-            "close": "Vous concentrez ainsi vos activités commerciales exactement sur les partenaires adaptés à votre produit.",
-            "cards": [
-                {
-                    "title": "Achat mondial",
-                    "body": "Entreprises à la recherche de nouveaux produits et fournisseurs dans le monde entier."
-                },
-                {
-                    "title": "Focus UE",
-                    "body": "Importateurs qui achètent exclusivement au sein de l'Union européenne."
-                },
-                {
-                    "title": "Orientés Mercosur",
-                    "body": "Entreprises qui importent de préférence depuis le Mercosur."
-                },
-                {
-                    "title": "Spécialistes régionaux",
-                    "body": "Spécialistes avec des marchés d'approvisionnement clairement définis."
-                }
-            ]
+        "setores": {
+            "eyebrow": "Secteurs",
+            "title": "Pour quelles industries nous avons déjà des études.",
+            "intro": "Chaque étude couvre un secteur sur un marché. Choisissez le vôtre pour voir ce qui est déjà publié.",
+            "close": "De nouveaux secteurs rejoignent le catalogue à mesure que les études sont prêtes."
         },
         "lieferumfang": {
             "eyebrow": "Ce qui est inclus",
@@ -222,6 +187,38 @@
                     "directory": "Répertoire d'importateurs et de grossistes"
                 }
             }
+        },
+        "sectionLinks": {
+            "catalog": "Voir le catalogue",
+            "allStudies": "Voir toutes les études"
+        },
+        "showcase": {
+            "eyebrow": "Au cœur de chaque étude",
+            "title": "Une étude, du panorama aux profils.",
+            "intro": "Chaque étude d'entrée sur un marché livre ce qu'il vous faut pour décider sur des bases solides — de la taille du marché aux profils des entreprises du secteur.",
+            "viewFull": "Voir la page entière",
+            "areas": [
+                {
+                    "eyebrow": "Panorama",
+                    "title": "Vue d'ensemble du marché",
+                    "description": "La taille et la structure du marché étranger, lues directement à l'aune de ce qui compte pour y entrer."
+                },
+                {
+                    "eyebrow": "Canaux",
+                    "title": "Canaux et exigences",
+                    "description": "La structure de distribution, les canaux utilisés par le secteur et les exigences réglementaires pour opérer."
+                },
+                {
+                    "eyebrow": "Analyse",
+                    "title": "Catégories et potentiel",
+                    "description": "Les catégories au plus fort potentiel et les indicateurs qui guident les priorités."
+                },
+                {
+                    "eyebrow": "Profils",
+                    "title": "Profils d'importateurs",
+                    "description": "Les entreprises du secteur : le positionnement de chacune, les canaux qu'elle dessert et le type de fournisseur qu'elle recherche."
+                }
+            ]
         },
         "featured": {
             "title": "Études en vedette",
@@ -261,6 +258,19 @@
                 "si des coordonnées de contact actuelles sont disponibles",
                 "si l'entreprise peut généralement être considérée comme un partenaire de distribution potentiel"
             ],
+            "flow": {
+                "step1": "Étude de marché",
+                "step2": "Vérification humaine",
+                "step3": "Étude publiée",
+                "sources": [
+                    "Site institutionnel",
+                    "Présence numérique",
+                    "Registres publics"
+                ],
+                "loop": "Revue périodique",
+                "note": "Lorsqu'une étude ne reflète plus le marché qu'elle décrit, elle est retirée de la vente.",
+                "alt": "Parcours d'une étude : étude de marché, puis vérification humaine de chaque entreprise à partir de son site institutionnel, de sa présence numérique et des registres publics, puis l'étude publiée au catalogue. Une revue périodique ramène l'étude à la vérification."
+            },
             "limitsTitle": "Ce que nous ne pouvons pas promettre",
             "limitsBody": "Le succès d'un projet d'exportation dépend de nombreux facteurs. Par conséquent, nous ne pouvons pas garantir que chaque entreprise répondra à une approche de contact ou qu'une relation commerciale en résultera immédiatement. Ce que nous pouvons cependant vous offrir, c'est une base solide pour votre planification d'exportation et un gain de temps significatif dans l'identification de partenaires de distribution adaptés."
         },

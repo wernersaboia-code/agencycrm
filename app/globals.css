@@ -281,6 +281,252 @@
     transform: translateY(-1px);
     box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.04), 0 2px 4px -2px rgb(0 0 0 / 0.04);
   }
+
+
+  /* Vitrine pública — acentos "azul mar premium". Escopado a estas classes, não
+     aos tokens globais: o CRM/operacional continua quiet operational. */
+  .vitrine-chip {
+    background: color-mix(in oklab, var(--brand-accent) 16%, transparent);
+    color: var(--brand-accent-strong);
+  }
+
+  .vitrine-chip-icon {
+    background: color-mix(in oklab, var(--brand-accent) 18%, transparent);
+    color: var(--brand-accent-strong);
+  }
+
+  .vitrine-glow-blue {
+    background: radial-gradient(
+      closest-side,
+      color-mix(in oklab, var(--brand-accent) 42%, transparent),
+      transparent
+    );
+  }
+
+  .vitrine-glow-teal {
+    background: radial-gradient(
+      closest-side,
+      color-mix(in oklab, var(--chart-3) 22%, transparent),
+      transparent
+    );
+  }
+
+  .vitrine-btn-primary {
+    background: var(--brand-accent-strong);
+    color: var(--brand-foreground);
+    box-shadow: 0 10px 24px -10px color-mix(in oklab, var(--brand-accent-strong) 55%, transparent);
+    transition: filter 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+  }
+
+  .vitrine-btn-primary:hover {
+    filter: brightness(1.08);
+    box-shadow: 0 14px 30px -10px color-mix(in oklab, var(--brand-accent-strong) 65%, transparent);
+  }
+
+  .vitrine-btn-primary:active {
+    transform: scale(0.98);
+  }
+
+  /* Quebra tonal da vitrine: um bloco escuro no meio da página, o lugar que a
+     referência (duna.com) dá ao "The infrastructure behind every decision".
+
+     A página inteira alternava entre `bg-background` e `bg-muted/40`, dois tons
+     quase idênticos — variação que existe no código e some na tela. Uma única
+     virada de superfície corta a home em dois atos e é o que mais separa uma
+     landing premium de uma sequência de seções.
+
+     O bloco não pinta só o fundo: ele redefine os tokens de superfície DENTRO
+     do próprio subárvore. Como `@theme inline` faz as utilitárias resolverem
+     `var(--foreground)`, `var(--card)` e `var(--border)` no ponto de uso, os
+     filhos que já usam `text-muted-foreground`, `bg-card` e `border-border`
+     acompanham sozinhos — nenhuma seção precisa de uma variante escura à mão,
+     que é justamente o que o DESIGN.md proíbe (paleta duplicada). */
+  .vitrine-deep {
+    --foreground: oklch(0.97 0.012 245);
+    --card: oklch(0.315 0.055 240);
+    --card-foreground: oklch(0.97 0.012 245);
+    --muted: oklch(0.315 0.05 240);
+    --muted-foreground: oklch(0.82 0.028 245);
+    --border: oklch(1 0 0 / 14%);
+    /* No escuro o azul forte da logo (0.413) some contra o fundo; a sobrancelha
+       e os ícones sobem para o mesmo azul claro que o tema escuro já usa. */
+    --brand-accent: oklch(0.72 0.10 250);
+    --brand-accent-strong: oklch(0.82 0.09 250);
+
+    color: var(--foreground);
+    background:
+      radial-gradient(
+        60% 80% at 78% 12%,
+        color-mix(in oklab, var(--chart-3) 16%, transparent),
+        transparent
+      ),
+      radial-gradient(
+        70% 90% at 12% 100%,
+        color-mix(in oklab, oklch(0.413 0.130 259) 34%, transparent),
+        transparent
+      ),
+      oklch(0.245 0.048 240);
+  }
+
+  /* No tema escuro o fundo da página já é escuro, então o bloco não pode
+     "escurecer" para se destacar: ele afunda mais um degrau e mantém o brilho
+     de marca, senão a quebra tonal desaparece justamente onde ela é o efeito. */
+  .dark .vitrine-deep {
+    --card: oklch(0.235 0.04 250);
+    --muted: oklch(0.235 0.04 250);
+    --border: oklch(1 0 0 / 10%);
+
+    background:
+      radial-gradient(
+        60% 80% at 78% 12%,
+        color-mix(in oklab, var(--chart-3) 12%, transparent),
+        transparent
+      ),
+      radial-gradient(
+        70% 90% at 12% 100%,
+        color-mix(in oklab, var(--brand) 20%, transparent),
+        transparent
+      ),
+      oklch(0.135 0.026 248);
+  }
+
+  /* Cores do diagrama de fluxo (`study-flow-diagram.tsx`). Vivem aqui, e não em
+     atributos `fill`/`stroke` do SVG, porque atributo de apresentação é terreno
+     incerto para `var()` e `color-mix()` entre navegadores — em CSS os dois são
+     suportados sem ressalva. De quebra, o desenho acompanha o tema e a
+     superfície escura pelos tokens, sem uma segunda arte. */
+  .fluxo-caixa {
+    fill: var(--card);
+    stroke: var(--border);
+  }
+
+  .fluxo-caixa-destaque {
+    fill: color-mix(in oklab, var(--brand-accent) 22%, var(--card));
+    stroke: var(--brand-accent);
+  }
+
+  .fluxo-rotulo {
+    fill: var(--foreground);
+  }
+
+  .fluxo-rotulo-fraco {
+    fill: var(--muted-foreground);
+  }
+
+  .fluxo-rotulo-marca {
+    fill: var(--brand-accent-strong);
+  }
+
+  .fluxo-linha {
+    stroke: var(--brand-accent);
+  }
+
+  .fluxo-linha-fraca {
+    stroke: var(--border);
+  }
+
+  .fluxo-chip {
+    fill: none;
+    stroke: var(--border);
+  }
+
+  .fluxo-tampa {
+    fill: var(--card);
+  }
+
+  .fluxo-seta {
+    fill: var(--brand-accent);
+  }
+
+  /* Sombra da vitrine, em camadas.
+
+     As `shadow-sm/md/xl` do Tailwind são uma camada só, e uma camada só lê como
+     caixa colada na página — é o detalhe que faz um painel parecer template. Uma
+     sombra que convence tem três: o contato (curta e quase opaca, cola o objeto
+     na superfície), a difusa (média, dá o volume) e a ambiente (longa e fraca,
+     é o que dá a sensação de profundidade).
+
+     Elas são utilitárias e não tokens do `@theme` porque valem só na vitrine: o
+     CRM continua com as sombras discretas de sempre, como manda o DESIGN.md. */
+  .shadow-vitrine {
+    box-shadow:
+      0 1px 2px -1px rgb(9 20 38 / 0.06),
+      0 4px 12px -4px rgb(9 20 38 / 0.08),
+      0 12px 32px -12px rgb(9 20 38 / 0.10);
+  }
+
+  .shadow-vitrine-lg {
+    box-shadow:
+      0 2px 4px -2px rgb(9 20 38 / 0.08),
+      0 12px 24px -8px rgb(9 20 38 / 0.12),
+      0 32px 64px -24px rgb(9 20 38 / 0.18);
+  }
+
+  /* No escuro a sombra some: não há luz para bloquear. O volume passa a vir de
+     preto mais fundo, e a mesma classe continua servindo os dois temas — nenhum
+     componente precisa saber em qual está. */
+  .dark .shadow-vitrine,
+  .vitrine-deep .shadow-vitrine {
+    box-shadow:
+      0 1px 2px -1px rgb(0 0 0 / 0.40),
+      0 4px 12px -4px rgb(0 0 0 / 0.45),
+      0 12px 32px -12px rgb(0 0 0 / 0.50);
+  }
+
+  .dark .shadow-vitrine-lg,
+  .vitrine-deep .shadow-vitrine-lg {
+    box-shadow:
+      0 2px 4px -2px rgb(0 0 0 / 0.45),
+      0 12px 24px -8px rgb(0 0 0 / 0.50),
+      0 32px 64px -24px rgb(0 0 0 / 0.60);
+  }
+
+  /* Mapa-múndi da seção de mercados (`world-map.tsx`). Cores em classe, e não em
+     atributo do SVG, pelo mesmo motivo do diagrama de fluxo: atributo de
+     apresentação é terreno incerto para `var()`, e em CSS o mapa acompanha o
+     tema sem uma segunda arte. */
+  .mapa-terra path {
+    fill: color-mix(in oklab, var(--muted-foreground) 14%, transparent);
+    stroke: var(--background);
+    stroke-width: 0.5;
+  }
+
+  .mapa-coberto .mapa-pais path {
+    fill: var(--brand-accent-strong);
+    stroke: var(--background);
+    stroke-width: 0.5;
+    transition: fill 150ms ease;
+  }
+
+  .mapa-marcador {
+    fill: var(--brand-accent-strong);
+    stroke: var(--background);
+    stroke-width: 1.5;
+    transition: fill 150ms ease, r 150ms ease;
+  }
+
+  .mapa-pais:hover path,
+  .mapa-pais:focus-visible path {
+    fill: var(--brand);
+  }
+
+  .mapa-pais:hover .mapa-marcador,
+  .mapa-pais:focus-visible .mapa-marcador {
+    fill: var(--brand);
+    r: 7;
+  }
+
+  .mapa-pais:focus-visible {
+    outline: 2px solid var(--brand-accent);
+    outline-offset: 2px;
+  }
+
+  /* No escuro o azul forte da logo some contra o canvas; o país coberto sobe
+     para o azul claro, e a "terra" desce, senão o continente inteiro brilha
+     mais que os países que a seção quer destacar. */
+  .dark .mapa-terra path {
+    fill: color-mix(in oklab, var(--muted-foreground) 22%, transparent);
+  }
 }
 
 @keyframes shimmer {
@@ -292,6 +538,7 @@
   }
 }
 
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -301,10 +548,6 @@
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-  .hero-gradient {
-    animation: none !important;
-    background-size: 100% 100% !important;
-  }
   .skeleton-shimmer {
     animation: none !important;
     background: hsl(var(--muted)) !important;
@@ -313,24 +556,25 @@
 
 /* Derivado do azul da marca em vez de tons slate/indigo fixos. Como parte de
    --background e --brand-accent, acompanha o tema sozinho — antes exigia uma
-   segunda definição `.dark .hero-gradient` com a paleta duplicada à mão. */
+   segunda definição `.dark .hero-gradient` com a paleta duplicada à mão.
+
+   "Azul mar premium": saturado e com um toque de teal (o verde da logo) no
+   canto, para o hero ter energia em vez de ler como um azul-pálido lavado.
+   O azul é o `--brand-accent` (decorativo) e o teal vem do `--chart-3`. */
 .hero-gradient {
   background: linear-gradient(
     135deg,
-    var(--background) 0%,
-    color-mix(in oklab, var(--brand-accent) 18%, var(--background)) 25%,
-    var(--background) 50%,
-    color-mix(in oklab, var(--brand-accent) 26%, var(--background)) 75%,
-    var(--background) 100%
+    color-mix(in oklab, var(--brand) 6%, var(--background)) 0%,
+    color-mix(in oklab, var(--brand-accent) 34%, var(--background)) 26%,
+    color-mix(in oklab, var(--brand-accent) 22%, var(--background)) 54%,
+    color-mix(in oklab, var(--chart-3) 20%, var(--background)) 82%,
+    color-mix(in oklab, var(--brand-accent) 22%, var(--background)) 100%
   );
-  background-size: 400% 400%;
-  animation: heroGradient 15s ease infinite;
-}
-
-@keyframes heroGradient {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  /* Parado de propósito. O gradiente respirava num ciclo de 15s, e fundo que se
+     move devagar é o sinal mais barato de template — a referência tem o hero
+     estático. Sem a animação sai também o `background-size: 220%`, que só
+     existia para dar folga ao deslocamento: com 100% o gradiente encaixa na
+     seção e os pontos de parada caem onde foram escritos. */
 }
 
 @keyframes fadeIn {

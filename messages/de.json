@@ -141,60 +141,25 @@
         },
         "zielmaerkte": {
             "eyebrow": "Zielmärkte",
-            "title": "Präzise Auswahl nach Ihren Zielmärkten.",
-            "intro": "Sie finden Studien für einzelne Länder oder für ganze Sprachräume, zum Beispiel:",
-            "note": "Darüber hinaus gibt es branchenspezifische Studien für verschiedene Industrien und Produktgruppen. Schritt für Schritt erweitern wir unser Angebot um Studien für Märkte weltweit.",
-            "regions": [
-                {
-                    "flag": "DE",
-                    "title": "Deutschsprachige Länder",
-                    "countries": "DE · AT · CH"
-                },
-                {
-                    "flag": "FR",
-                    "title": "Französischsprachige Länder",
-                    "countries": "FR · BE · CH · LU"
-                },
-                {
-                    "flag": "ES",
-                    "title": "Spanischsprachige Länder",
-                    "countries": "ES · MX · AR · CL …"
-                },
-                {
-                    "flag": "PT",
-                    "title": "Portugiesischsprachige Länder",
-                    "countries": "PT · BR · AO …"
-                },
-                {
-                    "flag": "SE",
-                    "title": "Skandinavische Länder",
-                    "countries": "SE · NO · DK · FI · IS"
-                }
-            ]
+            "title": "Wohin der Katalog bereits reicht.",
+            "intro": "Derzeit gibt es Studien für {paises, plural, one {# Land} other {# Länder}} auf {continentes, plural, one {# Kontinent} other {# Kontinenten}}. Klicken Sie auf einen Markt, um zu sehen, was verfügbar ist.",
+            "continentCount": "{paises, plural, one {# Land} other {# Länder}}",
+            "emptyContinent": "in Kürze",
+            "continents": {
+                "europa": "Europa",
+                "asia": "Asien",
+                "americaDoNorte": "Nordamerika",
+                "americaDoSul": "Südamerika",
+                "africa": "Afrika",
+                "oceania": "Ozeanien"
+            },
+            "note": "Darüber hinaus gibt es branchenspezifische Studien für verschiedene Industrien und Warengruppen. Schritt für Schritt erweitern wir unser Angebot um Studien für Märkte weltweit."
         },
-        "einkaufsprofile": {
-            "eyebrow": "Einkaufsprofile",
-            "title": "Importeur ist nicht gleich Importeur.",
-            "intro": "Unsere Studien unterscheiden mehrere Einkaufsprofile:",
-            "close": "Dadurch können Sie Ihre Vertriebsaktivitäten exakt auf die für Ihr Produkt geeigneten Geschäftspartner konzentrieren.",
-            "cards": [
-                {
-                    "title": "Weltweit einkaufend",
-                    "body": "Unternehmen, die weltweit nach neuen Produkten und Lieferanten suchen."
-                },
-                {
-                    "title": "EU-fokussiert",
-                    "body": "Importeure, die ausschließlich innerhalb der Europäischen Union einkaufen."
-                },
-                {
-                    "title": "Mercosur-orientiert",
-                    "body": "Unternehmen, die bevorzugt aus dem Mercosur importieren."
-                },
-                {
-                    "title": "Regionale Spezialisten",
-                    "body": "Spezialisten mit klar definierten Beschaffungsmärkten."
-                }
-            ]
+        "setores": {
+            "eyebrow": "Branchen",
+            "title": "Für welche Branchen es bereits Studien gibt.",
+            "intro": "Jede Studie deckt eine Branche in einem Markt ab. Wählen Sie Ihre Branche, um zu sehen, was bereits veröffentlicht ist.",
+            "close": "Neue Branchen kommen in den Katalog, sobald die Studien fertig sind."
         },
         "lieferumfang": {
             "eyebrow": "Im Lieferumfang",
@@ -222,6 +187,38 @@
                     "directory": "Verzeichnis der Importeure und Großhändler"
                 }
             }
+        },
+        "sectionLinks": {
+            "catalog": "Zum Katalog",
+            "allStudies": "Alle Studien ansehen"
+        },
+        "showcase": {
+            "eyebrow": "Ein Blick in jede Studie",
+            "title": "Eine Studie, vom Marktüberblick bis zu den Profilen.",
+            "intro": "Jede Markteintrittsstudie liefert, was Sie für eine fundierte Entscheidung brauchen — von der Marktgröße bis zu den Profilen der Unternehmen der Branche.",
+            "viewFull": "Ganze Seite ansehen",
+            "areas": [
+                {
+                    "eyebrow": "Überblick",
+                    "title": "Marktüberblick",
+                    "description": "Größe und Struktur des Auslandsmarktes, direkt auf das gelesen, was für den Markteintritt zählt."
+                },
+                {
+                    "eyebrow": "Kanäle",
+                    "title": "Kanäle und Anforderungen",
+                    "description": "Die Vertriebsstruktur, die Kanäle der Branche und die regulatorischen Anforderungen für den Marktbetrieb."
+                },
+                {
+                    "eyebrow": "Analyse",
+                    "title": "Kategorien und Potenzial",
+                    "description": "Die Kategorien mit dem größten Potenzial und die Kennzahlen, die die Priorisierung leiten."
+                },
+                {
+                    "eyebrow": "Profile",
+                    "title": "Importeursprofile",
+                    "description": "Die Unternehmen der Branche: die Positionierung jedes Einzelnen, die bedienten Kanäle und die Art von Lieferant, die gesucht wird."
+                }
+            ]
         },
         "featured": {
             "title": "Ausgewählte Studien",
@@ -261,6 +258,19 @@
                 "ob aktuelle Kontaktdaten verfügbar sind",
                 "ob das Unternehmen grundsätzlich als potenzieller Vertriebspartner infrage kommt"
             ],
+            "flow": {
+                "step1": "Marktrecherche",
+                "step2": "Manuelle Prüfung",
+                "step3": "Veröffentlichte Studie",
+                "sources": [
+                    "Unternehmenswebsite",
+                    "Digitale Präsenz",
+                    "Öffentliche Register"
+                ],
+                "loop": "Regelmäßige Überprüfung",
+                "note": "Wenn eine Studie den beschriebenen Markt nicht mehr abbildet, nehmen wir sie aus dem Verkauf.",
+                "alt": "Ablauf einer Studie: Marktrecherche, dann manuelle Prüfung jedes Unternehmens anhand von Unternehmenswebsite, digitaler Präsenz und öffentlichen Registern, danach die veröffentlichte Studie im Katalog. Eine regelmäßige Überprüfung führt die Studie zurück in die Prüfung."
+            },
             "limitsTitle": "Was wir nicht versprechen können",
             "limitsBody": "Exporterfolg lässt sich nicht garantieren. Ob aus einer Kontaktaufnahme eine langfristige Geschäftsbeziehung entsteht, hängt von zahlreichen Faktoren ab – unter anderem von der Wettbewerbsfähigkeit Ihres Produkts, der Nachfrage im Zielmarkt, Ihrer Preisgestaltung, Ihrer Lieferfähigkeit, Ihrer Vertriebsstrategie sowie den Einkaufsentscheidungen des jeweiligen Importeurs. Was wir Ihnen jedoch bieten können, ist eine fundierte Entscheidungsgrundlage und eine erhebliche Zeitersparnis bei der Suche nach geeigneten Vertriebspartnern."
         },
