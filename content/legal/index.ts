@@ -1,5 +1,5 @@
 import type { Locale } from "@/lib/i18n/locales"
-import { DEFAULT_LOCALE } from "@/lib/i18n/locales"
+import { DEFAULT_LOCALE, PUBLISHED_LOCALES } from "@/lib/i18n/locales"
 import type { LegalDocument, LegalKind } from "./types"
 
 import privacyPt from "./privacy.pt"
@@ -47,6 +47,22 @@ const DOCUMENTOS: Record<LegalKind, Partial<Record<Locale, LegalDocument>>> = {
  */
 export function getLegalDocument(kind: LegalKind, locale: Locale): LegalDocument {
     return DOCUMENTOS[kind][locale] ?? DOCUMENTOS[kind][DEFAULT_LOCALE]!
+}
+
+/**
+ * Idiomas que têm o documento de verdade, e não o português do fallback.
+ *
+ * O fallback acima é a decisão certa para quem ABRE a página — política em
+ * outro idioma é melhor que política nenhuma. Mas é a decisão errada para o
+ * buscador: submeter `/ar/terms` ao Google com hreflang `ar` anuncia texto
+ * português como se fosse árabe, exatamente a duplicata que PUBLISHED_LOCALES
+ * existe para evitar. Quem monta sitemap, hreflang e robots pergunta aqui.
+ *
+ * Derivado do mapa, não escrito à mão: no dia em que `terms.ar.ts` entrar em
+ * DOCUMENTOS, a rota passa a ser indexável em árabe sozinha.
+ */
+export function legalLocales(kind: LegalKind): readonly Locale[] {
+    return PUBLISHED_LOCALES.filter((locale) => DOCUMENTOS[kind][locale] !== undefined)
 }
 
 export type { LegalDocument, LegalKind, LegalSection, LegalBlock } from "./types"

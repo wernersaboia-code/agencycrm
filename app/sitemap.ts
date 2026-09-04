@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next"
 import { getPathname } from "@/lib/i18n/navigation"
 import { DEFAULT_LOCALE, PUBLISHED_LOCALES, type Locale } from "@/lib/i18n/locales"
 import { alternatesFor } from "@/lib/i18n/alternates"
+import { localesComConteudo } from "@/lib/seo/content-coverage"
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || "https://www.easyprospect.com.br"
 
@@ -13,13 +14,16 @@ const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || "https://www.easyprospect.co
 // cada visita de robô.
 export const revalidate = 3600
 
-// Rotas estáticas do funil: uma entrada por idioma publicado, com hreflang
+// Rotas estáticas do funil: uma entrada por idioma COM CONTEÚDO, com hreflang
 // de mão dupla via alternatesFor. `/blog` entra aqui (não mais no bloco
 // dinâmico abaixo) para não duplicar a URL do índice do blog.
 //
-// Iteramos sobre PUBLISHED_LOCALES, não LOCALES: locales roteáveis sem
-// tradução própria caem no fallback para pt (ver i18n/request.ts) e não
-// devem ser submetidos ao buscador como se tivessem conteúdo próprio.
+// "Com conteúdo" não é o mesmo que "publicado". A maioria destas rotas tira o
+// texto de messages/ e vale nos 8 idiomas, mas /terms, /privacy e /refund vêm
+// de um documento por idioma em content/legal, e /blog depende de haver post
+// publicado naquele idioma. Onde falta, a página serve o português do
+// fallback — abrir assim para quem chega é a decisão certa, submeter ao
+// Google como se fosse do idioma da URL não é. Ver lib/seo/content-coverage.
 const ROUTES: { path: string; changeFrequency: "daily" | "weekly" | "monthly" | "yearly"; priority: number }[] = [
     { path: "/", changeFrequency: "weekly", priority: 1 },
     { path: "/catalog", changeFrequency: "daily", priority: 0.9 },
@@ -31,19 +35,26 @@ const ROUTES: { path: string; changeFrequency: "daily" | "weekly" | "monthly" | 
     { path: "/refund", changeFrequency: "yearly", priority: 0.3 },
 ]
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-    const staticRoutes = ROUTES.flatMap((route) =>
-        PUBLISHED_LOCALES.map((locale) => {
-            return {
-                url: `${BASE_URL}${getPathname({ href: route.path, locale })}`,
-                lastModified: new Date(),
-                changeFrequency: route.changeFrequency,
-                priority: route.priority,
-                alternates: { languages: alternatesFor(route.path).languages },
-            }
-        })
-    )
+// `blogLocales` vem do banco e é o único pedaço da cobertura que não dá para
+// resolver estaticamente. Sem ele — quando a consulta falha — o índice do
+// blog fica de fora: melhor uma rota a menos no sitemap do que submeter sete
+// listagens que podem estar vazias.
+function rotasEstaticas(blogLocales: readonly Locale[]) {
+    return ROUTES.flatMap((route) => {
+        const idiomas = route.path === "/blog" ? blogLocales : localesComConteudo(route.path)
+        const languages = alternatesFor(route.path, DEFAULT_LOCALE, idiomas).languages
 
+        return idiomas.map((locale) => ({
+            url: `${BASE_URL}${getPathname({ href: route.path, locale })}`,
+            lastModified: new Date(),
+            changeFrequency: route.changeFrequency,
+            priority: route.priority,
+            ...(languages ? { alternates: { languages } } : {}),
+        }))
+    })
+}
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     try {
         const { prisma } = await import("@/lib/prisma")
         const lists = await prisma.leadList.findMany({
@@ -89,10 +100,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             }))
         })
 
-        // O índice do blog (/blog) já está em ROUTES/staticRoutes acima —
-        // aqui só entram os posts individuais, que vêm do banco.
-        return [...staticRoutes, ...listRoutes, ...blogRoutes]
+        // O índice do blog (/blog) sai de rotasEstaticas, mas só nos idiomas
+        // que aparecem aqui: uma listagem vazia é página fina, e era isso que
+        // o sitemap oferecia ao Google para cada idioma sem post. A consulta
+        // mora em lib/blog/queries para a página do blog aplicar o mesmo
+        // critério no seu noindex.
+        // Import dinâmico como o do prisma logo acima, e pelo mesmo motivo:
+        // o módulo carrega o cliente do banco, e falha de CARGA (não só de
+        // consulta) precisa cair no catch em vez de derrubar o sitemap.
+        const { localesComPostPublicado } = await import("@/lib/blog/queries")
+        const comPost = await localesComPostPublicado()
+        const blogLocales = PUBLISHED_LOCALES.filter((locale) => comPost.includes(locale))
+
+        // Aqui só entram os posts individuais, que vêm do banco.
+        return [...rotasEstaticas(blogLocales), ...listRoutes, ...blogRoutes]
     } catch {
-        return staticRoutes
+        return rotasEstaticas([])
     }
 }

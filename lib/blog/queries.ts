@@ -9,6 +9,26 @@ export function publishedWhere(now: Date = new Date()) {
 }
 
 /**
+ * Idiomas com ao menos um post publicado.
+ *
+ * O índice do blog existe nos 8 idiomas — a rota responde, os rótulos são
+ * traduzidos —, mas num idioma sem post ele é uma listagem vazia. Página fina
+ * não deve entrar no sitemap nem no hreflang dos idiomas que têm conteúdo, e
+ * não deve ser indexada. Sitemap e página perguntam os dois aqui, pela mesma
+ * razão de `getCategoriesWithPosts` morar ao lado de `publishedWhere`: dois
+ * critérios para a mesma pergunta acabam divergindo.
+ */
+export async function localesComPostPublicado(): Promise<string[]> {
+    const linhas = await prisma.blogPostTranslation.findMany({
+        where: { post: publishedWhere() },
+        select: { locale: true },
+        distinct: ["locale"],
+    })
+
+    return linhas.map((linha) => linha.locale)
+}
+
+/**
  * Categorias que têm ao menos um post publicado NAQUELE idioma.
  *
  * Mora aqui, ao lado de `publishedWhere`, porque os dois precisam concordar:

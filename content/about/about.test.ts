@@ -91,7 +91,7 @@ describe("documento 'Por que Easy Prospect'", () => {
             const fontes = doc.sections.find((s) => s.id === "fontes")
             const texto = JSON.stringify(fontes?.blocks ?? []).toLowerCase()
 
-            expect(texto).toMatch(/massenmailing|mass mailing|massa|masivo|masse|massaal/)
+            expect(texto).toMatch(/massenmailing|mass mailing|massa|masivo|masse|massaal|جماعي/)
         })
     }
 

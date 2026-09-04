@@ -9,10 +9,11 @@ import aboutEs from "./about.es"
 import aboutFr from "./about.fr"
 import aboutIt from "./about.it"
 import aboutNl from "./about.nl"
+import aboutAr from "./about.ar"
 
 const DOCUMENTOS: Partial<Record<Locale, AboutDocument>> = {
     pt: aboutPt, de: aboutDe, en: aboutEn, es: aboutEs,
-    fr: aboutFr, it: aboutIt, nl: aboutNl,
+    fr: aboutFr, it: aboutIt, nl: aboutNl, ar: aboutAr,
 }
 
 /** Idioma sem documento cai no português, mesmo princípio de `content/legal`. */
