@@ -4,6 +4,7 @@ import type { Metadata } from "next"
 import { getTranslations } from "next-intl/server"
 import { alternatesFor } from "@/lib/i18n/alternates"
 import type { Locale } from "@/lib/i18n/locales"
+import { paginaSemFiltro, type CatalogSearchParams } from "@/lib/seo/catalog-pagination"
 import { Link } from "@/lib/i18n/navigation"
 import { CatalogFiltersPanel } from "@/components/marketplace/catalog-filters-panel"
 import { CatalogGrid } from "@/components/marketplace/catalog-grid"
@@ -19,25 +20,46 @@ export const dynamic = "force-dynamic"
 
 export async function generateMetadata({
     params,
+    searchParams,
 }: {
     params: Promise<{ locale: string }>
+    searchParams: Promise<CatalogSearchParams>
 }): Promise<Metadata> {
-    const { locale } = await params
-    const t = await getTranslations("catalog")
+    const [{ locale }, sp, t] = await Promise.all([
+        params,
+        searchParams,
+        getTranslations("catalog"),
+    ])
+
+    const page = paginaSemFiltro(sp)
+    const base = alternatesFor("/catalog", locale as Locale)
+
+    if (page === 1) {
+        return {
+            title: t("metaTitle"),
+            description: t("heroSubtitle"),
+            alternates: base,
+        }
+    }
+
+    // O sufixo é aplicado sobre as URLs já montadas em vez de passar a query
+    // para getPathname: o prefixo de idioma é a única regra que interessa ali,
+    // e assim a paginação não depende de como o next-intl trata query string.
+    const sufixo = `?page=${page}`
 
     return {
-        title: t("metaTitle"),
+        // Título próprio por página: sete resultados com o mesmo título são
+        // sete duplicatas aos olhos do buscador, ainda que o canonical esteja
+        // certo.
+        title: `${t("metaTitle")} — ${t("metaPageSuffix", { page })}`,
         description: t("heroSubtitle"),
-        alternates: alternatesFor("/catalog", locale as Locale),
+        alternates: {
+            canonical: `${base.canonical}${sufixo}`,
+            languages: Object.fromEntries(
+                Object.entries(base.languages ?? {}).map(([lang, url]) => [lang, `${url}${sufixo}`])
+            ),
+        },
     }
-}
-
-type CatalogSearchParams = {
-    countries?: string
-    industries?: string
-    languages?: string
-    search?: string
-    page?: string
 }
 
 interface CatalogPageProps {

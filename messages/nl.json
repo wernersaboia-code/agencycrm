@@ -406,6 +406,7 @@
     },
     "catalog": {
         "metaTitle": "Catalogus van studies",
+        "metaPageSuffix": "pagina {page}",
         "badge": "Markttoetredingsstudies",
         "heroTitle": "Kies de studie voor de markt die u wilt begrijpen",
         "heroSubtitle": "Filter op land, sector en taal om de studie te vinden die uw doelmarkt behandelt.",

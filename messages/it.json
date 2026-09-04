@@ -406,6 +406,7 @@
     },
     "catalog": {
         "metaTitle": "Catalogo degli studi",
+        "metaPageSuffix": "pagina {page}",
         "badge": "Studi di ingresso nel mercato",
         "heroTitle": "Scelga lo studio del mercato che vuole capire",
         "heroSubtitle": "Filtri per paese, settore e lingua per trovare lo studio che copre il suo mercato di riferimento.",

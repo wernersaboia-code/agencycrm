@@ -406,6 +406,7 @@
     },
     "catalog": {
         "metaTitle": "Catalogue of studies",
+        "metaPageSuffix": "page {page}",
         "badge": "Market entry studies",
         "heroTitle": "Choose the study for the market you want to understand",
         "heroSubtitle": "Filter by country, sector and language to find the study covering your target market.",

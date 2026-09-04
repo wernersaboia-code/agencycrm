@@ -406,6 +406,7 @@
     },
     "catalog": {
         "metaTitle": "Studienkatalog",
+        "metaPageSuffix": "Seite {page}",
         "badge": "Markteintrittsstudien",
         "heroTitle": "Wählen Sie die Studie für den Markt, den Sie verstehen wollen",
         "heroSubtitle": "Filtern Sie nach Land, Branche und Sprache, um die Studie für Ihren Zielmarkt zu finden.",
