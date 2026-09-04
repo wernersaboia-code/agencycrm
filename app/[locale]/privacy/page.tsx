@@ -3,6 +3,7 @@ import { getFormatter, getTranslations } from "next-intl/server"
 import { getLegalDocument } from "@/content/legal"
 import { alternatesFor } from "@/lib/i18n/alternates"
 import type { Locale } from "@/lib/i18n/locales"
+import { robotsForPath } from "@/lib/seo/indexability"
 import { LegalDocumentView } from "@/components/legal/legal-document"
 
 export async function generateMetadata({
@@ -13,11 +14,14 @@ export async function generateMetadata({
     const { locale } = await params
     const doc = getLegalDocument("privacy", locale as Locale)
 
-    // Sai o robots: { index: false } que existia antes. Politica de privacidade
-    // com noindex enfraquece justamente a pagina que deveria gerar confianca.
+    // Saiu o robots: { index: false } fixo que existia antes. Politica de
+    // privacidade com noindex enfraquece justamente a pagina que deveria gerar
+    // confianca — nos idiomas que TEM o documento. Onde ele nao existe e a
+    // pagina cai no portugues, o noindex volta: e o texto errado sob a URL.
     return {
         title: doc.title,
         alternates: alternatesFor("/privacy", locale as Locale),
+        robots: robotsForPath("/privacy", locale),
     }
 }
 

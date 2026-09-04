@@ -1,4 +1,5 @@
 import { PUBLISHED_LOCALES, type Locale } from "@/lib/i18n/locales"
+import { temConteudoNoLocale } from "@/lib/seo/content-coverage"
 
 /**
  * `LOCALES` inclui locales roteáveis sem tradução própria (hoje "ar"), que
@@ -14,6 +15,23 @@ export function isPublishedLocale(locale: string): boolean {
 
 export function robotsForLocale(locale: string): { index: boolean; follow: boolean } {
     return { index: isPublishedLocale(locale), follow: true }
+}
+
+/**
+ * Como `robotsForLocale`, mas para as rotas cujo texto não vem de
+ * `messages/*.json` e sim de um documento por idioma (/terms, /privacy,
+ * /refund). Ter a interface traduzida não basta ali: sem o documento, a
+ * página serve o português do fallback e não pode ser indexada como se
+ * fosse do idioma da URL.
+ *
+ * `follow: true` pelo mesmo motivo de sempre — o texto está no idioma
+ * errado, mas os links dele apontam para páginas legítimas.
+ */
+export function robotsForPath(path: string, locale: string): { index: boolean; follow: boolean } {
+    const publicado = isPublishedLocale(locale)
+    const temConteudo = publicado && temConteudoNoLocale(path, locale as Locale)
+
+    return { index: temConteudo, follow: true }
 }
 
 /**

@@ -3,6 +3,7 @@ import { getFormatter, getTranslations } from "next-intl/server"
 import { getLegalDocument } from "@/content/legal"
 import { alternatesFor } from "@/lib/i18n/alternates"
 import type { Locale } from "@/lib/i18n/locales"
+import { robotsForPath } from "@/lib/seo/indexability"
 import { LegalDocumentView } from "@/components/legal/legal-document"
 
 export async function generateMetadata({
@@ -16,6 +17,9 @@ export async function generateMetadata({
     return {
         title: doc.title,
         alternates: alternatesFor("/refund", locale as Locale),
+        // Idioma sem documento próprio serve o português do fallback: a
+        // página continua aberta a quem chega, mas fora do índice.
+        robots: robotsForPath("/refund", locale),
     }
 }
 

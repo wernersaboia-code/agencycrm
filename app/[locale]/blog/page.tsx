@@ -1,11 +1,40 @@
 import { notFound } from "next/navigation"
 // eslint-disable-next-line no-restricted-imports -- href sempre montado via getPathname() abaixo, prefixo de locale já correto
 import Link from "next/link"
+import type { Metadata } from "next"
 import { isBlogLocale, dirForLocale, type BlogLocale } from "@/lib/blog/locales"
 import { getBlogLabels } from "@/lib/blog/i18n"
-import { getCategoriesWithPosts, getPublishedPostsForLocale } from "@/lib/blog/queries"
+import { getCategoriesWithPosts, getPublishedPostsForLocale, localesComPostPublicado } from "@/lib/blog/queries"
 import { PostCard } from "@/components/blog/post-card"
 import { getPathname } from "@/lib/i18n/navigation"
+import { alternatesFor } from "@/lib/i18n/alternates"
+import { isLocale, type Locale } from "@/lib/i18n/locales"
+
+/**
+ * O índice do blog responde nos 8 idiomas, mas só é uma página de verdade
+ * onde há post publicado — nos outros é uma listagem vazia. Daí a cobertura
+ * sair do banco: hreflang só entre os idiomas com post, e noindex nos demais.
+ * Mesma regra que app/sitemap.ts usa para decidir quais /blog submeter.
+ *
+ * O canonical ignora ?categoria e ?page de propósito: são recortes da mesma
+ * listagem, e cada combinação viraria uma URL concorrente no índice — o mesmo
+ * tratamento que /catalog já dá aos seus filtros.
+ */
+export async function generateMetadata({
+    params,
+}: {
+    params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+    const { locale } = await params
+    if (!isLocale(locale)) return {}
+
+    const comPost = (await localesComPostPublicado()).filter(isLocale)
+
+    return {
+        alternates: alternatesFor("/blog", locale as Locale, comPost),
+        robots: { index: comPost.includes(locale), follow: true },
+    }
+}
 
 export default async function BlogIndexPage({
     params, searchParams,
