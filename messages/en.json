@@ -272,15 +272,36 @@
             "steps": [
                 {
                     "title": "Filter",
-                    "body": "Browse countries, language regions and sectors to find the study for your target market."
+                    "body": "Browse countries, language regions and sectors to find the study for your target market.",
+                    "detail": "Each study page shows which country and sector it covers, and what is inside, before you buy."
                 },
                 {
                     "title": "Buy",
-                    "body": "Review the coverage, the contents and the price of the study before completing your order in a secure checkout."
+                    "body": "Review the coverage, the contents and the price of the study before completing your order in a secure checkout.",
+                    "detail": "You see the full price before paying; the payment itself is handled off-site by a certified payment provider."
                 },
                 {
                     "title": "Download",
-                    "body": "Once payment is confirmed, download the market study PDF in the My Purchases area."
+                    "body": "Once payment is confirmed, download the market study PDF in the My Purchases area.",
+                    "detail": "You also receive an email with an access link — even if you close the page right after paying."
+                }
+            ],
+            "facts": [
+                {
+                    "label": "Format",
+                    "body": "PDF. The studies are written in English."
+                },
+                {
+                    "label": "Delivery",
+                    "body": "Released as soon as payment is confirmed."
+                },
+                {
+                    "label": "Payment",
+                    "body": "Off-site checkout with a certified provider. One-off purchase, no subscription."
+                },
+                {
+                    "label": "Access",
+                    "body": "Permanent in My purchases, plus the link sent by email."
                 }
             ]
         },

@@ -272,15 +272,36 @@
             "steps": [
                 {
                     "title": "Filtre",
-                    "body": "Navegue por países, regiones lingüísticas y sectores y encuentre el estudio de su mercado objetivo."
+                    "body": "Navegue por países, regiones lingüísticas y sectores y encuentre el estudio de su mercado objetivo.",
+                    "detail": "La página de cada estudio muestra, antes de la compra, qué país y qué sector cubre y qué incluye."
                 },
                 {
                     "title": "Compre",
-                    "body": "Revise la cobertura, el contenido y el precio del estudio antes de finalizar el pedido en un checkout seguro."
+                    "body": "Revise la cobertura, el contenido y el precio del estudio antes de finalizar el pedido en un checkout seguro.",
+                    "detail": "El precio total se ve antes de pagar; el pago se realiza fuera del sitio, a través de un proveedor certificado."
                 },
                 {
                     "title": "Descargue",
-                    "body": "Tras confirmarse el pago, descargue el estudio de mercado en PDF en el área Mis compras."
+                    "body": "Tras confirmarse el pago, descargue el estudio de mercado en PDF en el área Mis compras.",
+                    "detail": "También recibirá un correo con el enlace de acceso, aunque cierre la página justo después de pagar."
+                }
+            ],
+            "facts": [
+                {
+                    "label": "Formato",
+                    "body": "PDF. Los estudios están redactados en inglés."
+                },
+                {
+                    "label": "Entrega",
+                    "body": "Se libera en cuanto se confirma el pago."
+                },
+                {
+                    "label": "Pago",
+                    "body": "Checkout fuera del sitio, con proveedor certificado. Compra única, sin suscripción."
+                },
+                {
+                    "label": "Acceso",
+                    "body": "Permanente en Mis compras, además del enlace enviado por correo."
                 }
             ]
         },

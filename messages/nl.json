@@ -272,15 +272,36 @@
             "steps": [
                 {
                     "title": "Filter",
-                    "body": "Blader door landen, taalgebieden en sectoren en vind de studie voor uw doelmarkt."
+                    "body": "Blader door landen, taalgebieden en sectoren en vind de studie voor uw doelmarkt.",
+                    "detail": "Op de pagina van elke studie ziet u vóór de aankoop welk land en welke sector zij dekt en wat erin staat."
                 },
                 {
                     "title": "Koop",
-                    "body": "Controleer de dekking, de inhoud en de prijs van de studie voordat u de bestelling afrondt in een beveiligde checkout."
+                    "body": "Controleer de dekking, de inhoud en de prijs van de studie voordat u de bestelling afrondt in een beveiligde checkout.",
+                    "detail": "U ziet de totaalprijs voordat u betaalt; de betaling zelf verloopt buiten de website, bij een gecertificeerde betaaldienst."
                 },
                 {
                     "title": "Download",
-                    "body": "Na bevestiging van de betaling downloadt u het marktonderzoek als pdf in Mijn aankopen."
+                    "body": "Na bevestiging van de betaling downloadt u het marktonderzoek als pdf in Mijn aankopen.",
+                    "detail": "U ontvangt daarnaast een e-mail met de toegangslink, ook als u de pagina meteen na de betaling sluit."
+                }
+            ],
+            "facts": [
+                {
+                    "label": "Formaat",
+                    "body": "Pdf. De studies zijn in het Engels geschreven."
+                },
+                {
+                    "label": "Levering",
+                    "body": "Vrijgegeven zodra de betaling is bevestigd."
+                },
+                {
+                    "label": "Betaling",
+                    "body": "Checkout buiten de website, bij een gecertificeerde aanbieder. Eenmalige aankoop, geen abonnement."
+                },
+                {
+                    "label": "Toegang",
+                    "body": "Permanent in Mijn aankopen, plus de link per e-mail."
                 }
             ]
         },

@@ -272,15 +272,36 @@
             "steps": [
                 {
                     "title": "Filtern",
-                    "body": "Stöbern Sie nach Ländern, Sprachräumen und Branchen und finden Sie die Studie für Ihren Zielmarkt."
+                    "body": "Stöbern Sie nach Ländern, Sprachräumen und Branchen und finden Sie die Studie für Ihren Zielmarkt.",
+                    "detail": "Auf der Seite jeder Studie sehen Sie schon vor dem Kauf, welches Land und welche Branche sie abdeckt und was darin enthalten ist."
                 },
                 {
                     "title": "Kaufen",
-                    "body": "Prüfen Sie Abdeckung, Inhalt und Preis der Studie, bevor Sie die Bestellung im sicheren Checkout abschließen."
+                    "body": "Prüfen Sie Abdeckung, Inhalt und Preis der Studie, bevor Sie die Bestellung im sicheren Checkout abschließen.",
+                    "detail": "Den Gesamtpreis sehen Sie vor dem Bezahlen; die Zahlung selbst läuft außerhalb der Website bei einem zertifizierten Zahlungsdienstleister."
                 },
                 {
                     "title": "Herunterladen",
-                    "body": "Nach der Zahlungsbestätigung laden Sie die Marktstudie als PDF im Bereich „Meine Käufe“ herunter."
+                    "body": "Nach der Zahlungsbestätigung laden Sie die Marktstudie als PDF im Bereich „Meine Käufe“ herunter.",
+                    "detail": "Zusätzlich erhalten Sie eine E-Mail mit dem Zugangslink – auch dann, wenn Sie die Seite direkt nach der Zahlung schließen."
+                }
+            ],
+            "facts": [
+                {
+                    "label": "Format",
+                    "body": "PDF. Die Studien sind auf Englisch verfasst."
+                },
+                {
+                    "label": "Lieferung",
+                    "body": "Freigabe, sobald die Zahlung bestätigt ist."
+                },
+                {
+                    "label": "Zahlung",
+                    "body": "Externer Checkout über einen zertifizierten Anbieter. Einzelkauf, kein Abo."
+                },
+                {
+                    "label": "Zugang",
+                    "body": "Dauerhaft unter „Meine Käufe“, dazu der Link per E-Mail."
                 }
             ]
         },

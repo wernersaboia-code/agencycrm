@@ -272,15 +272,36 @@
             "steps": [
                 {
                     "title": "Filtrez",
-                    "body": "Parcourez les pays, régions linguistiques et secteurs pour trouver l'étude de votre marché cible."
+                    "body": "Parcourez les pays, régions linguistiques et secteurs pour trouver l'étude de votre marché cible.",
+                    "detail": "La page de chaque étude indique, avant l’achat, le pays et le secteur couverts ainsi que son contenu."
                 },
                 {
                     "title": "Achetez",
-                    "body": "Vérifiez la couverture, le contenu et le prix de l'étude avant de finaliser la commande dans un checkout sécurisé."
+                    "body": "Vérifiez la couverture, le contenu et le prix de l'étude avant de finaliser la commande dans un checkout sécurisé.",
+                    "detail": "Le prix total s’affiche avant le paiement ; le paiement lui-même s’effectue hors du site, chez un prestataire certifié."
                 },
                 {
                     "title": "Téléchargez",
-                    "body": "Après confirmation du paiement, téléchargez l'étude de marché en PDF dans l'espace Mes achats."
+                    "body": "Après confirmation du paiement, téléchargez l'étude de marché en PDF dans l'espace Mes achats.",
+                    "detail": "Vous recevez également un e-mail contenant le lien d’accès, même si vous fermez la page juste après le paiement."
+                }
+            ],
+            "facts": [
+                {
+                    "label": "Format",
+                    "body": "PDF. Les études sont rédigées en anglais."
+                },
+                {
+                    "label": "Livraison",
+                    "body": "Débloquée dès la confirmation du paiement."
+                },
+                {
+                    "label": "Paiement",
+                    "body": "Checkout hors du site, prestataire certifié. Achat à l’unité, sans abonnement."
+                },
+                {
+                    "label": "Accès",
+                    "body": "Permanent dans Mes achats, avec le lien envoyé par e-mail."
                 }
             ]
         },

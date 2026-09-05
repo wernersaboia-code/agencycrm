@@ -272,15 +272,36 @@
             "steps": [
                 {
                     "title": "Filtre",
-                    "body": "Navegue por países, regiões linguísticas e setores e encontre o estudo do seu mercado-alvo."
+                    "body": "Navegue por países, regiões linguísticas e setores e encontre o estudo do seu mercado-alvo.",
+                    "detail": "A página de cada estudo mostra, antes da compra, qual país e qual setor ele cobre e o que vem dentro."
                 },
                 {
                     "title": "Compre",
-                    "body": "Revise a cobertura, o conteúdo e o preço do estudo antes de finalizar o pedido com checkout seguro."
+                    "body": "Revise a cobertura, o conteúdo e o preço do estudo antes de finalizar o pedido com checkout seguro.",
+                    "detail": "O preço total aparece antes do pagamento; o pagamento em si é feito fora do site, por um provedor certificado."
                 },
                 {
                     "title": "Baixe",
-                    "body": "Depois da confirmação do pagamento, baixe o estudo de mercado em PDF na área Minhas compras."
+                    "body": "Depois da confirmação do pagamento, baixe o estudo de mercado em PDF na área Minhas compras.",
+                    "detail": "Você também recebe um e-mail com o link de acesso — mesmo que feche a página logo depois de pagar."
+                }
+            ],
+            "facts": [
+                {
+                    "label": "Formato",
+                    "body": "PDF. Os estudos são redigidos em inglês."
+                },
+                {
+                    "label": "Entrega",
+                    "body": "Liberado assim que o pagamento é confirmado."
+                },
+                {
+                    "label": "Pagamento",
+                    "body": "Checkout fora do site, com provedor certificado. Compra avulsa, sem assinatura."
+                },
+                {
+                    "label": "Acesso",
+                    "body": "Permanente em Minhas compras, mais o link enviado por e-mail."
                 }
             ]
         },
