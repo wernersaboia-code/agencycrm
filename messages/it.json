@@ -258,19 +258,6 @@
                 "se sono disponibili dati di contatto aggiornati",
                 "se l’azienda possa generalmente essere considerata come potenziale partner di distribuzione"
             ],
-            "flow": {
-                "step1": "Ricerca di mercato",
-                "step2": "Verifica umana",
-                "step3": "Studio pubblicato",
-                "sources": [
-                    "Sito aziendale",
-                    "Presenza digitale",
-                    "Directory di settore"
-                ],
-                "loop": "Revisione periodica",
-                "note": "Quando uno studio non rispecchia più il mercato che descrive, esce dalla vendita.",
-                "alt": "Percorso di uno studio: ricerca di mercato, poi verifica umana di ogni azienda tramite sito aziendale, presenza digitale e directory di settore, camere e associazioni, quindi lo studio pubblicato nel catalogo. Una revisione periodica riporta lo studio alla verifica."
-            },
             "limitsTitle": "Cosa non possiamo promettere",
             "limitsBody": "Il successo di un progetto di esportazione dipende da molti fattori. Pertanto, non possiamo garantire che ogni azienda risponderà a un approccio di contatto o che ne risulterà immediatamente una relazione commerciale. Ciò che possiamo offrirvi, tuttavia, è una solida base per la vostra pianificazione dell’esportazione e un notevole risparmio di tempo nell’identificazione di partner di distribuzione idonei."
         },

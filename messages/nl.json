@@ -258,19 +258,6 @@
                 "of actuele contactgegevens beschikbaar zijn",
                 "of het bedrijf in het algemeen als potentiële distributiepartner in aanmerking kan komen"
             ],
-            "flow": {
-                "step1": "Marktonderzoek",
-                "step2": "Menselijke controle",
-                "step3": "Gepubliceerde studie",
-                "sources": [
-                    "Bedrijfswebsite",
-                    "Digitale aanwezigheid",
-                    "Branchegidsen"
-                ],
-                "loop": "Periodieke herziening",
-                "note": "Wanneer een studie de markt die zij beschrijft niet meer weergeeft, halen we haar uit de verkoop.",
-                "alt": "Verloop van een studie: marktonderzoek, daarna menselijke controle van elk bedrijf aan de hand van de bedrijfswebsite, de digitale aanwezigheid en branchegidsen, kamers en verenigingen, en vervolgens de gepubliceerde studie in de catalogus. Een periodieke herziening brengt de studie terug naar de controle."
-            },
             "limitsTitle": "Wat wij niet kunnen beloven",
             "limitsBody": "Het succes van een exportproject hangt van vele factoren af. Daarom kunnen wij niet garanderen dat elk bedrijf zal reageren op een contactbenadering of dat er onmiddellijk een zakelijke relatie zal ontstaan. Wat wij u echter wel kunnen bieden, is een solide basis voor uw exportplanning en een aanzienlijke tijdsbesparing bij het identificeren van geschikte distributiepartners."
         },

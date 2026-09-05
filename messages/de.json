@@ -258,19 +258,6 @@
                 "ob aktuelle Kontaktdaten verfügbar sind",
                 "ob das Unternehmen grundsätzlich als potenzieller Vertriebspartner infrage kommt"
             ],
-            "flow": {
-                "step1": "Marktrecherche",
-                "step2": "Manuelle Prüfung",
-                "step3": "Veröffentlichte Studie",
-                "sources": [
-                    "Unternehmenswebsite",
-                    "Digitale Präsenz",
-                    "Branchenverzeichnisse"
-                ],
-                "loop": "Regelmäßige Überprüfung",
-                "note": "Wenn eine Studie den beschriebenen Markt nicht mehr abbildet, nehmen wir sie aus dem Verkauf.",
-                "alt": "Ablauf einer Studie: Marktrecherche, dann manuelle Prüfung jedes Unternehmens anhand von Unternehmenswebsite, digitaler Präsenz sowie Branchenverzeichnissen, Kammern und Verbänden, danach die veröffentlichte Studie im Katalog. Eine regelmäßige Überprüfung führt die Studie zurück in die Prüfung."
-            },
             "limitsTitle": "Was wir nicht versprechen können",
             "limitsBody": "Exporterfolg lässt sich nicht garantieren. Ob aus einer Kontaktaufnahme eine langfristige Geschäftsbeziehung entsteht, hängt von zahlreichen Faktoren ab – unter anderem von der Wettbewerbsfähigkeit Ihres Produkts, der Nachfrage im Zielmarkt, Ihrer Preisgestaltung, Ihrer Lieferfähigkeit, Ihrer Vertriebsstrategie sowie den Einkaufsentscheidungen des jeweiligen Importeurs. Was wir Ihnen jedoch bieten können, ist eine fundierte Entscheidungsgrundlage und eine erhebliche Zeitersparnis bei der Suche nach geeigneten Vertriebspartnern."
         },

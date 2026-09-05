@@ -258,19 +258,6 @@
                 "whether current contact details are available",
                 "whether the company could generally be considered as a potential distribution partner"
             ],
-            "flow": {
-                "step1": "Market research",
-                "step2": "Human verification",
-                "step3": "Published study",
-                "sources": [
-                    "Company website",
-                    "Digital presence",
-                    "Trade directories"
-                ],
-                "loop": "Periodic review",
-                "note": "When a study no longer reflects the market it describes, it comes off sale.",
-                "alt": "How a study is made: market research, then human verification of each company against its company website, digital presence and trade directories, chambers and associations, then the published study in the catalogue. A periodic review sends the study back through verification."
-            },
             "limitsTitle": "What We Cannot Promise",
             "limitsBody": "The success of an export project depends on many factors. Therefore, we cannot guarantee that every company will respond to a contact approach or that a business relationship will immediately result. What we can offer you, however, is a solid foundation for your export planning and a significant time saving in identifying suitable distribution partners."
         },

@@ -258,19 +258,6 @@
                 "si hay datos de contacto actuales disponibles",
                 "si la empresa podría considerarse en general como un potencial socio de distribución"
             ],
-            "flow": {
-                "step1": "Investigación de mercado",
-                "step2": "Verificación humana",
-                "step3": "Estudio publicado",
-                "sources": [
-                    "Sitio web corporativo",
-                    "Presencia digital",
-                    "Directorios sectoriales"
-                ],
-                "loop": "Revisión periódica",
-                "note": "Cuando un estudio deja de reflejar el mercado que describe, sale de la venta.",
-                "alt": "Flujo de un estudio: investigación de mercado, después verificación humana de cada empresa en su sitio web corporativo, su presencia digital y los directorios sectoriales, cámaras y asociaciones, y luego el estudio publicado en el catálogo. Una revisión periódica devuelve el estudio a la verificación."
-            },
             "limitsTitle": "Lo que no podemos prometer",
             "limitsBody": "El éxito de un proyecto de exportación depende de muchos factores. Por lo tanto, no podemos garantizar que todas las empresas respondan a un contacto o que se establezca inmediatamente una relación comercial. Lo que sí podemos ofrecerle, sin embargo, es una base sólida para su planificación de exportación y un significativo ahorro de tiempo en la identificación de socios de distribución adecuados."
         },
