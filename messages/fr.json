@@ -62,7 +62,7 @@
             "success": "Compte créé avec succès !",
             "error": "Erreur lors de la création du compte",
             "benefitsTitle": "Avantages",
-            "benefit1": "Accès permanent aux études achetées",
+            "benefit1": "Accès à vie aux études achetées",
             "benefit2": "Téléchargements illimités de l'étude en PDF achetée",
             "benefit3": "Historique des commandes et reçus dans votre compte",
             "successTitle": "Compte créé avec succès ! 🎉",
@@ -117,7 +117,7 @@
     },
     "landing": {
         "hero": {
-            "badge": "Entreprises vérifiées sur des sources publiques",
+            "badge": "Marketplace de partenaires commerciaux B2B vérifiés",
             "title": "Listes qualifiées d'importateurs et de distributeurs pour votre commerce international.",
             "subtitle": "Trouvez exactement les partenaires commerciaux qui correspondent à votre produit et à votre stratégie d'exportation.",
             "ctaPrimary": "Explorer le catalogue",
@@ -246,7 +246,7 @@
         "daten": {
             "eyebrow": "Qualité des données",
             "title": "Données revues périodiquement.",
-            "body": "Les études sont réalisées par notre propre équipe, et chaque entreprise profilée est vérifiée dans des sources publiques — site institutionnel, présence numérique et annuaires professionnels, chambres et fédérations — avant d'entrer au catalogue. Le catalogue est révisé périodiquement : lorsqu'une étude ne reflète plus le marché qu'elle décrit, elle est retirée de la vente."
+            "body": "Les études sont réalisées par notre propre équipe, et chaque entreprise profilée est vérifiée dans des sources publiques — site institutionnel, présence numérique et registres disponibles — avant d'entrer au catalogue. Le catalogue est révisé périodiquement : lorsqu'une étude ne reflète plus le marché qu'elle décrit, elle est retirée de la vente."
         },
         "method": {
             "eyebrow": "Notre méthode",
@@ -258,6 +258,19 @@
                 "si des coordonnées de contact actuelles sont disponibles",
                 "si l'entreprise peut généralement être considérée comme un partenaire de distribution potentiel"
             ],
+            "flow": {
+                "step1": "Étude de marché",
+                "step2": "Vérification humaine",
+                "step3": "Étude publiée",
+                "sources": [
+                    "Site institutionnel",
+                    "Présence numérique",
+                    "Registres publics"
+                ],
+                "loop": "Revue périodique",
+                "note": "Lorsqu'une étude ne reflète plus le marché qu'elle décrit, elle est retirée de la vente.",
+                "alt": "Parcours d'une étude : étude de marché, puis vérification humaine de chaque entreprise à partir de son site institutionnel, de sa présence numérique et des registres publics, puis l'étude publiée au catalogue. Une revue périodique ramène l'étude à la vérification."
+            },
             "limitsTitle": "Ce que nous ne pouvons pas promettre",
             "limitsBody": "Le succès d'un projet d'exportation dépend de nombreux facteurs. Par conséquent, nous ne pouvons pas garantir que chaque entreprise répondra à une approche de contact ou qu'une relation commerciale en résultera immédiatement. Ce que nous pouvons cependant vous offrir, c'est une base solide pour votre planification d'exportation et un gain de temps significatif dans l'identification de partenaires de distribution adaptés."
         },
@@ -272,36 +285,15 @@
             "steps": [
                 {
                     "title": "Filtrez",
-                    "body": "Parcourez les pays, régions linguistiques et secteurs pour trouver l'étude de votre marché cible.",
-                    "detail": "La page de chaque étude indique, avant l’achat, le pays et le secteur couverts ainsi que son contenu."
+                    "body": "Parcourez les pays, régions linguistiques et secteurs pour trouver l'étude de votre marché cible."
                 },
                 {
                     "title": "Achetez",
-                    "body": "Vérifiez la couverture, le contenu et le prix de l'étude avant de finaliser la commande dans un checkout sécurisé.",
-                    "detail": "Le prix total s’affiche avant le paiement ; le paiement lui-même s’effectue hors du site, chez un prestataire certifié."
+                    "body": "Vérifiez la couverture, le contenu et le prix de l'étude avant de finaliser la commande dans un checkout sécurisé."
                 },
                 {
                     "title": "Téléchargez",
-                    "body": "Après confirmation du paiement, téléchargez l'étude de marché en PDF dans l'espace Mes achats.",
-                    "detail": "Vous recevez également un e-mail contenant le lien d’accès, même si vous fermez la page juste après le paiement."
-                }
-            ],
-            "facts": [
-                {
-                    "label": "Format",
-                    "body": "PDF. Les études sont rédigées en anglais."
-                },
-                {
-                    "label": "Livraison",
-                    "body": "Débloquée dès la confirmation du paiement."
-                },
-                {
-                    "label": "Paiement",
-                    "body": "Checkout hors du site, prestataire certifié. Achat à l’unité, sans abonnement."
-                },
-                {
-                    "label": "Accès",
-                    "body": "Permanent dans Mes achats, avec le lien envoyé par e-mail."
+                    "body": "Après confirmation du paiement, téléchargez l'étude de marché en PDF dans l'espace Mes achats."
                 }
             ]
         },
@@ -414,7 +406,6 @@
     },
     "catalog": {
         "metaTitle": "Catalogue d'études",
-        "metaPageSuffix": "page {page}",
         "badge": "Études d'entrée sur le marché",
         "heroTitle": "Choisissez l'étude du marché que vous voulez comprendre",
         "heroSubtitle": "Filtrez par pays, secteur et langue pour trouver l'étude couvrant votre marché cible.",
@@ -668,7 +659,7 @@
             "accessIntro": "Cliquez sur le bouton ci-dessous pour accéder à votre espace achats et télécharger les études :",
             "accessButton": "Accéder à mes achats",
             "linkNote": "Ce lien est personnel et valable 24 heures.",
-            "catalogTitle": "Atteignez de nouveaux marchés",
+            "catalogTitle": "Élargissez la portée de votre campagne",
             "catalogText": "Découvrez des études sur d'autres marchés et secteurs pour atteindre plus de partenaires commerciaux.",
             "catalogButton": "Voir le catalogue"
         }

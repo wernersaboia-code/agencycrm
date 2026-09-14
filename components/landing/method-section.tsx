@@ -1,11 +1,12 @@
 import { CheckCircle2 } from "lucide-react"
 import { getTranslations } from "next-intl/server"
 import { Section, SectionHeading } from "./section"
+import { StudyFlowDiagram } from "./study-flow-diagram"
 import type { LandingLocale } from "./types"
 
 /**
- * O centro da página: o checklist de verificação e os limites declarados,
- * lado a lado.
+ * O centro da página: como um estudo é feito, o checklist de verificação e os
+ * limites declarados.
  *
  * Os dois textos são transcrição do documento do sócio e já viviam em
  * `content/about/about.<locale>.ts`. Aqui eles aparecem DE NOVO, em
@@ -18,14 +19,14 @@ import type { LandingLocale } from "./types"
  * onde o concorrente põe elogio, é a troca mais barata desta página.
  *
  * `tone="deep"`: esta é a ÚNICA quebra tonal da home, e ela está aqui porque é
- * aqui que a página mostra mecanismo — o que se confere e o que não se promete
- * — em vez de afirmar qualidade; é o papel do bloco escuro da referência. Duas
- * quebras não são quebra, são listras: antes de dar `deep` a outra seção,
- * tirar desta.
+ * aqui que a página mostra mecanismo em vez de afirmar qualidade — o mesmo
+ * papel do bloco escuro da referência. Duas quebras não são quebra, são
+ * listras: antes de dar `deep` a outra seção, tirar desta.
  */
 export async function MethodSection({ locale }: { locale: LandingLocale }) {
     const t = await getTranslations({ locale, namespace: "landing.method" })
     const checks = t.raw("checks") as string[]
+    const fontes = t.raw("flow.sources") as string[]
     const tNav = await getTranslations({ locale, namespace: "nav" })
 
     return (
@@ -37,7 +38,21 @@ export async function MethodSection({ locale }: { locale: LandingLocale }) {
                 action={{ href: "/about", label: tNav("about") }}
             />
 
-            <div className="mx-auto mt-14 grid max-w-4xl gap-6 md:grid-cols-2">
+            <div className="mt-14">
+                <StudyFlowDiagram
+                    step1={t("flow.step1")}
+                    step2={t("flow.step2")}
+                    step3={t("flow.step3")}
+                    sources={fontes}
+                    loop={t("flow.loop")}
+                    alt={t("flow.alt")}
+                />
+                <p className="mx-auto mt-6 max-w-2xl text-center text-sm leading-6 text-muted-foreground">
+                    {t("flow.note")}
+                </p>
+            </div>
+
+            <div className="mx-auto mt-16 grid max-w-4xl gap-6 md:grid-cols-2">
                 <ul className="space-y-3 rounded-2xl border border-border bg-card p-6">
                     {checks.map((check) => (
                         <li

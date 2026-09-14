@@ -1,6 +1,5 @@
 import { getPathname } from "./navigation"
 import { PUBLISHED_LOCALES, DEFAULT_LOCALE, htmlLangFor, type Locale } from "./locales"
-import { localesComConteudo } from "@/lib/seo/content-coverage"
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || "https://www.easyprospect.com.br"
 
@@ -9,55 +8,23 @@ const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || "https://www.easyprospect.co
  * x-default aponta para o padrão. Sem isto o Google trata as traduções como
  * páginas concorrentes em vez de variantes.
  *
- * A lista de idiomas não é PUBLISHED_LOCALES direto, e sim a cobertura da
- * ROTA (localesComConteudo): locale sem o conteúdo daquela página serve o
- * fallback para pt e não pode ser anunciado como variante de idioma — isso
- * sinalizaria conteúdo duplicado ao buscador. Para a maioria das rotas, cujo
- * texto vem de messages/, as duas listas coincidem.
+ * Iteramos sobre PUBLISHED_LOCALES, não LOCALES: locales roteáveis sem
+ * tradução própria caem no fallback para pt (ver i18n/request.ts) e não
+ * devem ser anunciados como variantes de idioma — isso sinalizaria conteúdo
+ * duplicado ao buscador.
  *
  * O caminho com prefixo de locale vem de getPathname (next-intl), o mesmo
  * mecanismo usado em app/sitemap.ts — evita ter duas implementações da
  * mesma regra de prefixo.
  */
-export function alternatesFor(
-    path: string,
-    current: Locale = DEFAULT_LOCALE,
-    // Cobertura explícita, para a rota cuja lista de idiomas vem do banco e
-    // não de um mapa estático: hoje só o índice do blog, que existe de
-    // verdade nos idiomas em que há post publicado. Quem chama já fez a
-    // consulta (app/sitemap.ts) e passa o resultado.
-    cobertura?: readonly Locale[]
-): { canonical: string; languages?: Record<string, string> } {
-    // O idioma atual não tem o conteúdo desta rota (só o fallback para pt):
-    // canonical próprio e nenhum hreflang. Um par de hreflang precisa se
-    // autorreferenciar para ser válido, e esta página está fora do grupo —
-    // anunciar as outras sem estar entre elas seria um cluster quebrado. Ela
-    // sai também do sitemap e ganha noindex (ver lib/seo/indexability), então
-    // o canonical próprio aqui não contradiz nada: só evita o par
-    // "noindex + canonical apontando para outra página", que é ambíguo.
-    const idiomas = cobertura ?? localesComConteudo(path)
-
-    if (!idiomas.includes(current)) {
-        return { canonical: `${BASE_URL}${getPathname({ href: path, locale: current })}` }
-    }
-
+export function alternatesFor(path: string, current: Locale = DEFAULT_LOCALE) {
     const languages: Record<string, string> = {}
-    for (const locale of idiomas) {
+    for (const locale of PUBLISHED_LOCALES) {
         languages[htmlLangFor(locale)] = `${BASE_URL}${getPathname({ href: path, locale })}`
     }
     languages["x-default"] = `${BASE_URL}${getPathname({ href: path, locale: DEFAULT_LOCALE })}`
 
-    // Defesa para um locale roteável (LOCALES) que ainda não tenha tradução
-    // própria (PUBLISHED_LOCALES) — situação do árabe até a fase 4 da
-    // expansão de idiomas, hoje sem exemplo real porque os dois conjuntos
-    // coincidem. Sem esta guarda, a página de um locale nesse estado
-    // autodeclara canonical para si mesma servindo o fallback para pt — uma
-    // duplicata órfã, sem hreflang ligando as duas, porque o loop acima só
-    // cobre PUBLISHED_LOCALES. Aponta para a versão publicada mais próxima
-    // em vez disso, e volta a valer no próximo idioma que entrar assim.
-    const canonicalLocale = PUBLISHED_LOCALES.includes(current) ? current : DEFAULT_LOCALE
-
-    return { canonical: `${BASE_URL}${getPathname({ href: path, locale: canonicalLocale })}`, languages }
+    return { canonical: `${BASE_URL}${getPathname({ href: path, locale: current })}`, languages }
 }
 
 /**

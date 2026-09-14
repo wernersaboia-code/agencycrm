@@ -15,8 +15,7 @@
     "postinstall": "prisma generate",
     "seed:templates": "npx ts-node --project tsconfig.seed.json prisma/seed-templates.ts",
     "check:precos": "npx ts-node --project tsconfig.seed.json prisma/check-precos.ts",
-    "gerar:mapa": "node scripts/gerar-mapa-mundi.mjs",
-    "comparar:gsc": "node scripts/comparar-gsc.mjs"
+    "gerar:mapa": "node scripts/gerar-mapa-mundi.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

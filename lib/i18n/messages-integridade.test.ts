@@ -30,7 +30,6 @@ const LACUNAS_CONHECIDAS: Record<string, string[]> = {
     fr: ["admin"],
     it: ["admin"],
     nl: ["admin"],
-    ar: ["admin"],
 }
 
 function chaves(objeto: unknown, prefixo = ""): string[] {

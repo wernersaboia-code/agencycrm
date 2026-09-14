@@ -62,7 +62,7 @@
             "success": "Account created successfully!",
             "error": "Error creating account",
             "benefitsTitle": "Benefits",
-            "benefit1": "Permanent access to the studies you buy",
+            "benefit1": "Lifetime access to the studies you buy",
             "benefit2": "Unlimited downloads of the PDF study you bought",
             "benefit3": "Order history and receipts in your account",
             "successTitle": "Account created successfully! 🎉",
@@ -117,7 +117,7 @@
     },
     "landing": {
         "hero": {
-            "badge": "Companies checked against public sources",
+            "badge": "Marketplace of verified B2B trading partners",
             "title": "Qualified importer and distributor lists for your international trade.",
             "subtitle": "Find exactly the trading partners that fit your product and your export strategy.",
             "ctaPrimary": "Browse catalog",
@@ -246,7 +246,7 @@
         "daten": {
             "eyebrow": "Data quality",
             "title": "Data reviewed periodically.",
-            "body": "The studies are produced by our own operation, and every company profiled is checked against public sources — corporate website, digital presence and trade directories, chambers and associations — before it enters the catalogue. The catalogue is reviewed periodically: when a study no longer reflects the market it describes, it is withdrawn from sale."
+            "body": "The studies are produced by our own operation, and every company profiled is checked against public sources — corporate website, digital presence and available registers — before it enters the catalogue. The catalogue is reviewed periodically: when a study no longer reflects the market it describes, it is withdrawn from sale."
         },
         "method": {
             "eyebrow": "How we work",
@@ -258,6 +258,19 @@
                 "whether current contact details are available",
                 "whether the company could generally be considered as a potential distribution partner"
             ],
+            "flow": {
+                "step1": "Market research",
+                "step2": "Human verification",
+                "step3": "Published study",
+                "sources": [
+                    "Company website",
+                    "Digital presence",
+                    "Public records"
+                ],
+                "loop": "Periodic review",
+                "note": "When a study no longer reflects the market it describes, it comes off sale.",
+                "alt": "How a study is made: market research, then human verification of each company against its company website, digital presence and public records, then the published study in the catalogue. A periodic review sends the study back through verification."
+            },
             "limitsTitle": "What We Cannot Promise",
             "limitsBody": "The success of an export project depends on many factors. Therefore, we cannot guarantee that every company will respond to a contact approach or that a business relationship will immediately result. What we can offer you, however, is a solid foundation for your export planning and a significant time saving in identifying suitable distribution partners."
         },
@@ -272,36 +285,15 @@
             "steps": [
                 {
                     "title": "Filter",
-                    "body": "Browse countries, language regions and sectors to find the study for your target market.",
-                    "detail": "Each study page shows which country and sector it covers, and what is inside, before you buy."
+                    "body": "Browse countries, language regions and sectors to find the study for your target market."
                 },
                 {
                     "title": "Buy",
-                    "body": "Review the coverage, the contents and the price of the study before completing your order in a secure checkout.",
-                    "detail": "You see the full price before paying; the payment itself is handled off-site by a certified payment provider."
+                    "body": "Review the coverage, the contents and the price of the study before completing your order in a secure checkout."
                 },
                 {
                     "title": "Download",
-                    "body": "Once payment is confirmed, download the market study PDF in the My Purchases area.",
-                    "detail": "You also receive an email with an access link — even if you close the page right after paying."
-                }
-            ],
-            "facts": [
-                {
-                    "label": "Format",
-                    "body": "PDF. The studies are written in English."
-                },
-                {
-                    "label": "Delivery",
-                    "body": "Released as soon as payment is confirmed."
-                },
-                {
-                    "label": "Payment",
-                    "body": "Off-site checkout with a certified provider. One-off purchase, no subscription."
-                },
-                {
-                    "label": "Access",
-                    "body": "Permanent in My purchases, plus the link sent by email."
+                    "body": "Once payment is confirmed, download the market study PDF in the My Purchases area."
                 }
             ]
         },
@@ -414,7 +406,6 @@
     },
     "catalog": {
         "metaTitle": "Catalogue of studies",
-        "metaPageSuffix": "page {page}",
         "badge": "Market entry studies",
         "heroTitle": "Choose the study for the market you want to understand",
         "heroSubtitle": "Filter by country, sector and language to find the study covering your target market.",
@@ -1565,7 +1556,7 @@
             "accessIntro": "Click the button below to open your purchases area and download the studies:",
             "accessButton": "Go to my purchases",
             "linkNote": "This link is personal and valid for 24 hours.",
-            "catalogTitle": "Reach more markets",
+            "catalogTitle": "Widen your campaign's reach",
             "catalogText": "Browse studies for other markets and sectors to reach more trading partners.",
             "catalogButton": "Browse the catalogue"
         }

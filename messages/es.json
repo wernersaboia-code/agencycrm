@@ -62,7 +62,7 @@
             "success": "¡Cuenta creada correctamente!",
             "error": "Error al crear la cuenta",
             "benefitsTitle": "Beneficios",
-            "benefit1": "Acceso permanente a los estudios comprados",
+            "benefit1": "Acceso vitalicio a los estudios comprados",
             "benefit2": "Descargas ilimitadas del estudio en PDF que compraste",
             "benefit3": "Historial de pedidos y recibos en tu cuenta",
             "successTitle": "¡Cuenta creada correctamente! 🎉",
@@ -117,7 +117,7 @@
     },
     "landing": {
         "hero": {
-            "badge": "Empresas verificadas en fuentes públicas",
+            "badge": "Marketplace de socios comerciales B2B verificados",
             "title": "Listas calificadas de importadores y distribuidores para su comercio internacional.",
             "subtitle": "Encuentre exactamente los socios comerciales que se ajustan a su producto y a su estrategia de exportación.",
             "ctaPrimary": "Explorar catálogo",
@@ -246,7 +246,7 @@
         "daten": {
             "eyebrow": "Calidad de los datos",
             "title": "Datos revisados periódicamente.",
-            "body": "Los estudios los elabora nuestra propia operación, y cada empresa perfilada se verifica en fuentes públicas — sitio institucional, presencia digital y directorios sectoriales, cámaras y asociaciones — antes de entrar en el catálogo. El catálogo se revisa periódicamente: cuando un estudio deja de reflejar el mercado que describe, se retira de la venta."
+            "body": "Los estudios los elabora nuestra propia operación, y cada empresa perfilada se verifica en fuentes públicas — sitio institucional, presencia digital y registros disponibles — antes de entrar en el catálogo. El catálogo se revisa periódicamente: cuando un estudio deja de reflejar el mercado que describe, se retira de la venta."
         },
         "method": {
             "eyebrow": "Cómo trabajamos",
@@ -258,6 +258,19 @@
                 "si hay datos de contacto actuales disponibles",
                 "si la empresa podría considerarse en general como un potencial socio de distribución"
             ],
+            "flow": {
+                "step1": "Investigación de mercado",
+                "step2": "Verificación humana",
+                "step3": "Estudio publicado",
+                "sources": [
+                    "Sitio web corporativo",
+                    "Presencia digital",
+                    "Registros públicos"
+                ],
+                "loop": "Revisión periódica",
+                "note": "Cuando un estudio deja de reflejar el mercado que describe, sale de la venta.",
+                "alt": "Flujo de un estudio: investigación de mercado, después verificación humana de cada empresa en su sitio web corporativo, su presencia digital y los registros públicos, y luego el estudio publicado en el catálogo. Una revisión periódica devuelve el estudio a la verificación."
+            },
             "limitsTitle": "Lo que no podemos prometer",
             "limitsBody": "El éxito de un proyecto de exportación depende de muchos factores. Por lo tanto, no podemos garantizar que todas las empresas respondan a un contacto o que se establezca inmediatamente una relación comercial. Lo que sí podemos ofrecerle, sin embargo, es una base sólida para su planificación de exportación y un significativo ahorro de tiempo en la identificación de socios de distribución adecuados."
         },
@@ -272,36 +285,15 @@
             "steps": [
                 {
                     "title": "Filtre",
-                    "body": "Navegue por países, regiones lingüísticas y sectores y encuentre el estudio de su mercado objetivo.",
-                    "detail": "La página de cada estudio muestra, antes de la compra, qué país y qué sector cubre y qué incluye."
+                    "body": "Navegue por países, regiones lingüísticas y sectores y encuentre el estudio de su mercado objetivo."
                 },
                 {
                     "title": "Compre",
-                    "body": "Revise la cobertura, el contenido y el precio del estudio antes de finalizar el pedido en un checkout seguro.",
-                    "detail": "El precio total se ve antes de pagar; el pago se realiza fuera del sitio, a través de un proveedor certificado."
+                    "body": "Revise la cobertura, el contenido y el precio del estudio antes de finalizar el pedido en un checkout seguro."
                 },
                 {
                     "title": "Descargue",
-                    "body": "Tras confirmarse el pago, descargue el estudio de mercado en PDF en el área Mis compras.",
-                    "detail": "También recibirá un correo con el enlace de acceso, aunque cierre la página justo después de pagar."
-                }
-            ],
-            "facts": [
-                {
-                    "label": "Formato",
-                    "body": "PDF. Los estudios están redactados en inglés."
-                },
-                {
-                    "label": "Entrega",
-                    "body": "Se libera en cuanto se confirma el pago."
-                },
-                {
-                    "label": "Pago",
-                    "body": "Checkout fuera del sitio, con proveedor certificado. Compra única, sin suscripción."
-                },
-                {
-                    "label": "Acceso",
-                    "body": "Permanente en Mis compras, además del enlace enviado por correo."
+                    "body": "Tras confirmarse el pago, descargue el estudio de mercado en PDF en el área Mis compras."
                 }
             ]
         },
@@ -414,7 +406,6 @@
     },
     "catalog": {
         "metaTitle": "Catálogo de estudios",
-        "metaPageSuffix": "página {page}",
         "badge": "Estudios de entrada en mercado",
         "heroTitle": "Elija el estudio del mercado que quiere entender",
         "heroSubtitle": "Filtre por país, sector e idioma para encontrar el estudio que cubre su mercado objetivo.",
@@ -668,7 +659,7 @@
             "accessIntro": "Haga clic en el botón de abajo para acceder a su área de compras y descargar los estudios:",
             "accessButton": "Ir a mis compras",
             "linkNote": "Este enlace es personal y válido durante 24 horas.",
-            "catalogTitle": "Llegue a más mercados",
+            "catalogTitle": "Amplíe el alcance de su campaña",
             "catalogText": "Explore estudios de otros mercados y sectores para alcanzar más socios comerciales.",
             "catalogButton": "Ver el catálogo"
         }
