@@ -111,8 +111,6 @@
         "privacy": "Confidentialité",
         "refund": "Remboursements",
         "contact": "Contact",
-        "sectorsTitle": "Secteurs",
-        "marketsTitle": "Marchés",
         "copyright": "© {year} Easy Prospect. Tous droits réservés."
     },
     "landing": {
@@ -130,14 +128,6 @@
             "lede": "Nos études d'entrée sur le marché s'adressent aux fabricants, producteurs et propriétaires de marques qui veulent comprendre un marché étranger avant d'y investir.",
             "p1": "Choisissez par pays, secteur ou région linguistique et recevez une étude couvrant le panorama du marché, la structure des canaux, les exigences réglementaires et les catégories aux meilleures perspectives.",
             "p2": "Chaque étude se termine par les profils des entreprises du secteur : le positionnement commercial de chacune, les canaux qu'elle dessert et le type de fournisseur qu'elle recherche."
-        },
-        "stats": {
-            "eyebrow": "Le catalogue aujourd'hui",
-            "title": "Une recherche soignée plutôt que des listes d'adresses confuses.",
-            "studies": "études publiées",
-            "countries": "pays couverts",
-            "sectors": "secteurs",
-            "reviewed": "données vérifiées"
         },
         "zielmaerkte": {
             "eyebrow": "Marchés cibles",
@@ -251,19 +241,6 @@
             "title": "Données revues périodiquement.",
             "body": "Les études sont réalisées par notre propre équipe, et chaque entreprise profilée est vérifiée dans des sources publiques — site institutionnel, présence numérique et registres disponibles — avant d'entrer au catalogue. Le catalogue est révisé périodiquement : lorsqu'une étude ne reflète plus le marché qu'elle décrit, elle est retirée de la vente."
         },
-        "method": {
-            "eyebrow": "Notre méthode",
-            "checksTitle": "Examen des entreprises",
-            "checks": [
-                "si l'entreprise opère dans le secteur concerné",
-                "si des activités d'importation ou de distribution sont identifiables",
-                "s'il existe une présence professionnelle de l'entreprise",
-                "si des coordonnées de contact actuelles sont disponibles",
-                "si l'entreprise peut généralement être considérée comme un partenaire de distribution potentiel"
-            ],
-            "limitsTitle": "Ce que nous ne pouvons pas promettre",
-            "limitsBody": "Le succès d'un projet d'exportation dépend de nombreux facteurs. Par conséquent, nous ne pouvons pas garantir que chaque entreprise répondra à une approche de contact ou qu'une relation commerciale en résultera immédiatement. Ce que nous pouvons cependant vous offrir, c'est une base solide pour votre planification d'exportation et un gain de temps significatif dans l'identification de partenaires de distribution adaptés."
-        },
         "vorteil": {
             "eyebrow": "Votre avantage",
             "title": "Gagnez du temps et développez votre succès commercial.",
@@ -290,8 +267,7 @@
         "blog": {
             "eyebrow": "En savoir plus",
             "title": "Analyses de marché, rapports sectoriels et opportunités d'exportation.",
-            "intro": "Sur notre blog, nous publions régulièrement des analyses de marché, des rapports sectoriels et des informations sur les opportunités d'exportation, les tendances commerciales et les possibilités de vente dans divers pays et régions. Vous restez ainsi toujours informé de l'évolution du marché international.",
-            "readingTime": "{minutes} min de lecture"
+            "intro": "Sur notre blog, nous publions régulièrement des analyses de marché, des rapports sectoriels et des informations sur les opportunités d'exportation, les tendances commerciales et les possibilités de vente dans divers pays et régions. Vous restez ainsi toujours informé de l'évolution du marché international."
         },
         "cta": {
             "title": "Prêt à développer votre commerce international ?",
@@ -438,6 +414,62 @@
         "previousPage": "Page précédente",
         "nextPage": "Page suivante",
         "goToPage": "Aller à la page {page}",
+        "countries": {
+            "AT": "Autriche",
+            "BE": "Belgique",
+            "BG": "Bulgarie",
+            "CH": "Suisse",
+            "CZ": "République tchèque",
+            "DE": "Allemagne",
+            "DK": "Danemark",
+            "EE": "Estonie",
+            "ES": "Espagne",
+            "FI": "Finlande",
+            "FR": "France",
+            "GB": "Royaume-Uni",
+            "GR": "Grèce",
+            "HR": "Croatie",
+            "HU": "Hongrie",
+            "IE": "Irlande",
+            "IT": "Italie",
+            "LT": "Lituanie",
+            "LU": "Luxembourg",
+            "LV": "Lettonie",
+            "MT": "Malte",
+            "NL": "Pays-Bas",
+            "NO": "Norvège",
+            "PL": "Pologne",
+            "PT": "Portugal",
+            "RO": "Roumanie",
+            "SE": "Suède",
+            "SI": "Slovénie",
+            "SK": "Slovaquie",
+            "TR": "Turquie",
+            "AR": "Argentine",
+            "BO": "Bolivie",
+            "BR": "Brésil",
+            "CA": "Canada",
+            "CO": "Colombie",
+            "EC": "Équateur",
+            "PE": "Pérou",
+            "PY": "Paraguay",
+            "US": "États-Unis",
+            "UY": "Uruguay",
+            "VE": "Venezuela",
+            "CN": "Chine",
+            "ID": "Indonésie",
+            "IN": "Inde",
+            "JP": "Japon",
+            "KR": "Corée du Sud",
+            "AE": "Émirats arabes unis",
+            "KW": "Koweït",
+            "OM": "Oman",
+            "QA": "Qatar",
+            "EG": "Égypte",
+            "NG": "Nigeria",
+            "ZA": "Afrique du Sud",
+            "AU": "Australie"
+        },
         "industries": {
             "exotic_fruits": "Fruits Exotiques",
             "fmcg": "FMCG",

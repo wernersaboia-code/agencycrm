@@ -111,8 +111,6 @@
         "privacy": "Privacy",
         "refund": "Rimborsi",
         "contact": "Contatti",
-        "sectorsTitle": "Settori",
-        "marketsTitle": "Mercati",
         "copyright": "© {year} Easy Prospect. Tutti i diritti riservati."
     },
     "landing": {
@@ -130,14 +128,6 @@
             "lede": "I nostri studi di ingresso nel mercato sono pensati per produttori, fabbricanti e titolari di marchio che vogliono capire un mercato estero prima di investirvi.",
             "p1": "Scelga per paese, settore o regione linguistica e riceva uno studio con il panorama del mercato, la struttura dei canali, i requisiti normativi e le categorie con le migliori prospettive.",
             "p2": "Ogni studio si chiude con i profili delle aziende del settore: il posizionamento commerciale di ciascuna, i canali che serve e il tipo di fornitore che cerca."
-        },
-        "stats": {
-            "eyebrow": "Il catalogo oggi",
-            "title": "Ricerca accurata invece di elenchi di indirizzi confusi.",
-            "studies": "studi pubblicati",
-            "countries": "paesi coperti",
-            "sectors": "settori",
-            "reviewed": "dati verificati"
         },
         "zielmaerkte": {
             "eyebrow": "Mercati target",
@@ -251,19 +241,6 @@
             "title": "Dati rivisti periodicamente.",
             "body": "Gli studi sono elaborati dalla nostra struttura e ogni azienda profilata viene verificata su fonti pubbliche — sito istituzionale, presenza digitale e registri disponibili — prima di entrare nel catalogo. Il catalogo viene rivisto periodicamente: quando uno studio non rispecchia più il mercato che descrive, esce dalla vendita."
         },
-        "method": {
-            "eyebrow": "Come lavoriamo",
-            "checksTitle": "Revisione delle aziende",
-            "checks": [
-                "se l’azienda opera nel settore pertinente",
-                "se sono identificabili attività di importazione o distribuzione",
-                "se esiste una presenza aziendale professionale",
-                "se sono disponibili dati di contatto aggiornati",
-                "se l’azienda possa generalmente essere considerata come potenziale partner di distribuzione"
-            ],
-            "limitsTitle": "Cosa non possiamo promettere",
-            "limitsBody": "Il successo di un progetto di esportazione dipende da molti fattori. Pertanto, non possiamo garantire che ogni azienda risponderà a un approccio di contatto o che ne risulterà immediatamente una relazione commerciale. Ciò che possiamo offrirvi, tuttavia, è una solida base per la vostra pianificazione dell’esportazione e un notevole risparmio di tempo nell’identificazione di partner di distribuzione idonei."
-        },
         "vorteil": {
             "eyebrow": "Il tuo vantaggio",
             "title": "Risparmia tempo e fai crescere il tuo successo commerciale.",
@@ -290,8 +267,7 @@
         "blog": {
             "eyebrow": "Scopri di più",
             "title": "Analisi di mercato, report settoriali e opportunità di esportazione.",
-            "intro": "Sul nostro blog pubblichiamo regolarmente analisi di mercato, report settoriali e informazioni su opportunità di esportazione, tendenze commerciali e possibilità di vendita in vari paesi e regioni. Resti così sempre aggiornato sull'evoluzione del mercato internazionale.",
-            "readingTime": "{minutes} min di lettura"
+            "intro": "Sul nostro blog pubblichiamo regolarmente analisi di mercato, report settoriali e informazioni su opportunità di esportazione, tendenze commerciali e possibilità di vendita in vari paesi e regioni. Resti così sempre aggiornato sull'evoluzione del mercato internazionale."
         },
         "cta": {
             "title": "Pronto a far crescere il tuo commercio internazionale?",
@@ -438,6 +414,62 @@
         "previousPage": "Pagina precedente",
         "nextPage": "Pagina successiva",
         "goToPage": "Vai alla pagina {page}",
+        "countries": {
+            "AT": "Austria",
+            "BE": "Belgio",
+            "BG": "Bulgaria",
+            "CH": "Svizzera",
+            "CZ": "Repubblica Ceca",
+            "DE": "Germania",
+            "DK": "Danimarca",
+            "EE": "Estonia",
+            "ES": "Spagna",
+            "FI": "Finlandia",
+            "FR": "Francia",
+            "GB": "Regno Unito",
+            "GR": "Grecia",
+            "HR": "Croazia",
+            "HU": "Ungheria",
+            "IE": "Irlanda",
+            "IT": "Italia",
+            "LT": "Lituania",
+            "LU": "Lussemburgo",
+            "LV": "Lettonia",
+            "MT": "Malta",
+            "NL": "Paesi Bassi",
+            "NO": "Norvegia",
+            "PL": "Polonia",
+            "PT": "Portogallo",
+            "RO": "Romania",
+            "SE": "Svezia",
+            "SI": "Slovenia",
+            "SK": "Slovacchia",
+            "TR": "Turchia",
+            "AR": "Argentina",
+            "BO": "Bolivia",
+            "BR": "Brasile",
+            "CA": "Canada",
+            "CO": "Colombia",
+            "EC": "Ecuador",
+            "PE": "Perù",
+            "PY": "Paraguay",
+            "US": "Stati Uniti",
+            "UY": "Uruguay",
+            "VE": "Venezuela",
+            "CN": "Cina",
+            "ID": "Indonesia",
+            "IN": "India",
+            "JP": "Giappone",
+            "KR": "Corea del Sud",
+            "AE": "Emirati Arabi Uniti",
+            "KW": "Kuwait",
+            "OM": "Oman",
+            "QA": "Qatar",
+            "EG": "Egitto",
+            "NG": "Nigeria",
+            "ZA": "Sudafrica",
+            "AU": "Australia"
+        },
         "industries": {
             "exotic_fruits": "Frutta Esotica",
             "fmcg": "FMCG",

@@ -111,8 +111,6 @@
         "privacy": "Privacidade",
         "refund": "Reembolso",
         "contact": "Contato",
-        "sectorsTitle": "Setores",
-        "marketsTitle": "Mercados",
         "copyright": "© {year} Easy Prospect. Todos os direitos reservados."
     },
     "landing": {
@@ -130,14 +128,6 @@
             "lede": "Nossos estudos de entrada em mercado são feitos para fabricantes, produtores e detentores de marca que querem entender um mercado estrangeiro antes de investir nele.",
             "p1": "Escolha por país, setor ou região linguística e receba um estudo com o panorama do mercado, a estrutura de canais, os requisitos regulatórios e as categorias com maior potencial.",
             "p2": "Cada estudo se encerra com os perfis das empresas do setor: o posicionamento comercial de cada uma, os canais que ela atende e o tipo de fornecedor que ela procura."
-        },
-        "stats": {
-            "eyebrow": "O catálogo hoje",
-            "title": "Pesquisa cuidadosa em vez de listas confusas.",
-            "studies": "estudos publicados",
-            "countries": "países cobertos",
-            "sectors": "setores",
-            "reviewed": "dados revisados"
         },
         "zielmaerkte": {
             "eyebrow": "Mercados-alvo",
@@ -251,19 +241,6 @@
             "title": "Dados revisados periodicamente.",
             "body": "Os estudos são elaborados pela nossa operação, e cada empresa perfilada é conferida em fontes públicas — site institucional, presença digital e registros disponíveis — antes de entrar no catálogo. O catálogo é revisado periodicamente: quando um estudo deixa de refletir o mercado que descreve, ele sai de venda."
         },
-        "method": {
-            "eyebrow": "Como trabalhamos",
-            "checksTitle": "Como cada empresa é conferida",
-            "checks": [
-                "se a empresa atua no respectivo setor",
-                "se existem atividades de importação ou distribuição",
-                "se possui presença profissional",
-                "se há dados de contato atualizados",
-                "se pode ser considerada um potencial parceiro comercial"
-            ],
-            "limitsTitle": "O que não podemos prometer",
-            "limitsBody": "O sucesso de um projeto de exportação depende de muitos fatores. Não podemos garantir resposta de todas as empresas nem o fechamento imediato de negócios. Podemos, porém, oferecer uma base sólida para seu planejamento e economizar um tempo considerável na identificação de parceiros comerciais."
-        },
         "vorteil": {
             "eyebrow": "Sua vantagem",
             "title": "Economize tempo e aumente seu sucesso comercial.",
@@ -290,8 +267,7 @@
         "blog": {
             "eyebrow": "Mais informações",
             "title": "Análises de mercado, relatórios setoriais e oportunidades de exportação.",
-            "intro": "No nosso blog publicamos regularmente análises de mercado, relatórios setoriais e informações sobre oportunidades de exportação, tendências comerciais e possibilidades de venda em diversos países e regiões. Assim você fica sempre por dentro dos movimentos do mercado internacional.",
-            "readingTime": "{minutes} min de leitura"
+            "intro": "No nosso blog publicamos regularmente análises de mercado, relatórios setoriais e informações sobre oportunidades de exportação, tendências comerciais e possibilidades de venda em diversos países e regiões. Assim você fica sempre por dentro dos movimentos do mercado internacional."
         },
         "cta": {
             "title": "Pronto para construir o seu comércio internacional?",
@@ -438,6 +414,62 @@
         "previousPage": "Página anterior",
         "nextPage": "Próxima página",
         "goToPage": "Ir para a página {page}",
+        "countries": {
+            "AT": "Áustria",
+            "BE": "Bélgica",
+            "BG": "Bulgária",
+            "CH": "Suíça",
+            "CZ": "República Tcheca",
+            "DE": "Alemanha",
+            "DK": "Dinamarca",
+            "EE": "Estônia",
+            "ES": "Espanha",
+            "FI": "Finlândia",
+            "FR": "França",
+            "GB": "Reino Unido",
+            "GR": "Grécia",
+            "HR": "Croácia",
+            "HU": "Hungria",
+            "IE": "Irlanda",
+            "IT": "Itália",
+            "LT": "Lituânia",
+            "LU": "Luxemburgo",
+            "LV": "Letônia",
+            "MT": "Malta",
+            "NL": "Holanda",
+            "NO": "Noruega",
+            "PL": "Polônia",
+            "PT": "Portugal",
+            "RO": "Romênia",
+            "SE": "Suécia",
+            "SI": "Eslovênia",
+            "SK": "Eslováquia",
+            "TR": "Turquia",
+            "AR": "Argentina",
+            "BO": "Bolívia",
+            "BR": "Brasil",
+            "CA": "Canadá",
+            "CO": "Colômbia",
+            "EC": "Equador",
+            "PE": "Peru",
+            "PY": "Paraguai",
+            "US": "Estados Unidos",
+            "UY": "Uruguai",
+            "VE": "Venezuela",
+            "CN": "China",
+            "ID": "Indonésia",
+            "IN": "Índia",
+            "JP": "Japão",
+            "KR": "Coreia do Sul",
+            "AE": "Emirados Árabes Unidos",
+            "KW": "Kuwait",
+            "OM": "Omã",
+            "QA": "Catar",
+            "EG": "Egito",
+            "NG": "Nigéria",
+            "ZA": "África do Sul",
+            "AU": "Austrália"
+        },
         "industries": {
             "exotic_fruits": "Frutas Exóticas",
             "fmcg": "FMCG",
@@ -1298,8 +1330,6 @@
                 "countriesLabel": "Países (códigos ISO) *",
                 "countriesPlaceholder": "DE, AT, CH",
                 "countriesHint": "Separe por vírgula: DE, FR, IT",
-                "countriesUnknown": "Fora do padrão internacional: {codes}. O filtro do catálogo não mostra esses códigos — corrija antes de publicar.",
-                "countriesOutdated": "Códigos antigos: {codes}. Use o código à direita da seta — manter os dois criaria duas opções para o mesmo país no filtro.",
                 "autoFilled": "Auto-preenchido",
                 "industriesLabel": "Setores/Indústrias",
                 "industriesDesc": "Selecione um ou mais setores para esta lista",
