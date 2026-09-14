@@ -201,21 +201,7 @@
                 "Welche Informationen und Unterlagen Importeure vor einer Zusammenarbeit erwarten",
                 "Wie Sie potenzielle Distributoren professionell ansprechen",
                 "Welche Verkaufsargumente bei der Erstansprache besonders erfolgversprechend sind"
-            ],
-            "sample": {
-                "title": "Wie die Studie von innen aussieht",
-                "note": "Vier Seiten aus der Studie zum deutschen HoReCa-Markt. Die Studien sind auf Englisch verfasst, und in dieser Leseprobe sind die Kontaktdaten im Verzeichnis unkenntlich gemacht.",
-                "captions": {
-                    "cover": "Titelseite und Ausgabe",
-                    "contents": "Inhaltsverzeichnis",
-                    "data": "Marktzahlen",
-                    "directory": "Verzeichnis der Importeure und Großhändler"
-                }
-            }
-        },
-        "featured": {
-            "title": "Ausgewählte Studien",
-            "intro": "Eine Auswahl der derzeit verfügbaren Markteintrittsstudien. Der vollständige Katalog umfasst weitere Länder und Branchen."
+            ]
         },
         "freeSample": {
             "eyebrow": "Kostenlose Leseprobe",
@@ -417,58 +403,35 @@
         "countries": {
             "AT": "Österreich",
             "BE": "Belgien",
-            "BG": "Bulgarien",
             "CH": "Schweiz",
             "CZ": "Tschechien",
             "DE": "Deutschland",
             "DK": "Dänemark",
-            "EE": "Estland",
             "ES": "Spanien",
             "FI": "Finnland",
             "FR": "Frankreich",
             "GB": "Vereinigtes Königreich",
-            "GR": "Griechenland",
             "HR": "Kroatien",
-            "HU": "Ungarn",
             "IE": "Irland",
             "IT": "Italien",
-            "LT": "Litauen",
             "LU": "Luxemburg",
-            "LV": "Lettland",
-            "MT": "Malta",
             "NL": "Niederlande",
             "NO": "Norwegen",
             "PL": "Polen",
             "PT": "Portugal",
-            "RO": "Rumänien",
             "SE": "Schweden",
             "SI": "Slowenien",
             "SK": "Slowakei",
             "TR": "Türkei",
             "AR": "Argentinien",
-            "BO": "Bolivien",
             "BR": "Brasilien",
-            "CA": "Kanada",
             "CO": "Kolumbien",
             "EC": "Ecuador",
-            "PE": "Peru",
-            "PY": "Paraguay",
             "US": "Vereinigte Staaten",
             "UY": "Uruguay",
             "VE": "Venezuela",
             "CN": "China",
-            "ID": "Indonesien",
-            "IN": "Indien",
-            "JP": "Japan",
-            "KR": "Südkorea",
-            "AE": "Vereinigte Arabische Emirate",
-            "KW": "Kuwait",
-            "OM": "Oman",
-            "QA": "Katar",
-            "EG": "Ägypten",
-            "NG": "Nigeria",
-            "ZA": "Südafrika",
-            "AU": "Australien"
+            "JP": "Japan"
         },
         "industries": {
             "exotic_fruits": "Exotische Früchte",
@@ -598,7 +561,6 @@
         "emptyDescription": "Sehen Sie sich den Katalog an, wählen Sie die Studie für den Markt aus, den Sie erschließen wollen, und kommen Sie hierher zurück, um die Datei herunterzuladen.",
         "emptyCta": "Katalog durchstöbern",
         "browseMoreLists": "Weitere Studien ansehen",
-        "receiptButton": "Beleg herunterladen",
         "statStudies": "Markteintrittsstudien",
         "guidanceReadTitle": "Beginnen Sie mit der Analyse, nicht mit den Profilen",
         "guidanceReadText": "Die Studie erklärt, was Importeure erwarten und wie die erste Kontaktaufnahme gelingt. Wer das vorher liest, verbrennt kein gutes Unternehmen an einer übereilten Ansprache.",
@@ -889,7 +851,6 @@
             "cronProtected": "Cron durch Secret geschützt",
             "paypalReady": "PayPal bereit für Checkout",
             "stripeReady": "Stripe bereit für Checkout",
-            "receiptReady": "Kaufbeleg bereit",
             "adminLinks": "Administrative Links",
             "manageUsers": "Benutzer verwalten",
             "manageWorkspaces": "Workspaces verwalten",
@@ -916,9 +877,7 @@
                 "NEXT_PUBLIC_APP_URL": "Öffentliche URL für Callbacks, Links und Weiterleitungen.",
                 "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY": "Öffentlicher Stripe-Schlüssel für das Frontend des Checkouts.",
                 "STRIPE_SECRET_KEY": "Geheimer Stripe-Schlüssel, den der Server zum Erstellen von Checkout-Sitzungen verwendet.",
-                "STRIPE_WEBHOOK_SECRET": "Geheimnis zur Überprüfung der Signatur der Stripe-Webhooks.",
-                "SELLER_NAME": "Firmenname, der auf dem Kaufbeleg als Verkäufer erscheint.",
-                "SELLER_ADDRESS": "Adresse des Verkäufers auf dem Kaufbeleg. Ohne Name und Adresse wird kein Beleg erstellt."
+                "STRIPE_WEBHOOK_SECRET": "Geheimnis zur Überprüfung der Signatur der Stripe-Webhooks."
             }
         },
         "analytics": {
@@ -1549,20 +1508,6 @@
             "button": "Bei meinem Konto anmelden",
             "resetHint": "Falls Sie Ihr Passwort vergessen haben, nutzen Sie die Wiederherstellung auf der Anmeldeseite.",
             "ignore": "Falls Sie das nicht waren, können Sie diese Nachricht bedenkenlos ignorieren."
-        },
-        "receipt": {
-            "title": "Kaufbeleg",
-            "numberLabel": "Beleg-Nr.",
-            "dateLabel": "Zahlungsdatum",
-            "sellerLabel": "Verkäufer",
-            "buyerLabel": "Käufer",
-            "paymentLabel": "Zahlungsart",
-            "itemsLabel": "Beschreibung",
-            "priceLabel": "Betrag",
-            "totalLabel": "Gezahlter Gesamtbetrag",
-            "notFiscal": "Dieses Dokument ist ein Kaufbeleg und keine Rechnung im steuerlichen Sinne.",
-            "fileName": "kaufbeleg",
-            "attachmentNote": "Der Beleg zu diesem Kauf ist dieser E-Mail als PDF beigefügt."
         },
         "purchase": {
             "subject": "Ihr Kauf ist bestätigt — Bestellung #{pedido}",

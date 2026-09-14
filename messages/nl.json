@@ -201,21 +201,7 @@
                 "Welke informatie en documenten importeurs verwachten vóór een samenwerking",
                 "Hoe u potentiële distributeurs professioneel benadert",
                 "Welke verkoopargumenten het meest kansrijk zijn bij het eerste contact"
-            ],
-            "sample": {
-                "title": "Hoe de studie er vanbinnen uitziet",
-                "note": "Vier pagina's uit de studie over de Duitse HoReCa-markt. De studies zijn in het Engels geschreven en in dit voorbeeld zijn de contactgegevens in de lijst onleesbaar gemaakt.",
-                "captions": {
-                    "cover": "Omslag en editie",
-                    "contents": "Inhoudsopgave",
-                    "data": "Marktcijfers",
-                    "directory": "Lijst van importeurs en groothandels"
-                }
-            }
-        },
-        "featured": {
-            "title": "Uitgelichte studies",
-            "intro": "Een selectie van de markttoetredingsstudies die vandaag beschikbaar zijn. De volledige catalogus bevat meer landen en sectoren."
+            ]
         },
         "freeSample": {
             "eyebrow": "Gratis voorbeeld",
@@ -417,58 +403,35 @@
         "countries": {
             "AT": "Oostenrijk",
             "BE": "België",
-            "BG": "Bulgarije",
             "CH": "Zwitserland",
             "CZ": "Tsjechië",
             "DE": "Duitsland",
             "DK": "Denemarken",
-            "EE": "Estland",
             "ES": "Spanje",
             "FI": "Finland",
             "FR": "Frankrijk",
             "GB": "Verenigd Koninkrijk",
-            "GR": "Griekenland",
             "HR": "Kroatië",
-            "HU": "Hongarije",
             "IE": "Ierland",
             "IT": "Italië",
-            "LT": "Litouwen",
             "LU": "Luxemburg",
-            "LV": "Letland",
-            "MT": "Malta",
             "NL": "Nederland",
             "NO": "Noorwegen",
             "PL": "Polen",
             "PT": "Portugal",
-            "RO": "Roemenië",
             "SE": "Zweden",
             "SI": "Slovenië",
             "SK": "Slowakije",
             "TR": "Turkije",
             "AR": "Argentinië",
-            "BO": "Bolivia",
             "BR": "Brazilië",
-            "CA": "Canada",
             "CO": "Colombia",
             "EC": "Ecuador",
-            "PE": "Peru",
-            "PY": "Paraguay",
             "US": "Verenigde Staten",
             "UY": "Uruguay",
             "VE": "Venezuela",
             "CN": "China",
-            "ID": "Indonesië",
-            "IN": "India",
-            "JP": "Japan",
-            "KR": "Zuid-Korea",
-            "AE": "Verenigde Arabische Emiraten",
-            "KW": "Koeweit",
-            "OM": "Oman",
-            "QA": "Qatar",
-            "EG": "Egypte",
-            "NG": "Nigeria",
-            "ZA": "Zuid-Afrika",
-            "AU": "Australië"
+            "JP": "Japan"
         },
         "industries": {
             "exotic_fruits": "Exotisch Fruit",
@@ -598,7 +561,6 @@
         "emptyDescription": "Bekijk de catalogus, kies de studie voor de markt die u wilt betreden en kom hier terug om het bestand te downloaden.",
         "emptyCta": "Catalogus verkennen",
         "browseMoreLists": "Meer studies bekijken",
-        "receiptButton": "Bewijs downloaden",
         "statStudies": "Marktentreestudies",
         "guidanceReadTitle": "Begin met de analyse, niet met de profielen",
         "guidanceReadText": "De studie legt uit wat importeurs verwachten en hoe u het eerste contact aanpakt. Dat vooraf lezen voorkomt dat u een goed bedrijf verspeelt met een overhaaste benadering.",
@@ -654,20 +616,6 @@
             "button": "Inloggen op mijn account",
             "resetHint": "Bent u uw wachtwoord vergeten, gebruik dan de hersteloptie op het inlogscherm.",
             "ignore": "Was u dit niet, dan kunt u dit bericht gerust negeren."
-        },
-        "receipt": {
-            "title": "Aankoopbewijs",
-            "numberLabel": "Bewijs nr.",
-            "dateLabel": "Betaaldatum",
-            "sellerLabel": "Verkoper",
-            "buyerLabel": "Koper",
-            "paymentLabel": "Betaalwijze",
-            "itemsLabel": "Omschrijving",
-            "priceLabel": "Bedrag",
-            "totalLabel": "Totaal betaald",
-            "notFiscal": "Dit document is een aankoopbewijs en geen fiscaal document.",
-            "fileName": "aankoopbewijs",
-            "attachmentNote": "Het bewijs van deze aankoop is als pdf bij deze e-mail gevoegd."
         },
         "purchase": {
             "subject": "Uw aankoop is bevestigd — bestelling #{pedido}",

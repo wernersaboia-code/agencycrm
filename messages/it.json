@@ -201,21 +201,7 @@
                 "Quali informazioni e documenti si aspettano gli importatori prima di una collaborazione",
                 "Come avvicinare in modo professionale i potenziali distributori",
                 "Quali argomenti di vendita sono più promettenti al primo contatto"
-            ],
-            "sample": {
-                "title": "Com'è lo studio all'interno",
-                "note": "Quattro pagine dello studio sul mercato HoReCa tedesco. Gli studi sono redatti in inglese e, in questa anteprima, i contatti dell'elenco sono sfocati.",
-                "captions": {
-                    "cover": "Copertina ed edizione",
-                    "contents": "Indice",
-                    "data": "Numeri del mercato",
-                    "directory": "Elenco di importatori e grossisti"
-                }
-            }
-        },
-        "featured": {
-            "title": "Studi in evidenza",
-            "intro": "Una selezione degli studi di ingresso nel mercato disponibili oggi. Il catalogo completo copre altri paesi e settori."
+            ]
         },
         "freeSample": {
             "eyebrow": "Campione gratuito",
@@ -417,58 +403,35 @@
         "countries": {
             "AT": "Austria",
             "BE": "Belgio",
-            "BG": "Bulgaria",
             "CH": "Svizzera",
             "CZ": "Repubblica Ceca",
             "DE": "Germania",
             "DK": "Danimarca",
-            "EE": "Estonia",
             "ES": "Spagna",
             "FI": "Finlandia",
             "FR": "Francia",
             "GB": "Regno Unito",
-            "GR": "Grecia",
             "HR": "Croazia",
-            "HU": "Ungheria",
             "IE": "Irlanda",
             "IT": "Italia",
-            "LT": "Lituania",
             "LU": "Lussemburgo",
-            "LV": "Lettonia",
-            "MT": "Malta",
             "NL": "Paesi Bassi",
             "NO": "Norvegia",
             "PL": "Polonia",
             "PT": "Portogallo",
-            "RO": "Romania",
             "SE": "Svezia",
             "SI": "Slovenia",
             "SK": "Slovacchia",
             "TR": "Turchia",
             "AR": "Argentina",
-            "BO": "Bolivia",
             "BR": "Brasile",
-            "CA": "Canada",
             "CO": "Colombia",
             "EC": "Ecuador",
-            "PE": "Perù",
-            "PY": "Paraguay",
             "US": "Stati Uniti",
             "UY": "Uruguay",
             "VE": "Venezuela",
             "CN": "Cina",
-            "ID": "Indonesia",
-            "IN": "India",
-            "JP": "Giappone",
-            "KR": "Corea del Sud",
-            "AE": "Emirati Arabi Uniti",
-            "KW": "Kuwait",
-            "OM": "Oman",
-            "QA": "Qatar",
-            "EG": "Egitto",
-            "NG": "Nigeria",
-            "ZA": "Sudafrica",
-            "AU": "Australia"
+            "JP": "Giappone"
         },
         "industries": {
             "exotic_fruits": "Frutta Esotica",
@@ -598,7 +561,6 @@
         "emptyDescription": "Esplora il catalogo, scegli lo studio del mercato in cui vuoi entrare e torna qui per scaricare il file.",
         "emptyCta": "Esplora il catalogo",
         "browseMoreLists": "Vedi altri studi",
-        "receiptButton": "Scarica la ricevuta",
         "statStudies": "Studi di mercato",
         "guidanceReadTitle": "Inizi dall'analisi, non dai profili",
         "guidanceReadText": "Lo studio spiega che cosa si aspettano gli importatori e come impostare il primo contatto. Leggerlo prima evita di bruciare una buona azienda con un approccio affrettato.",
@@ -654,20 +616,6 @@
             "button": "Accedi al mio account",
             "resetHint": "Se ha dimenticato la password, usi l'opzione di recupero nella schermata di accesso.",
             "ignore": "Se non è stato lei, può ignorare tranquillamente questo messaggio."
-        },
-        "receipt": {
-            "title": "Ricevuta di acquisto",
-            "numberLabel": "Ricevuta n.",
-            "dateLabel": "Data del pagamento",
-            "sellerLabel": "Venditore",
-            "buyerLabel": "Acquirente",
-            "paymentLabel": "Metodo di pagamento",
-            "itemsLabel": "Descrizione",
-            "priceLabel": "Importo",
-            "totalLabel": "Totale pagato",
-            "notFiscal": "Questo documento è una ricevuta di acquisto e non costituisce documento fiscale.",
-            "fileName": "ricevuta",
-            "attachmentNote": "La ricevuta di questo acquisto è allegata a questa e-mail in PDF."
         },
         "purchase": {
             "subject": "Il suo acquisto è confermato — ordine #{pedido}",

@@ -201,21 +201,7 @@
                 "Quelles informations et quels documents les importateurs attendent avant un partenariat",
                 "Comment approcher les distributeurs potentiels de façon professionnelle",
                 "Quels arguments de vente sont les plus prometteurs lors du premier contact"
-            ],
-            "sample": {
-                "title": "À quoi ressemble l'étude",
-                "note": "Quatre pages de l'étude du marché HoReCa allemand. Les études sont rédigées en anglais et, dans cet aperçu, les coordonnées du répertoire sont floutées.",
-                "captions": {
-                    "cover": "Couverture et édition",
-                    "contents": "Sommaire",
-                    "data": "Chiffres du marché",
-                    "directory": "Répertoire d'importateurs et de grossistes"
-                }
-            }
-        },
-        "featured": {
-            "title": "Études en vedette",
-            "intro": "Une sélection des études d'entrée sur le marché disponibles aujourd'hui. Le catalogue complet couvre d'autres pays et secteurs."
+            ]
         },
         "freeSample": {
             "eyebrow": "Échantillon gratuit",
@@ -417,58 +403,35 @@
         "countries": {
             "AT": "Autriche",
             "BE": "Belgique",
-            "BG": "Bulgarie",
             "CH": "Suisse",
             "CZ": "République tchèque",
             "DE": "Allemagne",
             "DK": "Danemark",
-            "EE": "Estonie",
             "ES": "Espagne",
             "FI": "Finlande",
             "FR": "France",
             "GB": "Royaume-Uni",
-            "GR": "Grèce",
             "HR": "Croatie",
-            "HU": "Hongrie",
             "IE": "Irlande",
             "IT": "Italie",
-            "LT": "Lituanie",
             "LU": "Luxembourg",
-            "LV": "Lettonie",
-            "MT": "Malte",
             "NL": "Pays-Bas",
             "NO": "Norvège",
             "PL": "Pologne",
             "PT": "Portugal",
-            "RO": "Roumanie",
             "SE": "Suède",
             "SI": "Slovénie",
             "SK": "Slovaquie",
             "TR": "Turquie",
             "AR": "Argentine",
-            "BO": "Bolivie",
             "BR": "Brésil",
-            "CA": "Canada",
             "CO": "Colombie",
             "EC": "Équateur",
-            "PE": "Pérou",
-            "PY": "Paraguay",
             "US": "États-Unis",
             "UY": "Uruguay",
             "VE": "Venezuela",
             "CN": "Chine",
-            "ID": "Indonésie",
-            "IN": "Inde",
-            "JP": "Japon",
-            "KR": "Corée du Sud",
-            "AE": "Émirats arabes unis",
-            "KW": "Koweït",
-            "OM": "Oman",
-            "QA": "Qatar",
-            "EG": "Égypte",
-            "NG": "Nigeria",
-            "ZA": "Afrique du Sud",
-            "AU": "Australie"
+            "JP": "Japon"
         },
         "industries": {
             "exotic_fruits": "Fruits Exotiques",
@@ -598,7 +561,6 @@
         "emptyDescription": "Parcourez le catalogue, choisissez l’étude du marché que vous visez et revenez ici pour télécharger le fichier.",
         "emptyCta": "Explorer le catalogue",
         "browseMoreLists": "Voir d’autres études",
-        "receiptButton": "Télécharger le reçu",
         "statStudies": "Études de marché",
         "guidanceReadTitle": "Commencez par l'analyse, pas par les profils",
         "guidanceReadText": "L’étude explique ce qu’attendent les importateurs et comment réussir la prise de contact. La lire d’abord évite de gâcher une bonne entreprise avec une approche précipitée.",
@@ -654,20 +616,6 @@
             "button": "Me connecter à mon compte",
             "resetHint": "Si vous avez oublié votre mot de passe, utilisez l'option de récupération sur la page de connexion.",
             "ignore": "Si ce n'était pas vous, vous pouvez ignorer ce message en toute sécurité."
-        },
-        "receipt": {
-            "title": "Reçu d'achat",
-            "numberLabel": "Reçu n°",
-            "dateLabel": "Date de paiement",
-            "sellerLabel": "Vendeur",
-            "buyerLabel": "Acheteur",
-            "paymentLabel": "Moyen de paiement",
-            "itemsLabel": "Description",
-            "priceLabel": "Montant",
-            "totalLabel": "Total payé",
-            "notFiscal": "Ce document est un reçu d'achat et ne constitue pas un document fiscal.",
-            "fileName": "recu",
-            "attachmentNote": "Le reçu de cet achat est joint à cet e-mail au format PDF."
         },
         "purchase": {
             "subject": "Votre achat est confirmé — commande #{pedido}",
