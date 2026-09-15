@@ -20,6 +20,21 @@ export type VercelWebAnalyticsData = {
     countries: VercelAnalyticsRow[]
     referrers: VercelAnalyticsRow[]
     devices: VercelAnalyticsRow[]
+    allCountries: VercelAnalyticsRow[]
+    filterOptions: {
+        pages: string[]
+        countries: string[]
+        devices: string[]
+        referrers: string[]
+    }
+}
+
+export type VercelAnalyticsFilters = {
+    days: 7 | 30 | 90
+    path?: string
+    country?: string
+    device?: string
+    referrer?: string
 }
 
 type ApiRow = Record<string, unknown> & {
@@ -41,6 +56,8 @@ function emptyData(status: VercelWebAnalyticsData["status"]): VercelWebAnalytics
         countries: [],
         referrers: [],
         devices: [],
+        allCountries: [],
+        filterOptions: { pages: [], countries: [], devices: [], referrers: [] },
     }
 }
 
@@ -59,7 +76,8 @@ async function queryAggregate(
     since: string,
     until: string,
     by: string,
-    limit?: number
+    limit?: number,
+    filter?: string
 ): Promise<ApiRow[]> {
     const url = new URL(API_URL)
     url.searchParams.set("projectId", projectId)
@@ -68,6 +86,7 @@ async function queryAggregate(
     url.searchParams.set("until", until)
     url.searchParams.set("by", by)
     if (limit) url.searchParams.set("limit", String(limit))
+    if (filter) url.searchParams.set("filter", filter)
 
     const response = await fetch(url, {
         headers: { Authorization: `Bearer ${token}` },
@@ -87,30 +106,48 @@ function dimensionRows(rows: ApiRow[], dimension: string): VercelAnalyticsRow[] 
         label: typeof row[dimension] === "string" && row[dimension] ? String(row[dimension]) : "—",
         pageviews: numberValue(row.pageviews),
         visitors: numberValue(row.visitors),
-    }))
+    })).filter((row) => row.label.toLocaleLowerCase() !== "others")
+}
+
+function escapeFilterValue(value: string) {
+    return value.replaceAll("'", "''")
+}
+
+function buildFilter(filters: VercelAnalyticsFilters) {
+    const parts: string[] = []
+    if (filters.path) parts.push(`requestPath eq '${escapeFilterValue(filters.path)}'`)
+    if (filters.country) parts.push(`country eq '${escapeFilterValue(filters.country)}'`)
+    if (filters.device) parts.push(`deviceType eq '${escapeFilterValue(filters.device)}'`)
+    if (filters.referrer) parts.push(`referrerHostname eq '${escapeFilterValue(filters.referrer)}'`)
+    return parts.join(" and ")
 }
 
 const getCachedVercelWebAnalytics = unstable_cache(
-    async (): Promise<VercelWebAnalyticsData> => {
+    async (filters: VercelAnalyticsFilters): Promise<VercelWebAnalyticsData> => {
         const token = process.env.VERCEL_ANALYTICS_TOKEN
         const projectId = process.env.VERCEL_ANALYTICS_PROJECT_ID || process.env.VERCEL_PROJECT_ID
         const teamId = process.env.VERCEL_ANALYTICS_TEAM_ID
 
-        if (!token || !projectId || !teamId) return emptyData("not_configured")
+        if (!token || !projectId || !teamId) return { ...emptyData("not_configured"), periodDays: filters.days }
 
         const untilDate = new Date()
         const sinceDate = new Date(untilDate)
-        sinceDate.setUTCDate(sinceDate.getUTCDate() - 29)
+        sinceDate.setUTCDate(sinceDate.getUTCDate() - (filters.days - 1))
         const since = dateOnly(sinceDate)
         const until = dateOnly(untilDate)
 
         try {
-            const [dailyRows, pageRows, countryRows, referrerRows, deviceRows] = await Promise.all([
-                queryAggregate(token, projectId, teamId, since, until, "day"),
-                queryAggregate(token, projectId, teamId, since, until, "requestPath", 8),
-                queryAggregate(token, projectId, teamId, since, until, "country", 6),
-                queryAggregate(token, projectId, teamId, since, until, "referrerHostname", 6),
-                queryAggregate(token, projectId, teamId, since, until, "deviceType", 5),
+            const activeFilter = buildFilter(filters)
+            const [dailyRows, pageRows, countryRows, referrerRows, deviceRows, allPages, allCountries, allDevices, allReferrers] = await Promise.all([
+                queryAggregate(token, projectId, teamId, since, until, "day", undefined, activeFilter),
+                queryAggregate(token, projectId, teamId, since, until, "requestPath", 10, activeFilter),
+                queryAggregate(token, projectId, teamId, since, until, "country", 250, activeFilter),
+                queryAggregate(token, projectId, teamId, since, until, "referrerHostname", 10, activeFilter),
+                queryAggregate(token, projectId, teamId, since, until, "deviceType", 10, activeFilter),
+                queryAggregate(token, projectId, teamId, since, until, "requestPath", 250),
+                queryAggregate(token, projectId, teamId, since, until, "country", 250),
+                queryAggregate(token, projectId, teamId, since, until, "deviceType", 50),
+                queryAggregate(token, projectId, teamId, since, until, "referrerHostname", 250),
             ])
 
             const daily = dailyRows.map((row) => ({
@@ -122,24 +159,31 @@ const getCachedVercelWebAnalytics = unstable_cache(
 
             return {
                 status: "ready",
-                periodDays: 30,
+                periodDays: filters.days,
                 pageviews: daily.reduce((sum, row) => sum + row.pageviews, 0),
                 visitors: daily.reduce((sum, row) => sum + row.visitors, 0),
                 daily,
                 topPages: dimensionRows(pageRows, "requestPath"),
-                countries: dimensionRows(countryRows, "country"),
+                countries: dimensionRows(countryRows, "country").slice(0, 6),
                 referrers: dimensionRows(referrerRows, "referrerHostname"),
                 devices: dimensionRows(deviceRows, "deviceType"),
+                allCountries: dimensionRows(countryRows, "country"),
+                filterOptions: {
+                    pages: dimensionRows(allPages, "requestPath").map((row) => row.label),
+                    countries: dimensionRows(allCountries, "country").map((row) => row.label),
+                    devices: dimensionRows(allDevices, "deviceType").map((row) => row.label),
+                    referrers: dimensionRows(allReferrers, "referrerHostname").map((row) => row.label),
+                },
             }
         } catch (error) {
             console.error("[vercel-analytics] Falha ao consultar métricas:", error)
-            return emptyData("error")
+            return { ...emptyData("error"), periodDays: filters.days }
         }
     },
-    ["vercel-web-analytics-30d-v1"],
+    ["vercel-web-analytics-filtered-v2"],
     { revalidate: 900 }
 )
 
-export async function getVercelWebAnalytics() {
-    return getCachedVercelWebAnalytics()
+export async function getVercelWebAnalytics(filters: VercelAnalyticsFilters = { days: 30 }) {
+    return getCachedVercelWebAnalytics(filters)
 }

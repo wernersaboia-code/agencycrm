@@ -31,7 +31,8 @@ describe("getVercelWebAnalytics", () => {
     })
 
     it("soma a série diária e normaliza os rankings", async () => {
-        const fetchMock = vi.fn(async (input: URL | RequestInfo) => {
+        const fetchMock = vi.fn(async (input: URL | RequestInfo, _init?: RequestInit) => {
+            void _init
             const url = new URL(String(input))
             const by = url.searchParams.get("by")
             const rows = by === "day"
@@ -54,7 +55,9 @@ describe("getVercelWebAnalytics", () => {
         expect(result.pageviews).toBe(30)
         expect(result.visitors).toBe(19)
         expect(result.topPages[0]).toEqual({ label: "/de", pageviews: 9, visitors: 6 })
-        expect(fetchMock).toHaveBeenCalledTimes(5)
+        expect(result.allCountries[0]).toEqual({ label: "DE", pageviews: 9, visitors: 6 })
+        expect(result.filterOptions.pages).toContain("/de")
+        expect(fetchMock).toHaveBeenCalledTimes(9)
         expect(fetchMock.mock.calls[0]?.[1]).toMatchObject({
             headers: { Authorization: "Bearer token-teste" },
         })

@@ -15,6 +15,7 @@ import {
     LogOut,
     LifeBuoy,
     BarChart3,
+    ChartNoAxesCombined,
     FileText,
     FileDown,
     PencilLine,
@@ -78,6 +79,7 @@ export function AdminSidebar() {
     const secondaryItems: MenuItem[] = [
         { titleKey: "support", href: "/super-admin/support", icon: LifeBuoy },
         { titleKey: "analytics", href: "/super-admin/analytics", icon: BarChart3 },
+        { titleKey: "webAnalytics", href: "/super-admin/web-analytics", icon: ChartNoAxesCombined },
         { titleKey: "freeSample", href: "/super-admin/marketplace/free-sample", icon: FileDown },
         { titleKey: "settings", href: "/super-admin/settings", icon: Settings },
     ]
