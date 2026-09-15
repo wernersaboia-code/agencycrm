@@ -17,6 +17,7 @@ import {
     BarChart3,
     FileText,
     FileDown,
+    PencilLine,
     ScrollText,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -69,6 +70,7 @@ export function AdminSidebar() {
                 { titleKey: "leadLists", href: "/super-admin/marketplace/lists", icon: Package },
                 { titleKey: "sales", href: "/super-admin/marketplace/purchases", icon: ShoppingCart },
                 { titleKey: "blog", href: "/super-admin/blog", icon: FileText },
+                { titleKey: "content", href: "/super-admin/content", icon: PencilLine },
             ],
         },
     ]
@@ -129,7 +131,7 @@ export function AdminSidebar() {
                                         )}
                                     >
                                         <item.icon className="h-4 w-4" />
-                                        {t(item.titleKey)}
+                                        {item.titleKey === "content" ? "Conteúdo do site" : t(item.titleKey)}
                                     </Link>
                                 )
                             })}

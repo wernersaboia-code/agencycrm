@@ -973,3 +973,24 @@ model AuditLog {
   @@index([createdAt])
   @@map("audit_logs")
 }
+
+// ==================== CONTEÚDO DO SITE ====================
+
+/// Texto editável do site público. Cada chave corresponde a uma mensagem
+/// existente em `messages/<locale>.json` (por exemplo `landing.hero.title`).
+/// O rascunho nunca aparece publicamente: só `publishedValue` é mesclado às
+/// traduções durante a renderização.
+model SiteText {
+  id             String   @id @default(cuid())
+  locale         String
+  key            String
+  draftValue     String?  @db.Text
+  publishedValue String?  @db.Text
+  updatedById    String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([locale, key])
+  @@index([locale])
+  @@map("site_texts")
+}
