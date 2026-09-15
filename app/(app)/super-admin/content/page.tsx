@@ -1,6 +1,10 @@
 import { editableLocales, getSiteTexts } from "@/actions/admin/site-content"
 import { SiteContentEditor } from "@/components/admin/site-content-editor"
 
+// Esta rota exige sessão de administrador e consulta o banco; tentar coletá-la
+// durante o build do Vercel faz o Next executar a action sem uma sessão.
+export const dynamic = "force-dynamic"
+
 const localeNames: Record<(typeof editableLocales)[number], string> = {
     pt: "Português", en: "English", de: "Deutsch", es: "Español", fr: "Français", it: "Italiano", nl: "Nederlands",
 }
