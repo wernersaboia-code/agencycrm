@@ -12,6 +12,9 @@ import {
     ShoppingCart,
     TrendingUp,
     Users,
+    Eye,
+    Globe2,
+    TriangleAlert,
 } from "lucide-react"
 import { getAdminTranslations } from "@/lib/i18n/admin-locale"
 import { prisma } from "@/lib/prisma"
@@ -20,6 +23,8 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { formatCurrency } from "@/lib/utils"
+import { getVercelWebAnalytics, type VercelWebAnalyticsData } from "@/lib/analytics/vercel-web-analytics"
+import { VercelAnalyticsChart } from "@/components/admin/vercel-analytics-chart"
 
 export async function generateMetadata() {
     const t = await getAdminTranslations("admin.analytics")
@@ -192,7 +197,7 @@ async function getAnalyticsData() {
 
 export default async function SuperAdminAnalyticsPage() {
     const t = await getAdminTranslations("admin.analytics")
-    const data = await getAnalyticsData()
+    const [data, webAnalytics] = await Promise.all([getAnalyticsData(), getVercelWebAnalytics()])
     const activationRate = percentage(data.activeUsers, data.usersTotal)
     const crmMomentum = data.leadsLast30 + data.campaignsLast30 + data.callsTotal
     const marketplaceMomentum = data.purchasesLast30 + data.marketplaceLists
@@ -254,6 +259,8 @@ export default async function SuperAdminAnalyticsPage() {
                     tone="amber"
                 />
             </div>
+
+            <VercelAnalyticsPanel data={webAnalytics} t={t} />
 
             <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
                 <Card>
@@ -325,6 +332,74 @@ export default async function SuperAdminAnalyticsPage() {
                 <TopLists data={data} t={t} />
             </div>
         </div>
+    )
+}
+
+function VercelAnalyticsPanel({ data, t }: { data: VercelWebAnalyticsData; t: Awaited<ReturnType<typeof getAdminTranslations>> }) {
+    if (data.status !== "ready") {
+        return (
+            <Card className="border-amber-300 dark:border-amber-900">
+                <CardContent className="flex items-start gap-3 py-5">
+                    <TriangleAlert className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
+                    <div>
+                        <p className="font-medium">{t("vercelUnavailable")}</p>
+                        <p className="text-sm text-muted-foreground">
+                            {data.status === "not_configured" ? t("vercelNotConfigured") : t("vercelError")}
+                        </p>
+                    </div>
+                </CardContent>
+            </Card>
+        )
+    }
+
+    const viewsPerVisitor = data.visitors > 0 ? (data.pageviews / data.visitors).toFixed(1) : "0"
+
+    return (
+        <section className="space-y-4">
+            <div className="flex flex-wrap items-end justify-between gap-3">
+                <div>
+                    <h2 className="text-2xl font-bold tracking-tight">{t("vercelTitle")}</h2>
+                    <p className="text-sm text-muted-foreground">{t("vercelSubtitle")}</p>
+                </div>
+                <Badge variant="outline">{t("last30Days")}</Badge>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-3">
+                <MetricCard title={t("pageviews")} value={data.pageviews.toLocaleString()} description={t("pageviewsDesc")} icon={Eye} tone="indigo" />
+                <MetricCard title={t("visitors")} value={data.visitors.toLocaleString()} description={t("visitorsDesc")} icon={Users} tone="blue" />
+                <MetricCard title={t("viewsPerVisitor")} value={viewsPerVisitor} description={t("viewsPerVisitorDesc")} icon={Globe2} tone="violet" />
+            </div>
+
+            <div className="grid gap-6 xl:grid-cols-[1.4fr_1fr]">
+                <Card>
+                    <CardHeader><CardTitle>{t("trafficEvolution")}</CardTitle></CardHeader>
+                    <CardContent><VercelAnalyticsChart data={data.daily} /></CardContent>
+                </Card>
+                <AnalyticsRanking title={t("topPagesVercel")} rows={data.topPages} />
+            </div>
+
+            <div className="grid gap-6 md:grid-cols-3">
+                <AnalyticsRanking title={t("topCountries")} rows={data.countries} />
+                <AnalyticsRanking title={t("topReferrers")} rows={data.referrers} />
+                <AnalyticsRanking title={t("devices")} rows={data.devices} />
+            </div>
+        </section>
+    )
+}
+
+function AnalyticsRanking({ title, rows }: { title: string; rows: VercelWebAnalyticsData["topPages"] }) {
+    return (
+        <Card>
+            <CardHeader><CardTitle className="text-base">{title}</CardTitle></CardHeader>
+            <CardContent className="space-y-3">
+                {rows.length === 0 ? <EmptyText text="—" /> : rows.map((row) => (
+                    <div key={row.label} className="flex items-center justify-between gap-3 text-sm">
+                        <span className="min-w-0 truncate" title={row.label}>{row.label}</span>
+                        <span className="shrink-0 font-semibold tabular-nums">{row.pageviews.toLocaleString()}</span>
+                    </div>
+                ))}
+            </CardContent>
+        </Card>
     )
 }
 
