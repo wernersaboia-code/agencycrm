@@ -1,11 +1,12 @@
 "use server"
 
-import { revalidatePath } from "next/cache"
+import { revalidatePath, updateTag } from "next/cache"
 import { z } from "zod"
 import { prisma } from "@/lib/prisma"
 import { requireAdmin } from "@/lib/auth"
 import type { Locale } from "@/lib/i18n/locales"
 import { editableLocales, editableNamespaces, type EditableLocale } from "@/lib/site-content/config"
+import { SITE_TEXTS_CACHE_TAG } from "@/lib/site-content/published"
 
 const inputSchema = z.object({
     locale: z.enum(editableLocales),
@@ -91,6 +92,9 @@ export async function publishSiteText(input: unknown) {
         update: { draftValue: parsed.data.value, publishedValue: parsed.data.value, updatedById: admin.id },
     })
 
+    // Server Action: updateTag invalida imediatamente e garante que o próprio
+    // administrador já veja o texto novo na visita seguinte.
+    updateTag(SITE_TEXTS_CACHE_TAG)
     // A alteração é carregada junto das traduções; invalidar os layouts faz o
     // CDN descartar possíveis páginas pré-renderizadas de todos os idiomas.
     revalidatePath("/", "layout")

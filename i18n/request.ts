@@ -3,6 +3,7 @@ import { cookies } from "next/headers"
 import { isLocale, resolveMessagesLocale } from "@/lib/i18n/locales"
 import { resolveSiteLocale } from "@/lib/i18n/resolve-locale"
 import { loadMessages } from "@/lib/i18n/load-messages"
+import { loadPublicMessages } from "@/lib/site-content/published"
 
 // O locale vem do segmento de rota ([locale]) quando disponível. Para as áreas
 // internas (páginas sem [locale]), cai no cookie NEXT_LOCALE e, por fim, no pt.
@@ -29,5 +30,11 @@ export default getRequestConfig(async ({ requestLocale }) => {
     const messagesLocale = resolveMessagesLocale(locale)
 
     // loadMessages cuida do fallback de chave ausente (ver comentário lá).
-    return { locale, messages: await loadMessages(messagesLocale) }
+    // Somente rotas públicas com locale na URL precisam dos textos editáveis.
+    // Login, painel e e-mails permanecem 100% estáticos e não aguardam o banco.
+    const messages = explicit
+        ? await loadPublicMessages(messagesLocale)
+        : await loadMessages(messagesLocale)
+
+    return { locale, messages }
 })
