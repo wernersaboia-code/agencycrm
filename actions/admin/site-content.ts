@@ -5,10 +5,8 @@ import { z } from "zod"
 import { prisma } from "@/lib/prisma"
 import { requireAdmin } from "@/lib/auth"
 import type { Locale } from "@/lib/i18n/locales"
+import { editableLocales, editableNamespaces, type EditableLocale } from "@/lib/site-content/config"
 
-export const editableLocales = ["pt", "de", "en", "es", "fr", "it", "nl"] as const
-type EditableLocale = (typeof editableLocales)[number]
-const editableNamespaces = ["landing", "about", "faq", "footer", "nav", "terms", "privacy", "refund"]
 const inputSchema = z.object({
     locale: z.enum(editableLocales),
     key: z.string().regex(/^[a-zA-Z0-9_.-]+$/).max(180),

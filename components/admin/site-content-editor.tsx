@@ -7,9 +7,9 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { saveSiteTextDraft, publishSiteText, type SiteTextField } from "@/actions/admin/site-content"
-import { type editableLocales } from "@/actions/admin/site-content"
+import type { EditableLocale } from "@/lib/site-content/config"
 
-export function SiteContentEditor({ locale, fields }: { locale: (typeof editableLocales)[number]; fields: SiteTextField[] }) {
+export function SiteContentEditor({ locale, fields }: { locale: EditableLocale; fields: SiteTextField[] }) {
     const [query, setQuery] = useState("")
     const [values, setValues] = useState<Record<string, string>>(() =>
         Object.fromEntries(fields.map((field) => [field.key, field.draftValue ?? field.publishedValue ?? field.originalValue]))

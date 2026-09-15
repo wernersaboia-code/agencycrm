@@ -1,17 +1,18 @@
-import { editableLocales, getSiteTexts } from "@/actions/admin/site-content"
+import { getSiteTexts } from "@/actions/admin/site-content"
 import { SiteContentEditor } from "@/components/admin/site-content-editor"
+import { editableLocales, type EditableLocale } from "@/lib/site-content/config"
 
 // Esta rota exige sessão de administrador e consulta o banco; tentar coletá-la
 // durante o build do Vercel faz o Next executar a action sem uma sessão.
 export const dynamic = "force-dynamic"
 
-const localeNames: Record<(typeof editableLocales)[number], string> = {
+const localeNames: Record<EditableLocale, string> = {
     pt: "Português", en: "English", de: "Deutsch", es: "Español", fr: "Français", it: "Italiano", nl: "Nederlands",
 }
 
 export default async function SiteContentPage({ searchParams }: { searchParams: Promise<{ locale?: string }> }) {
     const params = await searchParams
-    const locale = editableLocales.includes(params.locale as (typeof editableLocales)[number]) ? params.locale as (typeof editableLocales)[number] : "pt"
+    const locale = editableLocales.includes(params.locale as EditableLocale) ? params.locale as EditableLocale : "pt"
     const fields = await getSiteTexts(locale)
 
     return (
