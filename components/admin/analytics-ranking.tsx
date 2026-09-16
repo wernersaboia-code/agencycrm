@@ -16,7 +16,7 @@ function RankingRows({ rows, total }: { rows: VercelAnalyticsRow[]; total: numbe
     return (
         <div className="space-y-3">
             {rows.map((row) => {
-                const percentage = total > 0 ? (row.pageviews / total) * 100 : 0
+                const percentage = total > 0 ? (row.visitors / total) * 100 : 0
                 return (
                     <div key={row.label} className="space-y-1.5">
                         <div className="flex items-center justify-between gap-3 text-sm">
