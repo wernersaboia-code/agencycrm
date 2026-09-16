@@ -1,10 +1,11 @@
 import Link from "next/link"
-import { BarChart3, MousePointerClick, Search, Target } from "lucide-react"
+import { BarChart3, CircleHelp, MousePointerClick, Search, Target } from "lucide-react"
 import { requireAdmin } from "@/lib/auth"
 import { getGoogleSearchConsoleAnalytics, type SearchConsoleRow } from "@/lib/analytics/google-search-console"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { countryLabel } from "@/lib/countries"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 export const dynamic = "force-dynamic"
 
@@ -23,7 +24,7 @@ export default async function SearchConsolePage({ searchParams }: { searchParams
 
         {data.status !== "ready" ? <ConnectionState status={data.status} error={params.error} /> : <>
             <Card><CardContent className="flex flex-wrap items-end justify-between gap-3 py-4"><div><p className="text-sm font-medium">Propriedade conectada</p><p className="text-sm text-muted-foreground">{data.siteUrl}</p></div><div className="flex gap-2">{[7, 28, 90].map((value) => <Button key={value} size="sm" variant={value === days ? "default" : "outline"} asChild><Link href={`/super-admin/search-console?days=${value}`}>{value} dias</Link></Button>)}</div></CardContent></Card>
-            <div className="grid gap-4 md:grid-cols-4"><Kpi title="Cliques" value={data.clicks.toLocaleString()} icon={MousePointerClick} /><Kpi title="Impressões" value={data.impressions.toLocaleString()} icon={Search} /><Kpi title="CTR médio" value={`${(data.ctr * 100).toFixed(1)}%`} icon={Target} /><Kpi title="Posição média" value={data.position.toFixed(1)} icon={BarChart3} /></div>
+            <TooltipProvider><div className="grid gap-4 md:grid-cols-4"><Kpi title="Cliques" value={data.clicks.toLocaleString()} description="Quantas vezes alguém clicou no Easy Prospect depois de encontrá-lo nos resultados do Google." icon={MousePointerClick} /><Kpi title="Impressões" value={data.impressions.toLocaleString()} description="Quantas vezes uma página do Easy Prospect apareceu na tela de alguém em uma busca do Google, mesmo sem receber clique." icon={Search} /><Kpi title="CTR médio" value={`${(data.ctr * 100).toFixed(1)}%`} description="A porcentagem de impressões que se transformaram em cliques. Por exemplo: CTR de 2% significa 2 cliques a cada 100 aparições no Google." icon={Target} /><Kpi title="Posição média" value={data.position.toFixed(1)} description="A colocação média do melhor resultado do site no Google. Quanto menor o número, melhor: posição 1 fica no topo da página de resultados." icon={BarChart3} /></div></TooltipProvider>
             <Card><CardHeader><CardTitle>Evolução diária</CardTitle></CardHeader><CardContent><div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">{data.daily.map((item) => <div key={item.date} className="rounded-md border p-3"><p className="text-xs text-muted-foreground">{item.date}</p><p className="font-semibold">{item.clicks} cliques</p><p className="text-sm text-muted-foreground">{item.impressions} impressões</p></div>)}</div></CardContent></Card>
             <div className="grid gap-6 xl:grid-cols-2"><Ranking title="Consultas mais encontradas" rows={data.queries} /><Ranking title="Páginas com melhor desempenho" rows={data.pages} /></div>
             <div className="grid gap-6 xl:grid-cols-2"><Ranking title="Países" rows={data.countries} countryRows /><Ranking title="Dispositivos" rows={data.devices} /></div>
@@ -36,7 +37,7 @@ function ConnectionState({ status, error }: { status: string; error?: string }) 
     return <Card><CardContent className="space-y-4 py-8 text-center"><p className="text-lg font-semibold">{unavailable ? "Configuração OAuth pendente" : "Conecte o Google Search Console"}</p><p className="mx-auto max-w-xl text-sm text-muted-foreground">{error ? "Não foi possível concluir a conexão. Tente novamente." : unavailable ? "Cadastre GOOGLE_SEARCH_CONSOLE_CLIENT_ID e GOOGLE_SEARCH_CONSOLE_CLIENT_SECRET na Vercel e faça um redeploy." : "Autorize a conta proprietária da propriedade do Easy Prospect para exibir cliques, impressões, consultas e páginas."}</p>{!unavailable && <Button asChild><Link href="/api/google-search-console/connect">Conectar Google Search Console</Link></Button>}</CardContent></Card>
 }
 
-function Kpi({ title, value, icon: Icon }: { title: string; value: string; icon: React.ComponentType<{ className?: string }> }) { return <Card><CardContent className="flex items-center justify-between py-5"><div><p className="text-sm text-muted-foreground">{title}</p><p className="text-3xl font-bold">{value}</p></div><Icon className="h-7 w-7 text-admin" /></CardContent></Card> }
+function Kpi({ title, value, description, icon: Icon }: { title: string; value: string; description: string; icon: React.ComponentType<{ className?: string }> }) { return <Card><CardContent className="flex items-center justify-between py-5"><div><div className="flex items-center gap-1"><p className="text-sm text-muted-foreground">{title}</p><Tooltip><TooltipTrigger asChild><button type="button" aria-label={`O que significa ${title}`} className="rounded-sm text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"><CircleHelp className="h-3.5 w-3.5" /></button></TooltipTrigger><TooltipContent className="max-w-72" sideOffset={6}>{description}</TooltipContent></Tooltip></div><p className="text-3xl font-bold">{value}</p></div><Icon className="h-7 w-7 text-admin" /></CardContent></Card> }
 
 function Ranking({ title, rows, countryRows = false }: { title: string; rows: SearchConsoleRow[]; countryRows?: boolean }) {
     const preview = rows.slice(0, 10)
