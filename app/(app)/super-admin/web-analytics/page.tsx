@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { VercelAnalyticsChart } from "@/components/admin/vercel-analytics-chart"
 import { CountryAnalytics } from "@/components/admin/country-analytics"
-import { AnalyticsRanking } from "@/components/admin/analytics-ranking"
+import { AnalyticsRanking, AnalyticsTabbedRanking } from "@/components/admin/analytics-ranking"
 import { getAdminLocale, getAdminTranslations } from "@/lib/i18n/admin-locale"
 import { getVercelWebAnalytics, type VercelAnalyticsFilters } from "@/lib/analytics/vercel-web-analytics"
 
@@ -28,6 +28,7 @@ export default async function WebAnalyticsPage({ searchParams }: { searchParams:
         path: selected(params.path),
         country: selected(params.country, 10),
         device: selected(params.device, 50),
+        browser: selected(params.browser, 80),
         referrer: selected(params.referrer),
     }
     const [data, locale, t] = await Promise.all([
@@ -45,13 +46,14 @@ export default async function WebAnalyticsPage({ searchParams }: { searchParams:
             <Card>
                 <CardHeader><CardTitle className="text-base">{t("filters")}</CardTitle></CardHeader>
                 <CardContent>
-                    <form className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
+                    <form className="grid gap-3 md:grid-cols-2 xl:grid-cols-6">
                         <FilterSelect name="days" label={t("period")} value={String(days)} allLabel={t("all")} options={[{ value: "1", label: t("last24Hours") }, ...[7, 30, 90].map((count) => ({ value: String(count), label: t("days", { count }) }))]} />
                         <FilterSelect name="path" label={t("page")} value={filters.path} allLabel={t("all")} options={data.filterOptions.pages.map((value) => ({ value, label: value }))} />
                         <FilterSelect name="country" label={t("country")} value={filters.country} allLabel={t("all")} options={data.filterOptions.countries.map((value) => ({ value, label: `${countryFlag(value)} ${countryName(value, locale)}` }))} />
                         <FilterSelect name="device" label={t("devices")} value={filters.device} allLabel={t("all")} options={data.filterOptions.devices.map((value) => ({ value, label: value }))} />
+                        <FilterSelect name="browser" label={t("browsers")} value={filters.browser} allLabel={t("all")} options={data.filterOptions.browsers.map((value) => ({ value, label: value }))} />
                         <FilterSelect name="referrer" label={t("referrer")} value={filters.referrer} allLabel={t("all")} options={data.filterOptions.referrers.map((value) => ({ value, label: value }))} />
-                        <div className="flex gap-2 md:col-span-2 xl:col-span-5"><Button type="submit">{t("applyFilters")}</Button><Button variant="outline" asChild><Link href="/super-admin/web-analytics">{t("clearFilters")}</Link></Button></div>
+                        <div className="flex gap-2 md:col-span-2 xl:col-span-6"><Button type="submit">{t("applyFilters")}</Button><Button variant="outline" asChild><Link href="/super-admin/web-analytics">{t("clearFilters")}</Link></Button></div>
                     </form>
                 </CardContent>
             </Card>
@@ -67,8 +69,8 @@ export default async function WebAnalyticsPage({ searchParams }: { searchParams:
                     </div>
                     <p className="text-sm text-muted-foreground">{t("bounceRateUnavailable")}</p>
                     <Card><CardHeader><CardTitle>{days === 1 ? t("trafficLast24Hours") : t("trafficEvolution")}</CardTitle></CardHeader><CardContent><VercelAnalyticsChart data={data.daily} /></CardContent></Card>
-                    <div className="grid gap-6 xl:grid-cols-2"><AnalyticsRanking title={t("topPagesVercel")} rows={data.allPages} total={data.pageviews} labels={rankingLabels(t, "topPagesVercel", data.allPages.length)} /><CountryAnalytics rows={data.allCountries} total={data.pageviews} locale={locale} labels={{ title: t("countries"), viewAll: t("viewAllCountries", { count: data.allCountries.length }), dialogTitle: t("allCountries"), dialogDescription: t("allCountriesDesc") }} /></div>
-                    <div className="grid gap-6 xl:grid-cols-3"><AnalyticsRanking title={t("topReferrers")} rows={data.allReferrers} total={data.pageviews} labels={rankingLabels(t, "topReferrers", data.allReferrers.length)} /><AnalyticsRanking title={t("devices")} rows={data.allDevices} total={data.pageviews} labels={rankingLabels(t, "devices", data.allDevices.length)} /><AnalyticsRanking title={t("operatingSystems")} rows={data.allOperatingSystems} total={data.pageviews} labels={rankingLabels(t, "operatingSystems", data.allOperatingSystems.length)} /></div>
+                    <div className="grid gap-6 xl:grid-cols-2"><AnalyticsRanking title={t("topPagesVercel")} rows={data.allPages} total={data.visitors} labels={rankingLabels(t, "topPagesVercel", data.allPages.length)} /><CountryAnalytics rows={data.allCountries} total={data.visitors} locale={locale} labels={{ title: t("countries"), viewAll: t("viewAllCountries", { count: data.allCountries.length }), dialogTitle: t("allCountries"), dialogDescription: t("allCountriesDesc") }} /></div>
+                    <div className="grid gap-6 xl:grid-cols-3"><AnalyticsRanking title={t("topReferrers")} rows={data.allReferrers} total={data.visitors} labels={rankingLabels(t, "topReferrers", data.allReferrers.length)} /><AnalyticsTabbedRanking total={data.visitors} primary={{ title: t("devices"), rows: data.allDevices, labels: rankingLabels(t, "devices", data.allDevices.length) }} secondary={{ title: t("browsers"), rows: data.allBrowsers, labels: rankingLabels(t, "browsers", data.allBrowsers.length) }} /><AnalyticsRanking title={t("operatingSystems")} rows={data.allOperatingSystems} total={data.visitors} labels={rankingLabels(t, "operatingSystems", data.allOperatingSystems.length)} /></div>
                 </>
             )}
         </div>

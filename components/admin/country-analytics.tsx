@@ -27,7 +27,7 @@ function CountryRows({ rows, total, locale }: { rows: VercelAnalyticsRow[]; tota
                     <div key={row.label} className="space-y-1.5">
                         <div className="flex items-center justify-between gap-3 text-sm">
                             <span className="min-w-0 truncate"><span className="mr-2 text-lg">{countryFlag(row.label)}</span>{countryName(row.label, locale)}</span>
-                            <span className="shrink-0 text-right tabular-nums"><strong>{percentage.toFixed(1)}%</strong><span className="ml-2 text-muted-foreground">{row.pageviews.toLocaleString()} / {row.visitors.toLocaleString()}</span></span>
+                            <span className="shrink-0 text-right tabular-nums"><strong>{percentage.toFixed(1)}%</strong><span className="ml-2 text-muted-foreground">{row.visitors.toLocaleString()} / {row.pageviews.toLocaleString()}</span></span>
                         </div>
                         <div className="h-1.5 overflow-hidden rounded-full bg-muted"><div className="h-full rounded-full bg-admin" style={{ width: `${Math.min(100, percentage)}%` }} /></div>
                     </div>
