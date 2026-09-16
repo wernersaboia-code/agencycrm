@@ -177,16 +177,11 @@ const getCachedVercelWebAnalytics = unstable_cache(
         sinceDate.setUTCHours(sinceDate.getUTCHours() - 24)
         const localUntil = dateInTimeZone(untilDate, timeZone)
         const since = filters.days === 1 ? sinceDate.toISOString() : subtractCalendarDays(localUntil, filters.days - 1)
-        const until = filters.days === 1 ? untilDate.toISOString() : localUntil
+        const until = filters.days === 1 ? untilDate.toISOString() : subtractCalendarDays(localUntil, -1)
 
         try {
             const activeFilter = buildFilter(filters)
-            const baseResults = await Promise.allSettled([
-                queryAggregate(token, projectId, teamId, since, until, filters.days === 1 ? "hour" : "day", undefined, activeFilter),
-                queryAggregate(token, projectId, teamId, since, until, "[]", undefined, activeFilter),
-            ])
-            const dailyRows = settledRows(baseResults[0], "evolução do tráfego")
-            const totalRows = settledRows(baseResults[1], "totais agregados")
+            const dailyRows = await queryAggregate(token, projectId, teamId, since, until, filters.days === 1 ? "hour" : "day", undefined, activeFilter)
             const filteredResults = await Promise.allSettled([
                 queryAggregate(token, projectId, teamId, since, until, "requestPath", 100, activeFilter),
                 queryAggregate(token, projectId, teamId, since, until, "country", 100, activeFilter),
@@ -229,9 +224,8 @@ const getCachedVercelWebAnalytics = unstable_cache(
                 pageviews: numberValue(row.pageviews),
                 visitors: numberValue(row.visitors),
             }))
-            const total = totalRows[0]
-            const pageviews = total ? numberValue(total.pageviews) : daily.reduce((sum, row) => sum + row.pageviews, 0)
-            const visitors = total ? numberValue(total.visitors) : daily.reduce((sum, row) => sum + row.visitors, 0)
+            const pageviews = daily.reduce((sum, row) => sum + row.pageviews, 0)
+            const visitors = daily.reduce((sum, row) => sum + row.visitors, 0)
 
             return {
                 status: "ready",
@@ -264,7 +258,7 @@ const getCachedVercelWebAnalytics = unstable_cache(
             return { ...emptyData("error"), periodDays: filters.days }
         }
     },
-    ["vercel-web-analytics-filtered-v6"],
+    ["vercel-web-analytics-filtered-v7"],
     { revalidate: 60 }
 )
 
