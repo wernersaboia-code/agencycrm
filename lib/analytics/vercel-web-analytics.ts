@@ -135,9 +135,23 @@ async function queryAggregate(
     return payload.data && typeof payload.data === "object" ? [payload.data] : []
 }
 
+function fallbackDimensionLabel(dimension: string) {
+    switch (dimension) {
+        case "referrerHostname": return "Direto"
+        case "deviceType": return "Dispositivo desconhecido"
+        case "osName": return "Sistema operacional desconhecido"
+        case "browserName": return "Navegador desconhecido"
+        case "requestPath": return "Página não identificada"
+        case "country": return "País não identificado"
+        default: return "Não identificado"
+    }
+}
+
 function dimensionRows(rows: ApiRow[], dimension: string): VercelAnalyticsRow[] {
     return rows.map((row) => ({
-        label: typeof row[dimension] === "string" && row[dimension] ? String(row[dimension]) : "—",
+        label: typeof row[dimension] === "string" && String(row[dimension]).trim()
+            ? String(row[dimension]).trim()
+            : fallbackDimensionLabel(dimension),
         pageviews: numberValue(row.pageviews),
         visitors: numberValue(row.visitors),
     })).filter((row) => row.label.toLocaleLowerCase() !== "others")
@@ -176,8 +190,10 @@ const getCachedVercelWebAnalytics = unstable_cache(
         const sinceDate = new Date(untilDate)
         sinceDate.setUTCHours(sinceDate.getUTCHours() - 24)
         const localUntil = dateInTimeZone(untilDate, timeZone)
-        const since = filters.days === 1 ? sinceDate.toISOString() : subtractCalendarDays(localUntil, filters.days - 1)
-        const until = filters.days === 1 ? untilDate.toISOString() : subtractCalendarDays(localUntil, -1)
+        // A consulta diária usa `until` exclusivo. Para acompanhar o painel da
+        // Vercel, os períodos de 7/30/90 dias terminam no último dia completo.
+        const since = filters.days === 1 ? sinceDate.toISOString() : subtractCalendarDays(localUntil, filters.days)
+        const until = filters.days === 1 ? untilDate.toISOString() : localUntil
 
         try {
             const activeFilter = buildFilter(filters)
@@ -258,7 +274,7 @@ const getCachedVercelWebAnalytics = unstable_cache(
             return { ...emptyData("error"), periodDays: filters.days }
         }
     },
-    ["vercel-web-analytics-filtered-v7"],
+    ["vercel-web-analytics-filtered-v8"],
     { revalidate: 60 }
 )
 
