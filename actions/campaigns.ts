@@ -148,7 +148,7 @@ export async function getCampaignById(
         const campaign = await prisma.campaign.findFirst({
             where: {
                 id,
-                workspace: { userId: user.id },
+                workspace: { members: { some: { userId: user.id } } },
             },
             include: {
                 template: {
@@ -406,7 +406,7 @@ export async function updateCampaign(
         const campaign = await prisma.campaign.findFirst({
             where: {
                 id,
-                workspace: { userId: user.id },
+                workspace: { members: { some: { userId: user.id } } },
             },
         })
 
@@ -468,7 +468,7 @@ export async function deleteCampaign(id: string): Promise<ActionResult> {
         const campaign = await prisma.campaign.findFirst({
             where: {
                 id,
-                workspace: { userId: user.id },
+                workspace: { members: { some: { userId: user.id } } },
             },
         })
 
@@ -500,7 +500,7 @@ export async function duplicateCampaign(id: string): Promise<ActionResult<{ id: 
         const original = await prisma.campaign.findFirst({
             where: {
                 id,
-                workspace: { userId: user.id },
+                workspace: { members: { some: { userId: user.id } } },
             },
             include: {
                 emailSends: {
@@ -604,7 +604,7 @@ export async function sendCampaign(id: string): Promise<ActionResult> {
         const campaign = await prisma.campaign.findFirst({
             where: {
                 id,
-                workspace: { userId: user.id },
+                workspace: { members: { some: { userId: user.id } } },
             },
             include: {
                 template: true,
@@ -743,7 +743,7 @@ export async function pauseCampaign(id: string): Promise<ActionResult> {
         const campaign = await prisma.campaign.findFirst({
             where: {
                 id,
-                workspace: { userId: user.id },
+                workspace: { members: { some: { userId: user.id } } },
                 status: "SENDING",
             },
         })
@@ -789,7 +789,7 @@ export async function cancelCampaign(id: string): Promise<ActionResult> {
         const campaign = await prisma.campaign.findFirst({
             where: {
                 id,
-                workspace: { userId: user.id },
+                workspace: { members: { some: { userId: user.id } } },
             },
         })
 
@@ -859,7 +859,7 @@ export async function getLeadsForCampaign(
 
         const where: Prisma.LeadWhereInput = {
             workspaceId,
-            workspace: { userId: user.id },
+            workspace: { members: { some: { userId: user.id } } },
         }
 
         if (options?.status && options.status.length > 0) {

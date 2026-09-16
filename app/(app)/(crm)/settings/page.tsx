@@ -4,6 +4,7 @@ import { cookies } from "next/headers"
 import { getAuthenticatedUser, requireWorkspaceAccess } from "@/lib/auth"
 import { getUserProfile, getAccountStats } from "@/actions/settings"
 import { getSendWindowSettings, listWorkspaceSuppressions } from "@/actions/workspace-settings"
+import { getWorkspaceMembers } from "@/actions/workspace-members"
 import { prisma } from "@/lib/prisma"
 import { SettingsClient } from "./settings-client"
 
@@ -84,6 +85,9 @@ export default async function SettingsPage() {
     const suppressionsResult = await listWorkspaceSuppressions(activeWorkspaceId)
     const suppressions = suppressionsResult.success ? suppressionsResult.data ?? [] : []
 
+    const membersResult = await getWorkspaceMembers(activeWorkspaceId)
+    const members = membersResult.success ? membersResult.data : []
+
     return (
         <SettingsClient
             profile={profile ?? null}
@@ -92,6 +96,8 @@ export default async function SettingsPage() {
             sendWindow={sendSettings?.window ?? null}
             replyDetection={sendSettings?.replyDetection ?? null}
             suppressions={suppressions}
+            members={members}
+            canManageMembers={membersResult.success && membersResult.canManage}
         />
     )
 }

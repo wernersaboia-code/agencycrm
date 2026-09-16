@@ -126,6 +126,13 @@ export const leadFormSchema = z.object({
         .optional()
         .nullable()
         .transform((val) => val?.trim() || null),
+    assignedToId: z
+        .string()
+        .min(1, 'Responsável inválido')
+        .max(200, 'Responsável inválido')
+        .optional()
+        .nullable()
+        .transform((val) => val || null),
 })
 
 /**
@@ -183,4 +190,5 @@ export const DEFAULT_LEAD_VALUES: LeadFormData = {
     status: 'NEW',
     source: 'MANUAL',
     notes: null,
+    assignedToId: null,
 }

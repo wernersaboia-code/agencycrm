@@ -3,7 +3,7 @@
 
 import { revalidatePath } from "next/cache"
 import { prisma } from "@/lib/prisma"
-import { requireAuth } from "@/lib/auth"
+import { accessibleWorkspaceWhere, requireAuth } from "@/lib/auth"
 import { z } from "zod"
 
 const profileUpdateSchema = z.object({
@@ -89,7 +89,7 @@ export async function getAccountStats() {
 
         // Buscar workspaces do usuário
         const workspaces = await prisma.workspace.findMany({
-            where: { userId: user.id },
+            where: accessibleWorkspaceWhere(user.id),
             select: { id: true },
         })
 

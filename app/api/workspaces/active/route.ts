@@ -2,7 +2,7 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { cookies } from "next/headers"
-import { getAuthenticatedUserId } from "@/lib/auth"
+import { accessibleWorkspaceWhere, getAuthenticatedUserId } from "@/lib/auth"
 
 const activeWorkspaceSelect = {
     id: true,
@@ -34,7 +34,7 @@ export async function GET() {
 
         const workspace = await prisma.workspace.findFirst({
             where: {
-                userId,
+                ...accessibleWorkspaceWhere(userId),
                 ...(user?.activeWorkspaceId ? { id: user.activeWorkspaceId } : {}),
             },
             select: activeWorkspaceSelect,
@@ -42,7 +42,7 @@ export async function GET() {
         })
 
         const fallbackWorkspace = workspace ?? await prisma.workspace.findFirst({
-            where: { userId },
+            where: accessibleWorkspaceWhere(userId),
             select: activeWorkspaceSelect,
             orderBy: { createdAt: "asc" },
         })
@@ -93,7 +93,7 @@ export async function POST(request: Request) {
         }
 
         const workspace = await prisma.workspace.findFirst({
-            where: { id: workspaceId, userId },
+            where: { id: workspaceId, ...accessibleWorkspaceWhere(userId) },
             select: { id: true },
         })
 

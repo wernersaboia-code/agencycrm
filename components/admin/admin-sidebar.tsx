@@ -21,6 +21,7 @@ import {
     FileDown,
     PencilLine,
     ScrollText,
+    MonitorCog,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -56,6 +57,7 @@ export function AdminSidebar() {
             labelKey: "sectionHome",
             items: [
                 { titleKey: "dashboard", href: "/super-admin", icon: LayoutDashboard, exact: true },
+                { titleKey: "crm", href: "/dashboard", icon: MonitorCog },
             ],
         },
         {
@@ -113,7 +115,7 @@ export function AdminSidebar() {
             </div>
 
             {/* Menu */}
-            <ScrollArea className="flex-1 px-3 py-4">
+            <ScrollArea type="always" className="flex-1 min-h-0 px-3 py-4">
                 <nav className="flex flex-col gap-1">
                     {menuSections.map((section, sectionIndex) => (
                         <div key={section.labelKey} className="mb-2">
@@ -135,7 +137,11 @@ export function AdminSidebar() {
                                         )}
                                     >
                                         <item.icon className="h-4 w-4" />
-                                        {item.titleKey === "content" ? "Conteúdo do site" : t(item.titleKey)}
+                                        {item.titleKey === "content"
+                                            ? "Conteúdo do site"
+                                            : item.titleKey === "crm"
+                                                ? "Abrir CRM"
+                                                : t(item.titleKey)}
                                     </Link>
                                 )
                             })}
@@ -145,31 +151,34 @@ export function AdminSidebar() {
                             )}
                         </div>
                     ))}
+
+                    <Separator className="my-3 bg-[#5559a0]" />
+
+                    <div className="grid gap-1">
+                        {secondaryItems.map((item) => {
+                            const isActive = isItemActive(item.href, item.exact)
+
+                            return (
+                                <Link
+                                    key={item.href}
+                                    href={item.href}
+                                    className={cn(
+                                        "flex min-h-10 items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                                        isActive
+                                            ? "bg-[#e8eafe] text-[#25285f]"
+                                            : "text-[#f1f2ff] hover:bg-[#3b3f82] hover:text-white"
+                                    )}
+                                >
+                                    <item.icon className="h-4 w-4" />
+                                    {t(item.titleKey)}
+                                </Link>
+                            )
+                        })}
+                    </div>
                 </nav>
             </ScrollArea>
 
             <div className="border-t border-[#5559a0] p-3">
-                <div className="mb-3 grid gap-1">
-                    {secondaryItems.map((item) => {
-                        const isActive = isItemActive(item.href, item.exact)
-
-                        return (
-                            <Link
-                                key={item.href}
-                                href={item.href}
-                                className={cn(
-                                    "flex items-center gap-2 rounded-md px-3 py-2 text-xs font-medium transition-colors",
-                                    isActive
-                                        ? "bg-[#e8eafe] text-[#25285f]"
-                                        : "text-[#dfe2ff]/75 hover:bg-[#3b3f82] hover:text-white"
-                                )}
-                            >
-                                <item.icon className="h-3.5 w-3.5" />
-                                {t(item.titleKey)}
-                            </Link>
-                        )
-                    })}
-                </div>
                 <Button
                     variant="ghost"
                     className="w-full justify-start gap-3 text-[#dfe2ff]/80 hover:bg-[#3b3f82] hover:text-white"

@@ -21,7 +21,7 @@ export async function GET(
         const campaign = await prisma.campaign.findFirst({
             where: {
                 id,
-                workspace: { userId: user.id },
+                workspace: { members: { some: { userId: user.id } } },
             },
             include: {
                 emailSends: {

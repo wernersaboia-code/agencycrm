@@ -11,7 +11,7 @@ import { CommandPalette } from "@/components/layout/command-palette"
 import { CrmHotkeys } from "@/components/layout/CrmHotkeys"
 import { TrialBanner } from "@/components/crm/trial-banner"
 import { prisma } from "@/lib/prisma"
-import { getAuthenticatedActiveDbUser } from "@/lib/auth"
+import { accessibleWorkspaceWhere, getAuthenticatedActiveDbUser } from "@/lib/auth"
 import { isRotaDeEscapeDoWorkspace } from "@/lib/auth/workspace-guard"
 
 export const dynamic = "force-dynamic"
@@ -27,17 +27,10 @@ export default async function DashboardLayout({
         redirect("/sign-in")
     }
 
-    // O CRM é ferramenta interna da operação, não parte do produto vendido.
-    // Antes bastava ter conta ativa: qualquer cliente que digitasse /dashboard
-    // via leads, campanhas, chamadas e relatórios. `getAuthenticatedActiveDbUser`
-    // confere `status`, nunca `role` — a checagem de papel precisa ser explícita.
-    if (user.role !== "ADMIN") {
-        redirect("/my-purchases")
-    }
-
-    // Buscar workspace para verificar trial
+    // O acesso ao CRM é dado pela participação no workspace, e não pelo papel
+    // global ADMIN. Assim uma pessoa da operação não ganha o super-admin do site.
     const workspace = await prisma.workspace.findFirst({
-        where: { userId: user.id },
+        where: accessibleWorkspaceWhere(user.id),
         select: {
             id: true,
             plan: true,
@@ -46,16 +39,16 @@ export default async function DashboardLayout({
         }
     })
 
-    // /workspaces e /trial-expired moram dentro deste mesmo grupo de rotas,
-    // então herdam este layout. Sem esta exceção, mandá-las para cá fazia o
-    // layout rodar de novo, não achar workspace e redirecionar outra vez —
-    // laço infinito, com a saída de emergência trancada por dentro.
+    // /trial-expired mora dentro deste mesmo grupo de rotas e herda este
+    // layout; ela precisa continuar como saída de emergência do trial.
     const pathname = (await headers()).get("x-pathname")
     const emRotaDeEscape = isRotaDeEscapeDoWorkspace(pathname)
 
-    // Se não tem workspace, redireciona para criar
-    if (!workspace && !emRotaDeEscape) {
-        redirect("/workspaces?message=create-first")
+    // CRM interno não é autoatendimento: uma conta do marketplace só entra
+    // depois de ser adicionada por um OWNER. Isso evita que qualquer cliente
+    // crie um workspace e passe a enxergar a área operacional.
+    if (!workspace) {
+        redirect("/my-purchases")
     }
 
     // Verificar trial expirado

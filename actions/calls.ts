@@ -166,7 +166,7 @@ export async function getCallById(id: string): Promise<SerializedCallWithLead | 
     const call = await prisma.call.findFirst({
         where: {
             id: parsedId.data,
-            workspace: { userId: user.id },
+            workspace: { members: { some: { userId: user.id } } },
         },
         include: callInclude,
     })
@@ -188,7 +188,7 @@ export async function getCallsByLead(leadId: string): Promise<SerializedCallWith
     const calls = await prisma.call.findMany({
         where: {
             leadId: parsedLeadId.data,
-            workspace: { userId: user.id },
+            workspace: { members: { some: { userId: user.id } } },
         },
         include: callInclude,
         orderBy: { calledAt: "desc" },
@@ -212,7 +212,7 @@ export async function getCallsByCampaign(campaignId: string): Promise<Serialized
         where: {
             campaignId: parsedCampaignId.data,
             campaign: {
-                workspace: { userId: user.id },
+                workspace: { members: { some: { userId: user.id } } },
             },
         },
         include: callInclude,
@@ -320,7 +320,7 @@ export async function updateCall(
         const existingCall = await prisma.call.findFirst({
             where: {
                 id,
-                workspace: { userId: user.id },
+                workspace: { members: { some: { userId: user.id } } },
             },
             include: { lead: true },
         })
@@ -388,7 +388,7 @@ export async function deleteCall(id: string): Promise<ActionResult<void>> {
         const call = await prisma.call.findFirst({
             where: {
                 id,
-                workspace: { userId: user.id },
+                workspace: { members: { some: { userId: user.id } } },
             },
         })
 
@@ -631,7 +631,7 @@ export async function getCampaignCallStats(campaignId: string): Promise<{
         where: {
             campaignId: parsedCampaignId.data,
             campaign: {
-                workspace: { userId: user.id },
+                workspace: { members: { some: { userId: user.id } } },
             },
         },
         select: {

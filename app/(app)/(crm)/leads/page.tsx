@@ -8,8 +8,8 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Card, CardContent } from "@/components/ui/card"
 
 export const metadata: Metadata = {
-    title: "Leads | AgencyCRM",
-    description: "Gerencie seus leads de prospecção",
+    title: "Contatos | Easy Prospect",
+    description: "Acompanhe os contatos comerciais da empresa selecionada",
 }
 
 function LeadsLoading() {
@@ -60,10 +60,10 @@ export default function LeadsPage() {
             <div>
                 <div className="flex items-center gap-2">
                     <Users className="h-6 w-6" />
-                    <h1 className="text-3xl font-bold tracking-tight">Leads</h1>
+                    <h1 className="text-3xl font-bold tracking-tight">Contatos</h1>
                 </div>
                 <p className="text-muted-foreground mt-1">
-                    Gerencie os leads do cliente selecionado
+                    Encontre um contato, abra a ficha e registre o próximo passo.
                 </p>
             </div>
 

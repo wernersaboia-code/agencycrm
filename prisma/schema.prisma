@@ -128,6 +128,13 @@ enum WorkspacePlan {
   ENTERPRISE // €99/mês
 }
 
+/// Papel de uma pessoa dentro de um workspace. Ele não substitui `User.role`,
+/// que continua reservado ao acesso administrativo global do site.
+enum WorkspaceMemberRole {
+  OWNER
+  OPERATOR
+}
+
 // 🆕 Motivo de supressão de e-mail
 enum SuppressionReason {
   hard_bounce
@@ -164,6 +171,8 @@ model User {
 
   // Relacionamentos
   workspaces           Workspace[]
+  workspaceMemberships WorkspaceMember[]
+  assignedLeads        Lead[]            @relation("LeadAssignee")
   purchases            Purchase[]
   purchaseAccessTokens PurchaseAccessToken[]
   blogPosts            BlogPost[]            @relation("BlogAuthor")
@@ -197,6 +206,7 @@ model Workspace {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   // Entidades do workspace
+  members        WorkspaceMember[]
   leads          Lead[]
   campaigns      Campaign[]
   emailTemplates EmailTemplate[]
@@ -238,6 +248,26 @@ model Workspace {
   @@map("workspaces")
 }
 
+/// Participação de uma pessoa no workspace. `Workspace.userId` permanece como
+/// dono legado para não quebrar dados e integrações existentes; esta tabela é
+/// a fonte de verdade de quem pode operar o CRM.
+model WorkspaceMember {
+  id          String              @id @default(cuid())
+  workspaceId String
+  userId      String
+  role        WorkspaceMemberRole @default(OPERATOR)
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId, userId])
+  @@index([userId])
+  @@index([workspaceId, role])
+  @@map("workspace_members")
+}
+
 // ==================== LEAD ====================
 
 model Lead {
@@ -274,6 +304,10 @@ model Lead {
   workspaceId String
   workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 
+  // Pessoa da equipe que deve conduzir o próximo contato com este lead.
+  assignedToId String?
+  assignedTo   User?   @relation("LeadAssignee", fields: [assignedToId], references: [id], onDelete: SetNull)
+
   emailSends  EmailSend[]
   calls       Call[]
   tags        TagsOnLeads[]
@@ -293,6 +327,7 @@ model Lead {
   @@index([workspaceId, createdAt])
   @@index([workspaceId, country])
   @@index([workspaceId, industry])
+  @@index([workspaceId, assignedToId])
   @@index([status])
   @@index([source])
   @@index([country])

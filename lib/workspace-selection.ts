@@ -1,5 +1,6 @@
 import { cookies } from "next/headers"
 import { prisma } from "@/lib/prisma"
+import { accessibleWorkspaceWhere } from "@/lib/auth"
 
 export async function getActiveOrFirstWorkspaceId(userId: string): Promise<string | null> {
     const cookieStore = await cookies()
@@ -9,7 +10,7 @@ export async function getActiveOrFirstWorkspaceId(userId: string): Promise<strin
         const activeWorkspace = await prisma.workspace.findFirst({
             where: {
                 id: activeWorkspaceId,
-                userId,
+                ...accessibleWorkspaceWhere(userId),
             },
             select: { id: true },
         })
@@ -20,7 +21,7 @@ export async function getActiveOrFirstWorkspaceId(userId: string): Promise<strin
     }
 
     const firstWorkspace = await prisma.workspace.findFirst({
-        where: { userId },
+        where: accessibleWorkspaceWhere(userId),
         select: { id: true },
         orderBy: { createdAt: "asc" },
     })

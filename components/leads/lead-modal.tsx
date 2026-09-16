@@ -59,6 +59,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 
 import { createLead, updateLead } from "@/actions/leads"
+import { getWorkspaceMembers, type WorkspaceMemberRow } from "@/actions/workspace-members"
 import { useWorkspace } from "@/contexts/workspace-context"
 import {
     leadFormSchema,
@@ -99,6 +100,12 @@ interface Lead {
     status: LeadStatus
     source: LeadSource
     notes: string | null
+    assignedToId: string | null
+    assignedTo?: {
+        id: string
+        name: string | null
+        email: string
+    } | null
 }
 
 interface LeadModalProps {
@@ -116,7 +123,7 @@ const TAB_FIELDS: Record<string, (keyof LeadFormData)[]> = {
     contact: ['firstName', 'lastName', 'email', 'phone', 'mobile'],
     company: ['company', 'jobTitle', 'website', 'taxId', 'industry', 'companySize'],
     location: ['address', 'city', 'state', 'postalCode', 'country'],
-    status: ['status', 'source', 'notes'],
+    status: ['status', 'source', 'assignedToId', 'notes'],
 }
 
 const TAB_LABELS: Record<string, string> = {
@@ -170,6 +177,7 @@ export function LeadModal({
                           }: LeadModalProps) {
     const [isLoading, setIsLoading] = useState(false)
     const [activeTab, setActiveTab] = useState("contact")
+    const [members, setMembers] = useState<WorkspaceMemberRow[]>([])
     const { activeWorkspace } = useWorkspace()
     const isEditing = !!lead
 
@@ -228,6 +236,14 @@ export function LeadModal({
             setActiveTab("contact")
         }
     }, [lead, open, form])
+
+    useEffect(() => {
+        if (!open || !activeWorkspace) return
+
+        void getWorkspaceMembers(activeWorkspace.id).then((result) => {
+            setMembers(result.success ? result.data : [])
+        })
+    }, [activeWorkspace, open])
 
     const onSubmit = async (values: LeadFormData) => {
         if (!activeWorkspace) {
@@ -811,6 +827,38 @@ export function LeadModal({
                                                 )}
                                             />
                                         </FormRow>
+
+                                        <FormField
+                                            control={form.control}
+                                            name="assignedToId"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel className="flex items-center gap-1">
+                                                        <User className="h-3 w-3" />
+                                                        Responsável
+                                                    </FormLabel>
+                                                    <Select
+                                                        value={field.value || "unassigned"}
+                                                        onValueChange={(value) => field.onChange(value === "unassigned" ? null : value)}
+                                                    >
+                                                        <FormControl>
+                                                            <SelectTrigger>
+                                                                <SelectValue placeholder="Sem responsável" />
+                                                            </SelectTrigger>
+                                                        </FormControl>
+                                                        <SelectContent>
+                                                            <SelectItem value="unassigned">Sem responsável</SelectItem>
+                                                            {members.map((member) => (
+                                                                <SelectItem key={member.userId} value={member.userId}>
+                                                                    {member.name || member.email}
+                                                                </SelectItem>
+                                                            ))}
+                                                        </SelectContent>
+                                                    </Select>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
 
                                         <FormField
                                             control={form.control}

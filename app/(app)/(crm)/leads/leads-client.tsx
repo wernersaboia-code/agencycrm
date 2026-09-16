@@ -10,10 +10,9 @@ import {
     MoreHorizontal,
     Pencil,
     Trash2,
-    Mail,
-    Phone,
     Building2,
     Filter,
+    SlidersHorizontal,
     X,
     Users,
     UserPlus,
@@ -63,10 +62,6 @@ import {
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -110,6 +105,12 @@ interface Lead {
     status: LeadStatus
     source: LeadSource
     notes: string | null
+    assignedToId: string | null
+    assignedTo?: {
+        id: string
+        name: string | null
+        email: string
+    } | null
     createdAt: Date | string
     updatedAt: Date | string
     _count?: {
@@ -256,44 +257,6 @@ function LeadRow({
                 </div>
             </TableCell>
 
-            {/* Email */}
-            <TableCell>
-                <TooltipProvider>
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <div className="flex items-center gap-2 max-w-[200px]">
-                                <Mail className="h-4 w-4 text-muted-foreground shrink-0" />
-                                <span className="text-sm truncate">{lead.email}</span>
-                            </div>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                            <p>{lead.email}</p>
-                        </TooltipContent>
-                    </Tooltip>
-                </TooltipProvider>
-            </TableCell>
-
-            {/* Telefone + Botão Ligar */}
-            <TableCell>
-                <div className="flex items-center gap-2">
-                    {lead.phone ? (
-                        <>
-                            <Phone className="h-4 w-4 text-muted-foreground shrink-0" />
-                            <span className="text-sm">{lead.phone}</span>
-                            <ClickToCallButton
-                                lead={leadForCall}
-                                variant="ghost"
-                                size="icon"
-                                showLabel={false}
-                                className="opacity-0 group-hover:opacity-100 transition-opacity"
-                            />
-                        </>
-                    ) : (
-                        <span className="text-muted-foreground">—</span>
-                    )}
-                </div>
-            </TableCell>
-
             {/* Empresa */}
             <TableCell>
                 {lead.company ? (
@@ -318,59 +281,42 @@ function LeadRow({
                 <LeadStatusBadge status={lead.status} />
             </TableCell>
 
-            {/* Atividade */}
+            {/* Responsável */}
             <TableCell>
-                <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                    <TooltipProvider>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <div className="flex items-center gap-1">
-                                    <Mail className="h-3.5 w-3.5" />
-                                    <span>{lead._count?.emailSends ?? 0}</span>
-                                </div>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <p>{lead._count?.emailSends ?? 0} emails enviados</p>
-                            </TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
-
-                    <TooltipProvider>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <div className="flex items-center gap-1">
-                                    <Phone className="h-3.5 w-3.5" />
-                                    <span>{lead._count?.calls ?? 0}</span>
-                                </div>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <p>{lead._count?.calls ?? 0} ligações</p>
-                            </TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
-                </div>
+                {lead.assignedTo ? (
+                    <div className="min-w-[120px]">
+                        <p className="text-sm font-medium">{lead.assignedTo.name || lead.assignedTo.email}</p>
+                        {lead.assignedTo.name && (
+                            <p className="max-w-[150px] truncate text-xs text-muted-foreground">{lead.assignedTo.email}</p>
+                        )}
+                    </div>
+                ) : (
+                    <span className="text-sm text-muted-foreground">Sem responsável</span>
+                )}
             </TableCell>
 
-            {/* Ações */}
+            {/* Ações principais */}
             <TableCell>
-                <div className="flex items-center gap-1">
-                    {/* Botão de Ligar (sempre visível se tiver telefone) */}
+                <div className="flex items-center gap-2">
+                    <Button variant="outline" size="sm" className="min-h-9" onClick={() => onRowClick(lead)}>
+                        Abrir ficha
+                    </Button>
                     {lead.phone && (
                         <ClickToCallButton
                             lead={leadForCall}
-                            variant="ghost"
-                            size="icon"
-                            showLabel={false}
+                            variant="outline"
+                            size="sm"
+                            showLabel={true}
                         />
                     )}
 
-                    {/* Menu de Ações */}
+                    {/* Ações menos frequentes */}
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button
                                 variant="ghost"
                                 size="icon"
-                                className="h-8 w-8"
+                                className="h-9 w-9"
                             >
                                 <MoreHorizontal className="h-4 w-4" />
                             </Button>
@@ -378,7 +324,7 @@ function LeadRow({
                         <DropdownMenuContent align="end">
                             <DropdownMenuItem onClick={() => onRowClick(lead)}>
                                 <ExternalLink className="h-4 w-4 mr-2" />
-                                Ver Detalhes
+                                Abrir ficha
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => onEdit(lead)}>
                                 <Pencil className="h-4 w-4 mr-2" />
@@ -418,6 +364,7 @@ export function LeadsClient() {
     })
     const [isLoading, setIsLoading] = useState(true)
     const [filters, setFilters] = useState<Filters>(INITIAL_FILTERS)
+    const [showMoreFilters, setShowMoreFilters] = useState(false)
 
     // Modais
     const [isModalOpen, setIsModalOpen] = useState(false)
@@ -541,13 +488,13 @@ export function LeadsClient() {
             {/* Cards de Estatísticas */}
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <StatsCard
-                    title="Total de Leads"
+                    title="Todos os contatos"
                     value={stats.total}
                     icon={Users}
                     isLoading={isLoading}
                 />
                 <StatsCard
-                    title="Novos"
+                    title="Ainda não contatados"
                     value={stats.new}
                     icon={UserPlus}
                     isLoading={isLoading}
@@ -566,24 +513,39 @@ export function LeadsClient() {
                 />
             </div>
 
-            {/* Filtros e Ações */}
+            <Card className="border-primary/15 bg-primary/[0.02]">
+                <CardContent className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                        <p className="font-semibold">Comece por aqui</p>
+                        <p className="text-sm text-muted-foreground">
+                            Para trabalhar um contato, clique em <strong>Abrir ficha</strong>. Depois, registre a ligação ou o retorno combinado.
+                        </p>
+                    </div>
+                    <Button className="min-h-11 shrink-0" onClick={() => setIsModalOpen(true)}>
+                        <Plus className="mr-2 h-5 w-5" />
+                        Adicionar contato
+                    </Button>
+                </CardContent>
+            </Card>
+
+            {/* Busca, filtros e ações */}
             <div className="flex flex-col gap-4">
                 {/* Linha 1: Busca e Botões */}
                 <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
                     <div className="relative flex-1 max-w-md">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         <Input
-                            placeholder="Buscar por nome, email ou empresa..."
-                            className="pl-9"
+                            placeholder="Procurar por nome, empresa ou e-mail..."
+                            className="h-11 pl-9 text-base"
                             value={filters.search}
                             onChange={(e) => handleFilterChange("search", e.target.value)}
                         />
                     </div>
 
-                    <div className="flex gap-2">
-                        <Button variant="outline" onClick={() => router.push('/leads/import')}>
+                    <div className="flex flex-wrap gap-2">
+                        <Button className="min-h-11" variant="outline" onClick={() => router.push('/leads/import')}>
                             <Upload className="h-4 w-4 mr-2" />
-                            Importar
+                            Importar planilha
                         </Button>
                         <ExportLeadsButtons
                             workspaceId={activeWorkspace.id}
@@ -594,27 +556,23 @@ export function LeadsClient() {
                                 search: filters.search || undefined,
                             }}
                         />
-                        <Button onClick={() => setIsModalOpen(true)}>
-                            <Plus className="h-4 w-4 mr-2" />
-                            Novo Lead
-                        </Button>
                     </div>
                 </div>
 
-                {/* Linha 2: Filtros */}
+                {/* Filtros essenciais */}
                 <div className="flex flex-wrap gap-2 items-center">
-                    <Filter className="h-4 w-4 text-muted-foreground" />
+                    <Filter className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
 
                     {/* Filtro de Status */}
                     <Select
                         value={filters.status}
                         onValueChange={(value) => handleFilterChange("status", value)}
                     >
-                        <SelectTrigger className="w-[160px] h-9">
-                            <SelectValue placeholder="Status" />
+                        <SelectTrigger className="h-10 w-[210px]">
+                            <SelectValue placeholder="Situação do contato" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="all">Todos os status</SelectItem>
+                            <SelectItem value="all">Todas as situações</SelectItem>
                             {LEAD_STATUS_OPTIONS.map((option) => (
                                 <SelectItem key={option.value} value={option.value}>
                                     {option.label}
@@ -623,6 +581,25 @@ export function LeadsClient() {
                         </SelectContent>
                     </Select>
 
+                    <Button
+                        variant="outline"
+                        className="h-10"
+                        onClick={() => setShowMoreFilters((current) => !current)}
+                    >
+                        <SlidersHorizontal className="mr-2 h-4 w-4" />
+                        {showMoreFilters ? "Menos filtros" : "Mais filtros"}
+                    </Button>
+
+                    {!isLoading && (
+                        <Badge variant="secondary" className="ml-auto px-3 py-1 text-sm">
+                            {leads.length} {leads.length === 1 ? "contato" : "contatos"}
+                        </Badge>
+                    )}
+                </div>
+
+                {showMoreFilters && (
+                    <div className="flex flex-wrap gap-2 items-center rounded-lg border bg-muted/30 p-3">
+                        <span className="mr-1 text-sm font-medium text-muted-foreground">Refinar por:</span>
                     {/* Filtro de País */}
                     <Select
                         value={filters.country}
@@ -702,15 +679,9 @@ export function LeadsClient() {
                             Limpar
                         </Button>
                     )}
-
-                    {/* Badge com quantidade */}
-                    {!isLoading && (
-                        <Badge variant="secondary" className="ml-auto">
-                            {leads.length} {leads.length === 1 ? "lead" : "leads"}
-                        </Badge>
-                    )}
+                    </div>
+                )}
                 </div>
-            </div>
 
             {/* Tabela de Leads */}
             <Card>
@@ -758,12 +729,10 @@ export function LeadsClient() {
                                     <TableHeader>
                                         <TableRow>
                                             <TableHead className="min-w-[200px] sticky left-0 bg-background z-20">Nome</TableHead>
-                                            <TableHead className="min-w-[180px]">Email</TableHead>
-                                            <TableHead className="min-w-[180px]">Telefone</TableHead>
-                                            <TableHead className="min-w-[150px]">Empresa</TableHead>
-                                            <TableHead className="min-w-[100px]">Status</TableHead>
-                                            <TableHead className="min-w-[100px]">Atividade</TableHead>
-                                            <TableHead className="min-w-[100px] sticky right-0 bg-background z-20">Ações</TableHead>
+                            <TableHead className="min-w-[150px]">Empresa</TableHead>
+                            <TableHead className="min-w-[150px]">Situação</TableHead>
+                            <TableHead className="min-w-[150px]">Responsável</TableHead>
+                            <TableHead className="min-w-[150px] sticky right-0 bg-background z-20">Abrir</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>

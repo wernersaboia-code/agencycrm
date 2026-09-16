@@ -39,6 +39,12 @@ export interface SerializedLead {
     source: LeadSource
     notes: string | null
     workspaceId: string
+    assignedToId: string | null
+    assignedTo?: {
+        id: string
+        name: string | null
+        email: string
+    } | null
     importedAt: string | null
     importBatch: string | null
     createdAt: string

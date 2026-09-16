@@ -4,7 +4,13 @@
 
 import { revalidatePath } from "next/cache"
 import { prisma } from "@/lib/prisma"
-import { requireAuth, requireWorkspaceAccess } from "@/lib/auth"
+import {
+    accessibleWorkspaceWhere,
+    requireAuth,
+    requireWorkspaceAccess,
+    requireWorkspaceOwner,
+    requireAdmin,
+} from "@/lib/auth"
 import { z } from "zod"
 
 type SerializableWorkspace = {
@@ -60,12 +66,15 @@ export async function createWorkspace(data: WorkspaceFormData) {
             return { success: false, error: validated.error.issues[0]?.message ?? "Dados inválidos" }
         }
 
-        const user = await requireAuth()
+        const user = await requireAdmin()
 
         const workspace = await prisma.workspace.create({
             data: {
                 ...validated.data,
                 userId: user.id,
+                members: {
+                    create: { userId: user.id, role: "OWNER" },
+                },
             },
         })
 
@@ -83,7 +92,7 @@ export async function getWorkspaces() {
         const user = await requireAuth()
 
         const workspaces = await prisma.workspace.findMany({
-            where: { userId: user.id },
+            where: accessibleWorkspaceWhere(user.id),
             include: {
                 _count: {
                     select: {
@@ -160,7 +169,7 @@ export async function updateWorkspace(id: string, data: WorkspaceFormData) {
         }
 
         try {
-            await requireWorkspaceAccess(parsedId.data)
+            await requireWorkspaceOwner(parsedId.data)
         } catch {
             return { success: false, error: "Workspace não encontrado" }
         }
@@ -188,7 +197,7 @@ export async function deleteWorkspace(id: string) {
         }
 
         try {
-            await requireWorkspaceAccess(parsedId.data)
+            await requireWorkspaceOwner(parsedId.data)
         } catch {
             return { success: false, error: "Workspace não encontrado" }
         }

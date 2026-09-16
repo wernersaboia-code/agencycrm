@@ -9,6 +9,6 @@ export function buildOwnedWhere(
 ) {
     return {
         ...extra,
-        workspace: { userId },
+        workspace: { members: { some: { userId } } },
     }
 }

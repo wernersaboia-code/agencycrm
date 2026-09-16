@@ -246,7 +246,7 @@ export async function getRecentCampaigns(
         const campaigns = await prisma.campaign.findMany({
             where: {
                 workspaceId,
-                workspace: { userId: user.id },
+                workspace: { members: { some: { userId: user.id } } },
             },
             orderBy: { createdAt: "desc" },
             take: limit,
@@ -292,7 +292,7 @@ export async function getRecentLeads(
         const leads = await prisma.lead.findMany({
             where: {
                 workspaceId,
-                workspace: { userId: user.id },
+                workspace: { members: { some: { userId: user.id } } },
             },
             orderBy: { createdAt: "desc" },
             take: limit,
@@ -385,7 +385,7 @@ export async function getDashboardCallbacks(
         const callbacks = await prisma.call.findMany({
             where: {
                 workspaceId,
-                workspace: { userId: user.id },
+                workspace: { members: { some: { userId: user.id } } },
                 followUpAt: { not: null },
             },
             orderBy: { followUpAt: "asc" },

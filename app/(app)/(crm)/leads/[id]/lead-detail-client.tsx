@@ -66,6 +66,12 @@ interface LeadData {
     source: string
     notes: string | null
     workspaceId: string
+    assignedToId: string | null
+    assignedTo: {
+        id: string
+        name: string | null
+        email: string
+    } | null
     createdAt: string
     updatedAt: string
 }
@@ -289,6 +295,13 @@ export function LeadDetailClient({
                             <div className="flex items-center justify-between">
                                 <span className="text-muted-foreground">Origem</span>
                                 <Badge variant="secondary">{lead.source}</Badge>
+                            </div>
+                            <Separator />
+                            <div className="flex items-center justify-between gap-4">
+                                <span className="text-muted-foreground">Responsável</span>
+                                <span className="truncate text-right">
+                                    {lead.assignedTo?.name || lead.assignedTo?.email || "Sem responsável"}
+                                </span>
                             </div>
                             <Separator />
                             <div className="flex items-center justify-between">

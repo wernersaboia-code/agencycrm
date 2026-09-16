@@ -373,9 +373,9 @@ export function DashboardClient({
         <div className="space-y-6">
             {/* Header */}
             <div>
-                <h1 className="text-3xl font-bold tracking-normal">Painel do CRM</h1>
+                <h1 className="text-3xl font-bold tracking-normal">Hoje</h1>
                 <p className="text-muted-foreground">
-                    Visão geral das suas campanhas e leads
+                    Veja o que precisa de atenção e escolha o próximo passo.
                 </p>
             </div>
 

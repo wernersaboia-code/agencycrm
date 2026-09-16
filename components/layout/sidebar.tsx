@@ -17,42 +17,41 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { createClient } from "@/lib/supabase/client"
 import { toast } from "sonner"
 
 const mainMenuItems = [
     {
-        title: "Painel",
+        title: "Hoje",
         href: "/dashboard",
         icon: LayoutDashboard,
         shortcut: "G D",
     },
     {
-        title: "Leads",
+        title: "Contatos",
         href: "/leads",
         icon: Users,
         shortcut: "G L",
     },
     {
-        title: "Campanhas",
+        title: "Enviar e-mails",
         href: "/campaigns",
         icon: Mail,
         shortcut: "G C",
     },
     {
-        title: "Modelos de e-mail",
+        title: "Textos prontos",
         href: "/templates",
         icon: FileText,
     },
     {
-        title: "Ligações",
+        title: "Retornos e ligações",
         href: "/calls",
         icon: Phone,
     },
     {
-        title: "Relatórios",
+        title: "Resultados",
         href: "/reports",
         icon: BarChart3,
     },
@@ -95,11 +94,11 @@ export function Sidebar() {
                 </Link>
             </div>
 
-            <ScrollArea className="flex-1 px-3 py-4">
+            <div className="flex-1 overflow-y-scroll px-3 py-4 [scrollbar-gutter:stable]">
                 <nav className="flex flex-col gap-1">
                     <div className="mb-2">
                         <p className="mb-2 px-3 text-xs font-bold uppercase text-sidebar-foreground/55">
-                            Principal
+                            Trabalho do dia
                         </p>
                         {mainMenuItems.map((item) => {
                             const isActive =
@@ -109,7 +108,7 @@ export function Sidebar() {
                                     key={item.href}
                                     href={item.href}
                                     className={cn(
-                                        "group flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                                        "flex min-h-11 items-center gap-3 rounded-md px-3 py-2.5 text-[15px] font-medium transition-colors",
                                         isActive
                                             ? "bg-sidebar-primary text-sidebar-primary-foreground"
                                             : "text-sidebar-foreground/72 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
@@ -117,11 +116,6 @@ export function Sidebar() {
                                 >
                                     <item.icon className="h-4 w-4" />
                                     {item.title}
-                                    {item.shortcut && (
-                                        <kbd className="ml-auto hidden text-[10px] text-sidebar-foreground/40 group-hover:inline-flex md:inline-flex items-center rounded border border-sidebar-border px-1.5 py-0.5 font-mono">
-                                            {item.shortcut}
-                                        </kbd>
-                                    )}
                                 </Link>
                             )
                         })}
@@ -131,7 +125,7 @@ export function Sidebar() {
 
                     <div className="mb-2">
                         <p className="mb-2 px-3 text-xs font-bold uppercase text-sidebar-foreground/55">
-                            Gestão
+                            Administração
                         </p>
                         {managementMenuItems.map((item) => {
                             const isActive =
@@ -141,7 +135,7 @@ export function Sidebar() {
                                     key={item.href}
                                     href={item.href}
                                     className={cn(
-                                        "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                                        "flex min-h-11 items-center gap-3 rounded-md px-3 py-2.5 text-[15px] font-medium transition-colors",
                                         isActive
                                             ? "bg-sidebar-primary text-sidebar-primary-foreground"
                                             : "text-sidebar-foreground/72 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
@@ -154,7 +148,7 @@ export function Sidebar() {
                         })}
                     </div>
                 </nav>
-            </ScrollArea>
+            </div>
 
             <div className="border-t border-sidebar-border p-3">
                 <Button

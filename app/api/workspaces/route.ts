@@ -1,7 +1,7 @@
 // app/api/workspaces/route.ts
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
-import { getAuthenticatedUserId } from "@/lib/auth"
+import { accessibleWorkspaceWhere, getAuthenticatedUserId } from "@/lib/auth"
 
 export async function GET() {
     try {
@@ -12,7 +12,7 @@ export async function GET() {
         }
 
         const workspaces = await prisma.workspace.findMany({
-            where: { userId },
+            where: accessibleWorkspaceWhere(userId),
             select: {
                 id: true,
                 name: true,

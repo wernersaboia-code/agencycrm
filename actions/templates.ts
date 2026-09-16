@@ -118,7 +118,7 @@ export async function getTemplateById(
         const template = await prisma.emailTemplate.findFirst({
             where: {
                 id: parsedId.data,
-                workspace: { userId: user.id },
+                workspace: { members: { some: { userId: user.id } } },
             },
             include: {
                 _count: {
@@ -203,7 +203,7 @@ export async function updateTemplate(
         const existingTemplate = await prisma.emailTemplate.findFirst({
             where: {
                 id: parsedId.data,
-                workspace: { userId: user.id },
+                workspace: { members: { some: { userId: user.id } } },
             },
         })
 
@@ -241,7 +241,7 @@ export async function deleteTemplate(id: string): Promise<ActionResult> {
         const template = await prisma.emailTemplate.findFirst({
             where: {
                 id: parsedId.data,
-                workspace: { userId: user.id },
+                workspace: { members: { some: { userId: user.id } } },
             },
             include: {
                 _count: { select: { campaigns: true } },
@@ -287,7 +287,7 @@ export async function duplicateTemplate(id: string): Promise<ActionResult<{ id: 
         const original = await prisma.emailTemplate.findFirst({
             where: {
                 id: parsedId.data,
-                workspace: { userId: user.id },
+                workspace: { members: { some: { userId: user.id } } },
             },
         })
 
@@ -330,7 +330,7 @@ export async function toggleTemplateActive(id: string): Promise<ActionResult> {
         const template = await prisma.emailTemplate.findFirst({
             where: {
                 id: parsedId.data,
-                workspace: { userId: user.id },
+                workspace: { members: { some: { userId: user.id } } },
             },
         })
 

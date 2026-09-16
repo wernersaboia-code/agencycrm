@@ -58,7 +58,7 @@ export async function recalculateCampaignMetrics(
         const campaign = await prisma.campaign.findFirst({
             where: {
                 id: campaignId,
-                workspace: { userId: user.id },
+                workspace: { members: { some: { userId: user.id } } },
             },
         })
 
@@ -142,7 +142,7 @@ export async function recalculateAllCampaignsMetrics(): Promise<ActionResult<num
 
         const campaigns = await prisma.campaign.findMany({
             where: {
-                workspace: { userId: user.id },
+                workspace: { members: { some: { userId: user.id } } },
             },
             select: { id: true },
         })
@@ -179,7 +179,7 @@ export async function getCampaignEmailSends(
             where: {
                 campaignId,
                 campaign: {
-                    workspace: { userId: user.id },
+                    workspace: { members: { some: { userId: user.id } } },
                 },
             },
             include: {

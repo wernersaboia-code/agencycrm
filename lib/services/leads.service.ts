@@ -32,6 +32,12 @@ export interface LeadWithRelations {
     source: string
     notes: string | null
     workspaceId: string
+    assignedToId: string | null
+    assignedTo?: {
+        id: string
+        name: string | null
+        email: string
+    } | null
     createdAt: Date
     updatedAt: Date
 }
@@ -129,6 +135,9 @@ export async function getLeads(
             skip: (page - 1) * pageSize,
             take: pageSize,
             include: {
+                assignedTo: {
+                    select: { id: true, name: true, email: true },
+                },
                 _count: {
                     select: {
                         emailSends: true,
@@ -156,10 +165,32 @@ export async function getLeadById(
     const lead = await prisma.lead.findFirst({
         where: {
             id,
-            workspace: { userId: ctx.user.id },
+            workspace: { members: { some: { userId: ctx.user.id } } },
+        },
+        include: {
+            assignedTo: {
+                select: { id: true, name: true, email: true },
+            },
         },
     })
     return (lead as unknown as LeadWithRelations | null) ?? null
+}
+
+async function assertWorkspaceAssignee(
+    prisma: PrismaClient,
+    workspaceId: string,
+    assignedToId: string | null | undefined
+): Promise<void> {
+    if (!assignedToId) return
+
+    const membership = await prisma.workspaceMember.findFirst({
+        where: { workspaceId, userId: assignedToId },
+        select: { id: true },
+    })
+
+    if (!membership) {
+        throw new Error("INVALID_ASSIGNEE")
+    }
 }
 
 export async function getLeadStats(
@@ -194,7 +225,7 @@ export async function getLeadEmailSends(
         where: {
             leadId,
             campaign: {
-                workspace: { userId: ctx.user.id },
+                workspace: { members: { some: { userId: ctx.user.id } } },
             },
         },
         include: {
@@ -236,6 +267,7 @@ export async function createLead(
         throw new Error("DUPLICATE_EMAIL")
     }
 
+    await assertWorkspaceAssignee(prisma, data.workspaceId, data.assignedToId)
     const sanitizedData = sanitizeLeadData(data)
 
     const lead = await prisma.lead.create({
@@ -254,7 +286,7 @@ export async function updateLead(
     const existingLead = await prisma.lead.findFirst({
         where: {
             id,
-            workspace: { userId: ctx.user.id },
+            workspace: { members: { some: { userId: ctx.user.id } } },
         },
     })
 
@@ -276,6 +308,10 @@ export async function updateLead(
         }
     }
 
+    if (data.assignedToId !== undefined) {
+        await assertWorkspaceAssignee(prisma, existingLead.workspaceId, data.assignedToId)
+    }
+
     const sanitizedData = sanitizeLeadData(data)
 
     const lead = await prisma.lead.update({
@@ -294,7 +330,7 @@ export async function deleteLead(
     const lead = await prisma.lead.findFirst({
         where: {
             id,
-            workspace: { userId: ctx.user.id },
+            workspace: { members: { some: { userId: ctx.user.id } } },
         },
     })
 
@@ -313,7 +349,7 @@ export async function deleteMultipleLeads(
     const result = await prisma.lead.deleteMany({
         where: {
             id: { in: ids },
-            workspace: { userId: ctx.user.id },
+            workspace: { members: { some: { userId: ctx.user.id } } },
         },
     })
 

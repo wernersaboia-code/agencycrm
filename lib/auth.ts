@@ -2,7 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
-import type { UserRole, UserStatus } from '@prisma/client'
+import type { UserRole, UserStatus, WorkspaceMemberRole } from '@prisma/client'
 import { localeFromUserLanguage } from '@/lib/i18n/user-locale'
 
 /**
@@ -219,13 +219,18 @@ export async function requireAdmin(): Promise<AuthenticatedDbUser> {
     return user
 }
 
+/** Filtro Prisma reutilizável para recursos de um workspace acessível ao usuário. */
+export function accessibleWorkspaceWhere(userId: string) {
+    return { members: { some: { userId } } }
+}
+
 export async function requireWorkspaceAccess(workspaceId: string): Promise<AuthenticatedUser> {
     const user = await requireAuth()
 
     const workspace = await prisma.workspace.findFirst({
         where: {
             id: workspaceId,
-            userId: user.id,
+            ...accessibleWorkspaceWhere(user.id),
         },
         select: { id: true },
     })
@@ -235,4 +240,28 @@ export async function requireWorkspaceAccess(workspaceId: string): Promise<Authe
     }
 
     return user
+}
+
+/** Exige uma função específica no workspace para operações de administração. */
+export async function requireWorkspaceRole(
+    workspaceId: string,
+    roles: WorkspaceMemberRole | WorkspaceMemberRole[]
+): Promise<AuthenticatedUser> {
+    const user = await requireAuth()
+    const allowedRoles = Array.isArray(roles) ? roles : [roles]
+
+    const membership = await prisma.workspaceMember.findFirst({
+        where: { workspaceId, userId: user.id, role: { in: allowedRoles } },
+        select: { id: true },
+    })
+
+    if (!membership) {
+        throw new Error('Acesso negado')
+    }
+
+    return user
+}
+
+export async function requireWorkspaceOwner(workspaceId: string): Promise<AuthenticatedUser> {
+    return requireWorkspaceRole(workspaceId, 'OWNER')
 }

@@ -59,6 +59,8 @@ export default async function LeadDetailPage({ params }: LeadDetailPageProps) {
         source: lead.source,
         notes: lead.notes,
         workspaceId: lead.workspaceId,
+        assignedToId: lead.assignedToId,
+        assignedTo: lead.assignedTo ?? null,
         createdAt: lead.createdAt.toISOString(),
         updatedAt: lead.updatedAt.toISOString(),
     }

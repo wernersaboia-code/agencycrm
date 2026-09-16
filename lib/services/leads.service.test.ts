@@ -25,6 +25,9 @@ function createMockPrisma(overrides: Partial<PrismaClient> = {}): PrismaClient {
         emailSend: {
             findMany: vi.fn().mockResolvedValue([]),
         },
+        workspaceMember: {
+            findFirst: vi.fn().mockResolvedValue(null),
+        },
         ...overrides,
     } as unknown as PrismaClient
 }
@@ -77,6 +80,41 @@ describe("createLead", () => {
                 workspaceId: "ws-1",
             } as Parameters<typeof createLead>[1])
         ).rejects.toThrow("DUPLICATE_EMAIL")
+    })
+
+    it("accepts an assignee who belongs to the workspace", async () => {
+        const prisma = createMockPrisma()
+        prisma.lead.findUnique = vi.fn().mockResolvedValue(null)
+        prisma.workspaceMember.findFirst = vi.fn().mockResolvedValue({ id: "member-2" })
+        prisma.lead.create = vi.fn().mockResolvedValue({ id: "lead-1", assignedToId: "user-2" })
+
+        const result = await createLead(prisma, {
+            firstName: "John",
+            email: "a@b.com",
+            workspaceId: "ws-1",
+            assignedToId: "user-2",
+        } as Parameters<typeof createLead>[1])
+
+        expect(result.assignedToId).toBe("user-2")
+        expect(prisma.workspaceMember.findFirst).toHaveBeenCalledWith({
+            where: { workspaceId: "ws-1", userId: "user-2" },
+            select: { id: true },
+        })
+    })
+
+    it("rejects an assignee outside the workspace", async () => {
+        const prisma = createMockPrisma()
+        prisma.lead.findUnique = vi.fn().mockResolvedValue(null)
+        prisma.workspaceMember.findFirst = vi.fn().mockResolvedValue(null)
+
+        await expect(
+            createLead(prisma, {
+                firstName: "John",
+                email: "a@b.com",
+                workspaceId: "ws-1",
+                assignedToId: "user-outside-workspace",
+            } as Parameters<typeof createLead>[1])
+        ).rejects.toThrow("INVALID_ASSIGNEE")
     })
 })
 

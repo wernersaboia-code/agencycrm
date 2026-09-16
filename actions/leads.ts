@@ -137,12 +137,21 @@ export async function createLead(data: CreateLeadData): Promise<ActionResult<Lea
     }
 
     try {
-        const lead = await createLeadService(auth.ctx.prisma, validation.data)
+        // Leads cadastrados manualmente já nascem com quem os criou como
+        // responsável. Importações continuam neutras para poderem ser
+        // distribuídas depois, sem atribuição acidental.
+        const lead = await createLeadService(auth.ctx.prisma, {
+            ...validation.data,
+            assignedToId: validation.data.assignedToId ?? auth.ctx.user.id,
+        })
         revalidatePath('/leads')
         return success(lead)
     } catch (error) {
         if (error instanceof Error && error.message === 'DUPLICATE_EMAIL') {
             return failure('Já existe um lead com este email')
+        }
+        if (error instanceof Error && error.message === 'INVALID_ASSIGNEE') {
+            return failure('O responsável precisa fazer parte deste workspace')
         }
         console.error('Erro ao criar lead:', error)
         return failure('Erro ao criar lead')
@@ -175,6 +184,9 @@ export async function updateLead(
             }
             if (error.message === 'DUPLICATE_EMAIL') {
                 return failure('Já existe um lead com este email')
+            }
+            if (error.message === 'INVALID_ASSIGNEE') {
+                return failure('O responsável precisa fazer parte deste workspace')
             }
         }
         console.error('Erro ao atualizar lead:', error)

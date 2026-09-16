@@ -4,7 +4,7 @@
 import { useMemo, useState } from "react"
 import { useSearchParams } from "next/navigation"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { AlertCircle, CheckCircle2, Mail, Palette, Settings, User, Building2 } from "lucide-react"
+import { AlertCircle, CheckCircle2, Mail, Palette, Settings, User, Building2, Users } from "lucide-react"
 import { ProfileSettings } from "./components/profile-settings"
 import { AppearanceSettings } from "./components/appearance-settings"
 import { EmailSettings } from "./components/email-settings"
@@ -12,6 +12,8 @@ import { SendWindowSettings } from "./components/send-window-settings"
 import { SuppressionList } from "./components/suppression-list"
 import type { SendWindowSettingsData, SuppressionRow, ReplyDetectionSettingsData } from "@/actions/workspace-settings"
 import { WorkspaceSettings } from "@/components/settings/workspace-settings"
+import { WorkspaceTeamSettings } from "@/components/settings/workspace-team-settings"
+import type { WorkspaceMemberRow } from "@/actions/workspace-members"
 import {
     Card,
     CardContent,
@@ -63,20 +65,22 @@ interface SettingsClientProps {
     sendWindow: SendWindowSettingsData | null
     replyDetection: ReplyDetectionSettingsData | null
     suppressions: SuppressionRow[]
+    members: WorkspaceMemberRow[]
+    canManageMembers: boolean
 }
 
 // ============================================================
 // COMPONENTE
 // ============================================================
 
-const SETTINGS_TABS = ["workspace", "profile", "appearance", "email"] as const
+const SETTINGS_TABS = ["workspace", "team", "profile", "appearance", "email"] as const
 type SettingsTab = (typeof SETTINGS_TABS)[number]
 
 function getInitialTab(tab: string | null): SettingsTab {
     return SETTINGS_TABS.includes(tab as SettingsTab) ? (tab as SettingsTab) : "workspace"
 }
 
-export function SettingsClient({ profile, workspace, stats, sendWindow, replyDetection, suppressions }: SettingsClientProps) {
+export function SettingsClient({ profile, workspace, stats, sendWindow, replyDetection, suppressions, members, canManageMembers }: SettingsClientProps) {
     const searchParams = useSearchParams()
     const [activeTab, setActiveTab] = useState<SettingsTab>(() => getInitialTab(searchParams.get("tab")))
     const hasSenderConfigured = Boolean(workspace.senderName && workspace.senderEmail)
@@ -197,6 +201,10 @@ export function SettingsClient({ profile, workspace, stats, sendWindow, replyDet
                         <Building2 className="h-4 w-4" />
                         <span className="hidden sm:inline">Workspace</span>
                     </TabsTrigger>
+                    <TabsTrigger value="team" className="inline-flex items-center gap-2 px-3">
+                        <Users className="h-4 w-4" />
+                        <span className="hidden sm:inline">Equipe</span>
+                    </TabsTrigger>
                     <TabsTrigger value="profile" className="inline-flex items-center gap-2 px-3">
                         <User className="h-4 w-4" />
                         <span className="hidden sm:inline">Perfil</span>
@@ -214,6 +222,14 @@ export function SettingsClient({ profile, workspace, stats, sendWindow, replyDet
                 <div className="mt-6">
                     <TabsContent value="workspace">
                         <WorkspaceSettings workspace={workspace} />
+                    </TabsContent>
+
+                    <TabsContent value="team">
+                        <WorkspaceTeamSettings
+                            workspaceId={workspace.id}
+                            members={members}
+                            canManage={canManageMembers}
+                        />
                     </TabsContent>
 
                     <TabsContent value="profile">
