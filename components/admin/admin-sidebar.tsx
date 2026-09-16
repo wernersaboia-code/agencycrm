@@ -135,7 +135,7 @@ export function AdminSidebar() {
                                         )}
                                     >
                                         <item.icon className="h-4 w-4" />
-                                        {item.titleKey === "content" ? "Conteúdo do site" : item.titleKey === "searchConsole" ? "Google Search Console" : t(item.titleKey)}
+                                        {item.titleKey === "content" ? "Conteúdo do site" : t(item.titleKey)}
                                     </Link>
                                 )
                             })}

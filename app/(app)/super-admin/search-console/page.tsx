@@ -4,6 +4,7 @@ import { requireAdmin } from "@/lib/auth"
 import { getGoogleSearchConsoleAnalytics, type SearchConsoleRow } from "@/lib/analytics/google-search-console"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { countryLabel } from "@/lib/countries"
 
 export const dynamic = "force-dynamic"
 
@@ -25,7 +26,7 @@ export default async function SearchConsolePage({ searchParams }: { searchParams
             <div className="grid gap-4 md:grid-cols-4"><Kpi title="Cliques" value={data.clicks.toLocaleString()} icon={MousePointerClick} /><Kpi title="Impressões" value={data.impressions.toLocaleString()} icon={Search} /><Kpi title="CTR médio" value={`${(data.ctr * 100).toFixed(1)}%`} icon={Target} /><Kpi title="Posição média" value={data.position.toFixed(1)} icon={BarChart3} /></div>
             <Card><CardHeader><CardTitle>Evolução diária</CardTitle></CardHeader><CardContent><div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">{data.daily.map((item) => <div key={item.date} className="rounded-md border p-3"><p className="text-xs text-muted-foreground">{item.date}</p><p className="font-semibold">{item.clicks} cliques</p><p className="text-sm text-muted-foreground">{item.impressions} impressões</p></div>)}</div></CardContent></Card>
             <div className="grid gap-6 xl:grid-cols-2"><Ranking title="Consultas mais encontradas" rows={data.queries} /><Ranking title="Páginas com melhor desempenho" rows={data.pages} /></div>
-            <div className="grid gap-6 xl:grid-cols-2"><Ranking title="Países" rows={data.countries} /><Ranking title="Dispositivos" rows={data.devices} /></div>
+            <div className="grid gap-6 xl:grid-cols-2"><Ranking title="Países" rows={data.countries} countryRows /><Ranking title="Dispositivos" rows={data.devices} /></div>
         </>}
     </div>
 }
@@ -37,7 +38,7 @@ function ConnectionState({ status, error }: { status: string; error?: string }) 
 
 function Kpi({ title, value, icon: Icon }: { title: string; value: string; icon: React.ComponentType<{ className?: string }> }) { return <Card><CardContent className="flex items-center justify-between py-5"><div><p className="text-sm text-muted-foreground">{title}</p><p className="text-3xl font-bold">{value}</p></div><Icon className="h-7 w-7 text-admin" /></CardContent></Card> }
 
-function Ranking({ title, rows }: { title: string; rows: SearchConsoleRow[] }) {
+function Ranking({ title, rows, countryRows = false }: { title: string; rows: SearchConsoleRow[]; countryRows?: boolean }) {
     const preview = rows.slice(0, 10)
-    return <Card><CardHeader><CardTitle className="text-base">{title}</CardTitle></CardHeader><CardContent>{preview.length ? <div className="space-y-3">{preview.map((row) => <div key={row.label} className="flex items-start justify-between gap-4 text-sm"><span className="min-w-0 break-all">{row.label}</span><span className="shrink-0 text-right"><strong>{row.clicks}</strong> cliques<br /><span className="text-muted-foreground">{row.impressions} impr. · {(row.ctr * 100).toFixed(1)}%</span></span></div>)}</div> : <p className="text-sm text-muted-foreground">Ainda não há dados para este período.</p>}</CardContent></Card>
+    return <Card><CardHeader><CardTitle className="text-base">{title}</CardTitle></CardHeader><CardContent>{preview.length ? <div className="space-y-3">{preview.map((row) => { const country = countryRows ? countryLabel(row.label) : null; return <div key={row.label} className="flex items-start justify-between gap-4 text-sm"><span className="min-w-0 break-all">{country ? <><span className="mr-2 text-base">{country.flag}</span>{country.name}</> : row.label}</span><span className="shrink-0 text-right"><strong>{row.clicks}</strong> cliques<br /><span className="text-muted-foreground">{row.impressions} impr. · {(row.ctr * 100).toFixed(1)}%</span></span></div> })}</div> : <p className="text-sm text-muted-foreground">Ainda não há dados para este período.</p>}</CardContent></Card>
 }

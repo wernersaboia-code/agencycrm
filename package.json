@@ -53,6 +53,7 @@
     "flag-icons": "^7.5.0",
     "framer-motion": "^12.38.0",
     "geist": "^1.7.0",
+    "i18n-iso-countries": "^7.14.0",
     "imapflow": "^1.5.0",
     "lru-cache": "^11.3.6",
     "lucide-react": "^0.563.0",
