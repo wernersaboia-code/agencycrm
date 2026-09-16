@@ -39,7 +39,7 @@ function CountryRows({ rows, total, locale }: { rows: VercelAnalyticsRow[]; tota
 
 type CountryAnalyticsLabels = {
     title: string
-    viewAll: (count: number) => string
+    viewAll: string
     dialogTitle: string
     dialogDescription: string
 }
@@ -52,7 +52,7 @@ export function CountryAnalytics({ rows, total, locale, labels }: { rows: Vercel
                 <CardTitle className="text-base">{labels.title}</CardTitle>
                 {rows.length > preview.length && (
                     <Dialog>
-                        <DialogTrigger asChild><Button variant="outline" size="sm">{labels.viewAll(rows.length)}</Button></DialogTrigger>
+                        <DialogTrigger asChild><Button variant="outline" size="sm">{labels.viewAll}</Button></DialogTrigger>
                         <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-2xl">
                             <DialogHeader><DialogTitle>{labels.dialogTitle}</DialogTitle><DialogDescription>{labels.dialogDescription}</DialogDescription></DialogHeader>
                             <CountryRows rows={rows} total={total} locale={locale} />

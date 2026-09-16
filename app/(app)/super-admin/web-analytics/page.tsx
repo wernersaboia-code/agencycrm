@@ -65,7 +65,7 @@ export default async function WebAnalyticsPage({ searchParams }: { searchParams:
                         <Kpi title={t("viewsPerVisitor")} value={viewsPerVisitor} icon={Globe2} />
                     </div>
                     <Card><CardHeader><CardTitle>{t("trafficEvolution")}</CardTitle></CardHeader><CardContent><VercelAnalyticsChart data={data.daily} /></CardContent></Card>
-                    <div className="grid gap-6 xl:grid-cols-2"><Ranking title={t("topPagesVercel")} rows={data.topPages} /><CountryAnalytics rows={data.allCountries} total={data.pageviews} locale={locale} labels={{ title: t("countries"), viewAll: (count) => t("viewAllCountries", { count }), dialogTitle: t("allCountries"), dialogDescription: t("allCountriesDesc") }} /></div>
+                    <div className="grid gap-6 xl:grid-cols-2"><Ranking title={t("topPagesVercel")} rows={data.topPages} /><CountryAnalytics rows={data.allCountries} total={data.pageviews} locale={locale} labels={{ title: t("countries"), viewAll: t("viewAllCountries", { count: data.allCountries.length }), dialogTitle: t("allCountries"), dialogDescription: t("allCountriesDesc") }} /></div>
                     <div className="grid gap-6 md:grid-cols-2"><Ranking title={t("topReferrers")} rows={data.referrers} /><Ranking title={t("devices")} rows={data.devices} /></div>
                 </>
             )}
