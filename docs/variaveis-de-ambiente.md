@@ -169,6 +169,24 @@ calculado a partir dessas variáveis.
 
 ## Observabilidade
 
+## Google Search Console
+
+O painel Super admin usa OAuth somente-leitura para consultar desempenho orgânico.
+Cadastre no cliente OAuth a URL de retorno abaixo, exatamente com `www` e sem barra
+no final:
+
+```
+https://www.easyprospect.com.br/api/google-search-console/callback
+```
+
+| variável | o que é |
+|---|---|
+| `GOOGLE_SEARCH_CONSOLE_CLIENT_ID` | Client ID do cliente OAuth Web criado no projeto Google Cloud Easy Prospect. |
+| `GOOGLE_SEARCH_CONSOLE_CLIENT_SECRET` | Client secret correspondente. **Secreta.** |
+
+O refresh token não fica em variável: ele é concedido pelo botão de conexão no
+Super admin e é salvo criptografado no banco com `SECRETS_ENCRYPTION_KEY`.
+
 | variável | o que é |
 |---|---|
 | `NEXT_PUBLIC_SENTRY_DSN` | Destino dos eventos |

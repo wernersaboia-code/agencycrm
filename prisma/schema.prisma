@@ -994,3 +994,19 @@ model SiteText {
   @@index([locale])
   @@map("site_texts")
 }
+
+// ==================== GOOGLE SEARCH CONSOLE ====================
+
+/// Conexão global do Search Console usada no painel super-admin. O refresh
+/// token é sempre gravado criptografado por `lib/secrets.ts`.
+model GoogleSearchConsoleConnection {
+  id                    String   @id @default(cuid())
+  userId                String   @unique
+  siteUrl               String
+  refreshTokenEncrypted String   @db.Text
+  connectedEmail        String?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@map("google_search_console_connections")
+}

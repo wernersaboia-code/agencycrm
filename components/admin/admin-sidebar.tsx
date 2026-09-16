@@ -16,6 +16,7 @@ import {
     LifeBuoy,
     BarChart3,
     ChartNoAxesCombined,
+    Search,
     FileText,
     FileDown,
     PencilLine,
@@ -80,6 +81,7 @@ export function AdminSidebar() {
         { titleKey: "support", href: "/super-admin/support", icon: LifeBuoy },
         { titleKey: "analytics", href: "/super-admin/analytics", icon: BarChart3 },
         { titleKey: "webAnalytics", href: "/super-admin/web-analytics", icon: ChartNoAxesCombined },
+        { titleKey: "searchConsole", href: "/super-admin/search-console", icon: Search },
         { titleKey: "freeSample", href: "/super-admin/marketplace/free-sample", icon: FileDown },
         { titleKey: "settings", href: "/super-admin/settings", icon: Settings },
     ]
@@ -133,7 +135,7 @@ export function AdminSidebar() {
                                         )}
                                     >
                                         <item.icon className="h-4 w-4" />
-                                        {item.titleKey === "content" ? "Conteúdo do site" : t(item.titleKey)}
+                                        {item.titleKey === "content" ? "Conteúdo do site" : item.titleKey === "searchConsole" ? "Google Search Console" : t(item.titleKey)}
                                     </Link>
                                 )
                             })}
