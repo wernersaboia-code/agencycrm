@@ -48,7 +48,7 @@ type ApiRow = Record<string, unknown> & {
     timestamp?: unknown
 }
 
-type ApiResponse = { data?: ApiRow[] }
+type ApiResponse = { data?: ApiRow[] | ApiRow }
 
 function emptyData(status: VercelWebAnalyticsData["status"]): VercelWebAnalyticsData {
     return {
@@ -108,7 +108,8 @@ async function queryAggregate(
     }
 
     const payload = await response.json() as ApiResponse
-    return Array.isArray(payload.data) ? payload.data : []
+    if (Array.isArray(payload.data)) return payload.data
+    return payload.data && typeof payload.data === "object" ? [payload.data] : []
 }
 
 function dimensionRows(rows: ApiRow[], dimension: string): VercelAnalyticsRow[] {
@@ -154,7 +155,12 @@ const getCachedVercelWebAnalytics = unstable_cache(
 
         try {
             const activeFilter = buildFilter(filters)
-            const dailyRows = await queryAggregate(token, projectId, teamId, since, until, filters.days === 1 ? "hour" : "day", undefined, activeFilter)
+            const baseResults = await Promise.allSettled([
+                queryAggregate(token, projectId, teamId, since, until, filters.days === 1 ? "hour" : "day", undefined, activeFilter),
+                queryAggregate(token, projectId, teamId, since, until, "[]", undefined, activeFilter),
+            ])
+            const dailyRows = settledRows(baseResults[0], "evolução do tráfego")
+            const totalRows = settledRows(baseResults[1], "totais agregados")
             const filteredResults = await Promise.allSettled([
                 queryAggregate(token, projectId, teamId, since, until, "requestPath", 100, activeFilter),
                 queryAggregate(token, projectId, teamId, since, until, "country", 100, activeFilter),
@@ -192,12 +198,15 @@ const getCachedVercelWebAnalytics = unstable_cache(
                 pageviews: numberValue(row.pageviews),
                 visitors: numberValue(row.visitors),
             }))
+            const total = totalRows[0]
+            const pageviews = total ? numberValue(total.pageviews) : daily.reduce((sum, row) => sum + row.pageviews, 0)
+            const visitors = total ? numberValue(total.visitors) : daily.reduce((sum, row) => sum + row.visitors, 0)
 
             return {
                 status: "ready",
                 periodDays: filters.days,
-                pageviews: daily.reduce((sum, row) => sum + row.pageviews, 0),
-                visitors: daily.reduce((sum, row) => sum + row.visitors, 0),
+                pageviews,
+                visitors,
                 daily,
                 topPages: dimensionRows(pageRows, "requestPath").slice(0, 10),
                 countries: dimensionRows(countryRows, "country").slice(0, 6),
@@ -221,8 +230,8 @@ const getCachedVercelWebAnalytics = unstable_cache(
             return { ...emptyData("error"), periodDays: filters.days }
         }
     },
-    ["vercel-web-analytics-filtered-v4"],
-    { revalidate: 900 }
+    ["vercel-web-analytics-filtered-v5"],
+    { revalidate: 60 }
 )
 
 export async function getVercelWebAnalytics(filters: VercelAnalyticsFilters = { days: 30 }) {

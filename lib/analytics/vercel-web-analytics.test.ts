@@ -40,6 +40,8 @@ describe("getVercelWebAnalytics", () => {
                     { timestamp: "2026-09-14T00:00:00.000Z", pageviews: 10, visitors: 7 },
                     { timestamp: "2026-09-15T00:00:00.000Z", pageviews: 20, visitors: 12 },
                 ]
+                : by === "[]"
+                    ? [{ pageviews: 30, visitors: 19 }]
                 : [{ [String(by)]: by === "requestPath" ? "/de" : "DE", pageviews: 9, visitors: 6 }]
 
             return new Response(JSON.stringify({ data: rows }), {
@@ -57,7 +59,7 @@ describe("getVercelWebAnalytics", () => {
         expect(result.topPages[0]).toEqual({ label: "/de", pageviews: 9, visitors: 6 })
         expect(result.allCountries[0]).toEqual({ label: "DE", pageviews: 9, visitors: 6 })
         expect(result.filterOptions.pages).toContain("/de")
-        expect(fetchMock).toHaveBeenCalledTimes(6)
+        expect(fetchMock).toHaveBeenCalledTimes(7)
         expect(fetchMock.mock.calls[0]?.[1]).toMatchObject({
             headers: { Authorization: "Bearer token-teste" },
         })
