@@ -56,6 +56,7 @@ export const INDUSTRY_IDS = [
     "fmcg",
     "horeca",
     "snacks_bars",
+    "plant_based_alternatives",
     "toys",
 ] as const
 

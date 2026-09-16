@@ -438,6 +438,7 @@
             "fmcg": "FMCG",
             "horeca": "HoReCa & Foodservice",
             "snacks_bars": "Riegel & Snacks",
+            "plant_based_alternatives": "Pflanzliche Alternativen",
             "toys": "Spielwaren"
         }
     },
@@ -627,6 +628,8 @@
             "blog": "Blog",
             "support": "Support",
             "analytics": "Berichte",
+            "webAnalytics": "Website-Analytics",
+            "searchConsole": "Google Search Console",
             "freeSample": "Kostenlose Leseprobe",
             "settings": "Einstellungen",
             "logout": "Abmelden",
