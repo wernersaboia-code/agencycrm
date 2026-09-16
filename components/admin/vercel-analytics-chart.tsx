@@ -15,7 +15,7 @@ export function VercelAnalyticsChart({ data }: { data: Array<VercelAnalyticsRow 
                         </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                    <XAxis dataKey="label" tick={{ fontSize: 11 }} tickFormatter={(value) => value.slice(5)} minTickGap={24} />
+                    <XAxis dataKey="label" tick={{ fontSize: 11 }} tickFormatter={(value) => value.includes(":") ? value : value.slice(5)} minTickGap={24} />
                     <YAxis allowDecimals={false} tick={{ fontSize: 11 }} />
                     <Tooltip />
                     <Area type="monotone" dataKey="pageviews" stroke="#5559a0" fill="url(#pageviews)" strokeWidth={2} />

@@ -57,7 +57,7 @@ describe("getVercelWebAnalytics", () => {
         expect(result.topPages[0]).toEqual({ label: "/de", pageviews: 9, visitors: 6 })
         expect(result.allCountries[0]).toEqual({ label: "DE", pageviews: 9, visitors: 6 })
         expect(result.filterOptions.pages).toContain("/de")
-        expect(fetchMock).toHaveBeenCalledTimes(5)
+        expect(fetchMock).toHaveBeenCalledTimes(6)
         expect(fetchMock.mock.calls[0]?.[1]).toMatchObject({
             headers: { Authorization: "Bearer token-teste" },
         })

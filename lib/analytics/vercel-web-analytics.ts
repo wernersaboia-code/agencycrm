@@ -20,7 +20,12 @@ export type VercelWebAnalyticsData = {
     countries: VercelAnalyticsRow[]
     referrers: VercelAnalyticsRow[]
     devices: VercelAnalyticsRow[]
+    operatingSystems: VercelAnalyticsRow[]
+    allPages: VercelAnalyticsRow[]
     allCountries: VercelAnalyticsRow[]
+    allReferrers: VercelAnalyticsRow[]
+    allDevices: VercelAnalyticsRow[]
+    allOperatingSystems: VercelAnalyticsRow[]
     filterOptions: {
         pages: string[]
         countries: string[]
@@ -30,7 +35,7 @@ export type VercelWebAnalyticsData = {
 }
 
 export type VercelAnalyticsFilters = {
-    days: 7 | 30 | 90
+    days: 1 | 7 | 30 | 90
     path?: string
     country?: string
     device?: string
@@ -56,7 +61,12 @@ function emptyData(status: VercelWebAnalyticsData["status"]): VercelWebAnalytics
         countries: [],
         referrers: [],
         devices: [],
+        operatingSystems: [],
+        allPages: [],
         allCountries: [],
+        allReferrers: [],
+        allDevices: [],
+        allOperatingSystems: [],
         filterOptions: { pages: [], countries: [], devices: [], referrers: [] },
     }
 }
@@ -138,23 +148,25 @@ const getCachedVercelWebAnalytics = unstable_cache(
 
         const untilDate = new Date()
         const sinceDate = new Date(untilDate)
-        sinceDate.setUTCDate(sinceDate.getUTCDate() - (filters.days - 1))
-        const since = dateOnly(sinceDate)
-        const until = dateOnly(untilDate)
+        sinceDate.setUTCHours(sinceDate.getUTCHours() - (filters.days === 1 ? 24 : (filters.days - 1) * 24))
+        const since = filters.days === 1 ? sinceDate.toISOString() : dateOnly(sinceDate)
+        const until = filters.days === 1 ? untilDate.toISOString() : dateOnly(untilDate)
 
         try {
             const activeFilter = buildFilter(filters)
-            const dailyRows = await queryAggregate(token, projectId, teamId, since, until, "day", undefined, activeFilter)
+            const dailyRows = await queryAggregate(token, projectId, teamId, since, until, filters.days === 1 ? "hour" : "day", undefined, activeFilter)
             const filteredResults = await Promise.allSettled([
                 queryAggregate(token, projectId, teamId, since, until, "requestPath", 100, activeFilter),
                 queryAggregate(token, projectId, teamId, since, until, "country", 100, activeFilter),
                 queryAggregate(token, projectId, teamId, since, until, "referrerHostname", 100, activeFilter),
                 queryAggregate(token, projectId, teamId, since, until, "deviceType", 50, activeFilter),
+                queryAggregate(token, projectId, teamId, since, until, "osName", 50, activeFilter),
             ])
             const pageRows = settledRows(filteredResults[0], "páginas")
             const countryRows = settledRows(filteredResults[1], "países")
             const referrerRows = settledRows(filteredResults[2], "origens")
             const deviceRows = settledRows(filteredResults[3], "dispositivos")
+            const operatingSystemRows = settledRows(filteredResults[4], "sistemas operacionais")
 
             let allPages = pageRows
             let allCountries = countryRows
@@ -175,7 +187,7 @@ const getCachedVercelWebAnalytics = unstable_cache(
             }
 
             const daily = dailyRows.map((row) => ({
-                label: typeof row.timestamp === "string" ? row.timestamp.slice(0, 10) : "",
+                label: typeof row.timestamp === "string" ? (filters.days === 1 ? row.timestamp.slice(11, 16) : row.timestamp.slice(0, 10)) : "",
                 timestamp: typeof row.timestamp === "string" ? row.timestamp : "",
                 pageviews: numberValue(row.pageviews),
                 visitors: numberValue(row.visitors),
@@ -191,7 +203,12 @@ const getCachedVercelWebAnalytics = unstable_cache(
                 countries: dimensionRows(countryRows, "country").slice(0, 6),
                 referrers: dimensionRows(referrerRows, "referrerHostname").slice(0, 10),
                 devices: dimensionRows(deviceRows, "deviceType").slice(0, 10),
+                operatingSystems: dimensionRows(operatingSystemRows, "osName").slice(0, 10),
+                allPages: dimensionRows(pageRows, "requestPath"),
                 allCountries: dimensionRows(countryRows, "country"),
+                allReferrers: dimensionRows(referrerRows, "referrerHostname"),
+                allDevices: dimensionRows(deviceRows, "deviceType"),
+                allOperatingSystems: dimensionRows(operatingSystemRows, "osName"),
                 filterOptions: {
                     pages: dimensionRows(allPages, "requestPath").map((row) => row.label),
                     countries: dimensionRows(allCountries, "country").map((row) => row.label),
@@ -204,7 +221,7 @@ const getCachedVercelWebAnalytics = unstable_cache(
             return { ...emptyData("error"), periodDays: filters.days }
         }
     },
-    ["vercel-web-analytics-filtered-v3"],
+    ["vercel-web-analytics-filtered-v4"],
     { revalidate: 900 }
 )
 

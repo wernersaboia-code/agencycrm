@@ -4,8 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { VercelAnalyticsChart } from "@/components/admin/vercel-analytics-chart"
 import { CountryAnalytics } from "@/components/admin/country-analytics"
+import { AnalyticsRanking } from "@/components/admin/analytics-ranking"
 import { getAdminLocale, getAdminTranslations } from "@/lib/i18n/admin-locale"
-import { getVercelWebAnalytics, type VercelAnalyticsFilters, type VercelAnalyticsRow } from "@/lib/analytics/vercel-web-analytics"
+import { getVercelWebAnalytics, type VercelAnalyticsFilters } from "@/lib/analytics/vercel-web-analytics"
 
 export const dynamic = "force-dynamic"
 
@@ -21,7 +22,7 @@ function selected(value: string | undefined, max = 200) {
 export default async function WebAnalyticsPage({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
     const params = await searchParams
     const requestedDays = Number(params.days)
-    const days: 7 | 30 | 90 = requestedDays === 7 || requestedDays === 90 ? requestedDays : 30
+    const days: 1 | 7 | 30 | 90 = requestedDays === 1 || requestedDays === 7 || requestedDays === 90 ? requestedDays : 30
     const filters: VercelAnalyticsFilters = {
         days,
         path: selected(params.path),
@@ -45,7 +46,7 @@ export default async function WebAnalyticsPage({ searchParams }: { searchParams:
                 <CardHeader><CardTitle className="text-base">{t("filters")}</CardTitle></CardHeader>
                 <CardContent>
                     <form className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
-                        <FilterSelect name="days" label={t("period")} value={String(days)} allLabel={t("all")} options={[7, 30, 90].map((count) => ({ value: String(count), label: t("days", { count }) }))} />
+                        <FilterSelect name="days" label={t("period")} value={String(days)} allLabel={t("all")} options={[{ value: "1", label: t("last24Hours") }, ...[7, 30, 90].map((count) => ({ value: String(count), label: t("days", { count }) }))]} />
                         <FilterSelect name="path" label={t("page")} value={filters.path} allLabel={t("all")} options={data.filterOptions.pages.map((value) => ({ value, label: value }))} />
                         <FilterSelect name="country" label={t("country")} value={filters.country} allLabel={t("all")} options={data.filterOptions.countries.map((value) => ({ value, label: `${countryFlag(value)} ${countryName(value, locale)}` }))} />
                         <FilterSelect name="device" label={t("devices")} value={filters.device} allLabel={t("all")} options={data.filterOptions.devices.map((value) => ({ value, label: value }))} />
@@ -64,9 +65,10 @@ export default async function WebAnalyticsPage({ searchParams }: { searchParams:
                         <Kpi title={t("visitors")} value={data.visitors.toLocaleString()} icon={Users} />
                         <Kpi title={t("viewsPerVisitor")} value={viewsPerVisitor} icon={Globe2} />
                     </div>
-                    <Card><CardHeader><CardTitle>{t("trafficEvolution")}</CardTitle></CardHeader><CardContent><VercelAnalyticsChart data={data.daily} /></CardContent></Card>
-                    <div className="grid gap-6 xl:grid-cols-2"><Ranking title={t("topPagesVercel")} rows={data.topPages} /><CountryAnalytics rows={data.allCountries} total={data.pageviews} locale={locale} labels={{ title: t("countries"), viewAll: t("viewAllCountries", { count: data.allCountries.length }), dialogTitle: t("allCountries"), dialogDescription: t("allCountriesDesc") }} /></div>
-                    <div className="grid gap-6 md:grid-cols-2"><Ranking title={t("topReferrers")} rows={data.referrers} /><Ranking title={t("devices")} rows={data.devices} /></div>
+                    <p className="text-sm text-muted-foreground">{t("bounceRateUnavailable")}</p>
+                    <Card><CardHeader><CardTitle>{days === 1 ? t("trafficLast24Hours") : t("trafficEvolution")}</CardTitle></CardHeader><CardContent><VercelAnalyticsChart data={data.daily} /></CardContent></Card>
+                    <div className="grid gap-6 xl:grid-cols-2"><AnalyticsRanking title={t("topPagesVercel")} rows={data.allPages} total={data.pageviews} labels={rankingLabels(t, "topPagesVercel", data.allPages.length)} /><CountryAnalytics rows={data.allCountries} total={data.pageviews} locale={locale} labels={{ title: t("countries"), viewAll: t("viewAllCountries", { count: data.allCountries.length }), dialogTitle: t("allCountries"), dialogDescription: t("allCountriesDesc") }} /></div>
+                    <div className="grid gap-6 xl:grid-cols-3"><AnalyticsRanking title={t("topReferrers")} rows={data.allReferrers} total={data.pageviews} labels={rankingLabels(t, "topReferrers", data.allReferrers.length)} /><AnalyticsRanking title={t("devices")} rows={data.allDevices} total={data.pageviews} labels={rankingLabels(t, "devices", data.allDevices.length)} /><AnalyticsRanking title={t("operatingSystems")} rows={data.allOperatingSystems} total={data.pageviews} labels={rankingLabels(t, "operatingSystems", data.allOperatingSystems.length)} /></div>
                 </>
             )}
         </div>
@@ -81,8 +83,9 @@ function Kpi({ title, value, icon: Icon }: { title: string; value: string; icon:
     return <Card><CardContent className="flex items-center justify-between py-5"><div><p className="text-sm text-muted-foreground">{title}</p><p className="text-3xl font-bold">{value}</p></div><Icon className="h-7 w-7 text-admin" /></CardContent></Card>
 }
 
-function Ranking({ title, rows }: { title: string; rows: VercelAnalyticsRow[] }) {
-    return <Card><CardHeader><CardTitle className="text-base">{title}</CardTitle></CardHeader><CardContent className="space-y-3">{rows.map((row) => <div key={row.label} className="flex justify-between gap-3 text-sm"><span className="truncate" title={row.label}>{row.label}</span><span className="shrink-0 font-semibold tabular-nums">{row.pageviews.toLocaleString()} <span className="font-normal text-muted-foreground">/ {row.visitors.toLocaleString()}</span></span></div>)}</CardContent></Card>
+function rankingLabels(t: Awaited<ReturnType<typeof getAdminTranslations>>, titleKey: string, count: number) {
+    const title = t(titleKey)
+    return { viewAll: t("viewAllItems", { count }), dialogTitle: title, dialogDescription: t("allItemsDesc", { title }) }
 }
 
 function countryFlag(code: string) { return /^[A-Z]{2}$/.test(code) ? String.fromCodePoint(...[...code].map((letter) => 127397 + letter.charCodeAt(0))) : "🌐" }
