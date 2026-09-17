@@ -143,5 +143,6 @@ describe("requestFreeSample", () => {
         expect(gravado.locale).toBe("de")
         expect(gravado.token).toEqual(expect.any(String))
         expect(gravado.tokenExpiresAt).toBeInstanceOf(Date)
+        expect(gravado.sampleFilePath).toBe("sample-1.pdf")
     })
 })

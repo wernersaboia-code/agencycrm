@@ -905,6 +905,9 @@ model FreeSampleDownload {
   locale         String
   token          String   @unique
   tokenExpiresAt DateTime
+  // Snapshot do arquivo entregue. O link do e-mail deve continuar levando a
+  // mesma amostra mesmo se o admin trocar ou desativar a amostra da home.
+  sampleFilePath String?
   ip             String?
   userAgent      String?
   createdAt      DateTime @default(now())

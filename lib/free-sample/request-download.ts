@@ -74,6 +74,9 @@ export async function requestFreeSample(input: unknown): Promise<RequestFreeSamp
                 locale: data.locale,
                 token,
                 tokenExpiresAt: calcularExpiracao(new Date()),
+                // O token de e-mail representa esta amostra, não a que
+                // estiver ativa quando a pessoa abrir a caixa depois.
+                sampleFilePath: amostra.filePath,
                 ip,
                 userAgent,
             },

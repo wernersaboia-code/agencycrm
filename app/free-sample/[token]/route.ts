@@ -23,12 +23,20 @@ export async function GET(
             return NextResponse.json({ error: "Link inválido ou expirado" }, { status: 404 })
         }
 
-        const amostra = await prisma.freeSample.findFirst({ where: { isActive: true } })
-        if (!amostra) {
+        // Pedidos novos carregam um snapshot do arquivo solicitado. Assim, a
+        // troca da amostra ativa não muda o conteúdo prometido no e-mail.
+        // O fallback só atende tokens legados, emitidos antes da migração.
+        const filePath = pedido.sampleFilePath ?? (
+            await prisma.freeSample.findFirst({
+                where: { isActive: true },
+                select: { filePath: true },
+            })
+        )?.filePath
+        if (!filePath) {
             return NextResponse.json({ error: "Amostra indisponível" }, { status: 404 })
         }
 
-        return NextResponse.redirect(await createFreeSampleSignedUrl(amostra.filePath))
+        return NextResponse.redirect(await createFreeSampleSignedUrl(filePath))
     } catch (error) {
         console.error("Erro ao servir a amostra por token:", error)
         return NextResponse.json({ error: "Falha no download" }, { status: 500 })
