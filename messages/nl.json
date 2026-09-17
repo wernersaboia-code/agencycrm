@@ -203,6 +203,11 @@
                 "Welke verkoopargumenten het meest kansrijk zijn bij het eerste contact"
             ]
         },
+        "featured": {
+            "eyebrow": "Selectie uit de catalogus",
+            "title": "Uitgelichte studies",
+            "intro": "Een selectie van de markttoetredingsstudies die vandaag beschikbaar zijn. De volledige catalogus bevat meer landen en sectoren."
+        },
         "freeSample": {
             "eyebrow": "Gratis voorbeeld",
             "title": "Bekijk een studie voordat u koopt",

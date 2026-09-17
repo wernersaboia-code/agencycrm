@@ -203,6 +203,11 @@
                 "Quais argumentos de venda são mais promissores no primeiro contato"
             ]
         },
+        "featured": {
+            "eyebrow": "Seleção do catálogo",
+            "title": "Estudos em destaque",
+            "intro": "Uma seleção dos estudos de entrada em mercado disponíveis hoje. O catálogo completo tem mais países e setores."
+        },
         "freeSample": {
             "eyebrow": "Amostra gratuita",
             "title": "Veja um estudo antes de comprar",

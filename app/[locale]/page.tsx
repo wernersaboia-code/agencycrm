@@ -11,6 +11,7 @@ import { IntroSection } from "@/components/landing/intro-section"
 import { TargetMarketsSection } from "@/components/landing/target-markets-section"
 import { BuyerProfilesSection } from "@/components/landing/buyer-profiles-section"
 import { DeliverablesSection } from "@/components/landing/deliverables-section"
+import { FeaturedStudiesSection } from "@/components/landing/featured-studies-section"
 import { FreeSampleSection } from "@/components/landing/free-sample-section"
 import { AdvantageSection, DataQualitySection } from "@/components/landing/text-sections"
 import { HowItWorksSection } from "@/components/landing/how-it-works-section"
@@ -78,6 +79,9 @@ export default async function EasyProspectHome({
             </Suspense>
             <Suspense fallback={<SectionFallback className="h-96" />}>
                 <DeliverablesSection locale={locale} />
+            </Suspense>
+            <Suspense fallback={<SectionFallback className="h-96" />}>
+                <FeaturedStudiesSection locale={locale} />
             </Suspense>
             <Suspense fallback={<SectionFallback className="h-64" />}>
                 <FreeSampleSection locale={locale} />

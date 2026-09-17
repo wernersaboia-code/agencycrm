@@ -203,6 +203,11 @@
                 "Quels arguments de vente sont les plus prometteurs lors du premier contact"
             ]
         },
+        "featured": {
+            "eyebrow": "Sélection du catalogue",
+            "title": "Études en vedette",
+            "intro": "Une sélection des études d'entrée sur le marché disponibles aujourd'hui. Le catalogue complet couvre d'autres pays et secteurs."
+        },
         "freeSample": {
             "eyebrow": "Échantillon gratuit",
             "title": "Consultez une étude avant d'acheter",

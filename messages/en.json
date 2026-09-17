@@ -203,6 +203,11 @@
                 "Which sales arguments are most promising on first contact"
             ]
         },
+        "featured": {
+            "eyebrow": "From the catalogue",
+            "title": "Featured studies",
+            "intro": "A selection of the market entry studies available today. The full catalogue covers more countries and sectors."
+        },
         "freeSample": {
             "eyebrow": "Free sample",
             "title": "See a study before you buy",

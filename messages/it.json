@@ -203,6 +203,11 @@
                 "Quali argomenti di vendita sono più promettenti al primo contatto"
             ]
         },
+        "featured": {
+            "eyebrow": "Selezione dal catalogo",
+            "title": "Studi in evidenza",
+            "intro": "Una selezione degli studi di ingresso nel mercato disponibili oggi. Il catalogo completo copre altri paesi e settori."
+        },
         "freeSample": {
             "eyebrow": "Campione gratuito",
             "title": "Guarda uno studio prima di acquistare",

@@ -203,6 +203,11 @@
                 "Welche Verkaufsargumente bei der Erstansprache besonders erfolgversprechend sind"
             ]
         },
+        "featured": {
+            "eyebrow": "Aus dem Katalog",
+            "title": "Ausgewählte Studien",
+            "intro": "Eine Auswahl der derzeit verfügbaren Markteintrittsstudien. Der vollständige Katalog umfasst weitere Länder und Branchen."
+        },
         "freeSample": {
             "eyebrow": "Kostenlose Leseprobe",
             "title": "Sehen Sie eine Studie vor dem Kauf",
