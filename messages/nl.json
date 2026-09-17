@@ -261,15 +261,15 @@
             "button": "Catalogus verkennen"
         },
         "meta": {
-            "title": "Markttoetredingsstudies",
-            "description": "Markttoetredingsstudies per land en sector: marktanalyse, distributiekanalen, regelgevende eisen en profielen van importeurs. Voor exporteurs."
+            "title": "Lijsten van importeurs en distributeurs",
+            "description": "Lijsten van importeurs en distributeurs per land en sector, met in openbare bronnen gecontroleerde bedrijven. Voor exporteurs."
         }
     },
     "faq": {
         "page": {
             "title": "Veelgestelde vragen",
             "subtitle": "Antwoorden op de belangrijkste vragen over onze markttoetredingsstudies.",
-            "metaTitle": "FAQ",
+            "metaTitle": "Vragen over de importeurslijsten",
             "metaDescription": "Antwoorden op veelgestelde vragen over onze markttoetredingsstudies: methodiek, actualisering, formaten, betaling en meer."
         },
         "items": [

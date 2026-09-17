@@ -261,15 +261,15 @@
             "button": "Browse catalog"
         },
         "meta": {
-            "title": "Market entry studies",
-            "description": "Market entry studies by country and sector: market analysis, distribution channels, regulatory requirements and profiles of importers. For exporters."
+            "title": "Lists of importers and distributors",
+            "description": "Lists of importers and distributors by country and sector, with companies verified in public sources. For exporters."
         }
     },
     "faq": {
         "page": {
             "title": "Frequently asked questions",
             "subtitle": "Answers to the most common questions about our market entry studies.",
-            "metaTitle": "FAQ",
+            "metaTitle": "Questions about the importer lists",
             "metaDescription": "Answers to frequently asked questions about our market entry studies: methodology, updates, formats, payment and more."
         },
         "items": [
@@ -1351,6 +1351,9 @@
                 "pdfDesc": "This is the file the buyer will download.",
                 "currentFile": "Current file:",
                 "pdfHint": "Format: PDF. Max 50MB.",
+                "coverImageLabel": "Study cover (URL)",
+                "coverImageHint": "Image shown on the card and in Google structured data. Leave blank to use the brand default image.",
+                "validationCoverUrl": "Enter a valid URL (https://...)",
                 "settingsSection": "Settings",
                 "activeLabel": "Active List",
                 "activeDesc": "Inactive lists do not appear in the catalog",

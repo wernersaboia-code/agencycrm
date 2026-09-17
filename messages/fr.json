@@ -261,15 +261,15 @@
             "button": "Explorer le catalogue"
         },
         "meta": {
-            "title": "Études d'entrée sur le marché",
-            "description": "Études d'entrée sur le marché par pays et secteur : analyse, canaux de distribution, exigences réglementaires et profils d'importateurs."
+            "title": "Listes d'importateurs et de distributeurs",
+            "description": "Listes d'importateurs et de distributeurs par pays et secteur, avec des entreprises vérifiées dans des sources publiques. Pour les exportateurs."
         }
     },
     "faq": {
         "page": {
             "title": "Questions fréquentes",
             "subtitle": "Réponses aux principales questions sur nos études d'entrée sur le marché.",
-            "metaTitle": "FAQ",
+            "metaTitle": "Questions sur les listes d'importateurs",
             "metaDescription": "Réponses aux questions fréquentes sur nos études d'entrée sur le marché : méthodologie, mise à jour, formats, paiement et plus."
         },
         "items": [

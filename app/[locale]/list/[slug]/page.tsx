@@ -10,10 +10,11 @@ import { AddToCartButton } from "@/components/marketplace/add-to-cart-button"
 import { formatCurrency } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { getListLanguage } from "@/lib/constants/list-languages"
+import type { Locale } from "@/lib/i18n/locales"
 import { FlagIcon } from "@/components/ui/flag-icon"
 import { JsonLd } from "@/components/seo/json-ld"
 import { buildProductSchema, buildBreadcrumbSchema, buildListBreadcrumbTrail } from "@/lib/seo/schema"
-import { canonicalDefaultLocale } from "@/lib/i18n/alternates"
+import { alternatesFor } from "@/lib/i18n/alternates"
 import { ROBOTS_NAO_ENCONTRADO } from "@/lib/seo/indexability"
 import { getActiveCurrency } from "@/lib/currency/server"
 import { pickPrice } from "@/lib/marketplace/list-prices"
@@ -46,7 +47,7 @@ async function getList(slug: string) {
 }
 
 export async function generateMetadata({ params }: ListPageProps) {
-    const { slug } = await params
+    const { locale, slug } = await params
     const [list, t] = await Promise.all([getList(slug), getTranslations("listing")])
 
     if (!list) {
@@ -59,11 +60,12 @@ export async function generateMetadata({ params }: ListPageProps) {
         // vêm da capa do PDF, em inglês. Quando os primeiros existem, mandam.
         title: list.metaTitle || list.name,
         description: list.metaDescription || list.description || t("metaFallbackDescription"),
-        // Uma lista = uma página indexável. O conteúdo vem do banco num só
-        // idioma; /de/list, /fr/list… traduzem apenas a interface, então todas
-        // as variantes canonizam para a URL do locale padrão e o Google
-        // consolida os sinais numa URL só. Ver app/sitemap.ts.
-        alternates: canonicalDefaultLocale(`/list/${slug}`),
+        // Self-canonical + hreflang recíproco: cada variante de idioma é uma
+        // versão legítima da mesma lista (a interface é traduzida). A
+        // estratégia anterior — canonicalizar todas para a URL pt — não era
+        // respeitada pelo Google, que indexava as variantes mesmo assim e
+        // deixava canônicas de fora. Ver lib/i18n/alternates.ts e app/sitemap.ts.
+        alternates: alternatesFor(`/list/${slug}`, locale as Locale),
     }
 }
 
@@ -135,6 +137,9 @@ export default async function ListPage({ params }: ListPageProps) {
                     offers: ofertas,
                     isActive: list.isActive,
                     locale,
+                    // Sem capa cadastrada o schema usa a imagem padrão da marca
+                    // (ver DEFAULT_PRODUCT_IMAGE_URL em lib/seo/schema.ts).
+                    imageUrl: list.coverImageUrl,
                 })}
             />
             <JsonLd

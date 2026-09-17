@@ -19,6 +19,16 @@ export const ORGANIZATION_ID = `${BASE_URL}#organization`
 
 const ORGANIZATION_NAME = "Easy Prospect"
 
+/**
+ * Imagem de reserva do Product quando a lista não tem capa cadastrada.
+ *
+ * É a imagem social da marca (`app/opengraph-image.tsx`), a mesma já usada no
+ * `og:image` de todas as páginas: real e estável, nunca uma imagem inventada
+ * do estudo específico. Sem `image` o rich result de Product é reprovado no
+ * Search Console (era o erro crítico "O campo image não foi encontrado").
+ */
+export const DEFAULT_PRODUCT_IMAGE_URL = `${BASE_URL}/opengraph-image`
+
 export function buildOrganizationSchema(): Record<string, unknown> {
     return {
         "@context": "https://schema.org",
@@ -71,17 +81,24 @@ export interface ProductSchemaInput {
     offers: Array<{ price: number; currency: string }>
     isActive: boolean
     locale: string
+    /** Capa do estudo (`LeadList.coverImageUrl`). Sem valor, usa a padrão. */
+    imageUrl?: string | null
 }
 
 /**
  * `price` sai como string com 2 casas: o schema.org espera o valor em texto,
  * e Number.toFixed evita "149.9" (que alguns validadores rejeitam).
  *
+ * `brand` é um nó `Brand`, não uma referência `{"@id": ...}` para a
+ * Organization: o Search Console acusa o segundo como "O tipo de objeto do
+ * campo brand não é válido".
+ *
  * Sem aggregateRating/review de propósito — não há avaliação real no banco,
  * e rich result inventado é penalizável além de desonesto.
  */
 export function buildProductSchema(input: ProductSchemaInput): Record<string, unknown> {
     const url = `${BASE_URL}${getPathname({ href: `/list/${input.slug}`, locale: input.locale as Locale })}`
+    const imageUrl = input.imageUrl?.trim() || DEFAULT_PRODUCT_IMAGE_URL
 
     return {
         "@context": "https://schema.org",
@@ -90,7 +107,8 @@ export function buildProductSchema(input: ProductSchemaInput): Record<string, un
         ...(input.description ? { description: input.description } : {}),
         url,
         inLanguage: input.locale,
-        brand: { "@id": ORGANIZATION_ID },
+        image: [imageUrl],
+        brand: { "@type": "Brand", name: ORGANIZATION_NAME },
         // Um Offer por moeda cadastrada. O crawler não tem cookie de moeda:
         // emitir só euro enquanto a página é renderizada em real seria dado
         // estruturado amplificando divergência — exatamente o que este projeto

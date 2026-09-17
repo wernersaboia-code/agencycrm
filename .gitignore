@@ -44,3 +44,6 @@ next-env.d.ts
 
 # Scratch do subagent-driven-development (briefs, reports, diffs de review)
 .superpowers/sdd/
+
+# Saída do diagnóstico de indexação (prisma/inspecionar-indexacao.ts)
+/inspecao-indexacao.csv

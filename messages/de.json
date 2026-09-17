@@ -261,15 +261,15 @@
             "button": "Katalog entdecken"
         },
         "meta": {
-            "title": "Markteintrittsstudien",
-            "description": "Markteintrittsstudien nach Land und Branche: Marktanalyse, Vertriebskanäle, regulatorische Anforderungen und Profile von Importeuren. Für Exporteure."
+            "title": "Listen von Importeuren und Distributoren",
+            "description": "Listen von Importeuren und Distributoren nach Land und Branche, mit in öffentlichen Quellen geprüften Unternehmen. Für Exporteure."
         }
     },
     "faq": {
         "page": {
             "title": "Häufige Fragen",
             "subtitle": "Antworten auf die häufigsten Fragen zu unseren Markteintrittsstudien.",
-            "metaTitle": "FAQ",
+            "metaTitle": "Fragen zu den Importeurslisten",
             "metaDescription": "Antworten auf häufige Fragen zu unseren Markteintrittsstudien: Methodik, Aktualisierung, Formate, Zahlung und mehr."
         },
         "items": [
@@ -1314,6 +1314,9 @@
                 "pdfDesc": "Dies ist die Datei, die der Käufer herunterlädt.",
                 "currentFile": "Aktuelle Datei:",
                 "pdfHint": "Format: PDF. Maximal 50 MB.",
+                "coverImageLabel": "Studiencover (URL)",
+                "coverImageHint": "Bild für die Karte und die strukturierten Daten von Google. Leer verwendet das Standardmarkenbild.",
+                "validationCoverUrl": "Bitte eine gültige URL angeben (https://...)",
                 "settingsSection": "Einstellungen",
                 "activeLabel": "Liste aktiv",
                 "activeDesc": "Inaktive Listen erscheinen nicht im Katalog",

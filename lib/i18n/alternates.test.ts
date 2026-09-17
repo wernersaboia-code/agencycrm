@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { alternatesFor, canonicalDefaultLocale } from "./alternates"
+import { alternatesFor } from "./alternates"
 import { PUBLISHED_LOCALES } from "./locales"
 
 describe("alternatesFor", () => {
@@ -33,11 +33,16 @@ describe("alternatesFor", () => {
     })
 })
 
-describe("canonicalDefaultLocale", () => {
-    it("aponta sempre para a URL sem prefixo, sem hreflang", () => {
-        const result = canonicalDefaultLocale("/list/leads-alemanha")
-        expect(result.canonical).toMatch(/\/list\/leads-alemanha$/)
-        expect(result.canonical).not.toMatch(/\/(de|es|fr|it|nl|en)\//)
-        expect(result).not.toHaveProperty("languages")
+describe("alternatesFor em página de lista", () => {
+    it("usa self-canonical na variante de idioma", () => {
+        expect(alternatesFor("/list/leads-alemanha", "de").canonical).toMatch(/\/de\/list\/leads-alemanha$/)
+        expect(alternatesFor("/list/leads-alemanha", "pt").canonical).toMatch(/\/list\/leads-alemanha$/)
+    })
+
+    it("anuncia todas as variantes de idioma mais x-default", () => {
+        const { languages } = alternatesFor("/list/leads-alemanha")
+        expect(Object.keys(languages)).toHaveLength(PUBLISHED_LOCALES.length + 1)
+        expect(languages["de-DE"]).toMatch(/\/de\/list\/leads-alemanha$/)
+        expect(languages["x-default"]).toMatch(/\/list\/leads-alemanha$/)
     })
 })

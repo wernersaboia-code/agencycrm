@@ -32,6 +32,8 @@ interface CreateListData {
     totalLeads?: number
     isActive: boolean
     isFeatured: boolean
+    /** URL pública da capa do estudo. Vazio = sem capa (fallback da marca). */
+    coverImageUrl?: string
 }
 
 const listDataSchema = z.object({
@@ -54,7 +56,16 @@ const listDataSchema = z.object({
     totalLeads: z.number().int().min(0).max(999999999).optional(),
     isActive: z.boolean(),
     isFeatured: z.boolean(),
+    // Capa do estudo. String vazia é aceita e normalizada para null: limpar o
+    // campo na edição precisa REMOVER a capa, não preservar a anterior.
+    coverImageUrl: z.union([z.literal(""), z.string().trim().url().max(1000)]).optional(),
 })
+
+/** Capa vazia vira `null`; o schema do Product cai na imagem padrão. */
+function normalizarCapa(valor: string | undefined): string | null {
+    const trimmed = valor?.trim()
+    return trimmed ? trimmed : null
+}
 
 // Tipo serializado para retornar ao client
 interface SerializedList {
@@ -73,6 +84,7 @@ interface SerializedList {
     currency: string
     isActive: boolean
     isFeatured: boolean
+    coverImageUrl: string | null
     previewData: unknown
     createdAt: string
     updatedAt: string
@@ -152,6 +164,7 @@ async function criarLista(data: CreateListData): Promise<SerializedList> {
             totalLeads: validated.totalLeads ?? 0,
             isActive: false,
             isFeatured: validated.isFeatured,
+            coverImageUrl: normalizarCapa(validated.coverImageUrl),
         },
     })
 
@@ -218,6 +231,7 @@ async function atualizarLista(id: string, data: CreateListData): Promise<Seriali
                 : {}),
             isActive: validated.isActive,
             isFeatured: validated.isFeatured,
+            coverImageUrl: normalizarCapa(validated.coverImageUrl),
         },
     })
 

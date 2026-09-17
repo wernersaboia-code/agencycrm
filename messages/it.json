@@ -261,15 +261,15 @@
             "button": "Esplora il catalogo"
         },
         "meta": {
-            "title": "Studi di ingresso nel mercato",
-            "description": "Studi di ingresso nel mercato per paese e settore: analisi, canali di distribuzione, requisiti normativi e profili di importatori."
+            "title": "Liste di importatori e distributori",
+            "description": "Liste di importatori e distributori per paese e settore, con aziende verificate in fonti pubbliche. Per chi esporta."
         }
     },
     "faq": {
         "page": {
             "title": "Domande frequenti",
             "subtitle": "Risposte alle domande principali sui nostri studi di ingresso nel mercato.",
-            "metaTitle": "FAQ",
+            "metaTitle": "Domande sulle liste di importatori",
             "metaDescription": "Risposte alle domande frequenti sui nostri studi di ingresso nel mercato: metodologia, aggiornamento, formati, pagamento e altro."
         },
         "items": [

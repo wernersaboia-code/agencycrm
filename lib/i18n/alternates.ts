@@ -16,6 +16,13 @@ const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || "https://www.easyprospect.co
  * O caminho com prefixo de locale vem de getPathname (next-intl), o mesmo
  * mecanismo usado em app/sitemap.ts — evita ter duas implementações da
  * mesma regra de prefixo.
+ *
+ * Usado nas rotas estáticas E nas páginas de lista. As listas antes
+ * canonicalizavam todas as variantes para a URL pt (sem hreflang); a medição
+ * com a URL Inspection API mostrou que o Google ignorava esse canonical e
+ * indexava 322 variantes mesmo assim, deixando 31 canônicas de fora. Cada
+ * variante passa a ter canonical próprio + hreflang recíproco: os sinais
+ * apontam para a mesma família de páginas em vez de se dividirem.
  */
 export function alternatesFor(path: string, current: Locale = DEFAULT_LOCALE) {
     const languages: Record<string, string> = {}
@@ -25,21 +32,4 @@ export function alternatesFor(path: string, current: Locale = DEFAULT_LOCALE) {
     languages["x-default"] = `${BASE_URL}${getPathname({ href: path, locale: DEFAULT_LOCALE })}`
 
     return { canonical: `${BASE_URL}${getPathname({ href: path, locale: current })}`, languages }
-}
-
-/**
- * Canonical único, sem hreflang, sempre na URL do locale padrão.
- *
- * Para páginas roteáveis em todos os locales mas com um só idioma de
- * conteúdo — hoje as listas do marketplace: nome, descrição, tabela de
- * amostra e leads vêm do banco num idioma só; as versões com prefixo
- * (/de/list, /fr/list…) traduzem apenas a interface em volta. Anunciá-las
- * com hreflang recíproco fazia o Google ver 7 quase-duplicatas por lista e
- * empilhá-las em "Detectada, mas não indexada". Apontando todas as variantes
- * para a mesma URL, o buscador consolida os sinais numa página só. Sem
- * `languages` aqui de propósito: com o canonical cruzando para outra URL, o
- * Google ignora o par hreflang de qualquer forma.
- */
-export function canonicalDefaultLocale(path: string) {
-    return { canonical: `${BASE_URL}${getPathname({ href: path, locale: DEFAULT_LOCALE })}` }
 }

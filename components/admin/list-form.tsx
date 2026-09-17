@@ -85,6 +85,7 @@ interface SerializedLeadList {
     prices?: { EUR?: number; BRL?: number; USD?: number }
     isActive: boolean
     isFeatured: boolean
+    coverImageUrl: string | null
     previewData: unknown
     createdAt: string
     updatedAt: string
@@ -129,6 +130,12 @@ export function ListForm({ list }: ListFormProps) {
         priceBRL: z.string().min(1, t("validationPriceBrl")),
         priceUSD: z.string().optional(),
         totalLeads: z.string().regex(/^\d*$/, t("validationInteger")).optional(),
+        // URL pública da capa do estudo. Vazio é válido (usa a imagem padrão
+        // da marca no JSON-LD), mas um texto preenchido precisa ser URL.
+        coverImageUrl: z.string().optional().refine(
+            (value) => !value || value.trim() === "" || /^https?:\/\/\S+$/.test(value.trim()),
+            t("validationCoverUrl")
+        ),
         isActive: z.boolean().default(true),
         isFeatured: z.boolean().default(false),
     }), [t])
@@ -176,6 +183,7 @@ export function ListForm({ list }: ListFormProps) {
             priceBRL: list?.prices?.BRL !== undefined ? String(list.prices.BRL) : "",
             priceUSD: list?.prices?.USD !== undefined ? String(list.prices.USD) : "",
             totalLeads: list ? String(list.totalLeads) : "",
+            coverImageUrl: list?.coverImageUrl || "",
             isActive: list?.isActive ?? true,
             isFeatured: list?.isFeatured ?? false,
         },
@@ -279,6 +287,9 @@ export function ListForm({ list }: ListFormProps) {
                 totalLeads: data.totalLeads?.trim()
                     ? parseInt(data.totalLeads, 10)
                     : undefined,
+                // String vazia é enviada de propósito: a action a normaliza
+                // para null, então limpar o campo remove a capa na edição.
+                coverImageUrl: data.coverImageUrl?.trim() ?? "",
             }
 
             if (list) {
@@ -866,6 +877,24 @@ export function ListForm({ list }: ListFormProps) {
                         <p className="text-xs text-muted-foreground">
                             {t("pdfHint")}
                         </p>
+
+                        <div className="space-y-2 border-t pt-4">
+                            <Label htmlFor="coverImageUrl">{t("coverImageLabel")}</Label>
+                            <Input
+                                id="coverImageUrl"
+                                type="url"
+                                placeholder="https://..."
+                                {...form.register("coverImageUrl")}
+                            />
+                            <p className="text-xs text-muted-foreground">
+                                {t("coverImageHint")}
+                            </p>
+                            {form.formState.errors.coverImageUrl && (
+                                <p className="text-sm text-destructive">
+                                    {form.formState.errors.coverImageUrl.message}
+                                </p>
+                            )}
+                        </div>
                     </CardContent>
                 </Card>
 

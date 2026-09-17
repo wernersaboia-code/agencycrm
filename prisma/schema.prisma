@@ -644,6 +644,13 @@ model LeadList {
   studyPdfUrl  String?
   studyPdfName String?
 
+  // Capa do estudo, exposta como `image` do Product no JSON-LD. URL pública,
+  // mesmo padrão do blog (coverImageUrl como texto, sem upload). Nullable de
+  // propósito: sem capa cadastrada, o schema cai na imagem padrão da marca
+  // (ver DEFAULT_PRODUCT_IMAGE_URL em lib/seo/schema.ts), nunca numa imagem
+  // inventada do estudo.
+  coverImageUrl String?
+
   // Título e descrição do resultado de busca, no idioma do país do estudo.
   //
   // Existem separados de `name` e `description` porque servem a leitores

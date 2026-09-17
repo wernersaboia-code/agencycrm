@@ -10,6 +10,7 @@ import {
     serializeJsonLd,
     BASE_URL,
     ORGANIZATION_ID,
+    DEFAULT_PRODUCT_IMAGE_URL,
 } from "./schema"
 import { PUBLISHED_LOCALES } from "@/lib/i18n/locales"
 
@@ -177,6 +178,33 @@ describe("buildProductSchema", () => {
 
         expect(schema.aggregateRating).toBeUndefined()
         expect(schema.review).toBeUndefined()
+    })
+
+    it("declara brand como nó Brand, não referência à Organization", () => {
+        // O Search Console reprova `{"@id":...}` em brand com "O tipo de
+        // objeto do campo brand não é válido".
+        expect(buildProductSchema(base).brand).toEqual({
+            "@type": "Brand",
+            name: "Easy Prospect",
+        })
+    })
+
+    it("usa a capa da lista como image quando cadastrada", () => {
+        const schema = buildProductSchema({ ...base, imageUrl: "https://cdn.x/capa.webp" })
+
+        expect(schema.image).toEqual(["https://cdn.x/capa.webp"])
+    })
+
+    it("cai na imagem padrão da marca quando não há capa", () => {
+        const schema = buildProductSchema(base)
+
+        expect(schema.image).toEqual([DEFAULT_PRODUCT_IMAGE_URL])
+        expect(String((schema.image as string[])[0])).toContain(BASE_URL)
+    })
+
+    it("trata capa em branco como ausente", () => {
+        expect(buildProductSchema({ ...base, imageUrl: "   " }).image)
+            .toEqual([DEFAULT_PRODUCT_IMAGE_URL])
     })
 })
 

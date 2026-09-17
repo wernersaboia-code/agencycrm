@@ -261,15 +261,15 @@
             "button": "Explorar catálogo"
         },
         "meta": {
-            "title": "Estudos de entrada em mercado",
-            "description": "Estudos de entrada em mercado por país e setor: análise, canais de distribuição, requisitos regulatórios e perfis de importadores. Para quem exporta."
+            "title": "Listas de importadores e distribuidores",
+            "description": "Listas de importadores e distribuidores por país e setor, com empresas conferidas em fontes públicas. Para quem exporta."
         }
     },
     "faq": {
         "page": {
             "title": "Perguntas frequentes",
             "subtitle": "Respostas para as principais dúvidas sobre nossos estudos de entrada em mercado.",
-            "metaTitle": "FAQ",
+            "metaTitle": "Dúvidas sobre as listas de importadores",
             "metaDescription": "Respostas para perguntas frequentes sobre nossos estudos de entrada em mercado: metodologia, atualização, formatos, pagamento e mais."
         },
         "items": [
@@ -1351,6 +1351,9 @@
                 "pdfDesc": "Este é o arquivo que o comprador vai baixar.",
                 "currentFile": "Arquivo atual:",
                 "pdfHint": "Formato: PDF. Máximo 50MB.",
+                "coverImageLabel": "Capa do estudo (URL)",
+                "coverImageHint": "Imagem exibida no card e nos dados estruturados do Google. Em branco usa a imagem padrão da marca.",
+                "validationCoverUrl": "Informe uma URL válida (https://...)",
                 "settingsSection": "Configurações",
                 "activeLabel": "Lista Ativa",
                 "activeDesc": "Listas inativas não aparecem no catálogo",
