@@ -109,7 +109,7 @@ export function AdminSidebar() {
                     <Image src="/logo-icon.png" alt="" width={32} height={32} className="h-8 w-8 rounded-md" />
                     <div>
                         <span className="text-lg font-bold text-white">Easy Prospect</span>
-                        <span className="block text-xs text-violet-400">{tc("area")}</span>
+                        <span className="block text-xs text-[#dfe2ff]">{tc("area")}</span>
                     </div>
                 </Link>
             </div>
@@ -119,7 +119,7 @@ export function AdminSidebar() {
                 <nav className="flex flex-col gap-1">
                     {menuSections.map((section, sectionIndex) => (
                         <div key={section.labelKey} className="mb-2">
-                            <p className="mb-2 px-3 text-xs font-bold uppercase text-[#cfd3fa]/75">
+                            <p className="mb-2 px-3 text-xs font-bold uppercase text-[#e8eafe]">
                                 {t(section.labelKey)}
                             </p>
 
@@ -133,7 +133,7 @@ export function AdminSidebar() {
                                             "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
                                             isActive
                                                 ? "bg-[#e8eafe] text-[#25285f]"
-                                                : "text-[#dfe2ff]/80 hover:bg-[#3b3f82] hover:text-white"
+                                                : "text-[#f1f2ff] hover:bg-[#3b3f82] hover:text-white"
                                         )}
                                     >
                                         <item.icon className="h-4 w-4" />
@@ -181,7 +181,7 @@ export function AdminSidebar() {
             <div className="border-t border-[#5559a0] p-3">
                 <Button
                     variant="ghost"
-                    className="w-full justify-start gap-3 text-[#dfe2ff]/80 hover:bg-[#3b3f82] hover:text-white"
+                    className="w-full justify-start gap-3 text-[#f1f2ff] hover:bg-[#3b3f82] hover:text-white"
                     onClick={handleLogout}
                 >
                     <LogOut className="h-4 w-4" />

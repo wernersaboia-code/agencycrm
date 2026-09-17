@@ -148,7 +148,7 @@ export function CatalogSidebar({
     const mostrarIdiomas = secaoOfereceEscolha(idiomas, selectedLanguages)
 
     return (
-        <div className={`space-y-6 transition-opacity ${isPending ? "pointer-events-none opacity-60" : ""}`}>
+        <div className={`space-y-3 transition-opacity ${isPending ? "pointer-events-none opacity-60" : ""}`}>
             {!hideHeading && (
                 <div>
                     <h2 className="text-lg font-semibold text-foreground">{t("filtersTitle")}</h2>
@@ -174,7 +174,7 @@ export function CatalogSidebar({
                 </button>
 
                 <div id={`${panelId}-countries`} hidden={!countriesOpen}>
-                    <div className="space-y-2">
+                    <div className="max-h-32 space-y-2 overflow-y-auto pe-2 [scrollbar-gutter:stable]">
                         {paises.map(({ code, nome, count }) => {
                             const isDisabled = count === 0
                             const isChecked = selectedCountries.includes(code)

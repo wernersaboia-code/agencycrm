@@ -61,9 +61,10 @@ export function CatalogFiltersPanel({ activeFilterCount, ...sidebarProps }: Cata
                 </Sheet>
             </div>
 
-            {/* Sem altura máxima o painel gruda no topo e o fim da lista fica
-                inalcançável: a roda do mouse rola a página, não o painel. */}
-            <aside className="hidden rounded-lg border border-border bg-card p-4 lg:sticky lg:top-24 lg:block lg:max-h-[calc(100dvh-7rem)] lg:w-72 lg:shrink-0 lg:overflow-y-auto">
+            {/* A lateral acompanha a página. Só a faceta longa de países tem
+                rolagem própria; fazer o aside inteiro rolar prendia a roda do
+                mouse até o painel chegar ao fim. */}
+            <aside className="hidden rounded-lg border border-border bg-card p-4 lg:sticky lg:top-24 lg:block lg:w-72 lg:shrink-0">
                 <CatalogSidebar {...sidebarProps} />
             </aside>
         </>
