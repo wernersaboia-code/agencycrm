@@ -55,9 +55,9 @@ export async function generateMetadata({ params }: ListPageProps) {
     }
 
     return {
-        // metaTitle/metaDescription são escritos no idioma do país do estudo e
-        // com o vocabulário que o comprador digita na busca; name/description
-        // vêm da capa do PDF, em inglês. Quando os primeiros existem, mandam.
+        // metaTitle/metaDescription são escritos no idioma do estudo e com o
+        // vocabulário que o comprador digita na busca; name/description vêm da
+        // capa do PDF, em inglês. Quando os primeiros existem, mandam.
         title: list.metaTitle || list.name,
         description: list.metaDescription || list.description || t("metaFallbackDescription"),
         // Self-canonical + hreflang recíproco: cada variante de idioma é uma

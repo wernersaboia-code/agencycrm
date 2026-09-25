@@ -16,7 +16,7 @@
     "seed:templates": "npx ts-node --project tsconfig.seed.json prisma/seed-templates.ts",
     "check:precos": "npx ts-node --project tsconfig.seed.json prisma/check-precos.ts",
     "index:inspecionar": "npx ts-node --project tsconfig.seed.json prisma/inspecionar-indexacao.ts",
-    "meta:listas-pendentes": "npx ts-node --project tsconfig.seed.json prisma/atualizar-listas-pendentes.ts"
+    "meta:listas": "npx ts-node --project tsconfig.seed.json prisma/atualizar-conteudo-listas.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
