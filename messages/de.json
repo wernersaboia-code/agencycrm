@@ -444,7 +444,9 @@
             "horeca": "HoReCa & Foodservice",
             "snacks_bars": "Riegel & Snacks",
             "plant_based_alternatives": "Pflanzliche Alternativen",
-            "toys": "Spielwaren"
+            "toys": "Spielwaren",
+            "baby_toddler_products": "Baby- und Kleinkindprodukte",
+            "granular_sulphur": "Granulierter Schwefel"
         }
     },
     "listing": {

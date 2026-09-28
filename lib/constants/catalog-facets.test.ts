@@ -40,15 +40,17 @@ describe("vocabulário controlado", () => {
 
     // A busca tem duas dimensões e só duas. Um setor genérico voltando ao
     // vocabulário (tech, fashion, retail…) é regressão: nenhum estudo usa.
-    // `snacks_bars` é a linha "Fruit Bars and Cereal Bars" e `toys` a linha
-    // "Toy Market" — cada id aqui tem estudo com esse título por trás.
+    // Cada id corresponde ao setor nomeado em um estudo de entrada de mercado.
     it("só tem os setores que aparecem no título dos estudos", () => {
         expect([...INDUSTRY_IDS]).toEqual([
             "exotic_fruits",
             "fmcg",
             "horeca",
             "snacks_bars",
+            "plant_based_alternatives",
             "toys",
+            "baby_toddler_products",
+            "granular_sulphur",
         ])
     })
 })

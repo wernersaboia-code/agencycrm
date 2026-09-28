@@ -3,3 +3,6 @@
 # for commitado, `prisma migrate deploy` falha no build da Vercel acusando
 # "migration file has been modified" — e o site nao publica.
 prisma/migrations/**/*.sql text eol=lf
+
+# Estudos publicados como PDF devem permanecer binários no Git.
+deliverables/market-studies/*.pdf binary

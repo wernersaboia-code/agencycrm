@@ -47,9 +47,9 @@
  * FMCG procura diretório amplo de país, e misturar uma categoria só na mesma
  * faceta troca granularidade por volume.
  *
- * Não existe `baby_products` ainda, e a ausência é deliberada: só entra quando
- * houver estudo de artigos infantis publicado, porque faceta sem lista por trás
- * é promessa de catálogo que não existe.
+ * `baby_toddler_products` cobre artigos para bebés e crianças pequenas, sem
+ * misturar este estudo com o catálogo geral de brinquedos. `granular_sulphur`
+ * identifica o produto químico específico do estudo alemão.
  */
 export const INDUSTRY_IDS = [
     "exotic_fruits",
@@ -58,6 +58,8 @@ export const INDUSTRY_IDS = [
     "snacks_bars",
     "plant_based_alternatives",
     "toys",
+    "baby_toddler_products",
+    "granular_sulphur",
 ] as const
 
 export type IndustryId = (typeof INDUSTRY_IDS)[number]
