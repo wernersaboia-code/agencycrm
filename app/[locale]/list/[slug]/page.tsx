@@ -18,6 +18,7 @@ import { alternatesFor } from "@/lib/i18n/alternates"
 import { ROBOTS_NAO_ENCONTRADO } from "@/lib/seo/indexability"
 import { getActiveCurrency } from "@/lib/currency/server"
 import { pickPrice } from "@/lib/marketplace/list-prices"
+import { paragrafosDaIntroducao } from "@/lib/marketplace/texto-colado"
 import type { Currency } from "@/lib/currency"
 import {
     ArrowLeft,
@@ -126,6 +127,12 @@ export default async function ListPage({ params }: ListPageProps) {
         currency: resolved.currency,
         totalLeads: list.totalLeads,
     }
+    // A introdução vem colada de um PDF, com as quebras de linha visuais do
+    // documento dentro do texto. Quem monta os parágrafos é a limpeza (ver
+    // lib/marketplace/texto-colado.ts): renderizar o texto cru com
+    // `whitespace-pre-line` transformava cada quebra da colagem numa quebra na
+    // tela — frase cortada no meio e nenhum parágrafo.
+    const introducao = paragrafosDaIntroducao(list.introduction)
 
     return (
         <div className="min-h-screen bg-muted/40">
@@ -183,12 +190,14 @@ export default async function ListPage({ params }: ListPageProps) {
                                     {list.description}
                                 </p>
                             )}
-                            {list.introduction && (
+                            {introducao.length > 0 && (
                                 <div className="mt-6">
                                     <h2 className="text-lg font-semibold text-foreground">{t("introductionTitle")}</h2>
-                                    <p className="mt-2 max-w-2xl whitespace-pre-line text-sm text-muted-foreground">
-                                        {list.introduction}
-                                    </p>
+                                    <div className="mt-2 max-w-2xl space-y-3 text-sm text-muted-foreground">
+                                        {introducao.map((paragrafo, indice) => (
+                                            <p key={indice}>{paragrafo}</p>
+                                        ))}
+                                    </div>
                                 </div>
                             )}
                         </div>

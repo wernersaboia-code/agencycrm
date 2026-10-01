@@ -1,7 +1,7 @@
 // components/admin/list-form.tsx
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, type ClipboardEvent as EventoDeColagem } from "react"
 import { useRouter } from "next/navigation"
 import { useForm, type Resolver } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -54,7 +54,7 @@ import {
 } from "@/components/ui/alert-dialog"
 
 import type { Achado as AchadoContato } from "@/lib/marketplace/contatos-pessoais"
-import { createList, updateList, uploadLeadsToList, markListReviewed } from "@/actions/admin/lists"
+import { createList, updateList, uploadLeadsToList, markListReviewed, gerarResumoDoEstudo } from "@/actions/admin/lists"
 import { MarketplaceImportWizard } from "@/components/admin/marketplace-import-wizard"
 import type { MarketplaceLeadData } from "@/lib/constants/marketplace-csv.constants"
 import { LIST_LANGUAGES } from "@/lib/constants/list-languages"
@@ -62,6 +62,7 @@ import { INDUSTRY_IDS } from "@/lib/constants/catalog-facets"
 import { paisesInvalidosDoCampo } from "@/lib/i18n/nome-de-pais"
 import { FlagIcon } from "@/components/ui/flag-icon"
 import { canPublishList } from "@/lib/marketplace/list-publishing"
+import { normalizarTextoColado } from "@/lib/marketplace/texto-colado"
 
 // ============================================
 // TIPOS
@@ -162,6 +163,7 @@ export function ListForm({ list }: ListFormProps) {
     } | null>(null)
     const [pdfFile, setPdfFile] = useState<File | null>(null)
     const [pdfName, setPdfName] = useState<string | null>(list?.studyPdfName ?? null)
+    const [importandoResumo, setImportandoResumo] = useState(false)
 
     // Estado das indústrias selecionadas
     const [selectedIndustries, setSelectedIndustries] = useState<string[]>(
@@ -174,8 +176,12 @@ export function ListForm({ list }: ListFormProps) {
         defaultValues: {
             name: list?.name || "",
             slug: list?.slug || "",
-            description: list?.description || "",
-            introduction: list?.introduction || "",
+            // Descrição e introdução são TEXTO PURO colado de um PDF, e o que
+            // está gravado nas listas antigas ainda tem as quebras de linha do
+            // documento. Mostrar o texto já limpo faz o formulário exibir o que
+            // a página pública exibe — e salvar conserta o que está no banco.
+            description: normalizarTextoColado(list?.description),
+            introduction: normalizarTextoColado(list?.introduction),
             language: list?.language || "",
             countries: list?.countries.join(", ") || "",
             industries: list?.industries.join(", ") || "",
@@ -192,6 +198,68 @@ export function ListForm({ list }: ListFormProps) {
     // ============================================
     // HANDLERS
     // ============================================
+
+    /**
+     * Limpa o texto colado antes que ele entre no campo.
+     *
+     * Colar de um PDF traz cada linha VISUAL do documento como uma quebra de
+     * linha de verdade, e é isso que fazia a introdução sair com frases
+     * cortadas na página. A limpeza roda já na colagem — e não só na gravação —
+     * para o admin ver o texto como ele vai sair, em vez de descobrir depois de
+     * salvar (ver lib/marketplace/texto-colado.ts).
+     */
+    const limparColagem =
+        (campo: "description" | "introduction") =>
+        (evento: EventoDeColagem<HTMLTextAreaElement>) => {
+            const colado = evento.clipboardData.getData("text/plain")
+            if (!colado) return
+
+            evento.preventDefault()
+            const textarea = evento.currentTarget
+            const inicio = textarea.selectionStart
+            const fim = textarea.selectionEnd
+            const atual = form.getValues(campo) ?? ""
+            const limpo = normalizarTextoColado(colado)
+            const novo = `${atual.slice(0, inicio)}${limpo}${atual.slice(fim)}`
+
+            form.setValue(campo, novo, { shouldDirty: true, shouldValidate: true })
+            // O textarea é não controlado: escrever o valor no elemento é o que
+            // torna a colagem visível antes do próximo render. O cursor fica
+            // depois do texto colado, como numa colagem normal.
+            textarea.value = novo
+            const destino = inicio + limpo.length
+            requestAnimationFrame(() => textarea.setSelectionRange(destino, destino))
+        }
+
+    /**
+     * Lê o resumo executivo do PDF do estudo e joga no campo.
+     *
+     * Não salva: o texto entra no formulário para o admin ler antes — a
+     * introdução é a primeira coisa que o visitante lê na página da lista, e uma
+     * extração que saiu errada (PDF em outro idioma, seção diferente) precisa
+     * poder ser descartada.
+     */
+    const importarResumoDoPdf = async () => {
+        if (!list) return
+
+        setImportandoResumo(true)
+        try {
+            const resultado = await gerarResumoDoEstudo(list.id)
+
+            if (!resultado.success) {
+                toast.error(resultado.error)
+                return
+            }
+
+            form.setValue("introduction", resultado.data.introduction, {
+                shouldDirty: true,
+                shouldValidate: true,
+            })
+            toast.success(t("introImportSuccess"))
+        } finally {
+            setImportandoResumo(false)
+        }
+    }
 
     const toggleIndustry = (industryId: string) => {
         setSelectedIndustries((prev) => {
@@ -556,6 +624,7 @@ export function ListForm({ list }: ListFormProps) {
                                 placeholder={t("descriptionPlaceholder")}
                                 rows={4}
                                 {...form.register("description")}
+                                onPaste={limparColagem("description")}
                             />
                         </div>
 
@@ -584,13 +653,38 @@ export function ListForm({ list }: ListFormProps) {
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="introduction">{t("introLabel")}</Label>
+                            <div className="flex flex-wrap items-center justify-between gap-2">
+                                <Label htmlFor="introduction">{t("introLabel")}</Label>
+                                {/* Só existe PDF para ler depois que a lista foi salva com o
+                                    arquivo anexado — daí a condição. Com um PDF novo escolhido
+                                    e ainda não enviado, o botão espera: importar do arquivo
+                                    antigo encheria o campo com o resumo errado. */}
+                                {list?.studyPdfUrl && (
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={importarResumoDoPdf}
+                                        disabled={importandoResumo || Boolean(pdfFile)}
+                                        title={pdfFile ? t("introImportSaveFirst") : undefined}
+                                    >
+                                        {importandoResumo ? (
+                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
+                                        ) : (
+                                            <FileText className="mr-2 h-4 w-4" aria-hidden="true" />
+                                        )}
+                                        {t("introImport")}
+                                    </Button>
+                                )}
+                            </div>
                             <Textarea
                                 id="introduction"
                                 placeholder={t("introPlaceholder")}
                                 rows={6}
                                 {...form.register("introduction")}
+                                onPaste={limparColagem("introduction")}
                             />
+                            <p className="text-xs text-muted-foreground">{t("introHint")}</p>
                         </div>
 
                         <div className="grid gap-4 md:grid-cols-2">

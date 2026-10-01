@@ -69,3 +69,19 @@ export async function createStudySignedUrl(
     if (error || !data) throw new Error(`Falha ao gerar link do PDF: ${error?.message}`)
     return data.signedUrl
 }
+
+/**
+ * Baixa o PDF do estudo para leitura no servidor (extração do resumo executivo).
+ *
+ * Diferente de `createStudySignedUrl`, que existe para entregar o arquivo ao
+ * comprador: aqui ninguém baixa nada, o arquivo vira bytes na memória.
+ */
+export async function downloadListPdf(path: string): Promise<Uint8Array> {
+    const supabase = createAdminClient()
+    const { data, error } = await supabase.storage
+        .from(LIST_STUDIES_BUCKET)
+        .download(extractStudyPathFromUrl(path))
+
+    if (error || !data) throw new Error(`Falha ao baixar o PDF do estudo: ${error?.message}`)
+    return new Uint8Array(await data.arrayBuffer())
+}

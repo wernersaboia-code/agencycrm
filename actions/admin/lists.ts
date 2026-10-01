@@ -14,6 +14,9 @@ import { DEFAULT_CURRENCY } from "@/lib/currency"
 import { writeListPrices } from "@/lib/marketplace/list-prices"
 import { describeListError, type ActionResult } from "@/lib/admin/action-errors"
 import { TAG_RESUMO_CATALOGO } from "@/lib/marketplace/resumo-catalogo"
+import { normalizarTextoColado } from "@/lib/marketplace/texto-colado"
+import { extrairResumoDoPdf } from "@/lib/marketplace/pdf-do-estudo"
+import { downloadListPdf } from "@/lib/supabase/list-studies"
 
 interface CreateListData {
     name: string
@@ -65,6 +68,19 @@ const listDataSchema = z.object({
 function normalizarCapa(valor: string | undefined): string | null {
     const trimmed = valor?.trim()
     return trimmed ? trimmed : null
+}
+
+/**
+ * Texto colado de um estudo em PDF, pronto para gravar.
+ *
+ * Introdução e descrição são TEXTO PURO copiado do documento, então chegam com
+ * as quebras de linha visuais do PDF no meio do texto. A limpeza junta cada
+ * parágrafo de volta (ver lib/marketplace/texto-colado.ts). Vazio depois da
+ * limpeza vira `null` — string em branco no banco não é conteúdo.
+ */
+function textoColadoParaGravar(valor: string | undefined): string | null {
+    const limpo = normalizarTextoColado(valor)
+    return limpo ? limpo : null
 }
 
 // Tipo serializado para retornar ao client
@@ -154,8 +170,8 @@ async function criarLista(data: CreateListData): Promise<SerializedList> {
         data: {
             name: validated.name,
             slug: validated.slug,
-            description: validated.description || null,
-            introduction: validated.introduction || null,
+            description: textoColadoParaGravar(validated.description),
+            introduction: textoColadoParaGravar(validated.introduction),
             language: validated.language || null,
             countries: validated.countries,
             industries: validated.industries,
@@ -217,8 +233,8 @@ async function atualizarLista(id: string, data: CreateListData): Promise<Seriali
         data: {
             name: validated.name,
             slug: validated.slug,
-            description: validated.description || null,
-            introduction: validated.introduction || null,
+            description: textoColadoParaGravar(validated.description),
+            introduction: textoColadoParaGravar(validated.introduction),
             language: validated.language || null,
             countries: validated.countries,
             industries: validated.industries,
@@ -321,6 +337,50 @@ export async function markListReviewed(listId: string): Promise<string> {
     revalidateListPaths(list.slug)
 
     return reviewedAt.toISOString()
+}
+
+/**
+ * Lê o resumo executivo do PDF do estudo e devolve o texto para a introdução.
+ *
+ * NÃO grava: quem grava é o formulário, depois que o admin leu o texto. A
+ * introdução é a primeira coisa que o visitante lê na página da lista, então
+ * uma extração que saiu errada precisa poder ser descartada antes de ir ao ar —
+ * e o PDF pode estar em outro idioma do que o esperado, o que só uma pessoa
+ * percebe.
+ */
+export async function gerarResumoDoEstudo(
+    listId: string
+): Promise<ActionResult<{ introduction: string }>> {
+    const admin = await requireAdmin()
+    await checkAdminRateLimit("list.resumo", admin.id, 10, 60_000)
+
+    try {
+        const lista = await prisma.leadList.findUnique({
+            where: { id: listId },
+            select: { studyPdfUrl: true },
+        })
+
+        if (!lista?.studyPdfUrl) {
+            return {
+                success: false,
+                error: "Anexe o estudo em PDF e salve a lista antes de importar o resumo.",
+            }
+        }
+
+        const resumo = await extrairResumoDoPdf(await downloadListPdf(lista.studyPdfUrl))
+
+        if (!resumo) {
+            return {
+                success: false,
+                error: "Não foi possível identificar o resumo executivo neste PDF. Copie o texto à mão.",
+            }
+        }
+
+        return { success: true, data: { introduction: resumo } }
+    } catch (error) {
+        console.error("Erro ao ler o resumo do estudo:", error)
+        return { success: false, error: "Falha ao ler o PDF do estudo. Tente novamente." }
+    }
 }
 
 export async function uploadLeadsToList(listId: string, leads: MarketplaceLeadData[]) {
