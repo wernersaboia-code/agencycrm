@@ -641,7 +641,9 @@
             "toggleTheme": "Alternar tema",
             "light": "Claro",
             "dark": "Escuro",
-            "system": "Sistema"
+            "system": "Sistema",
+            "language": "Idioma do painel",
+            "languageError": "Não foi possível trocar o idioma."
         },
         "dashboard": {
             "badge": "Área Administrativa",
@@ -958,6 +960,36 @@
             "vercelNotConfigured": "Confira as três variáveis VERCEL_ANALYTICS_* no ambiente de produção.",
             "vercelError": "A consulta falhou temporariamente. Os demais indicadores continuam atualizados."
         },
+        "searchConsole": {
+            "subtitle": "Desempenho orgânico do Google para o Easy Prospect.",
+            "reconnect": "Reconectar conta",
+            "property": "Propriedade conectada",
+            "days": "{count} dias",
+            "clicks": "Cliques",
+            "clicksDesc": "Quantas vezes alguém clicou no Easy Prospect depois de encontrá-lo nos resultados do Google.",
+            "impressions": "Impressões",
+            "impressionsDesc": "Quantas vezes uma página do Easy Prospect apareceu na tela de alguém em uma busca do Google, mesmo sem receber clique.",
+            "ctr": "CTR médio",
+            "ctrDesc": "A porcentagem de impressões que se transformaram em cliques. Por exemplo: CTR de 2% significa 2 cliques a cada 100 aparições no Google.",
+            "position": "Posição média",
+            "positionDesc": "A colocação média do melhor resultado do site no Google. Quanto menor o número, melhor: posição 1 fica no topo da página de resultados.",
+            "whatIs": "O que significa {title}",
+            "daily": "Evolução diária",
+            "clicksCount": "{count, plural, one {# clique} other {# cliques}}",
+            "impressionsCount": "{count, plural, one {# impressão} other {# impressões}}",
+            "impressionsShort": "{count} impr.",
+            "topQueries": "Consultas mais encontradas",
+            "topPages": "Páginas com melhor desempenho",
+            "countries": "Países",
+            "devices": "Dispositivos",
+            "noData": "Ainda não há dados para este período.",
+            "notConfiguredTitle": "Configuração OAuth pendente",
+            "notConfiguredDesc": "Cadastre GOOGLE_SEARCH_CONSOLE_CLIENT_ID e GOOGLE_SEARCH_CONSOLE_CLIENT_SECRET na Vercel e faça um redeploy.",
+            "connectTitle": "Conecte o Google Search Console",
+            "connectDesc": "Autorize a conta proprietária da propriedade do Easy Prospect para exibir cliques, impressões, consultas e páginas.",
+            "connectFailed": "Não foi possível concluir a conexão. Tente novamente.",
+            "connect": "Conectar Google Search Console"
+        },
         "audit": {
             "title": "Auditoria",
             "subtitle": "Registro das ações administrativas sensíveis ({total} eventos).",
@@ -1235,6 +1267,7 @@
             "categoryError": "Erro ao criar categoria.",
             "categoryDeleted": "Categoria excluída.",
             "deleteError": "Erro ao excluir.",
+            "categoryInUse": "Esta categoria tem posts. Mude a categoria desses posts antes de excluir.",
             "empty": "Nenhuma categoria.",
             "deleteLabel": "Excluir",
             "validationError": "Informe a chave e ao menos um nome traduzido."
@@ -1584,6 +1617,25 @@
                 "activate": "Ativar usuário",
                 "deactivate": "Desativar usuário",
                 "markPending": "Marcar como pendente"
+            },
+            "accessErrors": {
+                "self_demote": "Você não pode remover o seu próprio acesso de administrador.",
+                "self_deactivate": "Você não pode desativar o seu próprio usuário.",
+                "not_found": "Usuário não encontrado.",
+                "last_admin": "Este é o último administrador ativo. Promova outra pessoa a administrador antes.",
+                "invalid": "Valor inválido."
+            },
+            "seedPrices": {
+                "trigger": "Gerar preços",
+                "title": "Gerar preços a partir de uma taxa",
+                "description": "A taxa serve só para semear: o valor gravado é fixo e editável depois. Listas que já têm preço nessa moeda não são alteradas.",
+                "currency": "Moeda",
+                "rate": "Taxa (1 EUR = ?)",
+                "example": "Exemplo: uma lista de {from} fica em {to}.",
+                "generate": "Gerar",
+                "generating": "Gerando...",
+                "success": "{count, plural, one {# lista ganhou} other {# listas ganharam}} preço em {currency}.",
+                "error": "Não foi possível gerar os preços."
             }
         }
     },

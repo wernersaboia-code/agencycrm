@@ -1,8 +1,13 @@
 "use client"
 
-import { Moon, Sun } from "lucide-react"
+import { useTransition } from "react"
+import { useRouter } from "next/navigation"
+import { Check, Languages, Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
-import { useTranslations } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
+import { toast } from "sonner"
+import { alterarIdiomaDoPainel } from "@/actions/admin/idioma"
+import { IDIOMAS_DO_PAINEL } from "@/lib/i18n/idiomas-do-painel"
 import { Button } from "@/components/ui/button"
 import {
     DropdownMenu,
@@ -13,6 +18,13 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
+
+/** Cada idioma no próprio idioma: quem procura "Deutsch" não lê "Alemão". */
+const NOMES_DOS_IDIOMAS: Record<(typeof IDIOMAS_DO_PAINEL)[number], string> = {
+    pt: "Português",
+    de: "Deutsch",
+    en: "English",
+}
 
 // ==================== CONFIGURAÇÕES POR VARIANTE ====================
 
@@ -47,6 +59,21 @@ export function AdminHeader({ user, variant = "leadstore" }: AdminHeaderProps) {
     const t = useTranslations("admin.header")
     const { setTheme } = useTheme()
     const config = headerConfigs[variant]
+    const idiomaAtual = useLocale()
+    const router = useRouter()
+    const [trocandoIdioma, startTransition] = useTransition()
+
+    const trocarIdioma = (idioma: string) => {
+        if (idioma === idiomaAtual) return
+        startTransition(async () => {
+            const resultado = await alterarIdiomaDoPainel(idioma)
+            if (!resultado.success) {
+                toast.error(t("languageError"))
+                return
+            }
+            router.refresh()
+        })
+    }
 
     const initials = user?.name
         ?.split(" ")
@@ -69,6 +96,24 @@ export function AdminHeader({ user, variant = "leadstore" }: AdminHeaderProps) {
             </div>
 
             <div className="flex items-center gap-4">
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="outline" size="sm" disabled={trocandoIdioma} className="gap-2">
+                            <Languages className="h-4 w-4" />
+                            <span className="uppercase">{idiomaAtual}</span>
+                            <span className="sr-only">{t("language")}</span>
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                        {IDIOMAS_DO_PAINEL.map((idioma) => (
+                            <DropdownMenuItem key={idioma} onClick={() => trocarIdioma(idioma)} className="gap-2">
+                                <Check className={cn("h-4 w-4", idioma === idiomaAtual ? "opacity-100" : "opacity-0")} />
+                                {NOMES_DOS_IDIOMAS[idioma]}
+                            </DropdownMenuItem>
+                        ))}
+                    </DropdownMenuContent>
+                </DropdownMenu>
+
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="outline" size="icon">

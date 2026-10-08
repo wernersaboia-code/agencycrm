@@ -48,8 +48,8 @@ export function CategoryManager({ initial }: { initial: CategoryRow[] }) {
             toast.success(t("categoryCreated"))
             setKey(""); setNames({})
             router.refresh()
-        } catch (e) {
-            toast.error(e instanceof Error ? e.message : t("categoryError"))
+        } catch {
+            toast.error(t("categoryError"))
         } finally {
             setSaving(false)
         }
@@ -57,11 +57,15 @@ export function CategoryManager({ initial }: { initial: CategoryRow[] }) {
 
     const handleDelete = async (id: string) => {
         try {
-            await deleteCategory(id)
+            const resultado = await deleteCategory(id)
+            if (!resultado.success) {
+                toast.error(t("categoryInUse"))
+                return
+            }
             toast.success(t("categoryDeleted"))
             router.refresh()
-        } catch (e) {
-            toast.error(e instanceof Error ? e.message : t("deleteError"))
+        } catch {
+            toast.error(t("deleteError"))
         }
     }
 

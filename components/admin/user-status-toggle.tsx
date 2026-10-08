@@ -30,6 +30,7 @@ const statusConfig: Record<UserStatus, { variant: "default" | "secondary" | "out
 
 export function UserStatusToggle({ userId, currentStatus }: UserStatusToggleProps) {
     const t = useTranslations("admin.components.userStatusToggle")
+    const tAcesso = useTranslations("admin.components.accessErrors")
     const router = useRouter()
     const [isLoading, setIsLoading] = useState(false)
     const [status, setStatus] = useState<UserStatus>(currentStatus)
@@ -39,7 +40,11 @@ export function UserStatusToggle({ userId, currentStatus }: UserStatusToggleProp
 
         setIsLoading(true)
         try {
-            await updateUserStatus(userId, newStatus)
+            const resultado = await updateUserStatus(userId, newStatus)
+            if (!resultado.success) {
+                toast.error(tAcesso(resultado.error))
+                return
+            }
             setStatus(newStatus)
             toast.success(t("toastSuccess", { status: t(statusToKey(newStatus)) }))
             router.refresh()

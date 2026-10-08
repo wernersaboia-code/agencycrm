@@ -30,6 +30,7 @@ const roleColors: Record<UserRole, string> = {
 
 export function UserRoleSelect({ userId, currentRole }: UserRoleSelectProps) {
     const t = useTranslations("admin.components.userRoleSelect")
+    const tAcesso = useTranslations("admin.components.accessErrors")
     const router = useRouter()
     const [isLoading, setIsLoading] = useState(false)
     const [role, setRole] = useState<UserRole>(currentRole)
@@ -39,7 +40,11 @@ export function UserRoleSelect({ userId, currentRole }: UserRoleSelectProps) {
 
         setIsLoading(true)
         try {
-            await updateUserRole(userId, newRole)
+            const resultado = await updateUserRole(userId, newRole)
+            if (!resultado.success) {
+                toast.error(tAcesso(resultado.error))
+                return
+            }
             setRole(newRole)
             toast.success(t("toastSuccess", { role: t(newRole.toLowerCase()) }))
             router.refresh()

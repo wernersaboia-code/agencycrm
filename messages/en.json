@@ -641,7 +641,9 @@
             "toggleTheme": "Toggle theme",
             "light": "Light",
             "dark": "Dark",
-            "system": "System"
+            "system": "System",
+            "language": "Panel language",
+            "languageError": "Could not change the language."
         },
         "dashboard": {
             "badge": "Administrative Area",
@@ -958,6 +960,36 @@
             "vercelNotConfigured": "Check the three VERCEL_ANALYTICS_* variables in production.",
             "vercelError": "The query failed temporarily. Other indicators remain available."
         },
+        "searchConsole": {
+            "subtitle": "Organic Google performance for Easy Prospect.",
+            "reconnect": "Reconnect account",
+            "property": "Connected property",
+            "days": "{count} days",
+            "clicks": "Clicks",
+            "clicksDesc": "How many times someone clicked on Easy Prospect after finding it in Google results.",
+            "impressions": "Impressions",
+            "impressionsDesc": "How many times an Easy Prospect page appeared on someone’s screen in a Google search, even without a click.",
+            "ctr": "Average CTR",
+            "ctrDesc": "The share of impressions that turned into clicks. For example: a 2% CTR means 2 clicks for every 100 appearances on Google.",
+            "position": "Average position",
+            "positionDesc": "The average ranking of the site’s best result on Google. Lower is better: position 1 is at the top of the results page.",
+            "whatIs": "What {title} means",
+            "daily": "Daily trend",
+            "clicksCount": "{count, plural, one {# click} other {# clicks}}",
+            "impressionsCount": "{count, plural, one {# impression} other {# impressions}}",
+            "impressionsShort": "{count} impr.",
+            "topQueries": "Top queries",
+            "topPages": "Best-performing pages",
+            "countries": "Countries",
+            "devices": "Devices",
+            "noData": "No data for this period yet.",
+            "notConfiguredTitle": "OAuth setup pending",
+            "notConfiguredDesc": "Add GOOGLE_SEARCH_CONSOLE_CLIENT_ID and GOOGLE_SEARCH_CONSOLE_CLIENT_SECRET in Vercel and redeploy.",
+            "connectTitle": "Connect Google Search Console",
+            "connectDesc": "Authorize the account that owns the Easy Prospect property to show clicks, impressions, queries and pages.",
+            "connectFailed": "The connection could not be completed. Please try again.",
+            "connect": "Connect Google Search Console"
+        },
         "audit": {
             "title": "Audit",
             "subtitle": "Record of sensitive administrative actions ({total} events).",
@@ -1235,6 +1267,7 @@
             "categoryError": "Error creating category.",
             "categoryDeleted": "Category deleted.",
             "deleteError": "Error deleting.",
+            "categoryInUse": "This category has posts. Move those posts to another category before deleting.",
             "empty": "No categories.",
             "deleteLabel": "Delete",
             "validationError": "Enter the key and at least one translated name."
@@ -1584,6 +1617,25 @@
                 "activate": "Activate user",
                 "deactivate": "Deactivate user",
                 "markPending": "Mark as pending"
+            },
+            "accessErrors": {
+                "self_demote": "You cannot remove your own administrator access.",
+                "self_deactivate": "You cannot deactivate your own user.",
+                "not_found": "User not found.",
+                "last_admin": "This is the last active administrator. Promote someone else to administrator first.",
+                "invalid": "Invalid value."
+            },
+            "seedPrices": {
+                "trigger": "Generate prices",
+                "title": "Generate prices from an exchange rate",
+                "description": "The rate is only used to seed: the stored value is fixed and can be edited later. Lists that already have a price in this currency are not changed.",
+                "currency": "Currency",
+                "rate": "Rate (1 EUR = ?)",
+                "example": "Example: a list at {from} becomes {to}.",
+                "generate": "Generate",
+                "generating": "Generating...",
+                "success": "{count, plural, one {# list got} other {# lists got}} a price in {currency}.",
+                "error": "Could not generate the prices."
             }
         }
     },

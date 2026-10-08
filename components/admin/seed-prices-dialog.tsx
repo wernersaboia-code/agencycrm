@@ -1,9 +1,12 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 import { toast } from "sonner"
 import { seedPricesFromRate } from "@/actions/admin/list-prices-bulk"
 import { roundCommercial } from "@/lib/marketplace/list-prices"
+import { formatCurrency } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -18,6 +21,8 @@ import {
 } from "@/components/ui/dialog"
 
 export function SeedPricesDialog() {
+    const t = useTranslations("admin.components.seedPrices")
+    const router = useRouter()
     const [open, setOpen] = useState(false)
     const [currency, setCurrency] = useState<"BRL" | "USD">("BRL")
     const [rate, setRate] = useState("6.40")
@@ -35,10 +40,12 @@ export function SeedPricesDialog() {
                 toast.error(resultado.error)
                 return
             }
-            toast.success(`${resultado.data.updated} lista(s) ganharam preço em ${currency}.`)
+            toast.success(t("success", { count: resultado.data.updated, currency }))
             setOpen(false)
-        } catch (error) {
-            toast.error(error instanceof Error ? error.message : "Falha ao gerar preços.")
+            // A tabela de listas mostra os preços: sem isto ela seguia antiga.
+            router.refresh()
+        } catch {
+            toast.error(t("error"))
         } finally {
             setIsSaving(false)
         }
@@ -47,20 +54,17 @@ export function SeedPricesDialog() {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant="outline">Gerar preços</Button>
+                <Button variant="outline">{t("trigger")}</Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Gerar preços a partir de uma taxa</DialogTitle>
-                    <DialogDescription>
-                        A taxa serve só para semear: o valor gravado é fixo e editável depois.
-                        Listas que já têm preço nessa moeda não são alteradas.
-                    </DialogDescription>
+                    <DialogTitle>{t("title")}</DialogTitle>
+                    <DialogDescription>{t("description")}</DialogDescription>
                 </DialogHeader>
 
                 <div className="space-y-4">
                     <div className="space-y-2">
-                        <Label>Moeda</Label>
+                        <Label>{t("currency")}</Label>
                         <div className="flex gap-2">
                             {(["BRL", "USD"] as const).map((c) => (
                                 <Button
@@ -76,7 +80,7 @@ export function SeedPricesDialog() {
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="rate">Taxa (1 EUR = ?)</Label>
+                        <Label htmlFor="rate">{t("rate")}</Label>
                         <Input
                             id="rate"
                             type="number"
@@ -88,15 +92,17 @@ export function SeedPricesDialog() {
 
                     {exemplo !== null && (
                         <p className="text-sm text-muted-foreground">
-                            Exemplo: uma lista de € 45,00 fica em {currency === "BRL" ? "R$" : "US$"}{" "}
-                            {exemplo},00
+                            {t("example", {
+                                from: formatCurrency(45, "EUR"),
+                                to: formatCurrency(exemplo, currency),
+                            })}
                         </p>
                     )}
                 </div>
 
                 <DialogFooter>
                     <Button onClick={handleSubmit} disabled={isSaving || !(parsedRate > 0)}>
-                        {isSaving ? "Gerando..." : "Gerar"}
+                        {isSaving ? t("generating") : t("generate")}
                     </Button>
                 </DialogFooter>
             </DialogContent>

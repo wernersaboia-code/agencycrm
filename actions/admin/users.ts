@@ -66,18 +66,28 @@ function normalizePagination(page = 1, limit = 20) {
     }
 }
 
-async function assertAdminCanChangeUserAccess(
+/**
+ * Por que uma mudança de acesso foi recusada. É devolvido, não lançado: em
+ * produção o Next apaga a mensagem de exceção de Server Action, e o admin via
+ * só "erro ao alterar" justamente no caso que mais precisa de explicação (tirar
+ * o último admin ativo). A tela traduz o código para o idioma do admin.
+ */
+export type MotivoDeRecusa = "self_demote" | "self_deactivate" | "not_found" | "last_admin" | "invalid"
+
+export type ResultadoDeAcesso = { success: true } | { success: false; error: MotivoDeRecusa }
+
+async function motivoParaRecusarAcesso(
     currentAdminId: string,
     targetUserId: string,
     nextAccess: { role?: UserRole; status?: UserStatus }
-) {
+): Promise<MotivoDeRecusa | null> {
     if (currentAdminId === targetUserId) {
         if (nextAccess.role && nextAccess.role !== "ADMIN") {
-            throw new Error("Voce nao pode remover seu proprio acesso admin")
+            return "self_demote"
         }
 
         if (nextAccess.status && nextAccess.status !== "ACTIVE") {
-            throw new Error("Voce nao pode desativar seu proprio usuario")
+            return "self_deactivate"
         }
     }
 
@@ -87,7 +97,7 @@ async function assertAdminCanChangeUserAccess(
     })
 
     if (!targetUser) {
-        throw new Error("Usuario nao encontrado")
+        return "not_found"
     }
 
     const nextRole = nextAccess.role ?? targetUser.role
@@ -98,7 +108,7 @@ async function assertAdminCanChangeUserAccess(
         (nextRole !== "ADMIN" || nextStatus !== "ACTIVE")
 
     if (!removesActiveAdminAccess) {
-        return
+        return null
     }
 
     const remainingActiveAdmins = await prisma.user.count({
@@ -109,9 +119,7 @@ async function assertAdminCanChangeUserAccess(
         },
     })
 
-    if (remainingActiveAdmins === 0) {
-        throw new Error("Nao e possivel remover o ultimo admin ativo")
-    }
+    return remainingActiveAdmins === 0 ? "last_admin" : null
 }
 
 // ==================== LISTAR USUÁRIOS ====================
@@ -229,15 +237,16 @@ export async function getUserDetails(userId: string): Promise<UserDetails | null
 
 // ==================== ALTERAR ROLE ====================
 
-export async function updateUserRole(userId: string, role: UserRole) {
+export async function updateUserRole(userId: string, role: UserRole): Promise<ResultadoDeAcesso> {
     const admin = await requireAdmin()
     await checkAdminRateLimit("user.role_change", admin.id, 10, 60_000)
 
     if (!Object.values(UserRole).includes(role)) {
-        throw new Error("Role invalida")
+        return { success: false, error: "invalid" }
     }
 
-    await assertAdminCanChangeUserAccess(admin.id, userId, { role })
+    const recusaDoPapel = await motivoParaRecusarAcesso(admin.id, userId, { role })
+    if (recusaDoPapel) return { success: false, error: recusaDoPapel }
 
     const previous = await prisma.user.findUnique({
         where: { id: userId },
@@ -266,15 +275,16 @@ export async function updateUserRole(userId: string, role: UserRole) {
 
 // ==================== ALTERAR STATUS ====================
 
-export async function updateUserStatus(userId: string, status: UserStatus) {
+export async function updateUserStatus(userId: string, status: UserStatus): Promise<ResultadoDeAcesso> {
     const admin = await requireAdmin()
     await checkAdminRateLimit("user.status_change", admin.id, 10, 60_000)
 
     if (!Object.values(UserStatus).includes(status)) {
-        throw new Error("Status invalido")
+        return { success: false, error: "invalid" }
     }
 
-    await assertAdminCanChangeUserAccess(admin.id, userId, { status })
+    const recusaDoStatus = await motivoParaRecusarAcesso(admin.id, userId, { status })
+    if (recusaDoStatus) return { success: false, error: recusaDoStatus }
 
     const previous = await prisma.user.findUnique({
         where: { id: userId },

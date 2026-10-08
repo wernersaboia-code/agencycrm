@@ -641,7 +641,9 @@
             "toggleTheme": "Design wechseln",
             "light": "Hell",
             "dark": "Dunkel",
-            "system": "System"
+            "system": "System",
+            "language": "Sprache des Panels",
+            "languageError": "Die Sprache konnte nicht geändert werden."
         },
         "dashboard": {
             "badge": "Administrationsbereich",
@@ -958,6 +960,36 @@
             "vercelNotConfigured": "Prüfen Sie die drei Variablen VERCEL_ANALYTICS_* in der Produktionsumgebung.",
             "vercelError": "Die Abfrage ist vorübergehend fehlgeschlagen. Die übrigen Kennzahlen sind weiterhin aktuell."
         },
+        "searchConsole": {
+            "subtitle": "Organische Google-Leistung von Easy Prospect.",
+            "reconnect": "Konto neu verbinden",
+            "property": "Verbundene Property",
+            "days": "{count} Tage",
+            "clicks": "Klicks",
+            "clicksDesc": "Wie oft jemand Easy Prospect angeklickt hat, nachdem er es in den Google-Ergebnissen gefunden hat.",
+            "impressions": "Impressionen",
+            "impressionsDesc": "Wie oft eine Seite von Easy Prospect bei einer Google-Suche auf dem Bildschirm erschienen ist, auch ohne Klick.",
+            "ctr": "Durchschnittliche CTR",
+            "ctrDesc": "Der Anteil der Impressionen, der zu Klicks wurde. Beispiel: Eine CTR von 2 % bedeutet 2 Klicks pro 100 Einblendungen bei Google.",
+            "position": "Durchschnittliche Position",
+            "positionDesc": "Die durchschnittliche Platzierung des besten Ergebnisses der Website bei Google. Je kleiner, desto besser: Position 1 steht ganz oben.",
+            "whatIs": "Was {title} bedeutet",
+            "daily": "Täglicher Verlauf",
+            "clicksCount": "{count, plural, one {# Klick} other {# Klicks}}",
+            "impressionsCount": "{count, plural, one {# Impression} other {# Impressionen}}",
+            "impressionsShort": "{count} Impr.",
+            "topQueries": "Häufigste Suchanfragen",
+            "topPages": "Leistungsstärkste Seiten",
+            "countries": "Länder",
+            "devices": "Geräte",
+            "noData": "Für diesen Zeitraum liegen noch keine Daten vor.",
+            "notConfiguredTitle": "OAuth-Einrichtung ausstehend",
+            "notConfiguredDesc": "Hinterlegen Sie GOOGLE_SEARCH_CONSOLE_CLIENT_ID und GOOGLE_SEARCH_CONSOLE_CLIENT_SECRET in Vercel und stellen Sie neu bereit.",
+            "connectTitle": "Google Search Console verbinden",
+            "connectDesc": "Autorisieren Sie das Konto, dem die Property von Easy Prospect gehört, um Klicks, Impressionen, Suchanfragen und Seiten anzuzeigen.",
+            "connectFailed": "Die Verbindung konnte nicht hergestellt werden. Bitte erneut versuchen.",
+            "connect": "Google Search Console verbinden"
+        },
         "audit": {
             "title": "Audit",
             "subtitle": "Protokoll der sensiblen administrativen Aktionen ({total} Ereignisse).",
@@ -1026,7 +1058,7 @@
             "filtersSearchLabel": "Liste suchen",
             "filtersSearchPlaceholder": "Nach Name oder Slug suchen…",
             "filtersAllCountries": "Alle Länder",
-            "filtersAllIndustries": "Alle Sektoren",
+            "filtersAllIndustries": "Alle Branchen",
             "filtersAllStatus": "Alle Status",
             "filtersInactive": "Inaktiv",
             "filtersResult": "{shown} von {total} Liste(n) werden angezeigt.",
@@ -1047,7 +1079,7 @@
             "withSales": "Mit Verkäufen",
             "withSalesDesc": "{count} Verkauf/Verkäufe insgesamt.",
             "colName": "Name",
-            "colIndustries": "Sektoren",
+            "colIndustries": "Branchen",
             "colCountries": "Länder",
             "colCompanies": "Unternehmen",
             "colCompaniesHint": "Unternehmen im Verzeichnis der Studie. ≈ = Schätzung aus dem PDF.",
@@ -1235,6 +1267,7 @@
             "categoryError": "Fehler beim Erstellen der Kategorie.",
             "categoryDeleted": "Kategorie gelöscht.",
             "deleteError": "Fehler beim Löschen.",
+            "categoryInUse": "Diese Kategorie enthält Beiträge. Ordnen Sie diese Beiträge vor dem Löschen einer anderen Kategorie zu.",
             "empty": "Keine Kategorie.",
             "deleteLabel": "Löschen",
             "validationError": "Geben Sie den Schlüssel und mindestens einen übersetzten Namen an."
@@ -1584,6 +1617,25 @@
                 "activate": "Benutzer aktivieren",
                 "deactivate": "Benutzer deaktivieren",
                 "markPending": "Als ausstehend markieren"
+            },
+            "accessErrors": {
+                "self_demote": "Sie können Ihren eigenen Administratorzugang nicht entfernen.",
+                "self_deactivate": "Sie können Ihr eigenes Konto nicht deaktivieren.",
+                "not_found": "Benutzer nicht gefunden.",
+                "last_admin": "Dies ist der letzte aktive Administrator. Ernennen Sie zuerst eine andere Person zum Administrator.",
+                "invalid": "Ungültiger Wert."
+            },
+            "seedPrices": {
+                "trigger": "Preise erzeugen",
+                "title": "Preise aus einem Wechselkurs erzeugen",
+                "description": "Der Kurs dient nur als Ausgangswert: Der gespeicherte Preis ist fest und kann später bearbeitet werden. Listen, die in dieser Währung schon einen Preis haben, bleiben unverändert.",
+                "currency": "Währung",
+                "rate": "Kurs (1 EUR = ?)",
+                "example": "Beispiel: Eine Liste zu {from} kostet dann {to}.",
+                "generate": "Erzeugen",
+                "generating": "Wird erzeugt...",
+                "success": "{count, plural, one {# Liste hat} other {# Listen haben}} jetzt einen Preis in {currency}.",
+                "error": "Die Preise konnten nicht erzeugt werden."
             }
         }
     },

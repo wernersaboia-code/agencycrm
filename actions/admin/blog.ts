@@ -100,14 +100,19 @@ export async function updateCategory(id: string, input: unknown): Promise<Update
     return { success: true }
 }
 
-export async function deleteCategory(id: string) {
+/**
+ * Categoria em uso não é apagada. A recusa volta como valor, não exceção: em
+ * produção o Next apagaria a mensagem e o admin veria um erro sem motivo.
+ */
+export async function deleteCategory(id: string): Promise<{ success: true } | { success: false; error: "in_use" }> {
     await requireAdmin()
     const count = await prisma.blogPost.count({ where: { categoryId: id } })
     if (count > 0) {
-        throw new Error("Categoria em uso: reatribua os posts antes de excluir")
+        return { success: false, error: "in_use" }
     }
     await prisma.blogCategory.delete({ where: { id } })
     revalidateBlog()
+    return { success: true }
 }
 
 // ---------- Posts ----------
