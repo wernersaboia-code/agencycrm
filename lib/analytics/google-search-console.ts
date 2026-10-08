@@ -17,6 +17,8 @@ export type SearchConsoleRow = {
 export type GoogleSearchConsoleData = {
     status: "ready" | "not_connected" | "not_configured" | "error"
     siteUrl?: string
+    /** E-mail do admin que conectou a conta Google (a conexão vale para todos). */
+    connectedBy?: string
     clicks: number
     impressions: number
     ctr: number
@@ -34,6 +36,11 @@ type SearchConsoleResponse = { rows?: SearchConsoleApiRow[] }
 function number(value: unknown) { return typeof value === "number" && Number.isFinite(value) ? value : 0 }
 function empty(status: GoogleSearchConsoleData["status"]): GoogleSearchConsoleData {
     return { status, clicks: 0, impressions: 0, ctr: 0, position: 0, daily: [], queries: [], pages: [], countries: [], devices: [] }
+}
+
+async function emailDeQuemConectou(userId: string): Promise<string | undefined> {
+    const user = await prisma.user.findUnique({ where: { id: userId }, select: { email: true } })
+    return user?.email
 }
 
 function isoDate(date: Date) { return date.toISOString().slice(0, 10) }
@@ -75,9 +82,16 @@ function row(item: SearchConsoleApiRow): SearchConsoleRow {
     return { label: item.keys?.[0] || "Não identificado", clicks: number(item.clicks), impressions: number(item.impressions), ctr: number(item.ctr), position: number(item.position) }
 }
 
-export async function getGoogleSearchConsoleAnalytics(userId: string, days = 28): Promise<GoogleSearchConsoleData> {
+/**
+ * Dados do Search Console do site. A conexão é do SITE, não de quem está
+ * logado: o Google devolve os mesmos números para qualquer administrador, e
+ * buscar pela conta logada obrigava cada admin a refazer o OAuth — quem não
+ * sabe configurar via "Conecte o Google Search Console" e nada mais. Vale a
+ * conexão mais recente, de qualquer admin (reconectar substitui de fato).
+ */
+export async function getGoogleSearchConsoleAnalytics(days = 28): Promise<GoogleSearchConsoleData> {
     if (!process.env.GOOGLE_SEARCH_CONSOLE_CLIENT_ID || !process.env.GOOGLE_SEARCH_CONSOLE_CLIENT_SECRET) return empty("not_configured")
-    const connection = await prisma.googleSearchConsoleConnection.findUnique({ where: { userId } })
+    const connection = await prisma.googleSearchConsoleConnection.findFirst({ orderBy: { updatedAt: "desc" } })
     if (!connection) return empty("not_connected")
 
     try {
@@ -97,7 +111,7 @@ export async function getGoogleSearchConsoleAnalytics(userId: string, days = 28)
         const clicks = dailyRows.reduce((sum, item) => sum + item.clicks, 0)
         const impressions = dailyRows.reduce((sum, item) => sum + item.impressions, 0)
         return {
-            status: "ready", siteUrl: connection.siteUrl, clicks, impressions,
+            status: "ready", siteUrl: connection.siteUrl, connectedBy: await emailDeQuemConectou(connection.userId), clicks, impressions,
             ctr: impressions ? clicks / impressions : 0,
             position: impressions ? dailyRows.reduce((sum, item) => sum + item.position * item.impressions, 0) / impressions : 0,
             daily: dailyRows,

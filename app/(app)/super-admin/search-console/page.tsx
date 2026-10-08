@@ -14,7 +14,7 @@ export const dynamic = "force-dynamic"
 type Tradutor = Awaited<ReturnType<typeof getAdminTranslations>>
 
 export default async function SearchConsolePage({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
-    const user = await requireAdmin()
+    await requireAdmin()
     const [params, t, locale] = await Promise.all([
         searchParams,
         getAdminTranslations("admin.searchConsole"),
@@ -22,7 +22,7 @@ export default async function SearchConsolePage({ searchParams }: { searchParams
     ])
     const requested = Number(params.days)
     const days = requested === 7 || requested === 90 ? requested : 28
-    const data = await getGoogleSearchConsoleAnalytics(user.id, days)
+    const data = await getGoogleSearchConsoleAnalytics(days)
     const numero = new Intl.NumberFormat(htmlLangFor(locale))
     const decimal = new Intl.NumberFormat(htmlLangFor(locale), { minimumFractionDigits: 1, maximumFractionDigits: 1 })
 
@@ -33,7 +33,7 @@ export default async function SearchConsolePage({ searchParams }: { searchParams
         </div>
 
         {data.status !== "ready" ? <ConnectionState status={data.status} error={params.error} t={t} /> : <>
-            <Card><CardContent className="flex flex-wrap items-end justify-between gap-3 py-4"><div><p className="text-sm font-medium">{t("property")}</p><p className="text-sm text-muted-foreground">{data.siteUrl}</p></div><div className="flex gap-2">{[7, 28, 90].map((value) => <Button key={value} size="sm" variant={value === days ? "default" : "outline"} asChild><Link href={`/super-admin/search-console?days=${value}`}>{t("days", { count: value })}</Link></Button>)}</div></CardContent></Card>
+            <Card><CardContent className="flex flex-wrap items-end justify-between gap-3 py-4"><div><p className="text-sm font-medium">{t("property")}</p><p className="text-sm text-muted-foreground">{data.siteUrl}</p>{data.connectedBy && <p className="text-xs text-muted-foreground">{t("connectedBy", { email: data.connectedBy })}</p>}</div><div className="flex gap-2">{[7, 28, 90].map((value) => <Button key={value} size="sm" variant={value === days ? "default" : "outline"} asChild><Link href={`/super-admin/search-console?days=${value}`}>{t("days", { count: value })}</Link></Button>)}</div></CardContent></Card>
             <TooltipProvider><div className="grid gap-4 md:grid-cols-4">
                 <Kpi title={t("clicks")} value={numero.format(data.clicks)} description={t("clicksDesc")} icon={MousePointerClick} t={t} />
                 <Kpi title={t("impressions")} value={numero.format(data.impressions)} description={t("impressionsDesc")} icon={Search} t={t} />

@@ -964,6 +964,7 @@
             "subtitle": "Organic Google performance for Easy Prospect.",
             "reconnect": "Reconnect account",
             "property": "Connected property",
+            "connectedBy": "Connected by {email} — shared by all administrators.",
             "days": "{count} days",
             "clicks": "Clicks",
             "clicksDesc": "How many times someone clicked on Easy Prospect after finding it in Google results.",

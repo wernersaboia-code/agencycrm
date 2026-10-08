@@ -964,6 +964,7 @@
             "subtitle": "Organische Google-Leistung von Easy Prospect.",
             "reconnect": "Konto neu verbinden",
             "property": "Verbundene Property",
+            "connectedBy": "Verbunden von {email} — gilt für alle Administratoren.",
             "days": "{count} Tage",
             "clicks": "Klicks",
             "clicksDesc": "Wie oft jemand Easy Prospect angeklickt hat, nachdem er es in den Google-Ergebnissen gefunden hat.",
