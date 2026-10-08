@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import {
     AlertCircle,
     Package,
+    Globe,
     Users,
     ShoppingCart,
     TrendingUp,
@@ -16,21 +17,22 @@ import {
     Store,
 } from "lucide-react"
 import { formatCurrency } from "@/lib/utils"
-import { formatarReceita, receitaPorMoeda } from "@/lib/admin/receita"
+import { formatarReceita, receitaPorMoeda, VENDA_REAL } from "@/lib/admin/receita"
+import { getCoberturaDoCatalogo } from "@/lib/admin/cobertura"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 
 export default async function MarketplacePage() {
-    const [listsCount, leadsCount, purchasesCount, revenue, recentLists] = await Promise.all([
+    const [listsCount, cobertura, purchasesCount, revenue, recentLists] = await Promise.all([
         prisma.leadList.count(),
-        prisma.marketplaceLead.count(),
-        prisma.purchase.count({ where: { status: "paid" } }),
+        getCoberturaDoCatalogo(),
+        prisma.purchase.count({ where: { status: "paid", ...VENDA_REAL } }),
         receitaPorMoeda({ status: "paid" }),
         prisma.leadList.findMany({
             take: 5,
             orderBy: { createdAt: "desc" },
             include: {
-                _count: { select: { leads: true, purchaseItems: true } }
+                _count: { select: { leads: true, purchaseItems: { where: { purchase: VENDA_REAL } } } }
             }
         })
     ])
@@ -46,9 +48,9 @@ export default async function MarketplacePage() {
             color: "text-violet-600"
         },
         {
-            title: t("leadsInMarketplace"),
-            value: leadsCount.toLocaleString(),
-            icon: Users,
+            title: t("countriesCovered"),
+            value: cobertura.paises,
+            icon: Globe,
             href: "/super-admin/marketplace/lists",
             color: "text-blue-600"
         },
@@ -80,12 +82,16 @@ export default async function MarketplacePage() {
             value: listsCount,
         },
         {
-            title: t("leadStock"),
-            description: t("leadStockOk", { count: leadsCount.toLocaleString() }),
+            title: t("reviewedStudies"),
+            // Estudo sem revisão registrada não mostra data de frescor na
+            // página pública — é o que vale a pena perseguir aqui.
+            description: t("reviewedStudiesDesc", {
+                reviewed: cobertura.estudosRevisados,
+                total: cobertura.estudosAtivos,
+            }),
             href: "/super-admin/marketplace/lists",
-            // Informativo: no modelo PDF, vender não exige leads importados.
-            done: true,
-            value: leadsCount.toLocaleString(),
+            done: cobertura.estudosRevisados === cobertura.estudosAtivos,
+            value: `${cobertura.estudosRevisados}/${cobertura.estudosAtivos}`,
         },
         {
             title: t("paidSales"),

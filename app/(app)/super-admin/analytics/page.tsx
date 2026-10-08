@@ -20,6 +20,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { formatCurrency } from "@/lib/utils"
+import { formatarReceita, receitaPorMoeda, VENDA_REAL, type ReceitaNaMoeda } from "@/lib/admin/receita"
 
 export async function generateMetadata() {
     const t = await getAdminTranslations("admin.analytics")
@@ -86,22 +87,8 @@ async function getAnalyticsData() {
             where: { calledAt: { gte: last30Days } },
             _count: { id: true },
         }),
-        prisma.purchase.aggregate({
-            where: {
-                status: "paid",
-                paidAt: { gte: last30Days },
-            },
-            _count: { id: true },
-            _sum: { total: true },
-        }),
-        prisma.purchase.aggregate({
-            where: {
-                status: "paid",
-                paidAt: { gte: previous30Days, lt: last30Days },
-            },
-            _count: { id: true },
-            _sum: { total: true },
-        }),
+        receitaPorMoeda({ status: "paid", paidAt: { gte: last30Days } }),
+        receitaPorMoeda({ status: "paid", paidAt: { gte: previous30Days, lt: last30Days } }),
         prisma.leadList.count({ where: { isActive: true } }),
         prisma.marketplaceLead.count(),
         prisma.workspace.findMany({
@@ -138,7 +125,7 @@ async function getAnalyticsData() {
                 currency: true,
                 _count: {
                     select: {
-                        purchaseItems: true,
+                        purchaseItems: { where: { purchase: VENDA_REAL } },
                     },
                 },
             },
@@ -149,8 +136,7 @@ async function getAnalyticsData() {
     const emailsOpened = emailStatsLast30._sum.openCount || 0
     const emailsClicked = emailStatsLast30._sum.clickCount || 0
     const previousEmailsSent = emailStatsPrevious30._count.id
-    const revenueLast30 = Number(purchaseStatsLast30._sum.total || 0)
-    const revenuePrevious30 = Number(purchaseStatsPrevious30._sum.total || 0)
+    const somaVendas = (receitas: ReceitaNaMoeda[]) => receitas.reduce((acc, receita) => acc + receita.vendas, 0)
     const answeredResults = ["ANSWERED", "INTERESTED", "NOT_INTERESTED", "CALLBACK", "MEETING_SCHEDULED"]
     const callsTotal = callStatsLast30.reduce((sum, item) => sum + item._count.id, 0)
     const callsAnswered = callStatsLast30
@@ -178,10 +164,9 @@ async function getAnalyticsData() {
         callsTotal,
         callsAnswered,
         callAnswerRate: percentage(callsAnswered, callsTotal),
-        purchasesLast30: purchaseStatsLast30._count.id,
-        purchasesPrevious30: purchaseStatsPrevious30._count.id,
-        revenueLast30,
-        revenuePrevious30,
+        purchasesLast30: somaVendas(purchaseStatsLast30),
+        purchasesPrevious30: somaVendas(purchaseStatsPrevious30),
+        revenueLast30: purchaseStatsLast30,
         topWorkspaces,
         topLists: topLists.map((list) => ({
             ...list,
@@ -232,11 +217,13 @@ export default async function SuperAdminAnalyticsPage() {
                 />
                 <MetricCard
                     title={t("revenue30d")}
-                    value={formatCurrency(data.revenueLast30, "EUR")}
+                    value={formatarReceita(data.revenueLast30)}
                     description={t("revenue30dDesc", {count: data.purchasesLast30})}
                     icon={ShoppingCart}
                     tone="indigo"
-                    trend={compare(data.revenueLast30, data.revenuePrevious30)}
+                    // Receita em moedas diferentes não tem variação única; a
+                    // tendência acompanha o número de vendas.
+                    trend={compare(data.purchasesLast30, data.purchasesPrevious30)}
                 />
                 <MetricCard
                     title={t("emailsSent")}

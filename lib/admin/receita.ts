@@ -3,6 +3,12 @@ import type { Prisma } from "@prisma/client"
 import { prisma } from "@/lib/prisma"
 import { formatCurrency } from "@/lib/utils"
 
+/**
+ * Filtro de toda métrica de venda do painel: compra marcada como teste na tela
+ * de Vendas não é receita, não é venda e não entra no ticket médio.
+ */
+export const VENDA_REAL = { isTest: false } satisfies Prisma.PurchaseWhereInput
+
 /** Receita de uma moeda. Valores de moedas diferentes nunca se somam. */
 export interface ReceitaNaMoeda {
     currency: string
@@ -20,7 +26,7 @@ export interface ReceitaNaMoeda {
 export async function receitaPorMoeda(where: Prisma.PurchaseWhereInput): Promise<ReceitaNaMoeda[]> {
     const grupos = await prisma.purchase.groupBy({
         by: ["currency"],
-        where,
+        where: { ...where, ...VENDA_REAL },
         _sum: { total: true },
         _count: { _all: true },
     })

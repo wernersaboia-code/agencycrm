@@ -19,9 +19,10 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { getGlobalStats } from "@/actions/admin/global-stats"
 import { formatarReceita } from "@/lib/admin/receita"
+import { getCoberturaDoCatalogo } from "@/lib/admin/cobertura"
 
 export default async function SuperAdminDashboardPage() {
-    const stats = await getGlobalStats()
+    const [stats, cobertura] = await Promise.all([getGlobalStats(), getCoberturaDoCatalogo()])
     const t = await getAdminTranslations("admin.dashboard")
     const common = await getAdminTranslations("admin.common")
     const bcp47 = htmlLangFor(await getAdminLocale())
@@ -68,7 +69,7 @@ export default async function SuperAdminDashboardPage() {
         {
             label: t("activeLists"),
             value: stats.totalLists.toLocaleString(bcp47),
-            detail: t("listsWithLeads", { count: stats.totalLeadsMarketplace }),
+            detail: t("countriesCovered", { count: cobertura.paises }),
             icon: Store,
         },
         {

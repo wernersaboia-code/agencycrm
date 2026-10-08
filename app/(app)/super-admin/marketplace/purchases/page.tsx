@@ -14,7 +14,8 @@ import {
 } from "@/components/ui/table"
 import { AlertCircle, ArrowLeft, CheckCircle2, ShoppingCart, DollarSign, TrendingUp, Clock } from "lucide-react"
 import { formatCurrency } from "@/lib/utils"
-import { formatarReceita, formatarTicketMedio, receitaPorMoeda } from "@/lib/admin/receita"
+import { PurchaseTestToggle } from "@/components/admin/purchase-test-toggle"
+import { formatarReceita, formatarTicketMedio, receitaPorMoeda, VENDA_REAL } from "@/lib/admin/receita"
 import { format } from "date-fns"
 import { Progress } from "@/components/ui/progress"
 import { Button } from "@/components/ui/button"
@@ -43,12 +44,15 @@ export default async function PurchasesPage() {
     const paidSalesCount = receitas.reduce((acc, receita) => acc + receita.vendas, 0)
 
     const pendingCount = await prisma.purchase.count({
-        where: { status: "pending" }
+        where: { status: "pending", ...VENDA_REAL }
     })
-    const failedCount = purchases.filter((purchase) => purchase.status === "failed").length
-    const refundedCount = purchases.filter((purchase) => purchase.status === "refunded").length
-    const paidCount = purchases.filter((purchase) => purchase.status === "paid").length
-    const paidRate = purchases.length > 0 ? Math.round((paidCount / purchases.length) * 100) : 0
+    // A tabela mostra as compras de teste (marcadas, para poder desmarcar), mas
+    // a saúde das vendas só olha as reais.
+    const reais = purchases.filter((purchase) => !purchase.isTest)
+    const failedCount = reais.filter((purchase) => purchase.status === "failed").length
+    const refundedCount = reais.filter((purchase) => purchase.status === "refunded").length
+    const paidCount = reais.filter((purchase) => purchase.status === "paid").length
+    const paidRate = reais.length > 0 ? Math.round((paidCount / reais.length) * 100) : 0
     const t = await getAdminTranslations("admin.purchases")
     const tc = await getAdminTranslations("admin.common")
     const dateLocale = dateFnsLocaleFor(await getAdminLocale())
@@ -188,7 +192,7 @@ export default async function PurchasesPage() {
                             </TableHeader>
                             <TableBody>
                                 {purchases.map((purchase) => (
-                                    <TableRow key={purchase.id}>
+                                    <TableRow key={purchase.id} className={purchase.isTest ? "opacity-60" : undefined}>
                                         <TableCell>
                                             <div>
                                                 <p className="font-medium">
@@ -234,6 +238,12 @@ export default async function PurchasesPage() {
                                                 {purchase.status === "failed" && t("badgeFailed")}
                                                 {purchase.status === "refunded" && t("badgeRefunded")}
                                             </Badge>
+                                            {purchase.isTest && (
+                                                <Badge variant="outline" className="ml-1">{t("badgeTest")}</Badge>
+                                            )}
+                                            <div className="mt-1">
+                                                <PurchaseTestToggle purchaseId={purchase.id} isTest={purchase.isTest} />
+                                            </div>
                                         </TableCell>
                                     </TableRow>
                                 ))}

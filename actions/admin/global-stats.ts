@@ -4,7 +4,7 @@
 
 import { prisma } from "@/lib/prisma"
 import { requireAdmin } from "@/lib/auth"
-import { receitaPorMoeda, type ReceitaNaMoeda } from "@/lib/admin/receita"
+import { receitaPorMoeda, VENDA_REAL, type ReceitaNaMoeda } from "@/lib/admin/receita"
 import { startOfMonth, subDays } from "date-fns"
 
 export interface GlobalStats {
@@ -120,11 +120,12 @@ export async function getGlobalStats(): Promise<GlobalStats> {
         }),
 
         // Vendas
-        prisma.purchase.count({ where: { status: "paid" } }),
+        prisma.purchase.count({ where: { status: "paid", ...VENDA_REAL } }),
         prisma.purchase.count({
             where: {
                 status: "paid",
-                paidAt: { gte: startOfCurrentMonth }
+                paidAt: { gte: startOfCurrentMonth },
+                ...VENDA_REAL,
             }
         }),
         receitaPorMoeda({ status: "paid" }),

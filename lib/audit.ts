@@ -25,6 +25,7 @@ export type AuditAction =
     | "industry.updated"
     | "industry.reordered"
     | "industry.deleted"
+    | "purchase.test_flag_changed"
 
 export interface AuditInput {
     actorId: string

@@ -3,6 +3,8 @@ import Link from "next/link"
 import { getAdminLocale, getAdminTranslations } from "@/lib/i18n/admin-locale"
 import { getSetores } from "@/lib/marketplace/setores-servidor"
 import { mapaDeNomes } from "@/lib/marketplace/setores"
+import { calcularCobertura } from "@/lib/admin/cobertura"
+import { VENDA_REAL } from "@/lib/admin/receita"
 import { prisma } from "@/lib/prisma"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -40,7 +42,8 @@ export default async function MarketplaceListsPage({ searchParams }: Marketplace
             _count: {
                 select: {
                     leads: true,
-                    purchaseItems: true,
+                    // Compra de teste não conta como venda da lista.
+                    purchaseItems: { where: { purchase: VENDA_REAL } },
                 },
             },
         },
@@ -53,7 +56,7 @@ export default async function MarketplaceListsPage({ searchParams }: Marketplace
     const listsWithoutPdf = lists.filter((list) => !list.studyPdfUrl).length
     const featuredLists = lists.filter((list) => list.isFeatured).length
     const listsWithSales = lists.filter((list) => list._count.purchaseItems > 0).length
-    const totalLeads = lists.reduce((acc, list) => acc + list._count.leads, 0)
+    const cobertura = calcularCobertura(lists.filter((list) => list.isActive))
     const totalSales = lists.reduce((acc, list) => acc + list._count.purchaseItems, 0)
     const t = await getAdminTranslations("admin.lists")
     const tc = await getAdminTranslations("admin.common")
@@ -142,7 +145,7 @@ export default async function MarketplaceListsPage({ searchParams }: Marketplace
                     <div>
                         <CardTitle>{t("catalogHealth")}</CardTitle>
                         <p className="mt-1 text-sm text-muted-foreground">
-                            {t("healthDesc", { count: lists.length, leads: totalLeads.toLocaleString() })}
+                            {t("healthDesc", { count: lists.length, countries: cobertura.paises })}
                         </p>
                     </div>
                     <div className="w-full space-y-2 lg:w-64">
@@ -190,7 +193,6 @@ export default async function MarketplaceListsPage({ searchParams }: Marketplace
                             <TableHead>{t("colName")}</TableHead>
                             <TableHead>{t("colIndustries")}</TableHead>
                             <TableHead>{t("colCountries")}</TableHead>
-                            <TableHead className="text-center">{t("colLeads")}</TableHead>
                             <TableHead className="text-center">{t("colSales")}</TableHead>
                             <TableHead className="text-right">{t("colPrice")}</TableHead>
                             <TableHead className="text-center">{t("colStatus")}</TableHead>
@@ -239,9 +241,6 @@ export default async function MarketplaceListsPage({ searchParams }: Marketplace
                                             {list.countries.slice(0, 3).join(", ")}
                                             {list.countries.length > 3 && ` +${list.countries.length - 3}`}
                                         </span>
-                                    </TableCell>
-                                    <TableCell className="text-center">
-                                        {list._count.leads.toLocaleString()}
                                     </TableCell>
                                     <TableCell className="text-center">
                                         {list._count.purchaseItems}

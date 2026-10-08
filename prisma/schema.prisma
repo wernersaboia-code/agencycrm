@@ -803,6 +803,11 @@ model Purchase {
   mercadoPagoPaymentId    String?
   status                  PurchaseStatus  @default(pending)
 
+  // Compra de teste (cartão de teste, lista "Não Comprar"). Marcada à mão
+  // pelo admin na tela de Vendas; fica fora de receita, contagens e ticket
+  // médio, mas continua valendo para o comprador — o acesso ao PDF não muda.
+  isTest Boolean @default(false)
+
   // Valores
   subtotal Decimal @db.Decimal(10, 2)
   discount Decimal @default(0) @db.Decimal(10, 2)
