@@ -852,6 +852,7 @@
             "cronProtected": "Cron protected by secret",
             "paypalReady": "PayPal ready for checkout",
             "stripeReady": "Stripe ready for checkout",
+            "receiptReady": "PDF purchase receipt active",
             "adminLinks": "Administrative links",
             "manageUsers": "Manage users",
             "manageWorkspaces": "Manage workspaces",
@@ -878,7 +879,9 @@
                 "NEXT_PUBLIC_APP_URL": "Public URL used in callbacks, links and redirects.",
                 "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY": "Stripe public key used in the checkout frontend.",
                 "STRIPE_SECRET_KEY": "Stripe secret key used on the server to create checkout sessions.",
-                "STRIPE_WEBHOOK_SECRET": "Secret used to verify the signature of Stripe webhooks."
+                "STRIPE_WEBHOOK_SECRET": "Secret used to verify the signature of Stripe webhooks.",
+                "SELLER_NAME": "Seller legal name printed on the PDF purchase receipt.",
+                "SELLER_ADDRESS": "Seller address printed on the PDF purchase receipt."
             }
         },
         "analytics": {

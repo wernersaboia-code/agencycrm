@@ -16,6 +16,7 @@ import {
     Store,
 } from "lucide-react"
 import { formatCurrency } from "@/lib/utils"
+import { formatarReceita, receitaPorMoeda } from "@/lib/admin/receita"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 
@@ -24,10 +25,7 @@ export default async function MarketplacePage() {
         prisma.leadList.count(),
         prisma.marketplaceLead.count(),
         prisma.purchase.count({ where: { status: "paid" } }),
-        prisma.purchase.aggregate({
-            where: { status: "paid" },
-            _sum: { total: true }
-        }),
+        receitaPorMoeda({ status: "paid" }),
         prisma.leadList.findMany({
             take: 5,
             orderBy: { createdAt: "desc" },
@@ -63,7 +61,7 @@ export default async function MarketplacePage() {
         },
         {
             title: t("totalRevenue"),
-            value: formatCurrency(Number(revenue._sum.total || 0), "EUR"),
+            value: formatarReceita(revenue),
             icon: TrendingUp,
             href: "/super-admin/marketplace/purchases",
             color: "text-amber-600"

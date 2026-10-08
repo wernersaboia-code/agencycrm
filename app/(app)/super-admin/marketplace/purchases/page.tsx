@@ -14,13 +14,14 @@ import {
 } from "@/components/ui/table"
 import { AlertCircle, ArrowLeft, CheckCircle2, ShoppingCart, DollarSign, TrendingUp, Clock } from "lucide-react"
 import { formatCurrency } from "@/lib/utils"
+import { formatarReceita, formatarTicketMedio, receitaPorMoeda } from "@/lib/admin/receita"
 import { format } from "date-fns"
 import { Progress } from "@/components/ui/progress"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 
 export default async function PurchasesPage() {
-    const [purchases, stats] = await Promise.all([
+    const [purchases, receitas] = await Promise.all([
         prisma.purchase.findMany({
             orderBy: { createdAt: "desc" },
             include: {
@@ -37,12 +38,9 @@ export default async function PurchasesPage() {
             },
             take: 100
         }),
-        prisma.purchase.aggregate({
-            _count: true,
-            _sum: { total: true },
-            where: { status: "paid" }
-        })
+        receitaPorMoeda({ status: "paid" }),
     ])
+    const paidSalesCount = receitas.reduce((acc, receita) => acc + receita.vendas, 0)
 
     const pendingCount = await prisma.purchase.count({
         where: { status: "pending" }
@@ -87,7 +85,7 @@ export default async function PurchasesPage() {
                         <ShoppingCart className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <p className="text-2xl font-bold">{stats._count}</p>
+                        <p className="text-2xl font-bold">{paidSalesCount}</p>
                     </CardContent>
                 </Card>
 
@@ -97,9 +95,7 @@ export default async function PurchasesPage() {
                         <DollarSign className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <p className="text-2xl font-bold">
-                            {formatCurrency(Number(stats._sum.total || 0), "EUR")}
-                        </p>
+                        <p className="text-2xl font-bold">{formatarReceita(receitas)}</p>
                     </CardContent>
                 </Card>
 
@@ -109,14 +105,7 @@ export default async function PurchasesPage() {
                         <TrendingUp className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <p className="text-2xl font-bold">
-                            {formatCurrency(
-                                stats._count > 0
-                                    ? Number(stats._sum.total || 0) / stats._count
-                                    : 0,
-                                "EUR"
-                            )}
-                        </p>
+                        <p className="text-2xl font-bold">{formatarTicketMedio(receitas)}</p>
                     </CardContent>
                 </Card>
 

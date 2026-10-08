@@ -4,6 +4,7 @@
 
 import { prisma } from "@/lib/prisma"
 import { requireAdmin } from "@/lib/auth"
+import { receitaPorMoeda, type ReceitaNaMoeda } from "@/lib/admin/receita"
 import { startOfMonth, subDays } from "date-fns"
 
 export interface GlobalStats {
@@ -37,8 +38,9 @@ export interface GlobalStats {
     // Vendas
     totalPurchases: number
     purchasesThisMonth: number
-    totalRevenue: number
-    revenueThisMonth: number
+    // Uma entrada por moeda: real e euro não se somam (ver lib/admin/receita.ts).
+    totalRevenue: ReceitaNaMoeda[]
+    revenueThisMonth: ReceitaNaMoeda[]
 }
 
 export async function getGlobalStats(): Promise<GlobalStats> {
@@ -125,17 +127,8 @@ export async function getGlobalStats(): Promise<GlobalStats> {
                 paidAt: { gte: startOfCurrentMonth }
             }
         }),
-        prisma.purchase.aggregate({
-            where: { status: "paid" },
-            _sum: { total: true }
-        }),
-        prisma.purchase.aggregate({
-            where: {
-                status: "paid",
-                paidAt: { gte: startOfCurrentMonth }
-            },
-            _sum: { total: true }
-        }),
+        receitaPorMoeda({ status: "paid" }),
+        receitaPorMoeda({ status: "paid", paidAt: { gte: startOfCurrentMonth } }),
     ])
 
     // Calcular métricas de ligações
@@ -181,7 +174,7 @@ export async function getGlobalStats(): Promise<GlobalStats> {
         // Vendas
         totalPurchases: purchaseStats,
         purchasesThisMonth,
-        totalRevenue: Number(revenueStats._sum.total || 0),
-        revenueThisMonth: Number(revenueThisMonth._sum.total || 0),
+        totalRevenue: revenueStats,
+        revenueThisMonth,
     }
 }

@@ -852,6 +852,7 @@
             "cronProtected": "Cron durch Secret geschützt",
             "paypalReady": "PayPal bereit für Checkout",
             "stripeReady": "Stripe bereit für Checkout",
+            "receiptReady": "Kaufbeleg als PDF aktiv",
             "adminLinks": "Administrative Links",
             "manageUsers": "Benutzer verwalten",
             "manageWorkspaces": "Workspaces verwalten",
@@ -878,7 +879,9 @@
                 "NEXT_PUBLIC_APP_URL": "Öffentliche URL für Callbacks, Links und Weiterleitungen.",
                 "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY": "Öffentlicher Stripe-Schlüssel für das Frontend des Checkouts.",
                 "STRIPE_SECRET_KEY": "Geheimer Stripe-Schlüssel, den der Server zum Erstellen von Checkout-Sitzungen verwendet.",
-                "STRIPE_WEBHOOK_SECRET": "Geheimnis zur Überprüfung der Signatur der Stripe-Webhooks."
+                "STRIPE_WEBHOOK_SECRET": "Geheimnis zur Überprüfung der Signatur der Stripe-Webhooks.",
+                "SELLER_NAME": "Firmenname des Verkäufers auf dem Kaufbeleg (PDF).",
+                "SELLER_ADDRESS": "Anschrift des Verkäufers auf dem Kaufbeleg (PDF)."
             }
         },
         "analytics": {

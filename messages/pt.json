@@ -852,6 +852,7 @@
             "cronProtected": "Cron protegido por segredo",
             "paypalReady": "PayPal pronto para checkout",
             "stripeReady": "Stripe pronto para checkout",
+            "receiptReady": "Comprovante de compra em PDF ativo",
             "adminLinks": "Links administrativos",
             "manageUsers": "Gerenciar usuários",
             "manageWorkspaces": "Gerenciar workspaces",
@@ -878,7 +879,9 @@
                 "NEXT_PUBLIC_APP_URL": "URL pública usada em callbacks, links e redirecionamentos.",
                 "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY": "Chave pública do Stripe usada no frontend do checkout.",
                 "STRIPE_SECRET_KEY": "Chave secreta do Stripe usada no servidor para criar sessões de checkout.",
-                "STRIPE_WEBHOOK_SECRET": "Segredo usado para verificar a assinatura dos webhooks do Stripe."
+                "STRIPE_WEBHOOK_SECRET": "Segredo usado para verificar a assinatura dos webhooks do Stripe.",
+                "SELLER_NAME": "Razão social do vendedor impressa no comprovante de compra em PDF.",
+                "SELLER_ADDRESS": "Endereço do vendedor impresso no comprovante de compra em PDF."
             }
         },
         "analytics": {

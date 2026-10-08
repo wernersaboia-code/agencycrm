@@ -18,7 +18,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { getGlobalStats } from "@/actions/admin/global-stats"
-import { formatCurrency } from "@/lib/utils"
+import { formatarReceita } from "@/lib/admin/receita"
 
 export default async function SuperAdminDashboardPage() {
     const stats = await getGlobalStats()
@@ -79,8 +79,8 @@ export default async function SuperAdminDashboardPage() {
         },
         {
             label: t("totalRevenue"),
-            value: formatCurrency(stats.totalRevenue, "EUR"),
-            detail: t("revenueThisMonth", { value: formatCurrency(stats.revenueThisMonth, "EUR") }),
+            value: formatarReceita(stats.totalRevenue),
+            detail: t("revenueThisMonth", { value: formatarReceita(stats.revenueThisMonth) }),
             icon: BarChart3,
         },
         {
