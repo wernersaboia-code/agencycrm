@@ -564,7 +564,8 @@
         "guidanceReadText": "O estudo traz o que os importadores esperam e como fazer o primeiro contato. Ler antes evita queimar uma boa empresa numa abordagem apressada.",
         "guidanceRequestTitle": "Precisa de outro mercado?",
         "guidanceRequestText": "O portfólio cresce conforme a demanda. Diga qual setor e qual país você precisa.",
-        "guidanceRequestLink": "Pedir um estudo"
+        "guidanceRequestLink": "Pedir um estudo",
+        "receiptButton": "Baixar comprovante"
     },
     "about": {
         "meta": {
@@ -1358,6 +1359,8 @@
                 "countriesLabel": "Países (códigos ISO) *",
                 "countriesPlaceholder": "DE, AT, CH",
                 "countriesHint": "Separe por vírgula: DE, FR, IT",
+                "countriesUnknown": "Fora do padrão internacional: {codes}. O filtro do catálogo não mostra esses códigos — corrija antes de publicar.",
+                "countriesOutdated": "Códigos antigos: {codes}. Use o código à direita da seta — manter os dois criaria duas opções para o mesmo país no filtro.",
                 "autoFilled": "Auto-preenchido",
                 "industriesLabel": "Setores/Indústrias",
                 "industriesDesc": "Selecione um ou mais setores para esta lista",

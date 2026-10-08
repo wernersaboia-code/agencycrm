@@ -1109,7 +1109,7 @@ export function ListForm({ list, setores }: ListFormProps) {
                                 {isLoading ? (
                                     <>
                                         <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                                        {isEditing ? tc("saving") : t("creating")}
+                                        {isEditing ? tc("saving") : t("creatingList")}
                                     </>
                                 ) : isEditing ? (
                                     t("saveChanges")

@@ -564,7 +564,8 @@
         "guidanceReadText": "The study covers what importers expect and how to make first contact. Reading it first keeps you from burning a good company on a rushed approach.",
         "guidanceRequestTitle": "Need another market?",
         "guidanceRequestText": "Our portfolio grows with demand. Tell us which industry and which country you need.",
-        "guidanceRequestLink": "Request a study"
+        "guidanceRequestLink": "Request a study",
+        "receiptButton": "Download receipt"
     },
     "about": {
         "meta": {
@@ -1358,6 +1359,8 @@
                 "countriesLabel": "Countries (ISO codes) *",
                 "countriesPlaceholder": "DE, AT, CH",
                 "countriesHint": "Separate by comma: DE, FR, IT",
+                "countriesUnknown": "Outside the international standard: {codes}. The catalog filter does not show these codes — fix before publishing.",
+                "countriesOutdated": "Outdated codes: {codes}. Use the code to the right of the arrow — keeping both would create two options for the same country in the filter.",
                 "autoFilled": "Auto-filled",
                 "industriesLabel": "Sectors/Industries",
                 "industriesDesc": "Select one or more sectors for this list",

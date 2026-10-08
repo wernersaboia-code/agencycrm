@@ -564,7 +564,8 @@
         "guidanceReadText": "Die Studie erklärt, was Importeure erwarten und wie die erste Kontaktaufnahme gelingt. Wer das vorher liest, verbrennt kein gutes Unternehmen an einer übereilten Ansprache.",
         "guidanceRequestTitle": "Brauchen Sie einen weiteren Markt?",
         "guidanceRequestText": "Unser Portfolio wächst mit der Nachfrage. Sagen Sie uns, welche Branche und welches Land Sie brauchen.",
-        "guidanceRequestLink": "Studie anfragen"
+        "guidanceRequestLink": "Studie anfragen",
+        "receiptButton": "Beleg herunterladen"
     },
     "about": {
         "meta": {
@@ -1358,6 +1359,8 @@
                 "countriesLabel": "Länder (ISO-Codes) *",
                 "countriesPlaceholder": "DE, AT, CH",
                 "countriesHint": "Mit Komma trennen: DE, FR, IT",
+                "countriesUnknown": "Nicht im internationalen Standard: {codes}. Der Katalogfilter zeigt diese Codes nicht an — vor der Veröffentlichung korrigieren.",
+                "countriesOutdated": "Veraltete Codes: {codes}. Verwenden Sie den Code rechts vom Pfeil — beide zu behalten würde zwei Optionen für dasselbe Land im Filter erzeugen.",
                 "autoFilled": "Automatisch ausgefüllt",
                 "industriesLabel": "Branchen",
                 "industriesDesc": "Wählen Sie eine oder mehrere Branchen für diese Liste aus",
