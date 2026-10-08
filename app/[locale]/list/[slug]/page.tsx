@@ -21,6 +21,7 @@ import { pickPrice } from "@/lib/marketplace/list-prices"
 import { paragrafosDaIntroducao } from "@/lib/marketplace/texto-colado"
 import { getSetores } from "@/lib/marketplace/setores-servidor"
 import { nomesDosSetoresDaLista } from "@/lib/marketplace/setores"
+import { CAMPOS_SO_DO_ADMIN } from "@/lib/marketplace/campos-do-admin"
 import type { Currency } from "@/lib/currency"
 import {
     ArrowLeft,
@@ -46,6 +47,7 @@ async function getList(slug: string) {
             slug,
             isActive: true,
         },
+        omit: CAMPOS_SO_DO_ADMIN,
     })
 }
 

@@ -193,6 +193,7 @@ export default async function MarketplaceListsPage({ searchParams }: Marketplace
                             <TableHead>{t("colName")}</TableHead>
                             <TableHead>{t("colIndustries")}</TableHead>
                             <TableHead>{t("colCountries")}</TableHead>
+                            <TableHead className="text-center" title={t("colCompaniesHint")}>{t("colCompanies")}</TableHead>
                             <TableHead className="text-center">{t("colSales")}</TableHead>
                             <TableHead className="text-right">{t("colPrice")}</TableHead>
                             <TableHead className="text-center">{t("colStatus")}</TableHead>
@@ -241,6 +242,17 @@ export default async function MarketplaceListsPage({ searchParams }: Marketplace
                                             {list.countries.slice(0, 3).join(", ")}
                                             {list.countries.length > 3 && ` +${list.countries.length - 3}`}
                                         </span>
+                                    </TableCell>
+                                    <TableCell
+                                        className="text-center tabular-nums"
+                                        title={list.companyCount == null
+                                            ? undefined
+                                            : list.companyCountManual ? t("companiesManual") : t("companiesEstimate")}
+                                    >
+                                        {/* "≈" marca estimativa lida do PDF; sem ele, conferido à mão. */}
+                                        {list.companyCount == null
+                                            ? <span className="text-muted-foreground">—</span>
+                                            : `${list.companyCountManual ? "" : "≈ "}${list.companyCount}`}
                                     </TableCell>
                                     <TableCell className="text-center">
                                         {list._count.purchaseItems}

@@ -5,6 +5,9 @@ import { prisma } from "@/lib/prisma"
 import type { LeadList, Prisma } from "@prisma/client"
 import { getActiveCurrency } from "@/lib/currency/server"
 import { resolveListPrices } from "@/lib/marketplace/list-prices"
+import { CAMPOS_SO_DO_ADMIN } from "@/lib/marketplace/campos-do-admin"
+
+type ListaPublica = Omit<LeadList, keyof typeof CAMPOS_SO_DO_ADMIN>
 
 /**
  * O card recebe o preço JÁ resolvido: `price` e `currency` passam a significar
@@ -15,7 +18,7 @@ import { resolveListPrices } from "@/lib/marketplace/list-prices"
  * preço resolvido só num dos dois lugares é pior que preço nenhum: a home
  * anunciaria um valor e a página da lista mostraria outro.
  */
-async function comPrecoDoVisitante(lists: LeadList[]) {
+async function comPrecoDoVisitante(lists: ListaPublica[]) {
     const currency = await getActiveCurrency()
     const prices = await resolveListPrices(prisma, lists.map((l) => l.id), currency)
 
@@ -45,6 +48,7 @@ export async function getFeaturedLists(limite = 4) {
         where: { isActive: true, isFeatured: true },
         orderBy: { updatedAt: "desc" },
         take: limite,
+        omit: CAMPOS_SO_DO_ADMIN,
     })
 
     return comPrecoDoVisitante(lists)
@@ -110,6 +114,7 @@ export async function getMarketplaceLists(params: GetListsParams = {}) {
             orderBy: [{ isFeatured: "desc" }, { createdAt: "desc" }],
             skip,
             take: limit,
+            omit: CAMPOS_SO_DO_ADMIN,
         }),
         prisma.leadList.count({ where }),
     ])

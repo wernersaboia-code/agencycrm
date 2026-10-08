@@ -18,7 +18,8 @@
     "index:inspecionar": "npx ts-node --project tsconfig.seed.json prisma/inspecionar-indexacao.ts",
     "meta:listas": "npx ts-node --project tsconfig.seed.json prisma/atualizar-conteudo-listas.ts",
     "meta:textos": "npx ts-node --project tsconfig.seed.json prisma/limpar-textos-colados.ts",
-    "meta:resumos": "npx ts-node --project tsconfig.seed.json prisma/importar-resumos.ts"
+    "meta:resumos": "npx ts-node --project tsconfig.seed.json prisma/importar-resumos.ts",
+    "meta:empresas": "npx ts-node --project tsconfig.seed.json prisma/contar-empresas.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

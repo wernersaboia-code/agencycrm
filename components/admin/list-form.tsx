@@ -55,7 +55,7 @@ import {
 } from "@/components/ui/alert-dialog"
 
 import type { Achado as AchadoContato } from "@/lib/marketplace/contatos-pessoais"
-import { createList, updateList, uploadLeadsToList, markListReviewed, gerarResumoDoEstudo } from "@/actions/admin/lists"
+import { createList, updateList, uploadLeadsToList, markListReviewed, gerarResumoDoEstudo, recontarEmpresas } from "@/actions/admin/lists"
 import { MarketplaceImportWizard } from "@/components/admin/marketplace-import-wizard"
 import type { MarketplaceLeadData } from "@/lib/constants/marketplace-csv.constants"
 import { LIST_LANGUAGES } from "@/lib/constants/list-languages"
@@ -81,6 +81,9 @@ interface SerializedLeadList {
     countries: string[]
     industries: string[]
     totalLeads: number
+    /** Empresas do diretório. Só do admin; nunca vai para o site. */
+    companyCount: number | null
+    companyCountManual: boolean
     price: number
     currency: string
     /** Preços cadastrados por moeda. EUR sempre existe nas listas semeadas. */
@@ -134,6 +137,7 @@ export function ListForm({ list, setores }: ListFormProps) {
         priceBRL: z.string().min(1, t("validationPriceBrl")),
         priceUSD: z.string().optional(),
         totalLeads: z.string().regex(/^\d*$/, t("validationInteger")).optional(),
+        companyCount: z.string().regex(/^\d*$/, t("validationInteger")).optional(),
         // URL pública da capa do estudo. Vazio é válido (usa a imagem padrão
         // da marca no JSON-LD), mas um texto preenchido precisa ser URL.
         coverImageUrl: z.string().optional().refine(
@@ -167,6 +171,9 @@ export function ListForm({ list, setores }: ListFormProps) {
     const [pdfFile, setPdfFile] = useState<File | null>(null)
     const [pdfName, setPdfName] = useState<string | null>(list?.studyPdfName ?? null)
     const [importandoResumo, setImportandoResumo] = useState(false)
+    const [recontando, setRecontando] = useState(false)
+    // Se o número de empresas na tela é conferido à mão ou estimativa do PDF.
+    const [contagemManual, setContagemManual] = useState(list?.companyCountManual ?? false)
 
     // Estado das indústrias selecionadas
     const [selectedIndustries, setSelectedIndustries] = useState<string[]>(
@@ -192,6 +199,7 @@ export function ListForm({ list, setores }: ListFormProps) {
             priceBRL: list?.prices?.BRL !== undefined ? String(list.prices.BRL) : "",
             priceUSD: list?.prices?.USD !== undefined ? String(list.prices.USD) : "",
             totalLeads: list ? String(list.totalLeads) : "",
+            companyCount: list?.companyCount != null ? String(list.companyCount) : "",
             coverImageUrl: list?.coverImageUrl || "",
             isActive: list?.isActive ?? true,
             isFeatured: list?.isFeatured ?? false,
@@ -261,6 +269,27 @@ export function ListForm({ list, setores }: ListFormProps) {
             toast.success(t("introImportSuccess"))
         } finally {
             setImportandoResumo(false)
+        }
+    }
+
+    /** Refaz a estimativa de empresas lendo o PDF já enviado. */
+    const recontarPeloPdf = async () => {
+        if (!list) return
+
+        setRecontando(true)
+        try {
+            const resultado = await recontarEmpresas(list.id)
+            if (!resultado.success) {
+                toast.error(resultado.error)
+                return
+            }
+            // Já gravado no servidor: o campo volta a "limpo" com o número novo,
+            // senão salvar o formulário o marcaria como conferido à mão.
+            form.resetField("companyCount", { defaultValue: String(resultado.data.total) })
+            setContagemManual(false)
+            toast.success(t("companyCountRecounted", { count: resultado.data.total }))
+        } finally {
+            setRecontando(false)
         }
     }
 
@@ -357,6 +386,11 @@ export function ListForm({ list, setores }: ListFormProps) {
                 // atual na edição (e grava 0 na criação).
                 totalLeads: data.totalLeads?.trim()
                     ? parseInt(data.totalLeads, 10)
+                    : undefined,
+                // Só vai quando o admin mudou o número: aí ele passa a ser
+                // conferido. Sem mudança, a estimativa do PDF continua valendo.
+                companyCount: form.formState.dirtyFields.companyCount && data.companyCount?.trim()
+                    ? parseInt(data.companyCount, 10)
                     : undefined,
                 // String vazia é enviada de propósito: a action a normaliza
                 // para null, então limpar o campo remove a capa na edição.
@@ -856,6 +890,46 @@ export function ListForm({ list, setores }: ListFormProps) {
                         <p className="text-xs text-muted-foreground">
                             {t("priceOptionalNote")}
                         </p>
+
+                        {/* Empresas do diretório: referência de preço, só do admin. */}
+                        <div className="space-y-2 border-t pt-4">
+                            <Label htmlFor="companyCount" className="flex items-center gap-2">
+                                {t("companyCountLabel")}
+                                {list?.companyCount != null && !form.formState.dirtyFields.companyCount && (
+                                    <Badge variant="outline" className="text-xs font-normal">
+                                        {contagemManual ? t("companyCountManualBadge") : t("companyCountEstimateBadge")}
+                                    </Badge>
+                                )}
+                            </Label>
+                            <div className="flex flex-wrap items-center gap-2">
+                                <Input
+                                    id="companyCount"
+                                    type="text"
+                                    inputMode="numeric"
+                                    className="w-32"
+                                    placeholder="—"
+                                    {...form.register("companyCount")}
+                                />
+                                {list?.studyPdfUrl && (
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={recontarPeloPdf}
+                                        disabled={recontando || Boolean(pdfFile)}
+                                    >
+                                        {recontando ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+                                        {t("companyCountRecount")}
+                                    </Button>
+                                )}
+                            </div>
+                            <p className="text-xs text-muted-foreground">{t("companyCountDesc")}</p>
+                            {form.formState.errors.companyCount && (
+                                <p className="text-sm text-destructive">
+                                    {form.formState.errors.companyCount.message}
+                                </p>
+                            )}
+                        </div>
                     </CardContent>
                 </Card>
 

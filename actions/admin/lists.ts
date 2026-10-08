@@ -15,7 +15,7 @@ import { writeListPrices } from "@/lib/marketplace/list-prices"
 import { describeListError, type ActionResult } from "@/lib/admin/action-errors"
 import { TAG_RESUMO_CATALOGO } from "@/lib/marketplace/resumo-catalogo"
 import { normalizarTextoColado } from "@/lib/marketplace/texto-colado"
-import { extrairResumoDoPdf } from "@/lib/marketplace/pdf-do-estudo"
+import { contarEmpresasDoPdf, extrairResumoDoPdf } from "@/lib/marketplace/pdf-do-estudo"
 import { downloadListPdf } from "@/lib/supabase/list-studies"
 
 interface CreateListData {
@@ -33,6 +33,11 @@ interface CreateListData {
         USD?: number
     }
     totalLeads?: number
+    /**
+     * Empresas do diretório, conferidas pelo admin. Só é enviado quando o campo
+     * mudou; `undefined` mantém o número atual (estimado ou conferido).
+     */
+    companyCount?: number
     isActive: boolean
     isFeatured: boolean
     /** URL pública da capa do estudo. Vazio = sem capa (fallback da marca). */
@@ -57,6 +62,7 @@ const listDataSchema = z.object({
     // Número declarado manualmente pelo admin. A importação de leads
     // sobrescreve com a contagem real (fonte mais confiável quando existe).
     totalLeads: z.number().int().min(0).max(999999999).optional(),
+    companyCount: z.number().int().min(0).max(100000).optional(),
     isActive: z.boolean(),
     isFeatured: z.boolean(),
     // Capa do estudo. String vazia é aceita e normalizada para null: limpar o
@@ -96,6 +102,8 @@ interface SerializedList {
     countries: string[]
     industries: string[]
     totalLeads: number
+    companyCount: number | null
+    companyCountManual: boolean
     price: number
     currency: string
     isActive: boolean
@@ -197,6 +205,11 @@ async function criarLista(data: CreateListData): Promise<SerializedList> {
             price: validated.prices.EUR,
             currency: DEFAULT_CURRENCY,
             totalLeads: validated.totalLeads ?? 0,
+            // Número digitado na criação é conferido; sem ele, a contagem vem
+            // do PDF quando o estudo for enviado.
+            ...(validated.companyCount !== undefined
+                ? { companyCount: validated.companyCount, companyCountManual: true }
+                : {}),
             isActive: false,
             isFeatured: validated.isFeatured,
             coverImageUrl: normalizarCapa(validated.coverImageUrl),
@@ -264,6 +277,11 @@ async function atualizarLista(id: string, data: CreateListData): Promise<Seriali
             // em vez de zerar uma contagem já existente.
             ...(validated.totalLeads !== undefined
                 ? { totalLeads: validated.totalLeads }
+                : {}),
+            // O formulário só envia o número quando o admin o mudou: daí em
+            // diante ele é conferido, e a recontagem pelo PDF não o toca.
+            ...(validated.companyCount !== undefined
+                ? { companyCount: validated.companyCount, companyCountManual: true }
                 : {}),
             isActive: validated.isActive,
             isFeatured: validated.isFeatured,
@@ -624,4 +642,37 @@ export async function getListStats(listId: string) {
         complete,
         incomplete,
     }
+}
+
+/**
+ * Recalcula pelo PDF a estimativa de empresas do diretório (ver
+ * lib/marketplace/contagem-empresas.ts). Substitui inclusive o número
+ * conferido à mão: é o botão "Recontar pelo PDF", e o admin o aperta sabendo.
+ */
+export async function recontarEmpresas(listId: string): Promise<ActionResult<{ total: number }>> {
+    const admin = await requireAdmin()
+    await checkAdminRateLimit("list.recount_companies", admin.id, 20, 60_000)
+
+    const lista = await prisma.leadList.findUnique({
+        where: { id: listId },
+        select: { slug: true, studyPdfUrl: true },
+    })
+    if (!lista) return { success: false, error: "Lista não encontrada." }
+    if (!lista.studyPdfUrl) return { success: false, error: "A lista ainda não tem o estudo em PDF." }
+
+    const contagem = await contarEmpresasDoPdf(await downloadListPdf(lista.studyPdfUrl))
+    if (!contagem) {
+        return {
+            success: false,
+            error: "Não encontrei o capítulo do diretório neste PDF. Digite o número de empresas à mão.",
+        }
+    }
+
+    await prisma.leadList.update({
+        where: { id: listId },
+        data: { companyCount: contagem.total, companyCountManual: false },
+    })
+    revalidatePath("/super-admin/marketplace/lists")
+    revalidatePath(`/super-admin/marketplace/lists/${listId}`)
+    return { success: true, data: { total: contagem.total } }
 }

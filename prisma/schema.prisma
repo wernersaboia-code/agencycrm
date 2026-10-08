@@ -627,6 +627,14 @@ model LeadList {
   // Métricas
   totalLeads Int @default(0)
 
+  // Quantas empresas o diretório do estudo lista. SÓ PARA O ADMIN (calibrar
+  // preço); nunca aparece no site. Estimado a partir do PDF
+  // (lib/marketplace/contagem-empresas.ts) ou digitado no admin depois de
+  // conferido — `companyCountManual` marca o segundo caso, e a recontagem
+  // automática nunca sobrescreve número conferido à mão.
+  companyCount       Int?
+  companyCountManual Boolean @default(false)
+
   // Preço
   price    Decimal @db.Decimal(10, 2)
   currency String  @default("EUR")

@@ -9,6 +9,7 @@ import {
     validatePdfFile,
 } from "@/lib/supabase/list-studies"
 import { encontrarContatosPessoaisNoPdf } from "@/lib/marketplace/pdf-contatos"
+import { contarEmpresasDoPdf } from "@/lib/marketplace/pdf-do-estudo"
 
 export async function POST(
     request: NextRequest,
@@ -18,7 +19,7 @@ export async function POST(
         const admin = await requireAdmin()
         const { id } = await params
 
-        const list = await prisma.leadList.findUnique({ where: { id }, select: { id: true, studyPdfUrl: true } })
+        const list = await prisma.leadList.findUnique({ where: { id }, select: { id: true, studyPdfUrl: true, companyCountManual: true } })
         if (!list) {
             return NextResponse.json({ error: "Lista não encontrada" }, { status: 404 })
         }
@@ -67,9 +68,22 @@ export async function POST(
             })
         }
 
+        // Estudo novo, diretório novo: a estimativa de empresas (só do admin)
+        // é refeita, a não ser que o número tenha sido conferido à mão. PDF sem
+        // diretório reconhecível mantém o número anterior.
+        // Cópia nova dos bytes: o pdf.js pode transferir (e esvaziar) o buffer
+        // que a checagem de contatos acima já leu.
+        const contagem = list.companyCountManual
+            ? null
+            : await contarEmpresasDoPdf(new Uint8Array(await file.arrayBuffer()))
+
         await prisma.leadList.update({
             where: { id },
-            data: { studyPdfUrl: url, studyPdfName: file.name },
+            data: {
+                studyPdfUrl: url,
+                studyPdfName: file.name,
+                ...(contagem ? { companyCount: contagem.total, companyCountManual: false } : {}),
+            },
         })
 
         return NextResponse.json({ studyPdfName: file.name })
