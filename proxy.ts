@@ -59,8 +59,15 @@ export async function proxy(request: NextRequest) {
                     cookiesToSet.forEach(({ name, value }) =>
                         request.cookies.set(name, value)
                     )
+                    // Reconstrói os headers a partir do request com os cookies
+                    // novos e repõe o x-pathname: `NextResponse.next({ request })`
+                    // sozinho descartaria o header, e o layout do CRM aplicaria
+                    // a guarda de trial em /trial-expired justo na requisição
+                    // em que a sessão foi renovada.
+                    const refreshedHeaders = new Headers(request.headers)
+                    refreshedHeaders.set("x-pathname", pathname)
                     supabaseResponse = NextResponse.next({
-                        request,
+                        request: { headers: refreshedHeaders },
                     })
                     cookiesToSet.forEach(({ name, value, options }) =>
                         supabaseResponse.cookies.set(name, value, options)

@@ -62,6 +62,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Worktrees de sessões antigas: cópias inteiras do repo, com erros que já
+    // foram corrigidos no main. O vitest.config.ts exclui pelo mesmo motivo.
+    ".claude/**",
   ]),
 ]);
 

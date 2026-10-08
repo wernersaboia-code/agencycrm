@@ -1,5 +1,9 @@
 // lib/email/purchase.ts
-"use server"
+
+// Só o fulfillment chama isto, no servidor. Não é server action: com
+// "use server" ela virava endpoint público, sem autenticação e com `accessUrl`
+// escolhido por quem chama — um e-mail do nosso domínio com link arbitrário.
+import "server-only"
 
 import { sendEmail, SmtpConfig } from "@/lib/email"
 import { generatePurchaseConfirmationEmail } from "./templates/purchase-confirmation"

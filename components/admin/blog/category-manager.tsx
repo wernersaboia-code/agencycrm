@@ -72,7 +72,7 @@ export function CategoryManager({ initial }: { initial: CategoryRow[] }) {
                 <Input placeholder={t("keyPlaceholder")} value={key} onChange={(e) => setKey(e.target.value)} />
                 <div className="grid gap-2 sm:grid-cols-2">
                     {BLOG_LOCALES.map((l) => (
-                        <Input key={l} placeholder={t("namePlaceholder", { l: l.toUpperCase() })}
+                        <Input key={l} placeholder={t("namePlaceholder", { lang: l.toUpperCase() })}
                             value={names[l] ?? ""} onChange={(e) => setNames((n) => ({ ...n, [l]: e.target.value }))} />
                     ))}
                 </div>
