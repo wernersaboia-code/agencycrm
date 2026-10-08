@@ -32,7 +32,7 @@ export default async function MarketplacePage() {
             take: 5,
             orderBy: { createdAt: "desc" },
             include: {
-                _count: { select: { leads: true, purchaseItems: { where: { purchase: VENDA_REAL } } } }
+                _count: { select: { purchaseItems: { where: { purchase: VENDA_REAL } } } }
             }
         })
     ])
@@ -289,7 +289,7 @@ export default async function MarketplacePage() {
                                         <div>
                                             <p className="font-medium">{list.name}</p>
                                             <p className="text-sm text-muted-foreground">
-                                                {list._count.leads.toLocaleString()} leads • {list._count.purchaseItems} vendas
+                                                {list.countries.join(", ")} • {t("recentListSales", { count: list._count.purchaseItems })}
                                             </p>
                                         </div>
                                         <span className="text-sm font-medium">

@@ -1016,6 +1016,7 @@
             "viewSales": "Verkäufe ansehen",
             "viewSalesDesc": "Alle getätigten Käufe verfolgen",
             "recentLists": "Letzte Listen",
+            "recentListSales": "{count, plural, =0 {keine Verkäufe} one {# Verkauf} other {# Verkäufe}}",
             "viewAll": "Alle ansehen",
             "noLists": "Noch keine Liste erstellt"
         },
