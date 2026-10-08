@@ -1,21 +1,17 @@
 // lib/constants/catalog-facets.ts
 
 /**
- * Vocabulário controlado das facetas do catálogo. Fonte única: o formulário do
- * admin e o filtro público leem daqui.
+ * Regras de exibição das facetas do catálogo.
  *
- * Antes cada lado tinha o seu array, e eles já haviam divergido — o admin
- * oferecia doze setores e o filtro conhecia oito. Uma lista marcada como
- * "agriculture" existia no catálogo mas não tinha faceta nenhuma que a
- * encontrasse.
+ * A busca tem duas dimensões e só duas: PAÍS e SETOR — e nenhuma das duas
+ * tem mais o vocabulário guardado aqui.
  *
- * Os rótulos NÃO moram aqui: ficam em `messages/<locale>.json`, sob
- * `catalog.industries.*`. Setor novo exige o rótulo nos sete idiomas — o teste
- * de paridade em `lib/i18n/messages-integridade.test.ts` cobra isso.
+ * Setor saiu deste arquivo em 08.10.2026: o cadastro mora na tabela
+ * `industries`, editada em /super-admin/marketplace/industries, para que setor
+ * novo não exija deploy. Continua vocabulário curado — a curadoria só mudou de
+ * lugar. Ver `lib/marketplace/setores.ts`.
  *
- * A busca tem duas dimensões e só duas: PAÍS e SETOR — mas só SETOR mora aqui.
- *
- * País saiu deste arquivo. Era uma lista curada à mão, e o filtro percorria a
+ * País saiu antes. Era uma lista curada à mão, e o filtro percorria a
  * lista em vez do banco: país sem entrada aqui ficava publicado e invisível,
  * o que chegou a acontecer com 23 deles de uma vez. Como país é padrão
  * internacional e não vocabulário nosso, a faceta passou a ser derivada do
@@ -30,39 +26,6 @@
  * no mesmo arquivo, então nenhum valor único descrevia a lista com honestidade.
  * Faceta que o cliente não consegue escolher direito é pior que faceta nenhuma.
  */
-
-/**
- * Setores. Um por linha de estudo, exatamente como aparece no título dos
- * estudos de entrada de mercado — "Exotic Fruits Market", "FMCG Market",
- * "HoReCa & Foodservice Market".
- *
- * Sem hierarquia e sem subdivisão: FMCG é FMCG, sem separar alimentar de não
- * alimentar, porque numa lista de país os dois vêm no mesmo arquivo. O
- * vocabulário antigo tinha catorze setores genéricos (tech, fashion,
- * automotive…) que nenhum estudo jamais usou.
- *
- * `snacks_bars` cobre o estudo "Fruit Bars and Cereal Bars" — barra de fruta e
- * de cereal saem juntas no mesmo arquivo, e o rótulo curto ainda aceita um
- * estudo de snack salgado depois. Não foi para dentro de `fmcg`: quem filtra
- * FMCG procura diretório amplo de país, e misturar uma categoria só na mesma
- * faceta troca granularidade por volume.
- *
- * `baby_toddler_products` cobre artigos para bebés e crianças pequenas, sem
- * misturar este estudo com o catálogo geral de brinquedos. `granular_sulphur`
- * identifica o produto químico específico do estudo alemão.
- */
-export const INDUSTRY_IDS = [
-    "exotic_fruits",
-    "fmcg",
-    "horeca",
-    "snacks_bars",
-    "plant_based_alternatives",
-    "toys",
-    "baby_toddler_products",
-    "granular_sulphur",
-] as const
-
-export type IndustryId = (typeof INDUSTRY_IDS)[number]
 
 /**
  * Quais facetas o filtro público deve mostrar.

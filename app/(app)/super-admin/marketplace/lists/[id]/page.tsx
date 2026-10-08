@@ -1,8 +1,10 @@
 // app/super-admin/marketplace/lists/[id]/page.tsx.bak
 import { notFound } from "next/navigation"
-import { getAdminTranslations } from "@/lib/i18n/admin-locale"
+import { getAdminLocale, getAdminTranslations } from "@/lib/i18n/admin-locale"
 import { prisma } from "@/lib/prisma"
 import { ListForm } from "@/components/admin/list-form"
+import { getSetores } from "@/lib/marketplace/setores-servidor"
+import { rotularSetores } from "@/lib/marketplace/setores"
 
 interface EditListPageProps {
     params: Promise<{ id: string }>
@@ -20,7 +22,11 @@ export default async function EditListPage({ params }: EditListPageProps) {
         notFound()
     }
 
-    const t = await getAdminTranslations("admin.listDetails")
+    const [t, setores, locale] = await Promise.all([
+        getAdminTranslations("admin.listDetails"),
+        getSetores(),
+        getAdminLocale(),
+    ])
 
     // O form edita um campo por moeda; o banco guarda uma linha por moeda.
     const prices: Record<string, number> = {}
@@ -47,7 +53,7 @@ export default async function EditListPage({ params }: EditListPageProps) {
                 </p>
             </div>
 
-            <ListForm list={serializedList} />
+            <ListForm list={serializedList} setores={rotularSetores(setores, locale)} />
         </div>
     )
 }

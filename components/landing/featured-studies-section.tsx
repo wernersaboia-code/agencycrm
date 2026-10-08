@@ -1,6 +1,8 @@
 import { getTranslations } from "next-intl/server"
 import { getFeaturedLists } from "@/actions/marketplace"
 import { ListCard } from "@/components/marketplace/list-card"
+import { getSetores } from "@/lib/marketplace/setores-servidor"
+import { nomesDosSetoresDaLista } from "@/lib/marketplace/setores"
 import { Section, SectionHeading } from "./section"
 import type { LandingLocale } from "./types"
 
@@ -9,7 +11,7 @@ import type { LandingLocale } from "./types"
  * publicado, a seção não deixa um bloco vazio na página inicial.
  */
 export async function FeaturedStudiesSection({ locale }: { locale: LandingLocale }) {
-    const lists = await getFeaturedLists(4)
+    const [lists, setores] = await Promise.all([getFeaturedLists(4), getSetores()])
 
     if (lists.length === 0) {
         return null
@@ -23,7 +25,10 @@ export async function FeaturedStudiesSection({ locale }: { locale: LandingLocale
 
             <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 {lists.map((list) => (
-                    <ListCard key={list.id} list={list} />
+                    <ListCard
+                        key={list.id}
+                        list={{ ...list, industryNames: nomesDosSetoresDaLista(list.industries, setores, locale) }}
+                    />
                 ))}
             </div>
         </Section>

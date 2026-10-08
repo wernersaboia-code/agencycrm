@@ -1,6 +1,8 @@
 // app/super-admin/marketplace/lists/page.tsx.bak
 import Link from "next/link"
-import { getAdminTranslations } from "@/lib/i18n/admin-locale"
+import { getAdminLocale, getAdminTranslations } from "@/lib/i18n/admin-locale"
+import { getSetores } from "@/lib/marketplace/setores-servidor"
+import { mapaDeNomes } from "@/lib/marketplace/setores"
 import { prisma } from "@/lib/prisma"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -55,6 +57,7 @@ export default async function MarketplaceListsPage({ searchParams }: Marketplace
     const totalSales = lists.reduce((acc, list) => acc + list._count.purchaseItems, 0)
     const t = await getAdminTranslations("admin.lists")
     const tc = await getAdminTranslations("admin.common")
+    const nomesDeSetor = mapaDeNomes(await getSetores(), await getAdminLocale())
     const readinessChecks = [
         {
             label: t("active"),
@@ -174,6 +177,7 @@ export default async function MarketplaceListsPage({ searchParams }: Marketplace
                 <ListsFilterBar
                     countries={paisesDisponiveis}
                     industries={setoresDisponiveis}
+                    nomesDeSetor={nomesDeSetor}
                     shown={listasFiltradas.length}
                     total={lists.length}
                 />
@@ -226,7 +230,7 @@ export default async function MarketplaceListsPage({ searchParams }: Marketplace
                                     <TableCell>
                                         <div className="flex flex-wrap gap-1">
                                             {list.industries.map((id) => (
-                                                <Badge key={id} variant="outline">{id}</Badge>
+                                                <Badge key={id} variant="outline">{nomesDeSetor[id] ?? id}</Badge>
                                             ))}
                                         </div>
                                     </TableCell>

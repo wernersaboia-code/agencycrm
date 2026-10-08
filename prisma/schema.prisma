@@ -683,6 +683,26 @@ model LeadList {
   @@map("lead_lists")
 }
 
+// Setores do catálogo — a segunda faceta da busca, ao lado do país.
+//
+// Vocabulário curado, de propósito: "HoReCa" e "FMCG" são linguagem do
+// negócio, que nenhum runtime conhece. Mora no banco (e não no código) só para
+// que o admin crie setor novo sem deploy; a curadoria continua sendo dele.
+//
+// `id` é o slug gravado em `LeadList.industries` e nos links do filtro
+// (?industries=horeca), por isso NÃO muda depois de criado. `labels` guarda o
+// nome em cada idioma publicado ({ "pt": "...", "de": "...", ... }).
+model Industry {
+  id        String @id
+  labels    Json
+  sortOrder Int    @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("industries")
+}
+
 // Preço de uma lista numa moeda. Um registro por moeda oferecida.
 //
 // O preço é FIXO e cadastrado, nunca convertido em runtime.

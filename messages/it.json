@@ -437,16 +437,6 @@
             "VE": "Venezuela",
             "CN": "Cina",
             "JP": "Giappone"
-        },
-        "industries": {
-            "exotic_fruits": "Frutta Esotica",
-            "fmcg": "FMCG",
-            "horeca": "HoReCa & Foodservice",
-            "snacks_bars": "Barrette e Snack",
-            "plant_based_alternatives": "Alternative Vegetali",
-            "toys": "Giocattoli",
-            "baby_toddler_products": "Prodotti per Neonati e Bambini Piccoli",
-            "granular_sulphur": "Zolfo Granulare"
         }
     },
     "listing": {

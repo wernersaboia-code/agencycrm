@@ -25,6 +25,12 @@ export interface MarketplaceListCardData {
     description: string | null
     countries: string[]
     industries: string[]
+    /**
+     * Nomes dos setores no idioma da página, na ordem do cadastro. Resolvidos
+     * no servidor porque o cadastro de setores mora no banco
+     * (ver lib/marketplace/setores.ts).
+     */
+    industryNames: string[]
     language: string | null
     totalLeads: number
     price: number
@@ -115,16 +121,16 @@ export function ListCard({ list }: ListCardProps) {
                     </div>
 
                     {/* Setores */}
-                    {list.industries.length > 0 && (
+                    {list.industryNames.length > 0 && (
                         <div className="flex flex-wrap gap-1 mb-4">
-                            {list.industries.slice(0, 3).map((industry) => (
-                                <Badge key={industry} variant="secondary" className="text-xs">
-                                    {t(`industries.${industry}`)}
+                            {list.industryNames.slice(0, 3).map((nome) => (
+                                <Badge key={nome} variant="secondary" className="text-xs">
+                                    {nome}
                                 </Badge>
                             ))}
-                            {list.industries.length > 3 && (
+                            {list.industryNames.length > 3 && (
                                 <Badge variant="outline" className="text-xs">
-                                    +{list.industries.length - 3}
+                                    +{list.industryNames.length - 3}
                                 </Badge>
                             )}
                         </div>

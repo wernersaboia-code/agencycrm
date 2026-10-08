@@ -437,16 +437,6 @@
             "VE": "Venezuela",
             "CN": "China",
             "JP": "Japão"
-        },
-        "industries": {
-            "exotic_fruits": "Frutas Exóticas",
-            "fmcg": "FMCG",
-            "horeca": "HoReCa & Foodservice",
-            "snacks_bars": "Barras e Snacks",
-            "plant_based_alternatives": "Alternativas Vegetais",
-            "toys": "Brinquedos",
-            "baby_toddler_products": "Produtos para Bebês e Crianças Pequenas",
-            "granular_sulphur": "Enxofre Granulado"
         }
     },
     "listing": {
@@ -631,6 +621,7 @@
             "workspaces": "Empresas/Contas",
             "audit": "Auditoria",
             "leadLists": "Listas de leads",
+            "industries": "Setores",
             "sales": "Vendas",
             "blog": "Blog",
             "support": "Suporte",
@@ -1067,6 +1058,30 @@
             "viewLeads": "Ver leads",
             "edit": "Editar"
         },
+        "industries": {
+            "title": "Setores do catálogo",
+            "subtitle": "A segunda faceta da busca, ao lado do país. O nome aparece no filtro, no card e na página de cada estudo.",
+            "newIndustry": "Novo setor",
+            "slugLabel": "Slug",
+            "slugHelp": "Vai para a URL do filtro e fica gravado nas listas. Minúsculas, números e _. Não muda depois de criado.",
+            "namesLabel": "Nome em cada idioma",
+            "create": "Criar setor",
+            "save": "Salvar",
+            "cancel": "Cancelar",
+            "edit": "Editar nomes",
+            "moveUp": "Subir",
+            "moveDown": "Descer",
+            "delete": "Apagar",
+            "deleteConfirm": "Apagar o setor \"{name}\"?",
+            "usage": "{count, plural, =0 {sem listas} one {# lista} other {# listas}}",
+            "deleteBlocked": "Em uso: tire o setor das listas antes de apagar",
+            "created": "Setor criado.",
+            "saved": "Nomes salvos.",
+            "deleted": "Setor apagado.",
+            "missingFields": "Preencha o slug e o nome nos sete idiomas.",
+            "empty": "Nenhum setor cadastrado.",
+            "genericError": "Não foi possível salvar. Tente de novo."
+        },
         "listDetails": {
             "editTitle": "Editar Lista"
         },
@@ -1343,6 +1358,7 @@
                 "autoFilled": "Auto-preenchido",
                 "industriesLabel": "Setores/Indústrias",
                 "industriesDesc": "Selecione um ou mais setores para esta lista",
+                "industriesManageLink": "Setor que falta? Cadastre em Setores do catálogo.",
                 "priceSection": "Preço",
                 "priceLabelEur": "Preço (EUR) *",
                 "priceLabelBrl": "Preço (BRL) *",

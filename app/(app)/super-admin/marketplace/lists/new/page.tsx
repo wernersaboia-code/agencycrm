@@ -1,13 +1,19 @@
 // app/super-admin/marketplace/lists/new/page.tsx.bak
 import { ListForm } from "@/components/admin/list-form"
 import Link from "next/link"
-import { getAdminTranslations } from "@/lib/i18n/admin-locale"
+import { getAdminLocale, getAdminTranslations } from "@/lib/i18n/admin-locale"
+import { getSetores } from "@/lib/marketplace/setores-servidor"
+import { rotularSetores } from "@/lib/marketplace/setores"
 import { ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 
 export default async function NewListPage() {
-    const t = await getAdminTranslations("admin.newList")
+    const [t, setores, locale] = await Promise.all([
+        getAdminTranslations("admin.newList"),
+        getSetores(),
+        getAdminLocale(),
+    ])
 
     return (
         <div className="space-y-6">
@@ -32,7 +38,7 @@ export default async function NewListPage() {
                 </CardContent>
             </Card>
 
-            <ListForm />
+            <ListForm setores={rotularSetores(setores, locale)} />
         </div>
     )
 }

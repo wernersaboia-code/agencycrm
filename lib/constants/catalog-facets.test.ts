@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest"
-import { INDUSTRY_IDS, secaoOfereceEscolha, visibleFacets } from "./catalog-facets"
+import { secaoOfereceEscolha, visibleFacets } from "./catalog-facets"
 
 describe("visibleFacets", () => {
     it("mostra só as facetas com lista publicada por trás", () => {
@@ -22,36 +22,6 @@ describe("visibleFacets", () => {
 
     it("devolve vazio quando nenhuma faceta tem contagem", () => {
         expect(visibleFacets(["food", "tech"], {}, [])).toEqual([])
-    })
-})
-
-describe("vocabulário controlado", () => {
-    it("não tem id repetido", () => {
-        expect(new Set(INDUSTRY_IDS).size).toBe(INDUSTRY_IDS.length)
-    })
-
-    it("tem rótulo em português para todo id", async () => {
-        const messages = (await import("../../messages/pt.json")).default
-
-        for (const id of INDUSTRY_IDS) {
-            expect(messages.catalog.industries).toHaveProperty(id)
-        }
-    })
-
-    // A busca tem duas dimensões e só duas. Um setor genérico voltando ao
-    // vocabulário (tech, fashion, retail…) é regressão: nenhum estudo usa.
-    // Cada id corresponde ao setor nomeado em um estudo de entrada de mercado.
-    it("só tem os setores que aparecem no título dos estudos", () => {
-        expect([...INDUSTRY_IDS]).toEqual([
-            "exotic_fruits",
-            "fmcg",
-            "horeca",
-            "snacks_bars",
-            "plant_based_alternatives",
-            "toys",
-            "baby_toddler_products",
-            "granular_sulphur",
-        ])
     })
 })
 

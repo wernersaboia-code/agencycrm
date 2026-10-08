@@ -437,16 +437,6 @@
             "VE": "Venezuela",
             "CN": "China",
             "JP": "Japan"
-        },
-        "industries": {
-            "exotic_fruits": "Exotic Fruits",
-            "fmcg": "FMCG",
-            "horeca": "HoReCa & Foodservice",
-            "snacks_bars": "Bars & Snacks",
-            "plant_based_alternatives": "Plant-Based Alternatives",
-            "toys": "Toys",
-            "baby_toddler_products": "Baby & Toddler Products",
-            "granular_sulphur": "Granular Sulphur"
         }
     },
     "listing": {
@@ -631,6 +621,7 @@
             "workspaces": "Companies/Accounts",
             "audit": "Audit",
             "leadLists": "Lead lists",
+            "industries": "Industries",
             "sales": "Sales",
             "blog": "Blog",
             "support": "Support",
@@ -1067,6 +1058,30 @@
             "viewLeads": "View leads",
             "edit": "Edit"
         },
+        "industries": {
+            "title": "Catalog industries",
+            "subtitle": "The second search facet, next to country. The name appears in the filter, on the card and on each study page.",
+            "newIndustry": "New industry",
+            "slugLabel": "Slug",
+            "slugHelp": "Becomes part of the filter URL and is stored on the lists. Lowercase, digits and _. Cannot change after creation.",
+            "namesLabel": "Name in each language",
+            "create": "Create industry",
+            "save": "Save",
+            "cancel": "Cancel",
+            "edit": "Edit names",
+            "moveUp": "Move up",
+            "moveDown": "Move down",
+            "delete": "Delete",
+            "deleteConfirm": "Delete the industry \"{name}\"?",
+            "usage": "{count, plural, =0 {no lists} one {# list} other {# lists}}",
+            "deleteBlocked": "In use: remove the industry from its lists before deleting",
+            "created": "Industry created.",
+            "saved": "Names saved.",
+            "deleted": "Industry deleted.",
+            "missingFields": "Fill in the slug and the name in all seven languages.",
+            "empty": "No industries yet.",
+            "genericError": "Could not save. Please try again."
+        },
         "listDetails": {
             "editTitle": "Edit List"
         },
@@ -1343,6 +1358,7 @@
                 "autoFilled": "Auto-filled",
                 "industriesLabel": "Sectors/Industries",
                 "industriesDesc": "Select one or more sectors for this list",
+                "industriesManageLink": "Industry missing? Add it under Catalog industries.",
                 "priceSection": "Price",
                 "priceLabelEur": "Price (EUR) *",
                 "priceLabelBrl": "Price (BRL) *",

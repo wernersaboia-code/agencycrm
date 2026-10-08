@@ -10,6 +10,8 @@ import { CatalogGrid } from "@/components/marketplace/catalog-grid"
 import { CatalogSearch } from "@/components/marketplace/catalog-search"
 import { CatalogStats } from "@/components/marketplace/catalog-stats"
 import { getMarketplaceLists, getFilterCounts } from "@/actions/marketplace"
+import { getSetores } from "@/lib/marketplace/setores-servidor"
+import { nomesDosSetoresDaLista, rotularSetores } from "@/lib/marketplace/setores"
 import { AlertTriangle, CheckCircle2, Download, ShieldCheck, SlidersHorizontal } from "lucide-react"
 
 // Renderização dinâmica: a página consulta o banco a cada request, com filtros
@@ -41,6 +43,7 @@ type CatalogSearchParams = {
 }
 
 interface CatalogPageProps {
+    params: Promise<{ locale: string }>
     searchParams: Promise<CatalogSearchParams>
 }
 
@@ -56,8 +59,9 @@ function buildPageHref(params: CatalogSearchParams, page: number) {
     return `/catalog?${nextParams.toString()}`
 }
 
-export default async function CatalogPage({ searchParams }: CatalogPageProps) {
+export default async function CatalogPage({ params: routeParams, searchParams }: CatalogPageProps) {
     const t = await getTranslations("catalog")
+    const { locale } = await routeParams
     const params = await searchParams
 
     const countries = params.countries?.split(",").filter(Boolean) || []
@@ -67,13 +71,18 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
     const requestedPage = Number.parseInt(params.page || "1", 10)
     const page = Number.isFinite(requestedPage) && requestedPage > 0 ? requestedPage : 1
 
-    const { lists, total, pages, filterCounts, failed } = await getCatalogData({
+    const { lists: listasDoBanco, total, pages, filterCounts, setores, failed } = await getCatalogData({
         countries,
         industries,
         languages,
         search,
         page,
     })
+    const setoresRotulados = rotularSetores(setores, locale)
+    const lists = listasDoBanco.map((list) => ({
+        ...list,
+        industryNames: nomesDosSetoresDaLista(list.industries, setores, locale),
+    }))
     const visibleCountryTotal = new Set(lists.flatMap((list) => list.countries)).size
     const activeFilterCount =
         countries.length + industries.length + languages.length + (search ? 1 : 0)
@@ -136,6 +145,7 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
                         countryCounts={filterCounts.countryCounts}
                         industryCounts={filterCounts.industryCounts}
                         languageCounts={filterCounts.languageCounts}
+                        setores={setoresRotulados}
                         activeFilterCount={activeFilterCount}
                     />
                 </Suspense>
@@ -244,12 +254,13 @@ async function getCatalogData(params: {
     page: number
 }) {
     try {
-        const [{ lists, total, pages }, filterCounts] = await Promise.all([
+        const [{ lists, total, pages }, filterCounts, setores] = await Promise.all([
             getMarketplaceLists(params),
             getFilterCounts(),
+            getSetores(),
         ])
 
-        return { lists, total, pages, filterCounts, failed: false }
+        return { lists, total, pages, filterCounts, setores, failed: false }
     } catch (error) {
         console.error("Failed to load catalog data", error)
 
@@ -265,6 +276,7 @@ async function getCatalogData(params: {
                 industryCounts: {},
                 languageCounts: {},
             },
+            setores: [],
             failed: true,
         }
     }

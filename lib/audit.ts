@@ -21,6 +21,10 @@ export type AuditAction =
     | "freeSample.deactivated"
     | "freeSample.deleted"
     | "freeSampleDownload.deleted"
+    | "industry.created"
+    | "industry.updated"
+    | "industry.reordered"
+    | "industry.deleted"
 
 export interface AuditInput {
     actorId: string

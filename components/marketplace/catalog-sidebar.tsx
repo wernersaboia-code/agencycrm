@@ -8,11 +8,8 @@ import { useLocale, useTranslations } from "next-intl"
 import { Check, ChevronDown } from "lucide-react"
 import { FlagIcon } from "@/components/ui/flag-icon"
 
-import {
-    INDUSTRY_IDS,
-    secaoOfereceEscolha,
-    visibleFacets,
-} from "@/lib/constants/catalog-facets"
+import { secaoOfereceEscolha, visibleFacets } from "@/lib/constants/catalog-facets"
+import type { SetorRotulado } from "@/lib/marketplace/setores"
 import { excecoesDoIdioma } from "@/lib/i18n/nome-de-pais"
 import { facetasDePais } from "@/lib/marketplace/facetas-de-pais"
 import { LIST_LANGUAGES, LIST_LANGUAGE_CODES } from "@/lib/constants/list-languages"
@@ -24,6 +21,8 @@ interface CatalogSidebarProps {
     countryCounts: Record<string, number>
     industryCounts: Record<string, number>
     languageCounts: Record<string, number>
+    /** Setores cadastrados, já no idioma da página e na ordem do admin. */
+    setores: SetorRotulado[]
     onNavigate?: () => void
     /** Dentro da gaveta mobile o título já vem do SheetHeader. */
     hideHeading?: boolean
@@ -58,6 +57,7 @@ export function CatalogSidebar({
                                    countryCounts,
                                    industryCounts,
                                    languageCounts,
+                                   setores: setoresCadastrados,
                                    onNavigate,
                                    hideHeading = false,
                                }: CatalogSidebarProps) {
@@ -135,9 +135,15 @@ export function CatalogSidebar({
     // sem precisar de commit.
     const paises = facetasDePais(countryCounts, selectedCountries, locale, excecoesDoIdioma(locale))
     // Setor CONTINUA vocabulário curado — "HoReCa", "FMCG" e "snacks_bars" são
-    // linguagem do negócio, não padrão internacional. Só entra no filtro o que
-    // tem estudo por trás (mais o que estiver selecionado).
-    const setores = visibleFacets(INDUSTRY_IDS, industryCounts, selectedIndustries)
+    // linguagem do negócio, não padrão internacional. O cadastro é do admin
+    // (/super-admin/marketplace/industries); só entra no filtro o que tem
+    // estudo por trás (mais o que estiver selecionado).
+    const nomesDeSetor = new Map(setoresCadastrados.map((setor) => [setor.id, setor.nome]))
+    const setores = visibleFacets(
+        setoresCadastrados.map((setor) => setor.id),
+        industryCounts,
+        selectedIndustries
+    )
     const idiomas = visibleFacets(LIST_LANGUAGE_CODES, languageCounts, selectedLanguages)
 
     // Uma faceta sozinha não filtra nada: marcar a única opção devolve o mesmo
@@ -230,7 +236,7 @@ export function CatalogSidebar({
                             const count = industryCounts[industryId] || 0
                             const isDisabled = count === 0
                             const isChecked = selectedIndustries.includes(industryId)
-                            const name = t(`industries.${industryId}`)
+                            const name = nomesDeSetor.get(industryId) ?? industryId
 
                             return (
                                 <label

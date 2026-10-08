@@ -1,5 +1,9 @@
 import { describe, it, expect, vi } from "vitest"
 
+// A home importa a vitrine de estudos, que lê o cadastro de setores por um
+// módulo marcado como server-only; fora do Next ele lança ao ser importado.
+vi.mock("server-only", () => ({}))
+
 vi.mock("next-intl/server", () => ({
     getTranslations: async () => (key: string) =>
         key === "title" ? "Título de teste" : "Descrição de teste",

@@ -22,6 +22,7 @@ import {
     PencilLine,
     ScrollText,
     MonitorCog,
+    Tags,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -72,6 +73,7 @@ export function AdminSidebar() {
             labelKey: "sectionLeadsSales",
             items: [
                 { titleKey: "leadLists", href: "/super-admin/marketplace/lists", icon: Package },
+                { titleKey: "industries", href: "/super-admin/marketplace/industries", icon: Tags },
                 { titleKey: "sales", href: "/super-admin/marketplace/purchases", icon: ShoppingCart },
                 { titleKey: "blog", href: "/super-admin/blog", icon: FileText },
                 { titleKey: "content", href: "/super-admin/content", icon: PencilLine },

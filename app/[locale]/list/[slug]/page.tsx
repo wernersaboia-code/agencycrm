@@ -19,6 +19,8 @@ import { ROBOTS_NAO_ENCONTRADO } from "@/lib/seo/indexability"
 import { getActiveCurrency } from "@/lib/currency/server"
 import { pickPrice } from "@/lib/marketplace/list-prices"
 import { paragrafosDaIntroducao } from "@/lib/marketplace/texto-colado"
+import { getSetores } from "@/lib/marketplace/setores-servidor"
+import { nomesDosSetoresDaLista } from "@/lib/marketplace/setores"
 import type { Currency } from "@/lib/currency"
 import {
     ArrowLeft,
@@ -72,10 +74,10 @@ export async function generateMetadata({ params }: ListPageProps) {
 
 export default async function ListPage({ params }: ListPageProps) {
     const { locale, slug } = await params
-    const [list, t, tCatalog, format] = await Promise.all([
+    const [list, t, setores, format] = await Promise.all([
         getList(slug),
         getTranslations("listing"),
-        getTranslations("catalog"),
+        getSetores(),
         getFormatter(),
     ])
 
@@ -235,7 +237,7 @@ export default async function ListPage({ params }: ListPageProps) {
                             />
                             <DataItem
                                 label={t("fieldIndustries")}
-                                value={list.industries.map((id) => tCatalog(`industries.${id}`)).join(", ")}
+                                value={nomesDosSetoresDaLista(list.industries, setores, locale).join(", ")}
                                 icon={Target}
                                 fallback={t("notInformed")}
                             />

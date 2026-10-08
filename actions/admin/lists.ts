@@ -158,8 +158,27 @@ export async function createList(data: CreateListData): Promise<ActionResult<Ser
     }
 }
 
+/**
+ * Setor fora do cadastro deixaria o estudo com um slug cru no card e sem
+ * faceta que o encontre no catálogo. O formulário só oferece os cadastrados;
+ * isto cobre a chamada direta à action.
+ */
+async function garantirSetoresCadastrados(ids: string[]): Promise<void> {
+    if (ids.length === 0) return
+    const cadastrados = await prisma.industry.findMany({
+        where: { id: { in: ids } },
+        select: { id: true },
+    })
+    const conhecidos = new Set(cadastrados.map((setor) => setor.id))
+    const desconhecidos = ids.filter((id) => !conhecidos.has(id))
+    if (desconhecidos.length > 0) {
+        throw new Error(`Setor não cadastrado: ${desconhecidos.join(", ")}. Cadastre em Setores do catálogo.`)
+    }
+}
+
 async function criarLista(data: CreateListData): Promise<SerializedList> {
     const validated = listDataSchema.parse(data)
+    await garantirSetoresCadastrados(validated.industries)
 
     // O estudo em PDF só é enviado depois que a lista existe (rota de upload
     // precisa do id). Uma lista recém-criada nunca tem studyPdfUrl ainda, então
@@ -210,6 +229,7 @@ export async function updateList(
 
 async function atualizarLista(id: string, data: CreateListData): Promise<SerializedList> {
     const validated = listDataSchema.parse(data)
+    await garantirSetoresCadastrados(validated.industries)
 
     if (validated.isActive) {
         const current = await prisma.leadList.findUnique({
@@ -446,16 +466,19 @@ export async function uploadLeadsToList(listId: string, leads: MarketplaceLeadDa
         where: { listId },
     })
 
-    // Extrair países e setores únicos
+    // Extrair países únicos.
+    //
+    // Setores NÃO saem da planilha: a coluna "Sector" é texto livre
+    // ("Großhandel", "Food retail"…), e gravá-la em `industries` apagava os
+    // setores curados que o admin acabou de marcar no formulário — o estudo
+    // ficava com slugs crus e sumia do filtro do catálogo.
     const uniqueCountries = [...new Set(leads.map((l) => l.country.trim()))]
-    const uniqueSectors = [...new Set(leads.map((l) => l.sector?.trim()).filter(Boolean))] as string[]
 
     const list = await prisma.leadList.update({
         where: { id: listId },
         data: {
             totalLeads: count,
             countries: uniqueCountries,
-            industries: uniqueSectors,
             previewData: await generatePreviewData(listId),
         },
     })

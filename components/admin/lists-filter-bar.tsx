@@ -24,12 +24,14 @@ interface ListsFilterBarProps {
      *  inteiro daria filtro que nunca devolve nada. */
     countries: string[]
     industries: string[]
+    /** Nome de cada setor no idioma do admin (o cadastro mora no banco). */
+    nomesDeSetor: Record<string, string>
     /** Quantas linhas a tabela mostra agora e quantas listas existem. */
     shown: number
     total: number
 }
 
-export function ListsFilterBar({ countries, industries, shown, total }: ListsFilterBarProps) {
+export function ListsFilterBar({ countries, industries, nomesDeSetor, shown, total }: ListsFilterBarProps) {
     const t = useTranslations("admin.lists")
     // Os rótulos das facetas são os mesmos do catálogo público — o painel não
     // tem por que chamar a Alemanha de "DE" se o cliente a vê como "Alemanha".
@@ -47,6 +49,7 @@ export function ListsFilterBar({ countries, industries, shown, total }: ListsFil
      * a página inteira de listas em vez de aparecer como uma opção esquisita.
      */
     const rotulo = (grupo: "countries" | "industries", id: string) => {
+        if (grupo === "industries") return nomesDeSetor[id] ?? id
         const chave = `${grupo}.${id}`
         return tFacetas.has(chave) ? tFacetas(chave) : id
     }

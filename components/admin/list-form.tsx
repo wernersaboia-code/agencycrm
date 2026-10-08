@@ -3,6 +3,7 @@
 
 import { useState, useMemo, type ClipboardEvent as EventoDeColagem } from "react"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 import { useForm, type Resolver } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
@@ -58,7 +59,7 @@ import { createList, updateList, uploadLeadsToList, markListReviewed, gerarResum
 import { MarketplaceImportWizard } from "@/components/admin/marketplace-import-wizard"
 import type { MarketplaceLeadData } from "@/lib/constants/marketplace-csv.constants"
 import { LIST_LANGUAGES } from "@/lib/constants/list-languages"
-import { INDUSTRY_IDS } from "@/lib/constants/catalog-facets"
+import type { SetorRotulado } from "@/lib/marketplace/setores"
 import { paisesInvalidosDoCampo } from "@/lib/i18n/nome-de-pais"
 import { FlagIcon } from "@/components/ui/flag-icon"
 import { canPublishList } from "@/lib/marketplace/list-publishing"
@@ -95,26 +96,28 @@ interface SerializedLeadList {
 
 interface ListFormProps {
     list?: SerializedLeadList
+    /** Setores cadastrados, já no idioma do admin e na ordem do catálogo. */
+    setores: SetorRotulado[]
 }
 
 // ============================================
 // CONSTANTES
 // ============================================
 
-// Vocabulário e rótulos vêm da mesma fonte que o filtro público (ver
-// lib/constants/catalog-facets.ts): setor oferecido aqui e não conhecido lá
-// gerava lista impossível de encontrar no catálogo.
+// Setores vêm da mesma fonte que o filtro público (a tabela `industries`,
+// cadastrada em /super-admin/marketplace/industries): setor oferecido aqui e
+// não conhecido lá gerava lista impossível de encontrar no catálogo.
 
 // ============================================
 // COMPONENTE
 // ============================================
 
-export function ListForm({ list }: ListFormProps) {
+export function ListForm({ list, setores }: ListFormProps) {
     const router = useRouter()
     const t = useTranslations("admin.components.listForm")
     const tc = useTranslations("admin.common")
-    // Rótulos das facetas: os mesmos que o catálogo público mostra.
-    const tFacetas = useTranslations("catalog")
+    // Setor gravado na lista e já apagado do cadastro aparece pelo slug.
+    const nomeDoSetor = (id: string) => setores.find((setor) => setor.id === id)?.nome ?? id
 
     const listSchema = useMemo(() => z.object({
         name: z.string().min(3, t("validationName")),
@@ -499,7 +502,9 @@ export function ListForm({ list }: ListFormProps) {
                     industryId = "fmcg"
                 }
 
-                if (industryId && !mappedIndustries.includes(industryId)) {
+                // Só sugere setor que ainda existe no cadastro.
+                const cadastrado = setores.some((setor) => setor.id === industryId)
+                if (industryId && cadastrado && !mappedIndustries.includes(industryId)) {
                     mappedIndustries.push(industryId)
                 }
             })
@@ -754,7 +759,7 @@ export function ListForm({ list }: ListFormProps) {
                                                 variant="secondary"
                                                 className="gap-1 pr-1"
                                             >
-                                                {tFacetas(`industries.${id}`)}
+                                                {nomeDoSetor(id)}
                                                 <button
                                                     type="button"
                                                     onClick={() => removeIndustry(id)}
@@ -770,22 +775,28 @@ export function ListForm({ list }: ListFormProps) {
 
                             {/* Grid de checkboxes */}
                             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 p-4 border rounded-lg">
-                                {INDUSTRY_IDS.map((industryId) => (
+                                {setores.map((setor) => (
                                     <label
-                                        key={industryId}
+                                        key={setor.id}
                                         className="flex items-center gap-2 cursor-pointer hover:bg-muted/50 p-2 rounded transition-colors"
                                     >
                                         <Checkbox
-                                            checked={selectedIndustries.includes(industryId)}
-                                            onCheckedChange={() => toggleIndustry(industryId)}
+                                            checked={selectedIndustries.includes(setor.id)}
+                                            onCheckedChange={() => toggleIndustry(setor.id)}
                                         />
-                                        <span className="text-sm">{tFacetas(`industries.${industryId}`)}</span>
+                                        <span className="text-sm">{setor.nome}</span>
                                     </label>
                                 ))}
                             </div>
 
                             <p className="text-xs text-muted-foreground">
-                                {t("industriesDesc")}
+                                {t("industriesDesc")}{" "}
+                                <Link
+                                    href="/super-admin/marketplace/industries"
+                                    className="underline underline-offset-2 hover:text-foreground"
+                                >
+                                    {t("industriesManageLink")}
+                                </Link>
                             </p>
                         </div>
                     </CardContent>
