@@ -8,6 +8,10 @@ import type { Locale } from "@/lib/i18n/locales"
 import { editableLocales, editableNamespaces, type EditableLocale } from "@/lib/site-content/config"
 import { SITE_TEXTS_CACHE_TAG } from "@/lib/site-content/published"
 
+// `value` é o texto digitado, não uma coluna: vira draftValue/publishedValue.
+// Espalhar o objeto validado no `create` do upsert mandava `value` ao Prisma,
+// que recusava — toda PRIMEIRA edição de um texto falhava (só a criação; o
+// update não espalhava). O editor nunca gravou nada até 09.10.2026.
 const inputSchema = z.object({
     locale: z.enum(editableLocales),
     key: z.string().regex(/^[a-zA-Z0-9_.-]+$/).max(180),
@@ -64,33 +68,59 @@ export async function getSiteTexts(locale: EditableLocale): Promise<SiteTextFiel
         })
 }
 
-export async function saveSiteTextDraft(input: unknown) {
+/**
+ * Resultado das ações de salvar e publicar. A falha é devolvida, não lançada:
+ * em produção o Next apaga a mensagem de exceção de Server Action, e o editor
+ * só conseguia dizer "não foi possível salvar" — foi assim que o editor ficou
+ * quebrado sem que ninguém soubesse o motivo. `error` é um código que a tela
+ * traduz para o idioma do admin.
+ */
+export type SiteTextResult = { success: true } | { success: false; error: "invalid" | "unexpected" }
+
+export async function saveSiteTextDraft(input: unknown): Promise<SiteTextResult> {
     const admin = await requireAdmin()
     const parsed = inputSchema.safeParse(input)
     if (!parsed.success || !isEditableKey(parsed.data?.key ?? "")) {
-        throw new Error("Texto inválido")
+        return { success: false, error: "invalid" }
     }
 
-    await prisma.siteText.upsert({
-        where: { locale_key: { locale: parsed.data.locale, key: parsed.data.key } },
-        create: { ...parsed.data, draftValue: parsed.data.value, updatedById: admin.id },
-        update: { draftValue: parsed.data.value, updatedById: admin.id },
-    })
+    try {
+        await prisma.siteText.upsert({
+            where: { locale_key: { locale: parsed.data.locale, key: parsed.data.key } },
+            create: { locale: parsed.data.locale, key: parsed.data.key, draftValue: parsed.data.value, updatedById: admin.id },
+            update: { draftValue: parsed.data.value, updatedById: admin.id },
+        })
+    } catch (error) {
+        console.error("[site-content] Falha ao salvar rascunho:", error)
+        return { success: false, error: "unexpected" }
+    }
+    revalidatePath("/super-admin/content")
     return { success: true }
 }
 
-export async function publishSiteText(input: unknown) {
+export async function publishSiteText(input: unknown): Promise<SiteTextResult> {
     const admin = await requireAdmin()
     const parsed = inputSchema.safeParse(input)
     if (!parsed.success || !isEditableKey(parsed.data?.key ?? "")) {
-        throw new Error("Texto inválido")
+        return { success: false, error: "invalid" }
     }
 
-    await prisma.siteText.upsert({
-        where: { locale_key: { locale: parsed.data.locale, key: parsed.data.key } },
-        create: { ...parsed.data, draftValue: parsed.data.value, publishedValue: parsed.data.value, updatedById: admin.id },
-        update: { draftValue: parsed.data.value, publishedValue: parsed.data.value, updatedById: admin.id },
-    })
+    try {
+        await prisma.siteText.upsert({
+            where: { locale_key: { locale: parsed.data.locale, key: parsed.data.key } },
+            create: {
+                locale: parsed.data.locale,
+                key: parsed.data.key,
+                draftValue: parsed.data.value,
+                publishedValue: parsed.data.value,
+                updatedById: admin.id,
+            },
+            update: { draftValue: parsed.data.value, publishedValue: parsed.data.value, updatedById: admin.id },
+        })
+    } catch (error) {
+        console.error("[site-content] Falha ao publicar texto:", error)
+        return { success: false, error: "unexpected" }
+    }
 
     // Server Action: updateTag invalida imediatamente e garante que o próprio
     // administrador já veja o texto novo na visita seguinte.
@@ -99,5 +129,6 @@ export async function publishSiteText(input: unknown) {
     // CDN descartar possíveis páginas pré-renderizadas de todos os idiomas.
     revalidatePath("/", "layout")
     revalidatePath(`/${parsed.data.locale}`, "layout")
+    revalidatePath("/super-admin/content")
     return { success: true }
 }

@@ -1,6 +1,8 @@
 "use client"
 
 import { useMemo, useState, useTransition } from "react"
+import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 import { Check, Search, Send, Save } from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
@@ -10,6 +12,8 @@ import { saveSiteTextDraft, publishSiteText, type SiteTextField } from "@/action
 import type { EditableLocale } from "@/lib/site-content/config"
 
 export function SiteContentEditor({ locale, fields }: { locale: EditableLocale; fields: SiteTextField[] }) {
+    const t = useTranslations("admin.content")
+    const router = useRouter()
     const [query, setQuery] = useState("")
     const [values, setValues] = useState<Record<string, string>>(() =>
         Object.fromEntries(fields.map((field) => [field.key, field.draftValue ?? field.publishedValue ?? field.originalValue]))
@@ -26,16 +30,22 @@ export function SiteContentEditor({ locale, fields }: { locale: EditableLocale; 
     function save(field: SiteTextField, publish: boolean) {
         const value = values[field.key]
         if (!value.trim()) {
-            toast.error("O texto não pode ficar vazio.")
+            toast.error(t("emptyError"))
             return
         }
         startTransition(async () => {
             try {
                 const action = publish ? publishSiteText : saveSiteTextDraft
-                await action({ locale, key: field.key, value })
-                toast.success(publish ? "Texto publicado no site." : "Rascunho salvo.")
+                const result = await action({ locale, key: field.key, value })
+                if (!result.success) {
+                    toast.error(result.error === "invalid" ? t("invalidError") : t("saveError"))
+                    return
+                }
+                toast.success(publish ? t("published") : t("draftSaved"))
+                // Atualiza os selos "Publicado"/"Rascunho" com o que foi gravado.
+                router.refresh()
             } catch {
-                toast.error("Não foi possível salvar o texto.")
+                toast.error(t("saveError"))
             }
         })
     }
@@ -43,26 +53,30 @@ export function SiteContentEditor({ locale, fields }: { locale: EditableLocale; 
     return (
         <div className="space-y-5">
             <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-950 dark:border-amber-900 dark:bg-amber-950/30 dark:text-amber-100">
-                Salvar mantém um rascunho privado. Publicar substitui imediatamente apenas este texto no site público. Layout, imagens e formatação não são alterados.
+                {t("notice")}
             </div>
             <div className="relative max-w-xl">
                 <Search className="pointer-events-none absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input value={query} onChange={(event) => setQuery(event.target.value)} className="pl-9" placeholder="Buscar por página ou texto, ex.: hero, FAQ, privacidade" />
+                <Input value={query} onChange={(event) => setQuery(event.target.value)} className="pl-9" placeholder={t("searchPlaceholder")} />
             </div>
-            <p className="text-sm text-muted-foreground">{visibleFields.length} textos disponíveis para edição neste idioma.</p>
+            <p className="text-sm text-muted-foreground">{t("available", { count: visibleFields.length })}</p>
             <div className="space-y-4">
                 {visibleFields.map((field) => {
-                    const changed = values[field.key] !== field.originalValue
+                    const changed = values[field.key] !== (field.publishedValue ?? field.originalValue)
+                    const hasDraft = field.draftValue !== null && field.draftValue !== field.publishedValue
                     return (
                         <section key={field.key} className="rounded-lg border bg-card p-4 shadow-sm">
                             <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
                                 <code className="text-xs font-medium text-muted-foreground">{field.key}</code>
-                                {field.publishedValue !== null && <span className="inline-flex items-center gap-1 text-xs text-emerald-700"><Check className="h-3.5 w-3.5" />Publicado</span>}
+                                <div className="flex items-center gap-3">
+                                    {hasDraft && <span className="text-xs text-amber-700 dark:text-amber-400">{t("draftBadge")}</span>}
+                                    {field.publishedValue !== null && <span className="inline-flex items-center gap-1 text-xs text-emerald-700"><Check className="h-3.5 w-3.5" />{t("publishedBadge")}</span>}
+                                </div>
                             </div>
                             <Textarea value={values[field.key]} onChange={(event) => setValues((current) => ({ ...current, [field.key]: event.target.value }))} rows={Math.min(8, Math.max(3, Math.ceil(values[field.key].length / 100)))} />
                             <div className="mt-3 flex justify-end gap-2">
-                                <Button variant="outline" size="sm" disabled={pendingKey || !changed} onClick={() => save(field, false)}><Save className="mr-1.5 h-3.5 w-3.5" />Salvar rascunho</Button>
-                                <Button size="sm" disabled={pendingKey || !changed} onClick={() => save(field, true)}><Send className="mr-1.5 h-3.5 w-3.5" />Publicar</Button>
+                                <Button variant="outline" size="sm" disabled={pendingKey || values[field.key] === (field.draftValue ?? field.publishedValue ?? field.originalValue)} onClick={() => save(field, false)}><Save className="mr-1.5 h-3.5 w-3.5" />{t("saveDraft")}</Button>
+                                <Button size="sm" disabled={pendingKey || !changed} onClick={() => save(field, true)}><Send className="mr-1.5 h-3.5 w-3.5" />{t("publish")}</Button>
                             </div>
                         </section>
                     )

@@ -1239,6 +1239,23 @@
             "deleteLabel": "Delete",
             "validationError": "Enter the key and at least one translated name."
         },
+        "content": {
+            "eyebrow": "Content",
+            "title": "Website texts",
+            "subtitle": "Edit the public texts without changing the design or the code.",
+            "notice": "Saving keeps a private draft. Publishing immediately replaces only this text on the public website. Layout, images and formatting are not changed.",
+            "searchPlaceholder": "Search by page or text, e.g. hero, FAQ, privacy",
+            "available": "{count, plural, one {# text} other {# texts}} available for editing in this language.",
+            "saveDraft": "Save draft",
+            "publish": "Publish",
+            "draftSaved": "Draft saved.",
+            "published": "Text published on the website.",
+            "publishedBadge": "Published",
+            "draftBadge": "Unpublished draft",
+            "emptyError": "The text cannot be empty.",
+            "invalidError": "This text cannot be edited here.",
+            "saveError": "The text could not be saved. Please try again in a moment."
+        },
         "error": {
             "title": "Something went wrong",
             "subtitle": "An unexpected error occurred in the administrative panel.",

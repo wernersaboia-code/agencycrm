@@ -1239,6 +1239,23 @@
             "deleteLabel": "Excluir",
             "validationError": "Informe a chave e ao menos um nome traduzido."
         },
+        "content": {
+            "eyebrow": "Conteúdo",
+            "title": "Textos do site",
+            "subtitle": "Edite os textos públicos sem alterar o design ou o código.",
+            "notice": "Salvar mantém um rascunho privado. Publicar substitui imediatamente apenas este texto no site público. Layout, imagens e formatação não são alterados.",
+            "searchPlaceholder": "Buscar por página ou texto, ex.: hero, FAQ, privacidade",
+            "available": "{count, plural, one {# texto disponível} other {# textos disponíveis}} para edição neste idioma.",
+            "saveDraft": "Salvar rascunho",
+            "publish": "Publicar",
+            "draftSaved": "Rascunho salvo.",
+            "published": "Texto publicado no site.",
+            "publishedBadge": "Publicado",
+            "draftBadge": "Rascunho não publicado",
+            "emptyError": "O texto não pode ficar vazio.",
+            "invalidError": "Este texto não pode ser editado por aqui.",
+            "saveError": "Não foi possível salvar o texto. Tente de novo em instantes."
+        },
         "error": {
             "title": "Algo deu errado",
             "subtitle": "Ocorreu um erro inesperado no painel administrativo.",

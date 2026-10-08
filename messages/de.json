@@ -1239,6 +1239,23 @@
             "deleteLabel": "Löschen",
             "validationError": "Geben Sie den Schlüssel und mindestens einen übersetzten Namen an."
         },
+        "content": {
+            "eyebrow": "Inhalte",
+            "title": "Texte der Website",
+            "subtitle": "Bearbeiten Sie die öffentlichen Texte, ohne Design oder Code zu verändern.",
+            "notice": "Speichern legt einen privaten Entwurf an. Veröffentlichen ersetzt sofort nur diesen Text auf der öffentlichen Website. Layout, Bilder und Formatierung bleiben unverändert.",
+            "searchPlaceholder": "Nach Seite oder Text suchen, z. B. hero, FAQ, Datenschutz",
+            "available": "{count, plural, one {# Text} other {# Texte}} in dieser Sprache bearbeitbar.",
+            "saveDraft": "Entwurf speichern",
+            "publish": "Veröffentlichen",
+            "draftSaved": "Entwurf gespeichert.",
+            "published": "Text auf der Website veröffentlicht.",
+            "publishedBadge": "Veröffentlicht",
+            "draftBadge": "Unveröffentlichter Entwurf",
+            "emptyError": "Der Text darf nicht leer sein.",
+            "invalidError": "Dieser Text kann hier nicht bearbeitet werden.",
+            "saveError": "Der Text konnte nicht gespeichert werden. Bitte gleich noch einmal versuchen."
+        },
         "error": {
             "title": "Etwas ist schiefgelaufen",
             "subtitle": "Im Administrations-Dashboard ist ein unerwarteter Fehler aufgetreten.",
