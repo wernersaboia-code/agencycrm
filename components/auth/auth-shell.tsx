@@ -2,6 +2,7 @@ import type { ReactNode } from "react"
 import type { AbstractIntlMessages } from "next-intl"
 import { NextIntlClientProvider } from "next-intl"
 import type { Locale } from "@/lib/i18n/locales"
+import { semTextosDoAdmin } from "@/lib/i18n/sem-textos-do-admin"
 import { AuthBrand } from "./auth-brand"
 import { AuthLocaleSwitcher } from "./auth-locale-switcher"
 
@@ -18,7 +19,7 @@ export function AuthShell({
     children: ReactNode
 }) {
     return (
-        <NextIntlClientProvider locale={locale} messages={messages}>
+        <NextIntlClientProvider locale={locale} messages={semTextosDoAdmin(messages)}>
             <div className="relative w-full">
                 <div className="absolute right-0 top-0">
                     <AuthLocaleSwitcher />

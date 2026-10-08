@@ -7,6 +7,7 @@ import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { hasLocale, NextIntlClientProvider } from "next-intl"
 import { getMessages, getTranslations, setRequestLocale } from "next-intl/server"
+import { semTextosDoAdmin } from "@/lib/i18n/sem-textos-do-admin"
 import { routing } from "@/lib/i18n/routing"
 import { htmlLangFor, dirForLocale, type Locale } from "@/lib/i18n/locales"
 import { robotsForLocale } from "@/lib/seo/indexability"
@@ -139,7 +140,7 @@ export default async function MarketplaceLayout({
                 accept: tCookies("accept"),
             }}
         >
-            <NextIntlClientProvider locale={locale} messages={messages}>
+            <NextIntlClientProvider locale={locale} messages={semTextosDoAdmin(messages)}>
                 <CartProvider>
                     <div className="min-h-screen flex flex-col">
                         <Suspense fallback={<div className="h-16 bg-background border-b" />}>
