@@ -631,6 +631,20 @@
             "catalogTitle": "Élargissez la portée de votre campagne",
             "catalogText": "Découvrez des études sur d'autres marchés et secteurs pour atteindre plus de partenaires commerciaux.",
             "catalogButton": "Voir le catalogue"
+        },
+        "receipt": {
+            "title": "Reçu d'achat",
+            "numberLabel": "Reçu n°",
+            "dateLabel": "Date de paiement",
+            "sellerLabel": "Vendeur",
+            "buyerLabel": "Acheteur",
+            "paymentLabel": "Moyen de paiement",
+            "itemsLabel": "Description",
+            "priceLabel": "Montant",
+            "totalLabel": "Total payé",
+            "notFiscal": "Ce document est un reçu d'achat et ne constitue pas un document fiscal.",
+            "fileName": "recu",
+            "attachmentNote": "Le reçu de cet achat est joint à cet e-mail au format PDF."
         }
     }
 }

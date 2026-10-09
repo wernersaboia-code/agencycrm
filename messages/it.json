@@ -631,6 +631,20 @@
             "catalogTitle": "Ampli la portata della sua campagna",
             "catalogText": "Esplori studi di altri mercati e settori per raggiungere più partner commerciali.",
             "catalogButton": "Vedi il catalogo"
+        },
+        "receipt": {
+            "title": "Ricevuta di acquisto",
+            "numberLabel": "Ricevuta n.",
+            "dateLabel": "Data del pagamento",
+            "sellerLabel": "Venditore",
+            "buyerLabel": "Acquirente",
+            "paymentLabel": "Metodo di pagamento",
+            "itemsLabel": "Descrizione",
+            "priceLabel": "Importo",
+            "totalLabel": "Totale pagato",
+            "notFiscal": "Questo documento è una ricevuta di acquisto e non costituisce documento fiscale.",
+            "fileName": "ricevuta",
+            "attachmentNote": "La ricevuta di questo acquisto è allegata a questa e-mail in PDF."
         }
     }
 }

@@ -1687,6 +1687,20 @@
             "catalogTitle": "Amplie o alcance da sua campanha",
             "catalogText": "Explore estudos de outros mercados e setores para alcançar mais parceiros comerciais.",
             "catalogButton": "Ver catálogo"
+        },
+        "receipt": {
+            "title": "Comprovante de compra",
+            "numberLabel": "Comprovante nº",
+            "dateLabel": "Data do pagamento",
+            "sellerLabel": "Vendedor",
+            "buyerLabel": "Comprador",
+            "paymentLabel": "Forma de pagamento",
+            "itemsLabel": "Descrição",
+            "priceLabel": "Valor",
+            "totalLabel": "Total pago",
+            "notFiscal": "Este documento é um comprovante de compra e não constitui documento fiscal.",
+            "fileName": "comprovante",
+            "attachmentNote": "O comprovante desta compra está anexado a este e-mail, em PDF."
         }
     }
 }

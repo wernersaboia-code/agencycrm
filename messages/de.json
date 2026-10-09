@@ -1687,6 +1687,20 @@
             "catalogTitle": "Erweitern Sie die Reichweite Ihrer Kampagne",
             "catalogText": "Entdecken Sie Studien zu weiteren Märkten und Branchen, um mehr Handelspartner zu erreichen.",
             "catalogButton": "Katalog ansehen"
+        },
+        "receipt": {
+            "title": "Kaufbeleg",
+            "numberLabel": "Beleg-Nr.",
+            "dateLabel": "Zahlungsdatum",
+            "sellerLabel": "Verkäufer",
+            "buyerLabel": "Käufer",
+            "paymentLabel": "Zahlungsart",
+            "itemsLabel": "Beschreibung",
+            "priceLabel": "Betrag",
+            "totalLabel": "Gezahlter Gesamtbetrag",
+            "notFiscal": "Dieses Dokument ist ein Kaufbeleg und keine Rechnung im steuerlichen Sinne.",
+            "fileName": "kaufbeleg",
+            "attachmentNote": "Der Beleg zu diesem Kauf ist dieser E-Mail als PDF beigefügt."
         }
     }
 }

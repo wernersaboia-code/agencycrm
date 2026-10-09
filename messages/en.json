@@ -1687,6 +1687,20 @@
             "catalogTitle": "Widen your campaign's reach",
             "catalogText": "Browse studies for other markets and sectors to reach more trading partners.",
             "catalogButton": "Browse the catalogue"
+        },
+        "receipt": {
+            "title": "Purchase receipt",
+            "numberLabel": "Receipt no.",
+            "dateLabel": "Payment date",
+            "sellerLabel": "Seller",
+            "buyerLabel": "Buyer",
+            "paymentLabel": "Payment method",
+            "itemsLabel": "Description",
+            "priceLabel": "Amount",
+            "totalLabel": "Total paid",
+            "notFiscal": "This document is a purchase receipt and is not a tax document.",
+            "fileName": "receipt",
+            "attachmentNote": "The receipt for this purchase is attached to this e-mail as a PDF."
         }
     }
 }

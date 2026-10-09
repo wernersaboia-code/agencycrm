@@ -631,6 +631,20 @@
             "catalogTitle": "Vergroot het bereik van uw campagne",
             "catalogText": "Ontdek studies voor andere markten en sectoren om meer handelspartners te bereiken.",
             "catalogButton": "Bekijk de catalogus"
+        },
+        "receipt": {
+            "title": "Aankoopbewijs",
+            "numberLabel": "Bewijs nr.",
+            "dateLabel": "Betaaldatum",
+            "sellerLabel": "Verkoper",
+            "buyerLabel": "Koper",
+            "paymentLabel": "Betaalwijze",
+            "itemsLabel": "Omschrijving",
+            "priceLabel": "Bedrag",
+            "totalLabel": "Totaal betaald",
+            "notFiscal": "Dit document is een aankoopbewijs en geen fiscaal document.",
+            "fileName": "aankoopbewijs",
+            "attachmentNote": "Het bewijs van deze aankoop is als pdf bij deze e-mail gevoegd."
         }
     }
 }
