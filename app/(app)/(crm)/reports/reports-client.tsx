@@ -234,7 +234,7 @@ export function ReportsClient({ workspace, campaigns, stats }: ReportsClientProp
 
     const handleReadinessAction = (item: (typeof readinessItems)[number]) => {
         if (item.href) {
-            window.location.href = item.href
+            window.location.assign(item.href)
             return
         }
 

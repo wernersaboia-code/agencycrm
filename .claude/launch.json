@@ -13,6 +13,13 @@
       "runtimeArgs": ["/c", "set PATH=C:\\Program Files\\nodejs;%PATH% && npx next dev --turbopack"],
       "port": 3010,
       "autoPort": true
+    },
+    {
+      "name": "prod-autoport",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": ["/c", "set PATH=C:\\Program Files\\nodejs;%PATH% && npx next start"],
+      "port": 3020,
+      "autoPort": true
     }
   ]
 }
