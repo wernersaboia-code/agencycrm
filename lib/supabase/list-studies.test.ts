@@ -1,5 +1,32 @@
 import { describe, it, expect } from "vitest"
-import { validatePdfFile, extractStudyPathFromUrl, LIST_STUDIES_BUCKET } from "./list-studies"
+import {
+    validatePdfFile,
+    extractStudyPathFromUrl,
+    nomeArquivoDoEstudo,
+    LIST_STUDIES_BUCKET,
+} from "./list-studies"
+
+describe("nomeArquivoDoEstudo", () => {
+    it("troca espaços por sublinhado", () => {
+        expect(nomeArquivoDoEstudo("Baby and Toddler Products Belgium")).toBe(
+            "Baby_and_Toddler_Products_Belgium.pdf"
+        )
+    })
+
+    it("tira acento e pontuação que sistema de arquivos estranha", () => {
+        expect(nomeArquivoDoEstudo("Enxofre: Áustria / Österreich — 2026?")).toBe(
+            "Enxofre_Austria_Osterreich_2026.pdf"
+        )
+    })
+
+    it("não deixa nome vazio", () => {
+        expect(nomeArquivoDoEstudo("  ★★ ")).toBe("study.pdf")
+    })
+
+    it("corta nome longo demais", () => {
+        expect(nomeArquivoDoEstudo("a".repeat(300)).length).toBe(124)
+    })
+})
 
 describe("validatePdfFile", () => {
     it("aceita PDF dentro do limite", () => {

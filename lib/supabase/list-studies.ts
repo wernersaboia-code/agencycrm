@@ -57,14 +57,40 @@ export async function removeListPdfByPath(path: string): Promise<void> {
     await supabase.storage.from(LIST_STUDIES_BUCKET).remove([extractStudyPathFromUrl(path)])
 }
 
+/**
+ * Nome com que o comprador recebe o PDF do estudo.
+ *
+ * A chave do storage ("study-1760000000000.pdf") não diz nada na pasta de
+ * downloads de ninguém. O nome sai do nome do estudo, sem acento e sem nada
+ * que um sistema de arquivos ou um cabeçalho Content-Disposition estranhe:
+ * "Baby & Toddler Products — Belgium" vira "Baby_Toddler_Products_Belgium.pdf".
+ */
+export function nomeArquivoDoEstudo(nomeDoEstudo: string): string {
+    const base = nomeDoEstudo
+        .normalize("NFD")
+        .replace(/[̀-ͯ]/g, "")
+        .replace(/[^A-Za-z0-9-]+/g, "_")
+        .replace(/^[_-]+|[_-]+$/g, "")
+        .slice(0, 120)
+        .replace(/[_-]+$/, "")
+    return `${base || "study"}.pdf`
+}
+
 export async function createStudySignedUrl(
     path: string,
-    expiresInSeconds = 120
+    expiresInSeconds = 120,
+    nomeArquivo?: string
 ): Promise<string> {
     const supabase = createAdminClient()
+    // `download` faz o Supabase responder com Content-Disposition: attachment
+    // e esse nome; sem ele o navegador usa o último trecho da chave.
     const { data, error } = await supabase.storage
         .from(LIST_STUDIES_BUCKET)
-        .createSignedUrl(extractStudyPathFromUrl(path), expiresInSeconds)
+        .createSignedUrl(
+            extractStudyPathFromUrl(path),
+            expiresInSeconds,
+            nomeArquivo ? { download: nomeArquivo } : undefined
+        )
 
     if (error || !data) throw new Error(`Falha ao gerar link do PDF: ${error?.message}`)
     return data.signedUrl

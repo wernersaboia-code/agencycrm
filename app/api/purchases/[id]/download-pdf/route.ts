@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { getAuthenticatedUserId } from "@/lib/auth"
-import { createStudySignedUrl } from "@/lib/supabase/list-studies"
+import { createStudySignedUrl, nomeArquivoDoEstudo } from "@/lib/supabase/list-studies"
 
 export async function GET(
     request: NextRequest,
@@ -17,7 +17,7 @@ export async function GET(
 
         const item = await prisma.purchaseItem.findFirst({
             where: { id, purchase: { userId, status: "paid" } },
-            include: { list: { select: { studyPdfUrl: true } } },
+            include: { list: { select: { name: true, studyPdfUrl: true } } },
         })
 
         if (!item) {
@@ -32,7 +32,11 @@ export async function GET(
             data: { downloadCount: { increment: 1 }, downloadedAt: new Date() },
         })
 
-        const signedUrl = await createStudySignedUrl(item.list.studyPdfUrl)
+        const signedUrl = await createStudySignedUrl(
+            item.list.studyPdfUrl,
+            undefined,
+            nomeArquivoDoEstudo(item.list.name)
+        )
         return NextResponse.redirect(signedUrl)
     } catch (error) {
         console.error("Error downloading study PDF:", error)

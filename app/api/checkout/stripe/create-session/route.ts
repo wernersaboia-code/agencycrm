@@ -114,10 +114,10 @@ export async function POST(request: NextRequest) {
                     // Stripe quer a moeda em minúsculas e o valor em centavos.
                     currency: currency.toLowerCase(),
                     unit_amount: toStripeAmount(item.price),
-                    product_data: {
-                        name: item.name,
-                        description: `${item.leadsCount.toLocaleString()} leads`,
-                    },
+                    // Sem descrição: a loja vende estudos, e a antiga
+                    // "N leads" aparecia como "0 leads" na tela do Stripe. O
+                    // nome do estudo já diz o que é, como no Mercado Pago.
+                    product_data: { name: item.name },
                 },
             })),
             customer_email: user.email,

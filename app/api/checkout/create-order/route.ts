@@ -121,7 +121,6 @@ export async function POST(request: NextRequest) {
                     },
                     items: purchaseItems.map((item) => ({
                         name: item.name,
-                        description: `${item.leadsCount.toLocaleString()} leads`,
                         unitAmount: {
                             currencyCode: currency,
                             value: item.price.toFixed(2),
