@@ -101,6 +101,18 @@ describe("montarLinhas", () => {
         expect(montarLinhas([pagina1, pagina2]).map((l) => l.espacoAcima)).toEqual([0, 14, 0])
     })
 
+    it("troca o marcador da fonte Symbol (U+F0B7) pelo marcador comum", () => {
+        // horeca-foodservice-market-serbia: o Word grava o marcador de lista
+        // nesse código de uso privado, e sem a troca os itens grudavam num
+        // parágrafo só.
+        const itens: ItemDeTexto[] = [
+            { texto: "", altura: CORPO, y: 700 },
+            { texto: " Market size: Revenue of restaurants.", altura: CORPO, y: 700 },
+        ]
+
+        expect(montarLinhas([itens])[0].texto).toBe("• Market size: Revenue of restaurants.")
+    })
+
     it("ignora itens em branco e ordena de cima para baixo", () => {
         const itens: ItemDeTexto[] = [
             { texto: "   ", altura: CORPO, y: 700 },

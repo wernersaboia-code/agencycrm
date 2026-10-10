@@ -16,6 +16,15 @@ describe("normalizarTextoColado", () => {
         expect(normalizarTextoColado("   \n\n  ")).toBe("")
     })
 
+    it("trata o marcador da fonte Symbol (U+F0B7) como item de lista", () => {
+        // horeca-foodservice-market-serbia, colado do PDF.
+        const colado = "Key findings:\n\n Market size: EUR 3.7\nbillion.\n Growth catalyst: Expo 2027."
+
+        expect(normalizarTextoColado(colado)).toBe(
+            "Key findings:\n\n• Market size: EUR 3.7 billion.\n\n• Growth catalyst: Expo 2027."
+        )
+    })
+
     it("não mexe em texto já escrito em parágrafos", () => {
         const limpo =
             "Germany is the largest consumer market in the European Union: around 84 million inhabitants.\n\n" +

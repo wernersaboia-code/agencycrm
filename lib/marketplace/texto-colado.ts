@@ -104,6 +104,9 @@ export function normalizarTextoColado(texto: string | null | undefined): string 
         .replace(/[\u2028\u2029]/g, "\n")
         // Invisíveis da extração de PDF: hífen condicional e largura zero.
         .replace(/[\u00ad\u200b-\u200d\ufeff]/g, "")
+        // Marcador de lista da fonte Symbol (uso privado, como o Word o grava):
+        // vira o marcador comum para abrir item como os outros.
+        .replace(/\uf0b7/g, "\u2022")
         // Espaço "duro", espaço de tabulação e afins voltam a ser espaço comum.
         .replace(/[\t\u00a0\u2007\u202f]/g, " ")
         .replace(/ {2,}/g, " ")

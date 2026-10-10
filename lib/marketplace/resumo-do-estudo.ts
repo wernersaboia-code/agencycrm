@@ -135,7 +135,9 @@ function costurar(partes: readonly string[]): string {
         texto += cola ? parte : ` ${parte}`
     }
 
-    return texto.replace(/\s+/g, " ").trim()
+    // U+F0B7 é o marcador de lista da fonte Symbol, como o Word o grava no PDF.
+    // Sem a troca ele não é reconhecido como item e a lista vira um parágrafo só.
+    return texto.replace(//g, "•").replace(/\s+/g, " ").trim()
 }
 
 /**
