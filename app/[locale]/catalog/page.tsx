@@ -9,6 +9,7 @@ import { CatalogFiltersPanel } from "@/components/marketplace/catalog-filters-pa
 import { CatalogGrid } from "@/components/marketplace/catalog-grid"
 import { CatalogSearch } from "@/components/marketplace/catalog-search"
 import { CatalogStats } from "@/components/marketplace/catalog-stats"
+import { FreeStudyOffer } from "@/components/marketplace/free-study-offer"
 import { getMarketplaceLists, getFilterCounts } from "@/actions/marketplace"
 import { getSetores } from "@/lib/marketplace/setores-servidor"
 import { nomesDosSetoresDaLista, rotularSetores } from "@/lib/marketplace/setores"
@@ -133,6 +134,8 @@ export default async function CatalogPage({ params: routeParams, searchParams }:
                             description={t("trustDownloadDesc")}
                         />
                     </div>
+
+                    <FreeStudyOffer className="mt-4" />
                 </div>
             </section>
 

@@ -646,5 +646,20 @@
             "fileName": "recu",
             "attachmentNote": "Le reçu de cet achat est joint à cet e-mail au format PDF."
         }
+    },
+    "freeStudy": {
+        "bannerTitle": "Découvrez une étude complète, gratuitement",
+        "bannerText": "Créez votre compte et téléchargez gratuitement une étude complète d'entrée sur le marché, pour vérifier le format et la profondeur avant d'acheter.",
+        "bannerCta": "Créer un compte gratuit",
+        "bannerTextLoggedIn": "Votre étude gratuite vous attend dans Mes achats.",
+        "bannerCtaLoggedIn": "Aller à Mes achats",
+        "cardBadge": "Gratuit",
+        "cardTitle": "Votre étude gratuite",
+        "cardText": "Une étude complète d'entrée sur le marché, comme celles du catalogue. Vérifiez le format, la profondeur et le type d'informations que vous recevez avant de choisir votre marché.",
+        "cardCta": "Télécharger l'étude gratuite",
+        "signUpPerk": "En créant votre compte, vous téléchargez gratuitement une étude complète d'entrée sur le marché.",
+        "signUpPerkAfter": "Une fois votre e-mail confirmé, votre étude gratuite sera dans Mes achats.",
+        "homeSignUpText": "Vous préférez tout garder dans un compte ? Créez le vôtre et l'étude reste dans Mes achats.",
+        "homeSignUpCta": "Créer un compte"
     }
 }

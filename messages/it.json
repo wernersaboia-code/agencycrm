@@ -646,5 +646,20 @@
             "fileName": "ricevuta",
             "attachmentNote": "La ricevuta di questo acquisto è allegata a questa e-mail in PDF."
         }
+    },
+    "freeStudy": {
+        "bannerTitle": "Scopri uno studio completo, gratis",
+        "bannerText": "Crea il tuo account e scarica gratuitamente uno studio completo di ingresso nel mercato, per verificarne formato e profondità prima di acquistare.",
+        "bannerCta": "Crea un account gratuito",
+        "bannerTextLoggedIn": "Il tuo studio gratuito ti aspetta in I miei acquisti.",
+        "bannerCtaLoggedIn": "Vai a I miei acquisti",
+        "cardBadge": "Gratis",
+        "cardTitle": "Il tuo studio gratuito",
+        "cardText": "Uno studio completo di ingresso nel mercato, come quelli del catalogo. Verifica formato, profondità e tipo di informazioni che ricevi prima di scegliere il tuo mercato.",
+        "cardCta": "Scarica lo studio gratuito",
+        "signUpPerk": "Creando il tuo account, scarichi gratuitamente uno studio completo di ingresso nel mercato.",
+        "signUpPerkAfter": "Dopo aver confermato l'e-mail, il tuo studio gratuito sarà in I miei acquisti.",
+        "homeSignUpText": "Preferisci tenere tutto in un account? Crealo e lo studio resta in I miei acquisti.",
+        "homeSignUpCta": "Crea account"
     }
 }

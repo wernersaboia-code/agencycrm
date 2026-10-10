@@ -646,5 +646,20 @@
             "fileName": "aankoopbewijs",
             "attachmentNote": "Het bewijs van deze aankoop is als pdf bij deze e-mail gevoegd."
         }
+    },
+    "freeStudy": {
+        "bannerTitle": "Bekijk een volledige studie, gratis",
+        "bannerText": "Maak uw account aan en download kosteloos een volledige markttoetredingsstudie, zodat u opzet en diepgang kunt beoordelen voordat u koopt.",
+        "bannerCta": "Gratis account aanmaken",
+        "bannerTextLoggedIn": "Uw gratis studie staat voor u klaar onder Mijn aankopen.",
+        "bannerCtaLoggedIn": "Naar Mijn aankopen",
+        "cardBadge": "Gratis",
+        "cardTitle": "Uw gratis studie",
+        "cardText": "Een volledige markttoetredingsstudie, net als die in de catalogus. Beoordeel de opzet, de diepgang en het soort informatie dat u krijgt voordat u uw markt kiest.",
+        "cardCta": "Gratis studie downloaden",
+        "signUpPerk": "Met uw account downloadt u gratis een volledige markttoetredingsstudie.",
+        "signUpPerkAfter": "Zodra u uw e-mailadres hebt bevestigd, staat uw gratis studie onder Mijn aankopen.",
+        "homeSignUpText": "Liever alles in één account? Maak het aan en de studie blijft onder Mijn aankopen staan.",
+        "homeSignUpCta": "Account aanmaken"
     }
 }

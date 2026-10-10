@@ -20,6 +20,8 @@ import type { UserPurchase } from "@/actions/checkout"
 import { PublicPurchaseCard } from "@/components/marketplace/public-purchase-card"
 import { vendedorEstaConfigurado } from "@/lib/checkout/vendedor"
 import { MyPurchasesEmptyState } from "@/components/marketplace/my-purchases-empty-state"
+import { FreeStudyCard } from "@/components/marketplace/free-study-card"
+import { getAmostraAtiva } from "@/lib/free-sample/amostra-ativa"
 import { validatePurchaseAccessToken } from "@/lib/auth/magic-link"
 import { getAuthenticatedUserId } from "@/lib/auth"
 import { formatCurrency } from "@/lib/utils"
@@ -87,17 +89,21 @@ async function PurchasesContent({ searchParams }: PageProps) {
         redirect(`/sign-in?redirect=/my-purchases&lang=${locale}`)
     }
 
-    const purchases = await getUserPurchases()
+    const [purchases, amostra] = await Promise.all([getUserPurchases(), getAmostraAtiva()])
 
-    return <PurchasesDashboard purchases={purchases} />
+    return <PurchasesDashboard purchases={purchases} estudoGratuito={amostra !== null} />
 }
 
 async function PurchasesDashboard({
     purchases,
     tokenNotice,
+    estudoGratuito = false,
 }: {
     purchases: UserPurchase[]
     tokenNotice?: string
+    // Só com sessão: o acesso por link de e-mail (token) não tem conta para a
+    // rota do estudo gratuito reconhecer.
+    estudoGratuito?: boolean
 }) {
     const stats = getPurchaseStats(purchases)
     const t = await getTranslations("purchases")
@@ -175,6 +181,8 @@ async function PurchasesDashboard({
             </section>
 
             <div className="container mx-auto px-4 py-8">
+                {estudoGratuito && <FreeStudyCard />}
+
                 {purchases.length === 0 ? (
                     <MyPurchasesEmptyState />
                 ) : (

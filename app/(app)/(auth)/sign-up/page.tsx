@@ -5,6 +5,7 @@ import { AuthShell } from "@/components/auth/auth-shell"
 import { SignUpForm } from "@/components/auth/sign-up-form"
 import { resolveAuthLocale } from "@/lib/i18n/auth-locale"
 import { loadMessages } from "@/lib/i18n/load-messages"
+import { getAmostraAtiva } from "@/lib/free-sample/amostra-ativa"
 
 export default async function SignUpPage({
     searchParams,
@@ -13,7 +14,7 @@ export default async function SignUpPage({
 }) {
     const { lang } = await searchParams
     const locale = resolveAuthLocale(lang)
-    const messages = await loadMessages(locale)
+    const [messages, amostra] = await Promise.all([loadMessages(locale), getAmostraAtiva()])
 
     return (
         <AuthShell locale={locale} messages={messages}>
@@ -24,7 +25,7 @@ export default async function SignUpPage({
                     </div>
                 }
             >
-                <SignUpForm />
+                <SignUpForm estudoGratuito={amostra !== null} />
             </Suspense>
         </AuthShell>
     )

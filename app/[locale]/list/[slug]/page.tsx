@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma"
 import { ListPreview, toRows } from "@/components/marketplace/list-preview"
 import { BuyNowButton } from "@/components/marketplace/buy-now-button"
 import { AddToCartButton } from "@/components/marketplace/add-to-cart-button"
+import { FreeStudyOffer } from "@/components/marketplace/free-study-offer"
 import { formatCurrency } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { getListLanguage } from "@/lib/constants/list-languages"
@@ -173,7 +174,7 @@ export default async function ListPage({ params }: ListPageProps) {
                         {t("back")}
                     </Link>
 
-                    <div className="grid gap-6 lg:grid-cols-[1fr_360px] lg:items-start">
+                    <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_360px] lg:items-start">
                         <div>
                             <div className="mb-3 flex flex-wrap items-center gap-2">
                                 {list.isFeatured && (
@@ -219,7 +220,9 @@ export default async function ListPage({ params }: ListPageProps) {
                 </div>
             </div>
 
-            <div className="container mx-auto grid gap-6 px-4 py-6 lg:grid-cols-[1fr_360px] lg:items-start">
+            {/* grid-cols-1 é minmax(0, 1fr): sem ele a coluna implícita do celular
+                cresce até o texto `truncate` mais longo e a página rola de lado. */}
+            <div className="container mx-auto grid grid-cols-1 gap-6 px-4 pb-28 pt-6 lg:grid-cols-[1fr_360px] lg:items-start lg:pb-6">
                 <div className="space-y-6">
                     <section className="rounded-lg border bg-card p-6">
                         <div className="mb-5 flex items-center justify-between gap-4">
@@ -228,7 +231,7 @@ export default async function ListPage({ params }: ListPageProps) {
                                 <p className="text-sm text-muted-foreground">{t("coverageSubtitle")}</p>
                             </div>
                         </div>
-                        <div className="grid gap-4 sm:grid-cols-2">
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <DataItem label={t("fieldName")} value={list.name} icon={Building2} fallback={t("notInformed")} />
                             <DataItem label={t("fieldCountries")} value={list.countries.join(", ")} icon={Globe} fallback={t("notInformed")} />
                             <DataItem
@@ -300,7 +303,25 @@ export default async function ListPage({ params }: ListPageProps) {
                             <BenefitItem icon={CheckCircle} text={t("benefitRecorded")} />
                         </div>
                     </div>
+
+                    {/* Quem ainda hesita em pagar ganha uma saída que não é
+                        ir embora: ver um estudo inteiro antes. */}
+                    <FreeStudyOffer className="mt-4" layout="stack" />
                 </aside>
+            </div>
+
+            {/* No celular o card de compra fica depois de todo o conteúdo, a
+                quatro ou cinco telas do topo: a barra mantém preço e "Comprar"
+                sempre à mão. O pb-28 da grade acima reserva o espaço dela. */}
+            <div className="fixed inset-x-0 bottom-0 z-40 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 lg:hidden">
+                <div className="container mx-auto flex items-center gap-4 px-4 py-3">
+                    <div className="shrink-0 text-xl font-bold text-brand">
+                        {formatCurrency(price, resolved.currency, locale)}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                        <BuyNowButton list={listForCart} />
+                    </div>
+                </div>
             </div>
         </div>
     )

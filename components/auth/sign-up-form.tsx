@@ -4,7 +4,7 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { toast } from "sonner"
-import { Loader2, ShoppingBag, CheckCircle, Mail } from "lucide-react"
+import { Loader2, ShoppingBag, CheckCircle, Mail, Gift } from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
 
 import { Button } from "@/components/ui/button"
@@ -31,9 +31,15 @@ const MENSAGEM_DE_SENHA: Record<PasswordProblem, string> = {
     semNumero: "signUp.pwdNoDigit",
 }
 
-export function SignUpForm() {
+export function SignUpForm({
+    // Decidido no servidor: só promete o estudo se houver amostra ativa.
+    estudoGratuito = false,
+}: {
+    estudoGratuito?: boolean
+}) {
     const router = useRouter()
     const t = useTranslations("auth")
+    const tGratis = useTranslations("freeStudy")
     const locale = useLocale() as Locale
     const [isLoading, setIsLoading] = useState(false)
     const [name, setName] = useState("")
@@ -116,6 +122,13 @@ export function SignUpForm() {
                             <li>{t("signUp.step3")}</li>
                         </ol>
                     </div>
+
+                    {estudoGratuito && (
+                        <p className="flex items-start gap-2 rounded-lg border border-brand-accent/40 bg-brand-accent/10 p-3 text-sm text-foreground">
+                            <Gift className="mt-0.5 h-4 w-4 shrink-0 text-brand-accent-strong" aria-hidden="true" />
+                            {tGratis("signUpPerkAfter")}
+                        </p>
+                    )}
                 </CardContent>
 
                 <CardFooter className="flex flex-col space-y-4">
@@ -145,6 +158,12 @@ export function SignUpForm() {
             </CardHeader>
             <form onSubmit={handleSubmit}>
                 <CardContent className="space-y-4">
+                    {estudoGratuito && (
+                        <p className="flex items-start gap-2 rounded-lg border border-brand-accent/40 bg-brand-accent/10 p-3 text-sm font-medium text-foreground">
+                            <Gift className="mt-0.5 h-4 w-4 shrink-0 text-brand-accent-strong" aria-hidden="true" />
+                            {tGratis("signUpPerk")}
+                        </p>
+                    )}
                     <div className="space-y-2">
                         <Label htmlFor="name">{t("signUp.nameLabel")}</Label>
                         <Input

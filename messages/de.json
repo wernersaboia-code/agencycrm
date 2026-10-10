@@ -1702,5 +1702,20 @@
             "fileName": "kaufbeleg",
             "attachmentNote": "Der Beleg zu diesem Kauf ist dieser E-Mail als PDF beigefügt."
         }
+    },
+    "freeStudy": {
+        "bannerTitle": "Eine vollständige Studie, kostenlos",
+        "bannerText": "Legen Sie Ihr Konto an und laden Sie kostenlos eine vollständige Markteintrittsstudie herunter – so prüfen Sie Aufbau und Tiefe, bevor Sie kaufen.",
+        "bannerCta": "Kostenloses Konto anlegen",
+        "bannerTextLoggedIn": "Ihre kostenlose Studie wartet unter Meine Käufe auf Sie.",
+        "bannerCtaLoggedIn": "Zu Meine Käufe",
+        "cardBadge": "Kostenlos",
+        "cardTitle": "Ihre kostenlose Studie",
+        "cardText": "Eine vollständige Markteintrittsstudie, wie die im Katalog. Prüfen Sie Aufbau, Tiefe und die Art der Informationen, bevor Sie Ihren Markt wählen.",
+        "cardCta": "Kostenlose Studie herunterladen",
+        "signUpPerk": "Mit Ihrem Konto laden Sie kostenlos eine vollständige Markteintrittsstudie herunter.",
+        "signUpPerkAfter": "Sobald Sie Ihre E-Mail-Adresse bestätigt haben, finden Sie die kostenlose Studie unter Meine Käufe.",
+        "homeSignUpText": "Lieber alles in einem Konto? Legen Sie es an, und die Studie bleibt unter Meine Käufe gespeichert.",
+        "homeSignUpCta": "Konto anlegen"
     }
 }

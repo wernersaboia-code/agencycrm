@@ -1702,5 +1702,20 @@
             "fileName": "receipt",
             "attachmentNote": "The receipt for this purchase is attached to this e-mail as a PDF."
         }
+    },
+    "freeStudy": {
+        "bannerTitle": "See a complete study, free of charge",
+        "bannerText": "Create your account and download a complete market entry study at no cost, to check the format and depth before you buy.",
+        "bannerCta": "Create a free account",
+        "bannerTextLoggedIn": "Your free study is waiting for you in My purchases.",
+        "bannerCtaLoggedIn": "Go to My purchases",
+        "cardBadge": "Free",
+        "cardTitle": "Your free study",
+        "cardText": "A complete market entry study, just like the ones in the catalog. Check the format, the depth and the kind of information you receive before choosing your market.",
+        "cardCta": "Download free study",
+        "signUpPerk": "When you create your account, you can download a complete market entry study for free.",
+        "signUpPerkAfter": "Once you confirm your email, your free study will be in My purchases.",
+        "homeSignUpText": "Prefer to keep everything in one account? Create yours and the study stays in My purchases.",
+        "homeSignUpCta": "Create account"
     }
 }

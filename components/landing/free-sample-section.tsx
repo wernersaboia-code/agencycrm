@@ -1,4 +1,6 @@
 // components/landing/free-sample-section.tsx
+// eslint-disable-next-line no-restricted-imports -- usado só para /sign-up, fora do segmento de locale
+import NextLink from "next/link"
 import { getTranslations } from "next-intl/server"
 import { FileDown } from "lucide-react"
 import { Section, SectionHeading } from "./section"
@@ -19,6 +21,7 @@ export async function FreeSampleSection({ locale }: { locale: LandingLocale }) {
     if (!amostra) return null
 
     const t = await getTranslations({ locale, namespace: "landing.freeSample" })
+    const tConta = await getTranslations({ locale, namespace: "freeStudy" })
 
     return (
         <Section tone="default" width="narrow">
@@ -31,6 +34,18 @@ export async function FreeSampleSection({ locale }: { locale: LandingLocale }) {
                 </p>
                 <FreeSampleForm locale={locale} />
             </div>
+
+            {/* O formulário é o caminho curto; a conta é para quem quer o
+                estudo guardado junto das compras. Os dois entregam o mesmo. */}
+            <p className="mt-4 text-center text-sm text-muted-foreground">
+                {tConta("homeSignUpText")}{" "}
+                <NextLink
+                    href={`/sign-up?lang=${locale}`}
+                    className="font-medium text-brand-accent-strong underline underline-offset-4 hover:no-underline"
+                >
+                    {tConta("homeSignUpCta")}
+                </NextLink>
+            </p>
         </Section>
     )
 }

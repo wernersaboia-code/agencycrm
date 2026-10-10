@@ -1702,5 +1702,20 @@
             "fileName": "comprovante",
             "attachmentNote": "O comprovante desta compra está anexado a este e-mail, em PDF."
         }
+    },
+    "freeStudy": {
+        "bannerTitle": "Veja um estudo completo, de graça",
+        "bannerText": "Crie sua conta e baixe sem custo um estudo completo de entrada em mercado, para conferir o formato e a profundidade antes de comprar.",
+        "bannerCta": "Criar conta grátis",
+        "bannerTextLoggedIn": "Seu estudo gratuito está à sua espera em Minhas compras.",
+        "bannerCtaLoggedIn": "Ir para Minhas compras",
+        "cardBadge": "Grátis",
+        "cardTitle": "Seu estudo gratuito",
+        "cardText": "Um estudo completo de entrada em mercado, como os do catálogo. Confira o formato, a profundidade e o tipo de informação que você recebe antes de escolher o seu mercado.",
+        "cardCta": "Baixar estudo gratuito",
+        "signUpPerk": "Ao criar a conta, você baixa grátis um estudo completo de entrada em mercado.",
+        "signUpPerkAfter": "Depois de confirmar o e-mail, seu estudo gratuito estará em Minhas compras.",
+        "homeSignUpText": "Prefere guardar tudo numa conta? Crie a sua e o estudo fica em Minhas compras.",
+        "homeSignUpCta": "Criar conta"
     }
 }
