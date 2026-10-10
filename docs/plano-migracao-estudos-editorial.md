@@ -32,6 +32,40 @@ Nos 4 que saíram, o texto do corpo bate com o original. O que não aparece no P
 repetidos ("Market Entry Study … | Page N") e o sumário antigo, que o modelo substitui de propósito. A conta,
 porém, foi feita por contagem de palavras, que é grosseira. A conferência de verdade fica para a fase 2.
 
+### Resultado das fases 1 e 2 (10/10)
+
+**Fase 1, diagnóstico dos 124:** o script original gerava 101 e quebrava em 23. Entre os que geravam, 3 perdiam
+texto de verdade:
+
+| Problema | Estudos | Causa |
+|---|---|---|
+| Não acha a capa | 17 | Procurava "MARKET ENTRY STUDY" escrito igual; há "MARKET ENTRY S TUDY", "MA R K E T…", "MARKET-ENTRY GUIDE", português, espanhol e capa sem rótulo |
+| Não acha o capítulo 1 | 3 | Título de capítulo em 14 ou 16 pt (o script exigia 15), "1 Executive summary" sem ponto, capítulo 1 na própria capa |
+| Quebra ao montar | 3 | Linha de tabela mais alta que uma página |
+| Cartões perdiam colunas | Noruega e França (bebês) | Supunham 4 colunas em ordem fixa; Noruega tem 7, França 5, e em França tipo e perfil trocavam de lugar |
+| Tabela "campo / valor" sem os valores | Emirados (FMCG) | A tabela só é detectada pela coluna da esquerda; o texto da direita não entrava em lugar nenhum. Um quarto do diretório sumia |
+| Resumo executivo sem número sumia | Suíça (HoReCa), Itália (FMCG), Omã | O script começava no "1." e descartava o "Executive Summary" que vem antes |
+| Rodapé dentro do diretório | Índia (bebês) | Páginas em paisagem, onde o rodapé fica a 549 pt e não a 790 |
+
+**Fase 2, script endurecido:** os **124 estudos geram**, e a conferência embutida encontra no máximo 0,6% de
+palavras do original ausentes (mediana 0,0%). O que resta é endereço de site partido em célula estreita e um
+rodapé fora da zona padrão em Portugal, não conteúdo. O que mudou:
+
+- capa lida pela estrutura (rótulo reconhecido pelo texto, título no maior corpo, subtítulo, escopo, data);
+- tamanho do título de capítulo medido em cada estudo, e o corpo começa no primeiro título de capítulo depois do
+  sumário de origem, com ou sem número;
+- cabeçalho e rodapé de origem reconhecidos por repetição na borda da página, em retrato e em paisagem;
+- cartões de empresa guiados pelo cabeçalho: nada é descartado, cada coluna vai com o próprio rótulo; matrizes
+  sem coluna de contato continuam tabela;
+- linha de tabela maior que uma página vira parágrafos rotulados;
+- lista numerada no texto mantém um item por parágrafo;
+- moldura em português e espanhol (`--lang pt|es`);
+- marcador U+F0B7 vira `•`;
+- **conferência de texto embutida:** se faltar mais de 1% das palavras do original, o PDF sai como
+  `*.rejeitado.pdf` e o script termina com erro.
+
+O piloto da Áustria continua com a mesma cara.
+
 **O que já está resolvido fora deste plano:** as introduções e as descrições da página de cada estudo ficam no
 banco, não no PDF. As 8 introduções que mostravam o sumário foram trocadas pelo resumo executivo em 10/10, e as
 124 descrições novas foram gravadas no mesmo dia. Trocar o PDF não muda nenhum desses textos.
@@ -52,27 +86,18 @@ banco, não no PDF. As 8 introduções que mostravam o sumário foram trocadas p
 
 ## Fases
 
-### 1. Diagnóstico do acervo inteiro (sem gravar nada)
+### 1. Diagnóstico do acervo inteiro: feito em 10/10
 
-Baixar os 124 PDFs da loja para uma pasta local e rodar o script em todos. O resultado é uma planilha com uma
-linha por estudo: saiu ou falhou, capítulos, páginas, páginas quase vazias e a conferência de texto. Isso diz
-quantos estudos o script já resolve e quais formatos ainda quebram, e é o que dimensiona a fase 2.
+### 2. Endurecer o script: feito em 10/10
 
-### 2. Endurecer o script
+Resultado na seção "Onde estamos". Para gerar um estudo:
 
-Problemas já conhecidos:
+```powershell
+python scripts/redesign-market-study.py origem.pdf destino.pdf --illustration assets/study-covers/vienna-pencil.png --country Austria
+```
 
-- **Detector do capítulo 1:** quebra em 3 de 7 na amostra. É o ponto principal.
-- **Moldura em português e espanhol** (decisão 2).
-- **Marcador de lista U+F0B7** (fonte Symbol do Word): o mesmo caractere que juntava os itens da introdução da
-  Sérvia. O site já foi corrigido em `1564ee3`; o script Python precisa da mesma troca.
-- **Cartões de empresa:** só são usados quando a primeira coluna do diretório se chama exatamente "Company".
-  Diretórios com outro cabeçalho ("Company / Location") viram tabela comum, o que funciona, mas sem o visual dos
-  cartões.
-- **Endereço de site partido no meio da célula** ("eusmecentrechina.c / n").
-- **Conferência de texto embutida:** o script compara o texto do corpo com o original, palavra por palavra e
-  descontando cabeçalho, rodapé e sumário, e **recusa gerar** o PDF quando falta texto. Hoje essa conferência
-  é feita à mão.
+`--lang pt` ou `--lang es` para as edições em português e espanhol. Saída com status 2 quer dizer que a
+conferência de texto recusou o arquivo.
 
 ### 3. O que o site lê de dentro do PDF
 
