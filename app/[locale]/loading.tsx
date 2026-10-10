@@ -6,7 +6,7 @@ export default function Loading() {
       {/* Hero skeleton */}
       <section className="border-b border-border">
         <div className="container mx-auto px-4 py-12 md:py-16 lg:py-20">
-          <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_460px] lg:items-center">
+          <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_460px] lg:items-center">
             <div className="max-w-3xl space-y-5">
               <Skeleton className="h-6 w-64 rounded-md" />
               <Skeleton className="h-12 w-full rounded-lg" />

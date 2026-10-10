@@ -56,7 +56,7 @@ export function MarketplaceHeader() {
     return (
         <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="container mx-auto flex h-16 items-center justify-between px-4">
-                <LocaleLink href="/" className="flex items-center gap-2">
+                <LocaleLink href="/" className="flex shrink-0 items-center gap-2">
                     <Image src="/logo-icon.png" alt="Easy Prospect" width={32} height={32} className="h-8 w-8" priority />
                     <span className="hidden text-xl font-bold sm:block">Easy Prospect</span>
                 </LocaleLink>
@@ -105,9 +105,11 @@ export function MarketplaceHeader() {
                             {isAuthenticated ? (
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
-                                        <Button variant="outline" size="sm">
+                                        {/* No celular sobra só o ícone: com o rótulo, a fila de
+                                            botões espremia o logo até largura zero. */}
+                                        <Button variant="outline" size="sm" aria-label={t("myAccount")}>
                                             <User className="h-4 w-4" />
-                                            {t("myAccount")}
+                                            <span className="hidden sm:inline">{t("myAccount")}</span>
                                         </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end" className="w-56">
@@ -139,9 +141,9 @@ export function MarketplaceHeader() {
                                 </DropdownMenu>
                             ) : (
                                 <Button variant="outline" size="sm" asChild>
-                                    <Link href={`/sign-in?lang=${locale}`}>
+                                    <Link href={`/sign-in?lang=${locale}`} aria-label={t("login")}>
                                         <User className="h-4 w-4" />
-                                        {t("login")}
+                                        <span className="hidden sm:inline">{t("login")}</span>
                                     </Link>
                                 </Button>
                             )}
