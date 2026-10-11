@@ -47,3 +47,6 @@ next-env.d.ts
 
 # Saída do diagnóstico de indexação (prisma/inspecionar-indexacao.ts)
 /inspecao-indexacao.csv
+
+# Cache do Python dos scripts
+__pycache__/
