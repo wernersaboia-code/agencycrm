@@ -77,6 +77,7 @@ export function WorkspacesClient({ initialWorkspaces }: WorkspacesClientProps) {
 
     useEffect(() => {
         if (searchParams.get("new") === "true") {
+            // eslint-disable-next-line react-hooks/set-state-in-effect -- reage a ?new=true e limpa a URL com router.replace, que é efeito colateral
             setEditingWorkspace(null)
             setIsModalOpen(true)
             router.replace("/workspaces", { scroll: false })

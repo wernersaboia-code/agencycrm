@@ -4,7 +4,7 @@
 import { useState, useMemo, type ClipboardEvent as EventoDeColagem } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { useForm, type Resolver } from "react-hook-form"
+import { useForm, useWatch, type Resolver } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { toast } from "sonner"
@@ -584,7 +584,13 @@ export function ListForm({ list, setores }: ListFormProps) {
     // ============================================
 
     const isEditing = !!list
-    const paisesRuins = paisesInvalidosDoCampo(form.watch("countries") ?? "")
+    // useWatch em vez de form.watch: o React Compiler não memoiza funções que
+    // mudam de valor sem mudar de identidade, como o watch do react-hook-form.
+    const [countries, language, isActive, isFeatured, name] = useWatch({
+        control: form.control,
+        name: ["countries", "language", "isActive", "isFeatured", "name"],
+    })
+    const paisesRuins = paisesInvalidosDoCampo(countries ?? "")
     // Quem tem substituto conhecido ganha a seta; o resto é código que não
     // existe. Separado porque a orientação ao admin é diferente em cada caso.
     const paisesObsoletos = paisesRuins.filter((p) => p.atual)
@@ -671,7 +677,7 @@ export function ListForm({ list, setores }: ListFormProps) {
                             <div className="space-y-2">
                                 <Label htmlFor="language">{t("languageLabel")}</Label>
                                 <Select
-                                    value={form.watch("language")}
+                                    value={language}
                                                     onValueChange={(value) => form.setValue("language", value, { shouldDirty: true })}
                                 >
                                     <SelectTrigger>
@@ -1095,11 +1101,11 @@ export function ListForm({ list, setores }: ListFormProps) {
                                 </div>
                                 <Switch
                                     id="isActive"
-                                    checked={form.watch("isActive")}
+                                    checked={isActive}
                                     onCheckedChange={(checked) => form.setValue("isActive", checked, { shouldDirty: true })}
                                 />
                             </div>
-                            {isEditing && form.watch("isActive") && (() => {
+                            {isEditing && isActive && (() => {
                                 const effectivePdfUrl = pdfFile ? "pending-upload" : list!.studyPdfUrl
                                 const check = canPublishList({
                                     studyPdfUrl: effectivePdfUrl,
@@ -1121,7 +1127,7 @@ export function ListForm({ list, setores }: ListFormProps) {
                             </div>
                             <Switch
                                 id="isFeatured"
-                                checked={form.watch("isFeatured")}
+                                checked={isFeatured}
                                 onCheckedChange={(checked) => form.setValue("isFeatured", checked, { shouldDirty: true })}
                             />
                         </div>
@@ -1210,7 +1216,7 @@ export function ListForm({ list, setores }: ListFormProps) {
                 onOpenChange={setShowImportWizard}
                 mode={isEditing ? "import" : "prepare"}
                 listId={list?.id}
-                listName={form.watch("name") || t("newList")}
+                listName={name || t("newList")}
                 onSuccess={handleImportSuccess}
                 onLeadsPrepared={handleLeadsPrepared}
             />

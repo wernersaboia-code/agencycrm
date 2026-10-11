@@ -62,6 +62,7 @@ export function MercadoPagoButton({ items, currency }: MercadoPagoButtonProps) {
 
     useEffect(() => {
         if (!publicKey || !precisaAviso) return
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- busca a cotação no servidor quando o carrinho ou a moeda mudam
         buscarCotacao()
     }, [publicKey, precisaAviso, buscarCotacao])
 

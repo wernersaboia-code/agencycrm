@@ -2,7 +2,7 @@
 "use client"
 
 import { useState } from "react"
-import { useForm, type Resolver } from "react-hook-form"
+import { useForm, useWatch, type Resolver } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { Button } from "@/components/ui/button"
@@ -73,7 +73,7 @@ export function WorkspaceSettings({ workspace }: WorkspaceSettingsProps) {
     const {
         register,
         handleSubmit,
-        watch,
+        control,
         setValue,
         formState: { errors, isDirty },
     } = useForm<WorkspaceFormData>({
@@ -86,8 +86,7 @@ export function WorkspaceSettings({ workspace }: WorkspaceSettingsProps) {
         },
     })
 
-    const selectedColor = watch("color")
-    const watchedName = watch("name")
+    const [selectedColor, watchedName] = useWatch({ control, name: ["color", "name"] })
 
     // ============================================================
     // HANDLERS

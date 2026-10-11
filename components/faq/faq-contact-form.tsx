@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react"
 import { Link } from "@/lib/i18n/navigation"
-import { useForm } from "react-hook-form"
+import { useForm, useWatch } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { CheckCircle2, Loader2, TriangleAlert } from "lucide-react"
@@ -76,6 +76,7 @@ export function FaqContactForm({ locale, labels }: FaqContactFormProps) {
     })
 
     const { errors, isSubmitting } = form.formState
+    const consent = useWatch({ control: form.control, name: "consent" })
 
     // O texto do consentimento vem do locale com marcação <link>…</link>
     // apontando para a política de privacidade.
@@ -174,7 +175,7 @@ export function FaqContactForm({ locale, labels }: FaqContactFormProps) {
                 <div className="flex items-start gap-3">
                     <Checkbox
                         id="faq-consent"
-                        checked={form.watch("consent")}
+                        checked={consent}
                         onCheckedChange={(checked) =>
                             form.setValue("consent", checked === true, { shouldValidate: true })
                         }

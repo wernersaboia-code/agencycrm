@@ -2,7 +2,7 @@
 
 import type { ComponentType } from "react"
 import { Link } from "@/lib/i18n/navigation"
-import { useFormatter, useLocale, useTranslations } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 import { useCart } from "@/contexts/cart-context"
 import { formatCurrency } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -24,7 +24,6 @@ export default function CartPage() {
     const { items, removeItem, total, clearCart, itemCount, currency } = useCart()
     const t = useTranslations("cart")
     const tCheckout = useTranslations("checkout")
-    const format = useFormatter()
     const locale = useLocale()
 
     if (items.length === 0) {

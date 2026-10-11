@@ -6,7 +6,7 @@
 // IMPORTS
 // ============================================
 import { useState, useEffect, useCallback } from "react"
-import { useForm } from "react-hook-form"
+import { useForm, useWatch } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { format } from "date-fns"
 import {
@@ -227,6 +227,7 @@ export function CallModal({
                 calledAt: format(new Date(call.calledAt), "yyyy-MM-dd'T'HH:mm"),
                 campaignId: call.campaignId || "",
             })
+            // eslint-disable-next-line react-hooks/set-state-in-effect -- anda junto com o form.reset, que é efeito externo ao React
             setSelectedLead(call.lead)
         } else if (isFromClickToCall) {
             // 🆕 Dados vindos do Click-to-Call
@@ -260,6 +261,7 @@ export function CallModal({
         if (preselectedLeadId && leads.length > 0 && !isEditing) {
             const preselected = leads.find((lead) => lead.id === preselectedLeadId)
             if (preselected) {
+                // eslint-disable-next-line react-hooks/set-state-in-effect -- só dá para escolher depois que os leads chegam do servidor
                 setSelectedLead(preselected)
             }
         }
@@ -337,7 +339,8 @@ export function CallModal({
     // COMPUTED
     // ============================================
 
-    const selectedResultConfig = CALL_RESULT_CONFIG[form.watch("result") as CallResult]
+    const resultadoEscolhido = useWatch({ control: form.control, name: "result" })
+    const selectedResultConfig = CALL_RESULT_CONFIG[resultadoEscolhido as CallResult]
     const showFollowUpField = selectedResultConfig?.requiresFollowUp
 
     // ============================================

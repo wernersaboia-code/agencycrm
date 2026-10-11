@@ -2,7 +2,7 @@
 
 import { useEffect } from "react"
 import type { ComponentType } from "react"
-import { useFormatter, useLocale, useTranslations } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 import { Link, useRouter } from "@/lib/i18n/navigation"
 import { useCart } from "@/contexts/cart-context"
 import { MercadoPagoButton } from "@/components/checkout/mercadopago-button"
@@ -25,7 +25,6 @@ export default function CheckoutPage() {
     const { items, total, currency } = useCart()
     const router = useRouter()
     const t = useTranslations("checkout")
-    const format = useFormatter()
     const locale = useLocale()
 
     // PayPal segue fora da tela — a conta foi cancelada. A rota continua no

@@ -233,9 +233,17 @@ export function LeadModal({
             } else {
                 form.reset(DEFAULT_LEAD_VALUES)
             }
-            setActiveTab("contact")
         }
     }, [lead, open, form])
+
+    // A aba volta para "contato" nas mesmas condições do reset acima. Fica
+    // fora do efeito porque é estado do componente: ajustado no render, não
+    // pinta a aba anterior por um quadro.
+    const [aberturaAnterior, setAberturaAnterior] = useState<{ lead: typeof lead; open: boolean }>({ lead: null, open: false })
+    if (aberturaAnterior.lead !== lead || aberturaAnterior.open !== open) {
+        setAberturaAnterior({ lead, open })
+        if (open) setActiveTab("contact")
+    }
 
     useEffect(() => {
         if (!open || !activeWorkspace) return

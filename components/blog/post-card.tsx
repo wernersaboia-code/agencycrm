@@ -1,5 +1,6 @@
 // eslint-disable-next-line no-restricted-imports -- href sempre montado via getPathname() abaixo, prefixo de locale já correto
 import Link from "next/link"
+import Image from "next/image"
 import type { BlogLocale } from "@/lib/blog/locales"
 import { getPathname } from "@/lib/i18n/navigation"
 
@@ -13,7 +14,7 @@ export function PostCard({
         <Link href={getPathname({ href: `/blog/${slug}`, locale })}
             className="group flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
             {coverImageUrl
-                ? <img src={coverImageUrl} alt="" className="h-40 w-full object-cover" />
+                ? <div className="relative h-40 w-full"><Image src={coverImageUrl} alt="" fill sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw" className="object-cover" /></div>
                 : <div className="h-40 w-full bg-gradient-to-br from-indigo-100 to-indigo-200" />}
             <div className="flex flex-1 flex-col p-5">
                 {categoryName && <p className="text-xs font-semibold uppercase tracking-wider text-indigo-700">{categoryName}</p>}

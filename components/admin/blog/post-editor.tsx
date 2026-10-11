@@ -2,6 +2,7 @@
 "use client"
 
 import { useTranslations } from "next-intl"
+import Image from "next/image"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
@@ -111,6 +112,7 @@ export function PostEditor({
 
     useEffect(() => {
         if (initial.publishedAt) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect -- fuso do navegador só existe depois da hidratação; no render daria mismatch com o servidor
             setPublishedAt(toDatetimeLocalValue(initial.publishedAt))
         }
         // Só na montagem: converte o valor persistido para o fuso local do navegador.
@@ -245,7 +247,8 @@ export function PostEditor({
                     <Label>{t("cover")}</Label>
                     <Input type="file" accept="image/png,image/jpeg,image/webp"
                         onChange={(e) => e.target.files?.[0] && onUpload(e.target.files[0])} />
-                    {cover && <img src={cover} alt="" className="mt-2 h-24 rounded object-cover" />}
+                    {/* unoptimized: prévia do arquivo recém-enviado, só para o admin */}
+                    {cover && <Image src={cover} alt="" width={192} height={96} unoptimized className="mt-2 h-24 w-auto rounded object-cover" />}
                 </div>
             </div>
 

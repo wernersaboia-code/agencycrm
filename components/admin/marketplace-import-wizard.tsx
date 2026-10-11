@@ -257,7 +257,7 @@ export function MarketplaceImportWizard({
         } finally {
             setIsLoading(false)
         }
-    }, [])
+    }, [t])
 
     const handleDownloadTemplate = async (type: "csv" | "excel") => {
         if (type === "csv") {

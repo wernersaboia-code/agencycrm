@@ -409,6 +409,7 @@ export function LeadsClient() {
 
     // Recarregar quando workspace ou filtros mudam
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- busca dados do servidor; o loading ligado na hora é o efeito desejado
         loadLeads()
     }, [loadLeads])
 

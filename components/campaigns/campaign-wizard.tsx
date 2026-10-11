@@ -178,8 +178,12 @@ export function CampaignWizard({
         }
     }, [workspaceId])
 
-    // Reset quando fecha/abre
-    useEffect(() => {
+    // Reset ao abrir. Ajuste durante o render em vez de efeito: o wizard não
+    // chega a pintar a campanha anterior. Começa em `false` para a montagem já
+    // aberta também resetar, como o efeito fazia.
+    const [abertoAntes, setAbertoAntes] = useState(false)
+    if (open !== abertoAntes) {
+        setAbertoAntes(open)
         if (open) {
             setStep(1)
             setData({
@@ -190,11 +194,12 @@ export function CampaignWizard({
             setLeadSearch("")
             setStatusFilter("ALL")
         }
-    }, [open])
+    }
 
     // Carregar leads quando chegar no passo 2
     useEffect(() => {
         if (step === 2 && leads.length === 0) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect -- busca os leads do servidor ao chegar no passo 2
             loadLeads()
         }
     }, [leads.length, loadLeads, step])

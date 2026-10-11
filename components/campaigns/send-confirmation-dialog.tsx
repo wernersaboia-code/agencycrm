@@ -60,13 +60,16 @@ export function SendConfirmationDialog({
     const [isSending, setIsSending] = useState<boolean>(false)
     const isReady = countdown === 0
 
-    // Reset countdown quando abre
-    useEffect(() => {
+    // Reset countdown quando abre. Ajuste durante o render em vez de efeito:
+    // o diálogo não chega a pintar a contagem anterior.
+    const [abertoAntes, setAbertoAntes] = useState(false)
+    if (open !== abertoAntes) {
+        setAbertoAntes(open)
         if (open) {
             setCountdown(3)
             setIsSending(false)
         }
-    }, [open])
+    }
 
     // Contagem regressiva
     useEffect(() => {

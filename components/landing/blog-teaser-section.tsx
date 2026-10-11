@@ -1,5 +1,6 @@
 // eslint-disable-next-line no-restricted-imports -- href sempre montado via getPathname() abaixo, prefixo de locale já correto
 import Link from "next/link"
+import Image from "next/image"
 import { getTranslations } from "next-intl/server"
 import { getLatestPostsForTeaser } from "@/lib/blog/queries"
 import { getPathname } from "@/lib/i18n/navigation"
@@ -20,7 +21,7 @@ export async function BlogTeaserSection({ locale }: { locale: LandingLocale }) {
                         <Link key={post.postId} href={getPathname({ href: `/blog/${post.slug}`, locale })}
                             className="group overflow-hidden rounded-lg border border-border bg-card shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
                             {post.coverImageUrl
-                                ? <img src={post.coverImageUrl} alt="" className="h-28 w-full object-cover" />
+                                ? <div className="relative h-28 w-full"><Image src={post.coverImageUrl} alt="" fill sizes="(min-width: 768px) 33vw, 100vw" className="object-cover" /></div>
                                 : <div className="h-28 bg-gradient-to-br from-brand-accent/20 to-brand-accent/40" />}
                             <div className="p-5">
                                 {post.categoryName && <p className="text-xs font-semibold uppercase tracking-wider text-brand-accent-strong">{post.categoryName}</p>}

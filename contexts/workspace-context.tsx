@@ -107,6 +107,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
 
     // Carregar ao montar
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- carrega os workspaces do servidor na montagem
         refreshWorkspaces()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])

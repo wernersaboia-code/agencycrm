@@ -69,7 +69,14 @@ export function ListsFilterBar({ countries, industries, nomesDeSetor, shown, tot
     // para a URL depois da pausa. Navegar a cada tecla remontava a tabela
     // inteira no meio da palavra e roubava o foco do campo.
     const [texto, setTexto] = useState(q)
-    useEffect(() => setTexto(q), [q])
+    // Quando a URL muda por fora (voltar, limpar filtros), o campo acompanha.
+    // Ajuste durante o render, como a doc do React recomenda, e não num efeito
+    // que pintaria o valor velho por um quadro antes de corrigir.
+    const [qAnterior, setQAnterior] = useState(q)
+    if (q !== qAnterior) {
+        setQAnterior(q)
+        setTexto(q)
+    }
 
     const aplicar = (chave: string, valor: string) => {
         const params = new URLSearchParams(searchParams)

@@ -2,7 +2,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import { useForm, type Resolver } from "react-hook-form"
+import { useForm, useWatch, type Resolver } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "sonner"
 import { Eye, Info, Loader2, Sparkles } from "lucide-react"
@@ -104,9 +104,8 @@ export function TemplateModal({
         defaultValues: DEFAULT_TEMPLATE_VALUES,
     })
 
-    const { watch, setValue } = form
-    const watchSubject = watch("subject")
-    const watchBody = watch("body")
+    const { setValue } = form
+    const [watchSubject, watchBody] = useWatch({ control: form.control, name: ["subject", "body"] })
 
     // Reset form quando modal abre/fecha
     useEffect(() => {
@@ -122,9 +121,17 @@ export function TemplateModal({
             } else {
                 form.reset(DEFAULT_TEMPLATE_VALUES)
             }
-            setActiveTab("edit")
         }
     }, [open, template, form])
+
+    // A aba volta para "editar" nas mesmas condições do reset acima. Fica fora
+    // do efeito porque é estado do componente: ajustado no render, não pinta a
+    // aba anterior por um quadro.
+    const [aberturaAnterior, setAberturaAnterior] = useState<{ template: typeof template; open: boolean }>({ template: null, open: false })
+    if (aberturaAnterior.template !== template || aberturaAnterior.open !== open) {
+        setAberturaAnterior({ template, open })
+        if (open) setActiveTab("edit")
+    }
 
     // ============================================================
     // HANDLERS
