@@ -2,7 +2,7 @@
 import type { Metadata } from "next"
 import { GeistSans } from "geist/font/sans"
 import { GeistMono } from "geist/font/mono"
-import { Analytics } from "@vercel/analytics/react"
+import { SiteAnalytics } from "@/components/analytics/site-analytics"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { getLocale, getTranslations } from "next-intl/server"
 import { htmlLangFor, dirForLocale, type Locale } from "@/lib/i18n/locales"
@@ -89,7 +89,7 @@ export default async function AppRootLayout({
         >
             {children}
         </Providers>
-        <Analytics />
+        <SiteAnalytics somenteEntrada />
         <SpeedInsights />
         </body>
         </html>

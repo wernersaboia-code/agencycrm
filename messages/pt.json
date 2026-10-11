@@ -947,6 +947,8 @@
             "last24Hours": "Últimas 24 horas",
             "trafficLast24Hours": "Tráfego nas últimas 24 horas",
             "bounceRateUnavailable": "A taxa de rejeição não é disponibilizada pela API pública do Vercel; por isso não exibimos uma estimativa imprecisa.",
+            "visitorsMeaning": "Visitantes: a Vercel reconhece o visitante só dentro do mesmo dia, então quem volta em dias diferentes conta uma vez por dia.",
+            "teamExcluded": "Desde 10/10/2026 não contam as páginas do admin e do CRM nem as visitas de navegadores que já abriram o admin. Os dados anteriores incluem o uso da equipe.",
             "applyFilters": "Aplicar filtros",
             "clearFilters": "Limpar",
             "countries": "Países",

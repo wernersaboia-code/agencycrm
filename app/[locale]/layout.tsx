@@ -3,7 +3,7 @@ import { Suspense } from "react"
 import { notFound } from "next/navigation"
 import { GeistSans } from "geist/font/sans"
 import { GeistMono } from "geist/font/mono"
-import { Analytics } from "@vercel/analytics/react"
+import { SiteAnalytics } from "@/components/analytics/site-analytics"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { hasLocale, NextIntlClientProvider } from "next-intl"
 import { getMessages, getTranslations, setRequestLocale } from "next-intl/server"
@@ -161,7 +161,7 @@ export default async function MarketplaceLayout({
                 </CartProvider>
             </NextIntlClientProvider>
         </Providers>
-        <Analytics />
+        <SiteAnalytics />
         <SpeedInsights />
         </body>
         </html>

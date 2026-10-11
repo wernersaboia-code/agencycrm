@@ -947,6 +947,8 @@
             "last24Hours": "Letzte 24 Stunden",
             "trafficLast24Hours": "Traffic der letzten 24 Stunden",
             "bounceRateUnavailable": "Die Absprungrate wird von der öffentlichen Vercel-API nicht bereitgestellt; deshalb zeigen wir keine ungenaue Schätzung an.",
+            "visitorsMeaning": "Besucher: Vercel erkennt einen Besucher nur innerhalb desselben Tages; wer an verschiedenen Tagen wiederkommt, zählt einmal pro Tag.",
+            "teamExcluded": "Seit dem 10.10.2026 werden Admin- und CRM-Seiten sowie Besuche aus Browsern, die den Admin-Bereich geöffnet haben, nicht mehr gezählt. Frühere Daten enthalten die Nutzung durch das Team.",
             "applyFilters": "Filter anwenden",
             "clearFilters": "Zurücksetzen",
             "countries": "Länder",

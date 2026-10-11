@@ -9,6 +9,7 @@ import { getAdminLocale } from "@/lib/i18n/admin-locale"
 import { loadMessages } from "@/lib/i18n/load-messages"
 import { AdminSidebar } from "@/components/admin/admin-sidebar"
 import { AdminHeader } from "@/components/admin/admin-header"
+import { MarcarNavegadorDaEquipe } from "@/components/analytics/site-analytics"
 
 
 export default async function SuperAdminLayout({
@@ -33,6 +34,7 @@ export default async function SuperAdminLayout({
 
     return (
         <NextIntlClientProvider locale={locale} messages={messages}>
+            <MarcarNavegadorDaEquipe />
             <div className="flex h-screen bg-background">
                 <AdminSidebar />
                 <div className="flex-1 flex flex-col overflow-hidden">

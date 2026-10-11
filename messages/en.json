@@ -947,6 +947,8 @@
             "last24Hours": "Last 24 hours",
             "trafficLast24Hours": "Traffic in the last 24 hours",
             "bounceRateUnavailable": "Bounce rate is not available through Vercel's public API, so no inaccurate estimate is displayed.",
+            "visitorsMeaning": "Visitors: Vercel recognises a visitor only within the same day, so someone who returns on different days counts once per day.",
+            "teamExcluded": "Since 10/10/2026, admin and CRM pages and visits from browsers that have opened the admin are not counted. Earlier data includes the team's own use.",
             "applyFilters": "Apply filters",
             "clearFilters": "Clear",
             "countries": "Countries",
