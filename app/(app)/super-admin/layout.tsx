@@ -10,6 +10,8 @@ import { loadMessages } from "@/lib/i18n/load-messages"
 import { AdminSidebar } from "@/components/admin/admin-sidebar"
 import { AdminHeader } from "@/components/admin/admin-header"
 import { MarcarNavegadorDaEquipe } from "@/components/analytics/site-analytics"
+import { CookieConsent } from "@/components/cookie-consent"
+import { getTranslations } from "next-intl/server"
 
 
 export default async function SuperAdminLayout({
@@ -31,6 +33,9 @@ export default async function SuperAdminLayout({
     // conteúdo e a moldura (sidebar/header) nunca saírem em idiomas diferentes.
     const locale = await getAdminLocale()
     const messages: AbstractIntlMessages = await loadMessages(locale)
+    // O banner do root layout segue o cookie do funil e se cala aqui; este
+    // segue a conta, como o resto do painel.
+    const tCookies = await getTranslations({ locale, namespace: "cookies" })
 
     return (
         <NextIntlClientProvider locale={locale} messages={messages}>
@@ -47,6 +52,15 @@ export default async function SuperAdminLayout({
                     </main>
                 </div>
             </div>
+            <CookieConsent
+                area="admin"
+                labels={{
+                    message: tCookies("message"),
+                    learnMore: tCookies("learnMore"),
+                    decline: tCookies("decline"),
+                    accept: tCookies("accept"),
+                }}
+            />
         </NextIntlClientProvider>
     )
 }

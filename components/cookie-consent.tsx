@@ -37,11 +37,25 @@ function subscribeConsent(callback: () => void) {
     return () => window.removeEventListener("storage", handler)
 }
 
-export function CookieConsent({ labels }: { labels: CookieConsentLabels }) {
+/**
+ * `area="admin"` é a cópia que o layout do super-admin renderiza com o idioma
+ * da CONTA (ver lib/i18n/admin-locale.ts). A cópia do root layout é traduzida
+ * pelo cookie NEXT_LOCALE — o idioma do funil — e por isso se cala dentro do
+ * super-admin: senão o banner saía em alemão num painel em português.
+ */
+export function CookieConsent({
+    labels,
+    area = "site",
+}: {
+    labels: CookieConsentLabels
+    area?: "site" | "admin"
+}) {
     const consent = useSyncExternalStore(subscribeConsent, getConsent, () => "unknown")
     const [dismissed, setDismissed] = useState(false)
     const pathname = usePathname()
     const { locale } = stripLocale(pathname)
+
+    if (area === "site" && /^\/super-admin(\/|$)/.test(pathname)) return null
 
     const accept = () => {
         localStorage.setItem(CONSENT_KEY, "accepted")
