@@ -61,9 +61,8 @@ export default async function AppRootLayout({
     // O super-admin fala o idioma da CONTA (lib/i18n/admin-locale.ts), não o
     // do cookie do funil; o caminho vem do x-pathname que o proxy injeta.
     const pathname = (await headers()).get("x-pathname") ?? ""
-    const locale = isSuperAdminPath(pathname)
-        ? await getAdminLocale()
-        : ((await getLocale()) as Locale)
+    const siteLocale = (await getLocale()) as Locale
+    const locale = isSuperAdminPath(pathname) ? await getAdminLocale() : siteLocale
 
     // Mesma origem do `lang` acima, para o link de pular e o banner não
     // falarem outro idioma que o da página.
@@ -71,7 +70,15 @@ export default async function AppRootLayout({
     const tA11y = await getTranslations({ locale, namespace: "a11y" })
 
     return (
-        <html lang={htmlLangFor(locale)} dir={dirForLocale(locale)} suppressHydrationWarning>
+        <html
+            lang={htmlLangFor(locale)}
+            dir={dirForLocale(locale)}
+            // Idioma do resto da área interna, para o AdminHtmlLang devolver
+            // ao sair do painel por navegação suave.
+            data-site-lang={htmlLangFor(siteLocale)}
+            data-site-dir={dirForLocale(siteLocale)}
+            suppressHydrationWarning
+        >
         <head>
             <link rel="preconnect" href="https://api.supabase.co" />
             <link rel="preconnect" href="https://flagcdn.com" />
