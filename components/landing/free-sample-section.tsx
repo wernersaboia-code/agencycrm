@@ -10,7 +10,7 @@ import type { LandingLocale } from "./types"
 
 /** Âncora da seção, usada pelo destaque do hero. Mesmo padrão do #ablauf. */
 export function freeSampleAnchor(locale: LandingLocale): string {
-    return locale === "de" ? "leseprobe" : "amostra-gratuita"
+    return locale === "de" ? "kostenlose-studie" : "estudo-gratuito"
 }
 
 /**

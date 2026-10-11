@@ -32,7 +32,7 @@ export function Section({
             id={id}
             className={cn(
                 // scroll-mt: o cabeçalho é sticky (64px) e cobria o topo da
-                // seção ao chegar por âncora (#como-funciona, #amostra-gratuita).
+                // seção ao chegar por âncora (#como-funciona, #estudo-gratuito).
                 "scroll-mt-16 border-t border-border py-14 md:py-16",
                 tone === "muted" ? "bg-muted/40" : "bg-background",
                 className
