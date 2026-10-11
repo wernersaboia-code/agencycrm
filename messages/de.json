@@ -960,6 +960,7 @@
             "allItemsDesc": "Besucheranteil, Besucher und Seitenaufrufe nach {title} im gewählten Zeitraum.",
             "study": "Studie",
             "topStudies": "Meistbesuchte Studien",
+            "topStudiesDesc": "Anteil an den Aufrufen von Studienseiten, Besucher und Seitenaufrufe. Besucher werden über die Sprachen der Studienseite summiert.",
             "noStudyVisits": "Keine Besuche von Studienseiten im Zeitraum.",
             "vercelUnavailable": "Vercel-Daten nicht verfügbar",
             "vercelNotConfigured": "Prüfen Sie die drei Variablen VERCEL_ANALYTICS_* in der Produktionsumgebung.",

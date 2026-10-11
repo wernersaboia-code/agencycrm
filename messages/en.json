@@ -960,6 +960,7 @@
             "allItemsDesc": "Share of visitors, visitors and page views by {title} in the selected period.",
             "study": "Study",
             "topStudies": "Most visited studies",
+            "topStudiesDesc": "Share of study page views, visitors and page views. Visitors add up the study page's languages.",
             "noStudyVisits": "No study page visits in this period.",
             "vercelUnavailable": "Vercel data unavailable",
             "vercelNotConfigured": "Check the three VERCEL_ANALYTICS_* variables in production.",

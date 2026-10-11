@@ -12,11 +12,14 @@ type AnalyticsRankingLabels = {
     dialogDescription: string
 }
 
-function RankingRows({ rows, total }: { rows: VercelAnalyticsRow[]; total: number }) {
+/** Base do percentual: visitantes (padrão) ou visualizações, para rankings cujos visitantes vêm somados de várias páginas. */
+type Base = "visitors" | "pageviews"
+
+function RankingRows({ rows, total, base = "visitors" }: { rows: VercelAnalyticsRow[]; total: number; base?: Base }) {
     return (
         <div className="space-y-3">
             {rows.map((row) => {
-                const percentage = total > 0 ? (row.visitors / total) * 100 : 0
+                const percentage = total > 0 ? (row[base] / total) * 100 : 0
                 return (
                     <div key={row.label} className="space-y-1.5">
                         <div className="flex items-center justify-between gap-3 text-sm">
@@ -31,7 +34,7 @@ function RankingRows({ rows, total }: { rows: VercelAnalyticsRow[]; total: numbe
     )
 }
 
-export function AnalyticsRanking({ title, rows, total, labels, emptyLabel }: { title: string; rows: VercelAnalyticsRow[]; total: number; labels: AnalyticsRankingLabels; emptyLabel?: string }) {
+export function AnalyticsRanking({ title, rows, total, labels, emptyLabel, base }: { title: string; rows: VercelAnalyticsRow[]; total: number; labels: AnalyticsRankingLabels; emptyLabel?: string; base?: Base }) {
     const preview = rows.slice(0, 6)
     return (
         <Card>
@@ -42,12 +45,12 @@ export function AnalyticsRanking({ title, rows, total, labels, emptyLabel }: { t
                         <DialogTrigger asChild><Button variant="outline" size="sm">{labels.viewAll}</Button></DialogTrigger>
                         <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-2xl">
                             <DialogHeader><DialogTitle>{labels.dialogTitle}</DialogTitle><DialogDescription>{labels.dialogDescription}</DialogDescription></DialogHeader>
-                            <RankingRows rows={rows} total={total} />
+                            <RankingRows rows={rows} total={total} base={base} />
                         </DialogContent>
                     </Dialog>
                 )}
             </CardHeader>
-            <CardContent>{rows.length === 0 && emptyLabel ? <p className="text-sm text-muted-foreground">{emptyLabel}</p> : <RankingRows rows={preview} total={total} />}</CardContent>
+            <CardContent>{rows.length === 0 && emptyLabel ? <p className="text-sm text-muted-foreground">{emptyLabel}</p> : <RankingRows rows={preview} total={total} base={base} />}</CardContent>
         </Card>
     )
 }

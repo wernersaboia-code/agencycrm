@@ -960,6 +960,7 @@
             "allItemsDesc": "Percentual de visitantes, visitantes e visualizações por {title} no período selecionado.",
             "study": "Estudo",
             "topStudies": "Estudos mais visitados",
+            "topStudiesDesc": "Percentual das visualizações de páginas de estudo, visitantes e visualizações. Visitantes somam os idiomas da página do estudo.",
             "noStudyVisits": "Nenhuma visita a página de estudo no período.",
             "vercelUnavailable": "Dados do Vercel indisponíveis",
             "vercelNotConfigured": "Confira as três variáveis VERCEL_ANALYTICS_* no ambiente de produção.",
