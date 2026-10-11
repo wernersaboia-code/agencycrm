@@ -5,13 +5,14 @@ import type { AbstractIntlMessages } from "next-intl"
 import { NextIntlClientProvider } from "next-intl"
 import { redirect } from "next/navigation"
 import { getAuthenticatedDbUser } from "@/lib/auth"
-import { getAdminLocale } from "@/lib/i18n/admin-locale"
+import { getAdminLocale, getAdminTranslations } from "@/lib/i18n/admin-locale"
 import { loadMessages } from "@/lib/i18n/load-messages"
 import { AdminSidebar } from "@/components/admin/admin-sidebar"
 import { AdminHeader } from "@/components/admin/admin-header"
 import { MarcarNavegadorDaEquipe } from "@/components/analytics/site-analytics"
 import { CookieConsent } from "@/components/cookie-consent"
-import { getTranslations } from "next-intl/server"
+import { AdminHtmlLang } from "@/components/admin/admin-html-lang"
+import { dirForLocale, htmlLangFor } from "@/lib/i18n/locales"
 
 
 export default async function SuperAdminLayout({
@@ -33,12 +34,13 @@ export default async function SuperAdminLayout({
     // conteúdo e a moldura (sidebar/header) nunca saírem em idiomas diferentes.
     const locale = await getAdminLocale()
     const messages: AbstractIntlMessages = await loadMessages(locale)
-    // O banner do root layout segue o cookie do funil e se cala aqui; este
-    // segue a conta, como o resto do painel.
-    const tCookies = await getTranslations({ locale, namespace: "cookies" })
+    // O banner do root layout não re-renderiza em navegação suave (vindo do
+    // CRM ele ficaria no idioma do cookie) e se cala aqui; este segue a conta.
+    const tCookies = await getAdminTranslations("cookies")
 
     return (
         <NextIntlClientProvider locale={locale} messages={messages}>
+            <AdminHtmlLang lang={htmlLangFor(locale)} dir={dirForLocale(locale)} />
             <MarcarNavegadorDaEquipe />
             <div className="flex h-screen bg-background">
                 <AdminSidebar />

@@ -4,7 +4,10 @@ import { GeistSans } from "geist/font/sans"
 import { GeistMono } from "geist/font/mono"
 import { SiteAnalytics } from "@/components/analytics/site-analytics"
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import { headers } from "next/headers"
 import { getLocale, getTranslations } from "next-intl/server"
+import { getAdminLocale } from "@/lib/i18n/admin-locale"
+import { isSuperAdminPath } from "@/lib/auth/super-admin-gate"
 import { htmlLangFor, dirForLocale, type Locale } from "@/lib/i18n/locales"
 import "../globals.css"
 import { Providers } from "../providers"
@@ -55,13 +58,17 @@ export default async function AppRootLayout({
 }>) {
     // Resolvido no servidor: corrigir `lang` só depois da hidratação entrega o
     // idioma errado ao leitor de tela na primeira renderização e ao crawler.
-    const locale = (await getLocale()) as Locale
+    // O super-admin fala o idioma da CONTA (lib/i18n/admin-locale.ts), não o
+    // do cookie do funil; o caminho vem do x-pathname que o proxy injeta.
+    const pathname = (await headers()).get("x-pathname") ?? ""
+    const locale = isSuperAdminPath(pathname)
+        ? await getAdminLocale()
+        : ((await getLocale()) as Locale)
 
-    // Mesma origem do `lang` acima: o cookie NEXT_LOCALE resolvido por
-    // i18n/request.ts. O super-admin troca para o idioma da conta só dentro do
-    // seu próprio NextIntlClientProvider, abaixo daqui.
-    const tCookies = await getTranslations("cookies")
-    const tA11y = await getTranslations("a11y")
+    // Mesma origem do `lang` acima, para o link de pular e o banner não
+    // falarem outro idioma que o da página.
+    const tCookies = await getTranslations({ locale, namespace: "cookies" })
+    const tA11y = await getTranslations({ locale, namespace: "a11y" })
 
     return (
         <html lang={htmlLangFor(locale)} dir={dirForLocale(locale)} suppressHydrationWarning>

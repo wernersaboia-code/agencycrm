@@ -39,9 +39,9 @@ function subscribeConsent(callback: () => void) {
 
 /**
  * `area="admin"` é a cópia que o layout do super-admin renderiza com o idioma
- * da CONTA (ver lib/i18n/admin-locale.ts). A cópia do root layout é traduzida
- * pelo cookie NEXT_LOCALE — o idioma do funil — e por isso se cala dentro do
- * super-admin: senão o banner saía em alemão num painel em português.
+ * da CONTA (ver lib/i18n/admin-locale.ts). A cópia do root layout se cala
+ * dentro do super-admin: root layout não re-renderiza em navegação suave, e
+ * quem chegasse do CRM veria o banner no idioma do cookie do funil.
  */
 export function CookieConsent({
     labels,
