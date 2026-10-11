@@ -7,6 +7,8 @@ import { CountryAnalytics } from "@/components/admin/country-analytics"
 import { AnalyticsRanking, AnalyticsTabbedRanking } from "@/components/admin/analytics-ranking"
 import { getAdminLocale, getAdminTranslations } from "@/lib/i18n/admin-locale"
 import { getVercelWebAnalytics, type VercelAnalyticsFilters } from "@/lib/analytics/vercel-web-analytics"
+import type { VisitasDoEstudo } from "@/lib/analytics/visitas-por-estudo"
+import { prisma } from "@/lib/prisma"
 
 export const dynamic = "force-dynamic"
 
@@ -30,12 +32,22 @@ export default async function WebAnalyticsPage({ searchParams }: { searchParams:
         device: selected(params.device, 50),
         browser: selected(params.browser, 80),
         referrer: selected(params.referrer),
+        study: selected(params.study),
     }
-    const [data, locale, t] = await Promise.all([
+    const [data, locale, t, estudos] = await Promise.all([
         getVercelWebAnalytics(filters),
         getAdminLocale(),
         getAdminTranslations("admin.analytics"),
+        // Todos os estudos do catálogo, não só os visitados: o filtro também
+        // serve para confirmar que um estudo não teve visita nenhuma.
+        prisma.leadList.findMany({
+            where: { isActive: true, studyPdfUrl: { not: null } },
+            select: { slug: true, name: true },
+            orderBy: { name: "asc" },
+        }),
     ])
+    const nomeDoEstudo = new Map(estudos.map((estudo) => [estudo.slug, estudo.name]))
+    const linhasDeEstudo = data.studies.map((estudo) => linhaDeEstudo(estudo, nomeDoEstudo))
 
     const viewsPerVisitor = data.visitors > 0 ? (data.pageviews / data.visitors).toFixed(1) : "0"
 
@@ -46,14 +58,15 @@ export default async function WebAnalyticsPage({ searchParams }: { searchParams:
             <Card>
                 <CardHeader><CardTitle className="text-base">{t("filters")}</CardTitle></CardHeader>
                 <CardContent>
-                    <form className="grid gap-3 md:grid-cols-2 xl:grid-cols-6">
+                    <form className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
                         <FilterSelect name="days" label={t("period")} value={String(days)} allLabel={t("all")} options={[{ value: "1", label: t("last24Hours") }, ...[7, 30, 90].map((count) => ({ value: String(count), label: t("days", { count }) }))]} />
+                        <FilterSelect name="study" label={t("study")} value={filters.study} allLabel={t("all")} options={estudos.map((estudo) => ({ value: estudo.slug, label: estudo.name }))} />
                         <FilterSelect name="path" label={t("page")} value={filters.path} allLabel={t("all")} options={data.filterOptions.pages.map((value) => ({ value, label: value }))} />
                         <FilterSelect name="country" label={t("country")} value={filters.country} allLabel={t("all")} options={data.filterOptions.countries.map((value) => ({ value, label: `${countryFlag(value)} ${countryName(value, locale)}` }))} />
                         <FilterSelect name="device" label={t("devices")} value={filters.device} allLabel={t("all")} options={data.filterOptions.devices.map((value) => ({ value, label: value }))} />
                         <FilterSelect name="browser" label={t("browsers")} value={filters.browser} allLabel={t("all")} options={data.filterOptions.browsers.map((value) => ({ value, label: value }))} />
                         <FilterSelect name="referrer" label={t("referrer")} value={filters.referrer} allLabel={t("all")} options={data.filterOptions.referrers.map((value) => ({ value, label: value }))} />
-                        <div className="flex gap-2 md:col-span-2 xl:col-span-6"><Button type="submit">{t("applyFilters")}</Button><Button variant="outline" asChild><Link href="/super-admin/web-analytics">{t("clearFilters")}</Link></Button></div>
+                        <div className="flex gap-2 md:col-span-2 xl:col-span-4"><Button type="submit">{t("applyFilters")}</Button><Button variant="outline" asChild><Link href="/super-admin/web-analytics">{t("clearFilters")}</Link></Button></div>
                     </form>
                 </CardContent>
             </Card>
@@ -71,6 +84,7 @@ export default async function WebAnalyticsPage({ searchParams }: { searchParams:
                     <p className="text-sm text-muted-foreground">{t("visitorsMeaning")}</p>
                     <p className="text-sm text-muted-foreground">{t("teamExcluded")}</p>
                     <Card><CardHeader><CardTitle>{days === 1 ? t("trafficLast24Hours") : t("trafficEvolution")}</CardTitle></CardHeader><CardContent><VercelAnalyticsChart data={data.daily} /></CardContent></Card>
+                    <AnalyticsRanking title={t("topStudies")} rows={linhasDeEstudo} total={data.visitors} labels={rankingLabels(t, "topStudies", linhasDeEstudo.length)} emptyLabel={t("noStudyVisits")} />
                     <div className="grid gap-6 xl:grid-cols-2"><AnalyticsRanking title={t("topPagesVercel")} rows={data.allPages} total={data.visitors} labels={rankingLabels(t, "topPagesVercel", data.allPages.length)} /><CountryAnalytics rows={data.allCountries} total={data.visitors} locale={locale} labels={{ title: t("countries"), viewAll: t("viewAllCountries", { count: data.allCountries.length }), dialogTitle: t("allCountries"), dialogDescription: t("allCountriesDesc") }} /></div>
                     <div className="grid gap-6 xl:grid-cols-3"><AnalyticsRanking title={t("topReferrers")} rows={data.allReferrers} total={data.visitors} labels={rankingLabels(t, "topReferrers", data.allReferrers.length)} /><AnalyticsTabbedRanking total={data.visitors} primary={{ title: t("devices"), rows: data.allDevices, labels: rankingLabels(t, "devices", data.allDevices.length) }} secondary={{ title: t("browsers"), rows: data.allBrowsers, labels: rankingLabels(t, "browsers", data.allBrowsers.length) }} /><AnalyticsRanking title={t("operatingSystems")} rows={data.allOperatingSystems} total={data.visitors} labels={rankingLabels(t, "operatingSystems", data.allOperatingSystems.length)} /></div>
                 </>
@@ -90,6 +104,15 @@ function Kpi({ title, value, icon: Icon }: { title: string; value: string; icon:
 function rankingLabels(t: Awaited<ReturnType<typeof getAdminTranslations>>, titleKey: string, count: number) {
     const title = t(titleKey)
     return { viewAll: t("viewAllItems", { count }), dialogTitle: title, dialogDescription: t("allItemsDesc", { title }) }
+}
+
+/** Nome do estudo e o detalhe por idioma ("DE 6 · EN 1"); slug quando o estudo saiu do catálogo. */
+function linhaDeEstudo(estudo: VisitasDoEstudo, nomes: Map<string, string>) {
+    const idiomas = Object.entries(estudo.porIdioma)
+        .sort(([, a], [, b]) => b - a)
+        .map(([idioma, vistas]) => `${idioma.toUpperCase()} ${vistas}`)
+        .join(" · ")
+    return { label: `${nomes.get(estudo.slug) ?? estudo.slug} — ${idiomas}`, pageviews: estudo.pageviews, visitors: estudo.visitors }
 }
 
 function countryFlag(code: string) { return /^[A-Z]{2}$/.test(code) ? String.fromCodePoint(...[...code].map((letter) => 127397 + letter.charCodeAt(0))) : "🌐" }

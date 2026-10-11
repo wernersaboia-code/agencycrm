@@ -957,7 +957,10 @@
             "allCountriesDesc": "Percentual, visualizações e visitantes no período selecionado.",
             "operatingSystems": "Sistemas operacionais",
             "viewAllItems": "Ver todos ({count})",
-            "allItemsDesc": "Percentual, visualizações e visitantes por {title} no período selecionado.",
+            "allItemsDesc": "Percentual de visitantes, visitantes e visualizações por {title} no período selecionado.",
+            "study": "Estudo",
+            "topStudies": "Estudos mais visitados",
+            "noStudyVisits": "Nenhuma visita a página de estudo no período.",
             "vercelUnavailable": "Dados do Vercel indisponíveis",
             "vercelNotConfigured": "Confira as três variáveis VERCEL_ANALYTICS_* no ambiente de produção.",
             "vercelError": "A consulta falhou temporariamente. Os demais indicadores continuam atualizados."

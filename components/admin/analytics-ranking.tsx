@@ -31,7 +31,7 @@ function RankingRows({ rows, total }: { rows: VercelAnalyticsRow[]; total: numbe
     )
 }
 
-export function AnalyticsRanking({ title, rows, total, labels }: { title: string; rows: VercelAnalyticsRow[]; total: number; labels: AnalyticsRankingLabels }) {
+export function AnalyticsRanking({ title, rows, total, labels, emptyLabel }: { title: string; rows: VercelAnalyticsRow[]; total: number; labels: AnalyticsRankingLabels; emptyLabel?: string }) {
     const preview = rows.slice(0, 6)
     return (
         <Card>
@@ -47,7 +47,7 @@ export function AnalyticsRanking({ title, rows, total, labels }: { title: string
                     </Dialog>
                 )}
             </CardHeader>
-            <CardContent><RankingRows rows={preview} total={total} /></CardContent>
+            <CardContent>{rows.length === 0 && emptyLabel ? <p className="text-sm text-muted-foreground">{emptyLabel}</p> : <RankingRows rows={preview} total={total} />}</CardContent>
         </Card>
     )
 }

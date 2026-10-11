@@ -1,6 +1,12 @@
 import "server-only"
 
 import { unstable_cache } from "next/cache"
+import {
+    agruparPorEstudo,
+    filtroDePaginasDeEstudo,
+    filtroDoEstudo,
+    type VisitasDoEstudo,
+} from "@/lib/analytics/visitas-por-estudo"
 
 const API_URL = "https://api.vercel.com/v1/query/web-analytics/visits/aggregate"
 
@@ -28,12 +34,15 @@ export type VercelWebAnalyticsData = {
     allDevices: VercelAnalyticsRow[]
     allBrowsers: VercelAnalyticsRow[]
     allOperatingSystems: VercelAnalyticsRow[]
+    /** Visitas somadas por estudo, todos os idiomas juntos. */
+    studies: VisitasDoEstudo[]
     filterOptions: {
         pages: string[]
         countries: string[]
         devices: string[]
         browsers: string[]
         referrers: string[]
+        studies: string[]
     }
 }
 
@@ -44,6 +53,8 @@ export type VercelAnalyticsFilters = {
     device?: string
     browser?: string
     referrer?: string
+    /** Slug do estudo: soma as páginas dele em todos os idiomas. */
+    study?: string
 }
 
 type ApiRow = Record<string, unknown> & {
@@ -73,7 +84,8 @@ function emptyData(status: VercelWebAnalyticsData["status"]): VercelWebAnalytics
         allDevices: [],
         allBrowsers: [],
         allOperatingSystems: [],
-        filterOptions: { pages: [], countries: [], devices: [], browsers: [], referrers: [] },
+        studies: [],
+        filterOptions: { pages: [], countries: [], devices: [], browsers: [], referrers: [], studies: [] },
     }
 }
 
@@ -168,6 +180,7 @@ function buildFilter(filters: VercelAnalyticsFilters) {
     if (filters.device) parts.push(`deviceType eq '${escapeFilterValue(filters.device)}'`)
     if (filters.browser) parts.push(`browserName eq '${escapeFilterValue(filters.browser)}'`)
     if (filters.referrer) parts.push(`referrerHostname eq '${escapeFilterValue(filters.referrer)}'`)
+    if (filters.study) parts.push(filtroDoEstudo(filters.study))
     return parts.join(" and ")
 }
 
@@ -205,6 +218,10 @@ const getCachedVercelWebAnalytics = unstable_cache(
                 queryAggregate(token, projectId, teamId, since, until, "deviceType", 50, activeFilter),
                 queryAggregate(token, projectId, teamId, since, until, "osName", 50, activeFilter),
                 queryAggregate(token, projectId, teamId, since, until, "browserName", 50, activeFilter),
+                // Consulta própria das páginas de estudo: na lista geral elas
+                // disputam as 100 linhas com catálogo, blog e admin.
+                queryAggregate(token, projectId, teamId, since, until, "requestPath", 100,
+                    [activeFilter, filtroDePaginasDeEstudo()].filter(Boolean).join(" and ")),
             ])
             const pageRows = settledRows(filteredResults[0], "páginas")
             const countryRows = settledRows(filteredResults[1], "países")
@@ -212,6 +229,10 @@ const getCachedVercelWebAnalytics = unstable_cache(
             const deviceRows = settledRows(filteredResults[3], "dispositivos")
             const operatingSystemRows = settledRows(filteredResults[4], "sistemas operacionais")
             const browserRows = settledRows(filteredResults[5], "navegadores")
+            const studyPageRows = settledRows(filteredResults[6], "páginas de estudo")
+            // Sem a consulta própria (a API recusou o filtro), o agrupamento sai
+            // da lista geral, que pode ter cortado os estudos menos vistos.
+            const studies = agruparPorEstudo(dimensionRows(studyPageRows.length > 0 ? studyPageRows : pageRows, "requestPath"))
 
             let allPages = pageRows
             let allCountries = countryRows
@@ -261,12 +282,14 @@ const getCachedVercelWebAnalytics = unstable_cache(
                 allDevices: dimensionRows(deviceRows, "deviceType"),
                 allBrowsers: dimensionRows(browserRows, "browserName"),
                 allOperatingSystems: dimensionRows(operatingSystemRows, "osName"),
+                studies,
                 filterOptions: {
                     pages: dimensionRows(allPages, "requestPath").map((row) => row.label),
                     countries: dimensionRows(allCountries, "country").map((row) => row.label),
                     devices: dimensionRows(allDevices, "deviceType").map((row) => row.label),
                     browsers: dimensionRows(allBrowsers, "browserName").map((row) => row.label),
                     referrers: dimensionRows(allReferrers, "referrerHostname").map((row) => row.label),
+                    studies: studies.map((study) => study.slug),
                 },
             }
         } catch (error) {
@@ -274,7 +297,7 @@ const getCachedVercelWebAnalytics = unstable_cache(
             return { ...emptyData("error"), periodDays: filters.days }
         }
     },
-    ["vercel-web-analytics-filtered-v8"],
+    ["vercel-web-analytics-filtered-v9"],
     { revalidate: 60 }
 )
 

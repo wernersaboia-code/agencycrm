@@ -957,7 +957,10 @@
             "allCountriesDesc": "Anteil, Seitenaufrufe und Besucher im gewählten Zeitraum.",
             "operatingSystems": "Betriebssysteme",
             "viewAllItems": "Alle anzeigen ({count})",
-            "allItemsDesc": "Anteil, Seitenaufrufe und Besucher nach {title} im gewählten Zeitraum.",
+            "allItemsDesc": "Besucheranteil, Besucher und Seitenaufrufe nach {title} im gewählten Zeitraum.",
+            "study": "Studie",
+            "topStudies": "Meistbesuchte Studien",
+            "noStudyVisits": "Keine Besuche von Studienseiten im Zeitraum.",
             "vercelUnavailable": "Vercel-Daten nicht verfügbar",
             "vercelNotConfigured": "Prüfen Sie die drei Variablen VERCEL_ANALYTICS_* in der Produktionsumgebung.",
             "vercelError": "Die Abfrage ist vorübergehend fehlgeschlagen. Die übrigen Kennzahlen sind weiterhin aktuell."

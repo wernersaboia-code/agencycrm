@@ -957,7 +957,10 @@
             "allCountriesDesc": "Percentage, page views, and visitors in the selected period.",
             "operatingSystems": "Operating systems",
             "viewAllItems": "View all ({count})",
-            "allItemsDesc": "Percentage, page views, and visitors by {title} in the selected period.",
+            "allItemsDesc": "Share of visitors, visitors and page views by {title} in the selected period.",
+            "study": "Study",
+            "topStudies": "Most visited studies",
+            "noStudyVisits": "No study page visits in this period.",
             "vercelUnavailable": "Vercel data unavailable",
             "vercelNotConfigured": "Check the three VERCEL_ANALYTICS_* variables in production.",
             "vercelError": "The query failed temporarily. Other indicators remain available."
