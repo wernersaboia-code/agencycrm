@@ -68,6 +68,11 @@ export default async function EasyProspectHome({
             <Suspense fallback={<SectionFallback className="h-80" />}>
                 <HeroSection locale={locale} />
             </Suspense>
+            {/* Logo abaixo do hero, que tem um destaque apontando para cá: no
+                meio da página a amostra passou semanas sem um download. */}
+            <Suspense fallback={<SectionFallback className="h-64" />}>
+                <FreeSampleSection locale={locale} />
+            </Suspense>
             <Suspense fallback={<SectionFallback className="h-64" />}>
                 <IntroSection locale={locale} />
             </Suspense>
@@ -82,9 +87,6 @@ export default async function EasyProspectHome({
             </Suspense>
             <Suspense fallback={<SectionFallback className="h-96" />}>
                 <FeaturedStudiesSection locale={locale} />
-            </Suspense>
-            <Suspense fallback={<SectionFallback className="h-64" />}>
-                <FreeSampleSection locale={locale} />
             </Suspense>
             <Suspense fallback={<SectionFallback className="h-48" />}>
                 <DataQualitySection locale={locale} />

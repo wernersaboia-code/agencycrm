@@ -8,6 +8,11 @@ import { FreeSampleForm } from "./free-sample-form"
 import { getAmostraAtiva } from "@/lib/free-sample/amostra-ativa"
 import type { LandingLocale } from "./types"
 
+/** Âncora da seção, usada pelo destaque do hero. Mesmo padrão do #ablauf. */
+export function freeSampleAnchor(locale: LandingLocale): string {
+    return locale === "de" ? "leseprobe" : "amostra-gratuita"
+}
+
 /**
  * Só existe quando há amostra ativa no super-admin.
  *
@@ -24,10 +29,12 @@ export async function FreeSampleSection({ locale }: { locale: LandingLocale }) {
     const tConta = await getTranslations({ locale, namespace: "freeStudy" })
 
     return (
-        <Section tone="default" width="narrow">
+        // Logo abaixo do hero, que é `default` e chama para cá: o fundo muted
+        // separa a seção dele e da introdução, que vem em seguida.
+        <Section id={freeSampleAnchor(locale)} tone="muted" width="narrow">
             <SectionHeading eyebrow={t("eyebrow")} title={t("title")} intro={t("intro")} />
 
-            <div className="mt-6 rounded-lg border border-border bg-muted/40 p-6">
+            <div className="mt-6 rounded-lg border border-border bg-background p-6">
                 <p className="mb-4 flex items-center gap-2.5 text-sm font-medium text-foreground">
                     <FileDown className="h-5 w-5 text-brand-accent-strong" />
                     {t("fileNote")}
