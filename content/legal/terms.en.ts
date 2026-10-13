@@ -44,7 +44,7 @@ const termsEn: LegalDocument = {
             id: "propriedade",
             heading: "5. Intellectual property",
             blocks: [
-                { kind: "paragrafo", texto: "The studies and lists you purchase are intended for use by your company. Reselling, redistributing or publishing them is not permitted." },
+                { kind: "paragrafo", texto: "The studies you purchase are intended for use by your company. Reselling, redistributing or publishing them is not permitted." },
                 { kind: "paragrafo", texto: "The data you import or record in the CRM remains your responsibility. We claim no ownership over it, except as needed to operate the service." },
             ],
         },

@@ -44,7 +44,7 @@ const termsNl: LegalDocument = {
             id: "propriedade",
             heading: "5. Intellectuele eigendom",
             blocks: [
-                { kind: "paragrafo", texto: "De aangekochte studies en lijsten zijn bestemd voor gebruik door uw onderneming. Het is niet toegestaan ze door te verkopen, te verspreiden of te publiceren." },
+                { kind: "paragrafo", texto: "De aangekochte studies zijn bestemd voor gebruik door uw onderneming. Het is niet toegestaan ze door te verkopen, te verspreiden of te publiceren." },
                 { kind: "paragrafo", texto: "De gegevens die u in het CRM importeert of vastlegt, blijven onder uw verantwoordelijkheid. Wij maken er geen eigendom op aanspraak, behalve voor zover dat nodig is om de dienst te laten werken." },
             ],
         },

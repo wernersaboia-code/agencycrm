@@ -44,7 +44,7 @@ const termsDe: LegalDocument = {
             id: "propriedade",
             heading: "5. Geistiges Eigentum",
             blocks: [
-                { kind: "paragrafo", texto: "Die erworbenen Studien und Listen sind für die Nutzung durch Ihr Unternehmen bestimmt. Es ist nicht gestattet, sie weiterzuverkaufen, weiterzugeben oder zu veröffentlichen." },
+                { kind: "paragrafo", texto: "Die erworbenen Studien sind für die Nutzung durch Ihr Unternehmen bestimmt. Es ist nicht gestattet, sie weiterzuverkaufen, weiterzugeben oder zu veröffentlichen." },
                 { kind: "paragrafo", texto: "Die Daten, die Sie in das CRM importieren oder dort anlegen, bleiben in Ihrer Verantwortung. Wir beanspruchen daran kein Eigentum, außer soweit dies für den Betrieb des Dienstes erforderlich ist." },
             ],
         },

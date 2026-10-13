@@ -44,7 +44,7 @@ const termsFr: LegalDocument = {
             id: "propriedade",
             heading: "5. Propriété intellectuelle",
             blocks: [
-                { kind: "paragrafo", texto: "Les études et les listes achetées sont destinées à l'usage de votre entreprise. Il n'est pas permis de les revendre, de les redistribuer ni de les publier." },
+                { kind: "paragrafo", texto: "Les études achetées sont destinées à l'usage de votre entreprise. Il n'est pas permis de les revendre, de les redistribuer ni de les publier." },
                 { kind: "paragrafo", texto: "Les données que vous importez ou enregistrez dans le CRM restent sous votre responsabilité. Nous n'en revendiquons pas la propriété, sauf dans la mesure nécessaire au fonctionnement du service." },
             ],
         },
