@@ -59,16 +59,13 @@ export const revalidate = 3600
  * sempre no mesmo HTML (robô não manda cookie de moeda).
  *
  * Devolve só `{ slug }`: o Next combina com os params do layout de `[locale]`,
- * o que dá os 8 idiomas por estudo. Emitir apenas o locale padrão seria mais
- * barato no build, mas o layout fixa `dynamicParams = false` — e isso vale
- * para a subárvore, então par (idioma, slug) fora desta lista responderia 404
- * em vez de renderizar sob demanda. Já custou uma regressão: com só o pt na
- * lista, `/de/list/<slug>` parou de existir.
+ * o que dá os 8 idiomas por estudo.
  *
- * Consequência a vigiar: estudo publicado depois do deploy só aparece no
- * próximo build. É o mesmo compromisso que o `revalidate` do sitemap assume, e
- * o admin publica em lote, não a cada minuto — mas se isso mudar, o caminho é
- * revalidação sob demanda (revalidatePath) no fluxo de publicação.
+ * Estudo publicado depois do deploy não está nesta lista e é montado na
+ * primeira visita, depois servido do cache como os demais. Isso depende de
+ * nenhum segmento acima declarar `dynamicParams = false`: o Next aplica o
+ * valor à rota inteira, e um `true` aqui não o desfaz. Foi o que derrubou as
+ * fichas da Itália e da Espanha OTC em 13.10.2026 (404 até o próximo build).
  */
 export async function generateStaticParams() {
     const lists = await prisma.leadList.findMany({

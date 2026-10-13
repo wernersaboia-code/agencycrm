@@ -78,18 +78,15 @@ export function generateStaticParams() {
     return routing.locales.map((locale) => ({ locale }))
 }
 
-/**
- * A lista de idiomas é fechada: só os 8 de `generateStaticParams` existem.
- *
- * Sem isto, um caminho de um segmento só que não é idioma (`/llms.txt`,
- * `/ads.txt` — bots pedem esses o tempo todo) casa com `/[locale]` e o Next
- * tenta renderizá-lo sob demanda. Como a rota foi pré-renderizada, qualquer
- * API dinâmica no caminho (o `requestLocale` do next-intl lê header) estoura
- * "Page changed from static to dynamic at runtime" e o servidor responde 500
- * no lugar de 404. Com `dynamicParams = false`, o Next devolve 404 direto, sem
- * renderizar nada.
- */
-export const dynamicParams = false
+// Sem `dynamicParams = false` aqui, de propósito. Ele entrou em 28.07 para
+// `/llms.txt` e afins darem 404 em vez de 500, mas o Next aplica o valor à rota
+// inteira: qualquer segmento abaixo que o declare false faz TODO param fora do
+// build virar 404. Com ele, estudo publicado depois do deploy não tinha ficha
+// em `/list/[slug]` até o próximo build (13.10.2026, Itália e Espanha OTC).
+// O 500 já é evitado sem ele: o `notFound()` abaixo, a saída antecipada da
+// `generateMetadata` e o `request.ts` que não lê cookie com segmento presente.
+// Conferido num build de produção: `/llms.txt`, `/.env`, `/wp-login.php`,
+// `/foo/bar.txt` → 404, sem erro no log.
 
 export default async function MarketplaceLayout({
     children,
