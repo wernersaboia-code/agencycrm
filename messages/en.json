@@ -1647,12 +1647,6 @@
             }
         }
     },
-    "cookies": {
-        "message": "We use essential cookies for authentication and preferences. Analytics cookies are only loaded with your consent.",
-        "learnMore": "Learn more",
-        "decline": "Decline",
-        "accept": "Accept"
-    },
     "a11y": {
         "skipToContent": "Skip to content"
     },

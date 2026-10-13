@@ -2,7 +2,7 @@ import type { LegalDocument } from "./types"
 
 const privacyNl: LegalDocument = {
     title: "Privacyverklaring",
-    lastUpdated: "2026-07-29",
+    lastUpdated: "2026-10-13",
     sections: [
         {
             id: "responsavel",
@@ -21,7 +21,8 @@ const privacyNl: LegalDocument = {
                     "Accountgegevens: naam, e-mailadres en avatar, door u opgegeven bij de registratie en beheerd door Supabase Auth.",
                     "Aankoopgegevens: gekochte items, bedrag, valuta en downloadgeschiedenis.",
                     "Betaalgegevens: transactiekenmerken bij de betaaldienstverlener. Wij ontvangen en bewaren geen kaartnummers.",
-                    "Gebruiksgegevens van de site: bezochte pagina's en navigatiegebeurtenissen, alleen wanneer u de meetcookies accepteert.",
+                    "Gebruiksgegevens van de site: bezochte pagina's, land, type apparaat en browser, geaggregeerd en zonder cookies geteld. De meting identificeert bezoekers niet.",
+                    "Gratis studie: het e-mailadres dat u in het formulier invult, met de registratie van uw toestemming, of, wanneer u via uw account downloadt, de registratie van die download.",
                     "Gegevens die u in het CRM invoert: contacten, bedrijven en activiteitenregistraties die u importeert of aanmaakt.",
                     "Zakelijke contactgegevens van derden: de bedrijven en contactpersonen waaruit de studies in de catalogus bestaan. Zie de aparte sectie hieronder.",
                 ] },
@@ -35,7 +36,8 @@ const privacyNl: LegalDocument = {
                     "Uw account aanmaken en onderhouden, de aankoop verwerken en het gekochte onderzoek leveren: uitvoering van de overeenkomst tussen ons.",
                     "Berichten over uw aankoop sturen, zoals de bevestiging en de vrijgave van de download: uitvoering van de overeenkomst.",
                     "Verkoopgegevens bewaren gedurende de vereiste termijnen: nakoming van een wettelijke verplichting.",
-                    "Het gebruik van de site meten: toestemming, die u op elk moment kunt weigeren of intrekken via de cookiebanner.",
+                    "Het gebruik van de site geaggregeerd meten en technische fouten vastleggen om ze op te lossen: gerechtvaardigd belang om de site werkend te houden en te begrijpen hoe die wordt gebruikt.",
+                    "De via het formulier aangevraagde gratis studie toesturen: toestemming, die u geeft door het vakje in het formulier aan te vinken. Wanneer u via uw account downloadt: uitvoering van de overeenkomst.",
                 ] },
             ],
         },
@@ -61,8 +63,9 @@ const privacyNl: LegalDocument = {
                     "Supabase — database, authenticatie en bestandsopslag.",
                     "Mercado Pago — betalingsverwerking.",
                     "Stripe — betalingsverwerking.",
-                    "Vercel — hosting van de applicatie en prestatiemeting.",
-                    "Zoho — mailbox van het contactadres.",
+                    "Vercel — hosting van de applicatie en geaggregeerde meting van gebruik en prestaties, zonder cookies.",
+                    "Zoho — mailbox van het contactadres en verzending van de e-mails van de site, zoals de aankoopbevestiging.",
+                    "Sentry — vastlegging van technische fouten op de site.",
                 ] },
             ],
         },
@@ -102,8 +105,8 @@ const privacyNl: LegalDocument = {
             id: "cookies",
             heading: "9. Cookies en meting",
             blocks: [
-                { kind: "paragrafo", texto: "Wij gebruiken essentiële cookies voor authenticatie en om uw voorkeuren te onthouden, zoals de taal. Ze zijn nodig om de site te laten werken en vragen geen toestemming." },
-                { kind: "paragrafo", texto: "Cookies voor gebruiksmeting worden pas geladen nadat u ze accepteert in de banner die bij het eerste bezoek wordt getoond. Weigeren beperkt geen enkele functie." },
+                { kind: "paragrafo", texto: "Wij gebruiken alleen essentiële cookies en browseropslag: om u ingelogd te houden, de gekozen taal en valuta te onthouden en uw winkelwagen te bewaren. Ze zijn nodig om de site te laten werken en vereisen geen toestemming." },
+                { kind: "paragrafo", texto: "De gebruiksmeting van de site gebruikt geen cookies en slaat geen identificatoren op in uw browser: bezoeken worden geaggregeerd geteld, zonder bezoekers te identificeren. Daarom toont de site geen toestemmingsbanner." },
             ],
         },
         {

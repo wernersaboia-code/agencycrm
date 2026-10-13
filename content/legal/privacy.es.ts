@@ -2,7 +2,7 @@ import type { LegalDocument } from "./types"
 
 const privacyEs: LegalDocument = {
     title: "Política de Privacidad",
-    lastUpdated: "2026-07-29",
+    lastUpdated: "2026-10-13",
     sections: [
         {
             id: "responsavel",
@@ -21,7 +21,8 @@ const privacyEs: LegalDocument = {
                     "Datos de cuenta: nombre, correo electrónico y avatar, facilitados por usted en el registro y gestionados por Supabase Auth.",
                     "Datos de compra: artículos adquiridos, importe, moneda e historial de descargas.",
                     "Datos de pago: identificadores de la transacción en el proveedor de pago. No recibimos ni almacenamos números de tarjeta.",
-                    "Datos de uso del sitio: páginas visitadas y eventos de navegación, solo cuando usted acepta las cookies de medición.",
+                    "Datos de uso del sitio: páginas visitadas, país, tipo de dispositivo y navegador, contabilizados de forma agregada y sin cookies. La medición no identifica a quien visita.",
+                    "Estudio gratuito: el correo electrónico indicado en el formulario, con el registro de su consentimiento, o, cuando la descarga se hace desde la cuenta, el registro de esa descarga.",
                     "Datos introducidos por usted en el CRM: contactos, empresas y registros de actividad que importa o crea.",
                     "Datos de contacto profesional de terceros: las empresas y personas de contacto que componen los estudios del catálogo. Véase la sección específica más abajo.",
                 ] },
@@ -35,7 +36,8 @@ const privacyEs: LegalDocument = {
                     "Crear y mantener su cuenta, procesar la compra y entregar el estudio adquirido: ejecución del contrato entre nosotros.",
                     "Enviar mensajes sobre su compra, como la confirmación y la habilitación de la descarga: ejecución del contrato.",
                     "Conservar registros de venta durante los plazos exigidos: cumplimiento de una obligación legal.",
-                    "Medir el uso del sitio: consentimiento, que usted puede rechazar o retirar en cualquier momento en el banner de cookies.",
+                    "Medir el uso del sitio de forma agregada y registrar errores técnicos para corregirlos: interés legítimo en mantener el sitio en funcionamiento y entender cómo se usa.",
+                    "Enviar el estudio gratuito solicitado mediante el formulario: consentimiento, otorgado al marcar la casilla del formulario. Cuando la descarga se hace desde la cuenta: ejecución del contrato.",
                 ] },
             ],
         },
@@ -61,8 +63,9 @@ const privacyEs: LegalDocument = {
                     "Supabase — base de datos, autenticación y almacenamiento de archivos.",
                     "Mercado Pago — procesamiento de pagos.",
                     "Stripe — procesamiento de pagos.",
-                    "Vercel — alojamiento de la aplicación y medición de rendimiento.",
-                    "Zoho — buzón de la dirección de contacto.",
+                    "Vercel — alojamiento de la aplicación y medición agregada de uso y de rendimiento, sin cookies.",
+                    "Zoho — buzón de la dirección de contacto y envío de los correos del sitio, como la confirmación de compra.",
+                    "Sentry — registro de errores técnicos del sitio.",
                 ] },
             ],
         },
@@ -102,8 +105,8 @@ const privacyEs: LegalDocument = {
             id: "cookies",
             heading: "9. Cookies y medición",
             blocks: [
-                { kind: "paragrafo", texto: "Usamos cookies esenciales para la autenticación y para recordar sus preferencias, como el idioma. Son necesarias para que el sitio funcione y no dependen del consentimiento." },
-                { kind: "paragrafo", texto: "Las cookies de medición de uso solo se cargan después de que usted las acepte en el banner mostrado en la primera visita. Rechazarlas no limita ninguna funcionalidad." },
+                { kind: "paragrafo", texto: "Solo usamos cookies y almacenamiento del navegador esenciales: para mantener su sesión iniciada, recordar el idioma y la moneda elegidos y conservar el carrito. Son necesarios para que el sitio funcione y no dependen del consentimiento." },
+                { kind: "paragrafo", texto: "La medición de uso del sitio no usa cookies ni guarda identificadores en su navegador: las visitas se cuentan de forma agregada, sin identificar a quien visita. Por eso el sitio no muestra un banner de consentimiento." },
             ],
         },
         {

@@ -64,9 +64,8 @@ export default async function AppRootLayout({
     const siteLocale = (await getLocale()) as Locale
     const locale = isSuperAdminPath(pathname) ? await getAdminLocale() : siteLocale
 
-    // Mesma origem do `lang` acima, para o link de pular e o banner não
-    // falarem outro idioma que o da página.
-    const tCookies = await getTranslations({ locale, namespace: "cookies" })
+    // Mesma origem do `lang` acima, para o link de pular não falar outro
+    // idioma que o da página.
     const tA11y = await getTranslations({ locale, namespace: "a11y" })
 
     return (
@@ -93,14 +92,7 @@ export default async function AppRootLayout({
         >
             {tA11y("skipToContent")}
         </a>
-        <Providers
-            cookieConsent={{
-                message: tCookies("message"),
-                learnMore: tCookies("learnMore"),
-                decline: tCookies("decline"),
-                accept: tCookies("accept"),
-            }}
-        >
+        <Providers>
             {children}
         </Providers>
         <SiteAnalytics somenteEntrada />

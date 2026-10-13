@@ -2,7 +2,7 @@ import type { LegalDocument } from "./types"
 
 const privacyIt: LegalDocument = {
     title: "Informativa sulla privacy",
-    lastUpdated: "2026-07-29",
+    lastUpdated: "2026-10-13",
     sections: [
         {
             id: "responsavel",
@@ -21,7 +21,8 @@ const privacyIt: LegalDocument = {
                     "Dati dell'account: nome, e-mail e avatar, forniti da te in fase di registrazione e gestiti da Supabase Auth.",
                     "Dati di acquisto: articoli acquistati, importo, valuta e cronologia dei download.",
                     "Dati di pagamento: identificativi della transazione presso il fornitore di pagamento. Non riceviamo né conserviamo numeri di carta.",
-                    "Dati di utilizzo del sito: pagine visitate ed eventi di navigazione, solo quando accetti i cookie di misurazione.",
+                    "Dati di utilizzo del sito: pagine visitate, paese, tipo di dispositivo e browser, conteggiati in forma aggregata e senza cookie. La misurazione non identifica chi visita.",
+                    "Studio gratuito: l'indirizzo e-mail indicato nel modulo, con la registrazione del tuo consenso, oppure, quando il download avviene dall'account, la registrazione di quel download.",
                     "Dati inseriti da te nel CRM: contatti, aziende e registrazioni di attività che importi o crei.",
                     "Dati di contatto professionale di terzi: le aziende e le persone di contatto che compongono gli studi del catalogo. Vedi la sezione dedicata più avanti.",
                 ] },
@@ -35,7 +36,8 @@ const privacyIt: LegalDocument = {
                     "Creare e mantenere il tuo account, gestire l'acquisto e consegnare lo studio acquistato: esecuzione del contratto tra noi.",
                     "Inviare messaggi relativi al tuo acquisto, come la conferma e l'abilitazione del download: esecuzione del contratto.",
                     "Conservare le registrazioni di vendita per i termini richiesti: adempimento di un obbligo legale.",
-                    "Misurare l'uso del sito: consenso, che puoi rifiutare o revocare in qualsiasi momento dal banner dei cookie.",
+                    "Misurare l'uso del sito in forma aggregata e registrare gli errori tecnici per correggerli: legittimo interesse a mantenere il sito funzionante e a capire come viene usato.",
+                    "Inviare lo studio gratuito richiesto tramite il modulo: consenso, dato spuntando la casella del modulo. Quando il download avviene dall'account: esecuzione del contratto.",
                 ] },
             ],
         },
@@ -61,8 +63,9 @@ const privacyIt: LegalDocument = {
                     "Supabase — database, autenticazione e archiviazione dei file.",
                     "Mercado Pago — elaborazione dei pagamenti.",
                     "Stripe — elaborazione dei pagamenti.",
-                    "Vercel — hosting dell'applicazione e misurazione delle prestazioni.",
-                    "Zoho — casella dell'indirizzo di contatto.",
+                    "Vercel — hosting dell'applicazione e misurazione aggregata dell'uso e delle prestazioni, senza cookie.",
+                    "Zoho — casella dell'indirizzo di contatto e invio delle e-mail del sito, come la conferma d'acquisto.",
+                    "Sentry — registrazione degli errori tecnici del sito.",
                 ] },
             ],
         },
@@ -102,8 +105,8 @@ const privacyIt: LegalDocument = {
             id: "cookies",
             heading: "9. Cookie e misurazione",
             blocks: [
-                { kind: "paragrafo", texto: "Usiamo cookie essenziali per l'autenticazione e per ricordare le tue preferenze, come la lingua. Sono necessari al funzionamento del sito e non dipendono dal consenso." },
-                { kind: "paragrafo", texto: "I cookie di misurazione dell'uso vengono caricati solo dopo la tua accettazione nel banner mostrato alla prima visita. Rifiutarli non limita alcuna funzionalità." },
+                { kind: "paragrafo", texto: "Usiamo solo cookie e memoria del browser essenziali: per mantenerti connesso, ricordare la lingua e la valuta scelte e conservare il carrello. Sono necessari al funzionamento del sito e non dipendono dal consenso." },
+                { kind: "paragrafo", texto: "La misurazione dell'uso del sito non usa cookie né salva identificatori nel tuo browser: le visite vengono contate in forma aggregata, senza identificare chi visita. Per questo il sito non mostra un banner di consenso." },
             ],
         },
         {

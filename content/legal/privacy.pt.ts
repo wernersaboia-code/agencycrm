@@ -2,7 +2,7 @@ import type { LegalDocument } from "./types"
 
 const privacyPt: LegalDocument = {
     title: "Política de Privacidade",
-    lastUpdated: "2026-07-29",
+    lastUpdated: "2026-10-13",
     sections: [
         {
             id: "responsavel",
@@ -21,7 +21,8 @@ const privacyPt: LegalDocument = {
                     "Dados de conta: nome, e-mail e avatar, fornecidos por você no cadastro e gerenciados pelo Supabase Auth.",
                     "Dados de compra: itens adquiridos, valor, moeda e histórico de download.",
                     "Dados de pagamento: identificadores da transação no provedor de pagamento. Não recebemos nem armazenamos números de cartão.",
-                    "Dados de uso do site: páginas acessadas e eventos de navegação, apenas quando você aceita os cookies de medição.",
+                    "Dados de uso do site: páginas acessadas, país, tipo de dispositivo e navegador, contados de forma agregada e sem cookies. A medição não identifica quem visita.",
+                    "Estudo gratuito: o e-mail informado no formulário, com o registro do seu consentimento, ou, quando o download é feito pela conta, o registro desse download.",
                     "Dados inseridos por você no CRM: contatos, empresas e registros de atividade que você importa ou cadastra.",
                     "Dados de contato profissional de terceiros: as empresas e pessoas de contato que compõem os estudos do catálogo. Ver a seção específica abaixo.",
                 ] },
@@ -35,7 +36,8 @@ const privacyPt: LegalDocument = {
                     "Criar e manter a sua conta, processar a compra e entregar o estudo adquirido: execução do contrato entre nós.",
                     "Enviar mensagens sobre a sua compra, como confirmação e liberação do download: execução do contrato.",
                     "Guardar registros de venda pelos prazos exigidos: cumprimento de obrigação legal.",
-                    "Medir o uso do site: consentimento, que você pode recusar ou retirar a qualquer momento pelo banner de cookies.",
+                    "Medir o uso do site de forma agregada e registrar erros técnicos para corrigi-los: interesse legítimo em manter o site funcionando e entender como ele é usado.",
+                    "Enviar o estudo gratuito pedido pelo formulário: consentimento, dado ao marcar a caixa do formulário. Quando o download é feito pela conta: execução do contrato.",
                 ] },
             ],
         },
@@ -61,8 +63,9 @@ const privacyPt: LegalDocument = {
                     "Supabase — banco de dados, autenticação e armazenamento de arquivos.",
                     "Mercado Pago — processamento de pagamentos.",
                     "Stripe — processamento de pagamentos.",
-                    "Vercel — hospedagem da aplicação e medição de desempenho.",
-                    "Zoho — caixa do endereço de contato.",
+                    "Vercel — hospedagem da aplicação e medição agregada de uso e de desempenho, sem cookies.",
+                    "Zoho — caixa do endereço de contato e envio dos e-mails do site, como a confirmação de compra.",
+                    "Sentry — registro de erros técnicos do site.",
                 ] },
             ],
         },
@@ -102,8 +105,8 @@ const privacyPt: LegalDocument = {
             id: "cookies",
             heading: "9. Cookies e medição",
             blocks: [
-                { kind: "paragrafo", texto: "Usamos cookies essenciais para autenticação e para lembrar suas preferências, como idioma. Eles são necessários para o site funcionar e não dependem de consentimento." },
-                { kind: "paragrafo", texto: "Cookies de medição de uso só são carregados depois que você aceita, no banner exibido na primeira visita. Recusar não limita nenhuma funcionalidade." },
+                { kind: "paragrafo", texto: "Usamos apenas cookies e armazenamento do navegador essenciais: para manter você conectado, lembrar o idioma e a moeda escolhidos e guardar o carrinho. Eles são necessários para o site funcionar e não dependem de consentimento." },
+                { kind: "paragrafo", texto: "A medição de uso do site não usa cookies nem grava identificadores no seu navegador: as visitas são contadas de forma agregada, sem identificar quem visita. Por isso o site não exibe banner de consentimento." },
             ],
         },
         {

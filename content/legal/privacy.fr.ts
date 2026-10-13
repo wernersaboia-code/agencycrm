@@ -2,7 +2,7 @@ import type { LegalDocument } from "./types"
 
 const privacyFr: LegalDocument = {
     title: "Politique de confidentialité",
-    lastUpdated: "2026-07-29",
+    lastUpdated: "2026-10-13",
     sections: [
         {
             id: "responsavel",
@@ -21,7 +21,8 @@ const privacyFr: LegalDocument = {
                     "Données de compte : nom, adresse e-mail et avatar, fournis par vous lors de l'inscription et gérés par Supabase Auth.",
                     "Données d'achat : articles acquis, montant, devise et historique de téléchargement.",
                     "Données de paiement : identifiants de la transaction chez le prestataire de paiement. Nous ne recevons ni ne conservons de numéros de carte.",
-                    "Données d'utilisation du site : pages consultées et événements de navigation, uniquement lorsque vous acceptez les cookies de mesure.",
+                    "Données d'utilisation du site : pages consultées, pays, type d'appareil et navigateur, comptabilisés de manière agrégée et sans cookies. La mesure n'identifie pas les visiteurs.",
+                    "Étude gratuite : l'adresse e-mail indiquée dans le formulaire, avec la preuve de votre consentement, ou, lorsque le téléchargement se fait depuis votre compte, l'enregistrement de ce téléchargement.",
                     "Données que vous saisissez dans le CRM : contacts, entreprises et enregistrements d'activité que vous importez ou créez.",
                     "Données de contact professionnel de tiers : les entreprises et les personnes de contact qui composent les études du catalogue. Voir la section dédiée ci-dessous.",
                 ] },
@@ -35,7 +36,8 @@ const privacyFr: LegalDocument = {
                     "Créer et maintenir votre compte, traiter l'achat et livrer l'étude acquise : exécution du contrat qui nous lie.",
                     "Envoyer des messages relatifs à votre achat, comme la confirmation et la mise à disposition du téléchargement : exécution du contrat.",
                     "Conserver les registres de vente pendant les durées exigées : respect d'une obligation légale.",
-                    "Mesurer l'utilisation du site : consentement, que vous pouvez refuser ou retirer à tout moment via la bannière de cookies.",
+                    "Mesurer l'utilisation du site de manière agrégée et enregistrer les erreurs techniques pour les corriger : intérêt légitime à maintenir le site en fonctionnement et à comprendre comment il est utilisé.",
+                    "Envoyer l'étude gratuite demandée via le formulaire : consentement, donné en cochant la case du formulaire. Lorsque le téléchargement se fait depuis votre compte : exécution du contrat.",
                 ] },
             ],
         },
@@ -61,8 +63,9 @@ const privacyFr: LegalDocument = {
                     "Supabase — base de données, authentification et stockage de fichiers.",
                     "Mercado Pago — traitement des paiements.",
                     "Stripe — traitement des paiements.",
-                    "Vercel — hébergement de l'application et mesure de performance.",
-                    "Zoho — boîte de l'adresse de contact.",
+                    "Vercel — hébergement de l'application et mesure agrégée de l'utilisation et de la performance, sans cookies.",
+                    "Zoho — boîte de l'adresse de contact et envoi des e-mails du site, comme la confirmation d'achat.",
+                    "Sentry — enregistrement des erreurs techniques du site.",
                 ] },
             ],
         },
@@ -102,8 +105,8 @@ const privacyFr: LegalDocument = {
             id: "cookies",
             heading: "9. Cookies et mesure",
             blocks: [
-                { kind: "paragrafo", texto: "Nous utilisons des cookies essentiels pour l'authentification et pour mémoriser vos préférences, comme la langue. Ils sont nécessaires au fonctionnement du site et ne dépendent pas du consentement." },
-                { kind: "paragrafo", texto: "Les cookies de mesure d'audience ne sont chargés qu'après votre acceptation, dans la bannière affichée lors de la première visite. Les refuser ne limite aucune fonctionnalité." },
+                { kind: "paragrafo", texto: "Nous utilisons uniquement des cookies et un stockage du navigateur essentiels : pour vous garder connecté, mémoriser la langue et la devise choisies et conserver votre panier. Ils sont nécessaires au fonctionnement du site et ne dépendent pas du consentement." },
+                { kind: "paragrafo", texto: "La mesure d'audience du site n'utilise pas de cookies et n'enregistre aucun identifiant dans votre navigateur : les visites sont comptées de manière agrégée, sans identifier les visiteurs. C'est pourquoi le site n'affiche pas de bannière de consentement." },
             ],
         },
         {

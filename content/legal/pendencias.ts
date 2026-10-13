@@ -22,11 +22,10 @@ export const PENDENCIAS_ACEITAS = [
     "privacy.responsavel.enderecoPostal",
     "privacy.representanteUE",
     "privacy.baseLegal.listas",
-    "terms.foroLei",
 ] as const
 
 /** Ids de seção que, por estarem pendentes, não podem existir em documento. */
 export const SECOES_PENDENTES: Record<string, readonly string[]> = {
     privacy: ["representanteUE"],
-    terms: ["foroLei"],
+    terms: [],
 }

@@ -2,7 +2,7 @@ import type { LegalDocument } from "./types"
 
 const privacyEn: LegalDocument = {
     title: "Privacy Policy",
-    lastUpdated: "2026-07-29",
+    lastUpdated: "2026-10-13",
     sections: [
         {
             id: "responsavel",
@@ -21,7 +21,8 @@ const privacyEn: LegalDocument = {
                     "Account data: name, email and avatar, provided by you at sign-up and managed by Supabase Auth.",
                     "Purchase data: items bought, amount, currency and download history.",
                     "Payment data: transaction identifiers at the payment provider. We neither receive nor store card numbers.",
-                    "Site usage data: pages visited and navigation events, only when you accept the measurement cookies.",
+                    "Site usage data: pages visited, country, device type and browser, counted in aggregate and without cookies. The measurement does not identify who visits.",
+                    "Free study: the email address entered in the form, with a record of your consent, or, when the download is made from your account, a record of that download.",
                     "Data you enter in the CRM: contacts, companies and activity records that you import or create.",
                     "Third-party professional contact data: the companies and contact people that make up the catalogue studies. See the dedicated section below.",
                 ] },
@@ -35,7 +36,8 @@ const privacyEn: LegalDocument = {
                     "Creating and maintaining your account, processing the purchase and delivering the study bought: performance of the contract between us.",
                     "Sending messages about your purchase, such as confirmation and download release: performance of the contract.",
                     "Keeping sales records for the periods required: compliance with a legal obligation.",
-                    "Measuring site usage: consent, which you can refuse or withdraw at any time through the cookie banner.",
+                    "Measuring site usage in aggregate and logging technical errors to fix them: legitimate interest in keeping the site working and understanding how it is used.",
+                    "Sending the free study requested through the form: consent, given by ticking the box in the form. When the download is made from your account: performance of the contract.",
                 ] },
             ],
         },
@@ -61,8 +63,9 @@ const privacyEn: LegalDocument = {
                     "Supabase — database, authentication and file storage.",
                     "Mercado Pago — payment processing.",
                     "Stripe — payment processing.",
-                    "Vercel — application hosting and performance measurement.",
-                    "Zoho — mailbox for the contact address.",
+                    "Vercel — application hosting and aggregate usage and performance measurement, without cookies.",
+                    "Zoho — mailbox for the contact address and sending of the site's emails, such as the purchase confirmation.",
+                    "Sentry — logging of technical errors on the site.",
                 ] },
             ],
         },
@@ -102,8 +105,8 @@ const privacyEn: LegalDocument = {
             id: "cookies",
             heading: "9. Cookies and measurement",
             blocks: [
-                { kind: "paragrafo", texto: "We use essential cookies for authentication and to remember your preferences, such as language. They are needed for the site to work and do not depend on consent." },
-                { kind: "paragrafo", texto: "Usage measurement cookies are only loaded after you accept them in the banner shown on your first visit. Refusing does not limit any functionality." },
+                { kind: "paragrafo", texto: "We only use essential cookies and browser storage: to keep you signed in, remember the language and currency you chose and keep your cart. They are needed for the site to work and do not depend on consent." },
+                { kind: "paragrafo", texto: "Site usage measurement does not use cookies or store identifiers in your browser: visits are counted in aggregate, without identifying who visits. That is why the site does not show a consent banner." },
             ],
         },
         {

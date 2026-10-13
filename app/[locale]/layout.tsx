@@ -103,7 +103,6 @@ export default async function MarketplaceLayout({
 
     const messages = await getMessages()
 
-    const tCookies = await getTranslations({ locale, namespace: "cookies" })
     const tA11y = await getTranslations({ locale, namespace: "a11y" })
 
     return (
@@ -129,14 +128,7 @@ export default async function MarketplaceLayout({
         >
             {tA11y("skipToContent")}
         </a>
-        <Providers
-            cookieConsent={{
-                message: tCookies("message"),
-                learnMore: tCookies("learnMore"),
-                decline: tCookies("decline"),
-                accept: tCookies("accept"),
-            }}
-        >
+        <Providers>
             <NextIntlClientProvider locale={locale} messages={semTextosDoAdmin(messages)}>
                 <CartProvider>
                     <div className="min-h-screen flex flex-col">

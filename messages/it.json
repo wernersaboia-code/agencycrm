@@ -585,12 +585,6 @@
     "legal": {
         "lastUpdated": "Ultimo aggiornamento: {date}"
     },
-    "cookies": {
-        "message": "Utilizziamo cookie essenziali per l'autenticazione e le preferenze. I cookie di analisi vengono caricati solo con il tuo consenso.",
-        "learnMore": "Scopri di più",
-        "decline": "Rifiuta",
-        "accept": "Accetta"
-    },
     "a11y": {
         "skipToContent": "Vai al contenuto"
     },

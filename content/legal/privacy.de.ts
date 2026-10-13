@@ -2,7 +2,7 @@ import type { LegalDocument } from "./types"
 
 const privacyDe: LegalDocument = {
     title: "Datenschutzerklärung",
-    lastUpdated: "2026-07-29",
+    lastUpdated: "2026-10-13",
     sections: [
         {
             id: "responsavel",
@@ -21,7 +21,8 @@ const privacyDe: LegalDocument = {
                     "Kontodaten: Name, E-Mail-Adresse und Avatar, die Sie bei der Registrierung angeben und die über Supabase Auth verwaltet werden.",
                     "Kaufdaten: erworbene Artikel, Betrag, Währung und Download-Verlauf.",
                     "Zahlungsdaten: Transaktionskennungen beim Zahlungsdienstleister. Wir erhalten und speichern keine Kartennummern.",
-                    "Nutzungsdaten der Website: aufgerufene Seiten und Navigationsereignisse, nur wenn Sie die Messcookies akzeptieren.",
+                    "Nutzungsdaten der Website: aufgerufene Seiten, Land, Gerätetyp und Browser, aggregiert und ohne Cookies gezählt. Die Messung identifiziert die Besucher nicht.",
+                    "Kostenlose Studie: die im Formular angegebene E-Mail-Adresse mit dem Nachweis Ihrer Einwilligung oder, wenn der Download über Ihr Konto erfolgt, der Nachweis dieses Downloads.",
                     "Von Ihnen im CRM eingegebene Daten: Kontakte, Unternehmen und Aktivitätseinträge, die Sie importieren oder anlegen.",
                     "Berufliche Kontaktdaten Dritter: die Unternehmen und Ansprechpersonen, aus denen die Studien des Katalogs bestehen. Siehe den eigenen Abschnitt weiter unten.",
                 ] },
@@ -35,7 +36,8 @@ const privacyDe: LegalDocument = {
                     "Ihr Konto anlegen und führen, den Kauf abwickeln und die erworbene Studie bereitstellen: Erfüllung des Vertrags zwischen uns.",
                     "Nachrichten zu Ihrem Kauf senden, etwa Bestätigung und Freigabe des Downloads: Erfüllung des Vertrags.",
                     "Verkaufsunterlagen für die vorgeschriebenen Fristen aufbewahren: Erfüllung einer rechtlichen Verpflichtung.",
-                    "Die Nutzung der Website messen: Einwilligung, die Sie jederzeit über das Cookie-Banner verweigern oder widerrufen können.",
+                    "Die Nutzung der Website aggregiert messen und technische Fehler protokollieren, um sie zu beheben: berechtigtes Interesse daran, die Website funktionsfähig zu halten und zu verstehen, wie sie genutzt wird.",
+                    "Die über das Formular angeforderte kostenlose Studie zusenden: Einwilligung, die Sie durch Ankreuzen des Kästchens im Formular erteilen. Wenn der Download über Ihr Konto erfolgt: Vertragserfüllung.",
                 ] },
             ],
         },
@@ -61,8 +63,9 @@ const privacyDe: LegalDocument = {
                     "Supabase — Datenbank, Authentifizierung und Dateispeicherung.",
                     "Mercado Pago — Zahlungsabwicklung.",
                     "Stripe — Zahlungsabwicklung.",
-                    "Vercel — Hosting der Anwendung und Leistungsmessung.",
-                    "Zoho — Postfach der Kontaktadresse.",
+                    "Vercel — Hosting der Anwendung sowie aggregierte Nutzungs- und Leistungsmessung, ohne Cookies.",
+                    "Zoho — Postfach der Kontaktadresse und Versand der E-Mails der Website, etwa der Kaufbestätigung.",
+                    "Sentry — Protokollierung technischer Fehler der Website.",
                 ] },
             ],
         },
@@ -102,8 +105,8 @@ const privacyDe: LegalDocument = {
             id: "cookies",
             heading: "9. Cookies und Messung",
             blocks: [
-                { kind: "paragrafo", texto: "Wir verwenden unbedingt erforderliche Cookies für die Authentifizierung und um Ihre Einstellungen wie die Sprache zu speichern. Sie sind für den Betrieb der Website notwendig und setzen keine Einwilligung voraus." },
-                { kind: "paragrafo", texto: "Cookies zur Nutzungsmessung werden erst geladen, nachdem Sie im Banner beim ersten Besuch zugestimmt haben. Eine Ablehnung schränkt keine Funktion ein." },
+                { kind: "paragrafo", texto: "Wir verwenden ausschließlich unbedingt erforderliche Cookies und Browserspeicher: um Sie angemeldet zu halten, die gewählte Sprache und Währung zu speichern und Ihren Warenkorb zu bewahren. Sie sind für den Betrieb der Website notwendig und setzen keine Einwilligung voraus." },
+                { kind: "paragrafo", texto: "Die Nutzungsmessung der Website verwendet keine Cookies und speichert keine Kennungen in Ihrem Browser: Besuche werden aggregiert gezählt, ohne die Besucher zu identifizieren. Deshalb zeigt die Website kein Einwilligungsbanner." },
             ],
         },
         {
