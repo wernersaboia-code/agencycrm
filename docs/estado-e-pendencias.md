@@ -19,6 +19,15 @@ pagas.
 >   — no `main` o arquivo `components/admin/leads-upload-modal.tsx` foi corrigido em 03/09
 >   (resta apenas a cópia dentro da worktree do `claude/elastic-poitras-3a4395`).
 
+## Próximo passo fundamental — infraestrutura
+
+O site roda na Vercel, mas a operação já tem uma VPS Hetzner madura (Caddy com TLS,
+Prometheus/Alertmanager, backups para R2 e pipeline de deploy) hospedando Foodie e
+Storyverse. O `agencycrm` é stateless — banco, auth e arquivos no Supabase —, então
+a migração não move dados e libera a decisão de migração do Prisma de dentro do
+build. Plano completo, fases e riscos em
+[`plans/2026-10-21-migracao-vps.md`](plans/2026-10-21-migracao-vps.md).
+
 ## Em uma frase
 
 O Paddle reprovou `easyprospect.com.br` enquadrando o site em *Direct Marketing
