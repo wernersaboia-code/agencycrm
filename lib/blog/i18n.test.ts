@@ -9,6 +9,10 @@ describe("blog labels", () => {
             expect(labels.readMore.length).toBeGreaterThan(0)
             expect(labels.publishedOn.length).toBeGreaterThan(0)
             expect(labels.allCategories.length).toBeGreaterThan(0)
+            expect(labels.previous.length).toBeGreaterThan(0)
+            expect(labels.next.length).toBeGreaterThan(0)
+            expect(labels.pageOf).toContain("{current}")
+            expect(labels.pageOf).toContain("{total}")
             expect(Object.keys(labels.localeName)).toHaveLength(8)
         }
     })

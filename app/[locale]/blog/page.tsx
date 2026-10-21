@@ -5,6 +5,7 @@ import type { Metadata } from "next"
 import { isBlogLocale, dirForLocale, type BlogLocale } from "@/lib/blog/locales"
 import { getBlogLabels } from "@/lib/blog/i18n"
 import { getCategoriesWithPosts, getPublishedPostsForLocale, localesComPostPublicado } from "@/lib/blog/queries"
+import { BLOG_PAGE_SIZE, normalizarPagina, totalDePaginas } from "@/lib/blog/pagination"
 import { PostCard } from "@/components/blog/post-card"
 import { getPathname } from "@/lib/i18n/navigation"
 import { alternatesFor } from "@/lib/i18n/alternates"
@@ -47,10 +48,30 @@ export default async function BlogIndexPage({
     const { categoria, page } = await searchParams
     const labels = getBlogLabels(locale)
 
-    const [{ posts }, categories] = await Promise.all([
-        getPublishedPostsForLocale(locale, { categoryKey: categoria, page: page ? Number(page) : 1 }),
+    const paginaPedida = normalizarPagina(page)
+    const [consulta, categories] = await Promise.all([
+        getPublishedPostsForLocale(locale, { categoryKey: categoria, page: paginaPedida, pageSize: BLOG_PAGE_SIZE }),
         getCategoriesWithPosts(locale),
     ])
+
+    // Página fora do intervalo (link antigo, URL editada à mão) mostra a última
+    // em vez de uma grade vazia — o índice já foi indexado com outros totais.
+    const paginas = totalDePaginas(consulta.total)
+    const paginaAtual = Math.min(paginaPedida, paginas)
+    const { posts } = paginaAtual === paginaPedida
+        ? consulta
+        : await getPublishedPostsForLocale(locale, { categoryKey: categoria, page: paginaAtual, pageSize: BLOG_PAGE_SIZE })
+
+    const hrefDaPagina = (p: number) => getPathname({
+        href: {
+            pathname: "/blog",
+            query: {
+                ...(categoria ? { categoria } : {}),
+                ...(p > 1 ? { page: p } : {}),
+            },
+        },
+        locale,
+    })
 
     return (
         <div className="min-h-screen bg-white text-gray-950" dir={dirForLocale(locale)}>
@@ -81,6 +102,32 @@ export default async function BlogIndexPage({
                                 dateLabel={p.publishedAt ? new Date(p.publishedAt).toLocaleDateString(locale) : ""} />
                         ))}
                     </div>
+                )}
+
+                {paginas > 1 && (
+                    <nav className="mt-10 flex items-center justify-between gap-4">
+                        {paginaAtual > 1
+                            ? <Link href={hrefDaPagina(paginaAtual - 1)} rel="prev"
+                                className="rounded-full border px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-50">
+                                {labels.previous}
+                            </Link>
+                            : <span aria-disabled="true"
+                                className="rounded-full border px-4 py-2 text-sm text-gray-300">
+                                {labels.previous}
+                            </span>}
+                        <span className="text-sm text-gray-500">
+                            {labels.pageOf.replace("{current}", String(paginaAtual)).replace("{total}", String(paginas))}
+                        </span>
+                        {paginaAtual < paginas
+                            ? <Link href={hrefDaPagina(paginaAtual + 1)} rel="next"
+                                className="rounded-full border px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-50">
+                                {labels.next}
+                            </Link>
+                            : <span aria-disabled="true"
+                                className="rounded-full border px-4 py-2 text-sm text-gray-300">
+                                {labels.next}
+                            </span>}
+                    </nav>
                 )}
             </div>
         </div>
