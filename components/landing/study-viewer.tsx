@@ -25,7 +25,7 @@ import {
  * O link em nova aba não é enfeite: o visualizador nativo do iOS não rola
  * PDFs dentro de iframe (mostra só a primeira página). É a saída para mobile.
  */
-export function StudyViewer({ fileName }: { fileName: string }) {
+export function StudyViewer() {
     const t = useTranslations("landing.freeSample")
     const pdfUrl = "/api/free-sample/pdf"
 
@@ -36,7 +36,10 @@ export function StudyViewer({ fileName }: { fileName: string }) {
                     <FileText className="h-7 w-7" aria-hidden="true" />
                 </div>
                 <div className="min-w-0">
-                    <p className="truncate font-medium text-foreground">{fileName}</p>
+                    {/* Nome de arquivo é detalhe de armazenamento
+                        (`Bolivia_HoReCa_Market_Entry_Study.pdf`), não rótulo
+                        de produto — e não é traduzido. */}
+                    <p className="font-medium text-foreground">{t("viewerFileLabel")}</p>
                     <p className="mt-1 text-sm text-muted-foreground">{t("viewerDescription")}</p>
                 </div>
             </div>

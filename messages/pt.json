@@ -215,6 +215,7 @@
             "fileNote": "Estudo completo em PDF. Leia aqui mesmo, sem cadastro.",
             "viewerTitle": "Estudo gratuito",
             "viewerDescription": "Leitura completa do estudo, sem cadastro.",
+            "viewerFileLabel": "Estudo de entrada em mercado",
             "viewerCta": "Ler o estudo",
             "viewerNewTab": "Abrir em nova aba",
             "emailLabel": "Seu e-mail",

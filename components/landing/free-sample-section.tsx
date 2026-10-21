@@ -39,7 +39,7 @@ export async function FreeSampleSection({ locale }: { locale: LandingLocale }) {
                     <FileText className="h-5 w-5 text-brand-accent-strong" />
                     {t("fileNote")}
                 </p>
-                <StudyViewer fileName={amostra.fileName} />
+                <StudyViewer />
             </div>
 
             {/* A leitura é aberta; a conta é para quem quer o estudo guardado
