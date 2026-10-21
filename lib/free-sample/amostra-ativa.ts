@@ -32,7 +32,11 @@ export const getAmostraAtiva = unstable_cache(
         try {
             return await prisma.freeSample.findFirst({
                 where: { isActive: true },
-                select: { id: true },
+                // `filePath`/`fileName` alimentam o visualizador da home. A URL
+                // assinada NÃO pode entrar neste cache: expira, e o valor
+                // ficaria preso até alguém revalidar a tag. Quem precisa da URL
+                // gera na hora (`app/api/free-sample/pdf/route.ts`).
+                select: { id: true, filePath: true, fileName: true },
             })
         } catch (error) {
             // Só toleramos o erro "tabela não existe" (P2021): é o estado

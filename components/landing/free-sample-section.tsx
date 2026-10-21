@@ -2,9 +2,9 @@
 // eslint-disable-next-line no-restricted-imports -- usado só para /sign-up, fora do segmento de locale
 import NextLink from "next/link"
 import { getTranslations } from "next-intl/server"
-import { FileDown } from "lucide-react"
+import { FileText } from "lucide-react"
 import { Section, SectionHeading } from "./section"
-import { FreeSampleForm } from "./free-sample-form"
+import { StudyViewer } from "./study-viewer"
 import { getAmostraAtiva } from "@/lib/free-sample/amostra-ativa"
 import type { LandingLocale } from "./types"
 
@@ -34,16 +34,16 @@ export async function FreeSampleSection({ locale }: { locale: LandingLocale }) {
         <Section id={freeSampleAnchor(locale)} tone="muted" width="narrow">
             <SectionHeading eyebrow={t("eyebrow")} title={t("title")} intro={t("intro")} />
 
-            <div className="mt-6 rounded-lg border border-border bg-background p-6">
+            <div className="mt-6">
                 <p className="mb-4 flex items-center gap-2.5 text-sm font-medium text-foreground">
-                    <FileDown className="h-5 w-5 text-brand-accent-strong" />
+                    <FileText className="h-5 w-5 text-brand-accent-strong" />
                     {t("fileNote")}
                 </p>
-                <FreeSampleForm locale={locale} />
+                <StudyViewer fileName={amostra.fileName} />
             </div>
 
-            {/* O formulário é o caminho curto; a conta é para quem quer o
-                estudo guardado junto das compras. Os dois entregam o mesmo. */}
+            {/* A leitura é aberta; a conta é para quem quer o estudo guardado
+                junto das compras. Os dois entregam o mesmo arquivo. */}
             <p className="mt-4 text-center text-sm text-muted-foreground">
                 {tConta("homeSignUpText")}{" "}
                 <NextLink
