@@ -108,7 +108,9 @@ export function StudyViewer({
                                 ) : (
                                     // Páginas ainda não geradas (ou o desenho falhou no
                                     // admin): uma folha neutra, o bloco segue funcionando.
-                                    <span className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-muted-foreground">
+                                    // `bg-card` cobre o branco da moldura (que é papel para
+                                    // as páginas): no tema escuro o texto sumia no branco.
+                                    <span className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-card text-muted-foreground">
                                         <FileText className="h-10 w-10 text-brand-accent-strong" aria-hidden />
                                         <span className="px-6 text-center text-sm font-medium text-foreground">
                                             {t("viewerFileLabel")}
