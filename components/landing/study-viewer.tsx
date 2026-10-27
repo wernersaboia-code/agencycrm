@@ -61,89 +61,98 @@ export function StudyViewer({
     const next = (index + 1) % pages.length
 
     return (
-        <div id={id} className="mx-auto w-full max-w-sm scroll-mt-20">
+        <div id={id} className="mx-auto w-full max-w-sm scroll-mt-20 md:max-w-3xl">
             <Dialog>
-                <div className="rounded-xl border border-border bg-card p-5 shadow-xl shadow-brand/10">
-                    <p className="text-xs font-semibold uppercase tracking-wider text-brand-accent-strong">
-                        {t("eyebrow")}
-                    </p>
-                    <p className="mt-1 font-semibold text-foreground">{t("title")}</p>
-
-                    <DialogTrigger asChild>
-                        <button
-                            type="button"
-                            aria-label={t("viewerCta")}
-                            className="group relative mt-4 block w-full cursor-pointer"
-                            onMouseEnter={() => setPaused(true)}
-                            onMouseLeave={() => setPaused(false)}
-                            onFocus={() => setPaused(true)}
-                            onBlur={() => setPaused(false)}
-                        >
-                            {/* Folha de trás: dá a ideia de documento. */}
-                            <span
-                                aria-hidden
-                                className="absolute inset-0 translate-x-2 translate-y-2 rotate-2 rounded-md border border-border bg-muted"
-                            />
-                            {/* Moldura A4, o formato dos estudos; `object-contain` nas
-                                páginas para um PDF em Carta não perder o rodapé. */}
-                            <span className="relative block aspect-[1/1.414] overflow-hidden rounded-md border border-border bg-white shadow-md transition-shadow group-hover:shadow-lg">
-                                {pages.length > 0 ? (
-                                    <>
-                                        <AnimatePresence initial={false}>
-                                            <motion.img
-                                                key={pages[index]}
-                                                src={pages[index]}
-                                                alt=""
-                                                className="absolute inset-0 h-full w-full object-contain"
-                                                initial={{ opacity: 0, x: 16 }}
-                                                animate={{ opacity: 1, x: 0 }}
-                                                exit={{ opacity: 0, x: -16 }}
-                                                transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
-                                            />
-                                        </AnimatePresence>
-                                        {/* Pré-carrega a próxima página para a troca não piscar. */}
-                                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                                        <img src={pages[next]} alt="" aria-hidden className="hidden" />
-                                    </>
-                                ) : (
-                                    // Páginas ainda não geradas (ou o desenho falhou no
-                                    // admin): uma folha neutra, o bloco segue funcionando.
-                                    // `bg-card` cobre o branco da moldura (que é papel para
-                                    // as páginas): no tema escuro o texto sumia no branco.
-                                    <span className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-card text-muted-foreground">
-                                        <FileText className="h-10 w-10 text-brand-accent-strong" aria-hidden />
-                                        <span className="px-6 text-center text-sm font-medium text-foreground">
-                                            {t("viewerFileLabel")}
+                {/* Abaixo do hero, na horizontal: a página folheando de um lado,
+                    o convite do outro. No celular empilha. */}
+                <div className="grid items-center gap-6 rounded-xl border border-border bg-card p-5 shadow-xl shadow-brand/10 md:grid-cols-[minmax(0,17rem)_1fr] md:gap-10 md:p-8">
+                    {/* No celular a folha na largura toda ocupava a tela inteira. */}
+                    <div className="mx-auto w-full max-w-60 md:max-w-none">
+                        <DialogTrigger asChild>
+                            <button
+                                type="button"
+                                aria-label={t("viewerCta")}
+                                className="group relative block w-full cursor-pointer"
+                                onMouseEnter={() => setPaused(true)}
+                                onMouseLeave={() => setPaused(false)}
+                                onFocus={() => setPaused(true)}
+                                onBlur={() => setPaused(false)}
+                            >
+                                {/* Folha de trás: dá a ideia de documento. */}
+                                <span
+                                    aria-hidden
+                                    className="absolute inset-0 translate-x-2 translate-y-2 rotate-2 rounded-md border border-border bg-muted"
+                                />
+                                {/* Moldura A4, o formato dos estudos; `object-contain` nas
+                                    páginas para um PDF em Carta não perder o rodapé. */}
+                                <span className="relative block aspect-[1/1.414] overflow-hidden rounded-md border border-border bg-white shadow-md transition-shadow group-hover:shadow-lg">
+                                    {pages.length > 0 ? (
+                                        <>
+                                            <AnimatePresence initial={false}>
+                                                <motion.img
+                                                    key={pages[index]}
+                                                    src={pages[index]}
+                                                    alt=""
+                                                    className="absolute inset-0 h-full w-full object-contain"
+                                                    initial={{ opacity: 0, x: 16 }}
+                                                    animate={{ opacity: 1, x: 0 }}
+                                                    exit={{ opacity: 0, x: -16 }}
+                                                    transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+                                                />
+                                            </AnimatePresence>
+                                            {/* Pré-carrega a próxima página para a troca não piscar. */}
+                                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                                            <img src={pages[next]} alt="" aria-hidden className="hidden" />
+                                        </>
+                                    ) : (
+                                        // Páginas ainda não geradas (a home gera em segundo
+                                        // plano): uma folha neutra, o bloco segue funcionando.
+                                        // `bg-card` cobre o branco da moldura (que é papel para
+                                        // as páginas): no tema escuro o texto sumia no branco.
+                                        <span className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-card text-muted-foreground">
+                                            <FileText className="h-10 w-10 text-brand-accent-strong" aria-hidden />
+                                            <span className="px-6 text-center text-sm font-medium text-foreground">
+                                                {t("viewerFileLabel")}
+                                            </span>
                                         </span>
-                                    </span>
-                                )}
-                            </span>
-                        </button>
-                    </DialogTrigger>
+                                    )}
+                                </span>
+                            </button>
+                        </DialogTrigger>
 
-                    {pages.length > 0 && (
-                        <p className="mt-3 text-center text-xs tabular-nums text-muted-foreground" aria-hidden>
-                            {index + 1} / {pages.length}
+                        {pages.length > 0 && (
+                            <p className="mt-3 text-center text-xs tabular-nums text-muted-foreground" aria-hidden>
+                                {index + 1} / {pages.length}
+                            </p>
+                        )}
+                    </div>
+
+                    <div className="text-center md:text-left">
+                        <p className="text-xs font-semibold uppercase tracking-wider text-brand-accent-strong">
+                            {t("eyebrow")}
                         </p>
-                    )}
+                        <p className="mt-2 text-2xl font-bold text-foreground">{t("title")}</p>
+                        <p className="mt-3 leading-7 text-muted-foreground">{t("intro")}</p>
+                        <p className="mt-2 text-sm text-muted-foreground">{t("fileNote")}</p>
 
-                    <DialogTrigger asChild>
-                        <Button size="lg" className="mt-3 w-full bg-brand text-brand-foreground hover:bg-brand-hover">
-                            {t("viewerCta")}
-                        </Button>
-                    </DialogTrigger>
+                        <DialogTrigger asChild>
+                            <Button size="lg" className="mt-6 w-full bg-brand text-brand-foreground hover:bg-brand-hover md:w-auto">
+                                {t("viewerCta")}
+                            </Button>
+                        </DialogTrigger>
 
-                    {/* A leitura é aberta; a conta é para quem quer o estudo
-                        guardado junto das compras. */}
-                    <p className="mt-3 text-center text-xs text-muted-foreground">
-                        {signUpText}{" "}
-                        <a
-                            href={signUpHref}
-                            className="font-medium text-brand-accent-strong underline underline-offset-4 hover:no-underline"
-                        >
-                            {signUpCta}
-                        </a>
-                    </p>
+                        {/* A leitura é aberta; a conta é para quem quer o estudo
+                            guardado junto das compras. */}
+                        <p className="mt-4 text-sm text-muted-foreground">
+                            {signUpText}{" "}
+                            <a
+                                href={signUpHref}
+                                className="font-medium text-brand-accent-strong underline underline-offset-4 hover:no-underline"
+                            >
+                                {signUpCta}
+                            </a>
+                        </p>
+                    </div>
                 </div>
 
                 <DialogContent className="sm:max-w-5xl gap-0 p-0">

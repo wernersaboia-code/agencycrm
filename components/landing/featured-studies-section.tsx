@@ -21,12 +21,14 @@ export async function FeaturedStudiesSection({ locale }: { locale: LandingLocale
     const t = await getTranslations({ locale, namespace: "landing.featured" })
 
     return (
-        <Section tone="default">
+        <Section tone="glow">
             <SectionHeading eyebrow={t("eyebrow")} title={t("title")} intro={t("intro")} />
 
             <StaggerContainer className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 {lists.map((list) => (
-                    <StaggerItem key={list.id}>
+                    // min-w-0: o invólucro da animação é que vira item da grade,
+                    // e sem isto a etiqueta de setor esticava o cartão para fora.
+                    <StaggerItem key={list.id} className="min-w-0 [&>*]:h-full">
                         <ListCard list={{ ...list, industryNames: nomesDosSetoresDaLista(list.industries, setores, locale) }} />
                     </StaggerItem>
                 ))}

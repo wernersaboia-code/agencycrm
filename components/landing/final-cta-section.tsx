@@ -9,7 +9,7 @@ export async function FinalCtaSection({ locale }: { locale: LandingLocale }) {
     const t = await getTranslations({ locale, namespace: "landing.cta" })
 
     return (
-        <Section>
+        <Section tone="glow">
             {/* O fecho da página é o momento de marca: navy da logo em vez da
                 inversão neutra de foreground/background. */}
             <div className="flex flex-col items-start justify-between gap-6 rounded-lg bg-brand p-8 text-brand-foreground md:flex-row md:items-center md:p-10">

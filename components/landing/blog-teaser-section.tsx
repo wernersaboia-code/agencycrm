@@ -12,7 +12,7 @@ export async function BlogTeaserSection({ locale }: { locale: LandingLocale }) {
     const posts = await getLatestPostsForTeaser(locale, 3)
 
     return (
-        <Section tone="muted">
+        <Section tone="glow">
             <SectionHeading eyebrow={t("eyebrow")} title={t("title")} intro={t("intro")} centered />
 
             {posts.length > 0 && (
@@ -25,8 +25,9 @@ export async function BlogTeaserSection({ locale }: { locale: LandingLocale }) {
                                 : <div className="h-28 bg-gradient-to-br from-brand-accent/20 to-brand-accent/40" />}
                             <div className="p-5">
                                 {post.categoryName && <p className="text-xs font-semibold uppercase tracking-wider text-brand-accent-strong">{post.categoryName}</p>}
-                                <h3 className="mt-2 font-semibold leading-snug text-foreground group-hover:text-brand-accent-strong">{post.title}</h3>
-                                <p className="mt-2 text-sm leading-6 text-muted-foreground">{post.excerpt}</p>
+                                <h3 className="mt-2 line-clamp-2 font-semibold leading-snug text-foreground group-hover:text-brand-accent-strong">{post.title}</h3>
+                                {/* Na home é chamada, não resumo: duas linhas e o resto fica no post. */}
+                                <p className="mt-2 line-clamp-2 text-sm leading-6 text-muted-foreground">{post.excerpt}</p>
                             </div>
                         </Link>
                     ))}
@@ -35,7 +36,7 @@ export async function BlogTeaserSection({ locale }: { locale: LandingLocale }) {
 
             <div className="mt-8 text-center">
                 <Link href={getPathname({ href: "/blog", locale })} className="text-sm font-semibold text-brand-accent-strong hover:underline">
-                    {t("title")} →
+                    {t("cta")} →
                 </Link>
             </div>
         </Section>

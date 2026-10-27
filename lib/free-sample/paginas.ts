@@ -107,11 +107,24 @@ export async function gerarPaginasSemFalhar(amostraId: string, pdf: Uint8Array):
     }
 }
 
+/** Gerações em curso nesta instância: várias visitas seguidas à home sem
+ * páginas pediriam o mesmo desenho ao mesmo tempo. */
+const emCurso = new Map<string, Promise<void>>()
+
 /**
- * Ao ligar uma amostra sem páginas — as que subiram antes deste recurso, ou
- * uma cujo desenho falhou no upload —, baixa o PDF do bucket privado e gera.
+ * Para uma amostra sem páginas — as que subiram antes deste recurso, ou uma
+ * cujo desenho falhou no upload —, baixa o PDF do bucket privado e gera.
+ * Chamado ao ligar no admin e, em segundo plano, pela home.
  */
-export async function garantirPaginas(amostraId: string, filePath: string): Promise<void> {
+export function garantirPaginas(amostraId: string, filePath: string): Promise<void> {
+    const atual = emCurso.get(amostraId)
+    if (atual) return atual
+    const tarefa = baixarEGerar(amostraId, filePath).finally(() => emCurso.delete(amostraId))
+    emCurso.set(amostraId, tarefa)
+    return tarefa
+}
+
+async function baixarEGerar(amostraId: string, filePath: string): Promise<void> {
     const supabase = createAdminClient()
     const { data: existentes } = await supabase.storage.from(FREE_SAMPLE_PAGES_BUCKET).list(amostraId)
     if (existentes?.length) return
@@ -127,25 +140,41 @@ export async function garantirPaginas(amostraId: string, filePath: string): Prom
     await gerarPaginasSemFalhar(amostraId, new Uint8Array(await arquivo.arrayBuffer()))
 }
 
+/** Lançado de dentro do cache para a lista vazia não ficar guardada. */
+class SemPaginas extends Error {
+    name = "SemPaginas"
+}
+
 /**
  * URLs públicas das páginas, em ordem. Em cache com a mesma tag da amostra:
  * subir, ligar ou apagar uma amostra já invalida a tag.
  */
-export const getPaginasDaAmostra = unstable_cache(
+const listarPaginas = unstable_cache(
     async (amostraId: string): Promise<string[]> => {
         const supabase = createAdminClient()
         const { data, error } = await supabase.storage.from(FREE_SAMPLE_PAGES_BUCKET).list(amostraId)
-        // Bucket ainda inexistente (nenhuma amostra gerada) cai aqui também.
-        if (error || !data) return []
+        const nomes = ordenarPaginas((data ?? []).map((arquivo) => arquivo.name))
+        // Bucket inexistente, falha do storage ou páginas ainda não geradas:
+        // o `unstable_cache` não guarda erro, então a próxima visita olha de
+        // novo — e encontra as páginas assim que a geração em segundo plano
+        // terminar, sem esperar ninguém mexer na amostra.
+        if (error || nomes.length === 0) throw new SemPaginas()
 
-        return ordenarPaginas(data.map((arquivo) => arquivo.name)).map(
+        return nomes.map(
             (nome) =>
                 supabase.storage.from(FREE_SAMPLE_PAGES_BUCKET).getPublicUrl(`${amostraId}/${nome}`).data
                     .publicUrl
         )
     },
     ["free-sample-paginas"],
-    // `revalidate` além da tag: uma falha passageira do storage devolve lista
-    // vazia, e sem prazo ela ficaria em cache até alguém mexer na amostra.
     { tags: [TAG_AMOSTRA], revalidate: 3600 }
 )
+
+export async function getPaginasDaAmostra(amostraId: string): Promise<string[]> {
+    try {
+        return await listarPaginas(amostraId)
+    } catch (error) {
+        if (error instanceof Error && error.name === "SemPaginas") return []
+        throw error
+    }
+}

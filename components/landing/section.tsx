@@ -1,7 +1,7 @@
 import { FadeInView } from "@/components/motion"
 import { cn } from "@/lib/utils"
 
-type SectionTone = "default" | "muted" | "pause"
+type SectionTone = "default" | "muted" | "glow" | "pause"
 type SectionWidth = "narrow" | "wide"
 
 /**
@@ -40,7 +40,11 @@ export function Section({
                 tone === "muted" && "bg-linear-to-b from-transparent via-muted/50 to-transparent",
                 // Respiro entre blocos de cartões: um brilho do azul da marca
                 // que nasce no centro e some nas bordas, sem faixa.
-                tone === "pause" && "section-pause py-20 md:py-24",
+                // `glow` é o mesmo brilho com o espaçamento normal: na home ele
+                // está em todas as seções, e o centro de cada uma vira o ponto
+                // de luz — a página respira sem faixas.
+                (tone === "glow" || tone === "pause") && "section-pause",
+                tone === "pause" && "py-20 md:py-24",
                 className
             )}
         >

@@ -13,7 +13,7 @@ export async function BuyerProfilesSection({ locale }: { locale: LandingLocale }
     const cards = t.raw("cards") as ProfileCard[]
 
     return (
-        <Section tone="muted" width="narrow">
+        <Section tone="glow" width="narrow">
             <SectionHeading eyebrow={t("eyebrow")} title={t("title")} intro={t("intro")} />
 
             <StaggerContainer className="mt-6 grid gap-4 sm:grid-cols-2">

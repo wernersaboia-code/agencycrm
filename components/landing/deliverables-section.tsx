@@ -8,7 +8,7 @@ export async function DeliverablesSection({ locale }: { locale: LandingLocale })
     const items = t.raw("items") as string[]
 
     return (
-        <Section tone="muted" width="narrow">
+        <Section tone="glow" width="narrow">
             <SectionHeading eyebrow={t("eyebrow")} title={t("title")} />
 
             <div className="mt-6 rounded-lg border border-brand-accent/40 bg-brand-accent/10 p-6">

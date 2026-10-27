@@ -13,7 +13,7 @@ export async function HowItWorksSection({ locale }: { locale: LandingLocale }) {
     const steps = t.raw("steps") as Step[]
 
     return (
-        <Section id={locale === "de" ? "ablauf" : "como-funciona"} tone="muted">
+        <Section id={locale === "de" ? "ablauf" : "como-funciona"} tone="glow">
             <SectionHeading eyebrow={t("eyebrow")} title={t("title")} centered />
 
             <StaggerContainer className="mt-10 grid gap-4 md:grid-cols-3">

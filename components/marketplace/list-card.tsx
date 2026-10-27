@@ -124,7 +124,7 @@ export function ListCard({ list }: ListCardProps) {
                     {list.industryNames.length > 0 && (
                         <div className="flex flex-wrap gap-1 mb-4">
                             {list.industryNames.slice(0, 3).map((nome) => (
-                                <Badge key={nome} variant="secondary" className="text-xs">
+                                <Badge key={nome} variant="secondary" className="max-w-full text-xs whitespace-normal">
                                     {nome}
                                 </Badge>
                             ))}
