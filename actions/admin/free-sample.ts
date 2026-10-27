@@ -7,6 +7,7 @@ import { requireAdmin } from "@/lib/auth"
 import { recordAudit } from "@/lib/audit"
 import { removeFreeSample } from "@/lib/supabase/free-sample"
 import { TAG_AMOSTRA } from "@/lib/free-sample/amostra-ativa"
+import { garantirPaginas, removerPaginas } from "@/lib/free-sample/paginas"
 
 /**
  * Liga ou desliga a amostra. Ligar uma desliga as outras: a home procura a
@@ -20,10 +21,12 @@ export async function toggleFreeSample(id: string, isActive: boolean) {
     // liga a da outra, liga a desta) e deixar DUAS linhas com isActive: true —
     // reabrindo o problema que este comentário do topo diz que a função evita.
     if (isActive) {
-        await prisma.$transaction([
+        const [, amostra] = await prisma.$transaction([
             prisma.freeSample.updateMany({ where: { isActive: true }, data: { isActive: false } }),
             prisma.freeSample.update({ where: { id }, data: { isActive } }),
         ])
+        // Antes do updateTag: a home recarregada já encontra as páginas.
+        await garantirPaginas(amostra.id, amostra.filePath)
     } else {
         await prisma.freeSample.update({ where: { id }, data: { isActive } })
     }
@@ -54,6 +57,7 @@ export async function deleteFreeSample(id: string) {
 
     await prisma.freeSample.delete({ where: { id } })
     await removeFreeSample(amostra.filePath)
+    await removerPaginas(id)
     // Mesmo motivo do toggle: invalidação precisa ser imediata, e esta função
     // também é uma Server Action, então `updateTag` é o jeito certo.
     updateTag(TAG_AMOSTRA)

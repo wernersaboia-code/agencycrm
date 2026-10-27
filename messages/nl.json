@@ -115,6 +115,7 @@
     },
     "landing": {
         "hero": {
+            "previewContents": "Wat de studie bevat",
             "badge": "Marketplace voor geverifieerde B2B-handelspartners",
             "title": "Gekwalificeerde lijsten van importeurs en distributeurs voor uw internationale handel.",
             "subtitle": "Vind precies de handelspartners die passen bij uw product en exportstrategie.",

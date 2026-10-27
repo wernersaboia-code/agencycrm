@@ -16,8 +16,8 @@ export async function AdvantageSection({ locale }: { locale: LandingLocale }) {
 
 function TextBlock({ eyebrow, title, body }: { eyebrow: string; title: string; body: string }) {
     return (
-        <Section width="narrow">
-            <SectionHeading eyebrow={eyebrow} title={title} intro={body} />
+        <Section tone="pause" width="narrow">
+            <SectionHeading eyebrow={eyebrow} title={title} intro={body} centered />
         </Section>
     )
 }

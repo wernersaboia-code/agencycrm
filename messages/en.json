@@ -115,6 +115,7 @@
     },
     "landing": {
         "hero": {
+            "previewContents": "What the study covers",
             "badge": "Marketplace of verified B2B trading partners",
             "title": "Qualified importer and distributor lists for your international trade.",
             "subtitle": "Find exactly the trading partners that fit your product and your export strategy.",

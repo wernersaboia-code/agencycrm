@@ -12,7 +12,6 @@ import { TargetMarketsSection } from "@/components/landing/target-markets-sectio
 import { BuyerProfilesSection } from "@/components/landing/buyer-profiles-section"
 import { DeliverablesSection } from "@/components/landing/deliverables-section"
 import { FeaturedStudiesSection } from "@/components/landing/featured-studies-section"
-import { FreeSampleSection } from "@/components/landing/free-sample-section"
 import { AdvantageSection, DataQualitySection } from "@/components/landing/text-sections"
 import { HowItWorksSection } from "@/components/landing/how-it-works-section"
 import { BlogTeaserSection } from "@/components/landing/blog-teaser-section"
@@ -67,11 +66,6 @@ export default async function EasyProspectHome({
         <div className="min-h-screen bg-background text-foreground">
             <Suspense fallback={<SectionFallback className="h-80" />}>
                 <HeroSection locale={locale} />
-            </Suspense>
-            {/* Logo abaixo do hero, que tem um destaque apontando para cá: no
-                meio da página a amostra passou semanas sem um download. */}
-            <Suspense fallback={<SectionFallback className="h-64" />}>
-                <FreeSampleSection locale={locale} />
             </Suspense>
             <Suspense fallback={<SectionFallback className="h-64" />}>
                 <IntroSection locale={locale} />

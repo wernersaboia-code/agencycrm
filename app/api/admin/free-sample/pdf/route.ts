@@ -6,6 +6,10 @@ import { requireAdmin } from "@/lib/auth"
 import { uploadFreeSample } from "@/lib/supabase/free-sample"
 import { validatePdfFile } from "@/lib/supabase/list-studies"
 import { TAG_AMOSTRA } from "@/lib/free-sample/amostra-ativa"
+import { gerarPaginasSemFalhar } from "@/lib/free-sample/paginas"
+
+// Desenhar até 12 páginas leva alguns segundos; o padrão da Vercel é curto.
+export const maxDuration = 60
 
 export async function POST(request: NextRequest) {
     try {
@@ -32,6 +36,9 @@ export async function POST(request: NextRequest) {
         const amostra = await prisma.freeSample.create({
             data: { filePath: path, fileName: file.name, isActive: false },
         })
+
+        // Páginas para o folhear da home, já a partir do arquivo em mãos.
+        await gerarPaginasSemFalhar(amostra.id, new Uint8Array(await file.arrayBuffer()))
 
         // O admin sobe o PDF e espera o efeito na home na hora — precisa ser
         // invalidação IMEDIATA. `revalidateTag(tag, "max")` marca a tag como

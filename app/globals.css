@@ -327,6 +327,14 @@
   animation: heroGradient 15s ease infinite;
 }
 
+.section-pause {
+  background: radial-gradient(
+    ellipse 75% 65% at 50% 50%,
+    color-mix(in oklab, var(--brand-accent) 34%, transparent),
+    transparent 75%
+  );
+}
+
 @keyframes heroGradient {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }

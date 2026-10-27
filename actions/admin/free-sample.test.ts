@@ -26,13 +26,15 @@ vi.mock("@/lib/auth", () => ({
 }))
 vi.mock("@/lib/audit", () => ({ recordAudit: vi.fn() }))
 vi.mock("@/lib/supabase/free-sample", () => ({ removeFreeSample: vi.fn() }))
+const paginasMock = vi.hoisted(() => ({ garantirPaginas: vi.fn(), removerPaginas: vi.fn() }))
+vi.mock("@/lib/free-sample/paginas", () => paginasMock)
 
-import { toggleFreeSample } from "./free-sample"
+import { deleteFreeSample, toggleFreeSample } from "./free-sample"
 
 beforeEach(() => {
     vi.clearAllMocks()
     prismaMock.freeSample.updateMany.mockResolvedValue({ count: 0 })
-    prismaMock.freeSample.update.mockResolvedValue({})
+    prismaMock.freeSample.update.mockResolvedValue({ id: "s2", filePath: "sample-2.pdf" })
     // $transaction real roda as promises passadas; aqui só precisamos que ele
     // "execute" o array de operações mockadas, como o Prisma faria.
     prismaMock.$transaction.mockImplementation((ops: unknown[]) => Promise.all(ops))
@@ -73,6 +75,17 @@ describe("toggleFreeSample", () => {
     // cache e o interruptor parece não funcionar. `updateTag` (e não
     // `revalidateTag`) porque isto roda numa Server Action e precisa de
     // expiração IMEDIATA, não stale-while-revalidate.
+    // A amostra que já estava no ar subiu antes do folhear existir: sem gerar
+    // ao ligar, a home ficaria sem páginas até alguém subir o PDF de novo.
+    it("garante as páginas do folhear ao ligar, e só ao ligar", async () => {
+        await toggleFreeSample("s2", true)
+        expect(paginasMock.garantirPaginas).toHaveBeenCalledWith("s2", "sample-2.pdf")
+
+        paginasMock.garantirPaginas.mockClear()
+        await toggleFreeSample("s2", false)
+        expect(paginasMock.garantirPaginas).not.toHaveBeenCalled()
+    })
+
     it("invalida o cache da home na hora, nos dois sentidos", async () => {
         await toggleFreeSample("s2", true)
         expect(updateTagMock).toHaveBeenCalledWith("free-sample")
@@ -80,5 +93,17 @@ describe("toggleFreeSample", () => {
         updateTagMock.mockClear()
         await toggleFreeSample("s2", false)
         expect(updateTagMock).toHaveBeenCalledWith("free-sample")
+    })
+})
+
+describe("deleteFreeSample", () => {
+    // As páginas moram num bucket público: apagar só o PDF deixaria o estudo
+    // inteiro legível por quem tivesse a URL das imagens.
+    it("apaga as páginas junto com o PDF", async () => {
+        prismaMock.freeSample.findUnique.mockResolvedValue({ id: "s2", filePath: "sample-2.pdf", fileName: "x.pdf" })
+
+        await deleteFreeSample("s2")
+
+        expect(paginasMock.removerPaginas).toHaveBeenCalledWith("s2")
     })
 })

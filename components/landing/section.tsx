@@ -1,6 +1,7 @@
+import { FadeInView } from "@/components/motion"
 import { cn } from "@/lib/utils"
 
-type SectionTone = "default" | "muted"
+type SectionTone = "default" | "muted" | "pause"
 type SectionWidth = "narrow" | "wide"
 
 /**
@@ -33,14 +34,21 @@ export function Section({
             className={cn(
                 // scroll-mt: o cabeçalho é sticky (64px) e cobria o topo da
                 // seção ao chegar por âncora (#como-funciona, #estudo-gratuito).
-                "scroll-mt-16 border-t border-border py-14 md:py-16",
-                tone === "muted" ? "bg-muted/40" : "bg-background",
+                // Sem divisor e sem faixa de corte seco: o fundo "muted" entra e
+                // sai em degradê, e a página lê como uma superfície contínua.
+                "scroll-mt-16 py-14 md:py-16",
+                tone === "muted" && "bg-linear-to-b from-transparent via-muted/50 to-transparent",
+                // Respiro entre blocos de cartões: um brilho do azul da marca
+                // que nasce no centro e some nas bordas, sem faixa.
+                tone === "pause" && "section-pause py-20 md:py-24",
                 className
             )}
         >
-            <div className={cn("container mx-auto px-4", width === "narrow" && "max-w-3xl")}>
+            {/* A entrada que antes só o "Como funciona" tinha: o bloco sobe
+                com fade ao chegar na tela, uma vez. */}
+            <FadeInView className={cn("container mx-auto px-4", width === "narrow" && "max-w-3xl")}>
                 {children}
-            </div>
+            </FadeInView>
         </section>
     )
 }

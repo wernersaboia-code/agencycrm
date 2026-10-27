@@ -115,6 +115,7 @@
     },
     "landing": {
         "hero": {
+            "previewContents": "Inhalt der Studie",
             "badge": "Marktplatz für verifizierte B2B-Vertriebspartner",
             "title": "Qualifizierte Importeur- und Distributorenlisten für Ihren internationalen Vertrieb.",
             "subtitle": "Finden Sie genau die Vertriebspartner, die zu Ihrem Produkt und Ihrer Exportstrategie passen.",

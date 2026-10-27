@@ -115,6 +115,7 @@
     },
     "landing": {
         "hero": {
+            "previewContents": "O que o estudo traz",
             "badge": "Marketplace de parceiros comerciais B2B verificados",
             "title": "Listas qualificadas de importadores e distribuidores para o seu comércio internacional.",
             "subtitle": "Encontre exatamente os parceiros comerciais que combinam com o seu produto e a sua estratégia de exportação.",

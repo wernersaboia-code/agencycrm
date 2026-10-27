@@ -7,6 +7,9 @@ import createNextIntlPlugin from 'next-intl/plugin'
 const withNextIntl = createNextIntlPlugin('./i18n/request.ts')
 
 const nextConfig: NextConfig = {
+    // Módulo nativo (desenha as páginas da amostra gratuita, em
+    // lib/free-sample/paginas.ts): o bundler não pode embuti-lo.
+    serverExternalPackages: ['@napi-rs/canvas'],
     // Configuração para imagens externas
     images: {
         remotePatterns: [

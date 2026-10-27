@@ -1,4 +1,5 @@
 import { Globe2, Landmark, MapPin, Ship } from "lucide-react"
+import { StaggerContainer, StaggerItem } from "@/components/motion"
 import { getTranslations } from "next-intl/server"
 import { Section, SectionHeading } from "./section"
 import type { LandingLocale } from "./types"
@@ -15,20 +16,20 @@ export async function BuyerProfilesSection({ locale }: { locale: LandingLocale }
         <Section tone="muted" width="narrow">
             <SectionHeading eyebrow={t("eyebrow")} title={t("title")} intro={t("intro")} />
 
-            <div className="mt-6 grid gap-4 sm:grid-cols-2">
+            <StaggerContainer className="mt-6 grid gap-4 sm:grid-cols-2">
                 {cards.map((card, index) => {
                     const Icon = PROFILE_ICONS[index % PROFILE_ICONS.length]
                     return (
-                        <div key={card.title} className="rounded-lg border border-border bg-card p-5">
+                        <StaggerItem key={card.title} className="rounded-lg border border-border bg-card p-5 transition-[border-color,box-shadow] duration-300 hover:border-brand-accent/60 hover:shadow-md">
                             <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-md bg-brand-accent/15 text-brand-accent-strong">
                                 <Icon className="h-5 w-5" />
                             </div>
                             <h3 className="font-semibold text-foreground">{card.title}</h3>
                             <p className="mt-2 text-sm leading-6 text-muted-foreground">{card.body}</p>
-                        </div>
+                        </StaggerItem>
                     )
                 })}
-            </div>
+            </StaggerContainer>
 
             <p className="mt-6 leading-7 text-muted-foreground">{t("close")}</p>
         </Section>

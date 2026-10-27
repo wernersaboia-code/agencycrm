@@ -115,6 +115,7 @@
     },
     "landing": {
         "hero": {
+            "previewContents": "Cosa contiene lo studio",
             "badge": "Marketplace di partner commerciali B2B verificati",
             "title": "Elenchi qualificati di importatori e distributori per il tuo commercio internazionale.",
             "subtitle": "Trova esattamente i partner commerciali giusti per il tuo prodotto e la tua strategia di esportazione.",

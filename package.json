@@ -30,6 +30,7 @@
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
     "@hookform/resolvers": "^5.2.2",
+    "@napi-rs/canvas": "^0.1.100",
     "@paypal/paypal-server-sdk": "^2.3.0",
     "@paypal/react-paypal-js": "^9.2.0",
     "@prisma/adapter-pg": "^6.19.3",

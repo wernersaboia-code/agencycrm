@@ -104,9 +104,12 @@ export function StaggerContainer({
   }
 
   return (
+    // Dispara ao entrar na tela, junto com o FadeInView da seção: com
+    // `animate`, os cartões já tinham entrado antes de alguém rolar até eles.
     <motion.div
       initial="hidden"
-      animate="visible"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-50px" }}
       variants={containerVariants}
       className={className}
     >

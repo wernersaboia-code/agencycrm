@@ -6,6 +6,10 @@ import { Button } from "@/components/ui/button"
 import { ArrowLeft } from "lucide-react"
 import { FreeSampleManager } from "@/components/admin/free-sample-manager"
 
+// Ligar uma amostra sem páginas desenha o folhear da home na própria Server
+// Action (lib/free-sample/paginas.ts) — leva alguns segundos.
+export const maxDuration = 60
+
 export default async function FreeSamplePage() {
     const t = await getAdminTranslations("admin.freeSample")
     const tc = await getAdminTranslations("admin.common")

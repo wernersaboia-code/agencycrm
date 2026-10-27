@@ -115,6 +115,7 @@
     },
     "landing": {
         "hero": {
+            "previewContents": "Qué incluye el estudio",
             "badge": "Marketplace de socios comerciales B2B verificados",
             "title": "Listas calificadas de importadores y distribuidores para su comercio internacional.",
             "subtitle": "Encuentre exactamente los socios comerciales que se ajustan a su producto y a su estrategia de exportación.",
