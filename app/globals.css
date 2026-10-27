@@ -327,6 +327,23 @@
   animation: heroGradient 15s ease infinite;
 }
 
+/* Faixa da marca no topo da home: as três cores da logo (amarelo e verde do
+   lado do Brasil, azul do lado da Europa) em manchas suaves, como no fundo da
+   própria logo. Sem animação: o topo é a parte que o visitante lê parado. A
+   base some num degradê (máscara no hero) até o fundo comum do site. */
+.brand-banner {
+  --banner-forca: 38%;
+  background:
+    radial-gradient(ellipse 55% 75% at 0% 0%, color-mix(in oklab, #f0c018 var(--banner-forca), transparent), transparent 70%),
+    radial-gradient(ellipse 45% 70% at 0% 85%, color-mix(in oklab, #189048 calc(var(--banner-forca) * 0.75), transparent), transparent 70%),
+    radial-gradient(ellipse 60% 85% at 100% 15%, color-mix(in oklab, #184890 calc(var(--banner-forca) * 0.8), transparent), transparent 70%),
+    radial-gradient(ellipse 40% 60% at 70% 0%, color-mix(in oklab, #184890 calc(var(--banner-forca) * 0.35), transparent), transparent 70%);
+}
+.dark .brand-banner {
+  /* No escuro as mesmas cores a meia força: acesas, brigariam com o texto. */
+  --banner-forca: 20%;
+}
+
 .section-pause {
   background: radial-gradient(
     ellipse 75% 65% at 50% 50%,

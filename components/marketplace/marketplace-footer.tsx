@@ -19,7 +19,7 @@ export async function MarketplaceFooter({ locale = "pt" }: { locale?: Locale }) 
                 <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
                     <div className="col-span-2 md:col-span-1">
                         <LocaleLink href="/" className="mb-4 flex items-center gap-2">
-                            <Image src="/logo-icon.png" alt="Easy Prospect" width={32} height={32} className="h-8 w-8" />
+                            <Image src="/logo-mark.png" alt="Easy Prospect" width={38} height={36} className="h-9 w-auto" />
                             <span className="text-xl font-bold">Easy Prospect</span>
                         </LocaleLink>
                         <p className="text-sm text-muted-foreground">

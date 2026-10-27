@@ -54,10 +54,13 @@ export function MarketplaceHeader() {
     }
 
     return (
-        <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        // Mais transparente que antes (60%) para a faixa da marca, no topo da
+        // home, aparecer por trás; nas demais páginas o que está atrás é o
+        // próprio fundo, e nada muda.
+        <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/35">
             <div className="container mx-auto flex h-16 items-center justify-between px-4">
                 <LocaleLink href="/" className="flex shrink-0 items-center gap-2">
-                    <Image src="/logo-icon.png" alt="Easy Prospect" width={32} height={32} className="h-8 w-8" priority />
+                    <Image src="/logo-mark.png" alt="Easy Prospect" width={38} height={36} className="h-9 w-auto" priority />
                     <span className="hidden text-xl font-bold sm:block">Easy Prospect</span>
                 </LocaleLink>
 

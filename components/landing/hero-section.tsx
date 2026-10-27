@@ -34,12 +34,14 @@ export async function HeroSection({ locale }: { locale: LandingLocale }) {
     }
 
     return (
-        <section className="relative isolate">
+        // -mt-16 + pt-16: a faixa sobe por trás do cabeçalho, que é translúcido,
+        // e as cores da logo aparecem já na barra de navegação.
+        <section className="relative isolate -mt-16 pt-16">
             {/* O degradê fica numa camada própria para poder sumir aos poucos
                 na base, em vez de terminar numa borda contra a seção seguinte. */}
             <div
                 aria-hidden
-                className="hero-gradient absolute inset-0 -z-10 mask-[linear-gradient(to_bottom,#000_60%,transparent)]"
+                className="brand-banner absolute inset-0 -z-10 mask-[linear-gradient(to_bottom,#000_35%,transparent_80%)]"
             />
             <div className="container mx-auto px-4 py-16 md:py-20 lg:py-24">
                 {/* A frase ocupa o topo inteiro, centralizada; o estudo vem logo
