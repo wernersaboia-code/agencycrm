@@ -160,6 +160,7 @@ export default async function ListPage({ params }: ListPageProps) {
     // e o resultado é um número com o código de moeda errado.
     const precos = priceRows.map((row) => ({ currency: row.currency, amount: Number(row.amount) }))
     const precoLegado = { amount: Number(list.price), currency: list.currency }
+    const listaDoPreco = { id: list.id, name: list.name, slug: list.slug, totalLeads: list.totalLeads }
     const ofertas = precos.length > 0
         ? precos.map((row) => ({ price: row.amount, currency: row.currency }))
         : [{ price: precoLegado.amount, currency: precoLegado.currency }]
@@ -238,13 +239,24 @@ export default async function ListPage({ params }: ListPageProps) {
                             )}
                         </div>
 
-                        <div className="rounded-lg border bg-muted/40 p-4">
-                            <div className="grid grid-cols-2 gap-3">
-                                <QuickMetric label={t("quickCountries")} value={format.number(list.countries.length)} />
-                                <QuickMetric label={t("quickLanguage")} value={<LanguageValue language={language} fallback={t("notInformed")} />} />
-                                {dataReviewedAt && (
-                                    <QuickMetric label={t("quickReviewed")} value={dataReviewedAt} />
-                                )}
+                        {/* No desktop a caixa de preço mora AQUI, e acompanha a
+                            rolagem da introdução: antes ela ficava no bloco de
+                            baixo, e numa ficha com introdução longa o preço e
+                            o botão de compra só apareciam depois de duas telas
+                            de texto. No celular quem cumpre esse papel é a
+                            barra fixa (ListPriceBar), e a caixa segue embaixo. */}
+                        <div className="space-y-4 lg:sticky lg:top-24">
+                            <div className="rounded-lg border bg-muted/40 p-4">
+                                <div className="grid grid-cols-2 gap-3">
+                                    <QuickMetric label={t("quickCountries")} value={format.number(list.countries.length)} />
+                                    <QuickMetric label={t("quickLanguage")} value={<LanguageValue language={language} fallback={t("notInformed")} />} />
+                                    {dataReviewedAt && (
+                                        <QuickMetric label={t("quickReviewed")} value={dataReviewedAt} />
+                                    )}
+                                </div>
+                            </div>
+                            <div className="hidden lg:block">
+                                <ListPriceBox list={listaDoPreco} precos={precos} precoLegado={precoLegado} />
                             </div>
                         </div>
                     </div>
@@ -312,30 +324,19 @@ export default async function ListPage({ params }: ListPageProps) {
                 </div>
 
                 <aside className="lg:sticky lg:top-24">
-                    <ListPriceBox
-                        list={{
-                            id: list.id,
-                            name: list.name,
-                            slug: list.slug,
-                            totalLeads: list.totalLeads,
-                        }}
-                        precos={precos}
-                        precoLegado={precoLegado}
-                    />
+                    {/* Só abaixo de `lg`: no desktop a caixa está no topo. */}
+                    <div className="mb-4 lg:hidden">
+                        <ListPriceBox list={listaDoPreco} precos={precos} precoLegado={precoLegado} />
+                    </div>
 
                     {/* Quem ainda hesita em pagar ganha uma saída que não é
                         ir embora: ver um estudo inteiro antes. */}
-                    <FreeStudyOffer className="mt-4" layout="stack" />
+                    <FreeStudyOffer layout="stack" />
                 </aside>
             </div>
 
             <ListPriceBar
-                list={{
-                    id: list.id,
-                    name: list.name,
-                    slug: list.slug,
-                    totalLeads: list.totalLeads,
-                }}
+                list={listaDoPreco}
                 precos={precos}
                 precoLegado={precoLegado}
             />
