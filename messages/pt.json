@@ -1265,6 +1265,8 @@
             "tooBig": "passou do limite de {limite} caracteres",
             "invalidField": "valor inválido",
             "metaDescriptionHint": "Escreva entre 140 e 155 caracteres: o buscador corta o restante. Se ficar vazio, o resumo é usado no lugar.",
+            "titleTooLong": "Título com {count} caracteres: o buscador costuma cortar depois de 60.",
+            "metaDescriptionOutOfRange": "Meta description com {count} caracteres: o ideal fica entre 140 e 155.",
             "saving": "Salvando...",
             "save": "Salvar",
             "preview": "Ver como fica",

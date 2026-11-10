@@ -9,6 +9,9 @@ export interface BlogLabels {
     previous: string
     next: string
     pageOf: string
+    /** <title> do índice do blog; o layout acrescenta " | Easy Prospect". */
+    metaTitle: string
+    metaDescription: string
     localeName: Record<BlogLocale, string>
 }
 
@@ -25,14 +28,14 @@ const NAMES: Record<BlogLocale, Record<BlogLocale, string>> = {
 }
 
 const UI: Record<BlogLocale, Omit<BlogLabels, "localeName">> = {
-    pt: { readMore: "Ler mais", publishedOn: "Publicado em", allCategories: "Todas as categorias", otherLanguages: "Outros idiomas", empty: "Nenhum artigo publicado ainda.", previous: "Anterior", next: "Próxima", pageOf: "Página {current} de {total}" },
-    de: { readMore: "Weiterlesen", publishedOn: "Veröffentlicht am", allCategories: "Alle Kategorien", otherLanguages: "Andere Sprachen", empty: "Noch keine Artikel veröffentlicht.", previous: "Zurück", next: "Weiter", pageOf: "Seite {current} von {total}" },
-    en: { readMore: "Read more", publishedOn: "Published on", allCategories: "All categories", otherLanguages: "Other languages", empty: "No articles published yet.", previous: "Previous", next: "Next", pageOf: "Page {current} of {total}" },
-    es: { readMore: "Leer más", publishedOn: "Publicado el", allCategories: "Todas las categorías", otherLanguages: "Otros idiomas", empty: "Aún no hay artículos publicados.", previous: "Anterior", next: "Siguiente", pageOf: "Página {current} de {total}" },
-    fr: { readMore: "Lire la suite", publishedOn: "Publié le", allCategories: "Toutes les catégories", otherLanguages: "Autres langues", empty: "Aucun article publié pour le moment.", previous: "Précédent", next: "Suivant", pageOf: "Page {current} sur {total}" },
-    ar: { readMore: "اقرأ المزيد", publishedOn: "نُشر في", allCategories: "كل الفئات", otherLanguages: "لغات أخرى", empty: "لا توجد مقالات منشورة بعد.", previous: "السابق", next: "التالي", pageOf: "الصفحة {current} من {total}" },
-    it: { readMore: "Leggi di più", publishedOn: "Pubblicato il", allCategories: "Tutte le categorie", otherLanguages: "Altre lingue", empty: "Nessun articolo pubblicato ancora.", previous: "Precedente", next: "Successivo", pageOf: "Pagina {current} di {total}" },
-    nl: { readMore: "Lees meer", publishedOn: "Gepubliceerd op", allCategories: "Alle categorieën", otherLanguages: "Andere talen", empty: "Nog geen artikelen gepubliceerd.", previous: "Vorige", next: "Volgende", pageOf: "Pagina {current} van {total}" },
+    pt: { readMore: "Ler mais", publishedOn: "Publicado em", allCategories: "Todas as categorias", otherLanguages: "Outros idiomas", empty: "Nenhum artigo publicado ainda.", previous: "Anterior", next: "Próxima", pageOf: "Página {current} de {total}", metaTitle: "Blog para exportadores: mercados e importadores", metaDescription: "Artigos para quem exporta: tamanho e tendências de mercados, como encontrar importadores e distribuidores e como fazer o primeiro contato do jeito certo." },
+    de: { readMore: "Weiterlesen", publishedOn: "Veröffentlicht am", allCategories: "Alle Kategorien", otherLanguages: "Andere Sprachen", empty: "Noch keine Artikel veröffentlicht.", previous: "Zurück", next: "Weiter", pageOf: "Seite {current} von {total}", metaTitle: "Blog für Exporteure: Märkte und Importeure", metaDescription: "Artikel für Exporteure: Marktvolumen und Trends, wie Sie Importeure und Distributoren finden und den Erstkontakt richtig angehen." },
+    en: { readMore: "Read more", publishedOn: "Published on", allCategories: "All categories", otherLanguages: "Other languages", empty: "No articles published yet.", previous: "Previous", next: "Next", pageOf: "Page {current} of {total}", metaTitle: "Blog for exporters: markets and importers", metaDescription: "Articles for exporters: market size and trends, how to find importers and distributors, and how to make first contact the right way." },
+    es: { readMore: "Leer más", publishedOn: "Publicado el", allCategories: "Todas las categorías", otherLanguages: "Otros idiomas", empty: "Aún no hay artículos publicados.", previous: "Anterior", next: "Siguiente", pageOf: "Página {current} de {total}", metaTitle: "Blog para exportadores: mercados e importadores", metaDescription: "Artículos para quienes exportan: tamaño y tendencias de los mercados, cómo encontrar importadores y distribuidores y cómo hacer bien el primer contacto." },
+    fr: { readMore: "Lire la suite", publishedOn: "Publié le", allCategories: "Toutes les catégories", otherLanguages: "Autres langues", empty: "Aucun article publié pour le moment.", previous: "Précédent", next: "Suivant", pageOf: "Page {current} sur {total}", metaTitle: "Blog pour exportateurs : marchés et importateurs", metaDescription: "Des articles pour les exportateurs : taille et tendances des marchés, comment trouver importateurs et distributeurs et réussir le premier contact." },
+    ar: { readMore: "اقرأ المزيد", publishedOn: "نُشر في", allCategories: "كل الفئات", otherLanguages: "لغات أخرى", empty: "لا توجد مقالات منشورة بعد.", previous: "السابق", next: "التالي", pageOf: "الصفحة {current} من {total}", metaTitle: "مدونة للمصدّرين: الأسواق والمستوردون", metaDescription: "مقالات للمصدّرين: حجم الأسواق واتجاهاتها، وكيفية العثور على المستوردين والموزعين وإجراء أول اتصال بالطريقة الصحيحة." },
+    it: { readMore: "Leggi di più", publishedOn: "Pubblicato il", allCategories: "Tutte le categorie", otherLanguages: "Altre lingue", empty: "Nessun articolo pubblicato ancora.", previous: "Precedente", next: "Successivo", pageOf: "Pagina {current} di {total}", metaTitle: "Blog per esportatori: mercati e importatori", metaDescription: "Articoli per chi esporta: dimensioni e tendenze dei mercati, come trovare importatori e distributori e come gestire bene il primo contatto." },
+    nl: { readMore: "Lees meer", publishedOn: "Gepubliceerd op", allCategories: "Alle categorieën", otherLanguages: "Andere talen", empty: "Nog geen artikelen gepubliceerd.", previous: "Vorige", next: "Volgende", pageOf: "Pagina {current} van {total}", metaTitle: "Blog voor exporteurs: markten en importeurs", metaDescription: "Artikelen voor exporteurs: marktomvang en trends, hoe u importeurs en distributeurs vindt en hoe u het eerste contact goed aanpakt." },
 }
 
 export function getBlogLabels(locale: BlogLocale): BlogLabels {

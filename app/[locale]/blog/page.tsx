@@ -31,7 +31,19 @@ export async function generateMetadata({
 
     const comPost = (await localesComPostPublicado()).filter(isLocale)
 
+    // Sem isto a página herdava título e descrição da home. Idioma que o blog
+    // não cobre cai no notFound() do componente; os rótulos só são lidos
+    // quando existem.
+    const labels = isBlogLocale(locale) ? getBlogLabels(locale) : null
+
     return {
+        ...(labels
+            ? {
+                  title: labels.metaTitle,
+                  description: labels.metaDescription,
+                  openGraph: { title: labels.metaTitle, description: labels.metaDescription, locale },
+              }
+            : {}),
         alternates: alternatesFor("/blog", locale as Locale, comPost),
         robots: { index: comPost.includes(locale), follow: true },
     }

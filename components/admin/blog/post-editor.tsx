@@ -62,6 +62,20 @@ function ContadorDeCaracteres({ valor, limite }: { valor: string; limite: number
     )
 }
 
+/**
+ * Faixas que o buscador mostra sem cortar. São recomendação, não regra: o
+ * schema aceita bem mais (LIMITES_DE_POST) e o aviso não impede salvar. Os
+ * primeiros posts foram publicados com título de 100+ caracteres e meta
+ * description fora da faixa sem que nada na tela avisasse.
+ */
+const TITULO_RECOMENDADO = 60
+const META_DESCRIPTION_MIN = 140
+const META_DESCRIPTION_MAX = 155
+
+function AvisoDeSeo({ children }: { children: React.ReactNode }) {
+    return <p className="text-xs text-amber-700 dark:text-amber-400">{children}</p>
+}
+
 type TranslationState = {
     title: string; slug: string; excerpt: string; contentHtml: string; metaDescription: string
 }
@@ -120,6 +134,11 @@ export function PostEditor({
     }, [])
 
     const current = tr[active] ?? EMPTY
+    const tamanhoDoTitulo = current.title.trim().length
+    const tamanhoDaMeta = current.metaDescription.trim().length
+    // Meta vazia não é erro: o resumo entra no lugar (ver metaDescriptionHint).
+    const metaForaDaFaixa =
+        tamanhoDaMeta > 0 && (tamanhoDaMeta < META_DESCRIPTION_MIN || tamanhoDaMeta > META_DESCRIPTION_MAX)
 
     // Comparação contra a linha de base (ver comentário acima), não contra
     // `initial` direto. Serialização basta: os dois lados são objetos simples
@@ -269,6 +288,9 @@ export function PostEditor({
                 <div className="space-y-2">
                     <Label>{t("title")}</Label>
                     <Input value={current.title} onBlur={onTitleBlur} onChange={(e) => setField("title", e.target.value)} />
+                    {tamanhoDoTitulo > TITULO_RECOMENDADO && (
+                        <AvisoDeSeo>{t("titleTooLong", { count: tamanhoDoTitulo })}</AvisoDeSeo>
+                    )}
                 </div>
                 <div className="space-y-2">
                     <Label>{t("slug")}</Label>
@@ -297,6 +319,9 @@ export function PostEditor({
                     </div>
                     <Input value={current.metaDescription} onChange={(e) => setField("metaDescription", e.target.value)} />
                     <p className="text-xs text-muted-foreground">{t("metaDescriptionHint")}</p>
+                    {metaForaDaFaixa && (
+                        <AvisoDeSeo>{t("metaDescriptionOutOfRange", { count: tamanhoDaMeta })}</AvisoDeSeo>
+                    )}
                 </div>
             </div>
 

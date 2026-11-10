@@ -1265,6 +1265,8 @@
             "tooBig": "hat das Limit von {limite} Zeichen überschritten",
             "invalidField": "ungültiger Wert",
             "metaDescriptionHint": "Schreiben Sie zwischen 140 und 155 Zeichen: Die Suchmaschine schneidet den Rest ab. Bleibt das Feld leer, wird stattdessen die Zusammenfassung verwendet.",
+            "titleTooLong": "Titel mit {count} Zeichen: Suchmaschinen kürzen meist nach 60.",
+            "metaDescriptionOutOfRange": "Meta-Description mit {count} Zeichen: ideal sind 140 bis 155.",
             "saving": "Wird gespeichert ...",
             "save": "Speichern",
             "preview": "Vorschau",

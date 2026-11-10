@@ -14,6 +14,11 @@ describe("blog labels", () => {
             expect(labels.pageOf).toContain("{current}")
             expect(labels.pageOf).toContain("{total}")
             expect(Object.keys(labels.localeName)).toHaveLength(8)
+            // O layout acrescenta " | Easy Prospect" (16 caracteres) ao título.
+            expect(labels.metaTitle.length).toBeGreaterThan(0)
+            expect(labels.metaTitle.length).toBeLessThanOrEqual(50)
+            expect(labels.metaDescription.length).toBeGreaterThanOrEqual(100)
+            expect(labels.metaDescription.length).toBeLessThanOrEqual(160)
         }
     })
     it("nomeia idiomas no próprio locale", () => {
