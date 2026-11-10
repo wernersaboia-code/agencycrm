@@ -106,7 +106,14 @@ export function RichTextToolbar({ editor, disabled, preset = "email" }: RichText
                 ehArtigo
                     ? // Post longo: a barra acompanha a rolagem. Fundo opaco para o
                       // texto não aparecer por baixo.
-                      "sticky top-0 z-10 flex flex-wrap items-center gap-1 border-b bg-muted p-2"
+                      //
+                      // -top-5/-top-6 anula o padding (p-5 md:p-6) do <main> do
+                      // admin, que é quem rola: com top-0 a barra parava abaixo
+                      // do padding e o texto aparecia numa fresta acima dela.
+                      //
+                      // Botão ativo em cor primária: o bg-accent padrão do Toggle
+                      // some sobre o bg-muted da barra no tema escuro.
+                      "sticky -top-5 z-10 flex flex-wrap items-center gap-1 border-b bg-muted p-2 md:-top-6 [&_button[data-state=on]]:bg-primary [&_button[data-state=on]]:text-primary-foreground"
                     : "flex flex-wrap items-center gap-1 p-2 border-b bg-muted/50"
             }
         >
