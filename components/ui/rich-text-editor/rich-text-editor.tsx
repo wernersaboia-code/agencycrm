@@ -8,6 +8,7 @@ import Placeholder from "@tiptap/extension-placeholder"
 import Underline from "@tiptap/extension-underline"
 import TextAlign from "@tiptap/extension-text-align"
 import Image from "@tiptap/extension-image"
+import { TableKit } from "@tiptap/extension-table"
 import { useEffect } from "react"
 import { cn } from "@/lib/utils"
 import { RichTextToolbar } from "./rich-text-toolbar"
@@ -75,6 +76,14 @@ export function RichTextEditor({
                     // "rounded-lg" aqui e entregar imagem quadrada no post publicado
                     // é pior do que não prometer nada.
                     Image,
+                    // Sem isto o editor desmontava qualquer tabela em parágrafos
+                    // soltos — colada ou já salva — e o post publicado perdia a
+                    // tabela. O servidor sempre aceitou <table>; faltava só o
+                    // editor conhecê-la.
+                    //
+                    // resizable: false — redimensionar grava largura em px no
+                    // <col>, e largura fixa quebra a tabela no celular.
+                    TableKit.configure({ table: { resizable: false } }),
                 ]
                 : []),
         ],
@@ -113,7 +122,15 @@ export function RichTextEditor({
                     // O artigo é escrito no tamanho e no ritmo em que será lido;
                     // o e-mail continua compacto.
                     ehArtigo
-                        ? "min-h-[60vh] px-6 py-5 prose-headings:tracking-tight prose-img:rounded-lg"
+                        ? cn(
+                              "min-h-[60vh] px-6 py-5 prose-headings:tracking-tight prose-img:rounded-lg",
+                              // Tabela: bordas visíveis para editar, célula
+                              // selecionada destacada, e o <p> que o Tiptap põe
+                              // dentro de cada célula sem a margem de parágrafo.
+                              "[&_td]:border [&_th]:border [&_td]:p-2 [&_th]:p-2 [&_th]:bg-muted",
+                              "[&_td>p]:my-0 [&_th>p]:my-0 [&_.selectedCell]:bg-primary/15",
+                              "[&_.tableWrapper]:overflow-x-auto"
+                          )
                         : "prose-sm min-h-[200px] p-4 prose-p:my-2 prose-ul:my-2 prose-ol:my-2 prose-li:my-0",
                     "[&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6",
                     "[&_span[data-template-variable]]:inline-flex [&_span[data-template-variable]]:rounded",

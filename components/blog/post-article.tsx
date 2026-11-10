@@ -54,7 +54,7 @@ export function PostArticle({
                     único h1 da página é o título acima. Na leitura, e não só
                     no salvamento, para valer sem regravar o banco. */}
                 <div
-                    className="prose prose-lg prose-indigo mt-8 max-w-none prose-headings:tracking-tight prose-img:rounded-lg"
+                    className="prose prose-lg prose-indigo mt-8 max-w-none prose-headings:tracking-tight prose-img:rounded-lg [&_td>p]:my-0 [&_th>p]:my-0 [&_table]:block [&_table]:max-w-full [&_table]:overflow-x-auto"
                     dangerouslySetInnerHTML={{ __html: rebaixarTitulosDoCorpo(contentHtml) }}
                 />
                 {children}

@@ -84,3 +84,19 @@ describe("sanitizeTranslations (função de produção)", () => {
         expect(result.contentHtml).not.toBe(input.contentHtml)
     })
 })
+
+describe("sanitizeTranslations — tabela", () => {
+    // HTML no formato que o Tiptap grava: <p> dentro de cada célula.
+    const tabela =
+        "<table><tbody><tr><th colspan=\"1\" rowspan=\"1\"><p>País</p></th><th colspan=\"1\" rowspan=\"1\"><p>Regra</p></th></tr>" +
+        "<tr><td colspan=\"1\" rowspan=\"1\"><p>Alemanha</p></td><td colspan=\"2\" rowspan=\"1\"><p>UWG</p></td></tr></tbody></table>"
+
+    it("preserva a estrutura da tabela ao salvar", () => {
+        const [t] = sanitizeTranslations([{ contentHtml: tabela }])
+        expect(t.contentHtml).toContain("<table>")
+        expect(t.contentHtml.match(/<tr>/g)).toHaveLength(2)
+        expect(t.contentHtml.match(/<th/g)).toHaveLength(2)
+        expect(t.contentHtml).toContain('colspan="2"')
+        expect(t.contentHtml).toContain("Alemanha")
+    })
+})

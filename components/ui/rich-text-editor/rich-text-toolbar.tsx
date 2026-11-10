@@ -24,6 +24,7 @@ import {
     Quote,
     RemoveFormatting,
     ImagePlus,
+    Table as TableIcon,
 } from "lucide-react"
 import { Toggle } from "@/components/ui/toggle"
 import { Separator } from "@/components/ui/separator"
@@ -54,6 +55,7 @@ export function RichTextToolbar({ editor, disabled, preset = "email" }: RichText
     const [linkPopoverOpen, setLinkPopoverOpen] = useState(false)
     const [imagePopoverOpen, setImagePopoverOpen] = useState(false)
     const [imageAlt, setImageAlt] = useState("")
+    const [tablePopoverOpen, setTablePopoverOpen] = useState(false)
     const [enviandoImagem, setEnviandoImagem] = useState(false)
 
     // O alt é obrigatório: imagem sem texto alternativo é falha de
@@ -324,6 +326,58 @@ export function RichTextToolbar({ editor, disabled, preset = "email" }: RichText
                         </PopoverContent>
                     </Popover>
                 </>
+            )}
+
+            {ehArtigo && (
+                <Popover open={tablePopoverOpen} onOpenChange={setTablePopoverOpen}>
+                    <PopoverTrigger asChild>
+                        <Toggle size="sm" pressed={editor.isActive("table")} disabled={disabled} title="Tabela">
+                            <TableIcon className="h-4 w-4" />
+                        </Toggle>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-56 p-2" align="start">
+                        {/* Fora de uma tabela só faz sentido inserir; dentro, só
+                            mexer na que existe — tabela dentro de tabela não. */}
+                        <div className="flex flex-col gap-1">
+                            {(editor.isActive("table")
+                                ? ([
+                                      ["Linha acima", () => editor.chain().focus().addRowBefore().run()],
+                                      ["Linha abaixo", () => editor.chain().focus().addRowAfter().run()],
+                                      ["Coluna à esquerda", () => editor.chain().focus().addColumnBefore().run()],
+                                      ["Coluna à direita", () => editor.chain().focus().addColumnAfter().run()],
+                                      ["Remover linha", () => editor.chain().focus().deleteRow().run()],
+                                      ["Remover coluna", () => editor.chain().focus().deleteColumn().run()],
+                                      ["Linha de cabeçalho (liga/desliga)", () => editor.chain().focus().toggleHeaderRow().run()],
+                                      ["Remover tabela", () => editor.chain().focus().deleteTable().run()],
+                                  ] as const)
+                                : ([
+                                      [
+                                          "Inserir tabela 3 × 3",
+                                          () =>
+                                              editor
+                                                  .chain()
+                                                  .focus()
+                                                  .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
+                                                  .run(),
+                                      ],
+                                  ] as const)
+                            ).map(([rotulo, acao]) => (
+                                <Button
+                                    key={rotulo}
+                                    size="sm"
+                                    variant="ghost"
+                                    className="justify-start"
+                                    onClick={() => {
+                                        acao()
+                                        setTablePopoverOpen(false)
+                                    }}
+                                >
+                                    {rotulo}
+                                </Button>
+                            ))}
+                        </div>
+                    </PopoverContent>
+                </Popover>
             )}
 
             {/* Link */}
