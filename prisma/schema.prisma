@@ -982,6 +982,7 @@ model BlogPostTranslation {
   post            BlogPost @relation(fields: [postId], references: [id], onDelete: Cascade)
   locale          String
   title           String
+  subtitle        String?
   slug            String
   excerpt         String
   contentHtml     String   @db.Text

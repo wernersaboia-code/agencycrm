@@ -4,6 +4,7 @@ import { temAlteracaoNaoSalva, toDatetimeLocalValue, type TranslationStateLike }
 
 const traducaoPt: TranslationStateLike = {
     title: "Título",
+    subtitle: "Subtítulo",
     slug: "titulo",
     excerpt: "Resumo",
     contentHtml: "<p>Conteúdo</p>",

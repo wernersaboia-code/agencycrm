@@ -63,6 +63,7 @@ export default async function BlogPreviewPage({
                 locale={locale}
                 categoryName={data.categoryName}
                 title={data.translation.title}
+                subtitle={data.translation.subtitle}
                 dateLabel={dateLabel}
                 coverImageUrl={data.post.coverImageUrl}
                 contentHtml={data.translation.contentHtml}

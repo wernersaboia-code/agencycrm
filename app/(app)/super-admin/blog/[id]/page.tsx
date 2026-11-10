@@ -19,7 +19,7 @@ export default async function EditBlogPostPage({ params }: { params: Promise<{ i
     const translations: PostEditorInitial["translations"] = {}
     for (const t of post.translations) {
         translations[t.locale as BlogLocale] = {
-            title: t.title, slug: t.slug, excerpt: t.excerpt,
+            title: t.title, subtitle: t.subtitle ?? "", slug: t.slug, excerpt: t.excerpt,
             contentHtml: t.contentHtml, metaDescription: t.metaDescription ?? "",
         }
     }

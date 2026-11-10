@@ -1266,6 +1266,8 @@
             "invalidField": "invalid value",
             "metaDescriptionHint": "Aim for 140–155 characters: search engines cut the rest. If left empty, the summary is used instead.",
             "titleTooLong": "Title has {count} characters: search engines usually cut it after 60.",
+            "subtitle": "Subtitle",
+            "subtitleHint": "Optional. Shown below the title on the post and on the blog card; not part of the title search engines display.",
             "metaDescriptionOutOfRange": "Meta description has {count} characters: aim for 140 to 155.",
             "saving": "Saving...",
             "save": "Save",

@@ -5,6 +5,8 @@ interface PostArticleProps {
     locale: BlogLocale
     categoryName: string | null
     title: string
+    /** Opcional: a parte da frase que não coube no título curto. */
+    subtitle?: string | null
     /** Já formatado por quem chama — a prévia e o público formatam igual. */
     dateLabel: string
     coverImageUrl: string | null
@@ -26,6 +28,7 @@ export function PostArticle({
     locale,
     categoryName,
     title,
+    subtitle,
     dateLabel,
     coverImageUrl,
     contentHtml,
@@ -40,6 +43,8 @@ export function PostArticle({
                     </p>
                 )}
                 <h1 className="mt-2 text-3xl font-bold tracking-tight md:text-4xl">{title}</h1>
+                {/* <p>, não <h2>: é continuação do título, não uma seção do texto. */}
+                {subtitle && <p className="mt-3 text-xl leading-snug text-gray-600 md:text-2xl">{subtitle}</p>}
                 {dateLabel && <p className="mt-3 text-sm text-gray-500">{dateLabel}</p>}
                 {coverImageUrl && (
                     // eslint-disable-next-line @next/next/no-img-element

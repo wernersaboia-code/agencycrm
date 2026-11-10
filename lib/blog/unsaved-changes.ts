@@ -9,7 +9,7 @@ export function toDatetimeLocalValue(iso: string): string {
 }
 
 export type TranslationStateLike = {
-    title: string; slug: string; excerpt: string; contentHtml: string; metaDescription: string
+    title: string; subtitle: string; slug: string; excerpt: string; contentHtml: string; metaDescription: string
 }
 
 /**

@@ -109,7 +109,7 @@ export default async function BlogIndexPage({
                     <div className="mt-10 grid gap-4 md:grid-cols-3">
                         {posts.map((p) => (
                             <PostCard key={p.id} locale={locale as BlogLocale}
-                                slug={p.translation.slug} title={p.translation.title} excerpt={p.translation.excerpt}
+                                slug={p.translation.slug} title={p.translation.title} subtitle={p.translation.subtitle} excerpt={p.translation.excerpt}
                                 coverImageUrl={p.coverImageUrl} categoryName={p.categoryName}
                                 dateLabel={p.publishedAt ? new Date(p.publishedAt).toLocaleDateString(locale) : ""} />
                         ))}

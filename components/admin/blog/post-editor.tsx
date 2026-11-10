@@ -39,6 +39,7 @@ import { temAlteracaoNaoSalva as calcularAlteracaoNaoSalva, toDatetimeLocalValue
 function rotuloDoCampo(campo: string, t: (chave: string) => string): string {
     const rotulos: Record<string, string> = {
         title: t("title"),
+        subtitle: t("subtitle"),
         slug: t("slug"),
         excerpt: t("summary"),
         contentHtml: t("content"),
@@ -77,9 +78,9 @@ function AvisoDeSeo({ children }: { children: React.ReactNode }) {
 }
 
 type TranslationState = {
-    title: string; slug: string; excerpt: string; contentHtml: string; metaDescription: string
+    title: string; subtitle: string; slug: string; excerpt: string; contentHtml: string; metaDescription: string
 }
-const EMPTY: TranslationState = { title: "", slug: "", excerpt: "", contentHtml: "", metaDescription: "" }
+const EMPTY: TranslationState = { title: "", subtitle: "", slug: "", excerpt: "", contentHtml: "", metaDescription: "" }
 
 export type PostEditorInitial = {
     id?: string
@@ -183,6 +184,7 @@ export function PostEditor({
             .map((t) => ({
                 locale: t.locale,
                 title: t.title.trim(),
+                subtitle: t.subtitle.trim() || undefined,
                 slug: (t.slug.trim() || slugify(t.title || t.locale)),
                 excerpt: t.excerpt.trim(),
                 contentHtml: t.contentHtml,
@@ -291,6 +293,14 @@ export function PostEditor({
                     {tamanhoDoTitulo > TITULO_RECOMENDADO && (
                         <AvisoDeSeo>{t("titleTooLong", { count: tamanhoDoTitulo })}</AvisoDeSeo>
                     )}
+                </div>
+                <div className="space-y-2">
+                    <div className="flex items-baseline justify-between gap-2">
+                        <Label>{t("subtitle")}</Label>
+                        <ContadorDeCaracteres valor={current.subtitle} limite={LIMITES_DE_POST.subtitle} />
+                    </div>
+                    <Input value={current.subtitle} onChange={(e) => setField("subtitle", e.target.value)} />
+                    <p className="text-xs text-muted-foreground">{t("subtitleHint")}</p>
                 </div>
                 <div className="space-y-2">
                     <Label>{t("slug")}</Label>

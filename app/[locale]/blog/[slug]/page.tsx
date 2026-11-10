@@ -67,6 +67,7 @@ export default async function BlogPostPage({
                 locale={locale as BlogLocale}
                 categoryName={categoryName}
                 title={translation.title}
+                subtitle={translation.subtitle}
                 dateLabel={dateLabel}
                 coverImageUrl={post.coverImageUrl}
                 contentHtml={translation.contentHtml}

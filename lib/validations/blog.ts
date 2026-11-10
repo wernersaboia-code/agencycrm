@@ -14,6 +14,7 @@ export const blogLocaleSchema = z.enum(BLOG_LOCALES)
  */
 export const LIMITES_DE_POST = {
     title: 300,
+    subtitle: 200,
     slug: 220,
     excerpt: 2000,
     contentHtml: 400_000,
@@ -23,6 +24,7 @@ export const LIMITES_DE_POST = {
 export const translationInputSchema = z.object({
     locale: blogLocaleSchema,
     title: z.string().trim().min(1).max(LIMITES_DE_POST.title),
+    subtitle: z.string().trim().max(LIMITES_DE_POST.subtitle).optional(),
     slug: z.string().trim().min(1).max(LIMITES_DE_POST.slug).regex(/^[a-z0-9-]+$/),
     excerpt: z.string().trim().max(LIMITES_DE_POST.excerpt),
     contentHtml: z.string().max(LIMITES_DE_POST.contentHtml),
