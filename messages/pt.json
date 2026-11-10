@@ -1242,6 +1242,8 @@
         "blogEditor": {
             "editTitle": "Editar post",
             "newTitle": "Novo post",
+            "onePostPerArticleTitle": "Um post por artigo",
+            "onePostPerArticleBody": "Escreva todas as traduções neste mesmo post, cada uma na sua aba de idioma. Não crie um post separado para cada idioma: o site deixa de saber que são o mesmo artigo, e o Google passa a tratá-los como páginas sem relação entre si.",
             "back": "Voltar",
             "category": "Categoria",
             "noCategory": "— sem categoria —",

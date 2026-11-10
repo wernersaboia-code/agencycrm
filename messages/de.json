@@ -1242,6 +1242,8 @@
         "blogEditor": {
             "editTitle": "Beitrag bearbeiten",
             "newTitle": "Neuer Beitrag",
+            "onePostPerArticleTitle": "Ein Beitrag pro Artikel",
+            "onePostPerArticleBody": "Schreiben Sie alle Übersetzungen in diesen einen Beitrag, jede in ihren Sprach-Tab. Legen Sie nicht für jede Sprache einen eigenen Beitrag an: Die Website erkennt sie dann nicht mehr als denselben Artikel, und Google behandelt sie als Seiten ohne Zusammenhang.",
             "back": "Zurück",
             "category": "Kategorie",
             "noCategory": "— ohne Kategorie —",

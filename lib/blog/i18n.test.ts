@@ -6,6 +6,7 @@ describe("blog labels", () => {
     it("retorna rótulos para todos os 8 locales sem chaves vazias", () => {
         for (const locale of BLOG_LOCALES) {
             const labels = getBlogLabels(locale)
+            expect(labels.readAlso.length).toBeGreaterThan(0)
             expect(labels.readMore.length).toBeGreaterThan(0)
             expect(labels.publishedOn.length).toBeGreaterThan(0)
             expect(labels.allCategories.length).toBeGreaterThan(0)

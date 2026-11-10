@@ -2,8 +2,9 @@ import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { isBlogLocale, type BlogLocale } from "@/lib/blog/locales"
 import { getBlogLabels } from "@/lib/blog/i18n"
-import { getPostBySlug } from "@/lib/blog/queries"
+import { getPostBySlug, getRelatedPosts } from "@/lib/blog/queries"
 import { LanguageSwitcher } from "@/components/blog/language-switcher"
+import { RelatedPosts } from "@/components/blog/related-posts"
 import { JsonLd } from "@/components/seo/json-ld"
 import { buildBlogPostingSchema } from "@/lib/seo/schema"
 import { ROBOTS_NAO_ENCONTRADO } from "@/lib/seo/indexability"
@@ -49,6 +50,7 @@ export default async function BlogPostPage({
 
     const labels = getBlogLabels(locale)
     const { translation, post, availableLocales, localeSlugs, categoryName } = data
+    const relacionados = await getRelatedPosts(locale, post)
     const dateLabel = post.publishedAt
         ? `${labels.publishedOn} ${new Date(post.publishedAt).toLocaleDateString(locale)}`
         : ""
@@ -77,6 +79,7 @@ export default async function BlogPostPage({
                 coverImageUrl={post.coverImageUrl}
                 contentHtml={translation.contentHtml}
             >
+                <RelatedPosts locale={locale as BlogLocale} posts={relacionados} />
                 <LanguageSwitcher
                     locale={locale as BlogLocale}
                     availableLocales={availableLocales}

@@ -1242,6 +1242,8 @@
         "blogEditor": {
             "editTitle": "Edit post",
             "newTitle": "New post",
+            "onePostPerArticleTitle": "One post per article",
+            "onePostPerArticleBody": "Write every translation in this same post, each in its own language tab. Do not create a separate post for each language: the site no longer knows they are the same article, and Google treats them as unrelated pages.",
             "back": "Back",
             "category": "Category",
             "noCategory": "— no category —",

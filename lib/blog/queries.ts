@@ -121,6 +121,53 @@ export async function getPostBySlug(locale: BlogLocale, slug: string) {
     }
 }
 
+/**
+ * Escolhe os artigos do "Leia também": primeiro os da mesma categoria, depois
+ * os demais, cada grupo na ordem em que veio (mais recente primeiro).
+ *
+ * Função pura, separada da consulta, para a regra ter teste sem banco.
+ */
+export function escolherRelacionados<T extends { categoryId: string | null }>(
+    candidatos: T[],
+    categoryId: string | null,
+    limite: number
+): T[] {
+    const mesma = categoryId ? candidatos.filter((c) => c.categoryId === categoryId) : []
+    const outras = candidatos.filter((c) => !mesma.includes(c))
+
+    return [...mesma, ...outras].slice(0, limite)
+}
+
+/**
+ * Outros artigos publicados no mesmo idioma, para a lista ao pé do post.
+ *
+ * Existe porque os posts não se ligavam entre si: o único caminho de um
+ * artigo a outro era voltar ao índice. Só traz título, subtítulo e slug —
+ * `contentHtml` é `@db.Text` e não tem o que fazer aqui.
+ */
+export async function getRelatedPosts(
+    locale: BlogLocale,
+    post: { id: string; categoryId: string | null },
+    limite = 3
+) {
+    const rows = await prisma.blogPost.findMany({
+        where: { ...publishedWhere(), id: { not: post.id }, translations: { some: { locale } } },
+        orderBy: { publishedAt: "desc" },
+        // Folga para a categoria: os `limite` mais recentes podem ser todos de outra.
+        take: 30,
+        select: {
+            id: true,
+            categoryId: true,
+            translations: { where: { locale }, select: { slug: true, title: true, subtitle: true } },
+        },
+    })
+
+    return escolherRelacionados(rows, post.categoryId, limite).flatMap((p) => {
+        const tr = p.translations[0]
+        return tr ? [{ id: p.id, slug: tr.slug, title: tr.title, subtitle: tr.subtitle }] : []
+    })
+}
+
 export async function getLatestPostsForTeaser(locale: BlogLocale, limit = 3) {
     const rows = await prisma.blogPost.findMany({
         where: { ...publishedWhere(), translations: { some: { locale } } },

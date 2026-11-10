@@ -273,6 +273,15 @@ export function PostEditor({
                 </div>
             </div>
 
+            {/* Sempre visível, e não só na criação: quem abre um post pronto para
+                "ver como se faz" é justamente quem vai criar o próximo. Em
+                10.11.2026 havia 59 posts, um por idioma, para 10 artigos — sem
+                hreflang entre eles. */}
+            <div role="note" className="rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-950 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-100">
+                <p className="font-semibold">{t("onePostPerArticleTitle")}</p>
+                <p className="mt-1">{t("onePostPerArticleBody")}</p>
+            </div>
+
             {/* Abas de idioma */}
             <div className="flex flex-wrap gap-1 border-b">
                 {BLOG_LOCALES.map((l) => {
