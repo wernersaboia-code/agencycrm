@@ -5,13 +5,13 @@ import { useId, useState, useTransition } from "react"
 import { useSearchParams } from "next/navigation"
 import { useRouter } from "@/lib/i18n/navigation"
 import { useLocale, useTranslations } from "next-intl"
-import { Check, ChevronDown } from "lucide-react"
+import { Check, ChevronDown, Search } from "lucide-react"
 import { FlagIcon } from "@/components/ui/flag-icon"
 
 import { secaoOfereceEscolha, visibleFacets } from "@/lib/constants/catalog-facets"
 import type { SetorRotulado } from "@/lib/marketplace/setores"
 import { excecoesDoIdioma } from "@/lib/i18n/nome-de-pais"
-import { facetasDePais } from "@/lib/marketplace/facetas-de-pais"
+import { facetasDePais, facetasParaOFiltro } from "@/lib/marketplace/facetas-de-pais"
 import { LIST_LANGUAGES, LIST_LANGUAGE_CODES } from "@/lib/constants/list-languages"
 
 interface CatalogSidebarProps {
@@ -69,6 +69,7 @@ export function CatalogSidebar({
     const [countriesOpen, setCountriesOpen] = useState(true)
     const [industriesOpen, setIndustriesOpen] = useState(true)
     const [languagesOpen, setLanguagesOpen] = useState(true)
+    const [buscaDePais, setBuscaDePais] = useState("")
 
     const panelId = useId()
 
@@ -134,6 +135,7 @@ export function CatalogSidebar({
     // vem do ICU no idioma do visitante, então estudo de país novo aparece aqui
     // sem precisar de commit.
     const paises = facetasDePais(countryCounts, selectedCountries, locale, excecoesDoIdioma(locale))
+    const paisesDoFiltro = facetasParaOFiltro(paises, selectedCountries, buscaDePais, locale)
     // Setor CONTINUA vocabulário curado — "HoReCa", "FMCG" e "snacks_bars" são
     // linguagem do negócio, não padrão internacional. O cadastro é do admin
     // (/super-admin/marketplace/industries); só entra no filtro o que tem
@@ -180,8 +182,25 @@ export function CatalogSidebar({
                 </button>
 
                 <div id={`${panelId}-countries`} hidden={!countriesOpen}>
-                    <div className="max-h-32 space-y-2 overflow-y-auto pe-2 [scrollbar-gutter:stable]">
-                        {paises.map(({ code, nome, count }) => {
+                    {/* Com mais de 60 países a caixa de cinco linhas não dava
+                        conta: busca por nome, e sem busca os de mais estudos
+                        vêm primeiro (ver facetasParaOFiltro). O placeholder
+                        reaproveita o "Buscar" do catálogo — não é texto novo. */}
+                    {paises.length > 8 && (
+                        <div className="relative mb-3">
+                            <Search aria-hidden="true" className="pointer-events-none absolute start-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                            <input
+                                type="search"
+                                value={buscaDePais}
+                                onChange={(e) => setBuscaDePais(e.target.value)}
+                                aria-label={t("filterCountries")}
+                                placeholder={t("searchButton")}
+                                className="h-9 w-full rounded-md border border-input bg-background ps-8 pe-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                            />
+                        </div>
+                    )}
+                    <div className="max-h-64 space-y-2 overflow-y-auto pe-2 [scrollbar-gutter:stable]">
+                        {paisesDoFiltro.map(({ code, nome, count }) => {
                             const isDisabled = count === 0
                             const isChecked = selectedCountries.includes(code)
 

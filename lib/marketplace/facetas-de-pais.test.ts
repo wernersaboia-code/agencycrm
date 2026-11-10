@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest"
-import { facetasDePais } from "./facetas-de-pais"
+import { facetasDePais, facetasParaOFiltro } from "./facetas-de-pais"
 
 /**
  * A faceta de país deixou de sair de uma lista curada e passa a sair do próprio
@@ -60,5 +60,37 @@ describe("facetasDePais", () => {
         const facetas = facetasDePais({ DE: 6 }, ["DE"], "pt")
 
         expect(facetas).toEqual([{ code: "DE", nome: "Alemanha", count: 6 }])
+    })
+})
+
+describe("facetasParaOFiltro", () => {
+    const facetas = [
+        { code: "ZA", nome: "África do Sul", count: 2 },
+        { code: "DE", nome: "Alemanha", count: 13 },
+        { code: "AT", nome: "Áustria", count: 5 },
+        { code: "AR", nome: "Argentina", count: 1 },
+    ]
+    const codigos = (lista: { code: string }[]) => lista.map((f) => f.code)
+
+    it("põe na frente o país com mais estudos", () => {
+        expect(codigos(facetasParaOFiltro(facetas, [], "", "pt"))).toEqual(["DE", "AT", "ZA", "AR"])
+    })
+
+    it("mantém o selecionado no topo, mesmo com poucos estudos", () => {
+        expect(codigos(facetasParaOFiltro(facetas, ["AR"], "", "pt"))).toEqual(["AR", "DE", "AT", "ZA"])
+    })
+
+    it("busca pelo nome sem exigir acento nem maiúscula", () => {
+        expect(codigos(facetasParaOFiltro(facetas, [], "aust", "pt"))).toEqual(["AT"])
+        expect(codigos(facetasParaOFiltro(facetas, [], "AFRICA", "pt"))).toEqual(["ZA"])
+    })
+
+    it("busca também pelo código do país", () => {
+        expect(codigos(facetasParaOFiltro(facetas, [], "de", "pt"))).toEqual(["DE"])
+    })
+
+    it("não altera a lista recebida", () => {
+        facetasParaOFiltro(facetas, [], "", "pt")
+        expect(facetas[0].code).toBe("ZA")
     })
 })

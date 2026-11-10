@@ -45,3 +45,37 @@ export function facetasDePais(
         }))
         .sort((a, b) => a.nome.localeCompare(b.nome, locale))
 }
+
+/** Sem acento e em minúsculas, para a busca achar "Áustria" digitando "aus". */
+function semAcento(texto: string): string {
+    return texto.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase()
+}
+
+/**
+ * As facetas como o filtro do catálogo as lista: selecionadas primeiro, depois
+ * as de mais estudos, e o alfabeto só desempata.
+ *
+ * `facetasDePais` devolve ordem alfabética, que serve a quem já sabe o país que
+ * procura. Mas o catálogo passou de 60 países, a maioria com um ou dois
+ * estudos, e a lista abria em "África do Sul (2)" com a Alemanha (13) fora da
+ * caixa. Quem sabe o que quer usa a busca (`termo`); quem está olhando vê
+ * primeiro onde há mais oferta.
+ */
+export function facetasParaOFiltro(
+    facetas: readonly FacetaDePais[],
+    selecionados: readonly string[],
+    termo: string,
+    locale: string
+): FacetaDePais[] {
+    const marcados = new Set(selecionados.map(normalizaCodigoDePais))
+    const busca = semAcento(termo.trim())
+
+    return facetas
+        .filter((f) => !busca || semAcento(f.nome).includes(busca) || f.code.toLowerCase() === busca)
+        .sort(
+            (a, b) =>
+                Number(marcados.has(b.code)) - Number(marcados.has(a.code)) ||
+                b.count - a.count ||
+                a.nome.localeCompare(b.nome, locale)
+        )
+}

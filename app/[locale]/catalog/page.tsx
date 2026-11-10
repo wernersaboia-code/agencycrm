@@ -9,11 +9,12 @@ import { Link } from "@/lib/i18n/navigation"
 import { CatalogFiltersPanel } from "@/components/marketplace/catalog-filters-panel"
 import { CatalogGrid } from "@/components/marketplace/catalog-grid"
 import { CatalogSearch } from "@/components/marketplace/catalog-search"
-import { CatalogStats } from "@/components/marketplace/catalog-stats"
 import { getMarketplaceLists, getFilterCounts } from "@/actions/marketplace"
 import { getSetores } from "@/lib/marketplace/setores-servidor"
 import { nomesDosSetoresDaLista, rotularSetores } from "@/lib/marketplace/setores"
-import { AlertTriangle, CheckCircle2, Download, ShieldCheck, SlidersHorizontal } from "lucide-react"
+import { excecoesDoIdioma, nomeDePais } from "@/lib/i18n/nome-de-pais"
+import { LIST_LANGUAGES } from "@/lib/constants/list-languages"
+import { AlertTriangle, CheckCircle2, Download, ShieldCheck, SlidersHorizontal, X } from "lucide-react"
 
 // Renderização dinâmica: a página consulta o banco a cada request, com filtros
 // e busca vindos de searchParams — o resultado varia por requisição, então
@@ -105,9 +106,33 @@ export default async function CatalogPage({ params: routeParams, searchParams }:
         ...list,
         industryNames: nomesDosSetoresDaLista(list.industries, setores, locale),
     }))
-    const visibleCountryTotal = new Set(lists.flatMap((list) => list.countries)).size
     const activeFilterCount =
         countries.length + industries.length + languages.length + (search ? 1 : 0)
+
+    // Uma etiqueta por filtro ativo. O link de cada uma é a mesma busca sem
+    // aquele valor, de volta à página 1.
+    const filtros = { countries, industries, languages }
+    const semValor = (chave: keyof typeof filtros | "search", valor?: string) => {
+        const proximo = new URLSearchParams()
+        for (const [k, valores] of Object.entries(filtros)) {
+            const resto = k === chave ? valores.filter((v) => v !== valor) : valores
+            if (resto.length > 0) proximo.set(k, resto.join(","))
+        }
+        if (search && chave !== "search") proximo.set("search", search)
+        const query = proximo.toString()
+        return query ? `/catalog?${query}` : "/catalog"
+    }
+    const excecoesDePais = excecoesDoIdioma(locale)
+    const nomeDoSetorPorId = new Map(setoresRotulados.map((setor) => [setor.id, setor.nome]))
+    const chips = [
+        ...countries.map((code) => ({ href: semValor("countries", code), label: nomeDePais(code, locale, excecoesDePais) })),
+        ...industries.map((id) => ({ href: semValor("industries", id), label: nomeDoSetorPorId.get(id) ?? id })),
+        ...languages.map((code) => ({
+            href: semValor("languages", code),
+            label: LIST_LANGUAGES.find((l) => l.code === code)?.label ?? code,
+        })),
+        ...(search ? [{ href: semValor("search"), label: `“${search}”` }] : []),
+    ]
 
     return (
         <div className="min-h-screen bg-muted/40">
@@ -138,23 +163,14 @@ export default async function CatalogPage({ params: routeParams, searchParams }:
                         </div>
                     </div>
 
-                    <div className="mt-6 grid gap-3 md:grid-cols-3">
-                        <TrustStep
-                            icon={CheckCircle2}
-                            title={t("trustCompareTitle")}
-                            description={t("trustCompareDesc")}
-                        />
-                        <TrustStep
-                            icon={ShieldCheck}
-                            title={t("trustBuyTitle")}
-                            description={t("trustBuyDesc")}
-                        />
-                        <TrustStep
-                            icon={Download}
-                            title={t("trustDownloadTitle")}
-                            description={t("trustDownloadDesc")}
-                        />
-                    </div>
+                    {/* Uma linha de ícone + título. Antes eram três cartões com
+                        parágrafo, uma faixa inteira entre o título e o primeiro
+                        estudo; o detalhe de cada passo está na ficha e no FAQ. */}
+                    <ul className="mt-5 flex flex-wrap gap-x-6 gap-y-2 text-sm font-medium text-foreground">
+                        <TrustStep icon={CheckCircle2} title={t("trustCompareTitle")} />
+                        <TrustStep icon={ShieldCheck} title={t("trustBuyTitle")} />
+                        <TrustStep icon={Download} title={t("trustDownloadTitle")} />
+                    </ul>
                 </div>
             </section>
 
@@ -196,15 +212,23 @@ export default async function CatalogPage({ params: routeParams, searchParams }:
 
                     {!failed && (
                         <>
-                            <div className="mb-6">
-                                <CatalogStats
-                                    total={total}
-                                    visibleCountryTotal={visibleCountryTotal}
-                                    activeFilterCount={activeFilterCount}
-                                    page={page}
-                                    pages={pages}
-                                />
-                            </div>
+                            {/* Os quatro indicadores que ficavam aqui saíram: o total
+                                já está no subtítulo abaixo, a página na
+                                paginação, e "0 filtros ativos" não dizia nada.
+                                No lugar, só quando há filtro, o que está
+                                filtrado — cada etiqueta tira o seu. */}
+                            {chips.length > 0 && (
+                                <div className="mb-4 flex flex-wrap items-center gap-2">
+                                    {chips.map((chip) => (
+                                        <FilterChip key={chip.href} href={chip.href} label={chip.label} removeLabel={t("clearFilters")} />
+                                    ))}
+                                    {chips.length > 1 && (
+                                        <Link href="/catalog" className="ms-1 text-sm font-medium text-brand-accent-strong underline underline-offset-4 hover:no-underline">
+                                            {t("clearFilters")}
+                                        </Link>
+                                    )}
+                                </div>
+                            )}
 
                             <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                                 <div>
@@ -363,22 +387,29 @@ function PageLink({
 function TrustStep({
     icon: Icon,
     title,
-    description,
 }: {
     icon: ComponentType<{ className?: string }>
     title: string
-    description: string
 }) {
     return (
-        <div className="flex gap-3 rounded-lg border border-border bg-card p-4">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-brand-accent/15 text-brand-accent-strong">
-                <Icon className="h-5 w-5" />
-            </div>
-            <div>
-                <div className="font-semibold text-foreground">{title}</div>
-                <p className="mt-1 text-sm text-muted-foreground">{description}</p>
-            </div>
-        </div>
+        <li className="inline-flex items-center gap-2">
+            <Icon className="h-4 w-4 text-brand-accent-strong" />
+            {title}
+        </li>
+    )
+}
+
+/** Etiqueta de um filtro ativo: clicar tira só aquele filtro. */
+function FilterChip({ href, label, removeLabel }: { href: string; label: string; removeLabel: string }) {
+    return (
+        <Link
+            href={href}
+            aria-label={`${removeLabel}: ${label}`}
+            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card py-1 ps-3 pe-2 text-sm text-foreground transition-colors hover:border-brand-accent hover:bg-muted/40"
+        >
+            {label}
+            <X className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
+        </Link>
     )
 }
 
