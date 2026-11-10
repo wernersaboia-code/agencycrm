@@ -8,6 +8,8 @@ import { JsonLd } from "@/components/seo/json-ld"
 import { buildBlogPostingSchema } from "@/lib/seo/schema"
 import { ROBOTS_NAO_ENCONTRADO } from "@/lib/seo/indexability"
 import { PostArticle } from "@/components/blog/post-article"
+import { alternatesDoPost } from "@/lib/blog/alternates"
+import { isLocale } from "@/lib/i18n/locales"
 
 export async function generateMetadata({
     params,
@@ -21,6 +23,9 @@ export async function generateMetadata({
     if (!data) return { robots: ROBOTS_NAO_ENCONTRADO }
     const og = data.translation.ogImageUrl ?? data.post.coverImageUrl ?? undefined
     return {
+        // isLocale: o blog aceita um idioma (ar) que o site ainda não publica;
+        // nesse caso a página fica sem alternates, como estava.
+        ...(isLocale(locale) ? { alternates: alternatesDoPost(locale, slug, data.localeSlugs) } : {}),
         title: data.translation.title,
         description: data.translation.metaDescription ?? data.translation.excerpt,
         openGraph: {
