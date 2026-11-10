@@ -41,6 +41,7 @@
     "@sentry/nextjs": "^10.69.0",
     "@supabase/ssr": "^0.10.2",
     "@supabase/supabase-js": "^2.105.3",
+    "@tailwindcss/typography": "^0.5.20",
     "@tanstack/react-table": "^8.21.3",
     "@tiptap/core": "^3.31.4",
     "@tiptap/extension-image": "^3.31.4",

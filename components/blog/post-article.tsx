@@ -1,4 +1,5 @@
 import { dirForLocale, type BlogLocale } from "@/lib/blog/locales"
+import { rebaixarTitulosDoCorpo } from "@/lib/blog/heading-levels"
 
 interface PostArticleProps {
     locale: BlogLocale
@@ -44,9 +45,12 @@ export function PostArticle({
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={coverImageUrl} alt="" className="mt-6 w-full rounded-lg object-cover" />
                 )}
+                {/* rebaixarTitulosDoCorpo: posts antigos têm <h1> no corpo, e o
+                    único h1 da página é o título acima. Na leitura, e não só
+                    no salvamento, para valer sem regravar o banco. */}
                 <div
-                    className="prose prose-indigo mt-8 max-w-none"
-                    dangerouslySetInnerHTML={{ __html: contentHtml }}
+                    className="prose prose-lg prose-indigo mt-8 max-w-none prose-headings:tracking-tight prose-img:rounded-lg"
+                    dangerouslySetInnerHTML={{ __html: rebaixarTitulosDoCorpo(contentHtml) }}
                 />
                 {children}
             </div>

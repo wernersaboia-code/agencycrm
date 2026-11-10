@@ -101,7 +101,15 @@ export function RichTextToolbar({ editor, disabled, preset = "email" }: RichText
     }
 
     return (
-        <div className="flex flex-wrap items-center gap-1 p-2 border-b bg-muted/50">
+        <div
+            className={
+                ehArtigo
+                    ? // Post longo: a barra acompanha a rolagem. Fundo opaco para o
+                      // texto não aparecer por baixo.
+                      "sticky top-0 z-10 flex flex-wrap items-center gap-1 border-b bg-muted p-2"
+                    : "flex flex-wrap items-center gap-1 p-2 border-b bg-muted/50"
+            }
+        >
             {/* Undo/Redo */}
             <Toggle
                 size="sm"
@@ -125,6 +133,8 @@ export function RichTextToolbar({ editor, disabled, preset = "email" }: RichText
             <Separator orientation="vertical" className="mx-1 h-6" />
 
             {/* Headings */}
+            {/* No artigo o h1 é o título do post; o corpo começa no h2. */}
+            {!ehArtigo && (
             <Toggle
                 size="sm"
                 pressed={editor.isActive("heading", { level: 1 })}
@@ -136,6 +146,7 @@ export function RichTextToolbar({ editor, disabled, preset = "email" }: RichText
             >
                 <Heading1 className="h-4 w-4" />
             </Toggle>
+            )}
             <Toggle
                 size="sm"
                 pressed={editor.isActive("heading", { level: 2 })}
@@ -143,7 +154,7 @@ export function RichTextToolbar({ editor, disabled, preset = "email" }: RichText
                     editor.chain().focus().toggleHeading({ level: 2 }).run()
                 }
                 disabled={disabled}
-                title="Título 2"
+                title={ehArtigo ? "Título de seção" : "Título 2"}
             >
                 <Heading2 className="h-4 w-4" />
             </Toggle>
@@ -153,7 +164,7 @@ export function RichTextToolbar({ editor, disabled, preset = "email" }: RichText
                     pressed={editor.isActive("heading", { level: 3 })}
                     onPressedChange={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
                     disabled={disabled}
-                    title="Título 3"
+                    title="Subtítulo"
                 >
                     <Heading3 className="h-4 w-4" />
                 </Toggle>
