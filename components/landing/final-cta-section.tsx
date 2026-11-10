@@ -12,7 +12,7 @@ export async function FinalCtaSection({ locale }: { locale: LandingLocale }) {
         <Section tone="glow">
             {/* O fecho da página é o momento de marca: navy da logo em vez da
                 inversão neutra de foreground/background. */}
-            <div className="flex flex-col items-start justify-between gap-6 rounded-lg bg-brand p-8 text-brand-foreground md:flex-row md:items-center md:p-10">
+            <div data-catalog-cta className="flex flex-col items-start justify-between gap-6 rounded-lg bg-brand p-8 text-brand-foreground md:flex-row md:items-center md:p-10">
                 <div>
                     <h2 className="text-2xl font-bold md:text-3xl">{t("title")}</h2>
                     <p className="mt-2 max-w-xl leading-7 text-brand-foreground/75">{t("body")}</p>

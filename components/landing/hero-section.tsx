@@ -60,7 +60,9 @@ export async function HeroSection({ locale }: { locale: LandingLocale }) {
                         {t("subtitle")}
                     </p>
 
-                    <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+                    {/* data-catalog-cta: a barra fixa do celular some enquanto
+                        este botão está na tela (mobile-catalog-bar-shell). */}
+                    <div data-catalog-cta className="mt-8 flex flex-wrap items-center justify-center gap-3">
                         <Button size="lg" className="bg-brand text-brand-foreground hover:bg-brand-hover" asChild>
                             <Link href="/catalog">
                                 {t("ctaPrimary")}

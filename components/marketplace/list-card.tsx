@@ -10,6 +10,7 @@ import { formatCurrency } from "@/lib/utils"
 import { Globe, CheckCircle, ArrowRight, ShoppingCart, CalendarClock } from "lucide-react"
 import { FlagIcon } from "@/components/ui/flag-icon"
 import { useCart } from "@/contexts/cart-context"
+import { excecoesDoIdioma, nomeDePais } from "@/lib/i18n/nome-de-pais"
 
 export interface PreviewLead {
     companyName: string
@@ -52,10 +53,15 @@ export function ListCard({ list }: ListCardProps) {
     const tCart = useTranslations("cart")
     const locale = useLocale()
     const { addItem } = useCart()
-    const updatedAt = new Date(list.updatedAt).toLocaleDateString("pt-BR", {
+    // Idioma da página, e não "pt-BR" fixo: o cartão em alemão dizia "nov. de 2026".
+    const updatedAt = new Date(list.updatedAt).toLocaleDateString(locale, {
         month: "short",
         year: "numeric",
     })
+    // Nome do país em vez do código: "FR" sozinho não diz nada a quem não
+    // decorou a ISO, e a bandeira ao lado já faz o papel de sigla.
+    const excecoes = excecoesDoIdioma(locale)
+    const paises = list.countries.slice(0, 3).map((code) => nomeDePais(code, locale, excecoes))
 
     const handleAddToCart = (e: React.MouseEvent) => {
         e.preventDefault()
@@ -74,41 +80,49 @@ export function ListCard({ list }: ListCardProps) {
             <CardContent className="p-5 flex flex-col h-full">
                 {/* Header */}
                 <Link href={`/list/${list.slug}`} className="flex-1">
-                    <div className="flex items-start justify-between mb-4">
-                        <div className="flex-1">
-                            {list.isFeatured && (
-                                <Badge className="mb-2 bg-brand hover:bg-brand">
+                    <div className="mb-4">
+                        {/* Selo e bandeiras numa linha própria, acima do título.
+                            Antes a bandeira ficava AO LADO do título e tirava
+                            dele um quarto da largura: num cartão de 4 colunas,
+                            "… importers and distributors" já era cortado.
+                            O país é o primeiro filtro que o cliente aplica, então
+                            a bandeira é o sinal que ele procura no card — em
+                            16px ela virava enfeite. */}
+                        <div className="mb-3 flex min-h-6 items-center justify-between gap-2">
+                            {list.isFeatured ? (
+                                <Badge className="bg-brand hover:bg-brand">
                                     {t("featured")}
                                 </Badge>
-                            )}
-                            <h3 className="font-semibold text-foreground line-clamp-2 group-hover:text-brand-accent-strong transition-colors">
-                                {list.name}
-                            </h3>
-                            <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">
-                                {list.description || t("defaultDescription")}
-                            </p>
+                            ) : <span />}
+                            <div className="flex shrink-0 items-center gap-1.5">
+                                {list.countries.slice(0, 3).map((code) => (
+                                    <FlagIcon key={code} code={code} size="lg" />
+                                ))}
+                                {list.countries.length > 3 && (
+                                    <span className="text-xs text-muted-foreground ml-1">
+                                        +{list.countries.length - 3}
+                                    </span>
+                                )}
+                            </div>
                         </div>
-                        {/* O país é o primeiro filtro que o cliente aplica, então
-                            a bandeira é o sinal que ele procura no card — em
-                            16px ela virava enfeite. `shrink-0` porque o título
-                            ao lado tem duas linhas e empurrava a bandeira. */}
-                        <div className="flex shrink-0 items-center gap-1.5">
-                            {list.countries.slice(0, 3).map((code) => (
-                                <FlagIcon key={code} code={code} size="lg" />
-                            ))}
-                            {list.countries.length > 3 && (
-                                <span className="text-xs text-muted-foreground ml-1">
-                                    +{list.countries.length - 3}
-                                </span>
-                            )}
-                        </div>
+                        {/* Quatro linhas: os nomes dos estudos são longos
+                            ("X Importers and Distributors in Y - Market Entry
+                            Study", ~85 caracteres) e com duas o país do título
+                            sumia. Medido na grade de 4 colunas da home, onde o
+                            título tem 249px: três ainda cortavam 3 de 4. */}
+                        <h3 className="font-semibold text-foreground line-clamp-4 group-hover:text-brand-accent-strong transition-colors">
+                            {list.name}
+                        </h3>
+                        <p className="mt-2 line-clamp-3 text-sm text-muted-foreground">
+                            {list.description || t("defaultDescription")}
+                        </p>
                     </div>
 
                     {/* Info */}
                     <div className="space-y-2 mb-4">
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
                             <Globe className="h-4 w-4 text-muted-foreground" />
-                            <span className="truncate">{list.countries.slice(0, 3).join(", ")}{list.countries.length > 3 ? ` +${list.countries.length - 3}` : ''}</span>
+                            <span className="truncate">{paises.join(", ")}{list.countries.length > 3 ? ` +${list.countries.length - 3}` : ''}</span>
                         </div>
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
                             <CheckCircle className="h-4 w-4 text-brand-accent-strong" />

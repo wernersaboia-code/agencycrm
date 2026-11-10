@@ -16,6 +16,7 @@ import { AdvantageSection, DataQualitySection } from "@/components/landing/text-
 import { HowItWorksSection } from "@/components/landing/how-it-works-section"
 import { BlogTeaserSection } from "@/components/landing/blog-teaser-section"
 import { FinalCtaSection } from "@/components/landing/final-cta-section"
+import { MobileCatalogBar } from "@/components/landing/mobile-catalog-bar"
 
 function SectionFallback({ className }: { className?: string }) {
     return <div className={`animate-pulse bg-muted/30 ${className ?? "h-64"}`} />
@@ -67,6 +68,12 @@ export default async function EasyProspectHome({
             <Suspense fallback={<SectionFallback className="h-80" />}>
                 <HeroSection locale={locale} />
             </Suspense>
+            {/* Os estudos vêm logo depois do hero: antes ficavam na quinta tela,
+                atrás de quatro seções de texto, e quem chega quer ver primeiro
+                o que está à venda. */}
+            <Suspense fallback={<SectionFallback className="h-96" />}>
+                <FeaturedStudiesSection locale={locale} />
+            </Suspense>
             <Suspense fallback={<SectionFallback className="h-64" />}>
                 <IntroSection locale={locale} />
             </Suspense>
@@ -78,9 +85,6 @@ export default async function EasyProspectHome({
             </Suspense>
             <Suspense fallback={<SectionFallback className="h-96" />}>
                 <DeliverablesSection locale={locale} />
-            </Suspense>
-            <Suspense fallback={<SectionFallback className="h-96" />}>
-                <FeaturedStudiesSection locale={locale} />
             </Suspense>
             <Suspense fallback={<SectionFallback className="h-48" />}>
                 <DataQualitySection locale={locale} />
@@ -96,6 +100,9 @@ export default async function EasyProspectHome({
             </Suspense>
             <Suspense fallback={<SectionFallback className="h-96" />}>
                 <FinalCtaSection locale={locale} />
+            </Suspense>
+            <Suspense fallback={null}>
+                <MobileCatalogBar locale={locale} />
             </Suspense>
         </div>
     )
