@@ -3,7 +3,7 @@ import { readFileSync } from "fs"
 import { join } from "path"
 
 // Sem `runtime = "edge"`: a logo é lida do disco, o que o runtime edge não permite.
-export const alt = "Easy Prospect — Listas qualificadas de importadores e distribuidores"
+export const alt = "Easy Prospect — Estudos de entrada em mercado com importadores e distribuidores"
 export const size = { width: 1200, height: 630 }
 export const contentType = "image/png"
 
@@ -53,7 +53,7 @@ export default function OpengraphImage() {
                         textAlign: "center",
                     }}
                 >
-                    Listas qualificadas de importadores e distribuidores para o seu comércio internacional
+                    Estudos de entrada em mercado com os importadores e distribuidores do seu setor
                 </div>
             </div>
         ),

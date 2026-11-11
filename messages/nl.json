@@ -117,7 +117,7 @@
         "hero": {
             "previewContents": "Wat de studie bevat",
             "badge": "Marketplace voor geverifieerde B2B-handelspartners",
-            "title": "Gekwalificeerde lijsten van importeurs en distributeurs voor uw internationale handel.",
+            "title": "Markttoetredingsstudies met de importeurs en distributeurs in uw sector.",
             "subtitle": "Vind precies de handelspartners die passen bij uw product en exportstrategie.",
             "ctaPrimary": "Catalogus verkennen",
             "ctaSecondary": "Hoe het werkt",
@@ -273,8 +273,8 @@
             "button": "Catalogus verkennen"
         },
         "meta": {
-            "title": "Lijsten van importeurs en distributeurs",
-            "description": "Lijsten van importeurs en distributeurs per land en sector, met in openbare bronnen gecontroleerde bedrijven. Voor exporteurs."
+            "title": "Importeurs en distributeurs per land",
+            "description": "Markttoetredingsstudies met profielen van importeurs en distributeurs per land en sector. Bedrijven getoetst aan openbare bronnen."
         }
     },
     "faq": {

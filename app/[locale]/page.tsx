@@ -11,6 +11,7 @@ import { IntroSection } from "@/components/landing/intro-section"
 import { TargetMarketsSection } from "@/components/landing/target-markets-section"
 import { BuyerProfilesSection } from "@/components/landing/buyer-profiles-section"
 import { DeliverablesSection } from "@/components/landing/deliverables-section"
+import { TITLE_SUFFIX } from "@/lib/seo/meta-length"
 import { FeaturedStudiesSection } from "@/components/landing/featured-studies-section"
 import { AdvantageSection, DataQualitySection } from "@/components/landing/text-sections"
 import { HowItWorksSection } from "@/components/landing/how-it-works-section"
@@ -37,12 +38,17 @@ export async function generateMetadata({
 
     const t = await getTranslations({ locale, namespace: "landing.meta" })
 
+    // O template "%s | Easy Prospect" do layout não vale para a página do
+    // MESMO segmento: sem o `absolute` a home saía sem a marca no título, só
+    // "Listas de importadores e distribuidores".
+    const titulo = `${t("title")}${TITLE_SUFFIX}`
+
     return {
-        title: t("title"),
+        title: { absolute: titulo },
         description: t("description"),
         alternates: alternatesFor("/", locale as Locale),
         openGraph: {
-            title: t("title"),
+            title: titulo,
             description: t("description"),
             locale: ogLocaleFor(locale as Locale),
             // O merge de metadata do Next é raso: declarar `openGraph` aqui

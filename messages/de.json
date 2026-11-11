@@ -117,7 +117,7 @@
         "hero": {
             "previewContents": "Inhalt der Studie",
             "badge": "Marktplatz für verifizierte B2B-Vertriebspartner",
-            "title": "Qualifizierte Importeur- und Distributorenlisten für Ihren internationalen Vertrieb.",
+            "title": "Markteintrittsstudien mit den Importeuren und Distributoren Ihrer Branche.",
             "subtitle": "Finden Sie genau die Vertriebspartner, die zu Ihrem Produkt und Ihrer Exportstrategie passen.",
             "ctaPrimary": "Katalog entdecken",
             "ctaSecondary": "So funktioniert's",
@@ -273,8 +273,8 @@
             "button": "Katalog entdecken"
         },
         "meta": {
-            "title": "Listen von Importeuren und Distributoren",
-            "description": "Listen von Importeuren und Distributoren nach Land und Branche, mit in öffentlichen Quellen geprüften Unternehmen. Für Exporteure."
+            "title": "Importeure und Distributoren nach Land",
+            "description": "Markteintrittsstudien mit Profilen von Importeuren und Distributoren nach Land und Branche. Unternehmen anhand öffentlicher Quellen geprüft."
         }
     },
     "faq": {

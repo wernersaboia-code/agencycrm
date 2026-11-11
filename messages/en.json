@@ -117,7 +117,7 @@
         "hero": {
             "previewContents": "What the study covers",
             "badge": "Marketplace of verified B2B trading partners",
-            "title": "Qualified importer and distributor lists for your international trade.",
+            "title": "Market entry studies with the importers and distributors in your sector.",
             "subtitle": "Find exactly the trading partners that fit your product and your export strategy.",
             "ctaPrimary": "Browse catalog",
             "ctaSecondary": "How it works",
@@ -273,8 +273,8 @@
             "button": "Browse catalog"
         },
         "meta": {
-            "title": "Lists of importers and distributors",
-            "description": "Lists of importers and distributors by country and sector, with companies verified in public sources. For exporters."
+            "title": "Importers and distributors by country",
+            "description": "Market entry studies with profiles of importers and distributors by country and sector. Companies checked against public sources."
         }
     },
     "faq": {

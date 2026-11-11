@@ -117,7 +117,7 @@
         "hero": {
             "previewContents": "Cosa contiene lo studio",
             "badge": "Marketplace di partner commerciali B2B verificati",
-            "title": "Elenchi qualificati di importatori e distributori per il tuo commercio internazionale.",
+            "title": "Studi di ingresso nel mercato con gli importatori e i distributori del tuo settore.",
             "subtitle": "Trova esattamente i partner commerciali giusti per il tuo prodotto e la tua strategia di esportazione.",
             "ctaPrimary": "Esplora il catalogo",
             "ctaSecondary": "Come funziona",
@@ -273,8 +273,8 @@
             "button": "Esplora il catalogo"
         },
         "meta": {
-            "title": "Liste di importatori e distributori",
-            "description": "Liste di importatori e distributori per paese e settore, con aziende verificate in fonti pubbliche. Per chi esporta."
+            "title": "Importatori e distributori per paese",
+            "description": "Studi di ingresso nel mercato con profili di importatori e distributori per paese e settore. Aziende verificate su fonti pubbliche."
         }
     },
     "faq": {
