@@ -3,6 +3,7 @@ export type CatalogSearchParams = {
     industries?: string
     languages?: string
     search?: string
+    sort?: string
     page?: string
 }
 
@@ -27,9 +28,12 @@ export type CatalogSearchParams = {
  *
  * Filtro + paginação continua colapsando em `/catalog`: é faceta profunda, e
  * indexar `?industries=horeca&page=3` seria a explosão combinatória de novo.
+ *
+ * Ordenação (`?sort=country`) entra na mesma regra: são os mesmos estudos em
+ * outra ordem, e cada ordem multiplicaria as páginas indexáveis.
  */
 export function paginaSemFiltro(params: CatalogSearchParams): number {
-    if (params.countries || params.industries || params.languages || params.search) return 1
+    if (params.countries || params.industries || params.languages || params.search || params.sort) return 1
 
     const page = Math.floor(Number(params.page ?? 1))
     return Number.isFinite(page) && page > 1 ? page : 1

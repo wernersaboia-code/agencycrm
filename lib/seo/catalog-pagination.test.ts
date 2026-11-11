@@ -19,6 +19,8 @@ describe("paginaSemFiltro", () => {
         expect(paginaSemFiltro({ countries: "DE", page: "2" })).toBe(1)
         expect(paginaSemFiltro({ languages: "en", page: "5" })).toBe(1)
         expect(paginaSemFiltro({ search: "alemanha", page: "4" })).toBe(1)
+        // Outra ordem dos mesmos estudos não é página nova.
+        expect(paginaSemFiltro({ sort: "country", page: "2" })).toBe(1)
     })
 
     it("ignora page inválido em vez de gerar canonical quebrado", () => {

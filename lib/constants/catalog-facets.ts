@@ -62,3 +62,30 @@ export function secaoOfereceEscolha(
 ): boolean {
     return visiveis.length > 1 || selecionados.length > 0
 }
+
+/**
+ * Quantos estudos um idioma precisa ter para contar como escolha no filtro.
+ */
+export const MINIMO_DE_ESTUDOS_POR_IDIOMA = 5
+
+/**
+ * Se o filtro de idioma oferece uma escolha de verdade.
+ *
+ * `secaoOfereceEscolha` não basta aqui: em 10.11.2026 o catálogo tinha 162
+ * estudos em inglês, um em português e um em espanhol. Três facetas, mas o
+ * filtro só servia para achar dois estudos — e sugeria um catálogo multilíngue
+ * que não existe. A seção só aparece quando pelo menos dois idiomas têm
+ * estudos suficientes; volta sozinha quando o catálogo ganhar variedade.
+ *
+ * A exceção do filtro já ativo continua valendo, pelo mesmo motivo das outras
+ * seções: link antigo com `?languages=pt` não pode ficar sem ter onde ser
+ * desmarcado.
+ */
+export function idiomaOfereceEscolha(
+    contagens: Record<string, number>,
+    selecionados: readonly string[]
+): boolean {
+    if (selecionados.length > 0) return true
+    const comVolume = Object.values(contagens).filter((n) => n >= MINIMO_DE_ESTUDOS_POR_IDIOMA)
+    return comVolume.length > 1
+}

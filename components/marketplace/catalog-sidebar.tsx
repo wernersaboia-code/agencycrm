@@ -8,7 +8,7 @@ import { useLocale, useTranslations } from "next-intl"
 import { Check, ChevronDown, Search } from "lucide-react"
 import { FlagIcon } from "@/components/ui/flag-icon"
 
-import { secaoOfereceEscolha, visibleFacets } from "@/lib/constants/catalog-facets"
+import { idiomaOfereceEscolha, secaoOfereceEscolha, visibleFacets } from "@/lib/constants/catalog-facets"
 import type { SetorRotulado } from "@/lib/marketplace/setores"
 import { excecoesDoIdioma } from "@/lib/i18n/nome-de-pais"
 import { facetasDePais, facetasParaOFiltro } from "@/lib/marketplace/facetas-de-pais"
@@ -153,7 +153,7 @@ export function CatalogSidebar({
     // aplicado sem aparecer em lugar nenhum para ser desmarcado.
     const mostrarPaises = secaoOfereceEscolha(paises, selectedCountries)
     const mostrarSetores = secaoOfereceEscolha(setores, selectedIndustries)
-    const mostrarIdiomas = secaoOfereceEscolha(idiomas, selectedLanguages)
+    const mostrarIdiomas = idiomaOfereceEscolha(languageCounts, selectedLanguages)
 
     return (
         <div className={`space-y-3 transition-opacity ${isPending ? "pointer-events-none opacity-60" : ""}`}>

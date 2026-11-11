@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest"
-import { secaoOfereceEscolha, visibleFacets } from "./catalog-facets"
+import { idiomaOfereceEscolha, secaoOfereceEscolha, visibleFacets } from "./catalog-facets"
 
 describe("visibleFacets", () => {
     it("mostra só as facetas com lista publicada por trás", () => {
@@ -42,5 +42,23 @@ describe("secaoOfereceEscolha", () => {
         // Link antigo com ?category=importers: sem esta exceção o filtro ficaria
         // aplicado e invisível, sem como desmarcar.
         expect(secaoOfereceEscolha(["importers"], ["importers"])).toBe(true)
+    })
+})
+
+describe("idiomaOfereceEscolha", () => {
+    it("esconde o filtro quando só um idioma tem volume", () => {
+        // O catálogo de 10.11.2026.
+        expect(idiomaOfereceEscolha({ en: 162, pt: 1, es: 1 }, [])).toBe(false)
+        expect(idiomaOfereceEscolha({ en: 162 }, [])).toBe(false)
+        expect(idiomaOfereceEscolha({}, [])).toBe(false)
+    })
+
+    it("mostra quando dois idiomas têm estudos suficientes", () => {
+        expect(idiomaOfereceEscolha({ en: 162, de: 5, pt: 1 }, [])).toBe(true)
+        expect(idiomaOfereceEscolha({ en: 162, de: 4 }, [])).toBe(false)
+    })
+
+    it("filtro já ativo mantém a seção, para poder ser desmarcado", () => {
+        expect(idiomaOfereceEscolha({ en: 162, pt: 1 }, ["pt"])).toBe(true)
     })
 })

@@ -9,6 +9,8 @@ import { Link } from "@/lib/i18n/navigation"
 import { CatalogFiltersPanel } from "@/components/marketplace/catalog-filters-panel"
 import { CatalogGrid } from "@/components/marketplace/catalog-grid"
 import { CatalogSearch } from "@/components/marketplace/catalog-search"
+import { CatalogSort } from "@/components/marketplace/catalog-sort"
+import { lerOrdenacao } from "@/lib/marketplace/ordenacao-catalogo"
 import { getMarketplaceLists, getFilterCounts } from "@/actions/marketplace"
 import { getSetores } from "@/lib/marketplace/setores-servidor"
 import { nomesDosSetoresDaLista, rotularSetores } from "@/lib/marketplace/setores"
@@ -77,6 +79,7 @@ function buildPageHref(params: CatalogSearchParams, page: number) {
     if (params.industries) nextParams.set("industries", params.industries)
     if (params.languages) nextParams.set("languages", params.languages)
     if (params.search) nextParams.set("search", params.search)
+    if (params.sort) nextParams.set("sort", params.sort)
     nextParams.set("page", page.toString())
 
     return `/catalog?${nextParams.toString()}`
@@ -91,6 +94,7 @@ export default async function CatalogPage({ params: routeParams, searchParams }:
     const industries = params.industries?.split(",").filter(Boolean) || []
     const languages = params.languages?.split(",").filter(Boolean) || []
     const search = params.search || ""
+    const ordenacao = lerOrdenacao(params.sort)
     const requestedPage = Number.parseInt(params.page || "1", 10)
     const page = Number.isFinite(requestedPage) && requestedPage > 0 ? requestedPage : 1
 
@@ -100,6 +104,8 @@ export default async function CatalogPage({ params: routeParams, searchParams }:
         languages,
         search,
         page,
+        sort: ordenacao,
+        locale,
     })
     const setoresRotulados = rotularSetores(setores, locale)
     const lists = listasDoBanco.map((list) => ({
@@ -119,6 +125,8 @@ export default async function CatalogPage({ params: routeParams, searchParams }:
             if (resto.length > 0) proximo.set(k, resto.join(","))
         }
         if (search && chave !== "search") proximo.set("search", search)
+        // Tirar um filtro não desfaz a ordem que o visitante escolheu.
+        if (params.sort) proximo.set("sort", params.sort)
         const query = proximo.toString()
         return query ? `/catalog?${query}` : "/catalog"
     }
@@ -239,11 +247,19 @@ export default async function CatalogPage({ params: routeParams, searchParams }:
                                         {t("results", { count: total })}
                                     </p>
                                 </div>
-                                {pages > 1 && (
-                                    <span className="text-sm text-muted-foreground">
-                                        {t("pageOf", { page, pages })}
-                                    </span>
-                                )}
+                                <div className="flex items-center justify-between gap-4">
+                                    {/* Com um resultado só não há o que ordenar. */}
+                                    {total > 1 && (
+                                        <Suspense fallback={null}>
+                                            <CatalogSort value={ordenacao} />
+                                        </Suspense>
+                                    )}
+                                    {pages > 1 && (
+                                        <span className="text-sm text-muted-foreground">
+                                            {t("pageOf", { page, pages })}
+                                        </span>
+                                    )}
+                                </div>
                             </div>
 
                             <CatalogGrid lists={lists} />
@@ -298,6 +314,8 @@ async function getCatalogData(params: {
     languages: string[]
     search: string
     page: number
+    sort: string
+    locale: string
 }) {
     try {
         const [{ lists, total, pages }, filterCounts, setores] = await Promise.all([

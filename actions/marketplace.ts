@@ -6,6 +6,11 @@ import type { LeadList, Prisma } from "@prisma/client"
 import { getActiveCurrency } from "@/lib/currency/server"
 import { resolveListPrices } from "@/lib/marketplace/list-prices"
 import { CAMPOS_SO_DO_ADMIN } from "@/lib/marketplace/campos-do-admin"
+import { lerOrdenacao, ordenaPorNome, ordenarPorNome } from "@/lib/marketplace/ordenacao-catalogo"
+import { getSetores } from "@/lib/marketplace/setores-servidor"
+import { mapaDeNomes } from "@/lib/marketplace/setores"
+import { excecoesDoIdioma, nomeDePais } from "@/lib/i18n/nome-de-pais"
+import { DEFAULT_LOCALE } from "@/lib/i18n/locales"
 
 type ListaPublica = Omit<LeadList, keyof typeof CAMPOS_SO_DO_ADMIN>
 
@@ -61,6 +66,10 @@ interface GetListsParams {
     search?: string
     page?: number
     limit?: number
+    /** Valor cru de `?sort=`; desconhecido cai no padrão. */
+    sort?: string
+    /** Idioma da página: país e setor são ordenados pelo nome traduzido. */
+    locale?: string
 }
 
 export async function getMarketplaceLists(params: GetListsParams = {}) {
@@ -71,7 +80,9 @@ export async function getMarketplaceLists(params: GetListsParams = {}) {
         search = "",
         page = 1,
         limit = 12,
+        locale = DEFAULT_LOCALE,
     } = params
+    const ordenacao = lerOrdenacao(params.sort)
 
     const skip = (page - 1) * limit
 
@@ -107,17 +118,23 @@ export async function getMarketplaceLists(params: GetListsParams = {}) {
         ]
     }
 
-    // Buscar listas com contagem total
-    const [lists, total] = await Promise.all([
-        prisma.leadList.findMany({
-            where,
-            orderBy: [{ isFeatured: "desc" }, { createdAt: "desc" }],
-            skip,
-            take: limit,
-            omit: CAMPOS_SO_DO_ADMIN,
-        }),
-        prisma.leadList.count({ where }),
-    ])
+    const [lists, total] = ordenaPorNome(ordenacao)
+        ? await paginaOrdenadaPorNome(where, ordenacao, locale, skip, limit)
+        : await Promise.all([
+              prisma.leadList.findMany({
+                  where,
+                  // `id` no fim: sem desempate único, estudos criados no
+                  // mesmo instante podem trocar de página entre requisições.
+                  orderBy:
+                      ordenacao === "recent"
+                          ? [{ createdAt: "desc" }, { id: "asc" }]
+                          : [{ isFeatured: "desc" }, { createdAt: "desc" }, { id: "asc" }],
+                  skip,
+                  take: limit,
+                  omit: CAMPOS_SO_DO_ADMIN,
+              }),
+              prisma.leadList.count({ where }),
+          ])
 
     const listsWithPrice = await comPrecoDoVisitante(lists)
 
@@ -126,6 +143,51 @@ export async function getMarketplaceLists(params: GetListsParams = {}) {
         total,
         pages: Math.ceil(total / limit),
     }
+}
+
+/**
+ * Página do catálogo ordenada por nome de país ou de setor.
+ *
+ * O nome depende do idioma do visitante e o país é um array, então o banco não
+ * sabe ordenar: busca-se só o necessário de todos os estudos que passam no
+ * filtro, ordena-se em memória e só a página pedida é carregada por inteiro.
+ * São poucas centenas de linhas de quatro colunas.
+ */
+async function paginaOrdenadaPorNome(
+    where: Prisma.LeadListWhereInput,
+    ordenacao: "country" | "industry",
+    locale: string,
+    skip: number,
+    limit: number
+): Promise<[ListaPublica[], number]> {
+    const [todos, setores] = await Promise.all([
+        prisma.leadList.findMany({
+            where,
+            select: { id: true, countries: true, industries: true, createdAt: true },
+        }),
+        getSetores(),
+    ])
+
+    const nomesDeSetor = mapaDeNomes(setores, locale)
+    const excecoes = excecoesDoIdioma(locale)
+    const ordenados = ordenarPorNome(
+        todos,
+        ordenacao,
+        {
+            pais: (codigo) => nomeDePais(codigo, locale, excecoes),
+            setor: (id) => nomesDeSetor[id] ?? id,
+        },
+        locale
+    )
+
+    const idsDaPagina = ordenados.slice(skip, skip + limit).map((item) => item.id)
+    const linhas = await prisma.leadList.findMany({
+        where: { id: { in: idsDaPagina } },
+        omit: CAMPOS_SO_DO_ADMIN,
+    })
+    const porId = new Map(linhas.map((linha) => [linha.id, linha]))
+
+    return [idsDaPagina.flatMap((id) => porId.get(id) ?? []), todos.length]
 }
 
 // Action para obter contadores de filtros (sidebar)
