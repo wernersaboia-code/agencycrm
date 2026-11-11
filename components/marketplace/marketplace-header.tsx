@@ -98,9 +98,16 @@ export function MarketplaceHeader() {
                 </nav>
 
                 <div className="flex items-center gap-2">
-                    <ThemeToggle />
+                    {/* Tema e moeda saem da barra no celular e vão para dentro
+                        do menu: com os seis controles em fila, o logo ficava
+                        espremido. Idioma e carrinho continuam à mão. */}
+                    <div className="hidden md:block">
+                        <ThemeToggle />
+                    </div>
                     <LocaleSwitcher />
-                    <CurrencySwitcher />
+                    <div className="hidden md:block">
+                        <CurrencySwitcher />
+                    </div>
                     <CartBadge />
 
                     {!isLoading && (
@@ -220,6 +227,15 @@ export function MarketplaceHeader() {
                                         </SheetClose>
                                     </>
                                 )}
+                                <hr />
+                                <div className="flex items-center justify-between text-lg font-medium">
+                                    {t("theme")}
+                                    <ThemeToggle />
+                                </div>
+                                <div className="flex items-center justify-between text-lg font-medium">
+                                    {t("currency")}
+                                    <CurrencySwitcher />
+                                </div>
                             </nav>
                         </SheetContent>
                     </Sheet>

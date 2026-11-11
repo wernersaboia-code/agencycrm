@@ -1,7 +1,8 @@
 import { Globe2, Landmark, MapPin, Ship } from "lucide-react"
 import { StaggerContainer, StaggerItem } from "@/components/motion"
 import { getTranslations } from "next-intl/server"
-import { Section, SectionHeading } from "./section"
+import { cn } from "@/lib/utils"
+import { CARD_RAIL, Section, SectionHeading, SPLIT_ASIDE, SPLIT_CARDS, SplitLayout } from "./section"
 import type { LandingLocale } from "./types"
 
 type ProfileCard = { title: string; body: string }
@@ -13,14 +14,15 @@ export async function BuyerProfilesSection({ locale }: { locale: LandingLocale }
     const cards = t.raw("cards") as ProfileCard[]
 
     return (
-        <Section tone="glow" width="narrow">
+        <Section tone="glow">
+            <SplitLayout>
             <SectionHeading eyebrow={t("eyebrow")} title={t("title")} intro={t("intro")} />
 
-            <StaggerContainer className="mt-6 grid gap-4 sm:grid-cols-2">
+            <StaggerContainer className={cn(SPLIT_CARDS, CARD_RAIL, "gap-4 sm:grid-cols-2")}>
                 {cards.map((card, index) => {
                     const Icon = PROFILE_ICONS[index % PROFILE_ICONS.length]
                     return (
-                        <StaggerItem key={card.title} className="rounded-lg border border-border bg-card p-5 transition-[border-color,box-shadow] duration-300 hover:border-brand-accent/60 hover:shadow-md">
+                        <StaggerItem key={card.title} className="w-[78%] shrink-0 snap-start rounded-lg border border-border bg-card p-5 sm:w-autotransition-[border-color,box-shadow] duration-300 hover:border-brand-accent/60 hover:shadow-md">
                             <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-md bg-brand-accent/15 text-brand-accent-strong">
                                 <Icon className="h-5 w-5" />
                             </div>
@@ -31,7 +33,8 @@ export async function BuyerProfilesSection({ locale }: { locale: LandingLocale }
                 })}
             </StaggerContainer>
 
-            <p className="mt-6 leading-7 text-muted-foreground">{t("close")}</p>
+            <p className={cn(SPLIT_ASIDE, "leading-7 text-muted-foreground")}>{t("close")}</p>
+            </SplitLayout>
         </Section>
     )
 }

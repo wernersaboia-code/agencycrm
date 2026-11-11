@@ -58,6 +58,36 @@ export function Section({
 }
 
 /**
+ * Título à esquerda, cartões à direita — só a partir de `lg`. Antes, "Mercados-
+ * alvo" e "Perfis de compra" eram a mesma coluna estreita das seções de texto,
+ * e a página inteira lia como um bloco só. Abaixo de `lg` a ordem continua
+ * título → cartões → fecho, na coluna de 48rem de sempre.
+ *
+ * Espera três filhos: o título, os cartões (`SPLIT_CARDS`) e o fecho
+ * (`SPLIT_ASIDE`). No desktop o fecho desce para baixo do título e os cartões
+ * ocupam a coluna da direita inteira.
+ */
+export function SplitLayout({ children }: { children: React.ReactNode }) {
+    return (
+        <div className="mx-auto grid max-w-3xl gap-y-6 lg:max-w-6xl lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:grid-rows-[auto_1fr] lg:gap-x-16">
+            {children}
+        </div>
+    )
+}
+
+export const SPLIT_CARDS = "lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-center"
+export const SPLIT_ASIDE = "lg:col-start-1 lg:row-start-2 lg:self-start"
+
+/**
+ * No celular os cartões viram um trilho de rolagem lateral em vez de pilha: a
+ * home tinha ~12 telas de altura. O trilho sangra até a borda da tela (-mx-4) e
+ * cada cartão ocupa menos que a largura, para o seguinte aparecer cortado e
+ * avisar que há mais. De `sm` em diante volta a ser grade.
+ */
+export const CARD_RAIL =
+    "-mx-4 flex snap-x snap-mandatory scroll-px-4 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:grid sm:overflow-visible sm:px-0 sm:pb-0"
+
+/**
  * Par sobrancelha + título, repetido em sete seções da landing.
  */
 export function SectionHeading({

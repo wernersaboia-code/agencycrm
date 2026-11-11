@@ -329,7 +329,9 @@ export function FadeInView({
   id,
 }: FadeInViewProps) {
   const ref = useRef<HTMLDivElement>(null)
-  const isInView = useInView(ref, { once: true, margin: "-50px" })
+  // Dispara 120px ANTES de o bloco entrar na tela (antes era 50px depois) e
+  // dura menos: rolando rápido no celular, a seção aparecia ainda meio apagada.
+  const isInView = useInView(ref, { once: true, margin: "0px 0px 120px 0px" })
   const shouldReduceMotion = useReducedMotion()
 
   if (shouldReduceMotion) {
@@ -363,7 +365,7 @@ export function FadeInView({
               y: 0,
               x: 0,
               transition: {
-                duration: 0.5,
+                duration: 0.4,
                 delay,
                 ease: [0.25, 0.46, 0.45, 0.94],
               },
