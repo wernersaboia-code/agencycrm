@@ -31,6 +31,27 @@ const nextConfig: NextConfig = {
             },
         ],
     },
+    // Fichas desativadas que tinham substituta. Sem isto o endereço antigo
+    // vira 404 e o que ele já tinha de indexação se perde. Um par por ficha:
+    // sem prefixo (português) e com prefixo de idioma.
+    async redirects() {
+        const fichasSubstituidas: Array<[antiga: string, nova: string]> = [
+            // 10.11.2026: dois estudos de HoReCa na Sérvia com o mesmo PDF.
+            [
+                'horeca-foodservice-market-serbia',
+                'horeca-foodservice-market-serbia-with-the-most-important-importers-and-distributors',
+            ],
+        ]
+
+        return fichasSubstituidas.flatMap(([antiga, nova]) => [
+            { source: `/list/${antiga}`, destination: `/list/${nova}`, permanent: true },
+            {
+                source: `/:locale(pt|de|en|es|fr|ar|it|nl)/list/${antiga}`,
+                destination: `/:locale/list/${nova}`,
+                permanent: true,
+            },
+        ])
+    },
     async headers() {
         // 'unsafe-eval' só é necessário em dev (Turbopack/HMR usam eval para
         // recarregar módulos). Em produção o bundle do Next não precisa dele,
