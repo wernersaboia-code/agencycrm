@@ -39,12 +39,15 @@ export function StudyViewer({
     signUpText,
     signUpCta,
     signUpHref,
+    side = false,
 }: {
     id: string
     pages: string[]
     signUpText: string
     signUpCta: string
     signUpHref: string
+    /** Hero lado a lado: a partir de `lg` o bloco fica estreito e empilhado, como no celular. */
+    side?: boolean
 }) {
     const t = useTranslations("landing.freeSample")
     const pdfUrl = "/api/free-sample/pdf"
@@ -61,13 +64,13 @@ export function StudyViewer({
     const next = (index + 1) % pages.length
 
     return (
-        <div id={id} className="mx-auto w-full max-w-sm scroll-mt-20 md:max-w-3xl">
+        <div id={id} className={`mx-auto w-full max-w-sm scroll-mt-20 md:max-w-3xl ${side ? "lg:max-w-sm" : ""}`}>
             <Dialog>
                 {/* Abaixo do hero, na horizontal: a página folheando de um lado,
                     o convite do outro. No celular empilha. */}
-                <div className="grid items-center gap-6 rounded-xl border border-border bg-card p-5 shadow-xl shadow-brand/10 md:grid-cols-[minmax(0,17rem)_1fr] md:gap-10 md:p-8">
+                <div className={`grid items-center gap-6 rounded-xl border border-border bg-card p-5 shadow-xl shadow-brand/10 md:grid-cols-[minmax(0,17rem)_1fr] md:gap-10 md:p-8 ${side ? "lg:grid-cols-1 lg:gap-4 lg:p-6" : ""}`}>
                     {/* No celular a folha na largura toda ocupava a tela inteira. */}
-                    <div className="mx-auto w-full max-w-60 md:max-w-none">
+                    <div className={`mx-auto w-full max-w-60 md:max-w-none ${side ? "lg:max-w-44" : ""}`}>
                         <DialogTrigger asChild>
                             <button
                                 type="button"
@@ -127,7 +130,7 @@ export function StudyViewer({
                         )}
                     </div>
 
-                    <div className="text-center md:text-left">
+                    <div className={`text-center md:text-left ${side ? "lg:text-center" : ""}`}>
                         <p className="text-xs font-semibold uppercase tracking-wider text-brand-accent-strong">
                             {t("eyebrow")}
                         </p>
@@ -136,7 +139,7 @@ export function StudyViewer({
                         <p className="mt-2 text-sm text-muted-foreground">{t("fileNote")}</p>
 
                         <DialogTrigger asChild>
-                            <Button size="lg" className="mt-6 w-full bg-brand text-brand-foreground hover:bg-brand-hover md:w-auto">
+                            <Button size="lg" className={`mt-6 w-full bg-brand text-brand-foreground hover:bg-brand-hover md:w-auto ${side ? "lg:w-full" : ""}`}>
                                 {t("viewerCta")}
                             </Button>
                         </DialogTrigger>

@@ -43,26 +43,28 @@ export async function HeroSection({ locale }: { locale: LandingLocale }) {
                 aria-hidden
                 className="brand-banner absolute inset-0 -z-10 mask-[linear-gradient(to_bottom,#000_35%,transparent_80%)]"
             />
-            <div className="container mx-auto px-4 py-16 md:py-20 lg:py-24">
-                {/* A frase ocupa o topo inteiro, centralizada; o estudo vem logo
-                    abaixo, como prova do que a frase promete. */}
-                <div className="mx-auto max-w-3xl text-center">
+            <div className="container mx-auto px-4 py-16 md:py-20 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,24rem)] lg:items-center lg:gap-14 lg:py-16">
+                {/* Até `lg` a frase ocupa o topo, centralizada, e o estudo vem
+                    logo abaixo. A partir de `lg` ficam lado a lado: a frase à
+                    esquerda e o estudo à direita, para o produto aparecer já
+                    na primeira tela do desktop. */}
+                <div className="mx-auto max-w-3xl text-center lg:mx-0 lg:text-left">
                     <Badge className="mb-5 rounded-md border-brand-accent/40 bg-brand-accent/15 px-3 py-1 text-brand-accent-strong hover:bg-brand-accent/15">
                         <ShieldCheck className="h-3.5 w-3.5" />
                         {t("badge")}
                     </Badge>
 
-                    <h1 className="text-4xl font-bold text-foreground md:text-5xl lg:text-6xl">
+                    <h1 className="text-4xl font-bold text-foreground md:text-5xl">
                         {t("title")}
                     </h1>
 
-                    <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-muted-foreground">
+                    <p className="mx-auto mt-5 max-w-2xl text-lg lg:mx-0 leading-8 text-muted-foreground">
                         {t("subtitle")}
                     </p>
 
                     {/* data-catalog-cta: a barra fixa do celular some enquanto
                         este botão está na tela (mobile-catalog-bar-shell). */}
-                    <div data-catalog-cta className="mt-8 flex flex-wrap items-center justify-center gap-3">
+                    <div data-catalog-cta className="mt-8 flex flex-wrap items-center justify-center gap-3 lg:justify-start">
                         <Button size="lg" className="bg-brand text-brand-foreground hover:bg-brand-hover" asChild>
                             <Link href="/catalog">
                                 {t("ctaPrimary")}
@@ -74,7 +76,7 @@ export async function HeroSection({ locale }: { locale: LandingLocale }) {
                         </Button>
                     </div>
 
-                    <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm text-muted-foreground">
+                    <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm text-muted-foreground lg:justify-start">
                         <TrustNote icon={CheckCircle2} text={t("trust1")} />
                         <TrustNote icon={ShieldCheck} text={t("trust2")} />
                         <TrustNote icon={BadgeCheck} text={t("trust3")} />
@@ -84,11 +86,12 @@ export async function HeroSection({ locale }: { locale: LandingLocale }) {
                 {/* Com amostra ativa, o próprio estudo, com as páginas passando.
                     Sem ela, a prévia dos tópicos leva ao catálogo: "ler estudo
                     grátis" seria promessa sem arquivo. */}
-                <div className="mt-14 md:mt-16">
+                <div className="mt-14 md:mt-16 lg:mt-0">
                     {amostra ? (
                         <StudyViewer
                             id={freeSampleAnchor(locale)}
                             pages={paginas}
+                            side
                             signUpText={tConta("homeSignUpText")}
                             signUpCta={tConta("homeSignUpCta")}
                             signUpHref={`/sign-up?lang=${locale}`}
