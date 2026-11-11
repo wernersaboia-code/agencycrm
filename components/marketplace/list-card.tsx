@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { formatCurrency } from "@/lib/utils"
-import { Globe, CheckCircle, ArrowRight, ShoppingCart, CalendarClock } from "lucide-react"
+import { Globe, CheckCircle, ArrowRight, ShoppingCart, CalendarClock, Languages } from "lucide-react"
 import { FlagIcon } from "@/components/ui/flag-icon"
 import { useCart } from "@/contexts/cart-context"
 import { excecoesDoIdioma, nomeDePais } from "@/lib/i18n/nome-de-pais"
@@ -44,6 +44,15 @@ export interface MarketplaceListCardData {
     updatedAt: Date
 }
 
+/** "inglês", "Englisch", "anglais": o nome do idioma na língua da página. */
+function nomeDoIdioma(code: string, locale: string): string | null {
+    try {
+        return new Intl.DisplayNames([locale], { type: "language", fallback: "none" }).of(code) ?? null
+    } catch {
+        return null
+    }
+}
+
 interface ListCardProps {
     list: MarketplaceListCardData
 }
@@ -63,7 +72,13 @@ export function ListCard({ list }: ListCardProps) {
     const excecoes = excecoesDoIdioma(locale)
     const paises = list.countries.slice(0, 3).map((code) => nomeDePais(code, locale, excecoes))
 
-    const handleAddToCart = (e: React.MouseEvent) => {
+    // Título e descrição do cartão vêm no idioma do estudo; na página em
+    // português, um cartão todo em inglês parecia tradução esquecida. Só
+    // aparece quando o idioma do estudo difere do da página.
+    const idiomaDoEstudo =
+        list.language && list.language !== locale ? nomeDoIdioma(list.language, locale) : null
+
+    const handleAddToCart =(e: React.MouseEvent) => {
         e.preventDefault()
         addItem({
             id: list.id,
@@ -124,6 +139,12 @@ export function ListCard({ list }: ListCardProps) {
                             <Globe className="h-4 w-4 text-muted-foreground" />
                             <span className="truncate">{paises.join(", ")}{list.countries.length > 3 ? ` +${list.countries.length - 3}` : ''}</span>
                         </div>
+                        {idiomaDoEstudo && (
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                <Languages className="h-4 w-4 text-muted-foreground" />
+                                <span>{t("studyLanguage", { language: idiomaDoEstudo })}</span>
+                            </div>
+                        )}
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
                             <CheckCircle className="h-4 w-4 text-brand-accent-strong" />
                             <span>{t("verifiedEmails")}</span>
