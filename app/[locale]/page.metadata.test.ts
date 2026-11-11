@@ -24,8 +24,17 @@ describe("metadata da home", () => {
     it("mantém título, descrição e locale de Open Graph", async () => {
         const meta = await generateMetadata({ params: Promise.resolve({ locale: "pt" }) })
 
-        expect(meta.openGraph?.title).toBe("Título de teste")
+        expect(meta.openGraph?.title).toBe("Título de teste | Easy Prospect")
         expect(meta.openGraph?.description).toBe("Descrição de teste")
         expect(meta.openGraph?.locale).toBe("pt_BR")
+    })
+
+    it("leva a marca no título", async () => {
+        const meta = await generateMetadata({ params: Promise.resolve({ locale: "pt" }) })
+
+        // O template "%s | Easy Prospect" do layout não se aplica à página do
+        // mesmo segmento. Até 10.11.2026 a home saía em produção só com
+        // "Lists of importers and distributors", sem a marca.
+        expect(meta.title).toEqual({ absolute: "Título de teste | Easy Prospect" })
     })
 })
