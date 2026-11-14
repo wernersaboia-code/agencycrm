@@ -234,7 +234,11 @@ export default async function ListPage({ params }: ListPageProps) {
                                         // `space-y-*` somado a `prose-p:my-0` zerava a
                                         // distância entre parágrafos. Subtítulo fica um
                                         // degrau abaixo do título da seção (text-lg).
-                                        className="prose prose-sm mt-2 max-w-2xl text-sm text-muted-foreground dark:prose-invert prose-p:my-3 prose-headings:mb-2 prose-headings:mt-6 prose-headings:text-base prose-headings:font-semibold prose-ul:my-3 prose-ol:my-3 prose-li:my-1 [&>*:first-child]:mt-0 [&>*:last-child]:mb-0 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5"
+                                        // `[&_li>p]:my-0`: o editor do admin grava
+                                        // `<li><p>…</p></li>`; sem isso, a lista de um
+                                        // resumo salvo por lá ficaria mais espaçada
+                                        // que a de um resumo que nunca passou por ele.
+                                        className="prose prose-sm mt-2 max-w-2xl text-sm text-muted-foreground dark:prose-invert prose-p:my-3 prose-headings:mb-2 prose-headings:mt-6 prose-headings:text-base prose-headings:font-semibold prose-ul:my-3 prose-ol:my-3 prose-li:my-1 [&_li>p]:my-0 [&>*:first-child]:mt-0 [&>*:last-child]:mb-0 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5"
                                         dangerouslySetInnerHTML={{ __html: introducaoHtml }}
                                     />
                                 </div>
