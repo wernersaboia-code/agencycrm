@@ -13,6 +13,7 @@
 //     "q": ["Início da frase que abre parágrafo novo"],
 //     "t": ["Linha que é título"],
 //     "x": ["lixo do PDF a remover"], "s": [["de", "para"]] }
+// ou { "html": "<p>…</p>" } quando o resumo foi reescrito à mão.
 //
 // No fim, cada resumo é conferido: as palavras do HTML têm de ser as mesmas do
 // texto original, descontado só o que foi removido de propósito.
@@ -227,6 +228,17 @@ function fichaDeExemplo(texto) {
 function formatar(item) {
     const nota = anotacoes[item.slug] ?? {}
     const avisos = []
+
+    // Resumo reescrito à mão (o texto do banco não era um resumo): entra como
+    // está, só passa pelo mesmo sanitizador do site.
+    if (nota.html) {
+        const limpo = sanitizeHtml(nota.html, {
+            allowedTags: ["a", "b", "br", "del", "em", "h2", "h3", "h4", "i", "li", "ol", "p", "s", "strong", "u", "ul"],
+            allowedAttributes: { a: ["href", "title", "target"] },
+        }).replace(/<br \/>/g, "<br>")
+        if (limpo !== nota.html) avisos.push("o sanitizador do site alteraria o HTML reescrito")
+        return { id: item.id, slug: item.slug, html: nota.html, avisos }
+    }
     const usados = new Set()
     const blocos = emBlocos(item.introduction, nota, avisos)
     const titulosExtras = new Set(nota.t ?? [])
