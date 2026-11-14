@@ -230,7 +230,11 @@ export default async function ListPage({ params }: ListPageProps) {
                                 <div className="mt-6">
                                     <h2 className="text-lg font-semibold text-foreground">{t("introductionTitle")}</h2>
                                     <div
-                                        className="prose prose-sm mt-2 max-w-2xl space-y-3 text-sm text-muted-foreground dark:prose-invert prose-p:my-0 prose-headings:mt-0 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5"
+                                        // O espaçamento vem todo das margens do `prose`:
+                                        // `space-y-*` somado a `prose-p:my-0` zerava a
+                                        // distância entre parágrafos. Subtítulo fica um
+                                        // degrau abaixo do título da seção (text-lg).
+                                        className="prose prose-sm mt-2 max-w-2xl text-sm text-muted-foreground dark:prose-invert prose-p:my-3 prose-headings:mb-2 prose-headings:mt-6 prose-headings:text-base prose-headings:font-semibold prose-ul:my-3 prose-ol:my-3 prose-li:my-1 [&>*:first-child]:mt-0 [&>*:last-child]:mb-0 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5"
                                         dangerouslySetInnerHTML={{ __html: introducaoHtml }}
                                     />
                                 </div>
