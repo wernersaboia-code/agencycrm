@@ -51,6 +51,8 @@ interface RichTextToolbarProps {
 
 export function RichTextToolbar({ editor, disabled, preset = "email" }: RichTextToolbarProps) {
     const ehArtigo = preset === "article"
+    const ehEstudo = preset === "study"
+    const ehRico = ehArtigo || ehEstudo
     const [linkUrl, setLinkUrl] = useState("")
     const [linkPopoverOpen, setLinkPopoverOpen] = useState(false)
     const [imagePopoverOpen, setImagePopoverOpen] = useState(false)
@@ -142,8 +144,9 @@ export function RichTextToolbar({ editor, disabled, preset = "email" }: RichText
             <Separator orientation="vertical" className="mx-1 h-6" />
 
             {/* Headings */}
-            {/* No artigo o h1 é o título do post; o corpo começa no h2. */}
-            {!ehArtigo && (
+            {/* No artigo o h1 é o título do post; o resumo fica sob o h2
+                "Introdução" da ficha. Nos dois casos o corpo começa no h2. */}
+            {!ehRico && (
             <Toggle
                 size="sm"
                 pressed={editor.isActive("heading", { level: 1 })}
@@ -163,11 +166,11 @@ export function RichTextToolbar({ editor, disabled, preset = "email" }: RichText
                     editor.chain().focus().toggleHeading({ level: 2 }).run()
                 }
                 disabled={disabled}
-                title={ehArtigo ? "Título de seção" : "Título 2"}
+                title={ehRico ? "Título de seção" : "Título 2"}
             >
                 <Heading2 className="h-4 w-4" />
             </Toggle>
-            {ehArtigo && (
+            {ehRico && (
                 <Toggle
                     size="sm"
                     pressed={editor.isActive("heading", { level: 3 })}

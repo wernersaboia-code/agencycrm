@@ -4,7 +4,7 @@
 import { useState, useMemo, type ClipboardEvent as EventoDeColagem } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { useForm, useWatch, type Resolver } from "react-hook-form"
+import { useForm, useWatch, Controller, type Resolver } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { toast } from "sonner"
@@ -64,6 +64,8 @@ import { paisesInvalidosDoCampo } from "@/lib/i18n/nome-de-pais"
 import { FlagIcon } from "@/components/ui/flag-icon"
 import { canPublishList } from "@/lib/marketplace/list-publishing"
 import { normalizarTextoColado } from "@/lib/marketplace/texto-colado"
+import { htmlDaIntroducao } from "@/lib/marketplace/resumo-formatado"
+import { RichTextEditor } from "@/components/ui/rich-text-editor/rich-text-editor"
 
 // ============================================
 // TIPOS
@@ -191,7 +193,9 @@ export function ListForm({ list, setores }: ListFormProps) {
             // documento. Mostrar o texto já limpo faz o formulário exibir o que
             // a página pública exibe — e salvar conserta o que está no banco.
             description: normalizarTextoColado(list?.description),
-            introduction: normalizarTextoColado(list?.introduction),
+            // A introdução é editada como HTML rico. Listas antigas em texto
+            // puro são convertidas na hora de abrir, sem precisar de backfill.
+            introduction: htmlDaIntroducao(list?.introduction) ?? "",
             language: list?.language || "",
             countries: list?.countries.join(", ") || "",
             industries: list?.industries.join(", ") || "",
@@ -211,16 +215,19 @@ export function ListForm({ list, setores }: ListFormProps) {
     // ============================================
 
     /**
-     * Limpa o texto colado antes que ele entre no campo.
+     * Limpa a descrição colada antes que ela entre no campo.
      *
      * Colar de um PDF traz cada linha VISUAL do documento como uma quebra de
-     * linha de verdade, e é isso que fazia a introdução sair com frases
+     * linha de verdade, e é isso que fazia a descrição sair com frases
      * cortadas na página. A limpeza roda já na colagem — e não só na gravação —
      * para o admin ver o texto como ele vai sair, em vez de descobrir depois de
      * salvar (ver lib/marketplace/texto-colado.ts).
+     *
+     * A introdução não passa por aqui: ela é editada no editor rico, que faz a
+     * própria limpeza na colagem.
      */
     const limparColagem =
-        (campo: "description" | "introduction") =>
+        (campo: "description") =>
         (evento: EventoDeColagem<HTMLTextAreaElement>) => {
             const colado = evento.clipboardData.getData("text/plain")
             if (!colado) return
@@ -262,7 +269,7 @@ export function ListForm({ list, setores }: ListFormProps) {
                 return
             }
 
-            form.setValue("introduction", resultado.data.introduction, {
+            form.setValue("introduction", htmlDaIntroducao(resultado.data.introduction) ?? "", {
                 shouldDirty: true,
                 shouldValidate: true,
             })
@@ -722,12 +729,18 @@ export function ListForm({ list, setores }: ListFormProps) {
                                     </Button>
                                 )}
                             </div>
-                            <Textarea
-                                id="introduction"
-                                placeholder={t("introPlaceholder")}
-                                rows={6}
-                                {...form.register("introduction")}
-                                onPaste={limparColagem("introduction")}
+                            <Controller
+                                control={form.control}
+                                name="introduction"
+                                render={({ field }) => (
+                                    <RichTextEditor
+                                        id="introduction"
+                                        content={field.value ?? ""}
+                                        onChange={field.onChange}
+                                        preset="study"
+                                        placeholder={t("introPlaceholder")}
+                                    />
+                                )}
                             />
                             <p className="text-xs text-muted-foreground">{t("introHint")}</p>
                         </div>

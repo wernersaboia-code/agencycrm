@@ -9,22 +9,27 @@ import Underline from "@tiptap/extension-underline"
 import TextAlign from "@tiptap/extension-text-align"
 import Image from "@tiptap/extension-image"
 import { TableKit } from "@tiptap/extension-table"
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
+import type { Editor } from "@tiptap/react"
 import { cn } from "@/lib/utils"
 import { RichTextToolbar } from "./rich-text-toolbar"
 import { renderTemplateVariablesForEditor } from "@/lib/constants/template.constants"
 import { ehColagemInterna, limparHtmlDeColagem } from "@/lib/blog/paste-cleanup"
 import { rebaixarTitulosDoCorpo } from "@/lib/blog/heading-levels"
+import { textoParaHtml } from "@/lib/marketplace/resumo-formatado"
 
 /**
  * `email` é o comportamento histórico: chips de variável ({{nome}}) e nada
  * mais. `article` serve o blog — alinhamento, mais níveis de título e limpeza
- * do que for colado de Word/Google Docs/IA.
+ * do que for colado de Word/Google Docs/IA. `study` é o resumo do estudo de
+ * mercado: negrito, itálico, listas e títulos, sem imagem/tabela — e com a
+ * colagem normalizada como no `textarea` antigo, para o texto do PDF não voltar
+ * a entrar com uma quebra de linha por linha visual.
  *
- * Os dois convivem no mesmo componente de propósito: o editor de template e o
- * editor de post compartilham quase tudo, e duas cópias divergiriam.
+ * Os presets convivem no mesmo componente de propósito: o editor de template, o
+ * de post e o de resumo compartilham quase tudo, e cópias divergiriam.
  */
-export type RichTextPreset = "email" | "article"
+export type RichTextPreset = "email" | "article" | "study"
 
 interface RichTextEditorProps {
     content: string
@@ -33,6 +38,8 @@ interface RichTextEditorProps {
     className?: string
     disabled?: boolean
     preset?: RichTextPreset
+    /** Liga o rótulo do formulário à área editável. */
+    id?: string
 }
 
 export function RichTextEditor({
@@ -42,19 +49,30 @@ export function RichTextEditor({
                                    className,
                                    disabled = false,
                                    preset = "email",
+                                   id,
                                }: RichTextEditorProps) {
     const ehArtigo = preset === "article"
+    const ehEstudo = preset === "study"
+    const ehRico = ehArtigo || ehEstudo
     // Chip de variável só existe no mundo do cold mail.
     // No artigo, o h1 é o título do post: o corpo só tem h2 e h3. Post antigo
     // com h1 no corpo é rebaixado ao abrir — sem isso o editor, que não
     // conhece h1 neste preset, transformaria os títulos em parágrafo.
-    const editorContent = ehArtigo ? rebaixarTitulosDoCorpo(content) : renderTemplateVariablesForEditor(content)
+    const editorContent = ehArtigo
+        ? rebaixarTitulosDoCorpo(content)
+        : ehEstudo
+            ? content
+            : renderTemplateVariablesForEditor(content)
+
+    // O handlePaste do ProseMirror precisa do editor já criado; o ref é
+    // preenchido no efeito logo depois da criação.
+    const editorRef = useRef<Editor | null>(null)
 
     const editor = useEditor({
         extensions: [
             StarterKit.configure({
                 heading: {
-                    levels: ehArtigo ? [2, 3] : [1, 2, 3],
+                    levels: ehRico ? [2, 3] : [1, 2, 3],
                 },
             }),
             Link.configure({
@@ -115,12 +133,36 @@ export function RichTextEditor({
                               ? html
                               : limparHtmlDeColagem(html, { descartarImagens: true }),
                   }
+                : ehEstudo
+                ? {
+                      // O resumo é colado do PDF. O texto/plain é o que carrega
+                      // as linhas visuais do documento, e é ele que a limpeza
+                      // entende — por isso a colagem externa passa por aqui em
+                      // vez de virar uma pilha de parágrafos de uma linha só.
+                      handlePaste: (_view, event) => {
+                          const html = event.clipboardData?.getData("text/html") ?? ""
+                          if (ehColagemInterna(html)) return false
+
+                          const texto = event.clipboardData?.getData("text/plain")
+                          if (!texto) return false
+
+                          event.preventDefault()
+                          const conteudo = textoParaHtml(texto)
+                          if (conteudo) editorRef.current?.commands.insertContent(conteudo)
+                          return true
+                      },
+                      transformPastedHTML: (html: string) =>
+                          ehColagemInterna(html)
+                              ? html
+                              : limparHtmlDeColagem(html, { descartarImagens: true }),
+                  }
                 : {}),
             attributes: {
+                ...(id ? { id } : {}),
                 class: cn(
                     "prose max-w-none focus:outline-none dark:prose-invert",
                     // O artigo é escrito no tamanho e no ritmo em que será lido;
-                    // o e-mail continua compacto.
+                    // o resumo é um trecho curto e o e-mail continua compacto.
                     ehArtigo
                         ? cn(
                               "min-h-[60vh] px-6 py-5 prose-headings:tracking-tight prose-img:rounded-lg",
@@ -131,6 +173,8 @@ export function RichTextEditor({
                               "[&_td>p]:my-0 [&_th>p]:my-0 [&_.selectedCell]:bg-primary/15",
                               "[&_.tableWrapper]:overflow-x-auto"
                           )
+                        : ehEstudo
+                        ? "prose-sm min-h-[240px] p-4 prose-p:my-2 prose-ul:my-2 prose-ol:my-2 prose-li:my-0 prose-headings:tracking-tight"
                         : "prose-sm min-h-[200px] p-4 prose-p:my-2 prose-ul:my-2 prose-ol:my-2 prose-li:my-0",
                     "[&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6",
                     "[&_span[data-template-variable]]:inline-flex [&_span[data-template-variable]]:rounded",
@@ -147,6 +191,10 @@ export function RichTextEditor({
             editor.commands.setContent(editorContent)
         }
     }, [editorContent, editor])
+
+    useEffect(() => {
+        editorRef.current = editor
+    }, [editor])
 
     if (!editor) {
         return (

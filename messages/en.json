@@ -1432,7 +1432,7 @@
                 "languagePlaceholder": "Select language",
                 "introLabel": "Introduction",
                 "introPlaceholder": "Introduction text for the market study...",
-                "introHint": "Paste the study text: PDF line breaks are removed automatically. Use a blank line to separate paragraphs.",
+                "introHint": "Paste the study text: PDF line breaks are removed automatically. Use a blank line to separate paragraphs and the toolbar above for bold, italic and lists.",
                 "introImport": "Import from PDF",
                 "introImportSuccess": "Executive summary imported from the PDF. Review the text, then save the list.",
                 "introImportSaveFirst": "Save the list with the new PDF before importing the summary.",

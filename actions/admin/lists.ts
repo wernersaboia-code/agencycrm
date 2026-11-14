@@ -15,6 +15,7 @@ import { writeListPrices } from "@/lib/marketplace/list-prices"
 import { describeListError, type ActionResult } from "@/lib/admin/action-errors"
 import { TAG_RESUMO_CATALOGO } from "@/lib/marketplace/resumo-catalogo"
 import { normalizarTextoColado } from "@/lib/marketplace/texto-colado"
+import { introducaoParaGravar } from "@/lib/marketplace/resumo-formatado"
 import { contarEmpresasDoPdf, extrairResumoDoPdf } from "@/lib/marketplace/pdf-do-estudo"
 import { downloadListPdf } from "@/lib/supabase/list-studies"
 
@@ -48,7 +49,10 @@ const listDataSchema = z.object({
     name: z.string().trim().min(3).max(160),
     slug: z.string().trim().min(3).max(180).regex(/^[a-z0-9-]+$/),
     description: z.string().trim().max(5000).optional(),
-    introduction: z.string().trim().max(10000).optional(),
+    // A introdução agora guarda HTML (negrito, itálico, listas), então o teto
+    // é maior que o do texto puro: as tags contam e o conteúdo visível é o
+    // mesmo de antes.
+    introduction: z.string().trim().max(50000).optional(),
     language: z.enum(["pt", "en", "de", "fr", "es", "it", "nl"]).optional(),
     countries: z.array(z.string().trim().min(2).max(3)).min(1).max(100),
     industries: z.array(z.string().trim().min(1).max(80)).max(100),
@@ -77,14 +81,14 @@ function normalizarCapa(valor: string | undefined): string | null {
 }
 
 /**
- * Texto colado de um estudo em PDF, pronto para gravar.
+ * Descrição colada de um estudo em PDF, pronta para gravar.
  *
- * Introdução e descrição são TEXTO PURO copiado do documento, então chegam com
- * as quebras de linha visuais do PDF no meio do texto. A limpeza junta cada
+ * A descrição continua TEXTO PURO copiado do documento, então chega com as
+ * quebras de linha visuais do PDF no meio do texto. A limpeza junta cada
  * parágrafo de volta (ver lib/marketplace/texto-colado.ts). Vazio depois da
  * limpeza vira `null` — string em branco no banco não é conteúdo.
  */
-function textoColadoParaGravar(valor: string | undefined): string | null {
+function descricaoParaGravar(valor: string | undefined): string | null {
     const limpo = normalizarTextoColado(valor)
     return limpo ? limpo : null
 }
@@ -197,8 +201,8 @@ async function criarLista(data: CreateListData): Promise<SerializedList> {
         data: {
             name: validated.name,
             slug: validated.slug,
-            description: textoColadoParaGravar(validated.description),
-            introduction: textoColadoParaGravar(validated.introduction),
+            description: descricaoParaGravar(validated.description),
+            introduction: introducaoParaGravar(validated.introduction),
             language: validated.language || null,
             countries: validated.countries,
             industries: validated.industries,
@@ -266,8 +270,8 @@ async function atualizarLista(id: string, data: CreateListData): Promise<Seriali
         data: {
             name: validated.name,
             slug: validated.slug,
-            description: textoColadoParaGravar(validated.description),
-            introduction: textoColadoParaGravar(validated.introduction),
+            description: descricaoParaGravar(validated.description),
+            introduction: introducaoParaGravar(validated.introduction),
             language: validated.language || null,
             countries: validated.countries,
             industries: validated.industries,

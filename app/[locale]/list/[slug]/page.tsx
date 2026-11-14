@@ -15,7 +15,7 @@ import { JsonLd } from "@/components/seo/json-ld"
 import { buildProductSchema, buildBreadcrumbSchema, buildListBreadcrumbTrail } from "@/lib/seo/schema"
 import { alternatesFor } from "@/lib/i18n/alternates"
 import { ROBOTS_NAO_ENCONTRADO } from "@/lib/seo/indexability"
-import { paragrafosDaIntroducao } from "@/lib/marketplace/texto-colado"
+import { htmlDaIntroducao } from "@/lib/marketplace/resumo-formatado"
 import { getSetores } from "@/lib/marketplace/setores-servidor"
 import { nomesDosSetoresDaLista } from "@/lib/marketplace/setores"
 import { CAMPOS_SO_DO_ADMIN } from "@/lib/marketplace/campos-do-admin"
@@ -164,12 +164,11 @@ export default async function ListPage({ params }: ListPageProps) {
     const ofertas = precos.length > 0
         ? precos.map((row) => ({ price: row.amount, currency: row.currency }))
         : [{ price: precoLegado.amount, currency: precoLegado.currency }]
-    // A introdução vem colada de um PDF, com as quebras de linha visuais do
-    // documento dentro do texto. Quem monta os parágrafos é a limpeza (ver
-    // lib/marketplace/texto-colado.ts): renderizar o texto cru com
-    // `whitespace-pre-line` transformava cada quebra da colagem numa quebra na
-    // tela — frase cortada no meio e nenhum parágrafo.
-    const introducao = paragrafosDaIntroducao(list.introduction)
+    // A introdução pode estar em dois formatos: texto puro (listas antigas,
+    // com as quebras de linha do PDF) ou HTML (editada com formatação). Quem
+    // resolve os dois é htmlDaIntroducao, que também sanitiza antes de ir para
+    // a tela.
+    const introducaoHtml = htmlDaIntroducao(list.introduction)
 
     return (
         <div className="min-h-screen bg-muted/40">
@@ -227,14 +226,13 @@ export default async function ListPage({ params }: ListPageProps) {
                                     {list.description}
                                 </p>
                             )}
-                            {introducao.length > 0 && (
+                            {introducaoHtml && (
                                 <div className="mt-6">
                                     <h2 className="text-lg font-semibold text-foreground">{t("introductionTitle")}</h2>
-                                    <div className="mt-2 max-w-2xl space-y-3 text-sm text-muted-foreground">
-                                        {introducao.map((paragrafo, indice) => (
-                                            <p key={indice}>{paragrafo}</p>
-                                        ))}
-                                    </div>
+                                    <div
+                                        className="prose prose-sm mt-2 max-w-2xl space-y-3 text-sm text-muted-foreground dark:prose-invert prose-p:my-0 prose-headings:mt-0 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5"
+                                        dangerouslySetInnerHTML={{ __html: introducaoHtml }}
+                                    />
                                 </div>
                             )}
                         </div>
