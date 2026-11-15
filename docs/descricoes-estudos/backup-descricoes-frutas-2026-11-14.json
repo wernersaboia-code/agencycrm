@@ -1,0 +1,29 @@
+[
+  {
+    "id": "cms3q6enl0000l604fjxil5ap",
+    "slug": "exotic-fruits-market-germany",
+    "name": "Exotic Fruits Market - Germany",
+    "language": "en",
+    "isActive": true,
+    "description": "Germany depends almost entirely on imports for tropical fruit. Where the premium, speciality, organic and Fairtrade opportunities lie, which certifications open the door and how to reach German buyers.",
+    "studyPdfUrl": "cms3q6enl0000l604fjxil5ap/study-1787501760291.pdf"
+  },
+  {
+    "id": "cms0x12vv0000ld04xjcn3t2r",
+    "slug": "mercado-de-frutas-exoticas-alemanha",
+    "name": "Mercado de Frutas Exóticas - Alemanha",
+    "language": "pt",
+    "isActive": true,
+    "description": "A Alemanha importa quase toda a fruta tropical que consome. Onde estão as oportunidades no segmento premium, de especialidades, orgânico e Fairtrade, quais certificações abrem a porta e como chegar aos compradores.",
+    "studyPdfUrl": "cms0x12vv0000ld04xjcn3t2r/study-1787501758536.pdf"
+  },
+  {
+    "id": "cms3pjxjy0002ib04icwih0io",
+    "slug": "mercado-de-frutas-exoticas-alemania",
+    "name": "Mercado de Frutas Exóticas - Alemania",
+    "language": "es",
+    "isActive": true,
+    "description": "Alemania importa casi toda la fruta tropical que consume. Dónde están las oportunidades en el segmento premium, de especialidades, ecológico y Fairtrade, qué certificaciones abren la puerta y cómo llegar a los compradores.",
+    "studyPdfUrl": "cms3pjxjy0002ib04icwih0io/study-1787501757641.pdf"
+  }
+]
