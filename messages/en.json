@@ -1523,12 +1523,12 @@
                 },
                 "personalContactsCancel": "Cancel upload",
                 "personalContactsProceed": "Publish anyway",
-                "contentLossTitle": "The new PDF does not contain all of the current content",
-                "contentLossDesc": "{missing} of {total} words from the study in the shop are missing ({percent}%), not counting the cover. The current file has {oldPages} pages; the new one, {newPages}. Check that the cover change did not leave out a page, table or company.",
-                "contentLossLines": "Passages from the current study that are not in the new one:",
+                "contentLossTitle": "Check what leaves the current study",
+                "contentLossDesc": "{missing} of {total} words from the study in the shop do not appear in the new one ({percent}%), not counting the cover. The current file has {oldPages} pages; the new one, {newPages}. Added content is not counted here. Check that what leaves is only the expected changes of this edition, not a page, table or company lost in the copy.",
+                "contentLossLines": "Lines from the current study that are not in the new one:",
                 "contentLossWords": "Words from the current study that are not in the new one:",
                 "contentLossCancel": "Cancel upload",
-                "contentLossProceed": "Replace anyway"
+                "contentLossProceed": "Confirm and replace"
             },
             "importWizard": {
                 "prepareTitle": "Prepare Leads for \"{name}\"",

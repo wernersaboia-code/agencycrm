@@ -1523,12 +1523,12 @@
                 },
                 "personalContactsCancel": "Cancelar envio",
                 "personalContactsProceed": "Publicar mesmo assim",
-                "contentLossTitle": "O PDF novo não traz todo o conteúdo do atual",
-                "contentLossDesc": "Faltam {missing} de {total} palavras do estudo que está na loja ({percent}%), sem contar a capa. O atual tem {oldPages} páginas; o novo, {newPages}. Confira se a troca de capa não deixou página, tabela ou empresa para trás.",
-                "contentLossLines": "Trechos do estudo atual que não estão no novo:",
+                "contentLossTitle": "Confira o que sai do estudo atual",
+                "contentLossDesc": "{missing} de {total} palavras do estudo que está na loja não aparecem no novo ({percent}%), sem contar a capa. O atual tem {oldPages} páginas; o novo, {newPages}. Conteúdo acrescentado não entra nesta conta. Confira se o que sai são só as mudanças esperadas desta edição, e não uma página, tabela ou empresa perdida na cópia.",
+                "contentLossLines": "Linhas do estudo atual que não estão no novo:",
                 "contentLossWords": "Palavras do estudo atual que não estão no novo:",
                 "contentLossCancel": "Cancelar envio",
-                "contentLossProceed": "Substituir mesmo assim"
+                "contentLossProceed": "Confirmar e substituir"
             },
             "importWizard": {
                 "prepareTitle": "Preparar Leads para \"{name}\"",

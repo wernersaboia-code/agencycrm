@@ -1324,9 +1324,11 @@ export function ListForm({ list, setores }: ListFormProps) {
             </AlertDialog>
 
             {/*
-                O PDF novo (em geral, capa refeita) não trouxe todo o miolo do
-                que está na loja. Mostra o que sumiu, linha a linha, e só troca
-                com confirmação explícita, que fica no log de auditoria.
+                O PDF novo não traz tudo o que o da loja tem (sem contar a
+                capa). Numa troca de capa isso é cópia incompleta; numa edição
+                nova, é o que foi atualizado ou retirado. O texto é neutro de
+                propósito: mostra o que sai, linha a linha, e a confirmação
+                fica no log de auditoria. Conteúdo acrescentado não conta.
             */}
             <AlertDialog open={perdaPendente !== null}>
                 <AlertDialogContent className="max-w-2xl">

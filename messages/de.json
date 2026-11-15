@@ -1523,12 +1523,12 @@
                 },
                 "personalContactsCancel": "Upload abbrechen",
                 "personalContactsProceed": "Trotzdem veröffentlichen",
-                "contentLossTitle": "Das neue PDF enthält nicht den gesamten bisherigen Inhalt",
-                "contentLossDesc": "Es fehlen {missing} von {total} Wörtern der Studie im Shop ({percent} %), das Deckblatt nicht mitgezählt. Die aktuelle Datei hat {oldPages} Seiten, die neue {newPages}. Bitte prüfen, ob beim neuen Deckblatt eine Seite, Tabelle oder Firma verloren gegangen ist.",
-                "contentLossLines": "Passagen der aktuellen Studie, die in der neuen fehlen:",
+                "contentLossTitle": "Prüfen, was aus der aktuellen Studie wegfällt",
+                "contentLossDesc": "{missing} von {total} Wörtern der Studie im Shop kommen in der neuen nicht vor ({percent} %), das Deckblatt nicht mitgezählt. Die aktuelle Datei hat {oldPages} Seiten, die neue {newPages}. Neu hinzugekommene Inhalte zählen hier nicht. Bitte prüfen, ob nur die erwarteten Änderungen dieser Ausgabe wegfallen und nicht eine Seite, Tabelle oder Firma beim Kopieren verloren gegangen ist.",
+                "contentLossLines": "Zeilen der aktuellen Studie, die in der neuen fehlen:",
                 "contentLossWords": "Wörter der aktuellen Studie, die in der neuen fehlen:",
                 "contentLossCancel": "Upload abbrechen",
-                "contentLossProceed": "Trotzdem ersetzen"
+                "contentLossProceed": "Bestätigen und ersetzen"
             },
             "importWizard": {
                 "prepareTitle": "Leads für \"{name}\" vorbereiten",
