@@ -7,7 +7,9 @@ import {
     uploadListPdf,
     removeListPdfByPath,
     validatePdfFile,
+    downloadListPdf,
 } from "@/lib/supabase/list-studies"
+import { compararConteudoDosPdfs } from "@/lib/marketplace/pdf-conteudo"
 import { encontrarContatosPessoaisNoPdf } from "@/lib/marketplace/pdf-contatos"
 import { contarEmpresasDoPdf } from "@/lib/marketplace/pdf-do-estudo"
 
@@ -51,7 +53,51 @@ export async function POST(
             )
         }
 
+        // Troca de PDF (em geral, capa nova): o miolo tem de vir inteiro. A
+        // comparação é com o arquivo que está na loja agora, antes de ele ser
+        // apagado pelo upload. Perda acima do limite pede confirmação
+        // explícita, que fica no log de auditoria.
+        let comparacao: Awaited<ReturnType<typeof compararConteudoDosPdfs>> = null
+        if (list.studyPdfUrl) {
+            try {
+                comparacao = await compararConteudoDosPdfs(
+                    await downloadListPdf(list.studyPdfUrl),
+                    // Cópia nova: a checagem de contatos acima pode ter esvaziado `bytes`.
+                    new Uint8Array(await file.arrayBuffer())
+                )
+            } catch (error) {
+                console.error("[PDF] Não foi possível baixar o estudo atual para comparar:", error)
+            }
+        }
+
+        const perdaConfirmada = formData.get("confirmarPerdaDeConteudo") === "true"
+        if (comparacao && !comparacao.aprovado && !perdaConfirmada) {
+            return NextResponse.json(
+                { error: "conteudo_faltando", comparacao },
+                { status: 422 }
+            )
+        }
+
         const { url } = await uploadListPdf(file, id)
+
+        if (comparacao) {
+            await recordAudit({
+                actorId: admin.id,
+                actorEmail: admin.email,
+                action: comparacao.aprovado ? "list.pdf.replaced" : "list.pdf.content_loss_confirmed",
+                targetType: "list",
+                targetId: id,
+                metadata: {
+                    file: file.name,
+                    previous: list.studyPdfUrl,
+                    paginasAntigas: comparacao.paginasAntigas,
+                    paginasNovas: comparacao.paginasNovas,
+                    totalPalavras: comparacao.totalPalavras,
+                    palavrasFaltando: comparacao.palavrasFaltando,
+                    trechosFaltando: comparacao.trechosFaltando,
+                },
+            })
+        }
 
         if (achados.length > 0) {
             await recordAudit({

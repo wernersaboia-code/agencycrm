@@ -1522,7 +1522,13 @@
                     "pessoa_nomeada": "Named person"
                 },
                 "personalContactsCancel": "Cancel upload",
-                "personalContactsProceed": "Publish anyway"
+                "personalContactsProceed": "Publish anyway",
+                "contentLossTitle": "The new PDF does not contain all of the current content",
+                "contentLossDesc": "{missing} of {total} words from the study in the shop are missing ({percent}%), not counting the cover. The current file has {oldPages} pages; the new one, {newPages}. Check that the cover change did not leave out a page, table or company.",
+                "contentLossLines": "Passages from the current study that are not in the new one:",
+                "contentLossWords": "Words from the current study that are not in the new one:",
+                "contentLossCancel": "Cancel upload",
+                "contentLossProceed": "Replace anyway"
             },
             "importWizard": {
                 "prepareTitle": "Prepare Leads for \"{name}\"",

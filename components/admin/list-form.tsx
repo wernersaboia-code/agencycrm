@@ -55,6 +55,7 @@ import {
 } from "@/components/ui/alert-dialog"
 
 import type { Achado as AchadoContato } from "@/lib/marketplace/contatos-pessoais"
+import type { ComparacaoDeConteudo } from "@/lib/marketplace/conteudo-preservado"
 import { createList, updateList, uploadLeadsToList, markListReviewed, gerarResumoDoEstudo, recontarEmpresas } from "@/actions/admin/lists"
 import { MarketplaceImportWizard } from "@/components/admin/marketplace-import-wizard"
 import type { MarketplaceLeadData } from "@/lib/constants/marketplace-csv.constants"
@@ -169,6 +170,10 @@ export function ListForm({ list, setores }: ListFormProps) {
 
     const [contatosPendentes, setContatosPendentes] = useState<{
         achados: AchadoContato[]
+        resolver: (seguir: boolean) => void
+    } | null>(null)
+    const [perdaPendente, setPerdaPendente] = useState<{
+        comparacao: ComparacaoDeConteudo
         resolver: (seguir: boolean) => void
     } | null>(null)
     const [pdfFile, setPdfFile] = useState<File | null>(null)
@@ -339,28 +344,43 @@ export function ListForm({ list, setores }: ListFormProps) {
         setIsLoading(true)
         setUploadProgress(0)
 
-        const uploadPdf = async (listId: string, confirmado = false): Promise<boolean> => {
+        const uploadPdf = async (
+            listId: string,
+            confirmado: { contatos?: boolean; perda?: boolean } = {}
+        ): Promise<boolean> => {
             if (!pdfFile) return true
             try {
                 const body = new FormData()
                 body.append("file", pdfFile)
-                if (confirmado) {
+                if (confirmado.contatos) {
                     body.append("confirmarContatosPessoais", "true")
+                }
+                if (confirmado.perda) {
+                    body.append("confirmarPerdaDeConteudo", "true")
                 }
                 const res = await fetch(`/api/admin/lists/${listId}/pdf`, { method: "POST", body })
 
-                // 422 = o estudo traz contato pessoal. Não é erro de upload: é
-                // decisão editorial, e por isso ela é pedida em vez de suposta.
+                // 422 = o estudo traz contato pessoal, ou o PDF novo não traz
+                // todo o miolo do atual. Não é erro de upload: é decisão
+                // editorial, e por isso ela é pedida em vez de suposta.
                 if (res.status === 422) {
-                    const { achados } = (await res.json()) as { achados: AchadoContato[] }
+                    const resposta = (await res.json()) as
+                        | { error: "contatos_pessoais"; achados: AchadoContato[] }
+                        | { error: "conteudo_faltando"; comparacao: ComparacaoDeConteudo }
+
+                    if (resposta.error === "conteudo_faltando") {
+                        const seguir = await new Promise<boolean>((resolve) => {
+                            setPerdaPendente({ comparacao: resposta.comparacao, resolver: resolve })
+                        })
+                        setPerdaPendente(null)
+                        return seguir ? uploadPdf(listId, { ...confirmado, perda: true }) : false
+                    }
+
                     const seguir = await new Promise<boolean>((resolve) => {
-                        setContatosPendentes({ achados, resolver: resolve })
+                        setContatosPendentes({ achados: resposta.achados, resolver: resolve })
                     })
                     setContatosPendentes(null)
-                    if (!seguir) {
-                        return false
-                    }
-                    return uploadPdf(listId, true)
+                    return seguir ? uploadPdf(listId, { ...confirmado, contatos: true }) : false
                 }
 
                 return res.ok
@@ -1298,6 +1318,55 @@ export function ListForm({ list, setores }: ListFormProps) {
                         </AlertDialogCancel>
                         <AlertDialogAction onClick={() => contatosPendentes?.resolver(true)}>
                             {t("personalContactsProceed")}
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+
+            {/*
+                O PDF novo (em geral, capa refeita) não trouxe todo o miolo do
+                que está na loja. Mostra o que sumiu, linha a linha, e só troca
+                com confirmação explícita, que fica no log de auditoria.
+            */}
+            <AlertDialog open={perdaPendente !== null}>
+                <AlertDialogContent className="max-w-2xl">
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>{t("contentLossTitle")}</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            {t("contentLossDesc", {
+                                missing: perdaPendente?.comparacao.palavrasFaltando ?? 0,
+                                total: perdaPendente?.comparacao.totalPalavras ?? 0,
+                                percent: ((perdaPendente?.comparacao.proporcaoFaltando ?? 0) * 100).toFixed(1),
+                                oldPages: perdaPendente?.comparacao.paginasAntigas ?? 0,
+                                newPages: perdaPendente?.comparacao.paginasNovas ?? 0,
+                            })}
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+
+                    {perdaPendente && perdaPendente.comparacao.trechosFaltando.length > 0 ? (
+                        <div className="space-y-1">
+                            <p className="text-sm font-medium">{t("contentLossLines")}</p>
+                            <ul className="max-h-72 space-y-1 overflow-y-auto rounded-md border p-3 text-sm">
+                                {perdaPendente.comparacao.trechosFaltando.map((trecho, index) => (
+                                    <li key={`${trecho}-${index}`} className="break-all">{trecho}</li>
+                                ))}
+                            </ul>
+                        </div>
+                    ) : perdaPendente ? (
+                        <div className="space-y-1">
+                            <p className="text-sm font-medium">{t("contentLossWords")}</p>
+                            <p className="max-h-40 overflow-y-auto rounded-md border p-3 text-sm break-all">
+                                {perdaPendente.comparacao.palavrasExemplo.join(", ")}
+                            </p>
+                        </div>
+                    ) : null}
+
+                    <AlertDialogFooter>
+                        <AlertDialogCancel onClick={() => perdaPendente?.resolver(false)}>
+                            {t("contentLossCancel")}
+                        </AlertDialogCancel>
+                        <AlertDialogAction onClick={() => perdaPendente?.resolver(true)}>
+                            {t("contentLossProceed")}
                         </AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>

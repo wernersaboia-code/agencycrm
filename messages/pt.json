@@ -1522,7 +1522,13 @@
                     "pessoa_nomeada": "Pessoa nomeada"
                 },
                 "personalContactsCancel": "Cancelar envio",
-                "personalContactsProceed": "Publicar mesmo assim"
+                "personalContactsProceed": "Publicar mesmo assim",
+                "contentLossTitle": "O PDF novo não traz todo o conteúdo do atual",
+                "contentLossDesc": "Faltam {missing} de {total} palavras do estudo que está na loja ({percent}%), sem contar a capa. O atual tem {oldPages} páginas; o novo, {newPages}. Confira se a troca de capa não deixou página, tabela ou empresa para trás.",
+                "contentLossLines": "Trechos do estudo atual que não estão no novo:",
+                "contentLossWords": "Palavras do estudo atual que não estão no novo:",
+                "contentLossCancel": "Cancelar envio",
+                "contentLossProceed": "Substituir mesmo assim"
             },
             "importWizard": {
                 "prepareTitle": "Preparar Leads para \"{name}\"",

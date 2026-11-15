@@ -13,6 +13,8 @@ export type AuditAction =
     | "list.unpublished"
     | "list.prices.seed"
     | "list.pdf.personal_contacts_confirmed"
+    | "list.pdf.replaced"
+    | "list.pdf.content_loss_confirmed"
     | "marketplace_lead.deleted"
     | "workspace.exported"
     | "workspace.member_added"
