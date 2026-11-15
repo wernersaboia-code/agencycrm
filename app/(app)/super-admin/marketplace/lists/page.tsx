@@ -18,12 +18,19 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { AlertCircle, ArrowLeft, CheckCircle2, Edit, FileText, Plus, Star, Users } from "lucide-react"
+import { AlertCircle, ArrowDown, ArrowLeft, ArrowUp, ArrowUpDown, CheckCircle2, Edit, FileText, Plus, Star, Users } from "lucide-react"
 import { formatCurrency } from "@/lib/utils"
 import { DeleteListButton } from "@/components/admin/delete-list-button"
 import { SeedPricesDialog } from "@/components/admin/seed-prices-dialog"
 import { ListsFilterBar } from "@/components/admin/lists-filter-bar"
-import { filtrarListas, temDescricaoForaDaRegra, temFiltroAtivo } from "@/lib/admin/filtro-listas"
+import {
+    filtrarListas,
+    lerOrdenacao,
+    ordenarListas,
+    temDescricaoForaDaRegra,
+    temFiltroAtivo,
+    type ColunaOrdenavel,
+} from "@/lib/admin/filtro-listas"
 
 interface MarketplaceListsPageProps {
     searchParams: Promise<{
@@ -31,6 +38,8 @@ interface MarketplaceListsPageProps {
         country?: string
         industry?: string
         status?: string
+        sort?: string
+        dir?: string
     }>
 }
 
@@ -105,7 +114,38 @@ export default async function MarketplaceListsPage({ searchParams }: Marketplace
     // saúde, então repetir a ida ao banco só para recortá-lo custa mais do que
     // percorrer as linhas aqui. Revisar quando o catálogo passar de algumas
     // centenas de listas.
-    const listasFiltradas = filtrarListas(lists, filtros)
+    const ordenacao = lerOrdenacao(filtros.sort, filtros.dir)
+    const listasFiltradas = ordenarListas(filtrarListas(lists, filtros), ordenacao)
+
+    // Cabeçalho ordenável: link que mantém os filtros aplicados. Clicar de novo
+    // na coluna ativa inverte a direção; numa coluna nova, começa no padrão dela.
+    const cabecalho = (coluna: ColunaOrdenavel, rotulo: string, alinhamento: "left" | "center" | "right", dica?: string) => {
+        const ativa = ordenacao?.coluna === coluna
+        const params = new URLSearchParams()
+        for (const chave of ["q", "country", "industry", "status"] as const) {
+            if (filtros[chave]) params.set(chave, filtros[chave]!)
+        }
+        params.set("sort", coluna)
+        if (ativa) params.set("dir", ordenacao.direcao === "asc" ? "desc" : "asc")
+        const Icone = !ativa ? ArrowUpDown : ordenacao.direcao === "asc" ? ArrowUp : ArrowDown
+        const justificar = { left: "justify-start", center: "justify-center", right: "justify-end" }[alinhamento]
+        return (
+            <TableHead
+                className={alinhamento === "left" ? undefined : `text-${alinhamento}`}
+                title={dica}
+                aria-sort={ativa ? (ordenacao.direcao === "asc" ? "ascending" : "descending") : undefined}
+            >
+                <Link
+                    href={`/super-admin/marketplace/lists?${params}`}
+                    scroll={false}
+                    className={`inline-flex w-full items-center gap-1 ${justificar} hover:text-foreground ${ativa ? "text-foreground" : ""}`}
+                >
+                    {rotulo}
+                    <Icone className={`h-3.5 w-3.5 ${ativa ? "" : "opacity-40"}`} />
+                </Link>
+            </TableHead>
+        )
+    }
     const temFiltro = temFiltroAtivo(filtros)
 
     // As opções vêm do catálogo real: faceta sem lista por trás é filtro que
@@ -207,12 +247,12 @@ export default async function MarketplaceListsPage({ searchParams }: Marketplace
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead>{t("colName")}</TableHead>
+                            {cabecalho("name", t("colName"), "left")}
                             <TableHead>{t("colIndustries")}</TableHead>
                             <TableHead>{t("colCountries")}</TableHead>
-                            <TableHead className="text-center" title={t("colCompaniesHint")}>{t("colCompanies")}</TableHead>
-                            <TableHead className="text-center">{t("colSales")}</TableHead>
-                            <TableHead className="text-right">{t("colPrice")}</TableHead>
+                            {cabecalho("companies", t("colCompanies"), "center", t("colCompaniesHint"))}
+                            {cabecalho("sales", t("colSales"), "center")}
+                            {cabecalho("price", t("colPrice"), "right")}
                             <TableHead className="text-center">{t("colStatus")}</TableHead>
                             <TableHead className="text-right">{t("colActions")}</TableHead>
                         </TableRow>

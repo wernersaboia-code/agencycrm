@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest"
-import { filtrarListas, temDescricaoForaDaRegra, temFiltroAtivo, type ListaFiltravel } from "./filtro-listas"
+import { filtrarListas, lerOrdenacao, ordenarListas, temDescricaoForaDaRegra, temFiltroAtivo, type ListaFiltravel } from "./filtro-listas"
 
 function lista(over: Partial<ListaFiltravel> = {}): ListaFiltravel {
     return {
@@ -149,5 +149,39 @@ describe("filtro de descrição fora da regra", () => {
         expect(temDescricaoForaDaRegra(lista({ description: BOA }))).toBe(false)
         expect(temDescricaoForaDaRegra(lista({ description: "Curta." }))).toBe(true)
         expect(temDescricaoForaDaRegra(lista({ description: "Curta.", isActive: false }))).toBe(false)
+    })
+})
+
+describe("ordenação da tabela", () => {
+    const base = (nome: string, empresas: number | null, vendas: number, preco: number, dia: number) => ({
+        name: nome,
+        companyCount: empresas,
+        price: preco,
+        createdAt: new Date(2026, 10, dia),
+        _count: { purchaseItems: vendas },
+    })
+    const tabela = [base("beta", 40, 0, 40, 1), base("Alfa", null, 2, 50, 2), base("gama", 10, 1, 40, 3)]
+    const nomes = (l: { name: string }[]) => l.map((x) => x.name)
+
+    it("sem ordenação, mais recente primeiro", () => {
+        expect(nomes(ordenarListas(tabela, null))).toEqual(["gama", "Alfa", "beta"])
+    })
+
+    it("nome começa em A→Z, sem diferenciar caixa", () => {
+        expect(nomes(ordenarListas(tabela, lerOrdenacao("name")))).toEqual(["Alfa", "beta", "gama"])
+    })
+
+    it("empresas começa do maior e deixa sem contagem no fim nas duas direções", () => {
+        expect(nomes(ordenarListas(tabela, lerOrdenacao("companies")))).toEqual(["beta", "gama", "Alfa"])
+        expect(nomes(ordenarListas(tabela, lerOrdenacao("companies", "asc")))).toEqual(["gama", "beta", "Alfa"])
+    })
+
+    it("empate fica pela data, mais recente primeiro", () => {
+        expect(nomes(ordenarListas(tabela, lerOrdenacao("price")))).toEqual(["Alfa", "gama", "beta"])
+    })
+
+    it("ignora coluna desconhecida e direção inválida", () => {
+        expect(lerOrdenacao("createdAt")).toBeNull()
+        expect(lerOrdenacao("sales", "x")).toEqual({ coluna: "sales", direcao: "desc" })
     })
 })

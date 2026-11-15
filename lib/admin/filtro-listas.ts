@@ -90,3 +90,68 @@ export function filtrarListas<T extends ListaFiltravel>(
 export function temFiltroAtivo(filtro: FiltroListas): boolean {
     return Boolean(filtro.q?.trim() || filtro.country || filtro.industry || filtro.status)
 }
+
+// ============================================
+// ORDENAÇÃO
+// ============================================
+
+/** Colunas que dá para ordenar. Sem `sort` na URL, vale a mais recente primeiro. */
+export const COLUNAS_ORDENAVEIS = ["name", "companies", "sales", "price"] as const
+export type ColunaOrdenavel = (typeof COLUNAS_ORDENAVEIS)[number]
+export type Direcao = "asc" | "desc"
+
+export interface ListaOrdenavel {
+    name: string
+    createdAt: Date
+    companyCount: number | null
+    price: number | string | { toString(): string }
+    _count: { purchaseItems: number }
+}
+
+export function lerOrdenacao(sort?: string, dir?: string): { coluna: ColunaOrdenavel; direcao: Direcao } | null {
+    if (!sort || !(COLUNAS_ORDENAVEIS as readonly string[]).includes(sort)) return null
+    // Nome começa em A→Z; números começam do maior, que é o que se procura
+    // primeiro (o estudo com mais empresas, o que mais vendeu, o mais caro).
+    const padrao: Direcao = sort === "name" ? "asc" : "desc"
+    return { coluna: sort as ColunaOrdenavel, direcao: dir === "asc" || dir === "desc" ? dir : padrao }
+}
+
+/**
+ * Ordena sem mexer no array de entrada. Estudo sem contagem de empresas vai
+ * para o fim nas duas direções: "—" no topo de "mais empresas" não ajuda ninguém.
+ * Empate fica pela data de criação, mais recente primeiro, como a tabela vinha.
+ */
+export function ordenarListas<T extends ListaOrdenavel>(
+    listas: readonly T[],
+    ordenacao: { coluna: ColunaOrdenavel; direcao: Direcao } | null
+): T[] {
+    const porData = (a: T, b: T) => b.createdAt.getTime() - a.createdAt.getTime()
+    if (!ordenacao) return [...listas].sort(porData)
+
+    const sinal = ordenacao.direcao === "asc" ? 1 : -1
+    const valor = (lista: T): number | string | null => {
+        switch (ordenacao.coluna) {
+            case "name":
+                return lista.name
+            case "companies":
+                return lista.companyCount
+            case "sales":
+                return lista._count.purchaseItems
+            case "price":
+                return Number(lista.price.toString())
+        }
+    }
+
+    return [...listas].sort((a, b) => {
+        const va = valor(a)
+        const vb = valor(b)
+        if (va === null && vb === null) return porData(a, b)
+        if (va === null) return 1
+        if (vb === null) return -1
+        const comparacao =
+            typeof va === "string" && typeof vb === "string"
+                ? va.localeCompare(vb, undefined, { sensitivity: "base" })
+                : (va as number) - (vb as number)
+        return comparacao !== 0 ? comparacao * sinal : porData(a, b)
+    })
+}

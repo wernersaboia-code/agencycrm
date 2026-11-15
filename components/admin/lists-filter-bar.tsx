@@ -102,7 +102,14 @@ export function ListsFilterBar({ countries, industries, nomesDeSetor, shown, tot
 
     const limpar = () => {
         setTexto("")
-        startTransition(() => router.replace("?"))
+        // Limpa os filtros, não a ordenação escolhida no cabeçalho da tabela.
+        const params = new URLSearchParams()
+        for (const chave of ["sort", "dir"]) {
+            const valor = searchParams.get(chave)
+            if (valor) params.set(chave, valor)
+        }
+        const query = params.toString()
+        startTransition(() => router.replace(query ? `?${query}` : "?"))
     }
 
     return (
