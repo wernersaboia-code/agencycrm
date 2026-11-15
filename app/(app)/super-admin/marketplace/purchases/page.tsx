@@ -53,6 +53,11 @@ export default async function PurchasesPage() {
     const refundedCount = reais.filter((purchase) => purchase.status === "refunded").length
     const paidCount = reais.filter((purchase) => purchase.status === "paid").length
     const paidRate = reais.length > 0 ? Math.round((paidCount / reais.length) * 100) : 0
+    // Sem nenhuma compra real, "Pagas 0%" e quatro zeros parecem um problema
+    // de pagamento; o que acontece é que ainda não houve venda. A saúde diz
+    // isso em uma linha e conta as compras de teste que estão na tabela.
+    const semVendasReais = reais.length === 0
+    const comprasDeTeste = purchases.length - reais.length
     const t = await getAdminTranslations("admin.purchases")
     const tc = await getAdminTranslations("admin.common")
     const dateLocale = dateFnsLocaleFor(await getAdminLocale())
@@ -135,11 +140,20 @@ export default async function PurchasesPage() {
                     <div className="w-full space-y-2 lg:w-64">
                         <div className="flex items-center justify-between text-sm">
                             <span className="text-muted-foreground">{t("paid")}</span>
-                            <span className="font-medium">{paidRate}%</span>
+                            <span className="font-medium">{semVendasReais ? "—" : `${paidRate}%`}</span>
                         </div>
-                        <Progress value={paidRate} />
+                        {!semVendasReais && <Progress value={paidRate} />}
                     </div>
                 </CardHeader>
+                {semVendasReais ? (
+                    <CardContent>
+                        <p className="rounded-lg border bg-background p-4 text-sm text-muted-foreground">
+                            {comprasDeTeste > 0
+                                ? t("noRealSalesWithTests", { count: comprasDeTeste })
+                                : t("noRealSales")}
+                        </p>
+                    </CardContent>
+                ) : (
                 <CardContent className="grid gap-3 md:grid-cols-4">
                     {[
                         { label: t("paid"), value: paidCount, done: paidCount > 0, description: t("paidHealthDesc") },
@@ -163,6 +177,7 @@ export default async function PurchasesPage() {
                         </div>
                     ))}
                 </CardContent>
+                )}
             </Card>
 
             {/* Tabela */}
