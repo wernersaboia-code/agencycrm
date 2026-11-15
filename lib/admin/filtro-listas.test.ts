@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest"
-import { filtrarListas, temFiltroAtivo, type ListaFiltravel } from "./filtro-listas"
+import { filtrarListas, temDescricaoForaDaRegra, temFiltroAtivo, type ListaFiltravel } from "./filtro-listas"
 
 function lista(over: Partial<ListaFiltravel> = {}): ListaFiltravel {
     return {
@@ -128,5 +128,26 @@ describe("temFiltroAtivo", () => {
 
     it("ignora busca só com espaço", () => {
         expect(temFiltroAtivo({ q: "   " })).toBe(false)
+    })
+})
+
+describe("filtro de descrição fora da regra", () => {
+    const BOA =
+        "Europe's largest home-improvement and garden market. Covers market size, who decides on listings, access for branded and private-label suppliers and a directory of German importers and buying offices."
+
+    it("mostra só as listas ativas cuja descrição foge da regra", () => {
+        const catalogo = [
+            lista({ slug: "boa", description: BOA }),
+            lista({ slug: "capa", description: "Market volume Edition: October 2026" }),
+            lista({ slug: "vazia", description: null }),
+            lista({ slug: "inativa-vazia", description: "", isActive: false }),
+        ]
+        expect(filtrarListas(catalogo, { status: "badDescription" }).map((l) => l.slug)).toEqual(["capa", "vazia"])
+    })
+
+    it("conta igual ao cartão de saúde", () => {
+        expect(temDescricaoForaDaRegra(lista({ description: BOA }))).toBe(false)
+        expect(temDescricaoForaDaRegra(lista({ description: "Curta." }))).toBe(true)
+        expect(temDescricaoForaDaRegra(lista({ description: "Curta.", isActive: false }))).toBe(false)
     })
 })

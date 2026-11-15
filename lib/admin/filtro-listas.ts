@@ -8,6 +8,8 @@
  * do alcance de qualquer verificação que não seja um teste.
  */
 
+import { conferirDescricao } from "@/lib/marketplace/regra-descricao"
+
 export interface ListaFiltravel {
     name: string
     slug: string
@@ -16,6 +18,8 @@ export interface ListaFiltravel {
     isActive: boolean
     isFeatured: boolean
     studyPdfUrl: string | null
+    /** Opcional para quem só filtra por nome/país; sem ela, conta como vazia. */
+    description?: string | null
 }
 
 export interface FiltroListas {
@@ -37,6 +41,17 @@ function normalizar(texto: string): string {
         .toLowerCase()
         .normalize("NFD")
         .replace(/[̀-ͯ]/g, "")
+}
+
+/**
+ * Descrição que foge da regra do cartão (ver lib/marketplace/regra-descricao.ts).
+ * Só lista ATIVA: as inativas não aparecem no catálogo, e os três estudos de
+ * teste vazios ficariam acusando para sempre um problema que não existe.
+ * O cartão de saúde e o filtro usam esta mesma função, para o número do
+ * cartão ser exatamente o que o filtro mostra.
+ */
+export function temDescricaoForaDaRegra(lista: ListaFiltravel): boolean {
+    return lista.isActive && conferirDescricao(lista.description).length > 0
 }
 
 export function filtrarListas<T extends ListaFiltravel>(
@@ -62,6 +77,9 @@ export function filtrarListas<T extends ListaFiltravel>(
                 break
             case "featured":
                 if (!lista.isFeatured) return false
+                break
+            case "badDescription":
+                if (!temDescricaoForaDaRegra(lista)) return false
                 break
         }
 

@@ -1087,6 +1087,8 @@
             "activeDesc": "Im Katalog verfügbare Listen.",
             "noPdf": "Ohne PDF",
             "noPdfDesc": "Listen ohne angehängte PDF-Studie.",
+            "badDescription": "Beschreibung regelwidrig",
+            "badDescriptionDesc": "Aktive Listen außerhalb der Kartenregel (Länge, Zahl, Deckblatt).",
             "featured": "Hervorgehoben",
             "featuredDesc": "Im Katalog beworbene Listen.",
             "withSales": "Mit Verkäufen",

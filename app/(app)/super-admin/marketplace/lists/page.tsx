@@ -18,12 +18,12 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { AlertCircle, ArrowLeft, CheckCircle2, Edit, Plus, Star, Users } from "lucide-react"
+import { AlertCircle, ArrowLeft, CheckCircle2, Edit, FileText, Plus, Star, Users } from "lucide-react"
 import { formatCurrency } from "@/lib/utils"
 import { DeleteListButton } from "@/components/admin/delete-list-button"
 import { SeedPricesDialog } from "@/components/admin/seed-prices-dialog"
 import { ListsFilterBar } from "@/components/admin/lists-filter-bar"
-import { filtrarListas, temFiltroAtivo } from "@/lib/admin/filtro-listas"
+import { filtrarListas, temDescricaoForaDaRegra, temFiltroAtivo } from "@/lib/admin/filtro-listas"
 
 interface MarketplaceListsPageProps {
     searchParams: Promise<{
@@ -55,6 +55,7 @@ export default async function MarketplaceListsPage({ searchParams }: Marketplace
     const activeLists = lists.filter((list) => list.isActive).length
     const listsWithoutPdf = lists.filter((list) => !list.studyPdfUrl).length
     const featuredLists = lists.filter((list) => list.isFeatured).length
+    const listsWithBadDescription = lists.filter(temDescricaoForaDaRegra).length
     const listsWithSales = lists.filter((list) => list._count.purchaseItems > 0).length
     const cobertura = calcularCobertura(lists.filter((list) => list.isActive))
     const totalSales = lists.reduce((acc, list) => acc + list._count.purchaseItems, 0)
@@ -75,6 +76,15 @@ export default async function MarketplaceListsPage({ searchParams }: Marketplace
             description: t("noPdfDesc"),
             done: listsWithoutPdf === 0 && lists.length > 0,
             icon: AlertCircle,
+        },
+        {
+            label: t("badDescription"),
+            value: listsWithBadDescription,
+            description: t("badDescriptionDesc"),
+            done: listsWithBadDescription === 0 && lists.length > 0,
+            icon: FileText,
+            // O número só ajuda se levar às listas: abre a tabela já filtrada.
+            href: "/super-admin/marketplace/lists?status=badDescription",
         },
         {
             label: t("featured"),
@@ -156,9 +166,10 @@ export default async function MarketplaceListsPage({ searchParams }: Marketplace
                         <Progress value={readiness} />
                     </div>
                 </CardHeader>
-                <CardContent className="grid gap-3 md:grid-cols-4">
-                    {readinessChecks.map((check) => (
-                        <div key={check.label} className="flex min-h-[96px] items-start justify-between gap-3 rounded-lg border bg-background p-4">
+                <CardContent className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
+                    {readinessChecks.map((check) => {
+                        const conteudo = (
+                            <>
                             <span className="flex min-w-0 gap-3">
                                 {check.done ? (
                                     <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-admin" />
@@ -171,8 +182,19 @@ export default async function MarketplaceListsPage({ searchParams }: Marketplace
                                 </span>
                             </span>
                             <span className="text-xl font-semibold">{check.value}</span>
-                        </div>
-                    ))}
+                            </>
+                        )
+                        const classe = "flex min-h-[96px] items-start justify-between gap-3 rounded-lg border bg-background p-4"
+                        return "href" in check && check.href && check.value > 0 ? (
+                            <Link key={check.label} href={check.href} className={`${classe} transition-colors hover:border-admin`}>
+                                {conteudo}
+                            </Link>
+                        ) : (
+                            <div key={check.label} className={classe}>
+                                {conteudo}
+                            </div>
+                        )
+                    })}
                 </CardContent>
             </Card>
 

@@ -1087,6 +1087,8 @@
             "activeDesc": "Lists available in the catalog.",
             "noPdf": "No PDF",
             "noPdfDesc": "Lists without the study PDF attached.",
+            "badDescription": "Description off-rule",
+            "badDescriptionDesc": "Active lists off the card rule (length, number, cover).",
             "featured": "Featured",
             "featuredDesc": "Lists promoted in the catalog.",
             "withSales": "With sales",

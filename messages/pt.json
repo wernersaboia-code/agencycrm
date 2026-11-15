@@ -1087,6 +1087,8 @@
             "activeDesc": "Listas disponíveis no catálogo.",
             "noPdf": "Sem PDF",
             "noPdfDesc": "Listas sem o estudo em PDF anexado.",
+            "badDescription": "Descrição fora da regra",
+            "badDescriptionDesc": "Ativas fora da regra do cartão (tamanho, número, capa).",
             "featured": "Destaques",
             "featuredDesc": "Listas promovidas no catálogo.",
             "withSales": "Com vendas",

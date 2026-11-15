@@ -169,6 +169,7 @@ export function ListsFilterBar({ countries, industries, nomesDeSetor, shown, tot
                         <SelectItem value="inactive">{t("filtersInactive")}</SelectItem>
                         <SelectItem value="noPdf">{t("noPdf")}</SelectItem>
                         <SelectItem value="featured">{t("featured")}</SelectItem>
+                        <SelectItem value="badDescription">{t("badDescription")}</SelectItem>
                     </SelectContent>
                 </Select>
             </div>
