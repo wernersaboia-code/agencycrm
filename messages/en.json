@@ -1091,8 +1091,6 @@
             "badDescriptionDesc": "Active lists off the card rule (length, number, cover).",
             "featured": "Featured",
             "featuredDesc": "Lists promoted in the catalog.",
-            "withSales": "With sales",
-            "withSalesDesc": "{count} sale(s) total.",
             "colName": "Name",
             "colIndustries": "Sectors",
             "colCountries": "Countries",

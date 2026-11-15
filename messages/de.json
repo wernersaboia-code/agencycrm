@@ -1091,8 +1091,6 @@
             "badDescriptionDesc": "Aktive Listen außerhalb der Kartenregel (Länge, Zahl, Deckblatt).",
             "featured": "Hervorgehoben",
             "featuredDesc": "Im Katalog beworbene Listen.",
-            "withSales": "Mit Verkäufen",
-            "withSalesDesc": "{count} Verkauf/Verkäufe insgesamt.",
             "colName": "Name",
             "colIndustries": "Branchen",
             "colCountries": "Länder",

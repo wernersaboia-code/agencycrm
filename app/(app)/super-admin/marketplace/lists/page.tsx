@@ -56,12 +56,14 @@ export default async function MarketplaceListsPage({ searchParams }: Marketplace
     const listsWithoutPdf = lists.filter((list) => !list.studyPdfUrl).length
     const featuredLists = lists.filter((list) => list.isFeatured).length
     const listsWithBadDescription = lists.filter(temDescricaoForaDaRegra).length
-    const listsWithSales = lists.filter((list) => list._count.purchaseItems > 0).length
     const cobertura = calcularCobertura(lists.filter((list) => list.isActive))
-    const totalSales = lists.reduce((acc, list) => acc + list._count.purchaseItems, 0)
     const t = await getAdminTranslations("admin.lists")
     const tc = await getAdminTranslations("admin.common")
     const nomesDeSetor = mapaDeNomes(await getSetores(), await getAdminLocale())
+    // Prontidão mede o que o admin pode resolver no cadastro. "Com vendas" saiu
+    // em 14.11.2026: venda é resultado, não pendência, e com zero vendas reais
+    // a barra ficava presa em 75% acusando um problema que nenhum ajuste no
+    // catálogo resolve. As vendas por lista continuam na coluna da tabela.
     const readinessChecks = [
         {
             label: t("active"),
@@ -92,13 +94,6 @@ export default async function MarketplaceListsPage({ searchParams }: Marketplace
             description: t("featuredDesc"),
             done: featuredLists > 0,
             icon: Star,
-        },
-        {
-            label: t("withSales"),
-            value: listsWithSales,
-            description: t("withSalesDesc", { count: totalSales }),
-            done: listsWithSales > 0,
-            icon: Users,
         },
     ]
     const completedReadiness = readinessChecks.filter((check) => check.done).length
@@ -166,7 +161,7 @@ export default async function MarketplaceListsPage({ searchParams }: Marketplace
                         <Progress value={readiness} />
                     </div>
                 </CardHeader>
-                <CardContent className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
+                <CardContent className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
                     {readinessChecks.map((check) => {
                         const conteudo = (
                             <>

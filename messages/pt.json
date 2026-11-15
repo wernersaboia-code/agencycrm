@@ -1091,8 +1091,6 @@
             "badDescriptionDesc": "Ativas fora da regra do cartão (tamanho, número, capa).",
             "featured": "Destaques",
             "featuredDesc": "Listas promovidas no catálogo.",
-            "withSales": "Com vendas",
-            "withSalesDesc": "{count} venda(s) no total.",
             "colName": "Nome",
             "colIndustries": "Setores",
             "colCountries": "Países",
