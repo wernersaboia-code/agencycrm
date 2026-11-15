@@ -94,7 +94,7 @@ export default async function SuperAdminDashboardPage() {
 
     return (
         <div className="space-y-6">
-            <section className="rounded-lg border bg-white p-6 shadow-sm">
+            <section className="rounded-lg border bg-card text-card-foreground p-6 shadow-sm">
                 <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
                     <div>
                         <Badge variant="outline" className="mb-3 border-admin-soft bg-admin-soft text-admin">
@@ -211,20 +211,28 @@ async function AdminActionCard({
             href={href}
             className={`group flex min-h-52 flex-col justify-between rounded-lg border p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ${
                 isPrimary
-                    ? "border-admin bg-admin text-white"
-                    : "border-gray-200 bg-white text-gray-950 hover:border-admin"
+                    // No escuro o --admin é claro (L 0.65): texto branco some, então
+                    // o texto do cartão principal passa a ser a cor do fundo.
+                    ? "border-admin bg-admin text-white dark:text-background"
+                    : "bg-card text-card-foreground hover:border-admin"
             }`}
         >
             <div>
                 <div
                     className={`mb-5 flex h-12 w-12 items-center justify-center rounded-md ${
-                        isPrimary ? "bg-white/15 text-white" : "bg-admin-soft text-admin"
+                        isPrimary
+                            ? "bg-white/15 text-white dark:bg-background/15 dark:text-background"
+                            : "bg-admin-soft text-admin"
                     }`}
                 >
                     <Icon className="h-6 w-6" />
                 </div>
                 <h2 className="text-xl font-semibold leading-tight">{title}</h2>
-                <p className={`mt-3 text-sm leading-6 ${isPrimary ? "text-white/85" : "text-muted-foreground"}`}>
+                <p
+                    className={`mt-3 text-sm leading-6 ${
+                        isPrimary ? "text-white/85 dark:text-background/85" : "text-muted-foreground"
+                    }`}
+                >
                     {description}
                 </p>
             </div>
