@@ -1428,6 +1428,15 @@
                 "slugPlaceholder": "importadores-alimentos-alemanha",
                 "descriptionLabel": "Descrição",
                 "descriptionPlaceholder": "Descrição detalhada da lista...",
+                "descriptionCount": "{count} caracteres · faixa recomendada: {min} a {max}",
+                "descriptionRule": {
+                    "vazia": "Sem descrição: o cartão do catálogo e o Google ficam sem texto.",
+                    "curta": "Curta demais: fica abaixo de {min} caracteres.",
+                    "longa": "Longa demais: o cartão e o Google cortam depois de {max} caracteres.",
+                    "numero": "Tem número. A descrição não cita números (tamanho de mercado, quantidade de empresas, ano).",
+                    "semPonto": "Não termina em ponto: parece texto cortado.",
+                    "capa": "Parece texto da capa do PDF (\"Edition:\", \"Product scope:\"). Escreva uma ou duas frases sobre o mercado."
+                },
                 "languageLabel": "Idioma da lista",
                 "languagePlaceholder": "Selecione o idioma",
                 "introLabel": "Introdução",

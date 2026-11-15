@@ -1428,6 +1428,15 @@
                 "slugPlaceholder": "food-importers-germany",
                 "descriptionLabel": "Description",
                 "descriptionPlaceholder": "Detailed list description...",
+                "descriptionCount": "{count} characters · recommended range: {min} to {max}",
+                "descriptionRule": {
+                    "vazia": "No description: the catalogue card and Google show no text.",
+                    "curta": "Too short: below {min} characters.",
+                    "longa": "Too long: the card and Google cut it after {max} characters.",
+                    "numero": "Contains a number. The description does not quote figures (market size, number of companies, year).",
+                    "semPonto": "Does not end with a full stop: looks cut off.",
+                    "capa": "Looks like PDF cover text (\"Edition:\", \"Product scope:\"). Write one or two sentences about the market."
+                },
                 "languageLabel": "List language",
                 "languagePlaceholder": "Select language",
                 "introLabel": "Introduction",

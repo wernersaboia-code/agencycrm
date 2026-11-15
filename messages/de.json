@@ -1428,6 +1428,15 @@
                 "slugPlaceholder": "lebensmittelimporteure-deutschland",
                 "descriptionLabel": "Beschreibung",
                 "descriptionPlaceholder": "Ausführliche Beschreibung der Liste ...",
+                "descriptionCount": "{count} Zeichen · empfohlener Bereich: {min} bis {max}",
+                "descriptionRule": {
+                    "vazia": "Keine Beschreibung: Katalogkarte und Google zeigen keinen Text.",
+                    "curta": "Zu kurz: unter {min} Zeichen.",
+                    "longa": "Zu lang: Karte und Google schneiden nach {max} Zeichen ab.",
+                    "numero": "Enthält eine Zahl. Die Beschreibung nennt keine Zahlen (Marktgröße, Anzahl der Unternehmen, Jahr).",
+                    "semPonto": "Endet nicht mit einem Punkt: wirkt abgeschnitten.",
+                    "capa": "Sieht nach Text vom PDF-Deckblatt aus („Edition:“, „Product scope:“). Schreiben Sie ein bis zwei Sätze über den Markt."
+                },
                 "languageLabel": "Sprache der Liste",
                 "languagePlaceholder": "Sprache auswählen",
                 "introLabel": "Einleitung",

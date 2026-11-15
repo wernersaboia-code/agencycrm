@@ -64,6 +64,7 @@ import { paisesInvalidosDoCampo } from "@/lib/i18n/nome-de-pais"
 import { FlagIcon } from "@/components/ui/flag-icon"
 import { canPublishList } from "@/lib/marketplace/list-publishing"
 import { normalizarTextoColado } from "@/lib/marketplace/texto-colado"
+import { conferirDescricao, DESCRICAO_MAXIMO, DESCRICAO_MINIMO } from "@/lib/marketplace/regra-descricao"
 import { htmlDaIntroducao } from "@/lib/marketplace/resumo-formatado"
 import { RichTextEditor } from "@/components/ui/rich-text-editor/rich-text-editor"
 
@@ -593,10 +594,12 @@ export function ListForm({ list, setores }: ListFormProps) {
     const isEditing = !!list
     // useWatch em vez de form.watch: o React Compiler não memoiza funções que
     // mudam de valor sem mudar de identidade, como o watch do react-hook-form.
-    const [countries, language, isActive, isFeatured, name] = useWatch({
+    const [countries, language, isActive, isFeatured, name, description] = useWatch({
         control: form.control,
-        name: ["countries", "language", "isActive", "isFeatured", "name"],
+        name: ["countries", "language", "isActive", "isFeatured", "name", "description"],
     })
+    const tamanhoDaDescricao = (description ?? "").trim().length
+    const problemasDaDescricao = conferirDescricao(description)
     const paisesRuins = paisesInvalidosDoCampo(countries ?? "")
     // Quem tem substituto conhecido ganha a seta; o resto é código que não
     // existe. Separado porque a orientação ao admin é diferente em cada caso.
@@ -677,7 +680,36 @@ export function ListForm({ list, setores }: ListFormProps) {
                                 rows={4}
                                 {...form.register("description")}
                                 onPaste={limparColagem("description")}
+                                aria-describedby="description-regra"
                             />
+                            {/* Só aviso, nunca bloqueio: ver lib/marketplace/regra-descricao.ts */}
+                            <div id="description-regra" className="space-y-1 text-xs" aria-live="polite">
+                                <p
+                                    className={
+                                        problemasDaDescricao.includes("curta") || problemasDaDescricao.includes("longa")
+                                            ? "text-amber-700 dark:text-amber-400"
+                                            : "text-muted-foreground"
+                                    }
+                                >
+                                    {t("descriptionCount", {
+                                        count: tamanhoDaDescricao,
+                                        min: DESCRICAO_MINIMO,
+                                        max: DESCRICAO_MAXIMO,
+                                    })}
+                                </p>
+                                {problemasDaDescricao.length > 0 && (
+                                    <ul className="list-disc space-y-0.5 pl-4 text-amber-700 dark:text-amber-400">
+                                        {problemasDaDescricao.map((problema) => (
+                                            <li key={problema}>
+                                                {t(`descriptionRule.${problema}`, {
+                                                    min: DESCRICAO_MINIMO,
+                                                    max: DESCRICAO_MAXIMO,
+                                                })}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                            </div>
                         </div>
 
                         <div className="grid gap-4 md:grid-cols-2">
