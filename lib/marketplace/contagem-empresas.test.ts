@@ -35,6 +35,37 @@ describe("linhasDoDiretorio", () => {
         expect(contarEmpresas(pt)?.empresas).toEqual(["frutas"])
     })
 
+    it("não corta o diretório na empresa numerada com o número do capítulo seguinte", () => {
+        // Estudos de DIY (Alemanha, França, Polônia): o diretório é o capítulo 9
+        // e as empresas também são numeradas, então "10. Dehner" não é o capítulo 10.
+        const estudo = [
+            "9. Directory of Importers, Buying Offices and Distribution Partners.......... 12",
+            "10. Important Legal Notice on the Use of Contact Data......................... 15",
+            "9. Directory of Importers, Buying Offices and Distribution Partners",
+            "1. OBI (OBI Home and Garden",
+            "Website: www.obi.de",
+            "10. Dehner (Dehner Holding",
+            "Website: www.dehner.de",
+            "11. Hagebau",
+            "Website: www.hagebau.de",
+            "10. Important Legal Notice on the Use of Contact Data",
+            "Source: www.notcounted.com",
+        ]
+        expect(contarEmpresas(estudo)?.empresas).toEqual(["dehner", "hagebau", "obi"])
+    })
+
+    it("acha o capítulo seguinte de título curto pelo sumário", () => {
+        const estudo = [
+            "8. Directory of Importers........................................ 9",
+            "9. Sources......................................................... 20",
+            "8. Directory of Importers",
+            "9. Espace Émeraude www.emeraude.fr",
+            "9. Sources",
+            "www.notcounted.com",
+        ]
+        expect(contarEmpresas(estudo)?.empresas).toEqual(["emeraude"])
+    })
+
     it("devolve null quando o estudo não tem diretório", () => {
         expect(linhasDoDiretorio(["1. Executive Summary", "2. Market size"])).toBeNull()
     })

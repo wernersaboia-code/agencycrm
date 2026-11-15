@@ -120,15 +120,47 @@ export function linhasDoDiretorio(linhas: readonly string[]): string[] | null {
     })
     if (inicio === -1) return null
 
-    let fim = linhas.length
+    // Título do capítulo seguinte segundo o sumário. Sem ele, "10. Dehner" —
+    // empresa numerada dentro de um diretório que é o capítulo 9 — passava por
+    // capítulo 10 e cortava o diretório na décima empresa (DIY Alemanha,
+    // França e Polônia contavam ~10 em vez de 34 a 42).
+    const proximoNoSumario = linhas
+        .filter((linha) => LINHA_DE_SUMARIO.test(linha))
+        .map((linha) => linha.match(CAPITULO))
+        .find((capitulo) => capitulo && Number(capitulo[1]) === numero + 1)
+    const tituloDoProximo = proximoNoSumario ? normalizarTitulo(proximoNoSumario[2]) : null
+
+    // Candidatos a capítulo seguinte. Fica o que bate com o sumário; se nenhum
+    // bate (sumário ausente ou título quebrado de um jeito imprevisto), vale o
+    // primeiro, como antes — melhor subestimar do que contar o PDF inteiro.
+    const candidatos: number[] = []
     for (let j = inicio + 1; j < linhas.length; j++) {
         const capitulo = linhas[j].match(CAPITULO)
         if (capitulo && Number(capitulo[1]) === numero + 1 && !LINHA_DE_SUMARIO.test(linhas[j])) {
-            fim = j
-            break
+            candidatos.push(j)
         }
     }
+    const confirmado = tituloDoProximo
+        ? candidatos.find((j) => mesmoTitulo(normalizarTitulo(linhas[j].match(CAPITULO)![2]), tituloDoProximo))
+        : undefined
+    const fim = confirmado ?? candidatos[0] ?? linhas.length
     return linhas.slice(inicio, fim)
+}
+
+/** Título sem os pontinhos e o número de página do sumário, em minúsculas. */
+function normalizarTitulo(titulo: string): string {
+    return titulo.replace(/\.{2,}.*$/, "").replace(/\s+/g, " ").trim().toLowerCase()
+}
+
+/**
+ * O pdf.js pode quebrar um título longo em duas linhas, então basta um ser
+ * começo do outro — desde que o trecho comum tenha corpo (12 letras), para
+ * "10. Dehner" nunca casar com "10. Important Legal Notice".
+ */
+function mesmoTitulo(a: string, b: string): boolean {
+    if (a === b) return true
+    const [curto, longo] = a.length <= b.length ? [a, b] : [b, a]
+    return curto.length >= 12 && longo.startsWith(curto)
 }
 
 export interface ContagemDeEmpresas {
