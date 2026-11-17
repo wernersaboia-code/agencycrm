@@ -244,12 +244,14 @@ export default async function MarketplaceListsPage({ searchParams }: Marketplace
             )}
 
             <div className="border rounded-lg">
-                {/* Altura limitada à tela: com 100+ estudos a barra horizontal
-                    ficava no fim da tabela, e ver as colunas da direita exigia
-                    descer a página inteira. Cabeçalho fixo para não perder as
-                    colunas ao rolar. */}
-                <Table containerClassName="max-h-[calc(100dvh-8rem)] overflow-auto">
-                    <TableHeader className="sticky top-0 z-10 bg-secondary">
+                {/* A tabela tem de caber na largura: as células do componente
+                    não quebram linha (whitespace-nowrap), então nome, slug e
+                    países esticavam a tabela e a barra horizontal só aparecia
+                    depois de 100+ linhas. Aqui as colunas de texto quebram. Não
+                    limitar a altura: rolagem dentro da rolagem prende a roda do
+                    mouse na tabela e dá o mesmo efeito. */}
+                <Table>
+                    <TableHeader>
                         <TableRow>
                             {cabecalho("name", t("colName"), "left")}
                             <TableHead>{t("colIndustries")}</TableHead>
@@ -285,20 +287,20 @@ export default async function MarketplaceListsPage({ searchParams }: Marketplace
                         ) : (
                             listasFiltradas.map((list) => (
                                 <TableRow key={list.id}>
-                                    <TableCell>
+                                    <TableCell className="min-w-[12rem] whitespace-normal">
                                         <div>
                                             <p className="font-medium">{list.name}</p>
-                                            <p className="text-xs text-muted-foreground">{list.slug}</p>
+                                            <p className="text-xs text-muted-foreground break-all">{list.slug}</p>
                                         </div>
                                     </TableCell>
-                                    <TableCell>
+                                    <TableCell className="min-w-[8rem] whitespace-normal">
                                         <div className="flex flex-wrap gap-1">
                                             {list.industries.map((id) => (
                                                 <Badge key={id} variant="outline">{nomesDeSetor[id] ?? id}</Badge>
                                             ))}
                                         </div>
                                     </TableCell>
-                                    <TableCell>
+                                    <TableCell className="min-w-[6rem] whitespace-normal">
                                         <span className="text-sm">
                                             {list.countries.slice(0, 3).join(", ")}
                                             {list.countries.length > 3 && ` +${list.countries.length - 3}`}
@@ -321,15 +323,17 @@ export default async function MarketplaceListsPage({ searchParams }: Marketplace
                                     <TableCell className="text-right">
                                         {formatCurrency(Number(list.price), list.currency)}
                                     </TableCell>
-                                    <TableCell className="text-center">
-                                        <Badge variant={list.isActive ? "default" : "secondary"}>
-                                            {list.isActive ? t("badgeActive") : t("badgeInactive")}
-                                        </Badge>
-                                        {list.isFeatured && (
-                                            <Badge variant="outline" className="ml-1">
-                                                {t("badgeFeatured")}
+                                    <TableCell className="whitespace-normal">
+                                        <div className="flex flex-wrap justify-center gap-1">
+                                            <Badge variant={list.isActive ? "default" : "secondary"}>
+                                                {list.isActive ? t("badgeActive") : t("badgeInactive")}
                                             </Badge>
-                                        )}
+                                            {list.isFeatured && (
+                                                <Badge variant="outline">
+                                                    {t("badgeFeatured")}
+                                                </Badge>
+                                            )}
+                                        </div>
                                     </TableCell>
                                     <TableCell className="text-right">
                                         <div className="flex justify-end gap-1">
