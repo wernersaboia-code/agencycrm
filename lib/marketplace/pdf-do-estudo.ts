@@ -10,11 +10,12 @@ import { getDocumentProxy } from "unpdf"
 import { extrairResumoExecutivo, montarLinhas, type ItemDeTexto, type LinhaDoEstudo } from "./resumo-do-estudo"
 import { contarEmpresas, type ContagemDeEmpresas } from "./contagem-empresas"
 import { normalizarTextoColado } from "./texto-colado"
+import { extrairLeadsDoDiretorio, type ItemPosicionado, type LeadDoDiretorio } from "./leads-do-diretorio"
 
-/** Lê o texto do PDF, linha a linha, com altura e posição de cada linha. */
-async function lerLinhas(bytes: Uint8Array): Promise<LinhaDoEstudo[]> {
+/** Itens de texto de cada página, com posição e corpo da fonte. */
+async function lerItens(bytes: Uint8Array): Promise<ItemPosicionado[][]> {
     const documento = await getDocumentProxy(bytes)
-    const paginas: ItemDeTexto[][] = []
+    const paginas: ItemPosicionado[][] = []
 
     for (let numero = 1; numero <= documento.numPages; numero++) {
         const pagina = await documento.getPage(numero)
@@ -23,13 +24,31 @@ async function lerLinhas(bytes: Uint8Array): Promise<LinhaDoEstudo[]> {
         paginas.push(
             conteudo.items.flatMap((item) =>
                 "str" in item
-                    ? [{ texto: item.str, altura: item.height, y: item.transform[5] }]
+                    ? [{ texto: item.str, altura: item.height, y: item.transform[5], x: item.transform[4], largura: item.width }]
                     : []
             )
         )
     }
 
-    return montarLinhas(paginas)
+    return paginas
+}
+
+/** Lê o texto do PDF, linha a linha, com altura e posição de cada linha. */
+async function lerLinhas(bytes: Uint8Array): Promise<LinhaDoEstudo[]> {
+    return montarLinhas(await lerItens(bytes) as ItemDeTexto[][])
+}
+
+/**
+ * As empresas do diretório do estudo (ver leads-do-diretorio.ts). `null`
+ * quando o PDF não abre; `[]` quando abre mas o diretório não é reconhecido.
+ */
+export async function extrairLeadsDoPdf(bytes: Uint8Array): Promise<LeadDoDiretorio[] | null> {
+    try {
+        return extrairLeadsDoDiretorio(await lerItens(bytes))
+    } catch (error) {
+        console.error("[PDF] Não foi possível ler o estudo para extrair as empresas:", error)
+        return null
+    }
 }
 
 /**

@@ -2,6 +2,7 @@
 "use server"
 
 import { revalidatePath, updateTag } from "next/cache"
+import { LEADS_DO_COMPRADOR } from "@/lib/marketplace/origem-lead"
 import { prisma } from "@/lib/prisma"
 import { requireAdmin } from "@/lib/auth"
 import type { MarketplaceLeadData } from "@/lib/constants/marketplace-csv.constants"
@@ -485,7 +486,7 @@ export async function uploadLeadsToList(listId: string, leads: MarketplaceLeadDa
 
     // Atualizar contador e preview da lista
     const count = await prisma.marketplaceLead.count({
-        where: { listId },
+        where: { listId, ...LEADS_DO_COMPRADOR },
     })
 
     // Extrair países únicos.
@@ -538,7 +539,7 @@ export async function deleteMarketplaceLead(leadId: string, listId: string) {
 
     // Atualizar contador
     const count = await prisma.marketplaceLead.count({
-        where: { listId },
+        where: { listId, ...LEADS_DO_COMPRADOR },
     })
 
     const list = await prisma.leadList.update({
@@ -556,7 +557,7 @@ export async function deleteMarketplaceLead(leadId: string, listId: string) {
 // Função para gerar preview mascarado
 async function generatePreviewData(listId: string) {
     const leads = await prisma.marketplaceLead.findMany({
-        where: { listId },
+        where: { listId, ...LEADS_DO_COMPRADOR },
         take: 5,
         orderBy: { createdAt: "asc" },
         select: {

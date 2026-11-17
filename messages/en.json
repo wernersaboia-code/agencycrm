@@ -1139,6 +1139,9 @@
             "editTitle": "Edit List"
         },
         "listLeads": {
+            "fromPdf": "from PDF",
+            "fromPdfHint": "Read automatically from the study PDF directory. Team only; never sent to the buyer.",
+            "fromPdfNote": "Companies marked \"from PDF\" were read automatically from the study directory and are rebuilt whenever the PDF changes. Team only: they are not in the buyer download, the lead count or the public sample. The automatic reading can get a name wrong or include the city.",
             "backToLists": "Back to lists",
             "leadsCount": "{count} leads in this list",
             "export": "Export",

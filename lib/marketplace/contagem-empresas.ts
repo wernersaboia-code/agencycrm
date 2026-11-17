@@ -103,6 +103,18 @@ function nomeDaEmpresa(dominio: string): string | null {
  * estudo não tem capítulo de diretório reconhecível.
  */
 export function linhasDoDiretorio(linhas: readonly string[]): string[] | null {
+    const intervalo = intervaloDoDiretorio(linhas)
+    return intervalo ? linhas.slice(intervalo.inicio, intervalo.fim) : null
+}
+
+/**
+ * Onde o diretório começa e termina (`fim` exclusivo), em índices de `linhas`.
+ * Mesma regra de `linhasDoDiretorio`; existe para quem precisa voltar à página
+ * e à posição de cada linha (leads-do-diretorio.ts).
+ */
+export function intervaloDoDiretorio(
+    linhas: readonly string[]
+): { inicio: number; fim: number } | null {
     let inicio = -1
     let numero = 0
 
@@ -144,7 +156,7 @@ export function linhasDoDiretorio(linhas: readonly string[]): string[] | null {
         ? candidatos.find((j) => mesmoTitulo(normalizarTitulo(linhas[j].match(CAPITULO)![2]), tituloDoProximo))
         : undefined
     const fim = confirmado ?? candidatos[0] ?? linhas.length
-    return linhas.slice(inicio, fim)
+    return { inicio, fim }
 }
 
 /** Título sem os pontinhos e o número de página do sumário, em minúsculas. */

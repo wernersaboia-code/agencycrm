@@ -13,6 +13,19 @@ import {
 import { compararConteudoDosPdfs } from "@/lib/marketplace/pdf-conteudo"
 import { encontrarContatosPessoaisNoPdf } from "@/lib/marketplace/pdf-contatos"
 import { contarEmpresasDoPdf } from "@/lib/marketplace/pdf-do-estudo"
+import { regravarLeadsDoPdf } from "@/lib/marketplace/leads-do-pdf"
+
+/**
+ * Os leads do PDF (só do admin) acompanham o arquivo no ar. Falha aqui não
+ * desfaz a troca do PDF: o estudo vale mais que a lista interna de empresas.
+ */
+async function regravarLeadsSemDerrubar(listId: string, bytes: Uint8Array | null) {
+    try {
+        await regravarLeadsDoPdf(listId, bytes)
+    } catch (error) {
+        console.error("[PDF] Não foi possível regravar os leads do estudo:", error)
+    }
+}
 
 /**
  * Abre o PDF que está publicado, para a equipe conferir o que o comprador
@@ -179,6 +192,8 @@ export async function POST(
             },
         })
 
+        await regravarLeadsSemDerrubar(id, new Uint8Array(await file.arrayBuffer()))
+
         return NextResponse.json({ studyPdfName: file.name })
     } catch (error) {
         console.error("Error uploading study PDF:", error)
@@ -216,14 +231,16 @@ export async function PATCH(
             return NextResponse.json({ error: "Não há versão anterior" }, { status: 404 })
         }
 
-        // A estimativa de empresas segue o PDF que fica no ar.
+        // A estimativa de empresas e os leads do PDF seguem o PDF que fica no ar.
+        let bytesAnterior: Uint8Array | null = null
+        try {
+            bytesAnterior = await downloadListPdf(list.studyPdfPreviousUrl)
+        } catch (error) {
+            console.error("[PDF] Não foi possível baixar a versão anterior:", error)
+        }
         let contagem: Awaited<ReturnType<typeof contarEmpresasDoPdf>> = null
-        if (!list.companyCountManual) {
-            try {
-                contagem = await contarEmpresasDoPdf(await downloadListPdf(list.studyPdfPreviousUrl))
-            } catch (error) {
-                console.error("[PDF] Não foi possível recontar a versão anterior:", error)
-            }
+        if (!list.companyCountManual && bytesAnterior) {
+            contagem = await contarEmpresasDoPdf(new Uint8Array(bytesAnterior))
         }
 
         await prisma.leadList.update({
@@ -237,6 +254,8 @@ export async function PATCH(
                 ...(contagem ? { companyCount: contagem.total, companyCountManual: false } : {}),
             },
         })
+
+        if (bytesAnterior) await regravarLeadsSemDerrubar(id, bytesAnterior)
 
         await recordAudit({
             actorId: admin.id,
@@ -304,6 +323,8 @@ export async function DELETE(
                     : {}),
             },
         })
+
+        await regravarLeadsSemDerrubar(id, null)
 
         const unpublished = list?.isActive === true
 

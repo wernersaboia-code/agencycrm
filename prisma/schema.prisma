@@ -782,6 +782,16 @@ model MarketplaceLead {
   productKeywords  String?
   salesPointsCount String?
 
+  // === ORIGEM ===
+  // "planilha": importado pelo admin; é o que o comprador baixa e o que conta
+  // em totalLeads e previewData. "pdf": lido do diretório do PDF do estudo
+  // (lib/marketplace/leads-do-diretorio.ts), SÓ PARA O ADMIN — nunca entra no
+  // download do comprador, na contagem nem na amostra pública. É refeito a
+  // cada troca do PDF.
+  origin           String  @default("planilha")
+  location         String?
+  directorySection String?
+
   // === METADADOS ===
   emailVerified Boolean  @default(false)
   createdAt     DateTime @default(now())
@@ -795,6 +805,7 @@ model MarketplaceLead {
   @@index([country])
   @@index([sector])
   @@index([isComplete])
+  @@index([listId, origin])
   @@map("marketplace_leads")
 }
 

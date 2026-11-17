@@ -1139,6 +1139,9 @@
             "editTitle": "Editar Lista"
         },
         "listLeads": {
+            "fromPdf": "do PDF",
+            "fromPdfHint": "Lido automaticamente do diretório do PDF do estudo. Só a equipe vê; não vai para o comprador.",
+            "fromPdfNote": "Empresas marcadas \"do PDF\" foram lidas automaticamente do diretório do estudo e são refeitas a cada troca do PDF. Só a equipe vê: não entram no download do comprador, na contagem de leads nem na amostra pública. A leitura automática pode errar o nome ou trazer a cidade junto.",
             "backToLists": "Voltar para listas",
             "leadsCount": "{count} leads nesta lista",
             "export": "Exportar",

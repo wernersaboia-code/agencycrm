@@ -27,6 +27,7 @@ import {
 } from "lucide-react"
 import { LeadsUploadModal } from "@/components/admin/leads-upload-modal"
 import { DeleteLeadButton } from "@/components/admin/delete-lead-button"
+import { ORIGEM_PDF } from "@/lib/marketplace/origem-lead"
 
 interface ListLeadsPageProps {
     params: Promise<{ id: string }>
@@ -146,6 +147,9 @@ export default async function ListLeadsPage({ params }: ListLeadsPageProps) {
             <Card>
                 <CardHeader>
                     <CardTitle>{t("leadsTitle")}</CardTitle>
+                    {list.leads.some((lead) => lead.origin === ORIGEM_PDF) && (
+                        <p className="text-sm text-muted-foreground">{t("fromPdfNote")}</p>
+                    )}
                 </CardHeader>
                 <CardContent>
                     {list.leads.length === 0 ? (
@@ -176,7 +180,17 @@ export default async function ListLeadsPage({ params }: ListLeadsPageProps) {
                                         <TableRow key={lead.id}>
                                             <TableCell>
                                                 <div>
-                                                    <p className="font-medium">{lead.companyName}</p>
+                                                    <p className="font-medium">
+                                                        {lead.companyName}
+                                                        {lead.origin === ORIGEM_PDF && (
+                                                            <Badge variant="secondary" className="ml-2 align-middle" title={t("fromPdfHint")}>
+                                                                {t("fromPdf")}
+                                                            </Badge>
+                                                        )}
+                                                    </p>
+                                                    {lead.location && (
+                                                        <p className="text-xs text-muted-foreground">{lead.location}</p>
+                                                    )}
                                                     {lead.website && (
                                                         <a
                                                             href={lead.website.startsWith("http") ? lead.website : `https://${lead.website}`}
@@ -213,7 +227,7 @@ export default async function ListLeadsPage({ params }: ListLeadsPageProps) {
                                                     <p className="text-sm">
                                                         {lead.purchasingPerson || lead.manager || "-"}
                                                     </p>
-                                                    {(lead.purchasingPerson || lead.manager) && lead.phoneGeneral && (
+                                                    {lead.phoneGeneral && (
                                                         <p className="text-xs text-muted-foreground">
                                                             {lead.phoneGeneral}
                                                         </p>

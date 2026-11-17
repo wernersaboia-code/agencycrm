@@ -1,5 +1,6 @@
 // lib/exports/purchase-export.ts
 import { prisma } from "@/lib/prisma"
+import { LEADS_DO_COMPRADOR } from "@/lib/marketplace/origem-lead"
 import { buildCsv, sanitizeCsvFilenameSegment } from "@/lib/utils/csv.utils"
 
 export async function generatePurchaseCSV(purchaseItemId: string, userId: string) {
@@ -12,7 +13,7 @@ export async function generatePurchaseCSV(purchaseItemId: string, userId: string
         include: {
             list: {
                 include: {
-                    leads: true,
+                    leads: { where: LEADS_DO_COMPRADOR },
                 },
             },
         },
@@ -105,7 +106,7 @@ export async function generatePurchaseExcel(purchaseItemId: string, userId: stri
         include: {
             list: {
                 include: {
-                    leads: true,
+                    leads: { where: LEADS_DO_COMPRADOR },
                 },
             },
         },

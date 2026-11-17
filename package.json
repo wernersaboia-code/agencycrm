@@ -23,6 +23,7 @@
     "meta:textos": "npx ts-node --project tsconfig.seed.json prisma/limpar-textos-colados.ts",
     "meta:resumos": "npx ts-node --project tsconfig.seed.json prisma/importar-resumos.ts",
     "meta:empresas": "npx ts-node --project tsconfig.seed.json prisma/contar-empresas.ts",
+    "leads:pdf": "npx ts-node --project tsconfig.seed.json prisma/extrair-leads.ts",
     "comparar:gsc": "node scripts/comparar-gsc.mjs"
   },
   "dependencies": {
