@@ -255,6 +255,15 @@ function nomeELocal(
         i++
     }
     const resto = linhas.slice(i)
+    // Forma jurídica que quebrou para a linha do endereço ("EDEKA ZENTRALE
+    // Stiftung & Co." / "KG, New-York-Ring 6", "Kompernaß Handelsgesellschaft"
+    // / "mbH, Burgstraße 21"): volta para o nome.
+    const sufixo = resto[0]?.match(/^(KGaA|KG|mbH|GmbH|GesmbH|GmbH & Co\.? KG|oHG|OHG|AG|SE|Ltd\.?|S\.A\.|B\.V\.|N\.V\.)(?=,|\s|$)[,]?\s*(.*)$/)
+    if (sufixo) {
+        nome = `${nome} ${sufixo[1]}`
+        resto[0] = sufixo[2]
+        if (!resto[0]) resto.shift()
+    }
     // Diretório numerado ("1. OBI (OBI Home and Garden GmbH …)").
     nome = nome.replace(/\s+/g, " ").trim().replace(/^\d{1,3}\.\s+/, "")
     // "Company / type": as linhas do meio são o tipo e a última é a cidade

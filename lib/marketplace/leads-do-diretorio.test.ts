@@ -163,6 +163,22 @@ describe("extrairLeadsDoDiretorio — fichas da África do Sul", () => {
     })
 })
 
+describe("extrairLeadsDoDiretorio — forma jurídica quebrada", () => {
+    it("traz o 'KG' da linha do endereço de volta para o nome", () => {
+        const pagina = [
+            item(57, 760, "8. Directory of importers", 300),
+            item(60, 720, "Company / address"), item(220, 720, "Website / contact"),
+            item(60, 700, "EDEKA ZENTRALE Stiftung & Co."), item(220, 700, "www.edeka.de"),
+            item(60, 690, "KG, New-York-Ring 6, 22297 Hamburg"), item(220, 690, "info@edeka.de"),
+            item(57, 600, "9. Recommendations", 300),
+        ]
+        expect(extrairLeadsDoDiretorio([pagina])[0]).toMatchObject({
+            companyName: "EDEKA ZENTRALE Stiftung & Co. KG",
+            location: "New-York-Ring 6, 22297 Hamburg",
+        })
+    })
+})
+
 describe("extrairLeadsDoDiretorio — sem diretório", () => {
     it("devolve lista vazia quando o estudo não tem capítulo de diretório", () => {
         const pagina = [item(57, 700, "1. Executive Summary", 200), item(57, 680, "Some text about info@x.com")]
