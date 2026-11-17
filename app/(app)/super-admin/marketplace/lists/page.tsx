@@ -287,16 +287,18 @@ export default async function MarketplaceListsPage({ searchParams }: Marketplace
                         ) : (
                             listasFiltradas.map((list) => (
                                 <TableRow key={list.id}>
-                                    <TableCell className="min-w-[12rem] whitespace-normal">
+                                    <TableCell className="min-w-[10rem] whitespace-normal">
                                         <div>
                                             <p className="font-medium">{list.name}</p>
                                             <p className="text-xs text-muted-foreground break-all">{list.slug}</p>
                                         </div>
                                     </TableCell>
-                                    <TableCell className="min-w-[8rem] whitespace-normal">
+                                    <TableCell className="min-w-[7rem] whitespace-normal">
+                                        {/* O Badge não quebra linha por padrão, e "Produtos para Bebês e
+                                            Crianças Pequenas" sozinho alargava a coluna em 260px. */}
                                         <div className="flex flex-wrap gap-1">
                                             {list.industries.map((id) => (
-                                                <Badge key={id} variant="outline">{nomesDeSetor[id] ?? id}</Badge>
+                                                <Badge key={id} variant="outline" className="whitespace-normal text-left">{nomesDeSetor[id] ?? id}</Badge>
                                             ))}
                                         </div>
                                     </TableCell>
@@ -336,7 +338,8 @@ export default async function MarketplaceListsPage({ searchParams }: Marketplace
                                         </div>
                                     </TableCell>
                                     <TableCell className="text-right">
-                                        <div className="flex justify-end gap-1">
+                                        {/* Em tela menor os 4 botões ficam 2×2 para a tabela caber. */}
+                                        <div className="grid grid-cols-2 justify-items-end gap-1 2xl:flex 2xl:justify-end">
                                             {list.studyPdfUrl && (
                                                 <a
                                                     href={`/api/admin/lists/${list.id}/pdf`}
