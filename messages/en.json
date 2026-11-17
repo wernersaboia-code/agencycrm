@@ -1480,6 +1480,7 @@
                 "pdfSection": "Market study (PDF)",
                 "pdfDesc": "This is the file the buyer will download.",
                 "currentFile": "Current file:",
+                "openPdf": "Open PDF",
                 "pdfHint": "Format: PDF. Max 50MB.",
                 "coverImageLabel": "Study cover (URL)",
                 "coverImageHint": "Image shown on the card and in Google structured data. Leave blank to use the brand default image.",

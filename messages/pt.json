@@ -1480,6 +1480,7 @@
                 "pdfSection": "Estudo de mercado (PDF)",
                 "pdfDesc": "Este é o arquivo que o comprador vai baixar.",
                 "currentFile": "Arquivo atual:",
+                "openPdf": "Abrir PDF",
                 "pdfHint": "Formato: PDF. Máximo 50MB.",
                 "coverImageLabel": "Capa do estudo (URL)",
                 "coverImageHint": "Imagem exibida no card e nos dados estruturados do Google. Em branco usa a imagem padrão da marca.",

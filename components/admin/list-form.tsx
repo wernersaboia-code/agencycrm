@@ -18,6 +18,7 @@ import {
     X,
     FileText,
     BadgeCheck,
+    ExternalLink,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -1123,6 +1124,20 @@ export function ListForm({ list, setores }: ListFormProps) {
                             <p className="text-sm text-muted-foreground">
                                 {t("currentFile")} <span className="font-medium">{pdfName}</span>
                             </p>
+                        )}
+                        {/* Só o PDF já salvo: com arquivo novo escolhido e ainda
+                            não enviado, o link abriria o antigo. */}
+                        {list?.studyPdfUrl && !pdfFile && (
+                            <Button variant="outline" size="sm" asChild>
+                                <a
+                                    href={`/api/admin/lists/${list.id}/pdf`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    <ExternalLink className="mr-2 h-4 w-4" />
+                                    {t("openPdf")}
+                                </a>
+                            </Button>
                         )}
                         <p className="text-xs text-muted-foreground">
                             {t("pdfHint")}

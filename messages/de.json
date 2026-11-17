@@ -1480,6 +1480,7 @@
                 "pdfSection": "Marktstudie (PDF)",
                 "pdfDesc": "Dies ist die Datei, die der Käufer herunterlädt.",
                 "currentFile": "Aktuelle Datei:",
+                "openPdf": "PDF öffnen",
                 "pdfHint": "Format: PDF. Maximal 50 MB.",
                 "coverImageLabel": "Studiencover (URL)",
                 "coverImageHint": "Bild für die Karte und die strukturierten Daten von Google. Leer verwendet das Standardmarkenbild.",

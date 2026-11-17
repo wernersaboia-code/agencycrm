@@ -8,10 +8,40 @@ import {
     removeListPdfByPath,
     validatePdfFile,
     downloadListPdf,
+    createStudySignedUrl,
 } from "@/lib/supabase/list-studies"
 import { compararConteudoDosPdfs } from "@/lib/marketplace/pdf-conteudo"
 import { encontrarContatosPessoaisNoPdf } from "@/lib/marketplace/pdf-contatos"
 import { contarEmpresasDoPdf } from "@/lib/marketplace/pdf-do-estudo"
+
+/**
+ * Abre o PDF que está publicado, para a equipe conferir o que o comprador
+ * recebe. Mesmo caminho do download do cliente (link assinado de 2 minutos),
+ * mas sem compra e sem contar download: só admin passa.
+ */
+export async function GET(
+    request: NextRequest,
+    { params }: { params: Promise<{ id: string }> }
+) {
+    try {
+        await requireAdmin()
+    } catch {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+
+    try {
+        const { id } = await params
+        const list = await prisma.leadList.findUnique({ where: { id }, select: { studyPdfUrl: true } })
+        if (!list?.studyPdfUrl) {
+            return NextResponse.json({ error: "Esta lista não tem PDF" }, { status: 404 })
+        }
+
+        return NextResponse.redirect(await createStudySignedUrl(list.studyPdfUrl))
+    } catch (error) {
+        console.error("Error opening study PDF:", error)
+        return NextResponse.json({ error: "Falha ao abrir o PDF" }, { status: 500 })
+    }
+}
 
 export async function POST(
     request: NextRequest,
