@@ -269,6 +269,31 @@ describe("extrairLeadsDoDiretorio — fichas de Maurício", () => {
     })
 })
 
+describe("extrairLeadsDoDiretorio — fichas do México", () => {
+    it("subseção com palavra de rótulo e resto de campo entre parênteses não viram nome", () => {
+        const rotulo = (y: number, r: string, v: string) => [item(60, y, r, r.length * 4), item(200, y, v)]
+        const pagina = [
+            item(57, 790, "8. Directory of FMCG Importers and Distributors", 300),
+            item(60, 760, "1. Mexideli, S.A. de C.V."),
+            ...rotulo(748, "Type / scope", "Specialist food importer"),
+            item(60, 736, "Website"), item(60, 724, "mexideli.com.mx"),
+            ...rotulo(712, "General e-mail", "No public inbox; enquiries via the website contact form"),
+            item(60, 700, "(mexideli.com.mx/mex/es/contacto) and LinkedIn"),
+            ...rotulo(688, "Switchboard / phone", "+52 55 5241 4200"),
+            ...rotulo(676, "Likely interest", "Imported cheeses for foodservice in northern"),
+            item(60, 664, "Mexico"),
+            item(57, 640, "8.2 Full-range distributors", 200),
+            item(60, 620, "6. Grupo Herdez, S.A.B. de C.V."),
+            ...rotulo(608, "Type / scope", "Major Mexican food group"),
+            item(60, 596, "Website"), item(60, 584, "grupoherdez.com.mx"),
+            item(57, 500, "9. Recommendations", 300),
+        ]
+        const leads = extrairLeadsDoDiretorio([pagina])
+        expect(leads.map((l) => l.companyName)).toEqual(["Mexideli, S.A. de C.V.", "Grupo Herdez, S.A.B. de C.V."])
+        expect(leads[0]).toMatchObject({ website: "mexideli.com.mx", phoneGeneral: "+52 55 5241 4200" })
+    })
+})
+
 describe("extrairLeadsDoDiretorio — sem diretório", () => {
     it("devolve lista vazia quando o estudo não tem capítulo de diretório", () => {
         const pagina = [item(57, 700, "1. Executive Summary", 200), item(57, 680, "Some text about info@x.com")]

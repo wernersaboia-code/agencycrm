@@ -370,6 +370,9 @@ const PALAVRA_INTEIRA = new RegExp(PALAVRA_DE_ROTULO.source + "(?:s|ies|es|y)?(?
 
 function rotuloDaLinha(linha: Linha): { rotulo: string; valor: string } | null {
     const primeiro = linha.itens[0]?.texto.trim() ?? ""
+    // Subseção ("8.2 Full-range distributors") nunca é rótulo, mesmo com
+    // palavra de rótulo ("range").
+    if (SUBSECAO.test(linha.texto)) return null
     if (ROTULO_DE_FICHA.test(primeiro)) {
         return { rotulo: primeiro.replace(/:$/, "").toLowerCase(), valor: linha.itens.slice(1).map((i) => i.texto.trim()).join(" ") }
     }
@@ -501,6 +504,8 @@ function leadsDeFichas(linhas: Linha[]): LeadDoDiretorio[] {
             (!/\.$/.test(candidato) || FORMA_JURIDICA.test(candidato)) &&
             !/:\s|@|www\./.test(candidato) &&
             /^[\p{Lu}\d"„(]/u.test(candidato) &&
+            // "(mexideli.com.mx/…) and LinkedIn" é resto do campo anterior.
+            !/^\([a-z]/.test(candidato) &&
             // Rótulo curto ("Food / Non-Food") não é nome; nome longo com
             // palavra de rótulo é ("Brands2Africa (B2A) – Johannesburg").
             // Palavra inteira: "BrandActiv (IBL Group)" é nome, não rótulo.
