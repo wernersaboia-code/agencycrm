@@ -81,6 +81,46 @@ describe("extrairLeadsDoDiretorio — formato ficha", () => {
     })
 })
 
+describe("extrairLeadsDoDiretorio — casos da França e da Finlândia", () => {
+    it("célula 'importer; full range' na 2ª coluna não reabre a tabela, e coluna só de nome junta as linhas (França)", () => {
+        const pagina = [
+            item(57, 760, "8. Directory of importers", 300),
+            item(61, 715, "Company"), item(149, 715, "Type"), item(359, 715, "Website / supplier"), item(454, 715, "General e-mail"),
+            item(61, 689, "Autour de Bébé / New"), item(149, 689, "Buying group"), item(359, 689, "www.autourdebebe.com"),
+            item(61, 678, "Baby (Sagam group)"), item(149, 678, "importer; full"),
+            item(149, 668, "range"),
+            item(61, 640, "Babilol"), item(149, 640, "Specialised"), item(359, 640, "www.babilol.com"), item(454, 640, "commande@babilol.co"),
+            item(149, 630, "wholesaler"), item(454, 630, "m"),
+            item(57, 500, "9. Recommendations", 300),
+        ]
+        const leads = extrairLeadsDoDiretorio([pagina])
+        expect(leads.map((l) => l.companyName)).toEqual(["Autour de Bébé / New Baby (Sagam group)", "Babilol"])
+        expect(leads[1].emailGeneral).toBe("commande@babilol.com")
+    })
+
+    it("linha de dados que começa com 'Importer / distributor' ao lado de 'E-mail:' não é cabeçalho (Finlândia)", () => {
+        const pagina = [
+            item(57, 760, "7. Directory of importers and distributors", 300),
+            item(62, 471, "Company / type"), item(187, 471, "Profile & product categories"), item(372, 471, "Contact for first approach"),
+            item(62, 450, "Kiddex Oy"), item(187, 450, "Importer founded in 2008"), item(372, 450, "Website:"), item(412, 450, "www.kiddex.fi"),
+            item(62, 435, "Importer / distributor (baby &"), item(187, 435, "focusing on non-toxic products"), item(372, 435, "E-mail:"), item(405, 435, "info@kiddex.fi"),
+            item(62, 422, "kids specialist)"), item(372, 422, "Phone:"), item(405, 422, "+358 44 031 2259"),
+            item(62, 407, "Helsinki"),
+            item(57, 300, "8. Market entry", 300),
+        ]
+        const [kiddex, ...resto] = extrairLeadsDoDiretorio([pagina])
+        expect(resto).toEqual([])
+        expect(kiddex).toMatchObject({
+            companyName: "Kiddex Oy",
+            location: "Helsinki",
+            companyType: "Importer / distributor (baby & kids specialist)",
+            website: "kiddex.fi",
+            emailGeneral: "info@kiddex.fi",
+            phoneGeneral: "+358 44 031 2259",
+        })
+    })
+})
+
 describe("extrairLeadsDoDiretorio — sem diretório", () => {
     it("devolve lista vazia quando o estudo não tem capítulo de diretório", () => {
         const pagina = [item(57, 700, "1. Executive Summary", 200), item(57, 680, "Some text about info@x.com")]

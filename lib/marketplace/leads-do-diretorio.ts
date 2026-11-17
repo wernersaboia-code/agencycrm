@@ -58,7 +58,10 @@ interface Coluna {
 }
 
 /** Primeira coluna de um cabeçalho de diretório, nos idiomas dos estudos. */
-const ROTULO_EMPRESA = /^(company|companies|name|firma|unternehmen|empresa|entreprise|soci[eé]t[eé]|azienda|bedrijf|importer|distributor)\b/i
+// Só o rótulo, ou o rótulo seguido de separador ("Company / location"): a
+// célula "importer; full range" de uma linha da tabela não é cabeçalho.
+const ROTULO_EMPRESA =
+    /^(company|companies|name|firma|unternehmen|empresa|entreprise|soci[eé]t[eé]|azienda|bedrijf)s?\s*(?:$|[/&|–(,-]|\band\b|\bname\b|\bund\b)|^(importer|distributor)s?\s*(?:[/&]\s*(importer|distributor|wholesaler)s?)?$/i
 
 const SUBSECAO = /^\d{1,2}(\.\d{1,2})+\.?\s+\S/
 const RODAPE = /(^|\|\s*)(page|seite|página|pagina|p\.)\s*\d+\s*$|\b(page|seite|página|pagina)\s+\d+\s+(of|von|de|di|sur)\s+\d+\b/i
@@ -68,7 +71,8 @@ const FORMA_JURIDICA =
 
 const EMAIL = /[a-z0-9][a-z0-9._%+-]*@(?:[a-z0-9-]+\.)+[a-z]{2,6}/gi
 const URL = /(?<![@\w.-])(?:https?:\/\/)?(?:www\.)?(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,6}(?:\/[^\s,;)]*)?/gi
-const TELEFONE = /(?:\+|00)?\(?\d[\d\s().\/–-]{5,}\d/g
+// Sem \s: telefone não atravessa quebra de linha.
+const TELEFONE = /(?:\+|00)?\(?\d[\d \t().\/–-]{5,}\d/g
 const TLD = new Set(
     (
         "com net org info biz eu co io shop store online group global trade " +
@@ -107,6 +111,11 @@ function linhasComPosicao(paginas: readonly (readonly ItemPosicionado[])[]): Lin
 function colunasDoCabecalho(linha: Linha): Coluna[] | null {
     const itens = linha.itens.filter((i) => i.texto.trim())
     if (itens.length < 2 || !ROTULO_EMPRESA.test(itens[0].texto.trim())) return null
+    // Cabeçalho só tem rótulos: "E-mail:", um site ou um telefone na mesma
+    // linha mostram que é uma linha de dados ("Importer / distributor (baby &"
+    // ao lado de "E-mail:" na tabela da Finlândia).
+    if (itens.some((i) => /:\s*$|@|www\.|https?:|\d{3}/.test(i.texto))) return null
+    if ((itens[0].texto.match(/\(/g)?.length ?? 0) !== (itens[0].texto.match(/\)/g)?.length ?? 0)) return null
     // Rótulos colados ("Company / location") vêm num item só; colunas reais
     // ficam a pelo menos 40 pt uma da outra.
     const colunas: Coluna[] = []
@@ -150,9 +159,17 @@ function juntarCelula(partes: string[]): string {
             !/[:]$/.test(ultimoToken) &&
             !/\.[a-z]{2,6}$/i.test(ultimoToken) &&
             /^[a-z0-9./_-]/.test(primeiroToken) &&
-            !/:/.test(primeiroToken)
+            !/:/.test(primeiroToken) &&
+            !/^(www\.|https?:)/i.test(primeiroToken)
+        // "commande@babilol.co" / "m": o resto do TLD sozinho na linha.
+        const restoDeDominio =
+            (/@\S+\.[a-z]{2,5}$/i.test(ultimoToken) && /^[a-z]{1,3}$/.test(parte)) ||
+            // "larmoiredebebe.co" / "m" na coluna do site.
+            (/^(www\.)?[\w-]+\.[a-z]{2}$/i.test(ultimoToken) && /^[a-z]{1,2}$/.test(parte))
         const telefonePartido = /\d-$/.test(texto) && /^\d/.test(parte)
-        texto += pedacoDeEndereco || telefonePartido ? parte : " " + parte
+        // Fora isso, quebra de linha de verdade: sem ela o telefone de uma
+        // linha emendava no número da rua da linha de baixo.
+        texto += pedacoDeEndereco || restoDeDominio || telefonePartido ? parte : "\n" + parte
     }
     return texto
 }
@@ -174,6 +191,13 @@ function primeiroSite(texto: string): { site: string | null; formulario: string 
     return { site, formulario }
 }
 
+/** "profarma" para portal.profarma.com.br, ri.profarma.com.br e profarma.com.br. */
+function baseDoDominio(dominio: string): string {
+    const partes = dominio.toLowerCase().split(".")
+    const segundoNivel = partes.length >= 3 && /^(co|com|org|net|gov|ac|or|ne|gob)$/.test(partes.at(-2)!)
+    return (segundoNivel ? partes.at(-3) : partes.at(-2)) ?? dominio
+}
+
 function telefones(texto: string): string[] {
     return [...texto.matchAll(TELEFONE)]
         .map(([t]) => t.trim().replace(/[\s(–-]+$/, ""))
@@ -189,9 +213,23 @@ function telefones(texto: string): string[] {
  * quando ela traz forma jurídica ("Distribution Inc."), começa minúscula ou a
  * anterior terminou pendurada ("&", "-", ",", "/", "(").
  */
-function nomeELocal(partes: string[]): { nome: string; local: string | null } {
+function nomeELocal(
+    partes: string[],
+    rotulo: string
+): { nome: string; local: string | null; tipo: string | null } {
     const linhas = partes.map((p) => p.trim()).filter(Boolean)
-    if (linhas.length === 0) return { nome: "", local: null }
+    if (linhas.length === 0) return { nome: "", local: null, tipo: null }
+
+    // Coluna só de nome ("Company", sem "/ location"): tudo nela é o nome,
+    // que quebra em várias linhas ("Autour de Bébé / New" / "Baby (Sagam group)").
+    // Para no endereço, quando há um: linha com número de rua ou CEP
+    // ("26 quai Marcel Boyer", "92290 Châtenay-Malabry") é local, não nome.
+    if (!/\/|&|\band\b|location|city|ort|sede|type|typ|tipo/i.test(rotulo)) {
+        let fim = linhas.findIndex((l, j) => j > 0 && /\d{2,}/.test(l))
+        if (fim === -1) fim = linhas.length
+        const nomeCompleto = linhas.slice(0, fim).join(" ").replace(/-\s/g, "-").replace(/\s+/g, " ").trim()
+        return { nome: nomeCompleto.replace(/^\d{1,3}\.\s+/, ""), local: linhas.slice(fim).join(", ") || null, tipo: null }
+    }
     let nome = linhas[0]
     let i = 1
     while (i < linhas.length) {
@@ -206,8 +244,19 @@ function nomeELocal(partes: string[]): { nome: string; local: string | null } {
         nome = nome.endsWith("-") ? nome + proxima : `${nome} ${proxima}`
         i++
     }
-    const local = linhas.slice(i).join(", ") || null
-    return { nome: nome.replace(/\s+/g, " ").trim(), local }
+    const resto = linhas.slice(i)
+    // Diretório numerado ("1. OBI (OBI Home and Garden GmbH …)").
+    nome = nome.replace(/\s+/g, " ").trim().replace(/^\d{1,3}\.\s+/, "")
+    // "Company / type": as linhas do meio são o tipo e a última é a cidade
+    // (Finlândia: "Importer / distributor (baby &" / "kids specialist)" / "Helsinki").
+    // "Company / profile" (DIY Espanha): o que vem depois do nome é o perfil.
+    if (/profil|perfil/i.test(rotulo) && resto.length > 0) {
+        return { nome, tipo: resto.join(" ").replace(/\s+/g, " "), local: null }
+    }
+    if (/type|typ|tipo/i.test(rotulo) && resto.length >= 2) {
+        return { nome, tipo: resto.slice(0, -1).join(" ").replace(/\s+/g, " "), local: resto.at(-1)! }
+    }
+    return { nome, local: resto.join(", ") || null, tipo: null }
 }
 
 function semRotulo(texto: string): string {
@@ -215,7 +264,7 @@ function semRotulo(texto: string): string {
 }
 
 function linhaParaLead(colunas: Coluna[], celulas: string[][], secao: string | null): LeadDoDiretorio | null {
-    const { nome, local } = nomeELocal(celulas[0] ?? [])
+    const { nome, local, tipo } = nomeELocal(celulas[0] ?? [], colunas[0].rotulo)
     if (nome.length < 2) return null
 
     const textos = celulas.map((c) => juntarCelula(c))
@@ -230,8 +279,8 @@ function linhaParaLead(colunas: Coluna[], celulas: string[][], secao: string | n
     // ou texto que caiu na grade.
     if (!site && emails.length === 0 && fones.length === 0) return null
 
-    let companyType: string | null = null
-    let productPortfolio: string | null = null
+    let companyType: string | null = tipo ? tipo.split(/\s+[–—-]\s+|[.;]/)[0].trim().slice(0, 120) || null : null
+    let productPortfolio: string | null = tipo && tipo.length > 120 ? tipo : null
     let specialFocus: string | null = null
     colunas.forEach((coluna, i) => {
         if (i === 0) return
@@ -239,7 +288,7 @@ function linhaParaLead(colunas: Coluna[], celulas: string[][], secao: string | n
         if (!texto) return
         if (/type|channel|profile|focus|categor|tipo|typ|art|perfil|profil|segment/i.test(coluna.rotulo)) {
             productPortfolio = productPortfolio ? `${productPortfolio}\n${texto}` : texto
-            companyType ??= texto.split(/\s+[–—-]\s+|[.;(]/)[0].trim().slice(0, 120) || null
+            companyType ??= texto.replace(/\s+/g, " ").split(/\s+[–—-]\s+|[.;(]/)[0].trim().slice(0, 120) || null
         } else if (/note|remark|comment|hinweis|observa|bemerk|remarque|osserva|opmerk|why|fit/i.test(coluna.rotulo)) {
             specialFocus = specialFocus ? `${specialFocus}\n${texto}` : texto
         }
@@ -334,7 +383,7 @@ function fichaParaLead(nome: string, campos: Map<string, string[]>, secao: strin
         emailGeneral: emails.find((e) => !COMPRAS.test(e.split("@")[0])) ?? emails[0] ?? null,
         emailPurchasing: emails.find((e) => COMPRAS.test(e.split("@")[0])) ?? null,
         phoneGeneral: fones[0] ?? null,
-        companyType: perfil ? perfil.split(/\s+[–—-]\s+|[.;(]/)[0].trim().slice(0, 120) || null : null,
+        companyType: perfil ? perfil.replace(/\s+/g, " ").split(/\s+[–—-]\s+|[.;(]/)[0].trim().slice(0, 120) || null : null,
         productPortfolio: perfil,
         specialFocus: notas,
         secao,
@@ -471,8 +520,10 @@ export function extrairLeadsDoDiretorio(paginas: readonly (readonly ItemPosicion
     for (const linha of doDiretorio) {
         if (RODAPE.test(linha.texto) || corrido(linha)) continue
 
+        // Com uma tabela aberta, cabeçalho novo tem de começar na mesma margem
+        // da primeira coluna: texto da 2ª coluna nunca reabre a tabela.
         const cabecalho = colunasDoCabecalho(linha)
-        if (cabecalho) {
+        if (cabecalho && (!colunas || Math.abs(cabecalho[0].x - colunas[0].x) <= 12)) {
             fecharLinha()
             colunas = cabecalho
             ultimoYColuna0 = Infinity
@@ -501,11 +552,42 @@ export function extrairLeadsDoDiretorio(paginas: readonly (readonly ItemPosicion
             continue
         }
 
+        // Cada empresa tem um site só, na altura do nome. Um segundo site na
+        // coluna de site, com nome na primeira coluna da mesma linha, abre
+        // empresa nova mesmo sem vão: em tabelas sem respiro entre as linhas
+        // (DIY Espanha) Leroy Merlin, Obramat e Bauhaus saíam numa linha só.
+        // O segundo site tem de ser de OUTRA empresa (portal.profarma.com.br
+        // e ri.profarma.com.br são da mesma), e o texto da primeira coluna
+        // tem cara de nome: curto, sem "Type:", sem ponto final, e o nome
+        // anterior não ficou com parêntese aberto.
+        const colunaDoSite = colunas.findIndex((c) => /web|site|internet|contact|kontakt/i.test(c.rotulo))
+        const coluna0 = (celulas as string[][] | null)?.[0].join(" ") ?? ""
+        const nomeAberto = (coluna0.match(/\(/g)?.length ?? 0) > (coluna0.match(/\)/g)?.length ?? 0)
+        const temNome =
+            !nomeAberto &&
+            linha.itens.some((i) => {
+                const t = i.texto.trim()
+                return colunaDoItem(colunas!, i.x) === 0 && /^[\p{Lu}\d"„]/u.test(t) && t.length <= 60 && !/:|\.$/.test(t)
+            })
+        const sitesAtuais = ((celulas as string[][] | null)?.[colunaDoSite] ?? [])
+            .map((t) => primeiroSite(t).site)
+            .filter((s): s is string => Boolean(s))
+            .map(baseDoDominio)
+        const siteNovo =
+            colunaDoSite > 0 &&
+            temNome &&
+            sitesAtuais.length > 0 &&
+            linha.itens.some((i) => {
+                if (colunaDoItem(colunas!, i.x) !== colunaDoSite) return false
+                const site = primeiroSite(i.texto).site
+                return site != null && !sitesAtuais.includes(baseDoDominio(site))
+            })
+
         for (const item of linha.itens) {
             const c = colunaDoItem(colunas, item.x)
             if (c === 0) {
                 const vao = ultimoYColuna0 - linha.y
-                const novaLinha = !celulas || vao > alturaDaLinha * 1.75
+                const novaLinha = !celulas || vao > alturaDaLinha * 1.75 || (siteNovo && !((celulas as string[][])[0].length === 0))
                 if (novaLinha) {
                     fecharLinha()
                     celulas = colunas.map(() => [])
@@ -525,7 +607,11 @@ export function extrairLeadsDoDiretorio(paginas: readonly (readonly ItemPosicion
     // leitura de tabela também "acha" fichas, só que com os rótulos colados
     // no nome ("Profile, Address, Website").
     const fichas = leadsDeFichas(doDiretorio.filter((l) => !RODAPE.test(l.texto) && !corrido(l)))
-    const comSite = (lista: LeadDoDiretorio[]) => lista.filter((l) => l.website).length
+    // Só conta empresa com site E nome com cara de nome: a leitura de tabela
+    // que segue lendo fichas depois de uma tabela-resumo "acha" sites com
+    // nomes como "Pernigotti and Vergani chocolates, Italian wines (…".
+    const comSite = (lista: LeadDoDiretorio[]) =>
+        lista.filter((l) => l.website && l.companyName.length <= 70 && (l.companyName.match(/,/g)?.length ?? 0) <= 2).length
     const escolhidos = comSite(fichas) > 0 && comSite(fichas) >= comSite(leads) ? fichas : leads
 
     // A mesma empresa pode aparecer na tabela-resumo e na detalhada.
