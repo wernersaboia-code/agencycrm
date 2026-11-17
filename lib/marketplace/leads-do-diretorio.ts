@@ -69,7 +69,7 @@ const SUBSECAO = /^\d{1,2}(\.\d{1,2})+\.?\s+\S/
 const RODAPE = /(^|[|·•–—]\s*)(page|seite|página|pagina|p\.)\s*\d*\s*$|^\d{1,3}$|\b(page|seite|página|pagina)\s+\d+\s+(of|von|de|di|sur)\s+\d+\b/i
 
 const FORMA_JURIDICA =
-    /\b(inc|ltd|llc|corp|co|gmbh|ag|kg|se|sa|s\.a|sas|sarl|srl|s\.r\.l|spa|s\.p\.a|bv|b\.v|nv|n\.v|ab|as|a\/s|oy|plc|pty|limited|lda|sl|s\.l|sp\.\s*z\s*o\.o|kft|d\.o\.o|ehf|aps)\b\.?/i
+    /\b(inc|ltd|llc|corp|co|gmbh|ag|kg|se|sa|s\.a|sas|sarl|srl|s\.r\.l|spa|s\.p\.a|bv|b\.v|nv|n\.v|ab|as|a\/s|oy|plc|pty|limited|lda|sl|s\.l|sp\.\s*z\s*o\.o|kft|d\.o\.o|ehf|aps|s\.r\.o|a\.s|spol|k\.s|v\.o\.s|e\.u|ges\.m\.b\.h)\b\.?/i
 
 const EMAIL = /[a-z0-9][a-z0-9._%+-]*@(?:[a-z0-9-]+\.)+[a-z]{2,6}/gi
 const URL = /(?<![@\w.-])(?:https?:\/\/)?(?:www\.)?(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,6}(?:\/[^\s,;)]*)?/gi
@@ -370,7 +370,15 @@ function rotuloDaLinha(linha: Linha): { rotulo: string; valor: string } | null {
     if (ROTULO_DE_FICHA.test(primeiro)) {
         return { rotulo: primeiro.replace(/:$/, "").toLowerCase(), valor: linha.itens.slice(1).map((i) => i.texto.trim()).join(" ") }
     }
-    const curto = primeiro.length <= 45 && primeiro.split(/\s+/).length <= 7 && !/[.;,]$/.test(primeiro) && !/@|www\.|https?:/.test(primeiro)
+    // Nome numerado ou com forma jurídica ("14. Brand Warehouse (British Food
+    // s.r.o.)") nunca é rótulo, mesmo tendo palavra de rótulo.
+    const curto =
+        primeiro.length <= 45 &&
+        primeiro.split(/\s+/).length <= 7 &&
+        !/[.;,]$/.test(primeiro) &&
+        !/@|www\.|https?:/.test(primeiro) &&
+        !/^([A-Z]{1,2}\d{1,3}|\d{1,3})[.)]\s/.test(primeiro) &&
+        !FORMA_JURIDICA.test(primeiro)
     // Coluna de rótulos: primeiro item curto e o valor bem à direita dele.
     const segundo = linha.itens[1]
     // Vão de 8 pt: na África do Sul a coluna de rótulos é justa e
@@ -421,7 +429,8 @@ function fichaParaLead(nome: string, campos: Map<string, string[]>, secao: strin
         emailGeneral: emails.find((e) => !COMPRAS.test(e.split("@")[0])) ?? emails[0] ?? null,
         emailPurchasing: emails.find((e) => COMPRAS.test(e.split("@")[0])) ?? null,
         phoneGeneral: fones[0] ?? null,
-        companyType: perfil ? perfil.replace(/\s+/g, " ").split(/\s+[–—-]\s+|[.;(]/)[0].trim().slice(0, 120) || null : null,
+        // Só a primeira linha: o tipo não emenda no parágrafo do perfil.
+        companyType: perfil ? perfil.split("\n")[0].split(/\s+[–—-]\s+|[.;(]/)[0].trim().slice(0, 120) || null : null,
         productPortfolio: perfil,
         specialFocus: notas,
         secao,
@@ -521,6 +530,12 @@ function leadsDeFichas(linhas: Linha[]): LeadDoDiretorio[] {
                 /\s[–—]\s[^–—]*,[^–—]*$/.test(nome)
             if (incompleto && proxima && !rotuloDaLinha(proxima) && linhas[i + 2] && rotuloDaLinha(linhas[i + 2]) && proxima.texto.length <= 60 && !CODIGO.test(proxima.texto)) {
                 nome = `${nome} ${proxima.texto.trim()}`
+                pular = i + 1
+            } else if (proxima && !rotuloDaLinha(proxima) && linhas[i + 2] && rotuloDaLinha(linhas[i + 2]) && /\s·\s/.test(proxima.texto)) {
+                // Linha-resumo embaixo do nome ("Cash & carry · full range ·
+                // food & non-food · retail + HoReCa"): é o tipo da empresa.
+                rotuloAtual = "type"
+                campos.set("type", [proxima.texto.trim()])
                 pular = i + 1
             }
             return

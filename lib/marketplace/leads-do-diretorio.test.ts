@@ -214,6 +214,31 @@ describe("extrairLeadsDoDiretorio — nome à esquerda, rótulos à direita (DIY
     })
 })
 
+describe("extrairLeadsDoDiretorio — fichas da República Tcheca", () => {
+    it("aceita nome terminado em s.r.o./a.s., nome com palavra de rótulo e linha-resumo como tipo", () => {
+        const pagina = [
+            item(57, 790, "9. Importer & distributor directory", 300),
+            item(60, 760, "1. MAKRO Cash & Carry ČR s.r.o."),
+            item(60, 748, "Cash & carry · full range · food & non-food · retail + HoReCa"),
+            item(60, 736, "Profile"), item(60, 724, "The Czech arm of Metro AG."),
+            item(60, 712, "Website"), item(60, 700, "https://www.makro.cz"),
+            item(60, 688, "General e-mail"), item(60, 676, "info@makro.cz"),
+            item(60, 650, "14. Brand Warehouse (British Food s.r.o.)"),
+            item(60, 638, "Brand-maker / market entry · food · retail + wholesale"),
+            item(60, 626, "Profile"), item(60, 614, "A dedicated brand-representation distributor."),
+            item(60, 602, "Website"), item(60, 590, "https://www.brandwarehouse.cz"),
+            item(57, 500, "10. Recommendations", 300),
+        ]
+        const leads = extrairLeadsDoDiretorio([pagina])
+        expect(leads.map((l) => l.companyName)).toEqual(["MAKRO Cash & Carry ČR s.r.o.", "Brand Warehouse (British Food s.r.o.)"])
+        expect(leads[0]).toMatchObject({
+            website: "makro.cz",
+            emailGeneral: "info@makro.cz",
+            companyType: "Cash & carry · full range · food & non-food · retail + HoReCa",
+        })
+    })
+})
+
 describe("extrairLeadsDoDiretorio — sem diretório", () => {
     it("devolve lista vazia quando o estudo não tem capítulo de diretório", () => {
         const pagina = [item(57, 700, "1. Executive Summary", 200), item(57, 680, "Some text about info@x.com")]
