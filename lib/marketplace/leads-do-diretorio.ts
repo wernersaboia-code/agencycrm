@@ -365,6 +365,9 @@ const ROTULO_DE_FICHA = new RegExp(
 const PALAVRA_DE_ROTULO =
     /\b(profile|profil|perfil|categor|interest|orientation|brand|headquarter|head office|base|address|adress|anschrift|location|switchboard|phone|telephone|tel|telefon|e-?mail|website|web|buyer|purchas|supplier|decision|contact|kontakt|note|remark|segment|focus|channel|type|hq|fax|description|range|sortiment)/i
 
+/** Mesma lista, mas só como palavra (ou plural) inteira: "Brands" sim, "BrandActiv" não. */
+const PALAVRA_INTEIRA = new RegExp(PALAVRA_DE_ROTULO.source + "(?:s|ies|es|y)?(?![a-z])", "i")
+
 function rotuloDaLinha(linha: Linha): { rotulo: string; valor: string } | null {
     const primeiro = linha.itens[0]?.texto.trim() ?? ""
     if (ROTULO_DE_FICHA.test(primeiro)) {
@@ -383,16 +386,23 @@ function rotuloDaLinha(linha: Linha): { rotulo: string; valor: string } | null {
     const segundo = linha.itens[1]
     // Vão de 8 pt: na África do Sul a coluna de rótulos é justa e
     // "Switchboard / head office" fica a ~15 pt do valor.
-    if (curto && segundo && segundo.x - (linha.itens[0].x + linha.itens[0].largura) > 8 && PALAVRA_DE_ROTULO.test(primeiro)) {
+    if (curto && segundo && segundo.x - (linha.itens[0].x + linha.itens[0].largura) > 8 && PALAVRA_INTEIRA.test(primeiro)) {
         return { rotulo: primeiro.toLowerCase(), valor: linha.itens.slice(1).map((i) => i.texto.trim()).join(" ") }
     }
     // Rótulo sozinho na linha, com o valor na linha de baixo.
-    if (curto && linha.itens.length === 1 && PALAVRA_DE_ROTULO.test(primeiro) && !/\d{3}/.test(primeiro)) {
+    if (curto && linha.itens.length === 1 && PALAVRA_INTEIRA.test(primeiro) && !/\d{3}/.test(primeiro)) {
         return { rotulo: primeiro.replace(/:$/, "").toLowerCase(), valor: "" }
     }
     // Rótulo e valor no mesmo item: "Website: www.x.nl".
-    const m = primeiro.match(/^([^:]{2,30}):\s*(.*)$/)
-    if (m && ROTULO_DE_FICHA.test(m[1])) {
+    // Também rótulos fora da lista fechada, desde que curtos e com palavra de
+    // rótulo: "Type / channels:", "Supplier / contact route:", "Buyers /
+    // management named on website:" (FMCG Maurício).
+    const m = primeiro.match(/^([^:]{2,45}):\s*(.*)$/)
+    if (
+        m &&
+        !/https?$|^\d/.test(m[1]) &&
+        (ROTULO_DE_FICHA.test(m[1]) || (PALAVRA_DE_ROTULO.test(m[1]) && m[1].split(/\s+/).length <= 7 && /^\p{Lu}/u.test(m[1])))
+    ) {
         return { rotulo: m[1].toLowerCase(), valor: [m[2], ...linha.itens.slice(1).map((i) => i.texto.trim())].join(" ") }
     }
     return null
@@ -493,7 +503,8 @@ function leadsDeFichas(linhas: Linha[]): LeadDoDiretorio[] {
             /^[\p{Lu}\d"„(]/u.test(candidato) &&
             // Rótulo curto ("Food / Non-Food") não é nome; nome longo com
             // palavra de rótulo é ("Brands2Africa (B2A) – Johannesburg").
-            !(PALAVRA_DE_ROTULO.test(candidato) && candidato.split(/\s+/).length <= 3 && !CODIGO.test(candidato)) &&
+            // Palavra inteira: "BrandActiv (IBL Group)" é nome, não rótulo.
+            !(PALAVRA_INTEIRA.test(candidato) && candidato.split(/\s+/).length <= 3 && !CODIGO.test(candidato)) &&
             !/\bpage\b|\bseite\b|\bpágina\b/i.test(candidato) &&
             // Resto de telefone ("Durban: +27" / "32 944 1284") ou linha que
             // continua a anterior pendurada não abre ficha.

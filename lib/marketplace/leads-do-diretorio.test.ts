@@ -239,6 +239,36 @@ describe("extrairLeadsDoDiretorio — fichas da República Tcheca", () => {
     })
 })
 
+describe("extrairLeadsDoDiretorio — fichas de Maurício", () => {
+    it("lê rótulos 'Tipo / canal:' fora da lista fechada e não toma 'BrandActiv' por rótulo", () => {
+        const pagina = [
+            item(57, 790, "8. Directory of FMCG Importers and Distributors", 300),
+            item(57, 770, "8.2 Full-range importers serving retail and HoReCa", 300),
+            item(60, 750, "BrandActiv (IBL Group)"), item(200, 750, "Full-range | Food & Non-food | Retail"),
+            item(60, 738, "Type / channels: Importer and distributor serving key accounts"),
+            item(60, 726, "Categories: Food & beverage (35 brands); 49 trucks,"),
+            item(60, 714, "22,700 m² warehousing"),
+            item(60, 702, "Selected brands: Colgate, Chupa Chups"),
+            item(60, 690, "Website: https://www.brandactiv.mu"),
+            item(60, 678, "Switchboard: +230 206 9500 and +230 248 0377"),
+            item(60, 666, "General email: info@brandactiv.mu"),
+            item(60, 640, "Innodis Ltd"), item(200, 640, "Full-range | Food | Retail & HoReCa"),
+            item(60, 628, "Type / channels: Listed manufacturer-distributor"),
+            item(60, 616, "Website: https://www.innodisgroup.com"),
+            item(60, 604, "Switchboard: +230 206 0800"),
+            item(57, 500, "9. Recommendations", 300),
+        ]
+        const leads = extrairLeadsDoDiretorio([pagina])
+        expect(leads.map((l) => l.companyName)).toEqual(["BrandActiv (IBL Group)", "Innodis Ltd"])
+        expect(leads[0]).toMatchObject({
+            website: "brandactiv.mu",
+            emailGeneral: "info@brandactiv.mu",
+            phoneGeneral: "+230 206 9500",
+            companyType: "Importer and distributor serving key accounts",
+        })
+    })
+})
+
 describe("extrairLeadsDoDiretorio — sem diretório", () => {
     it("devolve lista vazia quando o estudo não tem capítulo de diretório", () => {
         const pagina = [item(57, 700, "1. Executive Summary", 200), item(57, 680, "Some text about info@x.com")]
