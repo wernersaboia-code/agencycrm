@@ -179,6 +179,41 @@ describe("extrairLeadsDoDiretorio — forma jurídica quebrada", () => {
     })
 })
 
+describe("extrairLeadsDoDiretorio — nome à esquerda, rótulos à direita (DIY Reino Unido)", () => {
+    // Sem cabeçalho de tabela: nome e perfil em x=77, rótulos com dois-pontos
+    // em x=212 e o valor logo depois.
+    const empresa = (y: number, nome: string[], perfil: string, site: string, telefone: string) => [
+        ...nome.map((n, j) => item(77, y - j * 11, n)),
+        item(77, y - nome.length * 11 - 2, perfil),
+        item(212, y, "Product groups:", 70), item(285, y, "Tools, garden"),
+        item(212, y - 12, "Website:", 37), item(252, y - 12, site),
+        item(212, y - 24, "Switchboard:", 57), item(272, y - 24, telefone),
+        item(212, y - 36, "Address:", 39), item(254, y - 36, "Trade House, Yeovil"),
+        item(212, y - 46, "the commercial buying team."),
+    ]
+    const pagina = [
+        item(57, 790, "7. Directory of importers and distribution partners", 300),
+        item(72, 770, "A. DIY and home-improvement retail chains (central buying offices) (8)", 400),
+        ...[0, 1, 2, 3, 4].flatMap((n) =>
+            empresa(740 - n * 70, n === 0 ? ["Screwfix Direct Ltd", "(Kingfisher plc)"] : [`Empresa ${n} Ltd`], "Generalist for trade – brands", `www.empresa${n}.co.uk`, `+44 1935 41410${n}`)
+        ),
+        item(57, 300, "8. Recommendations", 300),
+    ]
+
+    const leads = extrairLeadsDoDiretorio([pagina])
+
+    it("lê uma empresa por faixa, com nome de duas linhas e perfil separado", () => {
+        expect(leads).toHaveLength(5)
+        expect(leads[0]).toMatchObject({
+            companyName: "Screwfix Direct Ltd (Kingfisher plc)",
+            website: "empresa0.co.uk",
+            phoneGeneral: "+44 1935 414100",
+            location: "Trade House, Yeovil",
+            companyType: "Generalist for trade",
+        })
+    })
+})
+
 describe("extrairLeadsDoDiretorio — sem diretório", () => {
     it("devolve lista vazia quando o estudo não tem capítulo de diretório", () => {
         const pagina = [item(57, 700, "1. Executive Summary", 200), item(57, 680, "Some text about info@x.com")]

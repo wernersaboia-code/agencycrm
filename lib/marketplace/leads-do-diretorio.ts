@@ -535,6 +535,131 @@ function leadsDeFichas(linhas: Linha[]): LeadDoDiretorio[] {
     return leads
 }
 
+// ==================== FICHA LATERAL ====================
+//
+// DIY Reino Unido: sem cabeçalho de tabela. Cada empresa ocupa uma faixa da
+// página com o nome e o perfil numa coluna à esquerda e os rótulos com
+// dois-pontos ("Product groups:", "Website:", "Switchboard:") numa coluna à
+// direita. A empresa começa na altura do rótulo que fica alinhado ao nome.
+
+const ROTULO_COM_DOIS_PONTOS = /^[A-Z][\w /&()'’-]{1,40}:$/
+
+function leadsDeFichasLaterais(linhas: Linha[]): LeadDoDiretorio[] {
+    // A coluna dos rótulos: o x onde mais aparecem itens "Rótulo:".
+    const porX = new Map<number, number>()
+    for (const l of linhas) {
+        for (const it of l.itens) {
+            if (ROTULO_COM_DOIS_PONTOS.test(it.texto.trim())) {
+                const x = Math.round(it.x / 4) * 4
+                porX.set(x, (porX.get(x) ?? 0) + 1)
+            }
+        }
+    }
+    const [xRotulo, vezes] = [...porX.entries()].sort((a, b) => b[1] - a[1])[0] ?? [0, 0]
+    if (vezes < 8) return []
+    const naColunaDeRotulo = (it: ItemPosicionado) => it.x >= xRotulo - 6
+    const naColunaDoNome = (it: ItemPosicionado) => it.x < xRotulo - 30
+
+    // O rótulo que abre cada empresa: o que mais vezes divide a linha com um
+    // item da coluna do nome ("Product groups:" ao lado de "Screwfix Direct Ltd").
+    const abertura = new Map<string, number>()
+    for (const l of linhas) {
+        const rotulo = l.itens.find((it) => naColunaDeRotulo(it) && ROTULO_COM_DOIS_PONTOS.test(it.texto.trim()))
+        if (rotulo && l.itens.some(naColunaDoNome)) {
+            const t = rotulo.texto.trim().toLowerCase()
+            abertura.set(t, (abertura.get(t) ?? 0) + 1)
+        }
+    }
+    const [rotuloDeAbertura, quantas] = [...abertura.entries()].sort((a, b) => b[1] - a[1])[0] ?? ["", 0]
+    if (quantas < 5) return []
+
+    const leads: LeadDoDiretorio[] = []
+    let secao: string | null = null
+    let esquerda: string[] = []
+    let direita: Linha[] = []
+    let aberta = false
+
+    const fechar = () => {
+        if (aberta) {
+            const lead = fichaLateralParaLead(esquerda, direita, secao)
+            if (lead) leads.push(lead)
+        }
+        esquerda = []
+        direita = []
+        aberta = false
+    }
+
+    for (const linha of linhas) {
+        const abre = linha.itens.some(
+            (it) => naColunaDeRotulo(it) && it.texto.trim().toLowerCase() === rotuloDeAbertura
+        )
+        const largura = linha.itens.reduce((m, it) => Math.max(m, it.x + it.largura), 0) - linha.itens[0].x
+        // Subseção ("A. DIY and home-improvement retail chains") ou parágrafo
+        // corrido que atravessa as duas colunas encerra a empresa em curso.
+        if (!abre && linha.itens.length === 1 && naColunaDoNome(linha.itens[0]) && largura > xRotulo) {
+            fechar()
+            if (/^[A-Z0-9]{1,2}[.)]\s/.test(linha.texto)) secao = linha.texto.trim().slice(0, 200)
+            continue
+        }
+        if (abre) fechar()
+        if (abre) aberta = true
+        if (!aberta) continue
+
+        const daEsquerda = linha.itens.filter(naColunaDoNome)
+        const daDireita = linha.itens.filter((it) => !naColunaDoNome(it))
+        if (daEsquerda.length) esquerda.push(daEsquerda.map((i) => i.texto.trim()).join(" "))
+        if (daDireita.length) direita.push({ ...linha, itens: daDireita, texto: daDireita.map((i) => i.texto.trim()).join(" ") })
+    }
+    fechar()
+    return leads
+}
+
+function fichaLateralParaLead(esquerda: string[], direita: Linha[], secao: string | null): LeadDoDiretorio | null {
+    // Nome: as primeiras linhas da esquerda, enquanto continuam o nome
+    // ("Screwfix Direct Ltd" / "(Kingfisher plc)", "Wickes Building
+    // Supplies" / "Ltd"). O resto é o perfil.
+    let fim = 1
+    while (fim < esquerda.length) {
+        const anterior = esquerda.slice(0, fim).join(" ")
+        const proxima = esquerda[fim]
+        const continua =
+            /^\(/.test(proxima) ||
+            (anterior.match(/\(/g)?.length ?? 0) > (anterior.match(/\)/g)?.length ?? 0) ||
+            /[&,/–-]$/.test(anterior) ||
+            (FORMA_JURIDICA.test(proxima) && proxima.split(/\s+/).length <= 3)
+        if (!continua) break
+        fim++
+    }
+    // Diretório numerado ("1. Castorama Polska Sp. z o.o.", DIY Polônia).
+    const nome = esquerda.slice(0, fim).join(" ").replace(/\s+/g, " ").trim().replace(/^([A-Z]{1,2}\d{1,3}|\d{1,3})[.)]\s+/, "")
+    if (nome.length < 2) return null
+    const perfil = esquerda.slice(fim).join(" ").replace(/\s+/g, " ").trim() || null
+
+    const campos = new Map<string, string[]>()
+    let atual: string | null = null
+    for (const l of direita) {
+        const primeiro = l.itens[0].texto.trim()
+        if (ROTULO_COM_DOIS_PONTOS.test(primeiro)) {
+            atual = primeiro.replace(/:$/, "").toLowerCase()
+            campos.set(atual, [...(campos.get(atual) ?? []), l.itens.slice(1).map((i) => i.texto.trim()).join(" ")])
+        } else if (atual) {
+            campos.get(atual)!.push(l.texto)
+        }
+    }
+    const lead = fichaParaLead(nome, campos, secao)
+    if (!lead) return null
+    return {
+        ...lead,
+        // Linha em minúscula no fim do endereço é resto do campo seguinte
+        // ("…Yeovil" / "BA22 8RT" / "the commercial/category buying team.").
+        location: lead.location?.split("\n").filter((l) => !/^[a-z]/.test(l.trim())).join(", ") || null,
+        // "Product groups:" é o que a empresa vende; o perfil da esquerda diz
+        // o tipo ("Generalist for trade and serious DIY").
+        companyType: perfil ? perfil.split(/\s+[–—-]\s+|[.;]/)[0].trim().slice(0, 120) || lead.companyType : lead.companyType,
+        productPortfolio: [perfil, lead.productPortfolio].filter(Boolean).join("\n") || null,
+    }
+}
+
 /** Chave de duplicata: o domínio do site; sem site, o nome normalizado. */
 function chave(lead: LeadDoDiretorio): string {
     if (lead.website) return lead.website.split(".").slice(0, -1).join(".")
@@ -703,9 +828,13 @@ export function extrairLeadsDoDiretorio(paginas: readonly (readonly ItemPosicion
     // | Focus | Switchboard | Supplier page"): as linhas plausíveis da tabela
     // que as fichas não têm entram também.
     const dasFichas = new Set(fichas.map(chave))
-    const escolhidos = usarFichas
+    const melhorDosDois = usarFichas
         ? [...fichas, ...leads.filter((l) => plausivel(l) && !dasFichas.has(chave(l)))]
         : leads
+    // Terceiro formato: nome à esquerda, rótulos à direita (DIY Reino Unido).
+    // Só entra quando acha claramente mais empresas que os outros dois.
+    const laterais = leadsDeFichasLaterais(doDiretorio.filter((l) => !RODAPE.test(l.texto) && !corrido(l)))
+    const escolhidos = comSite(laterais) > comSite(melhorDosDois) * 1.2 + 2 ? laterais : melhorDosDois
 
     // A mesma empresa pode aparecer na tabela-resumo e na detalhada.
     const unicos = new Map<string, LeadDoDiretorio>()
