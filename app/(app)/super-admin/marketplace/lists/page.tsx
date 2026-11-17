@@ -244,8 +244,12 @@ export default async function MarketplaceListsPage({ searchParams }: Marketplace
             )}
 
             <div className="border rounded-lg">
-                <Table>
-                    <TableHeader>
+                {/* Altura limitada à tela: com 100+ estudos a barra horizontal
+                    ficava no fim da tabela, e ver as colunas da direita exigia
+                    descer a página inteira. Cabeçalho fixo para não perder as
+                    colunas ao rolar. */}
+                <Table containerClassName="max-h-[calc(100dvh-8rem)] overflow-auto">
+                    <TableHeader className="sticky top-0 z-10 bg-secondary">
                         <TableRow>
                             {cabecalho("name", t("colName"), "left")}
                             <TableHead>{t("colIndustries")}</TableHead>
@@ -329,6 +333,17 @@ export default async function MarketplaceListsPage({ searchParams }: Marketplace
                                     </TableCell>
                                     <TableCell className="text-right">
                                         <div className="flex justify-end gap-1">
+                                            {list.studyPdfUrl && (
+                                                <a
+                                                    href={`/api/admin/lists/${list.id}/pdf`}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                >
+                                                    <Button variant="ghost" size="icon" title={t("openPdf")}>
+                                                        <FileText className="h-4 w-4" />
+                                                    </Button>
+                                                </a>
+                                            )}
                                             <Link href={`/super-admin/marketplace/lists/${list.id}/leads`}>
                                                 <Button variant="ghost" size="icon" title={t("viewLeads")}>
                                                     <Users className="h-4 w-4" />
