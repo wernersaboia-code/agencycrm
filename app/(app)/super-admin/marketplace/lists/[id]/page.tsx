@@ -42,6 +42,7 @@ export default async function EditListPage({ params }: EditListPageProps) {
         createdAt: list.createdAt.toISOString(),
         updatedAt: list.updatedAt.toISOString(),
         dataReviewedAt: list.dataReviewedAt?.toISOString() ?? null,
+        studyPdfReplacedAt: list.studyPdfReplacedAt?.toISOString() ?? null,
     }
 
     return (

@@ -25,9 +25,14 @@ export function extractStudyPathFromUrl(publicOrPath: string): string {
     return afterBucket.split("?")[0]
 }
 
+/**
+ * Sobe o PDF novo e apaga do bucket os outros arquivos da lista, menos
+ * `manter` — o PDF que vira versão anterior (ver studyPdfPreviousUrl).
+ */
 export async function uploadListPdf(
     file: File,
-    listId: string
+    listId: string,
+    manter?: string | null
 ): Promise<{ url: string; path: string }> {
     const supabase = createAdminClient()
     const path = `${listId}/study-${Date.now()}.pdf`
@@ -39,11 +44,12 @@ export async function uploadListPdf(
     if (error) throw new Error(`Falha no upload do PDF: ${error.message}`)
 
     // Remove PDFs antigos da lista somente depois do novo upload ter sucesso.
+    const manterPath = manter ? extractStudyPathFromUrl(manter) : null
     const { data: existing } = await supabase.storage.from(LIST_STUDIES_BUCKET).list(listId)
     if (existing && existing.length > 0) {
         const stale = existing
             .map((f) => `${listId}/${f.name}`)
-            .filter((p) => p !== path)
+            .filter((p) => p !== path && p !== manterPath)
         if (stale.length > 0) {
             await supabase.storage.from(LIST_STUDIES_BUCKET).remove(stale)
         }

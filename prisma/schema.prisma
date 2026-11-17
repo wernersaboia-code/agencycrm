@@ -652,6 +652,13 @@ model LeadList {
   studyPdfUrl  String?
   studyPdfName String?
 
+  // Versão anterior do PDF, guardada na troca e na remoção para o admin poder
+  // voltar atrás. Só uma: a troca seguinte apaga a anterior do bucket. Voltar
+  // troca as duas de lugar, então a volta também se desfaz.
+  studyPdfPreviousUrl  String?
+  studyPdfPreviousName String?
+  studyPdfReplacedAt   DateTime?
+
   // Capa do estudo, exposta como `image` do Product no JSON-LD. URL pública,
   // mesmo padrão do blog (coverImageUrl como texto, sem upload). Nullable de
   // propósito: sem capa cadastrada, o schema cai na imagem padrão da marca

@@ -19,6 +19,7 @@ import {
     FileText,
     BadgeCheck,
     ExternalLink,
+    Undo2,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -83,6 +84,10 @@ interface SerializedLeadList {
     language: string | null
     studyPdfUrl: string | null
     studyPdfName: string | null
+    /** Backup da última troca ou remoção do PDF. */
+    studyPdfPreviousUrl?: string | null
+    studyPdfPreviousName?: string | null
+    studyPdfReplacedAt?: string | null
     countries: string[]
     industries: string[]
     totalLeads: number
@@ -179,6 +184,7 @@ export function ListForm({ list, setores }: ListFormProps) {
     } | null>(null)
     const [pdfFile, setPdfFile] = useState<File | null>(null)
     const [pdfName, setPdfName] = useState<string | null>(list?.studyPdfName ?? null)
+    const [voltandoPdf, setVoltandoPdf] = useState(false)
     const [importandoResumo, setImportandoResumo] = useState(false)
     const [recontando, setRecontando] = useState(false)
     // Se o número de empresas na tela é conferido à mão ou estimativa do PDF.
@@ -583,6 +589,25 @@ export function ListForm({ list, setores }: ListFormProps) {
     const handleImportSuccess = (count: number) => {
         toast.success(t("toastLeadsImported", { count }))
         router.refresh()
+    }
+
+    // Volta à versão anterior do PDF (as duas trocam de lugar).
+    const handleRestorePdf = async () => {
+        if (!list?.studyPdfPreviousUrl) return
+        if (!window.confirm(t("restorePdfConfirm", { name: list.studyPdfPreviousName ?? "" }))) return
+        setVoltandoPdf(true)
+        try {
+            const res = await fetch(`/api/admin/lists/${list.id}/pdf`, { method: "PATCH" })
+            if (!res.ok) throw new Error()
+            const data = (await res.json()) as { studyPdfName: string | null }
+            setPdfName(data.studyPdfName)
+            toast.success(t("restorePdfSuccess"))
+            router.refresh()
+        } catch {
+            toast.error(t("restorePdfError"))
+        } finally {
+            setVoltandoPdf(false)
+        }
     }
 
     // Marcar que os dados desta lista foram revisados agora
@@ -1138,6 +1163,43 @@ export function ListForm({ list, setores }: ListFormProps) {
                                     {t("openPdf")}
                                 </a>
                             </Button>
+                        )}
+                        {list?.studyPdfPreviousUrl && !pdfFile && (
+                            <div className="space-y-2 rounded-md border border-dashed p-3">
+                                <p className="text-sm text-muted-foreground">
+                                    {t("previousPdf")}{" "}
+                                    <span className="font-medium">{list.studyPdfPreviousName}</span>
+                                    {list.studyPdfReplacedAt && (
+                                        <> · {t("previousPdfReplacedAt", {
+                                            date: new Date(list.studyPdfReplacedAt).toLocaleString(),
+                                        })}</>
+                                    )}
+                                </p>
+                                <div className="flex flex-wrap gap-2">
+                                    <Button variant="outline" size="sm" asChild>
+                                        <a
+                                            href={`/api/admin/lists/${list.id}/pdf?versao=anterior`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            <ExternalLink className="mr-2 h-4 w-4" />
+                                            {t("openPdf")}
+                                        </a>
+                                    </Button>
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        size="sm"
+                                        disabled={voltandoPdf}
+                                        onClick={handleRestorePdf}
+                                    >
+                                        {voltandoPdf
+                                            ? <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                            : <Undo2 className="mr-2 h-4 w-4" />}
+                                        {t("restorePdf")}
+                                    </Button>
+                                </div>
+                            </div>
                         )}
                         <p className="text-xs text-muted-foreground">
                             {t("pdfHint")}

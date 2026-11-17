@@ -15,6 +15,7 @@ export type AuditAction =
     | "list.pdf.personal_contacts_confirmed"
     | "list.pdf.replaced"
     | "list.pdf.content_loss_confirmed"
+    | "list.pdf.restored"
     | "marketplace_lead.deleted"
     | "workspace.exported"
     | "workspace.member_added"

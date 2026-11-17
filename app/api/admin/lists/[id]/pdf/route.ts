@@ -31,12 +31,18 @@ export async function GET(
 
     try {
         const { id } = await params
-        const list = await prisma.leadList.findUnique({ where: { id }, select: { studyPdfUrl: true } })
-        if (!list?.studyPdfUrl) {
+        const list = await prisma.leadList.findUnique({
+            where: { id },
+            select: { studyPdfUrl: true, studyPdfPreviousUrl: true },
+        })
+        // ?versao=anterior abre o backup, para conferir antes de voltar a ele.
+        const anterior = request.nextUrl.searchParams.get("versao") === "anterior"
+        const path = anterior ? list?.studyPdfPreviousUrl : list?.studyPdfUrl
+        if (!path) {
             return NextResponse.json({ error: "Esta lista não tem PDF" }, { status: 404 })
         }
 
-        return NextResponse.redirect(await createStudySignedUrl(list.studyPdfUrl))
+        return NextResponse.redirect(await createStudySignedUrl(path))
     } catch (error) {
         console.error("Error opening study PDF:", error)
         return NextResponse.json({ error: "Falha ao abrir o PDF" }, { status: 500 })
@@ -51,7 +57,10 @@ export async function POST(
         const admin = await requireAdmin()
         const { id } = await params
 
-        const list = await prisma.leadList.findUnique({ where: { id }, select: { id: true, studyPdfUrl: true, companyCountManual: true } })
+        const list = await prisma.leadList.findUnique({
+            where: { id },
+            select: { id: true, studyPdfUrl: true, studyPdfName: true, companyCountManual: true },
+        })
         if (!list) {
             return NextResponse.json({ error: "Lista não encontrada" }, { status: 404 })
         }
@@ -108,7 +117,8 @@ export async function POST(
             )
         }
 
-        const { url } = await uploadListPdf(file, id)
+        // O PDF atual vira a versão anterior; o backup de antes dele é apagado.
+        const { url } = await uploadListPdf(file, id, list.studyPdfUrl)
 
         if (comparacao) {
             await recordAudit({
@@ -158,6 +168,13 @@ export async function POST(
             data: {
                 studyPdfUrl: url,
                 studyPdfName: file.name,
+                ...(list.studyPdfUrl
+                    ? {
+                          studyPdfPreviousUrl: list.studyPdfUrl,
+                          studyPdfPreviousName: list.studyPdfName,
+                          studyPdfReplacedAt: new Date(),
+                      }
+                    : {}),
                 ...(contagem ? { companyCount: contagem.total, companyCountManual: false } : {}),
             },
         })
@@ -166,6 +183,80 @@ export async function POST(
     } catch (error) {
         console.error("Error uploading study PDF:", error)
         return NextResponse.json({ error: "Falha no upload" }, { status: 500 })
+    }
+}
+
+/**
+ * Volta à versão anterior do PDF. As duas trocam de lugar, então voltar de
+ * novo desfaz a volta. A lista não é republicada sozinha: se o PDF tinha sido
+ * removido, o admin reativa depois de conferir.
+ */
+export async function PATCH(
+    request: NextRequest,
+    { params }: { params: Promise<{ id: string }> }
+) {
+    try {
+        const admin = await requireAdmin()
+        const { id } = await params
+
+        const list = await prisma.leadList.findUnique({
+            where: { id },
+            select: {
+                studyPdfUrl: true,
+                studyPdfName: true,
+                studyPdfPreviousUrl: true,
+                studyPdfPreviousName: true,
+                companyCountManual: true,
+            },
+        })
+        if (!list) {
+            return NextResponse.json({ error: "Lista não encontrada" }, { status: 404 })
+        }
+        if (!list.studyPdfPreviousUrl) {
+            return NextResponse.json({ error: "Não há versão anterior" }, { status: 404 })
+        }
+
+        // A estimativa de empresas segue o PDF que fica no ar.
+        let contagem: Awaited<ReturnType<typeof contarEmpresasDoPdf>> = null
+        if (!list.companyCountManual) {
+            try {
+                contagem = await contarEmpresasDoPdf(await downloadListPdf(list.studyPdfPreviousUrl))
+            } catch (error) {
+                console.error("[PDF] Não foi possível recontar a versão anterior:", error)
+            }
+        }
+
+        await prisma.leadList.update({
+            where: { id },
+            data: {
+                studyPdfUrl: list.studyPdfPreviousUrl,
+                studyPdfName: list.studyPdfPreviousName,
+                studyPdfPreviousUrl: list.studyPdfUrl,
+                studyPdfPreviousName: list.studyPdfUrl ? list.studyPdfName : null,
+                studyPdfReplacedAt: new Date(),
+                ...(contagem ? { companyCount: contagem.total, companyCountManual: false } : {}),
+            },
+        })
+
+        await recordAudit({
+            actorId: admin.id,
+            actorEmail: admin.email,
+            action: "list.pdf.restored",
+            targetType: "list",
+            targetId: id,
+            metadata: {
+                restored: list.studyPdfPreviousName,
+                replaced: list.studyPdfName,
+            },
+        })
+
+        return NextResponse.json({
+            studyPdfName: list.studyPdfPreviousName,
+            previousName: list.studyPdfUrl ? list.studyPdfName : null,
+        })
+    } catch (error) {
+        console.error("Error restoring study PDF:", error)
+        return NextResponse.json({ error: "Falha ao voltar à versão anterior" }, { status: 500 })
     }
 }
 
@@ -179,10 +270,19 @@ export async function DELETE(
 
         const list = await prisma.leadList.findUnique({
             where: { id },
-            select: { studyPdfUrl: true, isActive: true, name: true },
+            select: {
+                studyPdfUrl: true,
+                studyPdfName: true,
+                studyPdfPreviousUrl: true,
+                isActive: true,
+                name: true,
+            },
         })
-        if (list?.studyPdfUrl) {
-            await removeListPdfByPath(list.studyPdfUrl)
+
+        // Remover também se desfaz: o PDF atual vira a versão anterior, e só o
+        // backup de antes dele sai do bucket.
+        if (list?.studyPdfUrl && list.studyPdfPreviousUrl) {
+            await removeListPdfByPath(list.studyPdfPreviousUrl)
         }
 
         // Sem o PDF a lista não entrega nada: catálogo, página e checkout só
@@ -191,7 +291,18 @@ export async function DELETE(
         // Despublicar junto é a única forma de a remoção não virar venda vazia.
         await prisma.leadList.update({
             where: { id },
-            data: { studyPdfUrl: null, studyPdfName: null, isActive: false },
+            data: {
+                studyPdfUrl: null,
+                studyPdfName: null,
+                isActive: false,
+                ...(list?.studyPdfUrl
+                    ? {
+                          studyPdfPreviousUrl: list.studyPdfUrl,
+                          studyPdfPreviousName: list.studyPdfName,
+                          studyPdfReplacedAt: new Date(),
+                      }
+                    : {}),
+            },
         })
 
         const unpublished = list?.isActive === true
