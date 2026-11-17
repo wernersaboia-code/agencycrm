@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Carousel — Baby products in Austria</title>
+<style>
+  @font-face { font-family: Geist; font-weight: 400; src: url(__FONT_Regular__) format("woff2"); }
+  @font-face { font-family: Geist; font-weight: 500; src: url(__FONT_Medium__) format("woff2"); }
+  @font-face { font-family: Geist; font-weight: 600; src: url(__FONT_SemiBold__) format("woff2"); }
+  @font-face { font-family: Geist; font-weight: 700; src: url(__FONT_Bold__) format("woff2"); }
+
+  :root {
+    --navy: #003048;
+    --blue: #194890;
+    --green: #189048;
+    --yellow: #f0c019;
+    --paper: #f7f9fb;
+    --soft: #e3edf5;
+    --ink: #13222e;
+    --muted: #525f6b;
+  }
+  @page { size: 1080px 1350px; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--paper); }
+  body { font-family: Geist, system-ui, sans-serif; color: var(--ink); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  .slide {
+    width: 1080px; height: 1350px; position: relative; overflow: hidden;
+    padding: 88px 88px 56px; background: var(--paper);
+    page-break-after: always; break-after: page;
+    display: flex; flex-direction: column;
+  }
+  .slide:last-child { page-break-after: auto; break-after: auto; }
+  .dark { background: var(--navy); color: #fff; }
+
+  .kicker { font-size: 28px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--blue); }
+  .dark .kicker { color: var(--yellow); }
+  .rule { width: 120px; height: 8px; background: var(--yellow); margin: 26px 0 30px; border-radius: 4px; }
+  h1 { font-size: 92px; line-height: 1.04; font-weight: 700; letter-spacing: -.025em; }
+  h2 { font-size: 58px; line-height: 1.08; font-weight: 700; letter-spacing: -.02em; color: var(--navy); }
+  .dark h2 { color: #fff; }
+  .lead { font-size: 38px; line-height: 1.35; color: var(--muted); margin-top: 40px; }
+  .dark .lead { color: #c9d9e6; }
+  p.note { font-size: 27px; line-height: 1.42; color: var(--muted); }
+  strong { color: var(--navy); font-weight: 700; }
+  .dark strong { color: #fff; }
+
+  /* rodapé */
+  .foot {
+    margin-top: auto; padding-top: 28px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 24px; color: var(--muted);
+  }
+  .dark .foot { color: #9fb7c9; }
+  .brand { display: flex; align-items: center; gap: 16px; font-weight: 600; font-size: 28px; color: var(--navy); }
+  .dark .brand { color: #fff; }
+  .brand .mark { display: block; width: 52px; height: 49px; background: url(__LOGO__) center / contain no-repeat; }
+  .src { margin-top: auto; padding-top: 24px; font-size: 21px; color: #7b8792; }
+  .dark .src { color: #7f9db3; }
+
+  /* capa */
+  /* capa clara, como a capa dos estudos: ilustração de Viena sobre a faixa navy */
+  .cover h1 { margin-top: 6px; font-size: 84px; color: var(--navy); position: relative; z-index: 1; }
+  .cover h1 em { font-style: normal; color: var(--blue); }
+  .cover .lead { max-width: 600px; position: relative; z-index: 1; margin-top: 30px; }
+  .cover .bg { position: absolute; left: 0; bottom: 60px; width: 1080px; z-index: 0; }
+  .cover .foot { position: relative; z-index: 1; margin: auto -88px -56px; padding: 0 88px; height: 124px;
+    background: var(--navy); color: #fff; border-top: 8px solid var(--yellow); }
+  .cover .foot .brand { color: #fff; }
+  .cover .foot .go { font-size: 32px; font-weight: 600; color: var(--yellow); }
+  .src + .foot { margin-top: 0; padding-top: 16px; }
+  .swipe + .foot { margin-top: 160px; }
+  .swipe { margin-top: auto; font-size: 34px; font-weight: 600; color: var(--yellow); }
+
+  /* números */
+  .stats { display: flex; flex-direction: column; gap: 20px; margin-top: 8px; }
+  .stat { background: #fff; border-radius: 24px; padding: 24px 40px; border-left: 12px solid var(--blue); }
+  .stat b { display: block; font-size: 62px; font-weight: 700; color: var(--navy); letter-spacing: -.02em; line-height: 1.05; }
+  .stat span { display: block; font-size: 28px; color: var(--muted); margin-top: 8px; }
+  .callout { margin-top: 30px; font-size: 31px; line-height: 1.4; color: var(--ink); }
+
+  /* lista com marcador */
+  .items { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+  .items li { background: #fff; border-radius: 20px; padding: 20px 32px; font-size: 28px; line-height: 1.35; }
+  .items li b { display: block; font-size: 32px; color: var(--navy); margin-bottom: 4px; }
+  .items li small { font-size: 25px; color: var(--muted); }
+  .items li.alt { background: var(--soft); }
+  .tag { display: inline-block; font-size: 22px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; padding: 6px 14px; border-radius: 8px; background: var(--yellow); color: var(--navy); margin-bottom: 12px; }
+  .takeaway { margin-top: 24px; padding: 24px 32px; border-radius: 22px; background: var(--navy); color: #fff; font-size: 30px; line-height: 1.36; font-weight: 500; }
+
+  /* barras */
+  .bars { display: flex; flex-direction: column; gap: 16px; }
+  .bar .lbl { display: flex; justify-content: space-between; font-size: 27px; margin-bottom: 8px; }
+  .bar .lbl b { color: var(--navy); }
+  .track { height: 24px; background: var(--soft); border-radius: 15px; overflow: hidden; }
+  .fill { height: 100%; background: var(--blue); border-radius: 15px; }
+  .bar.top .fill { background: var(--navy); }
+
+  /* tabela de tarifas */
+  .duo { display: grid; grid-template-columns: 1fr; gap: 22px; }
+  .tariffs { margin-top: 20px; background: #fff; border-radius: 20px; padding: 18px 32px; }
+  .tariffs h3 { font-size: 26px; text-transform: uppercase; letter-spacing: .06em; color: var(--blue); margin-bottom: 12px; }
+  .tariffs table { width: 100%; border-collapse: collapse; font-size: 26px; }
+  .tariffs td { padding: 6px 0; border-top: 1px solid var(--soft); }
+  .tariffs td:last-child { text-align: right; font-weight: 700; color: var(--navy); }
+
+  /* rotas */
+  .routes { display: flex; flex-direction: column; gap: 18px; }
+  .route { display: grid; grid-template-columns: 96px 1fr; gap: 28px; align-items: start; background: #fff; border-radius: 24px; padding: 26px 32px; }
+  .route .n { width: 96px; height: 96px; border-radius: 50%; background: var(--navy); color: var(--yellow); font-size: 48px; font-weight: 700; display: grid; place-items: center; }
+  .route b { display: block; font-size: 34px; color: var(--navy); line-height: 1.2; }
+  .route span { display: block; font-size: 27px; color: var(--muted); margin-top: 8px; line-height: 1.35; }
+
+  /* CTA */
+  .cta h2 { font-size: 60px; }
+  .cta-row { display: grid; grid-template-columns: 340px 1fr; gap: 48px; align-items: center; margin-top: 44px; }
+  .cta-row img { width: 340px; display: block; border-radius: 4px; box-shadow: 0 26px 60px rgba(0,0,0,.5); transform: rotate(-3deg); }
+  .cta-row .box { margin-top: 0; font-size: 30px; padding: 32px 34px; }
+  .cta .box { margin-top: 40px; background: rgba(255,255,255,.07); border: 2px solid rgba(255,255,255,.18); border-radius: 26px; padding: 40px 44px; font-size: 34px; line-height: 1.42; color: #dbe7f0; }
+  .cta .url { margin-top: 48px; font-size: 52px; font-weight: 700; color: var(--yellow); letter-spacing: -.01em; }
+  .cta .sub { margin-top: 14px; font-size: 32px; color: #c9d9e6; }
+</style>
+</head>
+<body>
+
+<!-- 1. Cover -->
+<section class="slide cover">
+  <img class="bg" src="__IMG:viena.webp__" alt="">
+  <div class="kicker">Baby &amp; toddler products · Austria</div>
+  <div class="rule"></div>
+  <h1>You want to sell in Austria. <em>The buyer may well be in Germany.</em></h1>
+  <p class="lead">What a foreign supplier needs to know before the first contact.</p>
+  <div class="foot"><div class="brand"><i class="mark"></i>Easy Prospect</div><span class="go">Swipe →</span></div>
+</section>
+
+<!-- 2. Market -->
+<section class="slide">
+  <div class="kicker">The market</div>
+  <div class="rule"></div>
+  <h2>Small, affluent and demanding.</h2>
+  <div class="stats" style="margin-top:32px">
+    <div class="stat"><b>EUR 1.1–1.4 bn</b><span>estimated market for products for ages 0–6, at retail prices</span></div>
+    <div class="stat" style="border-left-color:var(--green)"><b>9.2 million</b><span>inhabitants, with one of the highest purchasing-power levels in the EU</span></div>
+    <div class="stat" style="border-left-color:var(--yellow)"><b>76,873</b><span>live births in 2024 (preliminary)</span></div>
+  </div>
+  <p class="callout">Births have been declining for several years. Growth comes from <strong>premium products</strong>, first-time parents and grandparents buying gifts.</p>
+  <div class="foot"><div class="brand"><i class="mark"></i>Easy Prospect</div><span>2 / 9</span></div>
+</section>
+
+<!-- 3. Where buying is decided -->
+<section class="slide">
+  <div class="kicker">The point many suppliers miss</div>
+  <div class="rule"></div>
+  <h2>The store is in Austria. The buying decision often is not.</h2>
+  <ul class="items" style="margin-top:32px">
+    <li><b>BabyOne</b>6 stores in Austria · buying centralised in Münster, Germany</li>
+    <li><b>baby-walz</b>stores and an online shop in Austria · central buying in Bad Waldsee, Germany</li>
+    <li><b>Müller</b>headquarters in Ulm, Germany · large toy departments in Austria</li>
+    <li class="alt"><span class="tag">Exception</span><b>dm Austria</b>a separate company, headquartered in Wals (Salzburg), makes its own listing decisions for Austria</li>
+  </ul>
+  <div class="takeaway">Contact the central purchasing department, not the Austrian store.</div>
+  <div class="foot"><div class="brand"><i class="mark"></i>Easy Prospect</div><span>3 / 9</span></div>
+</section>
+
+<!-- 4. Channels -->
+<section class="slide">
+  <div class="kicker">Sales channels</div>
+  <div class="rule"></div>
+  <h2>A quarter of sales already happen online.</h2>
+  <div class="bars" style="margin-top:32px">
+    <div class="bar top"><div class="lbl"><span>Online (Amazon, brand shops, specialists)</span><b>25–30%</b></div><div class="track"><div class="fill" style="width:92%"></div></div></div>
+    <div class="bar"><div class="lbl"><span>Drugstores (dm, BIPA, Müller)</span><b>15–20%</b></div><div class="track"><div class="fill" style="width:59%"></div></div></div>
+    <div class="bar"><div class="lbl"><span>Baby &amp; toy specialist chains</span><b>15–20%</b></div><div class="track"><div class="fill" style="width:59%"></div></div></div>
+    <div class="bar"><div class="lbl"><span>Independent specialist retailers</span><b>8–12%</b></div><div class="track"><div class="fill" style="width:34%"></div></div></div>
+    <div class="bar"><div class="lbl"><span>Food retail and discounters</span><b>8–10%</b></div><div class="track"><div class="fill" style="width:30%"></div></div></div>
+    <div class="bar"><div class="lbl"><span>Furniture retail</span><b>5–7%</b></div><div class="track"><div class="fill" style="width:20%"></div></div></div>
+    <div class="bar"><div class="lbl"><span>Pharmacies</span><b>2–4%</b></div><div class="track"><div class="fill" style="width:10%"></div></div></div>
+  </div>
+  <p class="note" style="margin-top:32px">Many Austrian consumers buy from German online shops; Amazon.de is a major channel. Shares are estimates and vary strongly by category.</p>
+  <div class="foot"><div class="brand"><i class="mark"></i>Easy Prospect</div><span>4 / 9</span></div>
+</section>
+
+<!-- 5. Opportunities -->
+<section class="slide">
+  <div class="kicker">Where the opportunities are</div>
+  <div class="rule"></div>
+  <h2>Six product groups with good sales prospects.</h2>
+  <ul class="items" style="margin-top:32px">
+    <li><b>Sustainable baby textiles</b><small>organic cotton (GOTS), OEKO-TEX bed linen, sleeping bags</small></li>
+    <li><b>Wooden and Montessori toys</b><small>learning towers, Pikler climbing triangles, sensory toys</small></li>
+    <li><b>Lightweight travel strollers</b><small>cabin-size buggies, e-strollers with electric push assistance</small></li>
+    <li><b>i-Size car seats</b><small>older R44 seats can no longer be sold since September 2024</small></li>
+    <li><b>Outdoor and alpine family products</b><small>bike trailers, snow suits, sledges</small></li>
+    <li><b>Children’s traditional wear (Tracht)</b><small>a distinctive Austrian niche with stable seasonal demand</small></li>
+  </ul>
+  <div class="foot"><div class="brand"><i class="mark"></i>Easy Prospect</div><span>5 / 9</span></div>
+</section>
+
+<!-- 6. Requirements -->
+<section class="slide">
+  <div class="kicker">Suppliers from outside Europe</div>
+  <div class="rule"></div>
+  <h2>What must be in place before you ship.</h2>
+  <ul class="items" style="margin-top:32px">
+    <li>An <strong>EORI number</strong> and customs clearance</li>
+    <li>A <strong>responsible economic operator in the EU</strong> for toys, childcare articles and electrical products</li>
+    <li><strong>Import VAT of 20%</strong></li>
+    <li>Warnings and instructions <strong>in German</strong>; standards such as EN 71, EN 1888 and UN R129</li>
+  </ul>
+  <div class="tariffs">
+    <h3>Indicative EU import duty</h3>
+    <table>
+      <tr><td>Toys, plush, puzzles</td><td>0%</td></tr>
+      <tr><td>Prams and strollers</td><td>1.7%</td></tr>
+      <tr><td>Car seats</td><td>3.7%</td></tr>
+      <tr><td>Babies’ garments, knitted</td><td>12%</td></tr>
+    </table>
+  </div>
+  <p class="src">Check TARIC for your exact product code; trade agreements can reduce the duty.</p>
+  <div class="foot"><div class="brand"><i class="mark"></i>Easy Prospect</div><span>6 / 9</span></div>
+</section>
+
+<!-- 7. Entry routes -->
+<section class="slide">
+  <div class="kicker">How to enter</div>
+  <div class="rule"></div>
+  <h2>Austria has few full-range baby importers. That leaves three routes.</h2>
+  <div class="routes" style="margin-top:32px">
+    <div class="route"><div class="n">1</div><div><b>Retailers that import directly</b><span>private label or your brand · discounters, drugstores, specialist chains</span></div></div>
+    <div class="route"><div class="n">2</div><div><b>Austrian distributors and agencies</b><span>mainly in toys and fashion</span></div></div>
+    <div class="route"><div class="n">3</div><div><b>A DACH distributor in Germany</b><span>that also covers Austria; many brands already reach the market this way</span></div></div>
+  </div>
+  <div class="foot"><div class="brand"><i class="mark"></i>Easy Prospect</div><span>7 / 9</span></div>
+</section>
+
+<!-- 8. First contact -->
+<section class="slide">
+  <div class="kicker">The first contact</div>
+  <div class="rule"></div>
+  <h2>How to approach an Austrian buyer.</h2>
+  <div class="routes" style="margin-top:32px">
+    <div class="route"><div class="n">1</div><div><b>A qualified e-mail to the general address</b><span>short product presentation, price level and compliance status</span></div></div>
+    <div class="route"><div class="n">2</div><div><b>A call to the switchboard</b><span>to identify the buyer responsible for your category</span></div></div>
+    <div class="route"><div class="n">3</div><div><b>The trade fairs they attend</b><span>Kind + Jugend (Cologne, September) and Spielwarenmesse (Nuremberg, January/February)</span></div></div>
+  </div>
+  <div class="takeaway">First things first: German packaging and manuals, and test reports from an accredited lab.</div>
+  <div class="foot"><div class="brand"><i class="mark"></i>Easy Prospect</div><span>8 / 9</span></div>
+</section>
+
+<!-- 9. CTA -->
+<section class="slide dark cta">
+  <div class="kicker">Full study</div>
+  <div class="rule"></div>
+  <h2>This carousel summarises a market entry study.</h2>
+  <div class="cta-row">
+    <img src="__IMG:capa-estudo.jpg__" alt="Cover of the study Baby and Toddler Products in Austria">
+    <div class="box">The study also includes the <strong>directory of importers, distributors and directly importing retailers</strong> in Austria, organised by type of company and with first-contact data. Available as PDF.</div>
+  </div>
+  <div class="url">easyprospect.com.br</div>
+  <div class="sub">Read a full study free before you buy.</div>
+  <p class="src">Source: Easy Prospect, Market Entry Study – Baby and Toddler Products in Austria (research status September 2026).</p>
+  <div class="foot"><div class="brand"><i class="mark"></i>Easy Prospect</div><span>9 / 9</span></div>
+</section>
+
+</body>
+</html>
