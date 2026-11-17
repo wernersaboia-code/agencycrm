@@ -294,6 +294,33 @@ describe("extrairLeadsDoDiretorio — fichas do México", () => {
     })
 })
 
+describe("extrairLeadsDoDiretorio — plant-based Alemanha (coluna 'Company & contact')", () => {
+    it("separa nome, marca entre parênteses, cidade, contato e observação da primeira coluna", () => {
+        const pagina = [
+            item(57, 790, "6. Directory of importers and wholesalers", 300),
+            item(62, 760, "Company & contact"), item(200, 760, "Channel & type"), item(330, 760, "Profile"),
+            item(62, 740, "AVE — Absolute Vegan Empire GmbH", 125), item(200, 740, "Vegan full-range wholesaler"), item(330, 740, "Brand-maker"),
+            item(62, 730, "(Velivery)"),
+            item(62, 720, "Nabburg / Rheine"),
+            item(62, 710, "Web: b2b.velivery.com"),
+            item(62, 680, "Selgros Cash & Carry (Transgourmet)", 130), item(200, 680, "Cash & carry"),
+            item(62, 670, "Neu-Isenburg"),
+            item(62, 660, "Part of the Transgourmet group; supplier", 130),
+            item(62, 650, "enquiries via website."),
+            item(62, 640, "Web: selgros.de"),
+            item(57, 500, "7. Recommendations", 300),
+        ]
+        const [ave, selgros] = extrairLeadsDoDiretorio([pagina])
+        expect(ave).toMatchObject({ companyName: "AVE — Absolute Vegan Empire GmbH (Velivery)", location: "Nabburg / Rheine", website: "b2b.velivery.com" })
+        expect(selgros).toMatchObject({
+            companyName: "Selgros Cash & Carry (Transgourmet)",
+            location: "Neu-Isenburg",
+            website: "selgros.de",
+            specialFocus: "Part of the Transgourmet group; supplier enquiries via website.",
+        })
+    })
+})
+
 describe("extrairLeadsDoDiretorio — sem diretório", () => {
     it("devolve lista vazia quando o estudo não tem capítulo de diretório", () => {
         const pagina = [item(57, 700, "1. Executive Summary", 200), item(57, 680, "Some text about info@x.com")]

@@ -249,7 +249,10 @@ function nomeELocal(
             /\s(e|and|und|et|y|of|de|di|van|der|du|des)$/i.test(nome) ||
             (nome.match(/\(/g)?.length ?? 0) > (nome.match(/\)/g)?.length ?? 0) ||
             /^[&]/.test(proxima) ||
-            (FORMA_JURIDICA.test(proxima) && proxima.split(/\s+/).length <= 4 && !FORMA_JURIDICA.test(nome))
+            (FORMA_JURIDICA.test(proxima) && proxima.split(/\s+/).length <= 4 && !FORMA_JURIDICA.test(nome)) ||
+            // Marca entre parênteses na linha de baixo: "AVE — Absolute Vegan
+            // Empire GmbH" / "(Velivery)".
+            /^\([^)]{2,40}\)$/.test(proxima)
         if (!continua) break
         nome = nome.endsWith("-") ? nome + proxima : `${nome} ${proxima}`
         i++
@@ -290,7 +293,20 @@ function linhaParaLead(colunas: Coluna[], celulas: string[][], secao: string | n
         // Domínio sozinho na linha ("transgourmet.de"), mas não "Co. OHG".
         /^[a-z0-9-]+(\.[a-z0-9-]+)*\.[a-z]{2,6}(\/\S*)?$/.test(l.trim())
     const coluna0 = celulas[0] ?? []
-    const { nome, local, tipo } = nomeELocal(coluna0.filter((l) => !ehContato(l)), colunas[0].rotulo)
+    // Observação no fim da primeira coluna ("Supplier enquiries via website.",
+    // "Central-listing gate; address the initial supplier proposal…"): daí
+    // em diante é nota, não endereço.
+    const semContato = coluna0.filter((l) => !ehContato(l))
+    let inicioDaNota = semContato.findIndex(
+        // "Part of the Transgourmet group; …" no começo da linha é nota; "(part
+        // of the Hape group)" logo depois do nome é complemento do nome.
+        (l, j) =>
+            j > 0 &&
+            (/\b(enquir\w*|onboarding|listing|supplier (route|proposal|page)|via (the )?(website|contact))\b/i.test(l) || /^Part of\b/.test(l.trim()))
+    )
+    if (inicioDaNota === -1) inicioDaNota = semContato.length
+    const notaDaColuna0 = semContato.slice(inicioDaNota).join(" ").replace(/\s+/g, " ").trim() || null
+    const { nome, local, tipo } = nomeELocal(semContato.slice(0, inicioDaNota), colunas[0].rotulo)
     if (nome.length < 2) return null
 
     const textos = celulas.map((c) => juntarCelula(c))
@@ -307,7 +323,7 @@ function linhaParaLead(colunas: Coluna[], celulas: string[][], secao: string | n
 
     let companyType: string | null = tipo ? tipo.split(/\s+[–—-]\s+|[.;]/)[0].trim().slice(0, 120) || null : null
     let productPortfolio: string | null = tipo && tipo.length > 120 ? tipo : null
-    let specialFocus: string | null = null
+    let specialFocus: string | null = notaDaColuna0
     colunas.forEach((coluna, i) => {
         if (i === 0) return
         const texto = semRotulo(textos[i] ?? "")
