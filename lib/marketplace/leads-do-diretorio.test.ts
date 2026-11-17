@@ -121,6 +121,48 @@ describe("extrairLeadsDoDiretorio — casos da França e da Finlândia", () => {
     })
 })
 
+describe("extrairLeadsDoDiretorio — fichas da África do Sul", () => {
+    // Ficha com código ("A1."), rótulos numa coluna justa (~10 pt até o
+    // valor), nome que quebra antes do rótulo, telefone que continua na linha
+    // de baixo e rodapé "· Page" entre uma ficha e outra.
+    const rotulo = (y: number, texto: string, valor: string) => [item(60, y, texto, texto.length * 4), item(60 + texto.length * 4 + 10, y, valor)]
+    const pagina1 = [
+        item(57, 790, "9. Directory of importers and distributors", 300),
+        item(60, 760, "A1. Brands2Africa (B2A) – Johannesburg (Bryanston)", 260),
+        ...rotulo(745, "Company type / channels", "Full turnkey importer-distributor"),
+        ...rotulo(730, "Website", "www.brands2africa.com"),
+        ...rotulo(715, "General e-mail", "info@brands2africa.com"),
+        item(60, 690, "A2. Bounty Foods & Care – Centurion, Cape", 230),
+        item(60, 678, "Town, Durban", 60),
+        ...rotulo(663, "Company type / channels", "FMCG brand owner"),
+        ...rotulo(648, "Website", "bbfc.co.za"),
+        ...rotulo(633, "Switchboard / head office", "Durban: +27"),
+        item(150, 621, "32 944 1284"),
+        ...rotulo(606, "Supplier page / buyer page", "Contact form: bbfc.co.za/contact"),
+        item(200, 40, "Market Entry Study FMCG South Africa · Page"),
+        item(400, 39, "10"),
+    ]
+    const pagina2 = [
+        item(60, 760, "A3. Rialto Foods – Cape Town (Montague Gardens)", 250),
+        ...rotulo(745, "Company type / channels", "Importer and distributor"),
+        ...rotulo(730, "Website", "www.rialtofoods.co.za"),
+        ...rotulo(715, "Switchboard / head office", "+27 21 555 2160"),
+        item(57, 600, "10. Recommendations for market entry", 300),
+    ]
+
+    const leads = extrairLeadsDoDiretorio([pagina1, pagina2])
+
+    it("lê uma empresa por ficha, sem confundir telefone ou rodapé com nome", () => {
+        expect(leads.map((l) => l.companyName)).toEqual(["Brands2Africa (B2A)", "Bounty Foods & Care", "Rialto Foods"])
+    })
+
+    it("tira a cidade do nome e junta o nome que quebrou", () => {
+        expect(leads[0]).toMatchObject({ location: "Johannesburg (Bryanston)", website: "brands2africa.com", emailGeneral: "info@brands2africa.com" })
+        expect(leads[1]).toMatchObject({ location: "Centurion, Cape Town, Durban", website: "bbfc.co.za" })
+        expect(leads[2]).toMatchObject({ website: "rialtofoods.co.za", phoneGeneral: "+27 21 555 2160" })
+    })
+})
+
 describe("extrairLeadsDoDiretorio — sem diretório", () => {
     it("devolve lista vazia quando o estudo não tem capítulo de diretório", () => {
         const pagina = [item(57, 700, "1. Executive Summary", 200), item(57, 680, "Some text about info@x.com")]

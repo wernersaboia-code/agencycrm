@@ -64,7 +64,9 @@ const ROTULO_EMPRESA =
     /^(company|companies|name|firma|unternehmen|empresa|entreprise|soci[eé]t[eé]|azienda|bedrijf)s?\s*(?:$|[/&|–(,-]|\band\b|\bname\b|\bund\b)|^(importer|distributor)s?\s*(?:[/&]\s*(importer|distributor|wholesaler)s?)?$/i
 
 const SUBSECAO = /^\d{1,2}(\.\d{1,2})+\.?\s+\S/
-const RODAPE = /(^|\|\s*)(page|seite|página|pagina|p\.)\s*\d+\s*$|\b(page|seite|página|pagina)\s+\d+\s+(of|von|de|di|sur)\s+\d+\b/i
+// "… | Page 9", "Market Entry Study FMCG South Africa · Page 9", "Page 7 of 12".
+// O número da página pode vir numa linha só dele, 1 pt fora da linha do texto.
+const RODAPE = /(^|[|·•–—]\s*)(page|seite|página|pagina|p\.)\s*\d*\s*$|^\d{1,3}$|\b(page|seite|página|pagina)\s+\d+\s+(of|von|de|di|sur)\s+\d+\b/i
 
 const FORMA_JURIDICA =
     /\b(inc|ltd|llc|corp|co|gmbh|ag|kg|se|sa|s\.a|sas|sarl|srl|s\.r\.l|spa|s\.p\.a|bv|b\.v|nv|n\.v|ab|as|a\/s|oy|plc|pty|limited|lda|sl|s\.l|sp\.\s*z\s*o\.o|kft|d\.o\.o|ehf|aps)\b\.?/i
@@ -224,11 +226,19 @@ function nomeELocal(
     // que quebra em várias linhas ("Autour de Bébé / New" / "Baby (Sagam group)").
     // Para no endereço, quando há um: linha com número de rua ou CEP
     // ("26 quai Marcel Boyer", "92290 Châtenay-Malabry") é local, não nome.
+    // Para também no tipo, quando a coluna o traz embaixo do nome sem dizer
+    // no cabeçalho ("Pound Wholesale" / "Online wholesaler – value baby
+    // essentials"): o resto vira tipo.
     if (!/\/|&|\band\b|location|city|ort|sede|type|typ|tipo/i.test(rotulo)) {
-        let fim = linhas.findIndex((l, j) => j > 0 && /\d{2,}/.test(l))
+        const ehTipo = (l: string) =>
+            /\s[–—]\s/.test(l) ||
+            /^(online |national |regional |specialist |full-range |discount )?(wholesaler|retailer|importer|distributor|buying group|superstore|manufacturer|brand owner|toy|department store|chain)\b/i.test(l)
+        let fim = linhas.findIndex((l, j) => j > 0 && (/\d{2,}/.test(l) || ehTipo(l)))
         if (fim === -1) fim = linhas.length
         const nomeCompleto = linhas.slice(0, fim).join(" ").replace(/-\s/g, "-").replace(/\s+/g, " ").trim()
-        return { nome: nomeCompleto.replace(/^\d{1,3}\.\s+/, ""), local: linhas.slice(fim).join(", ") || null, tipo: null }
+        const resto = linhas.slice(fim)
+        const tipo = resto.length > 0 && ehTipo(resto[0]) ? resto.join(" ").replace(/\s+/g, " ") : null
+        return { nome: nomeCompleto.replace(/^\d{1,3}\.\s+/, ""), local: tipo ? null : resto.join(", ") || null, tipo }
     }
     let nome = linhas[0]
     let i = 1
@@ -264,11 +274,18 @@ function semRotulo(texto: string): string {
 }
 
 function linhaParaLead(colunas: Coluna[], celulas: string[][], secao: string | null): LeadDoDiretorio | null {
-    const { nome, local, tipo } = nomeELocal(celulas[0] ?? [], colunas[0].rotulo)
+    // Coluna "Company & contact" (plant-based Alemanha): as linhas de
+    // contato da primeira coluna vão para o contato, não para nome ou local.
+    const ehContato = (l: string) =>
+        /@|www\.|https?:|^(e-?mail|web(site)?|tel(ephone)?|phone|fax)\b/i.test(l.trim()) ||
+        // Domínio sozinho na linha ("transgourmet.de"), mas não "Co. OHG".
+        /^[a-z0-9-]+(\.[a-z0-9-]+)*\.[a-z]{2,6}(\/\S*)?$/.test(l.trim())
+    const coluna0 = celulas[0] ?? []
+    const { nome, local, tipo } = nomeELocal(coluna0.filter((l) => !ehContato(l)), colunas[0].rotulo)
     if (nome.length < 2) return null
 
     const textos = celulas.map((c) => juntarCelula(c))
-    const resto = textos.slice(1).join("\n")
+    const resto = [juntarCelula(coluna0.filter(ehContato)), ...textos.slice(1)].join("\n")
 
     const emails = [...new Set([...resto.matchAll(EMAIL)].map(([e]) => e.toLowerCase().replace(/\.$/, "")))]
     // O site só conta fora dos e-mails: "info@x.de" não é o site "x.de" por si.
@@ -347,7 +364,9 @@ function rotuloDaLinha(linha: Linha): { rotulo: string; valor: string } | null {
     const curto = primeiro.length <= 45 && primeiro.split(/\s+/).length <= 7 && !/[.;,]$/.test(primeiro) && !/@|www\.|https?:/.test(primeiro)
     // Coluna de rótulos: primeiro item curto e o valor bem à direita dele.
     const segundo = linha.itens[1]
-    if (curto && segundo && segundo.x - (linha.itens[0].x + linha.itens[0].largura) > 25 && PALAVRA_DE_ROTULO.test(primeiro)) {
+    // Vão de 8 pt: na África do Sul a coluna de rótulos é justa e
+    // "Switchboard / head office" fica a ~15 pt do valor.
+    if (curto && segundo && segundo.x - (linha.itens[0].x + linha.itens[0].largura) > 8 && PALAVRA_DE_ROTULO.test(primeiro)) {
         return { rotulo: primeiro.toLowerCase(), valor: linha.itens.slice(1).map((i) => i.texto.trim()).join(" ") }
     }
     // Rótulo sozinho na linha, com o valor na linha de baixo.
@@ -375,9 +394,19 @@ function fichaParaLead(nome: string, campos: Map<string, string[]>, secao: strin
 
     const perfil = de(/profil|perfil|description|about|type|product|range|sortiment|brand|focus|channel/) || null
     const notas = de(/note|remark|supplier route|best first contact/) || null
+    // "Switchboard / head office" é telefone, não endereço.
+    let local = de(/^(?!.*(phone|tel|switchboard|fax|mail)).*(address|adress|anschrift|direcci|indirizzo|morada|endere|location|headquarter|head office|base|hq)/) || null
+    // Sem campo de endereço, a cidade costuma vir no próprio nome da ficha:
+    // "Brands2Africa (B2A) – Johannesburg (Bryanston)".
+    let companyName = nome
+    const traco = nome.match(/^(.{3,}?)\s+[–—]\s+(.+)$/)
+    if (!local && traco) {
+        companyName = traco[1].trim()
+        local = traco[2].trim()
+    }
     return {
-        companyName: nome,
-        location: de(/address|adress|anschrift|direcci|indirizzo|morada|endere|location|headquarter|head office|base|hq/) || null,
+        companyName,
+        location: local,
         website: site,
         contactForm: formulario,
         emailGeneral: emails.find((e) => !COMPRAS.test(e.split("@")[0])) ?? emails[0] ?? null,
@@ -407,7 +436,11 @@ function leadsDeFichas(linhas: Linha[]): LeadDoDiretorio[] {
         rotuloAtual = null
     }
 
+    const CODIGO = /^([A-Z]{1,2}\d{1,3}|\d{1,3})[.)]\s/
+    let pular = -1
+
     linhas.forEach((linha, i) => {
+        if (i === pular) return
         const rotulo = rotuloDaLinha(linha)
         if (rotulo) {
             if (!nome) return
@@ -432,18 +465,55 @@ function leadsDeFichas(linhas: Linha[]): LeadDoDiretorio[] {
         const candidato = linha.itens[0].texto.replace(/\s+/g, " ").trim()
         const pareceNome =
             candidato.length >= 3 &&
-            candidato.length <= 90 &&
+            // Ficha com código ("A2. Bounty Foods & Care (Bounty Brands; incl.
+            // …) – Centurion, Cape") pode ter nome longo.
+            candidato.length <= (CODIGO.test(candidato) ? 140 : 90) &&
             // Ponto final só vale se for de forma jurídica ("S.r.l.", "Inc.").
             !/[,;:]$/.test(candidato) &&
             (!/\.$/.test(candidato) || FORMA_JURIDICA.test(candidato)) &&
             !/:\s|@|www\./.test(candidato) &&
             /^[\p{Lu}\d"„(]/u.test(candidato) &&
-            !PALAVRA_DE_ROTULO.test(candidato) &&
+            // Rótulo curto ("Food / Non-Food") não é nome; nome longo com
+            // palavra de rótulo é ("Brands2Africa (B2A) – Johannesburg").
+            !(PALAVRA_DE_ROTULO.test(candidato) && candidato.split(/\s+/).length <= 3 && !CODIGO.test(candidato)) &&
+            !/\bpage\b|\bseite\b|\bpágina\b/i.test(candidato) &&
+            // Resto de telefone ("Durban: +27" / "32 944 1284") ou linha que
+            // continua a anterior pendurada não abre ficha.
+            (candidato.match(/\d/g)?.length ?? 0) < 6 &&
+            // Linha de tabela ("Retail group | Focus | Switchboard | Supplier
+            // page") não é ficha: nome de ficha tem no máximo dois itens.
+            // Exceção: nome ao lado de um rótulo com valor ("Screwfix Direct
+            // Ltd | Product groups: | Power and hand tools…", DIY Reino Unido).
+            (linha.itens.filter((it, j) => j === 0 || it.x - linha.itens[j - 1].x > 40).length <= 2 ||
+                linha.itens.slice(1).some((it) => /:\s*$/.test(it.texto.trim()))) &&
+            // (endereço terminado em "/" está completo: "…/team/").
+            // Só vale para linha de texto corrido: depois de "Product groups:
+            // …, PPE," pode vir o nome da próxima empresa em outra coluna.
+            !(i > 0 && !rotuloDaLinha(linhas[i - 1]) && /[,:+&(–-]$|\+\d{1,3}$|(^|\s)[^\s.]+\/$/.test(linhas[i - 1].texto.trim())) &&
+            // Se a linha de baixo é a que traz o código da ficha ("A3. Rialto
+            // Foods"), o nome é ela: esta é o fim da ficha anterior.
+            !(linhas[i + 1] && !rotuloDaLinha(linhas[i + 1]) && CODIGO.test(linhas[i + 1].texto)) &&
+            // A primeira linha é o título do capítulo ("9. Directory of …").
+            i > 0 &&
             seguinte != null &&
             fichaCompleta
         if (pareceNome) {
             fechar()
-            nome = candidato.replace(/^\d{1,3}[.)]\s+/, "")
+            // Código da ficha: "2. Maxi Zoo", "A1. Brands2Africa".
+            nome = candidato.replace(CODIGO, "").trim()
+            // Nome que quebrou antes do rótulo ("… – Centurion, Cape" /
+            // "Town, Durban") continua na linha de baixo.
+            // Só quando o nome ficou visivelmente incompleto: termina pendurado,
+            // tem parêntese aberto ou é uma lista de cidades depois do traço.
+            const proxima = linhas[i + 1]
+            const incompleto =
+                /[,&/(–-]$/.test(nome) ||
+                (nome.match(/\(/g)?.length ?? 0) > (nome.match(/\)/g)?.length ?? 0) ||
+                /\s[–—]\s[^–—]*,[^–—]*$/.test(nome)
+            if (incompleto && proxima && !rotuloDaLinha(proxima) && linhas[i + 2] && rotuloDaLinha(linhas[i + 2]) && proxima.texto.length <= 60 && !CODIGO.test(proxima.texto)) {
+                nome = `${nome} ${proxima.texto.trim()}`
+                pular = i + 1
+            }
             return
         }
 
@@ -610,9 +680,23 @@ export function extrairLeadsDoDiretorio(paginas: readonly (readonly ItemPosicion
     // Só conta empresa com site E nome com cara de nome: a leitura de tabela
     // que segue lendo fichas depois de uma tabela-resumo "acha" sites com
     // nomes como "Pernigotti and Vergani chocolates, Italian wines (…".
-    const comSite = (lista: LeadDoDiretorio[]) =>
-        lista.filter((l) => l.website && l.companyName.length <= 70 && (l.companyName.match(/,/g)?.length ?? 0) <= 2).length
-    const escolhidos = comSite(fichas) > 0 && comSite(fichas) >= comSite(leads) ? fichas : leads
+    const plausivel = (l: LeadDoDiretorio) =>
+        Boolean(l.website) &&
+        l.companyName.length <= 70 &&
+        (l.companyName.match(/,/g)?.length ?? 0) <= 2 &&
+        // Pedaço de nome ("Sixty60)") tem parêntese desequilibrado.
+        (l.companyName.match(/\(/g)?.length ?? 0) === (l.companyName.match(/\)/g)?.length ?? 0) &&
+        // Rótulo de ficha lido como nome ("Switchboard / head office").
+        !(PALAVRA_DE_ROTULO.test(l.companyName) && l.companyName.split(/\s+/).length <= 5)
+    const comSite = (lista: LeadDoDiretorio[]) => lista.filter(plausivel).length
+    const usarFichas = comSite(fichas) > 0 && comSite(fichas) >= comSite(leads)
+    // Estudo de fichas que fecha com uma tabela (África do Sul: "Retail group
+    // | Focus | Switchboard | Supplier page"): as linhas plausíveis da tabela
+    // que as fichas não têm entram também.
+    const dasFichas = new Set(fichas.map(chave))
+    const escolhidos = usarFichas
+        ? [...fichas, ...leads.filter((l) => plausivel(l) && !dasFichas.has(chave(l)))]
+        : leads
 
     // A mesma empresa pode aparecer na tabela-resumo e na detalhada.
     const unicos = new Map<string, LeadDoDiretorio>()
