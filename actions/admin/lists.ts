@@ -15,6 +15,7 @@ import { DEFAULT_CURRENCY } from "@/lib/currency"
 import { writeListPrices } from "@/lib/marketplace/list-prices"
 import { describeListError, type ActionResult } from "@/lib/admin/action-errors"
 import { TAG_RESUMO_CATALOGO } from "@/lib/marketplace/resumo-catalogo"
+import { LOCALES } from "@/lib/i18n/locales"
 import { normalizarTextoColado } from "@/lib/marketplace/texto-colado"
 import { introducaoParaGravar } from "@/lib/marketplace/resumo-formatado"
 import { contarEmpresasDoPdf, extrairResumoDoPdf } from "@/lib/marketplace/pdf-do-estudo"
@@ -140,9 +141,16 @@ function revalidateListPaths(listSlug?: string) {
     // Catálogo público
     revalidatePath("/catalog")
 
-    // Página específica da lista
+    // Ficha do estudo, em cada idioma. Tem que ser o caminho INTERNO
+    // (`/pt/list/x`), não o do navegador (`/list/x`): com localePrefix
+    // "as-needed" o proxy reescreve `/list/x` para `/pt/list/x`, e
+    // revalidatePath só acerta o destino da reescrita (doc do revalidatePath,
+    // "Using revalidatePath with rewrites"). `/list/x` sozinho não invalidava
+    // nada; a ficha só mudava quando o revalidate da página vencia.
     if (listSlug) {
-        revalidatePath(`/list/${listSlug}`)
+        for (const locale of LOCALES) {
+            revalidatePath(`/${locale}/list/${listSlug}`)
+        }
     }
 
     // A faixa de números da home lê de `unstable_cache` com tag. Sem esta

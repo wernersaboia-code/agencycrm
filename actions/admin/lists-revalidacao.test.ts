@@ -19,6 +19,7 @@ vi.mock("@/lib/audit", () => ({ recordAudit: vi.fn() }))
 
 import { markListReviewed } from "./lists"
 import { TAG_RESUMO_CATALOGO } from "@/lib/marketplace/resumo-catalogo"
+import { LOCALES } from "@/lib/i18n/locales"
 
 beforeEach(() => {
     vi.clearAllMocks()
@@ -44,6 +45,17 @@ describe("revalidacao do resumo do catalogo", () => {
         await markListReviewed("lista-1")
 
         expect(revalidatePathMock).toHaveBeenCalledWith("/catalog")
-        expect(revalidatePathMock).toHaveBeenCalledWith("/list/horeca-alemanha")
+    })
+
+    // A ficha fica em cache por um dia; e o admin que a renova na hora. O
+    // caminho tem que ser o interno, com idioma: `/list/x` (o do navegador)
+    // e reescrito pelo proxy para `/pt/list/x` e nao invalidava nada.
+    it("revalida a ficha do estudo pelo caminho interno, em todos os idiomas", async () => {
+        await markListReviewed("lista-1")
+
+        for (const locale of LOCALES) {
+            expect(revalidatePathMock).toHaveBeenCalledWith(`/${locale}/list/horeca-alemanha`)
+        }
+        expect(revalidatePathMock).not.toHaveBeenCalledWith("/list/horeca-alemanha")
     })
 })

@@ -32,7 +32,7 @@ import {
 } from "lucide-react"
 
 /**
- * A ficha do estudo é pré-renderizada e revalidada de hora em hora, em vez de
+ * A ficha do estudo é pré-renderizada e revalidada uma vez por dia, em vez de
  * montada a cada requisição. Antes ela era dinâmica sem precisar: o único
  * pedaço que dependia da requisição era a moeda do cookie, que foi para o
  * cliente (ListPriceBox).
@@ -42,12 +42,17 @@ import {
  * na CDN (`Cache-Control: private, no-store`). Página estática é servida da
  * borda, e o rastreio deixa de competir com o tráfego real pelo mesmo custo.
  *
- * Uma hora pelo mesmo motivo de app/sitemap.ts: é curto o bastante para uma
- * lista tirada do ar não sobreviver muito à decisão (em 23.08.2026 duas listas
- * de teste continuaram sendo servidas horas depois de desativadas) e longo o
- * bastante para o arquivo não ser reconstruído a cada visita de robô.
+ * Um dia, não uma hora. Com uma hora eram ~1.400 fichas (estudos × 8 idiomas)
+ * refeitas de hora em hora pelos robôs: 10–15 mil ISR writes por dia, 480 mil
+ * no mês contra 200 mil do Hobby, e a Vercel pausou o site em 18.11.2026.
+ *
+ * O que antes justificava uma hora — lista tirada do ar não sobreviver muito
+ * à decisão (23.08.2026) — agora é coberto pelo admin: toda alteração de
+ * estudo revalida a ficha nos 8 idiomas na hora (revalidateListPaths em
+ * actions/admin/lists.ts). O tempo aqui só pega o que muda sem passar pelo
+ * admin, como o preço lido do banco por script.
  */
-export const revalidate = 3600
+export const revalidate = 86400
 
 /**
  * Pré-renderiza as fichas de todos os estudos ativos.
