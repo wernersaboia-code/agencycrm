@@ -341,6 +341,41 @@ describe("extrairLeadsDoDiretorio — produtos infantis da Holanda", () => {
     })
 })
 
+describe("extrairLeadsDoDiretorio — HoReCa China (rótulos nas duas colunas)", () => {
+    // Nome, razão social e "Website:", "Phone:", "HQ / base:" à esquerda;
+    // "Segment:", "Products / focus:", "Note:" à direita.
+    const empresa = (y: number, nome: string, razao: string, site: string, telefone: string, cidade: string) => [
+        item(65, y, nome, 120), item(217, y, "Segment:", 37), item(257, y, "National broadline importer"),
+        item(65, y - 13, razao, 130), item(217, y - 13, "Products / focus:", 67), item(286, y - 13, "Dairy, pastry"),
+        item(65, y - 26, "Website:", 35), item(102, y - 26, site), item(217, y - 26, "Note:", 22), item(242, y - 26, "Strong first target."),
+        item(65, y - 39, "Phone:", 28), item(95, y - 39, telefone),
+        item(65, y - 52, "(Shanghai); Bidfood China +86 21", 128),
+        item(65, y - 65, "HQ / base:", 42), item(109, y - 65, cidade, 84),
+    ]
+    const pagina = [
+        item(60, 790, "7. Directory of importers and distributors", 300),
+        item(60, 770, "7.2 Full-range / broadline foodservice importers", 300),
+        ...empresa(740, "Angliss China (Bidcorp Group)", "Angliss Shanghai Food Service Ltd. /", "www.angliss.com.cn", "+86 21 6073 2060", "Shanghai"),
+        ...empresa(640, "Sinodis (Savencia Group)", "Sinodis Foods (Shanghai) Co., Ltd.", "www.sinodis.com.cn", "+86 21 6072 8700", "Shanghai HQ"),
+        ...empresa(540, "ESB Shanghai (ESB Foods)", "ESB (Shanghai)", "www.esb-foods.com", "+86 21 5000 0000", "Shanghai"),
+        ...empresa(440, "Summergate (Woolworths group)", "Summergate Ltd.", "www.summergate.com", "+86 10 6562 1800", "Beijing"),
+        ...empresa(340, "COFCO", "China National Cereals, Oils and", "www.cofco.com", "+86 10 6526 8888", "Beijing"),
+        item(60, 200, "8. Recommendations", 300),
+    ]
+
+    it("lê o nome da primeira linha e o contato dos rótulos da coluna da esquerda", () => {
+        const leads = extrairLeadsDoDiretorio([pagina])
+        expect(leads.map((l) => l.companyName)).toEqual([
+            "Angliss China (Bidcorp Group)",
+            "Sinodis (Savencia Group)",
+            "ESB Shanghai (ESB Foods)",
+            "Summergate (Woolworths group)",
+            "COFCO",
+        ])
+        expect(leads[1]).toMatchObject({ website: "sinodis.com.cn", phoneGeneral: "+86 21 6072 8700", location: "Shanghai HQ" })
+    })
+})
+
 describe("extrairLeadsDoDiretorio — sem diretório", () => {
     it("devolve lista vazia quando o estudo não tem capítulo de diretório", () => {
         const pagina = [item(57, 700, "1. Executive Summary", 200), item(57, 680, "Some text about info@x.com")]

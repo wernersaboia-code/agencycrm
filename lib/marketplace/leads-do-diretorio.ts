@@ -576,7 +576,9 @@ function leadsDeFichas(linhas: Linha[]): LeadDoDiretorio[] {
         if (pareceNome) {
             fechar()
             // Código da ficha: "2. Maxi Zoo", "A1. Brands2Africa".
-            nome = candidato.replace(CODIGO, "").trim()
+            // Sobra pendurada no fim ("Sinodis (Shanghai) Co., Ltd. –",
+            // "METRO China ("): o resto vinha na linha de baixo, fora do nome.
+            nome = candidato.replace(CODIGO, "").trim().replace(/\s*[–—(]\s*$/, "").trim()
             // Nome que quebrou antes do rótulo ("… – Centurion, Cape" /
             // "Town, Durban") continua na linha de baixo.
             // Só quando o nome ficou visivelmente incompleto: termina pendurado,
@@ -669,9 +671,11 @@ function leadsDeFichasLaterais(linhas: Linha[]): LeadDoDiretorio[] {
         const largura = linha.itens.reduce((m, it) => Math.max(m, it.x + it.largura), 0) - linha.itens[0].x
         // Subseção ("A. DIY and home-improvement retail chains") ou parágrafo
         // corrido que atravessa as duas colunas encerra a empresa em curso.
-        if (!abre && linha.itens.length === 1 && naColunaDoNome(linha.itens[0]) && largura > xRotulo) {
+        // Subseção numerada ("7.4 Cash & carry / wholesale operators") também
+        // encerra, mesmo estreita.
+        if (!abre && ((linha.itens.length === 1 && naColunaDoNome(linha.itens[0]) && largura > xRotulo) || (SUBSECAO.test(linha.texto) && naColunaDoNome(linha.itens[0])))) {
             fechar()
-            if (/^[A-Z0-9]{1,2}[.)]\s/.test(linha.texto)) secao = linha.texto.trim().slice(0, 200)
+            if (/^[A-Z0-9]{1,2}[.)]\s/.test(linha.texto) || SUBSECAO.test(linha.texto)) secao = linha.texto.trim().slice(0, 200)
             continue
         }
         if (abre) fechar()
@@ -699,16 +703,38 @@ function fichaLateralParaLead(esquerda: string[], direita: Linha[], secao: strin
             /^\(/.test(proxima) ||
             (anterior.match(/\(/g)?.length ?? 0) > (anterior.match(/\)/g)?.length ?? 0) ||
             /[&,/–-]$/.test(anterior) ||
-            (FORMA_JURIDICA.test(proxima) && proxima.split(/\s+/).length <= 3)
+            // "Wickes Building Supplies" / "Ltd" continua; "Summergate
+            // (Woolworths group)" / "Summergate Ltd." é a razão social, não.
+            // "Thompson & Morgan (UK)" / "Ltd" (só a forma jurídica) continua.
+            (FORMA_JURIDICA.test(proxima) &&
+                proxima.split(/\s+/).length <= 3 &&
+                (!/\)$/.test(anterior) || /^(Ltd|Limited|Inc|GmbH|AG|plc|S\.A\.|B\.V\.|N\.V\.)\.?$/i.test(proxima.trim())))
         if (!continua) break
         fim++
     }
     // Diretório numerado ("1. Castorama Polska Sp. z o.o.", DIY Polônia).
     const nome = esquerda.slice(0, fim).join(" ").replace(/\s+/g, " ").trim().replace(/^([A-Z]{1,2}\d{1,3}|\d{1,3})[.)]\s+/, "")
     if (nome.length < 2) return null
-    const perfil = esquerda.slice(fim).join(" ").replace(/\s+/g, " ").trim() || null
 
+    // A coluna da esquerda também pode trazer rótulos (HoReCa China: nome,
+    // razão social e "Website:", "Phone:", "HQ / base:" à esquerda; "Segment:",
+    // "Note:" à direita). Do primeiro rótulo em diante, a esquerda é campo.
     const campos = new Map<string, string[]>()
+    const restoEsquerda = esquerda.slice(fim)
+    const primeiroRotulo = restoEsquerda.findIndex((l) => /^\p{Lu}[^:]{1,40}:(\s|$)/u.test(l))
+    const fimDoPerfil = primeiroRotulo === -1 ? restoEsquerda.length : primeiroRotulo
+    const perfil = restoEsquerda.slice(0, fimDoPerfil).join(" ").replace(/\s+/g, " ").trim() || null
+    let campoDaEsquerda: string | null = null
+    for (const l of restoEsquerda.slice(fimDoPerfil)) {
+        const m = l.match(/^(\p{Lu}[^:]{1,40}):\s*(.*)$/u)
+        if (m) {
+            campoDaEsquerda = m[1].toLowerCase()
+            campos.set(campoDaEsquerda, [...(campos.get(campoDaEsquerda) ?? []), m[2]])
+        } else if (campoDaEsquerda) {
+            campos.get(campoDaEsquerda)!.push(l)
+        }
+    }
+
     let atual: string | null = null
     for (const l of direita) {
         const primeiro = l.itens[0].texto.trim()
@@ -908,8 +934,17 @@ export function extrairLeadsDoDiretorio(paginas: readonly (readonly ItemPosicion
         Boolean(l.website) &&
         l.companyName.length <= 70 &&
         (l.companyName.match(/,/g)?.length ?? 0) <= 2 &&
-        // Pedaço de nome ("Sixty60)") tem parêntese desequilibrado.
+        // Pedaço de nome ("Sixty60)") tem parêntese desequilibrado, começa
+        // por vírgula/parêntese ou termina pendurado ("… Ltd. /").
         (l.companyName.match(/\(/g)?.length ?? 0) === (l.companyName.match(/\)/g)?.length ?? 0) &&
+        !/^[,(]/.test(l.companyName) &&
+        !/[/,&–-]$/.test(l.companyName) &&
+        // Frase ou tipo no lugar do nome: "Generalist – full-line pharmaceutical
+        // …", "China National Cereals, Oils and", "METRO retains a minority stake".
+        !/^(Generalist|Specialist|Importer|Distributor|Wholesaler|Retailer)\b/.test(l.companyName) &&
+        !/\s[–—]\s\p{Ll}/u.test(l.companyName) &&
+        !/\s(and|of|und|et|e|y|the)$/i.test(l.companyName) &&
+        !/\b(retains|operates|is|are|was|has|owns)\b/.test(l.companyName) &&
         // Rótulo de ficha lido como nome ("Switchboard / head office").
         !(PALAVRA_DE_ROTULO.test(l.companyName) && l.companyName.split(/\s+/).length <= 5)
     const comSite = (lista: LeadDoDiretorio[]) => lista.filter(plausivel).length
