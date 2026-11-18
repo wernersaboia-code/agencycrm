@@ -69,7 +69,7 @@ const SUBSECAO = /^\d{1,2}(\.\d{1,2})+\.?\s+\S/
 const RODAPE = /(^|[|·•–—]\s*)(page|seite|página|pagina|p\.)\s*\d*\s*$|^\d{1,3}$|\b(page|seite|página|pagina)\s+\d+\s+(of|von|de|di|sur)\s+\d+\b/i
 
 const FORMA_JURIDICA =
-    /\b(inc|ltd|llc|corp|co|gmbh|ag|kg|se|sa|s\.a|sas|sarl|srl|s\.r\.l|spa|s\.p\.a|bv|b\.v|nv|n\.v|ab|as|a\/s|oy|plc|pty|limited|lda|sl|s\.l|sp\.\s*z\s*o\.o|kft|d\.o\.o|ehf|aps|s\.r\.o|a\.s|spol|k\.s|v\.o\.s|e\.u|ges\.m\.b\.h)\b\.?/i
+    /\b(inc|ltd|llc|corp|co|gmbh|ag|kg|se|sa|s\.a|sas|sarl|srl|s\.r\.l|spa|s\.p\.a|bv|b\.v|nv|n\.v|ab|as|a\/s|oy|plc|pty|limited|lda|sl|s\.l|sp\.\s*z\s*o\.o|kft|d\.o\.o|ehf|aps|s\.r\.o|a\.s|spol|k\.s|v\.o\.s|e\.u|ges\.m\.b\.h|c\.a|s\.a\.s|s\.a\.c|s\.a\.b)\b\.?/i
 
 const EMAIL = /[a-z0-9][a-z0-9._%+-]*@(?:[a-z0-9-]+\.)+[a-z]{2,6}/gi
 const URL = /(?<![@\w.-])(?:https?:\/\/)?(?:www\.)?(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,6}(?:\/[^\s,;)]*)?/gi
@@ -238,7 +238,7 @@ function nomeELocal(
         const nomeCompleto = linhas.slice(0, fim).join(" ").replace(/-\s/g, "-").replace(/\s+/g, " ").trim()
         const resto = linhas.slice(fim)
         const tipo = resto.length > 0 && ehTipo(resto[0]) ? resto.join(" ").replace(/\s+/g, " ") : null
-        return { nome: nomeCompleto.replace(/^\d{1,3}\.\s+/, ""), local: tipo ? null : resto.join(", ") || null, tipo }
+        return { ...separarCidade(nomeCompleto.replace(/^\d{1,3}\.\s+/, ""), tipo ? null : resto.join(", ") || null), tipo }
     }
     let nome = linhas[0]
     let i = 1
@@ -246,13 +246,15 @@ function nomeELocal(
         const proxima = linhas[i]
         const continua =
             /[&\-,/(]$/.test(nome) ||
-            /\s(e|and|und|et|y|of|de|di|van|der|du|des)$/i.test(nome) ||
+            /\s(e|en|and|und|et|y|of|de|di|van|der|du|des)$/i.test(nome) ||
             (nome.match(/\(/g)?.length ?? 0) > (nome.match(/\)/g)?.length ?? 0) ||
             /^[&]/.test(proxima) ||
             (FORMA_JURIDICA.test(proxima) && proxima.split(/\s+/).length <= 4 && !FORMA_JURIDICA.test(nome)) ||
             // Marca entre parênteses na linha de baixo: "AVE — Absolute Vegan
             // Empire GmbH" / "(Velivery)".
-            /^\([^)]{2,40}\)$/.test(proxima)
+            /^\([^)]{2,40}\),?$/.test(proxima) ||
+            // "Kidsland International" / "Holdings Ltd. (凯知乐) · Beijing".
+            /^(Holdings?|Ltd\.?|Limited|Inc\.?|Corp\.?|Corporation|Co\.,? Ltd\.?)(?![\w])/.test(proxima)
         if (!continua) break
         nome = nome.endsWith("-") ? nome + proxima : `${nome} ${proxima}`
         i++
@@ -278,7 +280,31 @@ function nomeELocal(
     if (/type|typ|tipo/i.test(rotulo) && resto.length >= 2) {
         return { nome, tipo: resto.slice(0, -1).join(" ").replace(/\s+/g, " "), local: resto.at(-1)! }
     }
-    return { nome, local: resto.join(", ") || null, tipo: null }
+    return { ...separarCidade(nome, resto.join(", ") || null), tipo: null }
+}
+
+/**
+ * Cidade grudada no nome pela vírgula ("Jamak B.V., Breda", "Alecto Baby
+ * (Commaxx; formerly Hesdo B.V.), 's-Hertogenbosch", "Little Brands, Belgium
+ * (Benelux coverage)"). Só quando ainda não há local, e nunca para forma
+ * jurídica ("Mexideli, S.A. de C.V.", "IMCO, s.r.o.").
+ */
+function separarCidade(nome: string, local: string | null): { nome: string; local: string | null } {
+    // "Kidsland International Holdings Ltd. (凯知乐) ·" com a cidade na linha de baixo.
+    nome = nome.replace(/\s*·$/, "")
+    if (local) return { nome, local }
+    // "Decathlon China · Shanghai", "Yonghui Superstores (永辉超市) · Fuzhou".
+    const ponto = nome.match(/^(.{2,}?)\s+·\s+(.+)$/)
+    if (ponto && (ponto[1].match(/\(/g)?.length ?? 0) === (ponto[1].match(/\)/g)?.length ?? 0)) {
+        return { nome: ponto[1].trim(), local: ponto[2].trim() }
+    }
+    // ("'s-Hertogenbosch" começa com "'s-".)
+    const m = nome.match(/^(.+),\s+((?:['’]s-)?\p{Lu}[^,()]{1,40}(?:\s\([^()]{2,40}\))?)$/u)
+    if (!m) return { nome, local }
+    const [, cabeca, cauda] = m
+    const equilibrado = (s: string) => (s.match(/\(/g)?.length ?? 0) === (s.match(/\)/g)?.length ?? 0)
+    if (FORMA_JURIDICA.test(cauda) || !equilibrado(cabeca) || cabeca.trim().length < 2 || /,$/.test(cabeca)) return { nome, local }
+    return { nome: cabeca.trim(), local: cauda.trim() }
 }
 
 function semRotulo(texto: string): string {
@@ -824,16 +850,28 @@ export function extrairLeadsDoDiretorio(paginas: readonly (readonly ItemPosicion
             .map((t) => primeiroSite(t).site)
             .filter((s): s is string => Boolean(s))
             .map(baseDoDominio)
+        // Lista de sites da mesma empresa ("www.aone.co.kr /" + "www.aonebaby.co.kr")
+        // ou nome que continua ("A-One Co., Ltd. (에이원)," + "Seoul") não abrem
+        // empresa nova.
+        const ultimaDoSite = ((celulas as string[][] | null)?.[colunaDoSite] ?? []).at(-1) ?? ""
+        const ultimaDoNome = ((celulas as string[][] | null)?.[0] ?? []).at(-1) ?? ""
         const siteNovo =
             colunaDoSite > 0 &&
             temNome &&
             sitesAtuais.length > 0 &&
+            !/[/,]\s*$/.test(ultimaDoSite) &&
+            !/,\s*$/.test(ultimaDoNome) &&
             linha.itens.some((i) => {
                 if (colunaDoItem(colunas!, i.x) !== colunaDoSite) return false
                 const site = primeiroSite(i.texto).site
                 return site != null && !sitesAtuais.includes(baseDoDominio(site))
             })
 
+        // Pedaços da mesma coluna na mesma linha visual formam UMA linha da
+        // célula: "Alecto Baby" + "(Commaxx;", "Angro" + ", Netherlands",
+        // "Web:" + "www.alectobaby.nl". Separados, viravam linhas próprias e
+        // o nome saía ", Netherlands".
+        const daLinha = new Map<number, string[]>()
         for (const item of linha.itens) {
             const c = colunaDoItem(colunas, item.x)
             if (c === 0) {
@@ -847,7 +885,12 @@ export function extrairLeadsDoDiretorio(paginas: readonly (readonly ItemPosicion
                 ultimoYColuna0 = linha.y
             }
             if (!celulas) continue
-            ;(celulas as string[][])[c].push(item.texto)
+            daLinha.set(c, [...(daLinha.get(c) ?? []), item.texto.trim()])
+        }
+        if (celulas) {
+            for (const [c, pedacos] of daLinha) {
+                ;(celulas as string[][])[c].push(pedacos.join(" ").replace(/\s+([,;.)])/g, "$1"))
+            }
         }
     }
     fecharLinha()

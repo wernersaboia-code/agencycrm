@@ -321,6 +321,26 @@ describe("extrairLeadsDoDiretorio — plant-based Alemanha (coluna 'Company & co
     })
 })
 
+describe("extrairLeadsDoDiretorio — produtos infantis da Holanda", () => {
+    it("junta os pedaços da mesma linha da coluna e separa a cidade depois da vírgula", () => {
+        const pagina = [
+            item(57, 790, "8. Directory of importers and distributors", 300),
+            item(62, 760, "Company / location"), item(169, 760, "Profile"), item(419, 760, "Contact"),
+            item(62, 740, "Alecto Baby", 49), item(113, 740, "(Commaxx;", 43), item(169, 740, "Baby monitors"), item(419, 740, "Web:", 21), item(442, 740, "www.alectobaby.nl"),
+            item(62, 731, "formerly Hesdo B.V.), 's-", 92), item(419, 730, "E-mail:", 28),
+            item(62, 721, "Hertogenbosch", 58), item(419, 720, "service@alectobaby.nl"),
+            item(62, 690, "Angro", 25), item(87, 690, ", Netherlands", 51), item(169, 690, "Wholesaler"), item(419, 690, "Web:", 21), item(442, 690, "www.angro.nl"),
+            item(57, 500, "9. Recommendations", 300),
+        ]
+        const leads = extrairLeadsDoDiretorio([pagina])
+        expect(leads.map((l) => [l.companyName, l.location])).toEqual([
+            ["Alecto Baby (Commaxx; formerly Hesdo B.V.)", "'s-Hertogenbosch"],
+            ["Angro", "Netherlands"],
+        ])
+        expect(leads[0]).toMatchObject({ website: "alectobaby.nl", emailGeneral: "service@alectobaby.nl" })
+    })
+})
+
 describe("extrairLeadsDoDiretorio — sem diretório", () => {
     it("devolve lista vazia quando o estudo não tem capítulo de diretório", () => {
         const pagina = [item(57, 700, "1. Executive Summary", 200), item(57, 680, "Some text about info@x.com")]
