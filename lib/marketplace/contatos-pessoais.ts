@@ -105,13 +105,6 @@ const SEPARA_CARGO = String.raw`(?:\s*,\s*|\s+[—–-]\s+)`
 const PESSOA_ATRIBUIDA = new RegExp(String.raw`(${NOME})${SEPARA_CARGO}[^,—–\n]{0,40}(?:${CARGO_LIVRE})`, "gu")
 
 /**
- * Cópia sem o flag `g` só para o teste booleano. Chamar `.test()` na instância
- * global avança o `lastIndex` dela, e o `matchAll` seguinte então começa depois
- * do match e não acha nada — a pessoa nomeada sumia do resultado.
- */
-const NOMEADA_TESTE = new RegExp(PESSOA_NOMEADA.source, "u")
-
-/**
  * Duas maiúsculas seguidas também formam nome de instituição, e aí o cargo
  * solto vira falso positivo. Veio de um caso real do estudo da Espanha:
  * "• European Commission — Import controls of food and feed; Reg. (EU)
@@ -125,10 +118,27 @@ function ehInstituicao(nome: string): boolean {
     return INSTITUICAO.test(nome.split(/\s+/).pop() ?? "")
 }
 
+/**
+ * Adjetivo de título de seção na posição do prenome. Veio do estudo de
+ * dispositivos médicos do Egito: o cabeçalho "F. Central Purchasing: Public
+ * Procurement and Hospital Groups" casava "Purchasing" como cargo e "Public
+ * Procurement" como nome. Ninguém se chama Public ou National; a lista cobre
+ * só palavras que nunca são prenome, para não perder pessoa de verdade.
+ */
+const NAO_E_PRENOME =
+    /^(?:Public|Private|Central|National|Regional|General|Global|International|Local|Federal|State|Hospital|Medical|Strategic|Direct|Indirect|Group|Joint|Centralised|Centralized)$/
+
+function ehPessoaPlausivel(nome: string): boolean {
+    return !NAO_E_PRENOME.test(nome.split(/\s+/)[0] ?? "")
+}
+
 /** A linha nomeia alguém — logo, o que estiver nela é o canal daquela pessoa. */
 function linhaNomeiaPessoa(linha: string): boolean {
-    if (NOMEADA_TESTE.test(linha)) {
-        return true
+    // `matchAll` clona a expressão, então não mexe no `lastIndex` da global.
+    for (const encontro of linha.matchAll(PESSOA_NOMEADA)) {
+        if (ehPessoaPlausivel(encontro[1].trim())) {
+            return true
+        }
     }
     // `matchAll` clona a expressão, então não mexe no `lastIndex` da global.
     for (const encontro of linha.matchAll(PESSOA_ATRIBUIDA)) {
@@ -184,6 +194,16 @@ export function emailEhPessoal(email: string): boolean {
     return !blocos.some(funcional)
 }
 
+/**
+ * Linha de sumário: título, pontilhado e número da página. Veio do estudo de
+ * dispositivos médicos do Egito, cujo sumário traz "F. Central Purchasing:
+ * Public Procurement and Hospital Groups.......16" — "Purchasing" casava como
+ * cargo e "Public Procurement" como nome. Sumário só tem títulos de seção, nunca
+ * contato, então a linha inteira fica de fora. O pontilhado pode vir como
+ * pontos ou como reticências (…), conforme o editor que gerou o PDF.
+ */
+const LINHA_DE_SUMARIO = /(?:\.\s?){4,}\s*\d{1,3}$|…{2,}\s*\d{1,3}$/
+
 /** Só é telefone direto se houver telefone: o rótulo sozinho aparece em prosa. */
 export function temTelefoneDireto(linha: string): boolean {
     return ROTULO_DIRETO.test(linha) && TELEFONE.test(linha)
@@ -195,7 +215,7 @@ export function encontrarContatosPessoais(texto: string): Achado[] {
 
     for (const bruta of texto.split(/\r?\n/)) {
         const linha = bruta.replace(/\s+/g, " ").trim()
-        if (!linha) {
+        if (!linha || LINHA_DE_SUMARIO.test(linha)) {
             continue
         }
 
@@ -223,6 +243,9 @@ export function encontrarContatosPessoais(texto: string): Achado[] {
 
         for (const encontro of linha.matchAll(PESSOA_NOMEADA)) {
             const nome = encontro[1].trim()
+            if (!ehPessoaPlausivel(nome)) {
+                continue
+            }
             const chave = `nome:${nome.toLowerCase()}`
             if (!vistos.has(chave)) {
                 vistos.add(chave)

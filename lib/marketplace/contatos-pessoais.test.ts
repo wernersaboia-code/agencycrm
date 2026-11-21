@@ -178,6 +178,26 @@ describe("encontrarContatosPessoais", () => {
         ).toEqual([])
     })
 
+    it("não toma título de seção do sumário por pessoa nomeada", () => {
+        // Linha real do sumário do estudo de dispositivos médicos do Egito.
+        expect(
+            encontrarContatosPessoais(
+                "F. Central Purchasing: Public Procurement and Hospital Groups............................................16"
+            )
+        ).toEqual([])
+    })
+
+    it("não toma o mesmo título, no corpo do estudo, por pessoa nomeada", () => {
+        expect(
+            encontrarContatosPessoais("F. Central Purchasing: Public Procurement and Hospital Groups")
+        ).toEqual([])
+    })
+
+    it("continua acusando pessoa de verdade depois de 'Purchasing:'", () => {
+        const achados = encontrarContatosPessoais("Purchasing: Hans Müller")
+        expect(achados.map((a) => a.valor)).toEqual(["Hans Müller"])
+    })
+
     it("não acusa página de análise sem diretório", () => {
         const achados = encontrarContatosPessoais(
             "Discounters hold a share of grocery turnover that has no equivalent in most of Europe, " +
